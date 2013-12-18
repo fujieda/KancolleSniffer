@@ -142,6 +142,11 @@ namespace KancolleSniffer
                     break;
                 }
             }
+            else if (oSession.uriContains("api_get_member/slotitem"))
+            {
+                ParseSlotItem(json);
+                Invoke(new Action(UpdateSlotCount));
+            }
             else if (oSession.uriContains("api_get_member/ship2"))
             {
                 ParseShipStatus(json);
@@ -277,8 +282,14 @@ namespace KancolleSniffer
             }
         }
 
+        private void ParseSlotItem(dynamic json)
+        {
+            _nowItems = ((object[])json).Count();
+        }
+
         private void ParseShipStatus(dynamic json)
         {
+            _shipStatuses.Clear();
             foreach (var entry in json)
             {
                 var data = new ShipState
@@ -291,6 +302,7 @@ namespace KancolleSniffer
                 };
                 _shipStatuses[(int)entry.api_id] = data;
             }
+            _nowShips = _shipStatuses.Count;
         }
 
         private void ParseQuestList(dynamic json)
@@ -338,7 +350,8 @@ namespace KancolleSniffer
         private void UpdateSlotCount()
         {
             labelNumOfShips.Text = string.Format("{0:D}/{1:D}", _nowShips, _maxShips);
-            if (_nowShips < _maxShips - 4)
+            if (_maxShips == 0 || // recordよりship3の方が先なので0の場合がある。
+                _nowShips < _maxShips - 4)
             {
                 labelNumOfShips.ForeColor = Color.Black;
                 _slotRinged = false;
@@ -406,6 +419,7 @@ namespace KancolleSniffer
                 hp[i].Text = string.Format("{0:D}/{1:D}", info.NowHp, info.MaxHp);
                 next[i].Text = info.ExpToNext.ToString("D");
             }
+            UpdateSlotCount();
         }
 
         private void UpdateTimers()
