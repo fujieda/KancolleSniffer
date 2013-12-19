@@ -307,7 +307,7 @@ namespace KancolleSniffer
 
         private void ParseQuestList(dynamic json)
         {
-            var resetTime = DateTime.Now.AddHours(5);
+            var resetTime = DateTime.Today.AddHours(5);
             if (DateTime.Now >= resetTime && _questLastUpdated < resetTime)
             {
                 // 前日に未消化のデイリーを消す。
