@@ -56,6 +56,18 @@ namespace KancolleSniffer
             this.label2 = new System.Windows.Forms.Label();
             this.labelFleet1 = new System.Windows.Forms.Label();
             this.panelFleet1 = new System.Windows.Forms.Panel();
+            this.label26 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.labelNextLv6 = new System.Windows.Forms.Label();
             this.labelNextLv5 = new System.Windows.Forms.Label();
             this.labelNextLv4 = new System.Windows.Forms.Label();
@@ -128,18 +140,6 @@ namespace KancolleSniffer
             this.labelQuest3 = new System.Windows.Forms.Label();
             this.labelQuest2 = new System.Windows.Forms.Label();
             this.labelQuest1 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelDock.SuspendLayout();
@@ -268,6 +268,114 @@ namespace KancolleSniffer
             this.panelFleet1.Name = "panelFleet1";
             this.panelFleet1.Size = new System.Drawing.Size(259, 102);
             this.panelFleet1.TabIndex = 2;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(230, 84);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(24, 12);
+            this.label26.TabIndex = 43;
+            this.label26.Text = "Exp";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(230, 68);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(24, 12);
+            this.label25.TabIndex = 42;
+            this.label25.Text = "Exp";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(230, 52);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(24, 12);
+            this.label24.TabIndex = 41;
+            this.label24.Text = "Exp";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(230, 36);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(24, 12);
+            this.label23.TabIndex = 40;
+            this.label23.Text = "Exp";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(230, 20);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(24, 12);
+            this.label22.TabIndex = 39;
+            this.label22.Text = "Exp";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(230, 4);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(24, 12);
+            this.label21.TabIndex = 38;
+            this.label21.Text = "Exp";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(102, 84);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(17, 12);
+            this.label20.TabIndex = 37;
+            this.label20.Text = "Lv";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(102, 68);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(17, 12);
+            this.label19.TabIndex = 36;
+            this.label19.Text = "Lv";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(102, 52);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(17, 12);
+            this.label18.TabIndex = 35;
+            this.label18.Text = "Lv";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(102, 36);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(17, 12);
+            this.label17.TabIndex = 34;
+            this.label17.Text = "Lv";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(102, 20);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(17, 12);
+            this.label16.TabIndex = 33;
+            this.label16.Text = "Lv";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(102, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(17, 12);
+            this.label1.TabIndex = 32;
+            this.label1.Text = "Lv";
             // 
             // labelNextLv6
             // 
@@ -907,114 +1015,6 @@ namespace KancolleSniffer
             this.labelQuest1.Name = "labelQuest1";
             this.labelQuest1.Size = new System.Drawing.Size(207, 12);
             this.labelQuest1.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(102, 4);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(17, 12);
-            this.label1.TabIndex = 32;
-            this.label1.Text = "Lv";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(102, 20);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(17, 12);
-            this.label16.TabIndex = 33;
-            this.label16.Text = "Lv";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(102, 36);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(17, 12);
-            this.label17.TabIndex = 34;
-            this.label17.Text = "Lv";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(102, 52);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(17, 12);
-            this.label18.TabIndex = 35;
-            this.label18.Text = "Lv";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(102, 68);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(17, 12);
-            this.label19.TabIndex = 36;
-            this.label19.Text = "Lv";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(102, 84);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(17, 12);
-            this.label20.TabIndex = 37;
-            this.label20.Text = "Lv";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(230, 4);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(24, 12);
-            this.label21.TabIndex = 38;
-            this.label21.Text = "Exp";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(230, 20);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(24, 12);
-            this.label22.TabIndex = 39;
-            this.label22.Text = "Exp";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(230, 36);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(24, 12);
-            this.label23.TabIndex = 40;
-            this.label23.Text = "Exp";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(230, 52);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(24, 12);
-            this.label24.TabIndex = 41;
-            this.label24.Text = "Exp";
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(230, 68);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(24, 12);
-            this.label25.TabIndex = 42;
-            this.label25.Text = "Exp";
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(230, 84);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(24, 12);
-            this.label26.TabIndex = 43;
-            this.label26.Text = "Exp";
             // 
             // MainForm
             // 
