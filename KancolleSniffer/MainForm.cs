@@ -410,6 +410,7 @@ namespace KancolleSniffer
                     name[i].Text = "";
                     lv[i].Text = "0";
                     hp[i].Text = "0/0";
+                    hp[i].BackColor = DefaultBackColor;
                     next[i].Text = "0";
                     continue;
                 }
@@ -417,6 +418,8 @@ namespace KancolleSniffer
                 name[i].Text = _shipNames.TryGetValue(info.ShipId, out text) ? text : "不明";
                 lv[i].Text = info.Level.ToString("D");
                 hp[i].Text = string.Format("{0:D}/{1:D}", info.NowHp, info.MaxHp);
+                var damage = (double)info.NowHp / info.MaxHp;
+                hp[i].BackColor = damage > 0.5 ? DefaultBackColor : damage > 0.25 ? Color.Orange : Color.Red;
                 next[i].Text = info.ExpToNext.ToString("D");
             }
             UpdateSlotCount();
