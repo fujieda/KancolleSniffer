@@ -49,25 +49,27 @@ namespace KancolleSniffer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panelHeadquarters = new System.Windows.Forms.Panel();
             this.labelNumOfBuckets = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.labelNumOfEquips = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.labelNumOfShips = new System.Windows.Forms.Label();
+            this.labelNumOfEquips = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.labelNumOfShips = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.labelFleet1 = new System.Windows.Forms.Label();
             this.panelFleet1 = new System.Windows.Forms.Panel();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
+            this.labelCondTimer2 = new System.Windows.Forms.Label();
+            this.labelCondTimer1 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
+            this.labelCond6 = new System.Windows.Forms.Label();
+            this.labelCond5 = new System.Windows.Forms.Label();
+            this.labelCond4 = new System.Windows.Forms.Label();
+            this.labelCond2 = new System.Windows.Forms.Label();
+            this.labelCond3 = new System.Windows.Forms.Label();
+            this.labelCond1 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.labelNextLv6 = new System.Windows.Forms.Label();
             this.labelNextLv5 = new System.Windows.Forms.Label();
             this.labelNextLv4 = new System.Windows.Forms.Label();
@@ -152,11 +154,11 @@ namespace KancolleSniffer
             // 
             this.panelHeadquarters.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelHeadquarters.Controls.Add(this.labelNumOfBuckets);
-            this.panelHeadquarters.Controls.Add(this.label4);
-            this.panelHeadquarters.Controls.Add(this.labelNumOfEquips);
             this.panelHeadquarters.Controls.Add(this.label3);
-            this.panelHeadquarters.Controls.Add(this.labelNumOfShips);
+            this.panelHeadquarters.Controls.Add(this.labelNumOfEquips);
             this.panelHeadquarters.Controls.Add(this.label2);
+            this.panelHeadquarters.Controls.Add(this.labelNumOfShips);
+            this.panelHeadquarters.Controls.Add(this.label1);
             this.panelHeadquarters.Location = new System.Drawing.Point(12, 12);
             this.panelHeadquarters.Name = "panelHeadquarters";
             this.panelHeadquarters.Size = new System.Drawing.Size(263, 38);
@@ -167,54 +169,54 @@ namespace KancolleSniffer
             this.labelNumOfBuckets.Location = new System.Drawing.Point(120, 19);
             this.labelNumOfBuckets.Name = "labelNumOfBuckets";
             this.labelNumOfBuckets.Size = new System.Drawing.Size(29, 12);
-            this.labelNumOfBuckets.TabIndex = 7;
+            this.labelNumOfBuckets.TabIndex = 5;
             this.labelNumOfBuckets.Text = "0";
             this.labelNumOfBuckets.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label4
+            // label3
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(116, 4);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(33, 12);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "バケツ";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(116, 4);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(33, 12);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "バケツ";
             // 
             // labelNumOfEquips
             // 
             this.labelNumOfEquips.Location = new System.Drawing.Point(55, 19);
             this.labelNumOfEquips.Name = "labelNumOfEquips";
             this.labelNumOfEquips.Size = new System.Drawing.Size(47, 12);
-            this.labelNumOfEquips.TabIndex = 5;
+            this.labelNumOfEquips.TabIndex = 3;
             this.labelNumOfEquips.Text = "0/0";
             this.labelNumOfEquips.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label3
+            // label2
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(61, 4);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(41, 12);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "装備数";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(61, 4);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(41, 12);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "装備数";
             // 
             // labelNumOfShips
             // 
             this.labelNumOfShips.Location = new System.Drawing.Point(0, 19);
             this.labelNumOfShips.Name = "labelNumOfShips";
             this.labelNumOfShips.Size = new System.Drawing.Size(47, 12);
-            this.labelNumOfShips.TabIndex = 3;
+            this.labelNumOfShips.TabIndex = 1;
             this.labelNumOfShips.Text = "0/0";
             this.labelNumOfShips.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label2
+            // label1
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 4);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(41, 12);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "艦娘数";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 12);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "艦娘数";
             // 
             // labelFleet1
             // 
@@ -228,18 +230,20 @@ namespace KancolleSniffer
             // panelFleet1
             // 
             this.panelFleet1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelFleet1.Controls.Add(this.label26);
-            this.panelFleet1.Controls.Add(this.label25);
-            this.panelFleet1.Controls.Add(this.label24);
-            this.panelFleet1.Controls.Add(this.label23);
-            this.panelFleet1.Controls.Add(this.label22);
-            this.panelFleet1.Controls.Add(this.label21);
             this.panelFleet1.Controls.Add(this.label20);
+            this.panelFleet1.Controls.Add(this.labelCondTimer2);
+            this.panelFleet1.Controls.Add(this.labelCondTimer1);
             this.panelFleet1.Controls.Add(this.label19);
-            this.panelFleet1.Controls.Add(this.label18);
             this.panelFleet1.Controls.Add(this.label17);
+            this.panelFleet1.Controls.Add(this.labelCond6);
+            this.panelFleet1.Controls.Add(this.labelCond5);
+            this.panelFleet1.Controls.Add(this.labelCond4);
+            this.panelFleet1.Controls.Add(this.labelCond2);
+            this.panelFleet1.Controls.Add(this.labelCond3);
+            this.panelFleet1.Controls.Add(this.labelCond1);
             this.panelFleet1.Controls.Add(this.label16);
-            this.panelFleet1.Controls.Add(this.label1);
+            this.panelFleet1.Controls.Add(this.label18);
+            this.panelFleet1.Controls.Add(this.label4);
             this.panelFleet1.Controls.Add(this.labelNextLv6);
             this.panelFleet1.Controls.Add(this.labelNextLv5);
             this.panelFleet1.Controls.Add(this.labelNextLv4);
@@ -266,317 +270,335 @@ namespace KancolleSniffer
             this.panelFleet1.Controls.Add(this.labelShip1);
             this.panelFleet1.Location = new System.Drawing.Point(12, 68);
             this.panelFleet1.Name = "panelFleet1";
-            this.panelFleet1.Size = new System.Drawing.Size(259, 102);
+            this.panelFleet1.Size = new System.Drawing.Size(259, 135);
             this.panelFleet1.TabIndex = 2;
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(230, 84);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(24, 12);
-            this.label26.TabIndex = 43;
-            this.label26.Text = "Exp";
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(230, 68);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(24, 12);
-            this.label25.TabIndex = 42;
-            this.label25.Text = "Exp";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(230, 52);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(24, 12);
-            this.label24.TabIndex = 41;
-            this.label24.Text = "Exp";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(230, 36);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(24, 12);
-            this.label23.TabIndex = 40;
-            this.label23.Text = "Exp";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(230, 20);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(24, 12);
-            this.label22.TabIndex = 39;
-            this.label22.Text = "Exp";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(230, 4);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(24, 12);
-            this.label21.TabIndex = 38;
-            this.label21.Text = "Exp";
             // 
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(102, 84);
+            this.label20.Location = new System.Drawing.Point(188, 117);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(17, 12);
-            this.label20.TabIndex = 37;
-            this.label20.Text = "Lv";
+            this.label20.Size = new System.Drawing.Size(29, 12);
+            this.label20.TabIndex = 36;
+            this.label20.Text = "間宮";
+            // 
+            // labelCondTimer2
+            // 
+            this.labelCondTimer2.Location = new System.Drawing.Point(223, 117);
+            this.labelCondTimer2.Name = "labelCondTimer2";
+            this.labelCondTimer2.Size = new System.Drawing.Size(31, 12);
+            this.labelCondTimer2.TabIndex = 37;
+            this.labelCondTimer2.Text = "00:00";
+            this.labelCondTimer2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // labelCondTimer1
+            // 
+            this.labelCondTimer1.Location = new System.Drawing.Point(151, 117);
+            this.labelCondTimer1.Name = "labelCondTimer1";
+            this.labelCondTimer1.Size = new System.Drawing.Size(31, 12);
+            this.labelCondTimer1.TabIndex = 35;
+            this.labelCondTimer1.Text = "00:00";
+            this.labelCondTimer1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(102, 68);
+            this.label19.Location = new System.Drawing.Point(116, 117);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(17, 12);
-            this.label19.TabIndex = 36;
-            this.label19.Text = "Lv";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(102, 52);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(17, 12);
-            this.label18.TabIndex = 35;
-            this.label18.Text = "Lv";
+            this.label19.Size = new System.Drawing.Size(29, 12);
+            this.label19.TabIndex = 34;
+            this.label19.Text = "疲労";
             // 
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(102, 36);
+            this.label17.Location = new System.Drawing.Point(181, 4);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(17, 12);
-            this.label17.TabIndex = 34;
-            this.label17.Text = "Lv";
+            this.label17.Size = new System.Drawing.Size(29, 12);
+            this.label17.TabIndex = 20;
+            this.label17.Text = "状態";
+            // 
+            // labelCond6
+            // 
+            this.labelCond6.Location = new System.Drawing.Point(186, 100);
+            this.labelCond6.Name = "labelCond6";
+            this.labelCond6.Size = new System.Drawing.Size(23, 12);
+            this.labelCond6.TabIndex = 26;
+            this.labelCond6.Text = "0";
+            this.labelCond6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // labelCond5
+            // 
+            this.labelCond5.Location = new System.Drawing.Point(186, 84);
+            this.labelCond5.Name = "labelCond5";
+            this.labelCond5.Size = new System.Drawing.Size(23, 12);
+            this.labelCond5.TabIndex = 25;
+            this.labelCond5.Text = "0";
+            this.labelCond5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // labelCond4
+            // 
+            this.labelCond4.Location = new System.Drawing.Point(186, 68);
+            this.labelCond4.Name = "labelCond4";
+            this.labelCond4.Size = new System.Drawing.Size(23, 12);
+            this.labelCond4.TabIndex = 24;
+            this.labelCond4.Text = "0";
+            this.labelCond4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // labelCond2
+            // 
+            this.labelCond2.Location = new System.Drawing.Point(186, 36);
+            this.labelCond2.Name = "labelCond2";
+            this.labelCond2.Size = new System.Drawing.Size(23, 12);
+            this.labelCond2.TabIndex = 22;
+            this.labelCond2.Text = "0";
+            this.labelCond2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // labelCond3
+            // 
+            this.labelCond3.Location = new System.Drawing.Point(186, 52);
+            this.labelCond3.Name = "labelCond3";
+            this.labelCond3.Size = new System.Drawing.Size(23, 12);
+            this.labelCond3.TabIndex = 23;
+            this.labelCond3.Text = "0";
+            this.labelCond3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // labelCond1
+            // 
+            this.labelCond1.Location = new System.Drawing.Point(186, 20);
+            this.labelCond1.Name = "labelCond1";
+            this.labelCond1.Size = new System.Drawing.Size(23, 12);
+            this.labelCond1.TabIndex = 21;
+            this.labelCond1.Text = "0";
+            this.labelCond1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(102, 20);
+            this.label16.Location = new System.Drawing.Point(151, 4);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(17, 12);
-            this.label16.TabIndex = 33;
-            this.label16.Text = "Lv";
+            this.label16.Size = new System.Drawing.Size(29, 12);
+            this.label16.TabIndex = 13;
+            this.label16.Text = "耐久";
             // 
-            // label1
+            // label18
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(102, 4);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(17, 12);
-            this.label1.TabIndex = 32;
-            this.label1.Text = "Lv";
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(213, 4);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(41, 12);
+            this.label18.TabIndex = 27;
+            this.label18.Text = "経験値";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(105, 4);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(34, 12);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "レベル";
             // 
             // labelNextLv6
             // 
-            this.labelNextLv6.Location = new System.Drawing.Point(193, 84);
+            this.labelNextLv6.Location = new System.Drawing.Point(219, 100);
             this.labelNextLv6.Name = "labelNextLv6";
             this.labelNextLv6.Size = new System.Drawing.Size(35, 12);
-            this.labelNextLv6.TabIndex = 31;
+            this.labelNextLv6.TabIndex = 33;
             this.labelNextLv6.Text = "0";
             this.labelNextLv6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelNextLv5
             // 
-            this.labelNextLv5.Location = new System.Drawing.Point(193, 68);
+            this.labelNextLv5.Location = new System.Drawing.Point(219, 84);
             this.labelNextLv5.Name = "labelNextLv5";
             this.labelNextLv5.Size = new System.Drawing.Size(35, 12);
-            this.labelNextLv5.TabIndex = 30;
+            this.labelNextLv5.TabIndex = 32;
             this.labelNextLv5.Text = "0";
             this.labelNextLv5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelNextLv4
             // 
-            this.labelNextLv4.Location = new System.Drawing.Point(193, 52);
+            this.labelNextLv4.Location = new System.Drawing.Point(219, 68);
             this.labelNextLv4.Name = "labelNextLv4";
             this.labelNextLv4.Size = new System.Drawing.Size(35, 12);
-            this.labelNextLv4.TabIndex = 29;
+            this.labelNextLv4.TabIndex = 31;
             this.labelNextLv4.Text = "0";
             this.labelNextLv4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelNextLv3
             // 
-            this.labelNextLv3.Location = new System.Drawing.Point(193, 36);
+            this.labelNextLv3.Location = new System.Drawing.Point(219, 52);
             this.labelNextLv3.Name = "labelNextLv3";
             this.labelNextLv3.Size = new System.Drawing.Size(35, 12);
-            this.labelNextLv3.TabIndex = 28;
+            this.labelNextLv3.TabIndex = 30;
             this.labelNextLv3.Text = "0";
             this.labelNextLv3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelNextLv2
             // 
-            this.labelNextLv2.Location = new System.Drawing.Point(193, 20);
+            this.labelNextLv2.Location = new System.Drawing.Point(219, 36);
             this.labelNextLv2.Name = "labelNextLv2";
             this.labelNextLv2.Size = new System.Drawing.Size(35, 12);
-            this.labelNextLv2.TabIndex = 27;
+            this.labelNextLv2.TabIndex = 29;
             this.labelNextLv2.Text = "0";
             this.labelNextLv2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelNextLv1
             // 
-            this.labelNextLv1.Location = new System.Drawing.Point(193, 4);
+            this.labelNextLv1.Location = new System.Drawing.Point(219, 20);
             this.labelNextLv1.Name = "labelNextLv1";
             this.labelNextLv1.Size = new System.Drawing.Size(35, 12);
-            this.labelNextLv1.TabIndex = 26;
+            this.labelNextLv1.TabIndex = 28;
             this.labelNextLv1.Text = "0";
             this.labelNextLv1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelHP6
             // 
-            this.labelHP6.Location = new System.Drawing.Point(142, 84);
+            this.labelHP6.Location = new System.Drawing.Point(145, 100);
             this.labelHP6.Name = "labelHP6";
-            this.labelHP6.Size = new System.Drawing.Size(35, 12);
-            this.labelHP6.TabIndex = 23;
+            this.labelHP6.Size = new System.Drawing.Size(35, 10);
+            this.labelHP6.TabIndex = 19;
             this.labelHP6.Text = "0/0";
             this.labelHP6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelHP5
             // 
-            this.labelHP5.Location = new System.Drawing.Point(142, 68);
+            this.labelHP5.Location = new System.Drawing.Point(145, 84);
             this.labelHP5.Name = "labelHP5";
-            this.labelHP5.Size = new System.Drawing.Size(35, 12);
-            this.labelHP5.TabIndex = 22;
+            this.labelHP5.Size = new System.Drawing.Size(35, 10);
+            this.labelHP5.TabIndex = 18;
             this.labelHP5.Text = "0/0";
             this.labelHP5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelHP4
             // 
-            this.labelHP4.Location = new System.Drawing.Point(142, 52);
+            this.labelHP4.Location = new System.Drawing.Point(145, 68);
             this.labelHP4.Name = "labelHP4";
-            this.labelHP4.Size = new System.Drawing.Size(35, 12);
-            this.labelHP4.TabIndex = 21;
+            this.labelHP4.Size = new System.Drawing.Size(35, 10);
+            this.labelHP4.TabIndex = 17;
             this.labelHP4.Text = "0/0";
             this.labelHP4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelHP3
             // 
-            this.labelHP3.Location = new System.Drawing.Point(142, 36);
+            this.labelHP3.Location = new System.Drawing.Point(145, 52);
             this.labelHP3.Name = "labelHP3";
-            this.labelHP3.Size = new System.Drawing.Size(35, 12);
-            this.labelHP3.TabIndex = 20;
+            this.labelHP3.Size = new System.Drawing.Size(35, 10);
+            this.labelHP3.TabIndex = 16;
             this.labelHP3.Text = "0/0";
             this.labelHP3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelHP2
             // 
-            this.labelHP2.Location = new System.Drawing.Point(142, 20);
+            this.labelHP2.Location = new System.Drawing.Point(145, 36);
             this.labelHP2.Name = "labelHP2";
-            this.labelHP2.Size = new System.Drawing.Size(35, 12);
-            this.labelHP2.TabIndex = 19;
+            this.labelHP2.Size = new System.Drawing.Size(35, 10);
+            this.labelHP2.TabIndex = 15;
             this.labelHP2.Text = "0/0";
             this.labelHP2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelHP1
             // 
-            this.labelHP1.Location = new System.Drawing.Point(142, 4);
+            this.labelHP1.Location = new System.Drawing.Point(145, 20);
             this.labelHP1.Name = "labelHP1";
-            this.labelHP1.Size = new System.Drawing.Size(35, 12);
-            this.labelHP1.TabIndex = 18;
+            this.labelHP1.Size = new System.Drawing.Size(35, 10);
+            this.labelHP1.TabIndex = 14;
             this.labelHP1.Text = "0/0";
             this.labelHP1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv6
             // 
-            this.labelLv6.Location = new System.Drawing.Point(119, 84);
+            this.labelLv6.Location = new System.Drawing.Point(122, 100);
             this.labelLv6.Name = "labelLv6";
             this.labelLv6.Size = new System.Drawing.Size(17, 12);
-            this.labelLv6.TabIndex = 17;
+            this.labelLv6.TabIndex = 12;
             this.labelLv6.Text = "0";
             this.labelLv6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv5
             // 
-            this.labelLv5.Location = new System.Drawing.Point(119, 68);
+            this.labelLv5.Location = new System.Drawing.Point(122, 84);
             this.labelLv5.Name = "labelLv5";
             this.labelLv5.Size = new System.Drawing.Size(17, 12);
-            this.labelLv5.TabIndex = 16;
+            this.labelLv5.TabIndex = 11;
             this.labelLv5.Text = "0";
             this.labelLv5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv4
             // 
-            this.labelLv4.Location = new System.Drawing.Point(119, 52);
+            this.labelLv4.Location = new System.Drawing.Point(122, 68);
             this.labelLv4.Name = "labelLv4";
             this.labelLv4.Size = new System.Drawing.Size(17, 12);
-            this.labelLv4.TabIndex = 15;
+            this.labelLv4.TabIndex = 10;
             this.labelLv4.Text = "0";
             this.labelLv4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv2
             // 
-            this.labelLv2.Location = new System.Drawing.Point(119, 20);
+            this.labelLv2.Location = new System.Drawing.Point(122, 36);
             this.labelLv2.Name = "labelLv2";
             this.labelLv2.Size = new System.Drawing.Size(17, 12);
-            this.labelLv2.TabIndex = 14;
+            this.labelLv2.TabIndex = 8;
             this.labelLv2.Text = "0";
             this.labelLv2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv3
             // 
-            this.labelLv3.Location = new System.Drawing.Point(119, 36);
+            this.labelLv3.Location = new System.Drawing.Point(122, 52);
             this.labelLv3.Name = "labelLv3";
             this.labelLv3.Size = new System.Drawing.Size(17, 12);
-            this.labelLv3.TabIndex = 13;
+            this.labelLv3.TabIndex = 9;
             this.labelLv3.Text = "0";
             this.labelLv3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv1
             // 
-            this.labelLv1.Location = new System.Drawing.Point(119, 4);
+            this.labelLv1.Location = new System.Drawing.Point(122, 20);
             this.labelLv1.Name = "labelLv1";
             this.labelLv1.Size = new System.Drawing.Size(17, 12);
-            this.labelLv1.TabIndex = 12;
+            this.labelLv1.TabIndex = 7;
             this.labelLv1.Text = "0";
             this.labelLv1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelShip6
             // 
-            this.labelShip6.Location = new System.Drawing.Point(3, 84);
+            this.labelShip6.Location = new System.Drawing.Point(3, 100);
             this.labelShip6.Name = "labelShip6";
             this.labelShip6.Size = new System.Drawing.Size(77, 12);
             this.labelShip6.TabIndex = 5;
             // 
             // labelShip5
             // 
-            this.labelShip5.Location = new System.Drawing.Point(3, 68);
+            this.labelShip5.Location = new System.Drawing.Point(3, 84);
             this.labelShip5.Name = "labelShip5";
             this.labelShip5.Size = new System.Drawing.Size(77, 12);
             this.labelShip5.TabIndex = 4;
             // 
             // labelShip4
             // 
-            this.labelShip4.Location = new System.Drawing.Point(3, 52);
+            this.labelShip4.Location = new System.Drawing.Point(3, 68);
             this.labelShip4.Name = "labelShip4";
             this.labelShip4.Size = new System.Drawing.Size(77, 12);
             this.labelShip4.TabIndex = 3;
             // 
             // labelShip3
             // 
-            this.labelShip3.Location = new System.Drawing.Point(3, 36);
+            this.labelShip3.Location = new System.Drawing.Point(3, 52);
             this.labelShip3.Name = "labelShip3";
             this.labelShip3.Size = new System.Drawing.Size(77, 12);
             this.labelShip3.TabIndex = 2;
             // 
             // labelShip2
             // 
-            this.labelShip2.Location = new System.Drawing.Point(3, 20);
+            this.labelShip2.Location = new System.Drawing.Point(3, 36);
             this.labelShip2.Name = "labelShip2";
             this.labelShip2.Size = new System.Drawing.Size(77, 12);
             this.labelShip2.TabIndex = 1;
             // 
             // labelShip1
             // 
-            this.labelShip1.Location = new System.Drawing.Point(3, 4);
+            this.labelShip1.Location = new System.Drawing.Point(3, 20);
             this.labelShip1.Name = "labelShip1";
             this.labelShip1.Size = new System.Drawing.Size(77, 12);
             this.labelShip1.TabIndex = 0;
@@ -584,7 +606,7 @@ namespace KancolleSniffer
             // labelRepair
             // 
             this.labelRepair.AutoSize = true;
-            this.labelRepair.Location = new System.Drawing.Point(15, 173);
+            this.labelRepair.Location = new System.Drawing.Point(15, 217);
             this.labelRepair.Name = "labelRepair";
             this.labelRepair.Size = new System.Drawing.Size(29, 12);
             this.labelRepair.TabIndex = 3;
@@ -605,7 +627,7 @@ namespace KancolleSniffer
             this.panelDock.Controls.Add(this.label7);
             this.panelDock.Controls.Add(this.label6);
             this.panelDock.Controls.Add(this.label5);
-            this.panelDock.Location = new System.Drawing.Point(12, 188);
+            this.panelDock.Location = new System.Drawing.Point(12, 232);
             this.panelDock.Name = "panelDock";
             this.panelDock.Size = new System.Drawing.Size(165, 68);
             this.panelDock.TabIndex = 4;
@@ -615,35 +637,35 @@ namespace KancolleSniffer
             this.labelRepairShip4.Location = new System.Drawing.Point(36, 50);
             this.labelRepairShip4.Name = "labelRepairShip4";
             this.labelRepairShip4.Size = new System.Drawing.Size(77, 12);
-            this.labelRepairShip4.TabIndex = 35;
+            this.labelRepairShip4.TabIndex = 7;
             // 
             // labelRepairShip3
             // 
             this.labelRepairShip3.Location = new System.Drawing.Point(36, 36);
             this.labelRepairShip3.Name = "labelRepairShip3";
             this.labelRepairShip3.Size = new System.Drawing.Size(77, 12);
-            this.labelRepairShip3.TabIndex = 34;
+            this.labelRepairShip3.TabIndex = 6;
             // 
             // labelRepairShip2
             // 
             this.labelRepairShip2.Location = new System.Drawing.Point(36, 20);
             this.labelRepairShip2.Name = "labelRepairShip2";
             this.labelRepairShip2.Size = new System.Drawing.Size(77, 12);
-            this.labelRepairShip2.TabIndex = 33;
+            this.labelRepairShip2.TabIndex = 5;
             // 
             // labelRepairShip1
             // 
             this.labelRepairShip1.Location = new System.Drawing.Point(36, 4);
             this.labelRepairShip1.Name = "labelRepairShip1";
             this.labelRepairShip1.Size = new System.Drawing.Size(77, 12);
-            this.labelRepairShip1.TabIndex = 32;
+            this.labelRepairShip1.TabIndex = 4;
             // 
             // labelRepair3
             // 
             this.labelRepair3.Location = new System.Drawing.Point(115, 36);
             this.labelRepair3.Name = "labelRepair3";
             this.labelRepair3.Size = new System.Drawing.Size(45, 12);
-            this.labelRepair3.TabIndex = 8;
+            this.labelRepair3.TabIndex = 10;
             this.labelRepair3.Text = "00:00:00";
             this.labelRepair3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -652,7 +674,7 @@ namespace KancolleSniffer
             this.labelRepair4.Location = new System.Drawing.Point(115, 50);
             this.labelRepair4.Name = "labelRepair4";
             this.labelRepair4.Size = new System.Drawing.Size(45, 12);
-            this.labelRepair4.TabIndex = 7;
+            this.labelRepair4.TabIndex = 11;
             this.labelRepair4.Text = "00:00:00";
             this.labelRepair4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -661,7 +683,7 @@ namespace KancolleSniffer
             this.labelRepair2.Location = new System.Drawing.Point(115, 20);
             this.labelRepair2.Name = "labelRepair2";
             this.labelRepair2.Size = new System.Drawing.Size(45, 12);
-            this.labelRepair2.TabIndex = 6;
+            this.labelRepair2.TabIndex = 9;
             this.labelRepair2.Text = "00:00:00";
             this.labelRepair2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -670,7 +692,7 @@ namespace KancolleSniffer
             this.labelRepair1.Location = new System.Drawing.Point(115, 4);
             this.labelRepair1.Name = "labelRepair1";
             this.labelRepair1.Size = new System.Drawing.Size(45, 12);
-            this.labelRepair1.TabIndex = 5;
+            this.labelRepair1.TabIndex = 8;
             this.labelRepair1.Text = "00:00:00";
             this.labelRepair1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -680,7 +702,7 @@ namespace KancolleSniffer
             this.label8.Location = new System.Drawing.Point(3, 50);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(29, 12);
-            this.label8.TabIndex = 4;
+            this.label8.TabIndex = 3;
             this.label8.Text = "第四";
             // 
             // label7
@@ -689,7 +711,7 @@ namespace KancolleSniffer
             this.label7.Location = new System.Drawing.Point(3, 36);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(29, 12);
-            this.label7.TabIndex = 3;
+            this.label7.TabIndex = 2;
             this.label7.Text = "第三";
             // 
             // label6
@@ -698,7 +720,7 @@ namespace KancolleSniffer
             this.label6.Location = new System.Drawing.Point(3, 20);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(29, 12);
-            this.label6.TabIndex = 2;
+            this.label6.TabIndex = 1;
             this.label6.Text = "第二";
             // 
             // label5
@@ -721,7 +743,7 @@ namespace KancolleSniffer
             this.panel1.Controls.Add(this.label10);
             this.panel1.Controls.Add(this.labelConstruct1);
             this.panel1.Controls.Add(this.label9);
-            this.panel1.Location = new System.Drawing.Point(183, 188);
+            this.panel1.Location = new System.Drawing.Point(183, 232);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(88, 68);
             this.panel1.TabIndex = 7;
@@ -731,7 +753,7 @@ namespace KancolleSniffer
             this.labelConstruct3.Location = new System.Drawing.Point(38, 36);
             this.labelConstruct3.Name = "labelConstruct3";
             this.labelConstruct3.Size = new System.Drawing.Size(45, 12);
-            this.labelConstruct3.TabIndex = 12;
+            this.labelConstruct3.TabIndex = 6;
             this.labelConstruct3.Text = "00:00:00";
             this.labelConstruct3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -741,7 +763,7 @@ namespace KancolleSniffer
             this.label12.Location = new System.Drawing.Point(3, 50);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(29, 12);
-            this.label12.TabIndex = 4;
+            this.label12.TabIndex = 3;
             this.label12.Text = "第四";
             // 
             // labelConstruct4
@@ -749,7 +771,7 @@ namespace KancolleSniffer
             this.labelConstruct4.Location = new System.Drawing.Point(38, 50);
             this.labelConstruct4.Name = "labelConstruct4";
             this.labelConstruct4.Size = new System.Drawing.Size(45, 12);
-            this.labelConstruct4.TabIndex = 11;
+            this.labelConstruct4.TabIndex = 7;
             this.labelConstruct4.Text = "00:00:00";
             this.labelConstruct4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -759,7 +781,7 @@ namespace KancolleSniffer
             this.label11.Location = new System.Drawing.Point(3, 36);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(29, 12);
-            this.label11.TabIndex = 3;
+            this.label11.TabIndex = 2;
             this.label11.Text = "第三";
             // 
             // labelConstruct2
@@ -767,7 +789,7 @@ namespace KancolleSniffer
             this.labelConstruct2.Location = new System.Drawing.Point(38, 20);
             this.labelConstruct2.Name = "labelConstruct2";
             this.labelConstruct2.Size = new System.Drawing.Size(45, 12);
-            this.labelConstruct2.TabIndex = 10;
+            this.labelConstruct2.TabIndex = 5;
             this.labelConstruct2.Text = "00:00:00";
             this.labelConstruct2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -777,7 +799,7 @@ namespace KancolleSniffer
             this.label10.Location = new System.Drawing.Point(3, 20);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(29, 12);
-            this.label10.TabIndex = 2;
+            this.label10.TabIndex = 1;
             this.label10.Text = "第二";
             // 
             // labelConstruct1
@@ -785,7 +807,7 @@ namespace KancolleSniffer
             this.labelConstruct1.Location = new System.Drawing.Point(38, 4);
             this.labelConstruct1.Name = "labelConstruct1";
             this.labelConstruct1.Size = new System.Drawing.Size(45, 12);
-            this.labelConstruct1.TabIndex = 9;
+            this.labelConstruct1.TabIndex = 4;
             this.labelConstruct1.Text = "00:00:00";
             this.labelConstruct1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -801,7 +823,7 @@ namespace KancolleSniffer
             // labelConstruct
             // 
             this.labelConstruct.AutoSize = true;
-            this.labelConstruct.Location = new System.Drawing.Point(184, 173);
+            this.labelConstruct.Location = new System.Drawing.Point(184, 217);
             this.labelConstruct.Name = "labelConstruct";
             this.labelConstruct.Size = new System.Drawing.Size(29, 12);
             this.labelConstruct.TabIndex = 6;
@@ -810,7 +832,7 @@ namespace KancolleSniffer
             // labelQuest
             // 
             this.labelQuest.AutoSize = true;
-            this.labelQuest.Location = new System.Drawing.Point(14, 331);
+            this.labelQuest.Location = new System.Drawing.Point(14, 375);
             this.labelQuest.Name = "labelQuest";
             this.labelQuest.Size = new System.Drawing.Size(29, 12);
             this.labelQuest.TabIndex = 8;
@@ -819,7 +841,7 @@ namespace KancolleSniffer
             // labelMission
             // 
             this.labelMission.AutoSize = true;
-            this.labelMission.Location = new System.Drawing.Point(13, 259);
+            this.labelMission.Location = new System.Drawing.Point(13, 303);
             this.labelMission.Name = "labelMission";
             this.labelMission.Size = new System.Drawing.Size(29, 12);
             this.labelMission.TabIndex = 10;
@@ -837,7 +859,7 @@ namespace KancolleSniffer
             this.panel2.Controls.Add(this.label15);
             this.panel2.Controls.Add(this.label14);
             this.panel2.Controls.Add(this.label13);
-            this.panel2.Location = new System.Drawing.Point(12, 274);
+            this.panel2.Location = new System.Drawing.Point(12, 318);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(259, 54);
             this.panel2.TabIndex = 11;
@@ -847,28 +869,28 @@ namespace KancolleSniffer
             this.labelMissionName3.Location = new System.Drawing.Point(61, 36);
             this.labelMissionName3.Name = "labelMissionName3";
             this.labelMissionName3.Size = new System.Drawing.Size(146, 12);
-            this.labelMissionName3.TabIndex = 18;
+            this.labelMissionName3.TabIndex = 5;
             // 
             // labelMissionName2
             // 
             this.labelMissionName2.Location = new System.Drawing.Point(62, 20);
             this.labelMissionName2.Name = "labelMissionName2";
             this.labelMissionName2.Size = new System.Drawing.Size(146, 12);
-            this.labelMissionName2.TabIndex = 17;
+            this.labelMissionName2.TabIndex = 4;
             // 
             // labelMissionName1
             // 
             this.labelMissionName1.Location = new System.Drawing.Point(61, 4);
             this.labelMissionName1.Name = "labelMissionName1";
             this.labelMissionName1.Size = new System.Drawing.Size(146, 12);
-            this.labelMissionName1.TabIndex = 16;
+            this.labelMissionName1.TabIndex = 3;
             // 
             // labelMission3
             // 
             this.labelMission3.Location = new System.Drawing.Point(209, 36);
             this.labelMission3.Name = "labelMission3";
             this.labelMission3.Size = new System.Drawing.Size(45, 12);
-            this.labelMission3.TabIndex = 15;
+            this.labelMission3.TabIndex = 8;
             this.labelMission3.Text = "00:00:00";
             this.labelMission3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -877,7 +899,7 @@ namespace KancolleSniffer
             this.labelMission2.Location = new System.Drawing.Point(209, 20);
             this.labelMission2.Name = "labelMission2";
             this.labelMission2.Size = new System.Drawing.Size(45, 12);
-            this.labelMission2.TabIndex = 14;
+            this.labelMission2.TabIndex = 7;
             this.labelMission2.Text = "00:00:00";
             this.labelMission2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -886,7 +908,7 @@ namespace KancolleSniffer
             this.labelMission1.Location = new System.Drawing.Point(209, 4);
             this.labelMission1.Name = "labelMission1";
             this.labelMission1.Size = new System.Drawing.Size(45, 12);
-            this.labelMission1.TabIndex = 13;
+            this.labelMission1.TabIndex = 6;
             this.labelMission1.Text = "00:00:00";
             this.labelMission1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -936,7 +958,7 @@ namespace KancolleSniffer
             this.panel3.Controls.Add(this.labelQuest3);
             this.panel3.Controls.Add(this.labelQuest2);
             this.panel3.Controls.Add(this.labelQuest1);
-            this.panel3.Location = new System.Drawing.Point(12, 346);
+            this.panel3.Location = new System.Drawing.Point(12, 390);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(259, 81);
             this.panel3.TabIndex = 13;
@@ -1020,7 +1042,7 @@ namespace KancolleSniffer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(287, 439);
+            this.ClientSize = new System.Drawing.Size(283, 483);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.labelMission);
@@ -1059,11 +1081,11 @@ namespace KancolleSniffer
 
         private System.Windows.Forms.Panel panelHeadquarters;
         private System.Windows.Forms.Label labelNumOfBuckets;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label labelNumOfEquips;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label labelNumOfShips;
+        private System.Windows.Forms.Label labelNumOfEquips;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelNumOfShips;
+        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelFleet1;
         private System.Windows.Forms.Panel panelFleet1;
         private System.Windows.Forms.Label labelShip6;
@@ -1138,18 +1160,20 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelRepairShip3;
         private System.Windows.Forms.Label labelRepairShip2;
         private System.Windows.Forms.Label labelRepairShip1;
-        private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label labelCond6;
+        private System.Windows.Forms.Label labelCond5;
+        private System.Windows.Forms.Label labelCond4;
+        private System.Windows.Forms.Label labelCond2;
+        private System.Windows.Forms.Label labelCond3;
+        private System.Windows.Forms.Label labelCond1;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelCondTimer2;
+        private System.Windows.Forms.Label labelCondTimer1;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label20;
     }
 }
 

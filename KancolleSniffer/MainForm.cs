@@ -46,6 +46,9 @@ namespace KancolleSniffer
         private readonly SortedDictionary<int, QuestState> _questList = new SortedDictionary<int, QuestState>();
         private DateTime _questLastUpdated;
         private bool _slotRinged;
+        private int _prevWorstCond = int.MaxValue;
+        private DateTime _condEndTime1;
+        private DateTime _condEndTime2;
 
         private readonly string _shipNamesFile =
             Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "shipnames.json");
@@ -60,6 +63,7 @@ namespace KancolleSniffer
             public int ExpToNext { get; set; }
             public int MaxHp { get; set; }
             public int NowHp { get; set; }
+            public int Cond { get; set; }
         }
 
         private struct QuestState
@@ -298,7 +302,8 @@ namespace KancolleSniffer
                     Level = (int)entry.api_lv,
                     ExpToNext = (int)entry.api_exp[1],
                     MaxHp = (int)entry.api_maxhp,
-                    NowHp = (int)entry.api_nowhp
+                    NowHp = (int)entry.api_nowhp,
+                    Cond = (int)entry.api_cond
                 };
                 _shipStatuses[(int)entry.api_id] = data;
             }
@@ -397,8 +402,10 @@ namespace KancolleSniffer
             var name = new[] {labelShip1, labelShip2, labelShip3, labelShip4, labelShip5, labelShip6};
             var lv = new[] {labelLv1, labelLv2, labelLv3, labelLv4, labelLv5, labelLv6};
             var hp = new[] {labelHP1, labelHP2, labelHP3, labelHP4, labelHP5, labelHP6};
+            var cond = new[] {labelCond1, labelCond2, labelCond3, labelCond4, labelCond5, labelCond6};
             var next = new[] {labelNextLv1, labelNextLv2, labelNextLv3, labelNextLv4, labelNextLv5, labelNextLv6};
 
+            var worstCond = int.MaxValue;
             if (_shipStatuses.Count == 0)
                 return;
             for (var i = 0; i < 6; i++)
@@ -411,6 +418,8 @@ namespace KancolleSniffer
                     lv[i].Text = "0";
                     hp[i].Text = "0/0";
                     hp[i].BackColor = DefaultBackColor;
+                    cond[i].Text = "0";
+                    cond[i].BackColor = DefaultBackColor;
                     next[i].Text = "0";
                     continue;
                 }
@@ -420,9 +429,40 @@ namespace KancolleSniffer
                 hp[i].Text = string.Format("{0:D}/{1:D}", info.NowHp, info.MaxHp);
                 var damage = (double)info.NowHp / info.MaxHp;
                 hp[i].BackColor = damage > 0.5 ? DefaultBackColor : damage > 0.25 ? Color.Orange : Color.Red;
+                SetHpLavel(hp[i], info.NowHp, info.MaxHp);
+                SetCondLabel(cond[i], info.Cond);
+                if (info.Cond < worstCond)
+                    worstCond = info.Cond;
                 next[i].Text = info.ExpToNext.ToString("D");
             }
+            if (worstCond != _prevWorstCond)
+            {
+                _prevWorstCond = worstCond;
+                SetCondTimers(worstCond);
+            }
             UpdateSlotCount();
+        }
+
+        private void SetHpLavel(Label label, int now, int max)
+        {
+            label.Text = string.Format("{0:D}/{1:D}", now, max);
+            var damage = (double)now / max;
+            label.ForeColor = damage > 0.5 ? Color.Black : damage > 0.25 ? Color.Orange : Color.Red;
+        }
+
+        private void SetCondLabel(Label label, int cond)
+        {
+            label.Text = cond.ToString("D");
+            label.BackColor = cond >= 50
+                ? Color.Yellow
+                : cond >= 30 ? DefaultBackColor : cond >= 20 ? Color.Orange : Color.Red;
+        }
+
+        private void SetCondTimers(int cond)
+        {
+            var now = DateTime.Now;
+            _condEndTime1 = (cond < 30) ? now.AddMinutes((30 - cond + 2) / 3 * 3) : DateTime.MinValue;
+            _condEndTime2 = (cond < 40) ? now.AddMinutes((40 - cond + 2) / 3 * 3) : DateTime.MinValue;
         }
 
         private void UpdateTimers()
@@ -460,6 +500,7 @@ namespace KancolleSniffer
                 Ring();
                 timer.NeedRing = false;
             }
+            UpdateCondTimers();
         }
 
         private void SetTimerLabel(RingTimer timer, Label label)
@@ -469,6 +510,14 @@ namespace KancolleSniffer
             if (!timer.IsSet)
                 label.ForeColor = Color.Black;
             label.Text = timer.ToString();
+        }
+
+        private void UpdateCondTimers()
+        {
+            var now = DateTime.Now;
+            var min = DateTime.MinValue;
+            labelCondTimer1.Text = (_condEndTime1 != min) ? (_condEndTime1 - now).ToString(@"mm\:ss") : "00:00";
+            labelCondTimer2.Text = (_condEndTime2 != min) ? (_condEndTime2 - now).ToString(@"mm\:ss") : "00:00";
         }
 
         private void UpdateQuestList()
