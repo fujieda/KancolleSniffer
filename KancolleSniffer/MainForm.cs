@@ -427,8 +427,6 @@ namespace KancolleSniffer
                 name[i].Text = _shipNames.TryGetValue(info.ShipId, out text) ? text : "不明";
                 lv[i].Text = info.Level.ToString("D");
                 hp[i].Text = string.Format("{0:D}/{1:D}", info.NowHp, info.MaxHp);
-                var damage = (double)info.NowHp / info.MaxHp;
-                hp[i].BackColor = damage > 0.5 ? DefaultBackColor : damage > 0.25 ? Color.Orange : Color.Red;
                 SetHpLavel(hp[i], info.NowHp, info.MaxHp);
                 SetCondLabel(cond[i], info.Cond);
                 if (info.Cond < worstCond)
@@ -447,7 +445,7 @@ namespace KancolleSniffer
         {
             label.Text = string.Format("{0:D}/{1:D}", now, max);
             var damage = (double)now / max;
-            label.ForeColor = damage > 0.5 ? Color.Black : damage > 0.25 ? Color.Orange : Color.Red;
+            label.BackColor = damage > 0.5 ? DefaultBackColor : damage > 0.25 ? Color.Orange : Color.Red;
         }
 
         private void SetCondLabel(Label label, int cond)
