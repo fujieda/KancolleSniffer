@@ -12,7 +12,9 @@ KancolleSniffer
 
 ## 動作環境
 
-Windows Vista以降です。.NET Framework 4.5を使っているのでWindows XPでは動きません。テストはWindows 7でしか行っていません。
+Windows Vista以降です。[.NET Framework 4.5]を使っているのでWindows XPでは動きません。テストはWindows 7でしか行っていません。
+
+[.NET Framework 4.5]: http://download.microsoft.com/download/B/A/4/BA4A7E71-2906-4B2D-A0E1-80CF16844F5F/dotNetFx45_Full_setup.exe
 
 ## ライセンス
 
@@ -29,3 +31,15 @@ KancolleSnifferは[GNU GPLv3][1]でライセンスします。ただしGPLv3の�
 FiddlerCoreを使っているので、Firefoxのプロキシ設定で「システムのプロキシ設定を利用する」以外を指定していると動きません。
 
 FiddlerCoreの障害でプロキシの設定がおかしくなり、ブラウザがインターネットに接続できなくなることがあります。もしそうなったらインターネットオプションの「接続」→「LANの設定」→「LANにプロキシ サーバーを使用する」のチェックを外したうえで、レジストリエディタ(regedit)で`HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ProxyServer`を削除してください。
+
+## 変更点
+
+#### バージョン1.1
+
+- アイコンが変わります
+- 艦娘のドロップや工廠での解体で艦娘数と装備数が増減します
+- 中破・大破したときに耐久の文字の背景色が変わります
+- 午前5時を過ぎたら前日のデイリーを消すために任務をリセットします
+- 疲労に関する情報を表示します
+
+疲労に関する情報は、艦娘のコンディション値と、疲労状態から平常に回復するまでと間宮点灯が消灯するまでの二つのタイマーを表示します。
