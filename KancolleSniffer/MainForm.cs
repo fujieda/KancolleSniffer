@@ -404,7 +404,8 @@ namespace KancolleSniffer
             for (var i = 0; i < 6; i++)
             {
                 var id = _deckShips[i];
-                if (id == -1 || id == 0)
+                ShipState info;
+                if (id == -1 || id == 0 || !_shipStatuses.TryGetValue(id, out info))
                 {
                     name[i].Text = "";
                     lv[i].Text = "0";
@@ -412,7 +413,6 @@ namespace KancolleSniffer
                     next[i].Text = "0";
                     continue;
                 }
-                var info = _shipStatuses[id];
                 string text;
                 name[i].Text = _shipNames.TryGetValue(info.ShipId, out text) ? text : "不明";
                 lv[i].Text = info.Level.ToString("D");
