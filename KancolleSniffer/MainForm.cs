@@ -46,7 +46,7 @@ namespace KancolleSniffer
         private readonly SortedDictionary<int, QuestState> _questList = new SortedDictionary<int, QuestState>();
         private DateTime _questLastUpdated;
         private bool _slotRinged;
-        private int _prevWorstCond = int.MaxValue;
+        private bool _updateCond;
         private DateTime _condEndTime1;
         private DateTime _condEndTime2;
 
@@ -114,8 +114,10 @@ namespace KancolleSniffer
                 ParseKDock(json);
                 Invoke(new Action(UpdateTimers));
             }
-            else if (oSession.url.Contains("api_get_member/deck"))
+            else if (oSession.uriContains("api_get_member/deck"))
             {
+                if (!oSession.uriContains("deck_port"))
+                    _updateCond = true;
                 ParseDeck(json);
                 Invoke(new Action(UpdateShipInfo));
                 Invoke(new Action(UpdateMissionLabels));
@@ -158,14 +160,6 @@ namespace KancolleSniffer
             }
             else if (oSession.uriContains("api_get_member/ship3"))
             {
-                var deck = json.api_deck_data;
-                foreach (var entry in deck)
-                {
-                    if ((int)entry.api_id != 1)
-                        continue;
-                    for (var i = 0; i < 6; i++)
-                        _deckShips[i] = (int)entry.api_ship[i];
-                }
                 var ship = json.api_ship_data;
                 ParseShipStatus(ship);
                 Invoke(new Action(UpdateShipInfo));
@@ -269,7 +263,12 @@ namespace KancolleSniffer
                 {
                     Invoke((Action<string>)(text => labelFleet1.Text = text), (string)entry.api_name);
                     for (var i = 0; i < 6; i++)
-                        _deckShips[i] = (int)entry.api_ship[i];
+                    {
+                        var ship = (int)entry.api_ship[i];
+                        if (_deckShips[i] != ship)
+                            _updateCond = true;
+                        _deckShips[i] = ship;
+                    }
                     continue;
                 }
                 id -= 2;
@@ -308,6 +307,27 @@ namespace KancolleSniffer
                 _shipStatuses[(int)entry.api_id] = data;
             }
             _nowShips = _shipStatuses.Count;
+            if (!_updateCond)
+                return;
+            _updateCond = false;
+            var cond = int.MaxValue;
+            foreach (var id in _deckShips)
+            {
+                ShipState info;
+                if (id == -1 || id == 0 || !_shipStatuses.TryGetValue(id, out info))
+                    continue;
+                if (info.Cond < cond)
+                    cond = info.Cond;
+            }
+            if (cond != int.MaxValue)
+                SetCondTimers(cond);
+        }
+
+        private void SetCondTimers(int cond)
+        {
+            var now = DateTime.Now;
+            _condEndTime1 = (cond < 30) ? now.AddMinutes((30 - cond + 2) / 3 * 3) : DateTime.MinValue;
+            _condEndTime2 = (cond < 40) ? now.AddMinutes((40 - cond + 2) / 3 * 3) : DateTime.MinValue;
         }
 
         private void ParseQuestList(dynamic json)
@@ -405,7 +425,6 @@ namespace KancolleSniffer
             var cond = new[] {labelCond1, labelCond2, labelCond3, labelCond4, labelCond5, labelCond6};
             var next = new[] {labelNextLv1, labelNextLv2, labelNextLv3, labelNextLv4, labelNextLv5, labelNextLv6};
 
-            var worstCond = int.MaxValue;
             if (_shipStatuses.Count == 0)
                 return;
             for (var i = 0; i < 6; i++)
@@ -429,14 +448,7 @@ namespace KancolleSniffer
                 hp[i].Text = string.Format("{0:D}/{1:D}", info.NowHp, info.MaxHp);
                 SetHpLavel(hp[i], info.NowHp, info.MaxHp);
                 SetCondLabel(cond[i], info.Cond);
-                if (info.Cond < worstCond)
-                    worstCond = info.Cond;
                 next[i].Text = info.ExpToNext.ToString("D");
-            }
-            if (worstCond != _prevWorstCond)
-            {
-                _prevWorstCond = worstCond;
-                SetCondTimers(worstCond);
             }
             UpdateSlotCount();
         }
@@ -454,13 +466,6 @@ namespace KancolleSniffer
             label.BackColor = cond >= 50
                 ? Color.Yellow
                 : cond >= 30 ? DefaultBackColor : cond >= 20 ? Color.Orange : Color.Red;
-        }
-
-        private void SetCondTimers(int cond)
-        {
-            var now = DateTime.Now;
-            _condEndTime1 = (cond < 30) ? now.AddMinutes((30 - cond + 2) / 3 * 3) : DateTime.MinValue;
-            _condEndTime2 = (cond < 40) ? now.AddMinutes((40 - cond + 2) / 3 * 3) : DateTime.MinValue;
         }
 
         private void UpdateTimers()
@@ -514,8 +519,12 @@ namespace KancolleSniffer
         {
             var now = DateTime.Now;
             var min = DateTime.MinValue;
-            labelCondTimer1.Text = (_condEndTime1 != min) ? (_condEndTime1 - now).ToString(@"mm\:ss") : "00:00";
-            labelCondTimer2.Text = (_condEndTime2 != min) ? (_condEndTime2 - now).ToString(@"mm\:ss") : "00:00";
+            labelCondTimer1.Text = (_condEndTime1 != min && _condEndTime1 > now)
+                ? (_condEndTime1 - now).ToString(@"mm\:ss")
+                : "00:00";
+            labelCondTimer2.Text = (_condEndTime2 != min && _condEndTime2 > now)
+                ? (_condEndTime2 - now).ToString(@"mm\:ss")
+                : "00:00";
         }
 
         private void UpdateQuestList()
