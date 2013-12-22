@@ -47,8 +47,7 @@ namespace KancolleSniffer
         private DateTime _questLastUpdated;
         private bool _slotRinged;
         private bool _updateCond;
-        private DateTime _condEndTime1;
-        private DateTime _condEndTime2;
+        private DateTime[] _condEndTime = new DateTime[3];
 
         private readonly string _shipNamesFile =
             Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "shipnames.json");
@@ -262,7 +261,7 @@ namespace KancolleSniffer
                 if (id == 1)
                 {
                     Invoke((Action<string>)(text => labelFleet1.Text = text), (string)entry.api_name);
-                    for (var i = 0; i < 6; i++)
+                    for (var i = 0; i < _deckShips.Count(); i++)
                     {
                         var ship = (int)entry.api_ship[i];
                         if (_deckShips[i] != ship)
@@ -325,9 +324,14 @@ namespace KancolleSniffer
 
         private void SetCondTimers(int cond)
         {
-            var now = DateTime.Now;
-            _condEndTime1 = (cond < 30) ? now.AddMinutes((30 - cond + 2) / 3 * 3) : DateTime.MinValue;
-            _condEndTime2 = (cond < 40) ? now.AddMinutes((40 - cond + 2) / 3 * 3) : DateTime.MinValue;
+            _condEndTime[0] = CondTimerEndTime(cond, 30);
+            _condEndTime[1] = CondTimerEndTime(cond, 40);
+            _condEndTime[2] = CondTimerEndTime(cond, 49);
+        }
+
+        private DateTime CondTimerEndTime(int cond, int thresh)
+        {
+            return (cond < thresh) ? DateTime.Now.AddMinutes((thresh - cond + 2) / 3 * 3) : DateTime.MinValue;
         }
 
         private void ParseQuestList(dynamic json)
@@ -427,7 +431,7 @@ namespace KancolleSniffer
 
             if (_shipStatuses.Count == 0)
                 return;
-            for (var i = 0; i < 6; i++)
+            for (var i = 0; i < _deckShips.Count(); i++)
             {
                 var id = _deckShips[i];
                 ShipState info;
@@ -517,14 +521,13 @@ namespace KancolleSniffer
 
         private void UpdateCondTimers()
         {
+            var label = new[] {labelCondTimer1, labelCondTimer2, labelCondTimer3};
             var now = DateTime.Now;
-            var min = DateTime.MinValue;
-            labelCondTimer1.Text = (_condEndTime1 != min && _condEndTime1 > now)
-                ? (_condEndTime1 - now).ToString(@"mm\:ss")
-                : "00:00";
-            labelCondTimer2.Text = (_condEndTime2 != min && _condEndTime2 > now)
-                ? (_condEndTime2 - now).ToString(@"mm\:ss")
-                : "00:00";
+            for (var i = 0; i < label.Count(); i++)
+            {
+                var timer = _condEndTime[i];
+                label[i].Text = timer != DateTime.MinValue && timer > now ? (timer - now).ToString(@"mm\:ss") : "00:00";
+            }
         }
 
         private void UpdateQuestList()
@@ -534,12 +537,12 @@ namespace KancolleSniffer
             var i = 0;
             foreach (var quest in _questList.Values)
             {
-                if (i == 5)
+                if (i == progress.Count())
                     break;
                 name[i].Text = quest.Name;
                 progress[i++].Text = string.Format("{0:D}%", quest.Progress);
             }
-            for (; i < 5; i++)
+            for (; i < progress.Count(); i++)
             {
                 name[i].Text = "";
                 progress[i].Text = "";

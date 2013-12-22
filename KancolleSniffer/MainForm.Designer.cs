@@ -56,6 +56,8 @@ namespace KancolleSniffer
             this.label1 = new System.Windows.Forms.Label();
             this.labelFleet1 = new System.Windows.Forms.Label();
             this.panelFleet1 = new System.Windows.Forms.Panel();
+            this.label21 = new System.Windows.Forms.Label();
+            this.labelCondTimer3 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.labelCondTimer2 = new System.Windows.Forms.Label();
             this.labelCondTimer1 = new System.Windows.Forms.Label();
@@ -230,6 +232,8 @@ namespace KancolleSniffer
             // panelFleet1
             // 
             this.panelFleet1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelFleet1.Controls.Add(this.label21);
+            this.panelFleet1.Controls.Add(this.labelCondTimer3);
             this.panelFleet1.Controls.Add(this.label20);
             this.panelFleet1.Controls.Add(this.labelCondTimer2);
             this.panelFleet1.Controls.Add(this.labelCondTimer1);
@@ -273,10 +277,28 @@ namespace KancolleSniffer
             this.panelFleet1.Size = new System.Drawing.Size(259, 135);
             this.panelFleet1.TabIndex = 2;
             // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(188, 117);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(28, 12);
+            this.label21.TabIndex = 39;
+            this.label21.Text = "隠れ";
+            // 
+            // labelCondTimer3
+            // 
+            this.labelCondTimer3.Location = new System.Drawing.Point(223, 117);
+            this.labelCondTimer3.Name = "labelCondTimer3";
+            this.labelCondTimer3.Size = new System.Drawing.Size(31, 12);
+            this.labelCondTimer3.TabIndex = 38;
+            this.labelCondTimer3.Text = "00:00";
+            this.labelCondTimer3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(188, 117);
+            this.label20.Location = new System.Drawing.Point(116, 117);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(29, 12);
             this.label20.TabIndex = 36;
@@ -284,7 +306,7 @@ namespace KancolleSniffer
             // 
             // labelCondTimer2
             // 
-            this.labelCondTimer2.Location = new System.Drawing.Point(223, 117);
+            this.labelCondTimer2.Location = new System.Drawing.Point(151, 117);
             this.labelCondTimer2.Name = "labelCondTimer2";
             this.labelCondTimer2.Size = new System.Drawing.Size(31, 12);
             this.labelCondTimer2.TabIndex = 37;
@@ -293,7 +315,7 @@ namespace KancolleSniffer
             // 
             // labelCondTimer1
             // 
-            this.labelCondTimer1.Location = new System.Drawing.Point(151, 117);
+            this.labelCondTimer1.Location = new System.Drawing.Point(79, 117);
             this.labelCondTimer1.Name = "labelCondTimer1";
             this.labelCondTimer1.Size = new System.Drawing.Size(31, 12);
             this.labelCondTimer1.TabIndex = 35;
@@ -303,7 +325,7 @@ namespace KancolleSniffer
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(116, 117);
+            this.label19.Location = new System.Drawing.Point(44, 117);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(29, 12);
             this.label19.TabIndex = 34;
@@ -1174,6 +1196,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelCondTimer1;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label labelCondTimer3;
     }
 }
 
