@@ -16,71 +16,27 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Media;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.IO;
 using Codeplex.Data;
 using Fiddler;
 
 namespace KancolleSniffer
 {
+    /// <summary>
+    /// メインフォーム
+    /// </summary>
     public partial class MainForm : Form
     {
-        private readonly Dictionary<int, string> _missions = new Dictionary<int, string>();
-        private readonly string[] _missionNames = new string[3];
-        private readonly RingTimer[] _missionTimers = new RingTimer[3];
-        private readonly RingTimer[] _ndocTimers = new RingTimer[4];
-        private readonly int[] _ndocShips = new int[4];
-        private readonly RingTimer[] _kdocTimers = new RingTimer[4];
-        private int _maxShips;
-        private int _nowShips;
-        private int _maxItems;
-        private int _nowItems;
-        private readonly int[] _deckShips = new int[6];
-        private readonly Dictionary<int, ShipState> _shipStatuses = new Dictionary<int, ShipState>();
-        private readonly Dictionary<int, string> _shipNames = new Dictionary<int, string>();
-        private readonly SortedDictionary<int, QuestState> _questList = new SortedDictionary<int, QuestState>();
-        private DateTime _questLastUpdated;
-        private bool _slotRinged;
-        private bool _updateCond;
-        private DateTime[] _condEndTime = new DateTime[3];
-
-        private readonly string _shipNamesFile =
-            Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "shipnames.json");
-
-        private readonly string _missionsFile =
-            Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "missions.json");
-
-        private struct ShipState
-        {
-            public int ShipId { get; set; }
-            public int Level { get; set; }
-            public int ExpToNext { get; set; }
-            public int MaxHp { get; set; }
-            public int NowHp { get; set; }
-            public int Cond { get; set; }
-        }
-
-        private struct QuestState
-        {
-            public string Name { get; set; }
-            public int Progress { get; set; }
-        }
+        private readonly Sniffer _sniffer = new Sniffer();
 
         public MainForm()
         {
             InitializeComponent();
             FiddlerApplication.AfterSessionComplete += FiddlerApplication_AfterSessionComplete;
-            for (var i = 0; i < _missionTimers.Length; i++)
-                _missionTimers[i] = new RingTimer();
-            for (var i = 0; i < _ndocTimers.Length; i++)
-                _ndocTimers[i] = new RingTimer();
-            for (var i = 0; i < _kdocTimers.Length; i++)
-                _kdocTimers[i] = new RingTimer();
         }
 
         private void FiddlerApplication_AfterSessionComplete(Session oSession)
@@ -95,98 +51,29 @@ namespace KancolleSniffer
             if (!json.IsDefined("api_data"))
                 return;
             json = json.api_data;
-            if (oSession.url.EndsWith("api_get_member/ship"))
-            {
-                ParseShipData(json);
-            }
-            else if (oSession.uriContains("api_get_master/mission"))
-            {
-                ParseMission(json);
-            }
-            else if (oSession.uriContains("api_get_member/ndock"))
-            {
-                ParseNDock(json);
-                Invoke(new Action(UpdateTimers));
-            }
-            else if (oSession.uriContains("api_get_member/kdock"))
-            {
-                ParseKDock(json);
-                Invoke(new Action(UpdateTimers));
-            }
-            else if (oSession.uriContains("api_get_member/deck"))
-            {
-                if (!oSession.uriContains("deck_port"))
-                    _updateCond = true;
-                ParseDeck(json);
-                Invoke(new Action(UpdateShipInfo));
+            UpdateInfo update = _sniffer.Sniff(oSession.url, json);
+            if ((update & UpdateInfo.Item) != 0)
+                Invoke(new Action(UpdateItemInfo));
+            if ((update & UpdateInfo.Mission) != 0)
                 Invoke(new Action(UpdateMissionLabels));
-                Invoke(new Action(UpdateTimers));
-            }
-            else if (oSession.uriContains("api_get_member/basic"))
-            {
-                _maxShips = (int)json.api_max_chara;
-                _maxItems = (int)json.api_max_slotitem;
-                Invoke(new Action(UpdateSlotCount));
-            }
-            else if (oSession.uriContains("api_get_member/record"))
-            {
-                _nowShips = (int)json.api_ship[0];
-                _maxShips = (int)json.api_ship[1];
-                _nowItems = (int)json.api_slotitem[0];
-                _maxItems = (int)json.api_slotitem[1];
-                Invoke(new Action(UpdateSlotCount));
-            }
-            else if (oSession.uriContains("api_get_member/material"))
-            {
-                foreach (var entry in json)
-                {
-                    if ((int)entry.api_id != 6)
-                        continue;
-                    var backet = ((int)entry.api_value).ToString("D");
-                    Invoke(new Action<string>(text => labelNumOfBuckets.Text = text), backet);
-                    break;
-                }
-            }
-            else if (oSession.uriContains("api_get_member/slotitem"))
-            {
-                ParseSlotItem(json);
-                Invoke(new Action(UpdateSlotCount));
-            }
-            else if (oSession.uriContains("api_get_member/ship2"))
-            {
-                ParseShipStatus(json);
+            if ((update & UpdateInfo.NDock) != 0)
+                Invoke(new Action(UpdateNDocLabels));
+            if ((update & UpdateInfo.Ship) != 0)
                 Invoke(new Action(UpdateShipInfo));
-            }
-            else if (oSession.uriContains("api_get_member/ship3"))
-            {
-                var ship = json.api_ship_data;
-                ParseShipStatus(ship);
-                Invoke(new Action(UpdateShipInfo));
-            }
-            else if (oSession.uriContains("api_req_sortie/battleresult"))
-            {
-                if (!json.IsDefined("api_get_ship"))
-                    return;
-                var entry = json.api_get_ship;
-                _shipNames[(int)entry.api_ship_id] = (string)entry.api_ship_name;
-            }
-            else if (oSession.uriContains("api_get_member/questlist"))
-            {
-                ParseQuestList(json);
+            if ((update & UpdateInfo.Quest) != 0)
                 Invoke(new Action(UpdateQuestList));
-            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            LoadNames();
+            _sniffer.LoadNames();
             FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             FiddlerApplication.Shutdown();
-            SaveNames();
+            _sniffer.SaveNames();
         }
 
         private void timerMain_Tick(object sender, EventArgs e)
@@ -194,231 +81,32 @@ namespace KancolleSniffer
             UpdateTimers();
         }
 
-        private void ParseMission(dynamic json)
+        private void UpdateItemInfo()
         {
-            foreach (var entry in json)
-                _missions[(int)entry.api_id] = (string)entry.api_name;
-        }
-
-        private void ParseShipData(dynamic json)
-        {
-            foreach (var entry in json)
-                _shipNames[(int)entry.api_ship_id] = (string)entry.api_name;
-        }
-
-        private void LoadNames()
-        {
-            try
+            var item = _sniffer.Item;
+            labelNumOfShips.Text = string.Format("{0:D}/{1:D}", item.NowShips, item.MaxShips);
+            labelNumOfShips.ForeColor = item.TooManyShips ? Color.Red : Color.Black;
+            if (item.NeedRing)
             {
-                ParseMission(DynamicJson.Parse(File.ReadAllText(_missionsFile)));
+                Ring();
+                item.NeedRing = false;
             }
-            catch (FileNotFoundException)
-            {
-            }
-            try
-            {
-                ParseShipData(DynamicJson.Parse(File.ReadAllText(_shipNamesFile)));
-            }
-            catch (FileNotFoundException)
-            {
-            }
-        }
-
-        private void SaveNames()
-        {
-            var ship = from data in _shipNames select new {api_ship_id = data.Key, api_name = data.Value};
-            File.WriteAllText(_shipNamesFile, DynamicJson.Serialize(ship));
-
-            var mission = from data in _missions select new {api_id = data.Key, api_name = data.Value};
-            File.WriteAllText(_missionsFile, DynamicJson.Serialize(mission));
-        }
-
-        private void ParseNDock(dynamic json)
-        {
-            foreach (var entry in json)
-            {
-                var id = (int)entry.api_id;
-                _ndocTimers[id - 1].EndTime = (double)entry.api_complete_time;
-                _ndocShips[id - 1] = (int)entry.api_ship_id;
-            }
-            Invoke(new Action(UpdateNDocLabels));
-        }
-
-        private void ParseKDock(dynamic json)
-        {
-            foreach (var entry in json)
-            {
-                var id = (int)entry.api_id;
-                _kdocTimers[id - 1].EndTime = (double)entry.api_complete_time;
-            }
-        }
-
-        private void ParseDeck(dynamic json)
-        {
-            foreach (var entry in json)
-            {
-                var id = (int)entry.api_id;
-                if (id == 1)
-                {
-                    Invoke((Action<string>)(text => labelFleet1.Text = text), (string)entry.api_name);
-                    for (var i = 0; i < _deckShips.Count(); i++)
-                    {
-                        var ship = (int)entry.api_ship[i];
-                        if (_deckShips[i] != ship)
-                            _updateCond = true;
-                        _deckShips[i] = ship;
-                    }
-                    continue;
-                }
-                id -= 2;
-                var mission = entry.api_mission;
-                if (mission[0] == 0)
-                {
-                    _missionNames[id] = "";
-                    _missionTimers[id].EndTime = 0;
-                    continue;
-                }
-                string name;
-                _missionNames[id] = _missions.TryGetValue((int)mission[1], out name) ? name : "不明";
-                _missionTimers[id].EndTime = mission[2];
-            }
-        }
-
-        private void ParseSlotItem(dynamic json)
-        {
-            _nowItems = ((object[])json).Count();
-        }
-
-        private void ParseShipStatus(dynamic json)
-        {
-            _shipStatuses.Clear();
-            foreach (var entry in json)
-            {
-                var data = new ShipState
-                {
-                    ShipId = (int)entry.api_ship_id,
-                    Level = (int)entry.api_lv,
-                    ExpToNext = (int)entry.api_exp[1],
-                    MaxHp = (int)entry.api_maxhp,
-                    NowHp = (int)entry.api_nowhp,
-                    Cond = (int)entry.api_cond
-                };
-                _shipStatuses[(int)entry.api_id] = data;
-            }
-            _nowShips = _shipStatuses.Count;
-            if (!_updateCond)
-                return;
-            _updateCond = false;
-            var cond = int.MaxValue;
-            foreach (var id in _deckShips)
-            {
-                ShipState info;
-                if (id == -1 || id == 0 || !_shipStatuses.TryGetValue(id, out info))
-                    continue;
-                if (info.Cond < cond)
-                    cond = info.Cond;
-            }
-            if (cond != int.MaxValue)
-                SetCondTimers(cond);
-        }
-
-        private void SetCondTimers(int cond)
-        {
-            _condEndTime[0] = CondTimerEndTime(cond, 30);
-            _condEndTime[1] = CondTimerEndTime(cond, 40);
-            _condEndTime[2] = CondTimerEndTime(cond, 49);
-        }
-
-        private DateTime CondTimerEndTime(int cond, int thresh)
-        {
-            return (cond < thresh) ? DateTime.Now.AddMinutes((thresh - cond + 2) / 3 * 3) : DateTime.MinValue;
-        }
-
-        private void ParseQuestList(dynamic json)
-        {
-            var resetTime = DateTime.Today.AddHours(5);
-            if (DateTime.Now >= resetTime && _questLastUpdated < resetTime)
-            {
-                // 前日に未消化のデイリーを消す。
-                _questList.Clear();
-                _questLastUpdated = DateTime.Now;
-            }
-            foreach (var entry in json.api_list)
-            {
-                if (entry is double)
-                    continue;
-                var id = (int)entry.api_no;
-                var state = (int)entry.api_state;
-                var progress = (int)entry.api_progress_flag;
-                var name = (string)entry.api_title;
-
-                switch (progress)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        progress = 50;
-                        break;
-                    case 2:
-                        progress = 80;
-                        break;
-                }
-                switch (state)
-                {
-                    case 2:
-                        _questList[id] = new QuestState {Name = name, Progress = progress};
-                        break;
-                    case 1:
-                    case 3:
-                        _questList.Remove(id);
-                        continue;
-                }
-            }
-        }
-
-        private void UpdateSlotCount()
-        {
-            labelNumOfShips.Text = string.Format("{0:D}/{1:D}", _nowShips, _maxShips);
-            if (_maxShips == 0 || // recordよりship3の方が先なので0の場合がある。
-                _nowShips < _maxShips - 4)
-            {
-                labelNumOfShips.ForeColor = Color.Black;
-                _slotRinged = false;
-            }
-            else
-            {
-                labelNumOfShips.ForeColor = Color.Red;
-                if (!_slotRinged)
-                {
-                    Ring();
-                    _slotRinged = true;
-                }
-            }
-            labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", _nowItems, _maxItems);
+            labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowItems, item.MaxItems);
+            labelNumOfBuckets.Text = item.NumBuckets.ToString("D");
         }
 
         private void UpdateMissionLabels()
         {
             var labels = new[] {labelMissionName1, labelMissionName2, labelMissionName3};
-            for (var i = 0; i < 3; i++)
-                labels[i].Text = _missionNames[i];
+            for (var i = 0; i < labels.Length; i++)
+                labels[i].Text = _sniffer.Missions[i].Name;
         }
 
         private void UpdateNDocLabels()
         {
             var ship = new[] {labelRepairShip1, labelRepairShip2, labelRepairShip3, labelRepairShip4};
-            var i = 0;
-            foreach (var id in _ndocShips)
-            {
-                ShipState shipStatus;
-                string text;
-                ship[i++].Text = id == 0
-                    ? ""
-                    : _shipStatuses.TryGetValue(id, out shipStatus) &&
-                      _shipNames.TryGetValue(shipStatus.ShipId, out text)
-                        ? text
-                        : "不明";
-            }
+            for (var i = 0; i < ship.Length; i++)
+                ship[i].Text = _sniffer.NDock[i].Name;
         }
 
         private void UpdateShipInfo()
@@ -429,38 +117,23 @@ namespace KancolleSniffer
             var cond = new[] {labelCond1, labelCond2, labelCond3, labelCond4, labelCond5, labelCond6};
             var next = new[] {labelNextLv1, labelNextLv2, labelNextLv3, labelNextLv4, labelNextLv5, labelNextLv6};
 
-            if (_shipStatuses.Count == 0)
-                return;
-            for (var i = 0; i < _deckShips.Count(); i++)
+            var stats = _sniffer.ShipStatuses;
+            for (var i = 0; i < stats.Length; i++)
             {
-                var id = _deckShips[i];
-                ShipState info;
-                if (id == -1 || id == 0 || !_shipStatuses.TryGetValue(id, out info))
-                {
-                    name[i].Text = "";
-                    lv[i].Text = "0";
-                    hp[i].Text = "0/0";
-                    hp[i].BackColor = DefaultBackColor;
-                    cond[i].Text = "0";
-                    cond[i].BackColor = DefaultBackColor;
-                    next[i].Text = "0";
-                    continue;
-                }
-                string text;
-                name[i].Text = _shipNames.TryGetValue(info.ShipId, out text) ? text : "不明";
-                lv[i].Text = info.Level.ToString("D");
-                hp[i].Text = string.Format("{0:D}/{1:D}", info.NowHp, info.MaxHp);
-                SetHpLavel(hp[i], info.NowHp, info.MaxHp);
-                SetCondLabel(cond[i], info.Cond);
-                next[i].Text = info.ExpToNext.ToString("D");
+                var stat = stats[i];
+                name[i].Text = stat.Name;
+                lv[i].Text = stat.Level.ToString("D");
+                hp[i].Text = string.Format("{0:D}/{1:D}", stat.NowHp, stat.MaxHp);
+                SetHpLavel(hp[i], stat.NowHp, stat.MaxHp);
+                SetCondLabel(cond[i], stat.Cond);
+                next[i].Text = stat.ExpToNext.ToString("D");
             }
-            UpdateSlotCount();
         }
 
         private void SetHpLavel(Label label, int now, int max)
         {
             label.Text = string.Format("{0:D}/{1:D}", now, max);
-            var damage = (double)now / max;
+            var damage = max == 0 ? 1 : (double)now / max;
             label.BackColor = damage > 0.5 ? DefaultBackColor : damage > 0.25 ? Color.Orange : Color.Red;
         }
 
@@ -469,39 +142,41 @@ namespace KancolleSniffer
             label.Text = cond.ToString("D");
             label.BackColor = cond >= 50
                 ? Color.Yellow
-                : cond >= 30 ? DefaultBackColor : cond >= 20 ? Color.Orange : Color.Red;
+                : cond >= 30 || cond == 0
+                    ? DefaultBackColor
+                    : cond >= 20 ? Color.Orange : Color.Red;
         }
 
         private void UpdateTimers()
         {
             var mission = new[] {labelMission1, labelMission2, labelMission3};
-            var i = 0;
-            foreach (var timer in _missionTimers)
+            for (var i = 0; i < mission.Length; i++)
             {
+                var timer = _sniffer.Missions[i].Timer;
                 timer.Update();
-                SetTimerLabel(timer, mission[i++]);
+                SetTimerLabel(timer, mission[i]);
                 if (!timer.NeedRing)
                     continue;
                 Ring();
                 timer.NeedRing = false;
             }
             var ndock = new[] {labelRepair1, labelRepair2, labelRepair3, labelRepair4};
-            i = 0;
-            foreach (var timer in _ndocTimers)
+            for (var i = 0; i < ndock.Length; i++)
             {
+                var timer = _sniffer.NDock[i].Timer;
                 timer.Update();
-                SetTimerLabel(timer, ndock[i++]);
+                SetTimerLabel(timer, ndock[i]);
                 if (!timer.NeedRing)
                     continue;
                 Ring();
                 timer.NeedRing = false;
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
-            i = 0;
-            foreach (var timer in _kdocTimers)
+            for (var i = 0; i < kdock.Length; i++)
             {
+                var timer = _sniffer.KDock[i];
                 timer.Update();
-                SetTimerLabel(timer, kdock[i++]);
+                SetTimerLabel(timer, kdock[i]);
                 if (!timer.NeedRing)
                     continue;
                 Ring();
@@ -523,9 +198,9 @@ namespace KancolleSniffer
         {
             var label = new[] {labelCondTimer1, labelCondTimer2, labelCondTimer3};
             var now = DateTime.Now;
-            for (var i = 0; i < label.Count(); i++)
+            for (var i = 0; i < label.Length; i++)
             {
-                var timer = _condEndTime[i];
+                var timer = _sniffer.RecoveryTimes[i];
                 label[i].Text = timer != DateTime.MinValue && timer > now ? (timer - now).ToString(@"mm\:ss") : "00:00";
             }
         }
@@ -535,14 +210,14 @@ namespace KancolleSniffer
             var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5};
             var progress = new[] {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5};
             var i = 0;
-            foreach (var quest in _questList.Values)
+            foreach (var quest in _sniffer.Quests)
             {
-                if (i == progress.Count())
+                if (i == progress.Length)
                     break;
                 name[i].Text = quest.Name;
                 progress[i++].Text = string.Format("{0:D}%", quest.Progress);
             }
-            for (; i < progress.Count(); i++)
+            for (; i < progress.Length; i++)
             {
                 name[i].Text = "";
                 progress[i].Text = "";
@@ -573,55 +248,5 @@ namespace KancolleSniffer
 
         [DllImport("user32.dll")]
         private static extern Int32 FlashWindowEx(ref FLASHWINFO pwfi);
-
-        private class RingTimer
-        {
-            private bool _ringed;
-            private DateTime _endTime;
-            private TimeSpan _rest;
-
-            public double EndTime
-            {
-                set
-                {
-// ReSharper disable once CompareOfFloatsByEqualityOperator
-                    if (value != 0)
-                        _endTime = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(value / 1000);
-                    else
-                    {
-                        _endTime = DateTime.MinValue;
-                        _ringed = false;
-                    }
-                }
-            }
-
-            public void Update()
-            {
-                if (_endTime == DateTime.MinValue)
-                {
-                    _rest = TimeSpan.Zero;
-                    return;
-                }
-                _rest = _endTime - DateTime.Now;
-                if (_rest < TimeSpan.Zero)
-                    _rest = TimeSpan.Zero;
-                if (_rest >= TimeSpan.FromMinutes(1) || _ringed)
-                    return;
-                _ringed = true;
-                NeedRing = true;
-            }
-
-            public bool NeedRing { get; set; }
-
-            public bool IsSet
-            {
-                get { return _endTime != DateTime.MinValue; }
-            }
-
-            public override string ToString()
-            {
-                return _rest.Days == 0 ? _rest.ToString(@"hh\:mm\:ss") : _rest.ToString(@"d\.hh\:mm");
-            }
-        }
     }
 }
