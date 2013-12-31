@@ -34,6 +34,8 @@ namespace KancolleSniffer
                 _quests.Clear(); // 前日に未消化のデイリーを消す。
                 _lastCreared = DateTime.Now;
             }
+            if (json.api_list == null)
+                return;
             foreach (var entry in json.api_list)
             {
                 if (entry is double) // -1の場合がある。
