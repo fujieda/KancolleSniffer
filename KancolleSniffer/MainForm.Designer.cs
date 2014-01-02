@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2013, 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -144,6 +144,7 @@ namespace KancolleSniffer
             this.labelQuest3 = new System.Windows.Forms.Label();
             this.labelQuest2 = new System.Windows.Forms.Label();
             this.labelQuest1 = new System.Windows.Forms.Label();
+            this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelDock.SuspendLayout();
@@ -1060,6 +1061,12 @@ namespace KancolleSniffer
             this.labelQuest1.Size = new System.Drawing.Size(207, 12);
             this.labelQuest1.TabIndex = 0;
             // 
+            // notifyIconMain
+            // 
+            this.notifyIconMain.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIconMain.Icon")));
+            this.notifyIconMain.Text = "KancolleSniffer";
+            this.notifyIconMain.Visible = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1198,6 +1205,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label labelCondTimer3;
+        private System.Windows.Forms.NotifyIcon notifyIconMain;
     }
 }
 

@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2013, 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -25,12 +25,10 @@ using Fiddler;
 
 namespace KancolleSniffer
 {
-    /// <summary>
-    /// メインフォーム
-    /// </summary>
     public partial class MainForm : Form
     {
         private readonly Sniffer _sniffer = new Sniffer();
+        private const int TipTimeout = 20000;
 
         public MainForm()
         {
@@ -88,6 +86,8 @@ namespace KancolleSniffer
             if (item.NeedRing)
             {
                 Ring();
+                notifyIconMain.ShowBalloonTip(TipTimeout, "艦娘が多すぎます",
+                    string.Format("残り{0:D}隻", _sniffer.Item.MarginShips), ToolTipIcon.Info);
                 item.NeedRing = false;
             }
             labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowItems, item.MaxItems);
@@ -157,6 +157,7 @@ namespace KancolleSniffer
                 if (!timer.NeedRing)
                     continue;
                 Ring();
+                notifyIconMain.ShowBalloonTip(TipTimeout, "遠征が終わりました", _sniffer.Missions[i].Name, ToolTipIcon.Info);
                 timer.NeedRing = false;
             }
             var ndock = new[] {labelRepair1, labelRepair2, labelRepair3, labelRepair4};
@@ -168,6 +169,7 @@ namespace KancolleSniffer
                 if (!timer.NeedRing)
                     continue;
                 Ring();
+                notifyIconMain.ShowBalloonTip(TipTimeout, "入渠が終わりました", _sniffer.NDock[i].Name, ToolTipIcon.Info);
                 timer.NeedRing = false;
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
@@ -179,6 +181,8 @@ namespace KancolleSniffer
                 if (!timer.NeedRing)
                     continue;
                 Ring();
+                notifyIconMain.ShowBalloonTip(TipTimeout, "建造が終わりました", string.Format("第{0:D}ドック", i + 1),
+                    ToolTipIcon.Info);
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
