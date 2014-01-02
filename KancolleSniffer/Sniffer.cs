@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -98,7 +98,7 @@ namespace KancolleSniffer
             if (uri.Contains("api_get_member/deck"))
             {
                 _missionInfo.InspectDeck(json);
-                _shipInfo.InspectDeck(json, uri.EndsWith("deck_port"));
+                _shipInfo.InspectDeck(json);
                 return UpdateInfo.Mission | UpdateInfo.Ship;
             }
             if (uri.EndsWith("api_req_sortie/battleresult"))

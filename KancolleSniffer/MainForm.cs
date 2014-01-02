@@ -17,7 +17,6 @@
 
 using System;
 using System.Drawing;
-using System.Linq;
 using System.Media;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;

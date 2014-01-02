@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2013, 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -30,7 +30,6 @@ namespace KancolleSniffer
         private readonly int[] _deck = {-1, -1, -1, -1, -1, -1};
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
         private readonly DateTime[] _recoveryTimes = new DateTime[3];
-        private bool _updateRecoveryTimes;
 
         private readonly string _shipNamesFile =
             Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "shipnames.json");
@@ -85,11 +84,8 @@ namespace KancolleSniffer
             _shipNames[(int)entry.api_ship_id] = (string)entry.api_ship_name;
         }
 
-        public void InspectDeck(dynamic json, bool port)
+        public void InspectDeck(dynamic json)
         {
-            if (!port)
-                _updateRecoveryTimes = true;
-
             foreach (var entry in json)
             {
                 var fleet = (int)entry.api_id;
@@ -97,13 +93,7 @@ namespace KancolleSniffer
                     continue;
                 FleetName = (string)entry.api_name;
                 for (var i = 0; i < _deck.Length; i++)
-                {
-                    var id = (int)entry.api_ship[i];
-                    if (_deck[i] == id)
-                        continue;
-                    _deck[i] = id;
-                    _updateRecoveryTimes = true;
-                }
+                    _deck[i] = (int)entry.api_ship[i];
             }
         }
 
@@ -132,13 +122,20 @@ namespace KancolleSniffer
 
         private void SetRecoveryTime()
         {
-            if (!_updateRecoveryTimes)
-                return;
             var cond =
                 (from id in _deck where _shipInfo.ContainsKey(id) select _shipInfo[id].Cond).DefaultIfEmpty(49).Min();
-            var thresh = new[] { 30, 40, 49 };
+            if (cond < 49 && _recoveryTimes[2] != DateTime.MinValue) // 計時中
+            {
+                // コンディション値から推定される残り時刻と経過時間の差
+                var diff = TimeSpan.FromMinutes((49 - cond + 2) / 3 * 3) - (_recoveryTimes[2] - DateTime.Now);
+                if (diff >= TimeSpan.Zero && diff <= TimeSpan.FromMinutes(3)) // 差が0以上3分以内ならタイマーを更新しない。
+                    return;
+            }
+            var thresh = new[] {30, 40, 49};
             for (var i = 0; i < thresh.Length; i++)
-                _recoveryTimes[i] = cond < thresh[i] ? DateTime.Now.AddMinutes((thresh[i] - cond + 2) / 3 * 3) : DateTime.MinValue;            
+                _recoveryTimes[i] = cond < thresh[i]
+                    ? DateTime.Now.AddMinutes((thresh[i] - cond + 2) / 3 * 3)
+                    : DateTime.MinValue;
         }
 
         public ShipStatus[] ShipStatuses
