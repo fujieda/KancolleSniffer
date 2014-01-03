@@ -61,13 +61,13 @@ namespace KancolleSniffer
                 Invoke(new Action(UpdateQuestList));
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             _sniffer.LoadNames();
             FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             FiddlerApplication.Shutdown();
             _sniffer.SaveNames();

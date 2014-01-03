@@ -1088,8 +1088,8 @@ namespace KancolleSniffer
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "KancolleSniffer";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.panelHeadquarters.ResumeLayout(false);
             this.panelHeadquarters.PerformLayout();
             this.panelFleet1.ResumeLayout(false);
