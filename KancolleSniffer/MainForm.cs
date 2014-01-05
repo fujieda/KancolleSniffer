@@ -72,6 +72,13 @@ namespace KancolleSniffer
             _sniffer.SaveNames();
         }
 
+        private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+                WindowState = FormWindowState.Normal;
+            Activate();
+        }
+
         private void timerMain_Tick(object sender, EventArgs e)
         {
             UpdateTimers();
