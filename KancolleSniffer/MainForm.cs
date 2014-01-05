@@ -17,7 +17,7 @@
 
 using System;
 using System.Drawing;
-using System.Media;
+using System.IO;
 using System.Windows.Forms;
 using Codeplex.Data;
 using Fiddler;
@@ -27,12 +27,13 @@ namespace KancolleSniffer
     public partial class MainForm : Form
     {
         private readonly Sniffer _sniffer = new Sniffer();
-        private const int TipTimeout = 20000;
+        private readonly dynamic _wmp = Activator.CreateInstance(Type.GetTypeFromProgID("WMPlayer.OCX.7"));
 
         public MainForm()
         {
             InitializeComponent();
             FiddlerApplication.AfterSessionComplete += FiddlerApplication_AfterSessionComplete;
+            _wmp.PlayStateChange += new EventHandler(_wmp_PlayStateChange);
         }
 
         private void FiddlerApplication_AfterSessionComplete(Session oSession)
@@ -91,9 +92,8 @@ namespace KancolleSniffer
             labelNumOfShips.ForeColor = item.TooManyShips ? Color.Red : Color.Black;
             if (item.NeedRing)
             {
-                Ring();
-                notifyIconMain.ShowBalloonTip(TipTimeout, "艦娘が多すぎます",
-                    string.Format("残り{0:D}隻", _sniffer.Item.MarginShips), ToolTipIcon.Info);
+                var message = string.Format("残り{0:D}隻", _sniffer.Item.MaxShips - _sniffer.Item.NowShips);
+                Ring("艦娘が多すぎます", message, "kanmusu.mp3");
                 item.NeedRing = false;
             }
             labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowItems, item.MaxItems);
@@ -162,8 +162,7 @@ namespace KancolleSniffer
                 SetTimerLabel(timer, mission[i]);
                 if (!timer.NeedRing)
                     continue;
-                Ring();
-                notifyIconMain.ShowBalloonTip(TipTimeout, "遠征が終わりました", _sniffer.Missions[i].Name, ToolTipIcon.Info);
+                Ring("遠征が終わりました", _sniffer.Missions[i].Name, "ensei.mp3");
                 timer.NeedRing = false;
             }
             var ndock = new[] {labelRepair1, labelRepair2, labelRepair3, labelRepair4};
@@ -174,8 +173,7 @@ namespace KancolleSniffer
                 SetTimerLabel(timer, ndock[i]);
                 if (!timer.NeedRing)
                     continue;
-                Ring();
-                notifyIconMain.ShowBalloonTip(TipTimeout, "入渠が終わりました", _sniffer.NDock[i].Name, ToolTipIcon.Info);
+                Ring("入渠が終わりました", _sniffer.NDock[i].Name, "nyuukyo.mp3");
                 timer.NeedRing = false;
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
@@ -186,9 +184,7 @@ namespace KancolleSniffer
                 SetTimerLabel(timer, kdock[i]);
                 if (!timer.NeedRing)
                     continue;
-                Ring();
-                notifyIconMain.ShowBalloonTip(TipTimeout, "建造が終わりました", string.Format("第{0:D}ドック", i + 1),
-                    ToolTipIcon.Info);
+                Ring("建造が終わりました", string.Format("第{0:D}ドック", i + 1), "kenzou.mp3");
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
@@ -233,10 +229,19 @@ namespace KancolleSniffer
             }
         }
 
-        private void Ring()
+        private void Ring(string baloonTitle, string baloonMessage, string soundFile)
         {
-            SystemSounds.Asterisk.Play();
             Win32API.FlashWindow(Handle);
+            notifyIconMain.ShowBalloonTip(20000, baloonTitle, baloonMessage, ToolTipIcon.Info);
+// ReSharper disable once AssignNullToNotNullAttribute
+            _wmp.URL = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), soundFile);
+            _wmp.controls.play();
+        }
+
+        private void _wmp_PlayStateChange(object sender, EventArgs e)
+        {
+            if (_wmp.playState == 8) // MediaEnded
+                _wmp.URL = ""; // 再生したファイルが差し替えできなくなるのを防ぐ。
         }
     }
 }
