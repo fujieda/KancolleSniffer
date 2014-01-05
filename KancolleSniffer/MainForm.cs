@@ -28,12 +28,15 @@ namespace KancolleSniffer
     {
         private readonly Sniffer _sniffer = new Sniffer();
         private readonly dynamic _wmp = Activator.CreateInstance(Type.GetTypeFromProgID("WMPlayer.OCX.7"));
+        private readonly Config _config = new Config();
+        private readonly ConfigDialog _configDialog = new ConfigDialog();
 
         public MainForm()
         {
             InitializeComponent();
             FiddlerApplication.AfterSessionComplete += FiddlerApplication_AfterSessionComplete;
             _wmp.PlayStateChange += new EventHandler(_wmp_PlayStateChange);
+            _configDialog.Tag = _config;
         }
 
         private void FiddlerApplication_AfterSessionComplete(Session oSession)
@@ -64,6 +67,9 @@ namespace KancolleSniffer
         private void MainForm_Load(object sender, EventArgs e)
         {
             _sniffer.LoadNames();
+            _config.Load();
+            _wmp.settings.volume = _config.SoundVolume;
+            _sniffer.Item.MarginShips = _config.MarginShips;
             FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
         }
 
@@ -71,6 +77,7 @@ namespace KancolleSniffer
         {
             FiddlerApplication.Shutdown();
             _sniffer.SaveNames();
+            _config.Save();
         }
 
         private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -85,8 +92,13 @@ namespace KancolleSniffer
             Application.Exit();
         }
 
+
         private void ConfigToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_configDialog.ShowDialog() != DialogResult.OK)
+                return;
+            _wmp.settings.volume = _config.SoundVolume;
+            _sniffer.Item.MarginShips = _config.MarginShips;
         }
 
         private void timerMain_Tick(object sender, EventArgs e)
@@ -102,7 +114,7 @@ namespace KancolleSniffer
             if (item.NeedRing)
             {
                 var message = string.Format("残り{0:D}隻", _sniffer.Item.MaxShips - _sniffer.Item.NowShips);
-                Ring("艦娘が多すぎます", message, "kanmusu.mp3");
+                Ring("艦娘が多すぎます", message, _config.MaxShipsSoundFile);
                 item.NeedRing = false;
             }
             labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowItems, item.MaxItems);
@@ -171,7 +183,7 @@ namespace KancolleSniffer
                 SetTimerLabel(timer, mission[i]);
                 if (!timer.NeedRing)
                     continue;
-                Ring("遠征が終わりました", _sniffer.Missions[i].Name, "ensei.mp3");
+                Ring("遠征が終わりました", _sniffer.Missions[i].Name, _config.MissionSoundFile);
                 timer.NeedRing = false;
             }
             var ndock = new[] {labelRepair1, labelRepair2, labelRepair3, labelRepair4};
@@ -182,7 +194,7 @@ namespace KancolleSniffer
                 SetTimerLabel(timer, ndock[i]);
                 if (!timer.NeedRing)
                     continue;
-                Ring("入渠が終わりました", _sniffer.NDock[i].Name, "nyuukyo.mp3");
+                Ring("入渠が終わりました", _sniffer.NDock[i].Name, _config.NDockSoundFile);
                 timer.NeedRing = false;
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
@@ -193,7 +205,7 @@ namespace KancolleSniffer
                 SetTimerLabel(timer, kdock[i]);
                 if (!timer.NeedRing)
                     continue;
-                Ring("建造が終わりました", string.Format("第{0:D}ドック", i + 1), "kenzou.mp3");
+                Ring("建造が終わりました", string.Format("第{0:D}ドック", i + 1), _config.KDockSoundFile);
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
@@ -240,11 +252,15 @@ namespace KancolleSniffer
 
         private void Ring(string baloonTitle, string baloonMessage, string soundFile)
         {
-            Win32API.FlashWindow(Handle);
-            notifyIconMain.ShowBalloonTip(20000, baloonTitle, baloonMessage, ToolTipIcon.Info);
-// ReSharper disable once AssignNullToNotNullAttribute
-            _wmp.URL = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), soundFile);
-            _wmp.controls.play();
+            if (_config.FlashWindow)
+                Win32API.FlashWindow(Handle);
+            if (_config.ShowBaloonTip)
+                notifyIconMain.ShowBalloonTip(20000, baloonTitle, baloonMessage, ToolTipIcon.Info);
+            if (_config.PlaySound && File.Exists(soundFile))
+            {
+                _wmp.URL = soundFile;
+                _wmp.controls.play();
+            }
         }
 
         private void _wmp_PlayStateChange(object sender, EventArgs e)
