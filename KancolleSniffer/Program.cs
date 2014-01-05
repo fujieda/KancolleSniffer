@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2013, 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -16,17 +16,12 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
 {
     internal static class Program
     {
-        /// <summary>
-        /// アプリケーションのメイン エントリ ポイントです。
-        /// </summary>
         [STAThread]
         private static void Main()
         {
@@ -35,44 +30,6 @@ namespace KancolleSniffer
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
-        }
-    }
-
-    /// <summary>
-    /// Win32APIを実行するクラス
-    /// </summary>
-    public class Win32API
-    {
-        [DllImport("user32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
-
-        [DllImport("user32.dll")]
-        private static extern bool IsIconic(IntPtr hWnd);
-
-        /// <summary>
-        /// 同じアプリケーションがすでに起動しているか調べる。起動していたら最前面に表示する。
-        /// </summary>
-        /// <returns>起動していたらtrue</returns>
-        public static bool ProcessAlreadyExists()
-        {
-            var cur = Process.GetCurrentProcess();
-            var all = Process.GetProcessesByName(cur.ProcessName);
-            foreach (var p in all)
-            {
-                if (cur.Id == p.Id)
-                    continue;
-                if (p.MainModule.FileName != cur.MainModule.FileName)
-                    continue;
-                if (IsIconic(p.MainWindowHandle))
-                    ShowWindowAsync(p.MainWindowHandle, 9); // SW_RESTORE
-                else
-                    SetForegroundWindow(p.MainWindowHandle);
-                return true;
-            }
-            return false;
         }
     }
 }

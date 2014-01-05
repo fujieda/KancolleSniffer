@@ -18,7 +18,6 @@
 using System;
 using System.Drawing;
 using System.Media;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Codeplex.Data;
 using Fiddler;
@@ -230,26 +229,7 @@ namespace KancolleSniffer
         private void Ring()
         {
             SystemSounds.Asterisk.Play();
-            var info = new FLASHWINFO();
-            info.cbSize = Convert.ToUInt32(Marshal.SizeOf(info));
-            info.hwnd = Handle;
-            info.dwFlags = 3; // FLASHW_ALL
-            info.uCount = 3;
-            info.dwTimeout = 0;
-            FlashWindowEx(ref info);
+            Win32API.FlashWindow(Handle);
         }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct FLASHWINFO
-        {
-            public UInt32 cbSize;
-            public IntPtr hwnd;
-            public UInt32 dwFlags;
-            public UInt32 uCount;
-            public UInt32 dwTimeout;
-        }
-
-        [DllImport("user32.dll")]
-        private static extern Int32 FlashWindowEx(ref FLASHWINFO pwfi);
     }
 }
