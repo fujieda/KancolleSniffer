@@ -80,6 +80,15 @@ namespace KancolleSniffer
             Activate();
         }
 
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void ConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
         private void timerMain_Tick(object sender, EventArgs e)
         {
             UpdateTimers();

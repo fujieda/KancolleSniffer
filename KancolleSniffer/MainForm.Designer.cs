@@ -145,12 +145,16 @@ namespace KancolleSniffer
             this.labelQuest2 = new System.Windows.Forms.Label();
             this.labelQuest1 = new System.Windows.Forms.Label();
             this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextMenuStripToolTip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelDock.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.contextMenuStripToolTip.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelHeadquarters
@@ -1063,16 +1067,40 @@ namespace KancolleSniffer
             // 
             // notifyIconMain
             // 
+            this.notifyIconMain.ContextMenuStrip = this.contextMenuStripToolTip;
             this.notifyIconMain.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIconMain.Icon")));
             this.notifyIconMain.Text = "KancolleSniffer";
             this.notifyIconMain.Visible = true;
             this.notifyIconMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIconMain_MouseDoubleClick);
+            // 
+            // contextMenuStripToolTip
+            // 
+            this.contextMenuStripToolTip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ConfigToolStripMenuItem,
+            this.ExitToolStripMenuItem});
+            this.contextMenuStripToolTip.Name = "contextMenuStripToolTip";
+            this.contextMenuStripToolTip.Size = new System.Drawing.Size(120, 48);
+            // 
+            // ConfigToolStripMenuItem
+            // 
+            this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
+            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.ConfigToolStripMenuItem.Text = "設定(&O)";
+            this.ConfigToolStripMenuItem.Click += new System.EventHandler(this.ConfigToolStripMenuItem_Click);
+            // 
+            // ExitToolStripMenuItem
+            // 
+            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.ExitToolStripMenuItem.Text = "終了(&X)";
+            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(283, 483);
+            this.ContextMenuStrip = this.contextMenuStripToolTip;
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.labelMission);
@@ -1102,6 +1130,7 @@ namespace KancolleSniffer
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
+            this.contextMenuStripToolTip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1207,6 +1236,9 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label labelCondTimer3;
         private System.Windows.Forms.NotifyIcon notifyIconMain;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripToolTip;
+        private System.Windows.Forms.ToolStripMenuItem ConfigToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
     }
 }
 
