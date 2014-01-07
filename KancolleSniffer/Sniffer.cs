@@ -1,4 +1,4 @@
-﻿﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -35,13 +35,15 @@ namespace KancolleSniffer
     {
         private readonly NameAndTimer[] _ndocInfo = new NameAndTimer[4];
         private readonly RingTimer[] _kdocTimers = new RingTimer[4];
+        private readonly ShipMaster _shipMaster = new ShipMaster();
         private readonly ItemInfo _itemInfo = new ItemInfo();
         private readonly QuestInfo _questInfo = new QuestInfo();
         private readonly MissionInfo _missionInfo = new MissionInfo();
-        private readonly ShipInfo _shipInfo = new ShipInfo();
+        private readonly ShipInfo _shipInfo;
 
         public Sniffer()
         {
+            _shipInfo = new ShipInfo(_shipMaster);
             for (var i = 0; i < _ndocInfo.Length; i++)
                 _ndocInfo[i] = new NameAndTimer();
             for (var i = 0; i < _kdocTimers.Length; i++)
@@ -50,9 +52,9 @@ namespace KancolleSniffer
 
         public UpdateInfo Sniff(string uri, dynamic json)
         {
-            if (uri.EndsWith("api_get_member/ship"))
+            if (uri.EndsWith("api_get_master/ship"))
             {
-                _shipInfo.InspectShip(json);
+                _shipMaster.InspectShip(json);
                 return UpdateInfo.None;
             }
             if (uri.EndsWith("api_get_member/basic"))
@@ -101,11 +103,6 @@ namespace KancolleSniffer
                 _shipInfo.InspectDeck(json);
                 return UpdateInfo.Mission | UpdateInfo.Ship;
             }
-            if (uri.EndsWith("api_req_sortie/battleresult"))
-            {
-                _shipInfo.InspectBattleResult(json);
-                return UpdateInfo.None;
-            }
             if (uri.EndsWith("api_get_member/ship2") || uri.EndsWith("api_get_member/ship3"))
             {
                 _shipInfo.InspectShipInfo(uri.EndsWith("ship3") ? json.api_ship_data : json);
@@ -115,16 +112,16 @@ namespace KancolleSniffer
             return UpdateInfo.None;
         }
 
-        public void SaveNames()
+        public void SaveMaster()
         {
             _missionInfo.SaveNames();
-            _shipInfo.SaveNames();
+            _shipMaster.Save();
         }
 
-        public void LoadNames()
+        public void LoadMaster()
         {
             _missionInfo.LoadNames();
-            _shipInfo.LoadNames();
+            _shipMaster.Load();
         }
 
         private void InspectNDock(dynamic json)

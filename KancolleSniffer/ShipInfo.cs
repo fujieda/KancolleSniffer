@@ -17,71 +17,33 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Windows.Forms;
-using Codeplex.Data;
 
 namespace KancolleSniffer
 {
     public class ShipInfo
     {
-        private readonly Dictionary<int, string> _shipNames = new Dictionary<int, string>();
         private readonly int[] _deck = {-1, -1, -1, -1, -1, -1};
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
         private readonly DateTime[] _recoveryTimes = new DateTime[3];
-
-        private readonly string _shipNamesFile =
-            Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "shipnames.json");
+        private readonly ShipMaster _shipMaster;
 
         public string FleetName { get; set; }
+
+        public ShipInfo(ShipMaster shipMaster)
+        {
+            _shipMaster = shipMaster;
+        }
 
         public DateTime[] RecoveryTimes
         {
             get { return _recoveryTimes; }
         }
 
-        public void InspectShip(dynamic json)
-        {
-            foreach (var entry in json)
-                _shipNames[(int)entry.api_ship_id] = (string)entry.api_name;
-        }
-
-        public void LoadNames()
-        {
-            try
-            {
-                InspectShip(DynamicJson.Parse(File.ReadAllText(_shipNamesFile)));
-            }
-            catch (FileNotFoundException)
-            {
-            }
-        }
-
-        public void SaveNames()
-        {
-            var ship = from data in _shipNames select new {api_ship_id = data.Key, api_name = data.Value};
-            File.WriteAllText(_shipNamesFile, DynamicJson.Serialize(ship));
-        }
-
-        public string GetNameByShipId(int shipId)
-        {
-            string name;
-            return _shipNames.TryGetValue(shipId, out name) ? name : "不明";
-        }
-
         public string GetNameById(int id)
         {
             ShipStatus ship;
-            return _shipInfo.TryGetValue(id, out ship) ? GetNameByShipId(ship.ShipId) : "不明";
-        }
-
-        public void InspectBattleResult(dynamic json)
-        {
-            if (!json.IsDefined("api_get_ship")) // 艦娘がドロップしていない。
-                return;
-            var entry = json.api_get_ship;
-            _shipNames[(int)entry.api_ship_id] = (string)entry.api_ship_name;
+            return _shipInfo.TryGetValue(id, out ship) ? _shipMaster.GetSpec(ship.ShipId).Name : "不明";
         }
 
         public void InspectDeck(dynamic json)
@@ -149,7 +111,7 @@ namespace KancolleSniffer
                     ShipStatus status;
                     if (id == -1 || !_shipInfo.TryGetValue(id, out status))
                         continue;
-                    status.Name = GetNameByShipId(status.ShipId);
+                    status.Name = _shipMaster.GetSpec(status.ShipId).Name;
                     result[i] = status;
                 }
                 return result;

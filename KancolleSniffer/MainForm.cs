@@ -66,7 +66,7 @@ namespace KancolleSniffer
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            _sniffer.LoadNames();
+            _sniffer.LoadMaster();
             _config.Load();
             _wmp.settings.volume = _config.SoundVolume;
             _sniffer.Item.MarginShips = _config.MarginShips;
@@ -76,7 +76,7 @@ namespace KancolleSniffer
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             FiddlerApplication.Shutdown();
-            _sniffer.SaveNames();
+            _sniffer.SaveMaster();
             _config.Save();
         }
 
