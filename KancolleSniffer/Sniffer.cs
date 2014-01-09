@@ -48,7 +48,7 @@ namespace KancolleSniffer
             for (var i = 0; i < _ndocInfo.Length; i++)
                 _ndocInfo[i] = new NameAndTimer();
             for (var i = 0; i < _kdocTimers.Length; i++)
-                _kdocTimers[i] = new RingTimer();
+                _kdocTimers[i] = new RingTimer(0);
         }
 
         public UpdateInfo Sniff(string uri, dynamic json)
@@ -205,6 +205,12 @@ namespace KancolleSniffer
         private bool _ringed;
         private DateTime _endTime;
         private TimeSpan _rest;
+        private readonly TimeSpan _spare;
+
+        public RingTimer(int spare = 60)
+        {
+            _spare = TimeSpan.FromSeconds(spare);
+        }
 
         public double EndTime
         {
@@ -231,7 +237,7 @@ namespace KancolleSniffer
             _rest = _endTime - DateTime.Now;
             if (_rest < TimeSpan.Zero)
                 _rest = TimeSpan.Zero;
-            if (_rest >= TimeSpan.FromMinutes(1) || _ringed)
+            if (_rest > _spare || _ringed)
                 return;
             _ringed = true;
             NeedRing = true;
