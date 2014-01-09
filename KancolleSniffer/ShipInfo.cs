@@ -21,9 +21,28 @@ using System.Linq;
 
 namespace KancolleSniffer
 {
+    public struct ShipStatus
+    {
+        public int ShipId { get; set; }
+        public string Name { get; set; }
+        public int Level { get; set; }
+        public int ExpToNext { get; set; }
+        public int MaxHp { get; set; }
+        public int NowHp { get; set; }
+        public int Cond { get; set; }
+        public int Fuel { get; set; }
+        public int Bull { get; set; }
+    }
+
+    public struct ChargeStatus
+    {
+        public int Fuel { get; set; }
+        public int Bull { get; set; }
+    }
+
     public class ShipInfo
     {
-        private readonly int[] _deck = {-1, -1, -1, -1, -1, -1};
+        private readonly int[][] _decks = new int[4][];
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
         private readonly DateTime[] _recoveryTimes = new DateTime[3];
         private readonly ShipMaster _shipMaster;
@@ -33,6 +52,9 @@ namespace KancolleSniffer
         public ShipInfo(ShipMaster shipMaster)
         {
             _shipMaster = shipMaster;
+
+            for (var i = 0; i < _decks.Length; i++)
+                _decks[i] = new[] {-1, -1, -1, -1, -1, -1};
         }
 
         public DateTime[] RecoveryTimes
@@ -51,11 +73,11 @@ namespace KancolleSniffer
             foreach (var entry in json)
             {
                 var fleet = (int)entry.api_id;
-                if (fleet != 1)
-                    continue;
-                FleetName = (string)entry.api_name;
-                for (var i = 0; i < _deck.Length; i++)
-                    _deck[i] = (int)entry.api_ship[i];
+                if (fleet == 1)
+                    FleetName = (string)entry.api_name;
+                var deck = _decks[fleet - 1];
+                for (var i = 0; i < deck.Length; i++)
+                    deck[i] = (int)entry.api_ship[i];
             }
         }
 
@@ -76,7 +98,9 @@ namespace KancolleSniffer
                     ExpToNext = (int)entry.api_exp[1],
                     MaxHp = (int)entry.api_maxhp,
                     NowHp = (int)entry.api_nowhp,
-                    Cond = (int)entry.api_cond
+                    Cond = (int)entry.api_cond,
+                    Fuel = (int)entry.api_fuel,
+                    Bull = (int)entry.api_bull
                 };
             }
             SetRecoveryTime();
@@ -85,7 +109,8 @@ namespace KancolleSniffer
         private void SetRecoveryTime()
         {
             var cond =
-                (from id in _deck where _shipInfo.ContainsKey(id) select _shipInfo[id].Cond).DefaultIfEmpty(49).Min();
+                (from id in _decks[0] where _shipInfo.ContainsKey(id) select _shipInfo[id].Cond).DefaultIfEmpty(49)
+                    .Min();
             if (cond < 49 && _recoveryTimes[2] != DateTime.MinValue) // 計時中
             {
                 // コンディション値から推定される残り時刻と経過時間の差
@@ -104,10 +129,11 @@ namespace KancolleSniffer
         {
             get
             {
-                var result = new ShipStatus[_deck.Length];
-                for (var i = 0; i < _deck.Length; i++)
+                var deck = _decks[0];
+                var result = new ShipStatus[deck.Length];
+                for (var i = 0; i < deck.Length; i++)
                 {
-                    var id = _deck[i];
+                    var id = deck[i];
                     ShipStatus status;
                     if (id == -1 || !_shipInfo.TryGetValue(id, out status))
                         continue;
@@ -117,16 +143,40 @@ namespace KancolleSniffer
                 return result;
             }
         }
-    }
 
-    public struct ShipStatus
-    {
-        public int ShipId { get; set; }
-        public string Name { get; set; }
-        public int Level { get; set; }
-        public int ExpToNext { get; set; }
-        public int MaxHp { get; set; }
-        public int NowHp { get; set; }
-        public int Cond { get; set; }
+        public ChargeStatus[] ChargeStatuses
+        {
+            get
+            {
+                var result = new ChargeStatus[_decks.Length];
+                for (var fleet = 0; fleet < _decks.Length; fleet++)
+                {
+                    foreach (var id in _decks[fleet])
+                    {
+                        ShipStatus status;
+                        if (!_shipInfo.TryGetValue(id, out status))
+                            continue;
+                        var spec = _shipMaster.GetSpec(status.ShipId);
+                        result[fleet].Fuel = Math.Max(CalcChargeState(status.Fuel, spec.FuelMax), result[fleet].Fuel);
+                        result[fleet].Bull = Math.Max(CalcChargeState(status.Bull, spec.BullMax), result[fleet].Bull);
+                    }
+                }
+                return result;
+            }
+        }
+
+        private int CalcChargeState(int now, int full)
+        {
+            if (full == 0 || now == full)
+                return 0;
+            var ratio = (double)now / full;
+            if (ratio >= 7.0 / 9)
+                return 1;
+            if (ratio >= 3.0 / 9)
+                return 2;
+            if (ratio > 0)
+                return 3;
+            return 4;
+        }
     }
 }

@@ -28,7 +28,8 @@ namespace KancolleSniffer
         Timer = 4,
         Quest = 8,
         NDock = 16,
-        Mission = 32
+        Mission = 32,
+        Charge = 64
     }
 
     public class Sniffer
@@ -101,13 +102,13 @@ namespace KancolleSniffer
             {
                 _missionInfo.InspectDeck(json);
                 _shipInfo.InspectDeck(json);
-                return UpdateInfo.Mission | UpdateInfo.Ship;
+                return UpdateInfo.Mission | UpdateInfo.Ship | UpdateInfo.Charge;
             }
             if (uri.EndsWith("api_get_member/ship2") || uri.EndsWith("api_get_member/ship3"))
             {
                 _shipInfo.InspectShipInfo(uri.EndsWith("ship3") ? json.api_ship_data : json);
                 _itemInfo.NowShips = _shipInfo.NumShips;
-                return UpdateInfo.Ship | UpdateInfo.Item | UpdateInfo.Timer;
+                return UpdateInfo.Ship | UpdateInfo.Item | UpdateInfo.Timer | UpdateInfo.Charge;
             }
             return UpdateInfo.None;
         }
@@ -179,6 +180,11 @@ namespace KancolleSniffer
         public ShipStatus[] ShipStatuses
         {
             get { return _shipInfo.ShipStatuses; }
+        }
+
+        public ChargeStatus[] ChargeStatuses
+        {
+            get { return _shipInfo.ChargeStatuses; }
         }
     }
 

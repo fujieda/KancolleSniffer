@@ -62,6 +62,8 @@ namespace KancolleSniffer
                 Invoke(new Action(UpdateShipInfo));
             if ((update & UpdateInfo.Quest) != 0)
                 Invoke(new Action(UpdateQuestList));
+            if ((update & UpdateInfo.Charge) != 0)
+                Invoke(new Action(UpdateChargeInfo));
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -153,6 +155,19 @@ namespace KancolleSniffer
                 SetHpLavel(hp[i], stat.NowHp, stat.MaxHp);
                 SetCondLabel(cond[i], stat.Cond);
                 next[i].Text = stat.ExpToNext.ToString("D");
+            }
+        }
+
+        private void UpdateChargeInfo()
+        {
+            var fuel = new[] {labelFuel1, labelFuel2, labelFuel3, labelFuel4};
+            var bull = new[] {labelBull1, labelBull2, labelBull3, labelBull4};
+
+            var statuses = _sniffer.ChargeStatuses;
+            for (var i = 0; i < fuel.Length; i++)
+            {
+                fuel[i].ImageIndex = statuses[i].Fuel;
+                bull[i].ImageIndex = statuses[i].Bull;
             }
         }
 
