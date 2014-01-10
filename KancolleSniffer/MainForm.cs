@@ -195,7 +195,7 @@ namespace KancolleSniffer
             {
                 var timer = _sniffer.Missions[i].Timer;
                 timer.Update();
-                SetTimerLabel(timer, mission[i]);
+                SetTimerLabel(mission[i], timer);
                 if (!timer.NeedRing)
                     continue;
                 Ring("遠征が終わりました", _sniffer.Missions[i].Name, _config.MissionSoundFile);
@@ -206,7 +206,7 @@ namespace KancolleSniffer
             {
                 var timer = _sniffer.NDock[i].Timer;
                 timer.Update();
-                SetTimerLabel(timer, ndock[i]);
+                SetTimerLabel(ndock[i], timer);
                 if (!timer.NeedRing)
                     continue;
                 Ring("入渠が終わりました", _sniffer.NDock[i].Name, _config.NDockSoundFile);
@@ -217,7 +217,7 @@ namespace KancolleSniffer
             {
                 var timer = _sniffer.KDock[i];
                 timer.Update();
-                SetTimerLabel(timer, kdock[i]);
+                SetTimerLabel(kdock[i], timer);
                 if (!timer.NeedRing)
                     continue;
                 Ring("建造が終わりました", string.Format("第{0:D}ドック", i + 1), _config.KDockSoundFile);
@@ -226,7 +226,7 @@ namespace KancolleSniffer
             UpdateCondTimers();
         }
 
-        private void SetTimerLabel(RingTimer timer, Label label)
+        private void SetTimerLabel(Label label, RingTimer timer)
         {
             if (timer.NeedRing)
                 label.ForeColor = Color.Red;
