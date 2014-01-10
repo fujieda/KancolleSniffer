@@ -191,7 +191,6 @@ namespace KancolleSniffer
     public class NameAndTimer
     {
         public string Name { get; set; }
-
         public RingTimer Timer { get; set; }
 
         public NameAndTimer()

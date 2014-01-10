@@ -18,6 +18,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Codeplex.Data;
 using Fiddler;
@@ -125,16 +126,18 @@ namespace KancolleSniffer
 
         private void UpdateMissionLabels()
         {
-            var labels = new[] {labelMissionName1, labelMissionName2, labelMissionName3};
-            for (var i = 0; i < labels.Length; i++)
-                labels[i].Text = _sniffer.Missions[i].Name;
+            foreach (var entry in
+                new[] {labelMissionName1, labelMissionName2, labelMissionName3}.Zip(_sniffer.Missions,
+                    (label, mission) => new {label, mission.Name}))
+                entry.label.Text = entry.Name;
         }
 
         private void UpdateNDocLabels()
         {
-            var ship = new[] {labelRepairShip1, labelRepairShip2, labelRepairShip3, labelRepairShip4};
-            for (var i = 0; i < ship.Length; i++)
-                ship[i].Text = _sniffer.NDock[i].Name;
+            foreach (var entry in
+                new[] {labelRepairShip1, labelRepairShip2, labelRepairShip3, labelRepairShip4}.Zip(_sniffer.NDock,
+                    (label, ndock) => new {label, ndock.Name}))
+                entry.label.Text = entry.Name;
         }
 
         private void UpdateShipInfo()
@@ -145,10 +148,9 @@ namespace KancolleSniffer
             var cond = new[] {labelCond1, labelCond2, labelCond3, labelCond4, labelCond5, labelCond6};
             var next = new[] {labelNextLv1, labelNextLv2, labelNextLv3, labelNextLv4, labelNextLv5, labelNextLv6};
 
-            var stats = _sniffer.ShipStatuses;
-            for (var i = 0; i < stats.Length; i++)
+            for (var i = 0; i < name.Length; i++)
             {
-                var stat = stats[i];
+                var stat = _sniffer.ShipStatuses[i];
                 name[i].Text = stat.Name;
                 lv[i].Text = stat.Level.ToString("D");
                 hp[i].Text = string.Format("{0:D}/{1:D}", stat.NowHp, stat.MaxHp);
@@ -163,11 +165,11 @@ namespace KancolleSniffer
             var fuel = new[] {labelFuel1, labelFuel2, labelFuel3, labelFuel4};
             var bull = new[] {labelBull1, labelBull2, labelBull3, labelBull4};
 
-            var statuses = _sniffer.ChargeStatuses;
             for (var i = 0; i < fuel.Length; i++)
             {
-                fuel[i].ImageIndex = statuses[i].Fuel;
-                bull[i].ImageIndex = statuses[i].Bull;
+                var stat = _sniffer.ChargeStatuses[i];
+                fuel[i].ImageIndex = stat.Fuel;
+                bull[i].ImageIndex = stat.Bull;
             }
         }
 
@@ -190,27 +192,27 @@ namespace KancolleSniffer
 
         private void UpdateTimers()
         {
-            var mission = new[] {labelMission1, labelMission2, labelMission3};
-            for (var i = 0; i < mission.Length; i++)
+            foreach (var entry in
+                new[] {labelMission1, labelMission2, labelMission3}.Zip(_sniffer.Missions,
+                    (label, mission) => new {label, mission.Name, mission.Timer}))
             {
-                var timer = _sniffer.Missions[i].Timer;
-                timer.Update();
-                SetTimerLabel(mission[i], timer);
-                if (!timer.NeedRing)
+                entry.Timer.Update();
+                SetTimerLabel(entry.label, entry.Timer);
+                if (!entry.Timer.NeedRing)
                     continue;
-                Ring("遠征が終わりました", _sniffer.Missions[i].Name, _config.MissionSoundFile);
-                timer.NeedRing = false;
+                Ring("遠征が終わりました", entry.Name, _config.MissionSoundFile);
+                entry.Timer.NeedRing = false;
             }
-            var ndock = new[] {labelRepair1, labelRepair2, labelRepair3, labelRepair4};
-            for (var i = 0; i < ndock.Length; i++)
+            foreach (var entry in
+                new[] {labelRepair1, labelRepair2, labelRepair3, labelRepair4}.Zip(_sniffer.NDock,
+                    (label, ndock) => new {label, ndock.Name, ndock.Timer}))
             {
-                var timer = _sniffer.NDock[i].Timer;
-                timer.Update();
-                SetTimerLabel(ndock[i], timer);
-                if (!timer.NeedRing)
+                entry.Timer.Update();
+                SetTimerLabel(entry.label, entry.Timer);
+                if (!entry.Timer.NeedRing)
                     continue;
-                Ring("入渠が終わりました", _sniffer.NDock[i].Name, _config.NDockSoundFile);
-                timer.NeedRing = false;
+                Ring("入渠が終わりました", entry.Name, _config.NDockSoundFile);
+                entry.Timer.NeedRing = false;
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
             for (var i = 0; i < kdock.Length; i++)
@@ -237,31 +239,29 @@ namespace KancolleSniffer
 
         private void UpdateCondTimers()
         {
-            var label = new[] {labelCondTimer1, labelCondTimer2, labelCondTimer3};
             var now = DateTime.Now;
-            for (var i = 0; i < label.Length; i++)
-            {
-                var timer = _sniffer.RecoveryTimes[i];
-                label[i].Text = timer != DateTime.MinValue && timer > now ? (timer - now).ToString(@"mm\:ss") : "00:00";
-            }
+            foreach (var entry in
+                new[] {labelCondTimer1, labelCondTimer2, labelCondTimer3}.Zip(_sniffer.RecoveryTimes,
+                    (label, time) => new {label, time}))
+                entry.label.Text = entry.time > now ? (entry.time - now).ToString(@"mm\:ss") : "00:00";
         }
 
         private void UpdateQuestList()
         {
             var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5};
             var progress = new[] {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5};
-            var i = 0;
-            foreach (var quest in _sniffer.Quests)
+
+            for (var i = 0; i < name.Length; i++)
             {
-                if (i == progress.Length)
-                    break;
-                name[i].Text = quest.Name;
-                progress[i++].Text = string.Format("{0:D}%", quest.Progress);
-            }
-            for (; i < progress.Length; i++)
-            {
-                name[i].Text = "";
-                progress[i].Text = "";
+                if (i < _sniffer.Quests.Length)
+                {
+                    name[i].Text = _sniffer.Quests[i].Name;
+                    progress[i].Text = string.Format("{0:D}%", _sniffer.Quests[i].Progress);
+                }
+                else
+                {
+                    name[i].Text = progress[i].Text = "";
+                }
             }
         }
 

@@ -129,18 +129,13 @@ namespace KancolleSniffer
         {
             get
             {
-                var deck = _decks[0];
-                var result = new ShipStatus[deck.Length];
-                for (var i = 0; i < deck.Length; i++)
+                return _decks[0].Select(id =>
                 {
-                    var id = deck[i];
                     ShipStatus status;
-                    if (id == -1 || !_shipInfo.TryGetValue(id, out status))
-                        continue;
-                    status.Name = _shipMaster.GetSpec(status.ShipId).Name;
-                    result[i] = status;
-                }
-                return result;
+                    if (_shipInfo.TryGetValue(id, out status))
+                        status.Name = _shipMaster.GetSpec(status.ShipId).Name;
+                    return status;
+                }).ToArray();
             }
         }
 
@@ -148,20 +143,20 @@ namespace KancolleSniffer
         {
             get
             {
-                var result = new ChargeStatus[_decks.Length];
-                for (var fleet = 0; fleet < _decks.Length; fleet++)
+                return _decks.Select(deck =>
                 {
-                    foreach (var id in _decks[fleet])
+                    var result = new ChargeStatus();
+                    foreach (var id in deck)
                     {
                         ShipStatus status;
                         if (!_shipInfo.TryGetValue(id, out status))
                             continue;
                         var spec = _shipMaster.GetSpec(status.ShipId);
-                        result[fleet].Fuel = Math.Max(CalcChargeState(status.Fuel, spec.FuelMax), result[fleet].Fuel);
-                        result[fleet].Bull = Math.Max(CalcChargeState(status.Bull, spec.BullMax), result[fleet].Bull);
+                        result.Fuel = Math.Max(CalcChargeState(status.Fuel, spec.FuelMax), result.Fuel);
+                        result.Bull = Math.Max(CalcChargeState(status.Bull, spec.BullMax), result.Bull);
                     }
-                }
-                return result;
+                    return result;
+                }).ToArray();
             }
         }
 
