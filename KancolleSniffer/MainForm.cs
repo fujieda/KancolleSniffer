@@ -31,6 +31,7 @@ namespace KancolleSniffer
         private readonly dynamic _wmp = Activator.CreateInstance(Type.GetTypeFromProgID("WMPlayer.OCX.7"));
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog = new ConfigDialog();
+        private readonly int _labelRightDistance;
 
         public MainForm()
         {
@@ -38,6 +39,7 @@ namespace KancolleSniffer
             FiddlerApplication.AfterSessionComplete += FiddlerApplication_AfterSessionComplete;
             _wmp.PlayStateChange += new EventHandler(_wmp_PlayStateChange);
             _configDialog.Tag = _config;
+            _labelRightDistance = labelHP1.Parent.Width - labelHP1.Right;
         }
 
         private void FiddlerApplication_AfterSessionComplete(Session oSession)
@@ -82,6 +84,12 @@ namespace KancolleSniffer
             _config.Save();
         }
 
+        private void labelHP_SizeChanged(object sender, EventArgs e)
+        {
+            var label = (Label)sender;
+            label.Location = new Point(label.Parent.Width - _labelRightDistance - label.Width, label.Top);
+        }
+
         private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)
@@ -105,7 +113,7 @@ namespace KancolleSniffer
         {
             TopMost = _config.TopMost;
             _wmp.settings.volume = _config.SoundVolume;
-            _sniffer.Item.MarginShips = _config.MarginShips;            
+            _sniffer.Item.MarginShips = _config.MarginShips;
         }
 
         private void timerMain_Tick(object sender, EventArgs e)

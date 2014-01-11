@@ -151,10 +151,12 @@ namespace KancolleSniffer
             this.label22 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.labelBull4 = new System.Windows.Forms.Label();
+            this.imageListBull = new System.Windows.Forms.ImageList(this.components);
             this.labelBull3 = new System.Windows.Forms.Label();
             this.labelBull2 = new System.Windows.Forms.Label();
             this.labelBull1 = new System.Windows.Forms.Label();
             this.labelFuel4 = new System.Windows.Forms.Label();
+            this.imageListFuel = new System.Windows.Forms.ImageList(this.components);
             this.labelFuel3 = new System.Windows.Forms.Label();
             this.labelFuel2 = new System.Windows.Forms.Label();
             this.labelFuel1 = new System.Windows.Forms.Label();
@@ -162,8 +164,6 @@ namespace KancolleSniffer
             this.label25 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
-            this.imageListFuel = new System.Windows.Forms.ImageList(this.components);
-            this.imageListBull = new System.Windows.Forms.ImageList(this.components);
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelDock.SuspendLayout();
@@ -499,57 +499,69 @@ namespace KancolleSniffer
             // 
             // labelHP6
             // 
-            this.labelHP6.Location = new System.Drawing.Point(90, 100);
+            this.labelHP6.AutoSize = true;
+            this.labelHP6.Location = new System.Drawing.Point(114, 100);
             this.labelHP6.Name = "labelHP6";
-            this.labelHP6.Size = new System.Drawing.Size(47, 12);
+            this.labelHP6.Size = new System.Drawing.Size(23, 12);
             this.labelHP6.TabIndex = 19;
             this.labelHP6.Text = "0/0";
             this.labelHP6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelHP6.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
             // 
             // labelHP5
             // 
-            this.labelHP5.Location = new System.Drawing.Point(90, 84);
+            this.labelHP5.AutoSize = true;
+            this.labelHP5.Location = new System.Drawing.Point(114, 84);
             this.labelHP5.Name = "labelHP5";
-            this.labelHP5.Size = new System.Drawing.Size(47, 12);
+            this.labelHP5.Size = new System.Drawing.Size(23, 12);
             this.labelHP5.TabIndex = 18;
             this.labelHP5.Text = "0/0";
             this.labelHP5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelHP5.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
             // 
             // labelHP4
             // 
-            this.labelHP4.Location = new System.Drawing.Point(90, 68);
+            this.labelHP4.AutoSize = true;
+            this.labelHP4.Location = new System.Drawing.Point(114, 68);
             this.labelHP4.Name = "labelHP4";
-            this.labelHP4.Size = new System.Drawing.Size(47, 12);
+            this.labelHP4.Size = new System.Drawing.Size(23, 12);
             this.labelHP4.TabIndex = 17;
             this.labelHP4.Text = "0/0";
             this.labelHP4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelHP4.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
             // 
             // labelHP3
             // 
-            this.labelHP3.Location = new System.Drawing.Point(90, 52);
+            this.labelHP3.AutoSize = true;
+            this.labelHP3.Location = new System.Drawing.Point(114, 52);
             this.labelHP3.Name = "labelHP3";
-            this.labelHP3.Size = new System.Drawing.Size(47, 12);
+            this.labelHP3.Size = new System.Drawing.Size(23, 12);
             this.labelHP3.TabIndex = 16;
             this.labelHP3.Text = "0/0";
             this.labelHP3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelHP3.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
             // 
             // labelHP2
             // 
-            this.labelHP2.Location = new System.Drawing.Point(90, 36);
+            this.labelHP2.AutoSize = true;
+            this.labelHP2.Location = new System.Drawing.Point(114, 36);
             this.labelHP2.Name = "labelHP2";
-            this.labelHP2.Size = new System.Drawing.Size(47, 12);
+            this.labelHP2.Size = new System.Drawing.Size(23, 12);
             this.labelHP2.TabIndex = 15;
             this.labelHP2.Text = "0/0";
             this.labelHP2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelHP2.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
             // 
             // labelHP1
             // 
-            this.labelHP1.Location = new System.Drawing.Point(90, 20);
+            this.labelHP1.AutoSize = true;
+            this.labelHP1.Location = new System.Drawing.Point(114, 20);
             this.labelHP1.Name = "labelHP1";
-            this.labelHP1.Size = new System.Drawing.Size(47, 12);
+            this.labelHP1.Size = new System.Drawing.Size(23, 12);
             this.labelHP1.TabIndex = 14;
             this.labelHP1.Text = "0/0";
             this.labelHP1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelHP1.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
             // 
             // labelLv6
             // 
@@ -1149,6 +1161,16 @@ namespace KancolleSniffer
             this.labelBull4.Size = new System.Drawing.Size(16, 16);
             this.labelBull4.TabIndex = 11;
             // 
+            // imageListBull
+            // 
+            this.imageListBull.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListBull.ImageStream")));
+            this.imageListBull.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListBull.Images.SetKeyName(0, "透明.png");
+            this.imageListBull.Images.SetKeyName(1, "弾薬黄.png");
+            this.imageListBull.Images.SetKeyName(2, "弾薬橙.png");
+            this.imageListBull.Images.SetKeyName(3, "弾薬赤.png");
+            this.imageListBull.Images.SetKeyName(4, "弾薬灰.png");
+            // 
             // labelBull3
             // 
             this.labelBull3.ImageList = this.imageListBull;
@@ -1181,6 +1203,16 @@ namespace KancolleSniffer
             this.labelFuel4.Name = "labelFuel4";
             this.labelFuel4.Size = new System.Drawing.Size(16, 16);
             this.labelFuel4.TabIndex = 7;
+            // 
+            // imageListFuel
+            // 
+            this.imageListFuel.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListFuel.ImageStream")));
+            this.imageListFuel.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListFuel.Images.SetKeyName(0, "透明.png");
+            this.imageListFuel.Images.SetKeyName(1, "燃料黄.png");
+            this.imageListFuel.Images.SetKeyName(2, "燃料橙.png");
+            this.imageListFuel.Images.SetKeyName(3, "燃料赤.png");
+            this.imageListFuel.Images.SetKeyName(4, "燃料灰.png");
             // 
             // labelFuel3
             // 
@@ -1245,26 +1277,6 @@ namespace KancolleSniffer
             this.label23.Size = new System.Drawing.Size(53, 12);
             this.label23.TabIndex = 0;
             this.label23.Text = "第一艦隊";
-            // 
-            // imageListFuel
-            // 
-            this.imageListFuel.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListFuel.ImageStream")));
-            this.imageListFuel.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListFuel.Images.SetKeyName(0, "透明.png");
-            this.imageListFuel.Images.SetKeyName(1, "燃料黄.png");
-            this.imageListFuel.Images.SetKeyName(2, "燃料橙.png");
-            this.imageListFuel.Images.SetKeyName(3, "燃料赤.png");
-            this.imageListFuel.Images.SetKeyName(4, "燃料灰.png");
-            // 
-            // imageListBull
-            // 
-            this.imageListBull.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListBull.ImageStream")));
-            this.imageListBull.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListBull.Images.SetKeyName(0, "透明.png");
-            this.imageListBull.Images.SetKeyName(1, "弾薬黄.png");
-            this.imageListBull.Images.SetKeyName(2, "弾薬橙.png");
-            this.imageListBull.Images.SetKeyName(3, "弾薬赤.png");
-            this.imageListBull.Images.SetKeyName(4, "弾薬灰.png");
             // 
             // MainForm
             // 
