@@ -165,7 +165,6 @@ namespace KancolleSniffer
                 var stat = _sniffer.ShipStatuses[i];
                 name[i].Text = stat.Name;
                 lv[i].Text = stat.Level.ToString("D");
-                hp[i].Text = string.Format("{0:D}/{1:D}", stat.NowHp, stat.MaxHp);
                 SetHpLavel(hp[i], stat.NowHp, stat.MaxHp);
                 SetCondLabel(cond[i], stat.Cond);
                 next[i].Text = stat.ExpToNext.ToString("D");
