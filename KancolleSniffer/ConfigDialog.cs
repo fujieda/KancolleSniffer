@@ -32,6 +32,7 @@ namespace KancolleSniffer
         {
             var config = (Config)Tag;
 
+            checkBoxTopMost.Checked = config.TopMost;
             checkBoxFlash.Checked = config.FlashWindow;
             checkBoxBalloon.Checked = config.ShowBaloonTip;
             groupBoxSound.Enabled = checkBoxSound.Checked = config.PlaySound;
@@ -48,6 +49,7 @@ namespace KancolleSniffer
         {
             var config = (Config)Tag;
 
+            config.TopMost = checkBoxTopMost.Checked;
             config.FlashWindow = checkBoxFlash.Checked;
             config.ShowBaloonTip = checkBoxBalloon.Checked;
             config.PlaySound = checkBoxSound.Checked;

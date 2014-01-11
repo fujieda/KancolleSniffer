@@ -70,10 +70,13 @@ namespace KancolleSniffer
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.groupBoxShow = new System.Windows.Forms.GroupBox();
+            this.checkBoxTopMost = new System.Windows.Forms.CheckBox();
             this.groupBoxNotification.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).BeginInit();
             this.groupBoxSound.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSoundVolume)).BeginInit();
+            this.groupBoxShow.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxNotification
@@ -84,17 +87,16 @@ namespace KancolleSniffer
             this.groupBoxNotification.Controls.Add(this.checkBoxSound);
             this.groupBoxNotification.Controls.Add(this.checkBoxBalloon);
             this.groupBoxNotification.Controls.Add(this.checkBoxFlash);
-            this.groupBoxNotification.Location = new System.Drawing.Point(12, 12);
+            this.groupBoxNotification.Location = new System.Drawing.Point(12, 58);
             this.groupBoxNotification.Name = "groupBoxNotification";
-            this.groupBoxNotification.Padding = new System.Windows.Forms.Padding(8);
-            this.groupBoxNotification.Size = new System.Drawing.Size(248, 119);
+            this.groupBoxNotification.Size = new System.Drawing.Size(240, 108);
             this.groupBoxNotification.TabIndex = 0;
             this.groupBoxNotification.TabStop = false;
             this.groupBoxNotification.Text = "通知";
             // 
             // numericUpDownMarginShips
             // 
-            this.numericUpDownMarginShips.Location = new System.Drawing.Point(125, 89);
+            this.numericUpDownMarginShips.Location = new System.Drawing.Point(120, 82);
             this.numericUpDownMarginShips.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.numericUpDownMarginShips.Maximum = new decimal(new int[] {
             99,
@@ -109,7 +111,7 @@ namespace KancolleSniffer
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(161, 91);
+            this.label2.Location = new System.Drawing.Point(156, 84);
             this.label2.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(70, 12);
@@ -119,7 +121,7 @@ namespace KancolleSniffer
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 91);
+            this.label1.Location = new System.Drawing.Point(4, 84);
             this.label1.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(116, 12);
@@ -129,7 +131,7 @@ namespace KancolleSniffer
             // checkBoxSound
             // 
             this.checkBoxSound.AutoSize = true;
-            this.checkBoxSound.Location = new System.Drawing.Point(11, 67);
+            this.checkBoxSound.Location = new System.Drawing.Point(6, 62);
             this.checkBoxSound.Name = "checkBoxSound";
             this.checkBoxSound.Size = new System.Drawing.Size(113, 16);
             this.checkBoxSound.TabIndex = 2;
@@ -140,7 +142,7 @@ namespace KancolleSniffer
             // checkBoxBalloon
             // 
             this.checkBoxBalloon.AutoSize = true;
-            this.checkBoxBalloon.Location = new System.Drawing.Point(11, 45);
+            this.checkBoxBalloon.Location = new System.Drawing.Point(6, 40);
             this.checkBoxBalloon.Name = "checkBoxBalloon";
             this.checkBoxBalloon.Size = new System.Drawing.Size(172, 16);
             this.checkBoxBalloon.TabIndex = 1;
@@ -150,7 +152,7 @@ namespace KancolleSniffer
             // checkBoxFlash
             // 
             this.checkBoxFlash.AutoSize = true;
-            this.checkBoxFlash.Location = new System.Drawing.Point(11, 23);
+            this.checkBoxFlash.Location = new System.Drawing.Point(6, 18);
             this.checkBoxFlash.Name = "checkBoxFlash";
             this.checkBoxFlash.Size = new System.Drawing.Size(127, 16);
             this.checkBoxFlash.TabIndex = 0;
@@ -173,18 +175,16 @@ namespace KancolleSniffer
             this.groupBoxSound.Controls.Add(this.buttonMissionOpenFile);
             this.groupBoxSound.Controls.Add(this.textBoxMissionSoundFile);
             this.groupBoxSound.Controls.Add(this.label4);
-            this.groupBoxSound.Location = new System.Drawing.Point(12, 146);
-            this.groupBoxSound.Margin = new System.Windows.Forms.Padding(3, 12, 3, 12);
+            this.groupBoxSound.Location = new System.Drawing.Point(12, 172);
             this.groupBoxSound.Name = "groupBoxSound";
-            this.groupBoxSound.Padding = new System.Windows.Forms.Padding(8);
-            this.groupBoxSound.Size = new System.Drawing.Size(248, 155);
+            this.groupBoxSound.Size = new System.Drawing.Size(240, 155);
             this.groupBoxSound.TabIndex = 1;
             this.groupBoxSound.TabStop = false;
             this.groupBoxSound.Text = "サウンド";
             // 
             // numericUpDownSoundVolume
             // 
-            this.numericUpDownSoundVolume.Location = new System.Drawing.Point(46, 23);
+            this.numericUpDownSoundVolume.Location = new System.Drawing.Point(41, 16);
             this.numericUpDownSoundVolume.Name = "numericUpDownSoundVolume";
             this.numericUpDownSoundVolume.Size = new System.Drawing.Size(44, 19);
             this.numericUpDownSoundVolume.TabIndex = 1;
@@ -193,7 +193,8 @@ namespace KancolleSniffer
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 25);
+            this.label3.Location = new System.Drawing.Point(6, 18);
+            this.label3.Margin = new System.Windows.Forms.Padding(3);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(29, 12);
             this.label3.TabIndex = 0;
@@ -201,7 +202,7 @@ namespace KancolleSniffer
             // 
             // buttonMaxShipsOpenFile
             // 
-            this.buttonMaxShipsOpenFile.Location = new System.Drawing.Point(196, 121);
+            this.buttonMaxShipsOpenFile.Location = new System.Drawing.Point(191, 114);
             this.buttonMaxShipsOpenFile.Name = "buttonMaxShipsOpenFile";
             this.buttonMaxShipsOpenFile.Size = new System.Drawing.Size(41, 23);
             this.buttonMaxShipsOpenFile.TabIndex = 13;
@@ -211,7 +212,7 @@ namespace KancolleSniffer
             // 
             // textBoxMaxShipsSoundFile
             // 
-            this.textBoxMaxShipsSoundFile.Location = new System.Drawing.Point(46, 123);
+            this.textBoxMaxShipsSoundFile.Location = new System.Drawing.Point(41, 116);
             this.textBoxMaxShipsSoundFile.Name = "textBoxMaxShipsSoundFile";
             this.textBoxMaxShipsSoundFile.Size = new System.Drawing.Size(144, 19);
             this.textBoxMaxShipsSoundFile.TabIndex = 12;
@@ -219,7 +220,7 @@ namespace KancolleSniffer
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(11, 126);
+            this.label7.Location = new System.Drawing.Point(6, 119);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(29, 12);
             this.label7.TabIndex = 11;
@@ -227,7 +228,7 @@ namespace KancolleSniffer
             // 
             // buttonKDockOpenFile
             // 
-            this.buttonKDockOpenFile.Location = new System.Drawing.Point(196, 96);
+            this.buttonKDockOpenFile.Location = new System.Drawing.Point(191, 89);
             this.buttonKDockOpenFile.Name = "buttonKDockOpenFile";
             this.buttonKDockOpenFile.Size = new System.Drawing.Size(41, 23);
             this.buttonKDockOpenFile.TabIndex = 10;
@@ -237,7 +238,7 @@ namespace KancolleSniffer
             // 
             // textBoxKDockSoundFile
             // 
-            this.textBoxKDockSoundFile.Location = new System.Drawing.Point(46, 98);
+            this.textBoxKDockSoundFile.Location = new System.Drawing.Point(41, 91);
             this.textBoxKDockSoundFile.Name = "textBoxKDockSoundFile";
             this.textBoxKDockSoundFile.Size = new System.Drawing.Size(144, 19);
             this.textBoxKDockSoundFile.TabIndex = 9;
@@ -245,7 +246,7 @@ namespace KancolleSniffer
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(11, 101);
+            this.label6.Location = new System.Drawing.Point(6, 94);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(29, 12);
             this.label6.TabIndex = 8;
@@ -253,7 +254,7 @@ namespace KancolleSniffer
             // 
             // buttonNDockOpenFile
             // 
-            this.buttonNDockOpenFile.Location = new System.Drawing.Point(196, 71);
+            this.buttonNDockOpenFile.Location = new System.Drawing.Point(191, 64);
             this.buttonNDockOpenFile.Name = "buttonNDockOpenFile";
             this.buttonNDockOpenFile.Size = new System.Drawing.Size(41, 23);
             this.buttonNDockOpenFile.TabIndex = 7;
@@ -263,7 +264,7 @@ namespace KancolleSniffer
             // 
             // textBoxNDockSoundFile
             // 
-            this.textBoxNDockSoundFile.Location = new System.Drawing.Point(46, 73);
+            this.textBoxNDockSoundFile.Location = new System.Drawing.Point(41, 66);
             this.textBoxNDockSoundFile.Name = "textBoxNDockSoundFile";
             this.textBoxNDockSoundFile.Size = new System.Drawing.Size(144, 19);
             this.textBoxNDockSoundFile.TabIndex = 6;
@@ -271,7 +272,7 @@ namespace KancolleSniffer
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(11, 76);
+            this.label5.Location = new System.Drawing.Point(6, 69);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(29, 12);
             this.label5.TabIndex = 5;
@@ -279,7 +280,7 @@ namespace KancolleSniffer
             // 
             // buttonMissionOpenFile
             // 
-            this.buttonMissionOpenFile.Location = new System.Drawing.Point(196, 46);
+            this.buttonMissionOpenFile.Location = new System.Drawing.Point(191, 39);
             this.buttonMissionOpenFile.Name = "buttonMissionOpenFile";
             this.buttonMissionOpenFile.Size = new System.Drawing.Size(41, 23);
             this.buttonMissionOpenFile.TabIndex = 4;
@@ -289,7 +290,7 @@ namespace KancolleSniffer
             // 
             // textBoxMissionSoundFile
             // 
-            this.textBoxMissionSoundFile.Location = new System.Drawing.Point(46, 48);
+            this.textBoxMissionSoundFile.Location = new System.Drawing.Point(41, 41);
             this.textBoxMissionSoundFile.Name = "textBoxMissionSoundFile";
             this.textBoxMissionSoundFile.Size = new System.Drawing.Size(144, 19);
             this.textBoxMissionSoundFile.TabIndex = 3;
@@ -297,7 +298,7 @@ namespace KancolleSniffer
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(11, 51);
+            this.label4.Location = new System.Drawing.Point(6, 44);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(29, 12);
             this.label4.TabIndex = 2;
@@ -306,7 +307,8 @@ namespace KancolleSniffer
             // buttonOk
             // 
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(104, 316);
+            this.buttonOk.Location = new System.Drawing.Point(96, 338);
+            this.buttonOk.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 2;
@@ -317,7 +319,8 @@ namespace KancolleSniffer
             // buttonCancel
             // 
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(185, 316);
+            this.buttonCancel.Location = new System.Drawing.Point(177, 338);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 3;
@@ -330,14 +333,35 @@ namespace KancolleSniffer
     ";*.wma;*.mp2;*.mp3";
             this.openFileDialog.Title = "オーディオファイルを選択する";
             // 
+            // groupBoxShow
+            // 
+            this.groupBoxShow.Controls.Add(this.checkBoxTopMost);
+            this.groupBoxShow.Location = new System.Drawing.Point(12, 12);
+            this.groupBoxShow.Name = "groupBoxShow";
+            this.groupBoxShow.Size = new System.Drawing.Size(240, 40);
+            this.groupBoxShow.TabIndex = 4;
+            this.groupBoxShow.TabStop = false;
+            this.groupBoxShow.Text = "表示";
+            // 
+            // checkBoxTopMost
+            // 
+            this.checkBoxTopMost.AutoSize = true;
+            this.checkBoxTopMost.Location = new System.Drawing.Point(6, 18);
+            this.checkBoxTopMost.Name = "checkBoxTopMost";
+            this.checkBoxTopMost.Size = new System.Drawing.Size(112, 16);
+            this.checkBoxTopMost.TabIndex = 0;
+            this.checkBoxTopMost.Text = "最前面に表示する";
+            this.checkBoxTopMost.UseVisualStyleBackColor = true;
+            // 
             // ConfigDialog
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(272, 351);
+            this.ClientSize = new System.Drawing.Size(264, 373);
             this.ControlBox = false;
+            this.Controls.Add(this.groupBoxShow);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.groupBoxSound);
@@ -352,6 +376,8 @@ namespace KancolleSniffer
             this.groupBoxSound.ResumeLayout(false);
             this.groupBoxSound.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSoundVolume)).EndInit();
+            this.groupBoxShow.ResumeLayout(false);
+            this.groupBoxShow.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -383,5 +409,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.NumericUpDown numericUpDownMarginShips;
+        private System.Windows.Forms.GroupBox groupBoxShow;
+        private System.Windows.Forms.CheckBox checkBoxTopMost;
     }
 }

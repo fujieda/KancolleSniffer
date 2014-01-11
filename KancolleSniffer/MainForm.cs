@@ -71,8 +71,7 @@ namespace KancolleSniffer
         {
             _sniffer.LoadMaster();
             _config.Load();
-            _wmp.settings.volume = _config.SoundVolume;
-            _sniffer.Item.MarginShips = _config.MarginShips;
+            ApplyConfig();
             FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
         }
 
@@ -98,10 +97,15 @@ namespace KancolleSniffer
 
         private void ConfigToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_configDialog.ShowDialog() != DialogResult.OK)
-                return;
+            if (_configDialog.ShowDialog(this) == DialogResult.OK)
+                ApplyConfig();
+        }
+
+        private void ApplyConfig()
+        {
+            TopMost = _config.TopMost;
             _wmp.settings.volume = _config.SoundVolume;
-            _sniffer.Item.MarginShips = _config.MarginShips;
+            _sniffer.Item.MarginShips = _config.MarginShips;            
         }
 
         private void timerMain_Tick(object sender, EventArgs e)

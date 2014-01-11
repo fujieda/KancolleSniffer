@@ -25,6 +25,7 @@ namespace KancolleSniffer
     {
         private readonly string _configFileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "config.json");
 
+        public bool TopMost { get; set; }
         public bool FlashWindow { get; set; }
         public bool ShowBaloonTip { get; set; }
         public bool PlaySound { get; set; }
