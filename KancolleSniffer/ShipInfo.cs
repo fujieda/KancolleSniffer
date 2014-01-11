@@ -65,7 +65,7 @@ namespace KancolleSniffer
         public string GetNameById(int id)
         {
             ShipStatus ship;
-            return _shipInfo.TryGetValue(id, out ship) ? _shipMaster.GetSpec(ship.ShipId).Name : "不明";
+            return _shipInfo.TryGetValue(id, out ship) ? _shipMaster.GetSpec(ship.ShipId).Name : "";
         }
 
         public void InspectDeck(dynamic json)

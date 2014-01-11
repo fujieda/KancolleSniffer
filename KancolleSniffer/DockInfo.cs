@@ -23,14 +23,15 @@ namespace KancolleSniffer
     public class DockInfo
     {
         private readonly ShipInfo _shipInfo;
-        private readonly NameAndTimer[] _ndocInfo = new NameAndTimer[4];
+        private readonly int[] _ndoc = new int[4];
+        private readonly RingTimer[] _ndocTimers = new RingTimer[4];
         private readonly RingTimer[] _kdocTimers = new RingTimer[4];
 
         public DockInfo(ShipInfo shipInfo)
         {
             _shipInfo = shipInfo;
-            for (var i = 0; i < _ndocInfo.Length; i++)
-                _ndocInfo[i] = new NameAndTimer();
+            for (var i = 0; i < _ndocTimers.Length; i++)
+                _ndocTimers[i] = new RingTimer();
             for (var i = 0; i < _kdocTimers.Length; i++)
                 _kdocTimers[i] = new RingTimer(0);
         }
@@ -40,15 +41,18 @@ namespace KancolleSniffer
             foreach (var entry in json)
             {
                 var id = (int)entry.api_id;
-                _ndocInfo[id - 1].Timer.EndTime = (double)entry.api_complete_time;
-                var ship = (int)entry.api_ship_id;
-                _ndocInfo[id - 1].Name = ship == 0 ? "" : _shipInfo.GetNameById(ship);
+                _ndocTimers[id - 1].EndTime = (double)entry.api_complete_time;
+                _ndoc[id - 1] = (int)entry.api_ship_id;
             }
         }
 
         public NameAndTimer[] NDock
         {
-            get { return _ndocInfo; }
+            get
+            {
+                return _ndoc.Zip(_ndocTimers,
+                    (id, timer) => new NameAndTimer {Name = _shipInfo.GetNameById(id), Timer = timer}).ToArray();
+            }
         }
 
         public void InspectKDock(dynamic json)

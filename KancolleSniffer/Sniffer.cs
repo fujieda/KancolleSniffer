@@ -104,7 +104,7 @@ namespace KancolleSniffer
             {
                 _shipInfo.InspectShipInfo(uri.EndsWith("ship3") ? json.api_ship_data : json);
                 _itemInfo.NowShips = _shipInfo.NumShips;
-                return UpdateInfo.Ship | UpdateInfo.Item | UpdateInfo.Timer | UpdateInfo.Charge;
+                return UpdateInfo.Ship | UpdateInfo.Item | UpdateInfo.Timer | UpdateInfo.NDock | UpdateInfo.Charge;
             }
             return UpdateInfo.None;
         }
