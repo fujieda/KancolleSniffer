@@ -166,7 +166,13 @@ namespace KancolleSniffer
                 name[i].Text = stat.Name;
                 lv[i].Text = stat.Level.ToString("D");
                 SetHpLavel(hp[i], stat.NowHp, stat.MaxHp);
-                SetCondLabel(cond[i], stat.Cond);
+                if (stat.Name == null)
+                {
+                    cond[i].Text = "0";
+                    cond[i].BackColor = DefaultBackColor;
+                }
+                else
+                    SetCondLabel(cond[i], stat.Cond);
                 next[i].Text = stat.ExpToNext.ToString("D");
             }
         }
@@ -196,7 +202,7 @@ namespace KancolleSniffer
             label.Text = cond.ToString("D");
             label.BackColor = cond >= 50
                 ? Color.Yellow
-                : cond >= 30 || cond == 0
+                : cond >= 30
                     ? DefaultBackColor
                     : cond >= 20 ? Color.Orange : Color.Red;
         }
