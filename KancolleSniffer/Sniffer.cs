@@ -34,21 +34,17 @@ namespace KancolleSniffer
 
     public class Sniffer
     {
-        private readonly NameAndTimer[] _ndocInfo = new NameAndTimer[4];
-        private readonly RingTimer[] _kdocTimers = new RingTimer[4];
         private readonly ShipMaster _shipMaster = new ShipMaster();
         private readonly ItemInfo _itemInfo = new ItemInfo();
         private readonly QuestInfo _questInfo = new QuestInfo();
         private readonly MissionInfo _missionInfo = new MissionInfo();
         private readonly ShipInfo _shipInfo;
+        private readonly DockInfo _dockInfo;
 
         public Sniffer()
         {
             _shipInfo = new ShipInfo(_shipMaster);
-            for (var i = 0; i < _ndocInfo.Length; i++)
-                _ndocInfo[i] = new NameAndTimer();
-            for (var i = 0; i < _kdocTimers.Length; i++)
-                _kdocTimers[i] = new RingTimer(0);
+            _dockInfo = new DockInfo(_shipInfo);
         }
 
         public UpdateInfo Sniff(string uri, dynamic json)
@@ -85,12 +81,12 @@ namespace KancolleSniffer
             }
             if (uri.EndsWith("api_get_member/ndock"))
             {
-                InspectNDock(json);
+                _dockInfo.InspectNDock(json);
                 return UpdateInfo.NDock | UpdateInfo.Timer;
             }
             if (uri.EndsWith("api_get_member/kdock"))
             {
-                InspectKDock(json);
+                _dockInfo.InspectKDock(json);
                 return UpdateInfo.Timer;
             }
             if (uri.EndsWith("api_get_master/mission"))
@@ -125,31 +121,14 @@ namespace KancolleSniffer
             _shipMaster.Load();
         }
 
-        private void InspectNDock(dynamic json)
-        {
-            foreach (var entry in json)
-            {
-                var id = (int)entry.api_id;
-                _ndocInfo[id - 1].Timer.EndTime = (double)entry.api_complete_time;
-                var ship = (int)entry.api_ship_id;
-                _ndocInfo[id - 1].Name = ship == 0 ? "" : _shipInfo.GetNameById(ship);
-            }
-        }
-
         public NameAndTimer[] NDock
         {
-            get { return _ndocInfo; }
-        }
-
-        private void InspectKDock(dynamic json)
-        {
-            foreach (var entry in json)
-                _kdocTimers[(int)entry.api_id - 1].EndTime = (double)entry.api_complete_time;
+            get { return _dockInfo.NDock; }
         }
 
         public RingTimer[] KDock
         {
-            get { return _kdocTimers; }
+            get { return _dockInfo.KDock; }
         }
 
         public ItemInfo Item
