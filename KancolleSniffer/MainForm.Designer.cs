@@ -883,7 +883,7 @@ namespace KancolleSniffer
             this.labelConstruct.Name = "labelConstruct";
             this.labelConstruct.Size = new System.Drawing.Size(29, 12);
             this.labelConstruct.TabIndex = 6;
-            this.labelConstruct.Text = "工廠";
+            this.labelConstruct.Text = "建造";
             // 
             // labelQuest
             // 
