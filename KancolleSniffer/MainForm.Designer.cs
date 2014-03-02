@@ -445,54 +445,54 @@ namespace KancolleSniffer
             // 
             // labelNextLv6
             // 
-            this.labelNextLv6.Location = new System.Drawing.Point(219, 100);
+            this.labelNextLv6.Location = new System.Drawing.Point(213, 100);
             this.labelNextLv6.Name = "labelNextLv6";
-            this.labelNextLv6.Size = new System.Drawing.Size(35, 12);
+            this.labelNextLv6.Size = new System.Drawing.Size(41, 12);
             this.labelNextLv6.TabIndex = 33;
             this.labelNextLv6.Text = "0";
             this.labelNextLv6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelNextLv5
             // 
-            this.labelNextLv5.Location = new System.Drawing.Point(219, 84);
+            this.labelNextLv5.Location = new System.Drawing.Point(213, 84);
             this.labelNextLv5.Name = "labelNextLv5";
-            this.labelNextLv5.Size = new System.Drawing.Size(35, 12);
+            this.labelNextLv5.Size = new System.Drawing.Size(41, 12);
             this.labelNextLv5.TabIndex = 32;
             this.labelNextLv5.Text = "0";
             this.labelNextLv5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelNextLv4
             // 
-            this.labelNextLv4.Location = new System.Drawing.Point(219, 68);
+            this.labelNextLv4.Location = new System.Drawing.Point(213, 68);
             this.labelNextLv4.Name = "labelNextLv4";
-            this.labelNextLv4.Size = new System.Drawing.Size(35, 12);
+            this.labelNextLv4.Size = new System.Drawing.Size(41, 12);
             this.labelNextLv4.TabIndex = 31;
             this.labelNextLv4.Text = "0";
             this.labelNextLv4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelNextLv3
             // 
-            this.labelNextLv3.Location = new System.Drawing.Point(219, 52);
+            this.labelNextLv3.Location = new System.Drawing.Point(213, 52);
             this.labelNextLv3.Name = "labelNextLv3";
-            this.labelNextLv3.Size = new System.Drawing.Size(35, 12);
+            this.labelNextLv3.Size = new System.Drawing.Size(41, 12);
             this.labelNextLv3.TabIndex = 30;
             this.labelNextLv3.Text = "0";
             this.labelNextLv3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelNextLv2
             // 
-            this.labelNextLv2.Location = new System.Drawing.Point(219, 36);
+            this.labelNextLv2.Location = new System.Drawing.Point(213, 36);
             this.labelNextLv2.Name = "labelNextLv2";
-            this.labelNextLv2.Size = new System.Drawing.Size(35, 12);
+            this.labelNextLv2.Size = new System.Drawing.Size(41, 12);
             this.labelNextLv2.TabIndex = 29;
             this.labelNextLv2.Text = "0";
             this.labelNextLv2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelNextLv1
             // 
-            this.labelNextLv1.Location = new System.Drawing.Point(219, 20);
+            this.labelNextLv1.Location = new System.Drawing.Point(213, 20);
             this.labelNextLv1.Name = "labelNextLv1";
-            this.labelNextLv1.Size = new System.Drawing.Size(35, 12);
+            this.labelNextLv1.Size = new System.Drawing.Size(41, 12);
             this.labelNextLv1.TabIndex = 28;
             this.labelNextLv1.Text = "0";
             this.labelNextLv1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
