@@ -194,7 +194,9 @@ namespace KancolleSniffer
         {
             label.Text = string.Format("{0:D}/{1:D}", now, max);
             var damage = max == 0 ? 1 : (double)now / max;
-            label.BackColor = damage > 0.5 ? DefaultBackColor : damage > 0.25 ? Color.Orange : Color.Red;
+            label.BackColor = damage > 0.75
+                ? DefaultBackColor
+                : damage > 0.5 ? Color.FromArgb(255, 240, 240, 100) : damage > 0.25 ? Color.Orange : Color.Red;
         }
 
         private void SetCondLabel(Label label, int cond)
