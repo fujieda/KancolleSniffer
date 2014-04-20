@@ -44,10 +44,8 @@ namespace KancolleSniffer
     {
         private readonly int[][] _decks = new int[4][];
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
-        private readonly DateTime[] _recoveryTimes = new DateTime[3];
+        private readonly DateTime[][] _recoveryTimes = {new DateTime[3], new DateTime[3], new DateTime[3], new DateTime[3]};
         private readonly ShipMaster _shipMaster;
-
-        public string FleetName { get; set; }
 
         public ShipInfo(ShipMaster shipMaster)
         {
@@ -57,9 +55,9 @@ namespace KancolleSniffer
                 _decks[i] = new[] {-1, -1, -1, -1, -1, -1};
         }
 
-        public DateTime[] RecoveryTimes
+        public DateTime[] GetRecoveryTimes(int fleet)
         {
-            get { return _recoveryTimes; }
+            return _recoveryTimes[fleet];
         }
 
         public string GetNameById(int id)
@@ -73,8 +71,6 @@ namespace KancolleSniffer
             foreach (var entry in json)
             {
                 var fleet = (int)entry.api_id;
-                if (fleet == 1)
-                    FleetName = (string)entry.api_name;
                 var deck = _decks[fleet - 1];
                 for (var i = 0; i < deck.Length; i++)
                     deck[i] = (int)entry.api_ship[i];
@@ -108,35 +104,35 @@ namespace KancolleSniffer
 
         private void SetRecoveryTime()
         {
-            var cond =
-                (from id in _decks[0] where _shipInfo.ContainsKey(id) select _shipInfo[id].Cond).DefaultIfEmpty(49)
-                    .Min();
-            if (cond < 49 && _recoveryTimes[2] != DateTime.MinValue) // 計時中
+            for (var fleet = 0; fleet < 4; fleet++)
             {
-                // コンディション値から推定される残り時刻と経過時間の差
-                var diff = TimeSpan.FromMinutes((49 - cond + 2) / 3 * 3) - (_recoveryTimes[2] - DateTime.Now);
-                if (diff >= TimeSpan.Zero && diff <= TimeSpan.FromMinutes(3)) // 差が0以上3分以内ならタイマーを更新しない。
-                    return;
+                var cond =
+                    (from id in _decks[fleet] where _shipInfo.ContainsKey(id) select _shipInfo[id].Cond).DefaultIfEmpty(49)
+                        .Min();
+                if (cond < 49 && _recoveryTimes[fleet][2] != DateTime.MinValue) // 計時中
+                {
+                    // コンディション値から推定される残り時刻と経過時間の差
+                    var diff = TimeSpan.FromMinutes((49 - cond + 2) / 3 * 3) - (_recoveryTimes[fleet][2] - DateTime.Now);
+                    if (diff >= TimeSpan.Zero && diff <= TimeSpan.FromMinutes(3)) // 差が0以上3分以内ならタイマーを更新しない。
+                        return;
+                }
+                var thresh = new[] {30, 40, 49};
+                for (var i = 0; i < thresh.Length; i++)
+                    _recoveryTimes[fleet][i] = cond < thresh[i]
+                        ? DateTime.Now.AddMinutes((thresh[i] - cond + 2) / 3 * 3)
+                        : DateTime.MinValue;
             }
-            var thresh = new[] {30, 40, 49};
-            for (var i = 0; i < thresh.Length; i++)
-                _recoveryTimes[i] = cond < thresh[i]
-                    ? DateTime.Now.AddMinutes((thresh[i] - cond + 2) / 3 * 3)
-                    : DateTime.MinValue;
         }
 
-        public ShipStatus[] ShipStatuses
+        public ShipStatus[] GetShipStatuses(int fleet)
         {
-            get
+            return _decks[fleet].Select(id =>
             {
-                return _decks[0].Select(id =>
-                {
-                    ShipStatus status;
-                    if (_shipInfo.TryGetValue(id, out status))
-                        status.Name = _shipMaster.GetSpec(status.ShipId).Name;
-                    return status;
-                }).ToArray();
-            }
+                ShipStatus status;
+                if (_shipInfo.TryGetValue(id, out status))
+                    status.Name = _shipMaster.GetSpec(status.ShipId).Name;
+                return status;
+            }).ToArray();
         }
 
         public ChargeStatus[] ChargeStatuses

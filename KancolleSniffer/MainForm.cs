@@ -32,6 +32,8 @@ namespace KancolleSniffer
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog = new ConfigDialog();
         private readonly int _labelRightDistance;
+        private int _currentFleet;
+        private readonly Label[] _labelCheckFleets;
 
         public MainForm()
         {
@@ -40,6 +42,10 @@ namespace KancolleSniffer
             _wmp.PlayStateChange += new EventHandler(_wmp_PlayStateChange);
             _configDialog.Tag = _config;
             _labelRightDistance = labelHP1.Parent.Width - labelHP1.Right;
+            _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
+            var i = 0;
+            foreach (var label in new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4})
+                label.Tag = i++;
         }
 
         private void FiddlerApplication_AfterSessionComplete(Session oSession)
@@ -162,7 +168,7 @@ namespace KancolleSniffer
 
             for (var i = 0; i < name.Length; i++)
             {
-                var stat = _sniffer.ShipStatuses[i];
+                var stat = _sniffer.GetShipStatuses(_currentFleet)[i];
                 name[i].Text = stat.Name;
                 lv[i].Text = stat.Level.ToString("D");
                 SetHpLavel(hp[i], stat.NowHp, stat.MaxHp);
@@ -260,7 +266,7 @@ namespace KancolleSniffer
         {
             var now = DateTime.Now;
             foreach (var entry in
-                new[] {labelCondTimer1, labelCondTimer2, labelCondTimer3}.Zip(_sniffer.RecoveryTimes,
+                new[] {labelCondTimer1, labelCondTimer2, labelCondTimer3}.Zip(_sniffer.GetRecoveryTimes(_currentFleet),
                     (label, time) => new {label, time}))
                 entry.label.Text = entry.time > now ? (entry.time - now).ToString(@"mm\:ss") : "00:00";
         }
@@ -301,6 +307,19 @@ namespace KancolleSniffer
         {
             if (_wmp.playState == 8) // MediaEnded
                 _wmp.URL = ""; // 再生したファイルが差し替えできなくなるのを防ぐ。
+        }
+
+        private void labelFleet_Click(object sender, EventArgs e)
+        {
+            var fleet = (int)((Label)sender).Tag;
+            if (_currentFleet == fleet)
+                return;
+            _currentFleet = fleet;
+            foreach (var label in _labelCheckFleets)
+                label.Visible = false;
+            _labelCheckFleets[fleet].Visible = true;
+            UpdateShipInfo();
+            UpdateCondTimers();
         }
     }
 }

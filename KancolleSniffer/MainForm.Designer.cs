@@ -54,7 +54,6 @@ namespace KancolleSniffer
             this.label2 = new System.Windows.Forms.Label();
             this.labelNumOfShips = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.labelFleet1 = new System.Windows.Forms.Label();
             this.panelFleet1 = new System.Windows.Forms.Panel();
             this.label21 = new System.Windows.Forms.Label();
             this.labelCondTimer3 = new System.Windows.Forms.Label();
@@ -164,6 +163,15 @@ namespace KancolleSniffer
             this.label25 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
+            this.labelFleet1 = new System.Windows.Forms.Label();
+            this.labelCheckFleet1 = new System.Windows.Forms.Label();
+            this.imageListMisc = new System.Windows.Forms.ImageList(this.components);
+            this.labelCheckFleet4 = new System.Windows.Forms.Label();
+            this.labelFleet4 = new System.Windows.Forms.Label();
+            this.labelCheckFleet3 = new System.Windows.Forms.Label();
+            this.labelFleet3 = new System.Windows.Forms.Label();
+            this.labelCheckFleet2 = new System.Windows.Forms.Label();
+            this.labelFleet2 = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelDock.SuspendLayout();
@@ -241,15 +249,6 @@ namespace KancolleSniffer
             this.label1.Size = new System.Drawing.Size(41, 12);
             this.label1.TabIndex = 0;
             this.label1.Text = "艦娘数";
-            // 
-            // labelFleet1
-            // 
-            this.labelFleet1.AutoSize = true;
-            this.labelFleet1.Location = new System.Drawing.Point(13, 50);
-            this.labelFleet1.Name = "labelFleet1";
-            this.labelFleet1.Size = new System.Drawing.Size(53, 12);
-            this.labelFleet1.TabIndex = 1;
-            this.labelFleet1.Text = "第一艦隊";
             // 
             // panelFleet1
             // 
@@ -1278,12 +1277,104 @@ namespace KancolleSniffer
             this.label23.TabIndex = 0;
             this.label23.Text = "第一艦隊";
             // 
+            // labelFleet1
+            // 
+            this.labelFleet1.AutoSize = true;
+            this.labelFleet1.Location = new System.Drawing.Point(20, 51);
+            this.labelFleet1.Name = "labelFleet1";
+            this.labelFleet1.Size = new System.Drawing.Size(53, 12);
+            this.labelFleet1.TabIndex = 1;
+            this.labelFleet1.Text = "第一艦隊";
+            this.labelFleet1.Click += new System.EventHandler(this.labelFleet_Click);
+            // 
+            // labelCheckFleet1
+            // 
+            this.labelCheckFleet1.ImageIndex = 0;
+            this.labelCheckFleet1.ImageList = this.imageListMisc;
+            this.labelCheckFleet1.Location = new System.Drawing.Point(11, 49);
+            this.labelCheckFleet1.Name = "labelCheckFleet1";
+            this.labelCheckFleet1.Size = new System.Drawing.Size(11, 14);
+            this.labelCheckFleet1.TabIndex = 16;
+            // 
+            // imageListMisc
+            // 
+            this.imageListMisc.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListMisc.ImageStream")));
+            this.imageListMisc.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListMisc.Images.SetKeyName(0, "sankaku.png");
+            // 
+            // labelCheckFleet4
+            // 
+            this.labelCheckFleet4.ImageIndex = 0;
+            this.labelCheckFleet4.ImageList = this.imageListMisc;
+            this.labelCheckFleet4.Location = new System.Drawing.Point(197, 49);
+            this.labelCheckFleet4.Name = "labelCheckFleet4";
+            this.labelCheckFleet4.Size = new System.Drawing.Size(11, 14);
+            this.labelCheckFleet4.TabIndex = 18;
+            this.labelCheckFleet4.Visible = false;
+            // 
+            // labelFleet4
+            // 
+            this.labelFleet4.AutoSize = true;
+            this.labelFleet4.Location = new System.Drawing.Point(206, 51);
+            this.labelFleet4.Name = "labelFleet4";
+            this.labelFleet4.Size = new System.Drawing.Size(53, 12);
+            this.labelFleet4.TabIndex = 17;
+            this.labelFleet4.Text = "第四艦隊";
+            this.labelFleet4.Click += new System.EventHandler(this.labelFleet_Click);
+            // 
+            // labelCheckFleet3
+            // 
+            this.labelCheckFleet3.ImageIndex = 0;
+            this.labelCheckFleet3.ImageList = this.imageListMisc;
+            this.labelCheckFleet3.Location = new System.Drawing.Point(135, 49);
+            this.labelCheckFleet3.Name = "labelCheckFleet3";
+            this.labelCheckFleet3.Size = new System.Drawing.Size(11, 14);
+            this.labelCheckFleet3.TabIndex = 20;
+            this.labelCheckFleet3.Visible = false;
+            // 
+            // labelFleet3
+            // 
+            this.labelFleet3.AutoSize = true;
+            this.labelFleet3.Location = new System.Drawing.Point(144, 51);
+            this.labelFleet3.Name = "labelFleet3";
+            this.labelFleet3.Size = new System.Drawing.Size(53, 12);
+            this.labelFleet3.TabIndex = 19;
+            this.labelFleet3.Text = "第三艦隊";
+            this.labelFleet3.Click += new System.EventHandler(this.labelFleet_Click);
+            // 
+            // labelCheckFleet2
+            // 
+            this.labelCheckFleet2.ImageIndex = 0;
+            this.labelCheckFleet2.ImageList = this.imageListMisc;
+            this.labelCheckFleet2.Location = new System.Drawing.Point(73, 49);
+            this.labelCheckFleet2.Name = "labelCheckFleet2";
+            this.labelCheckFleet2.Size = new System.Drawing.Size(11, 14);
+            this.labelCheckFleet2.TabIndex = 22;
+            this.labelCheckFleet2.Visible = false;
+            // 
+            // labelFleet2
+            // 
+            this.labelFleet2.AutoSize = true;
+            this.labelFleet2.Location = new System.Drawing.Point(82, 51);
+            this.labelFleet2.Name = "labelFleet2";
+            this.labelFleet2.Size = new System.Drawing.Size(53, 12);
+            this.labelFleet2.TabIndex = 21;
+            this.labelFleet2.Text = "第二艦隊";
+            this.labelFleet2.Click += new System.EventHandler(this.labelFleet_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(283, 527);
             this.ContextMenuStrip = this.contextMenuStripToolTip;
+            this.Controls.Add(this.labelCheckFleet2);
+            this.Controls.Add(this.labelFleet2);
+            this.Controls.Add(this.labelCheckFleet3);
+            this.Controls.Add(this.labelFleet3);
+            this.Controls.Add(this.labelCheckFleet4);
+            this.Controls.Add(this.labelFleet4);
+            this.Controls.Add(this.labelCheckFleet1);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.label22);
             this.Controls.Add(this.panel3);
@@ -1332,7 +1423,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelNumOfShips;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label labelFleet1;
         private System.Windows.Forms.Panel panelFleet1;
         private System.Windows.Forms.Label labelShip6;
         private System.Windows.Forms.Label labelShip5;
@@ -1442,6 +1532,15 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFuel2;
         private System.Windows.Forms.ImageList imageListBull;
         private System.Windows.Forms.ImageList imageListFuel;
+        private System.Windows.Forms.Label labelFleet1;
+        private System.Windows.Forms.Label labelCheckFleet1;
+        private System.Windows.Forms.ImageList imageListMisc;
+        private System.Windows.Forms.Label labelCheckFleet4;
+        private System.Windows.Forms.Label labelFleet4;
+        private System.Windows.Forms.Label labelCheckFleet3;
+        private System.Windows.Forms.Label labelFleet3;
+        private System.Windows.Forms.Label labelCheckFleet2;
+        private System.Windows.Forms.Label labelFleet2;
     }
 }
 
