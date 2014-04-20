@@ -565,54 +565,54 @@ namespace KancolleSniffer
             // 
             // labelLv6
             // 
-            this.labelLv6.Location = new System.Drawing.Point(190, 100);
+            this.labelLv6.Location = new System.Drawing.Point(184, 100);
             this.labelLv6.Name = "labelLv6";
-            this.labelLv6.Size = new System.Drawing.Size(17, 12);
+            this.labelLv6.Size = new System.Drawing.Size(23, 12);
             this.labelLv6.TabIndex = 12;
             this.labelLv6.Text = "0";
             this.labelLv6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv5
             // 
-            this.labelLv5.Location = new System.Drawing.Point(190, 84);
+            this.labelLv5.Location = new System.Drawing.Point(184, 84);
             this.labelLv5.Name = "labelLv5";
-            this.labelLv5.Size = new System.Drawing.Size(17, 12);
+            this.labelLv5.Size = new System.Drawing.Size(23, 12);
             this.labelLv5.TabIndex = 11;
             this.labelLv5.Text = "0";
             this.labelLv5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv4
             // 
-            this.labelLv4.Location = new System.Drawing.Point(190, 68);
+            this.labelLv4.Location = new System.Drawing.Point(184, 68);
             this.labelLv4.Name = "labelLv4";
-            this.labelLv4.Size = new System.Drawing.Size(17, 12);
+            this.labelLv4.Size = new System.Drawing.Size(23, 12);
             this.labelLv4.TabIndex = 10;
             this.labelLv4.Text = "0";
             this.labelLv4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv2
             // 
-            this.labelLv2.Location = new System.Drawing.Point(190, 36);
+            this.labelLv2.Location = new System.Drawing.Point(184, 36);
             this.labelLv2.Name = "labelLv2";
-            this.labelLv2.Size = new System.Drawing.Size(17, 12);
+            this.labelLv2.Size = new System.Drawing.Size(23, 12);
             this.labelLv2.TabIndex = 8;
             this.labelLv2.Text = "0";
             this.labelLv2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv3
             // 
-            this.labelLv3.Location = new System.Drawing.Point(190, 52);
+            this.labelLv3.Location = new System.Drawing.Point(184, 52);
             this.labelLv3.Name = "labelLv3";
-            this.labelLv3.Size = new System.Drawing.Size(17, 12);
+            this.labelLv3.Size = new System.Drawing.Size(23, 12);
             this.labelLv3.TabIndex = 9;
             this.labelLv3.Text = "0";
             this.labelLv3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelLv1
             // 
-            this.labelLv1.Location = new System.Drawing.Point(190, 20);
+            this.labelLv1.Location = new System.Drawing.Point(184, 20);
             this.labelLv1.Name = "labelLv1";
-            this.labelLv1.Size = new System.Drawing.Size(17, 12);
+            this.labelLv1.Size = new System.Drawing.Size(23, 12);
             this.labelLv1.TabIndex = 7;
             this.labelLv1.Text = "0";
             this.labelLv1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
