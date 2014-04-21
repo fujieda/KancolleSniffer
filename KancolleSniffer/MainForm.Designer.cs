@@ -172,6 +172,8 @@ namespace KancolleSniffer
             this.labelFleet3 = new System.Windows.Forms.Label();
             this.labelCheckFleet2 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
+            this.labelAirSuperiority = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelDock.SuspendLayout();
@@ -253,6 +255,8 @@ namespace KancolleSniffer
             // panelFleet1
             // 
             this.panelFleet1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelFleet1.Controls.Add(this.labelAirSuperiority);
+            this.panelFleet1.Controls.Add(this.label27);
             this.panelFleet1.Controls.Add(this.label21);
             this.panelFleet1.Controls.Add(this.labelCondTimer3);
             this.panelFleet1.Controls.Add(this.label20);
@@ -301,7 +305,7 @@ namespace KancolleSniffer
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(188, 117);
+            this.label21.Location = new System.Drawing.Point(197, 117);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(28, 12);
             this.label21.TabIndex = 39;
@@ -319,7 +323,7 @@ namespace KancolleSniffer
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(116, 117);
+            this.label20.Location = new System.Drawing.Point(138, 117);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(29, 12);
             this.label20.TabIndex = 36;
@@ -327,7 +331,7 @@ namespace KancolleSniffer
             // 
             // labelCondTimer2
             // 
-            this.labelCondTimer2.Location = new System.Drawing.Point(151, 117);
+            this.labelCondTimer2.Location = new System.Drawing.Point(164, 117);
             this.labelCondTimer2.Name = "labelCondTimer2";
             this.labelCondTimer2.Size = new System.Drawing.Size(31, 12);
             this.labelCondTimer2.TabIndex = 37;
@@ -336,7 +340,7 @@ namespace KancolleSniffer
             // 
             // labelCondTimer1
             // 
-            this.labelCondTimer1.Location = new System.Drawing.Point(79, 117);
+            this.labelCondTimer1.Location = new System.Drawing.Point(105, 117);
             this.labelCondTimer1.Name = "labelCondTimer1";
             this.labelCondTimer1.Size = new System.Drawing.Size(31, 12);
             this.labelCondTimer1.TabIndex = 35;
@@ -346,7 +350,7 @@ namespace KancolleSniffer
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(44, 117);
+            this.label19.Location = new System.Drawing.Point(79, 117);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(29, 12);
             this.label19.TabIndex = 34;
@@ -1362,6 +1366,24 @@ namespace KancolleSniffer
             this.labelFleet2.Text = "第二艦隊";
             this.labelFleet2.Click += new System.EventHandler(this.labelFleet_Click);
             // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(18, 117);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(29, 12);
+            this.label27.TabIndex = 23;
+            this.label27.Text = "制空";
+            // 
+            // labelAirSuperiority
+            // 
+            this.labelAirSuperiority.Location = new System.Drawing.Point(43, 117);
+            this.labelAirSuperiority.Name = "labelAirSuperiority";
+            this.labelAirSuperiority.Size = new System.Drawing.Size(29, 12);
+            this.labelAirSuperiority.TabIndex = 23;
+            this.labelAirSuperiority.Text = "0";
+            this.labelAirSuperiority.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1541,6 +1563,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFleet3;
         private System.Windows.Forms.Label labelCheckFleet2;
         private System.Windows.Forms.Label labelFleet2;
+        private System.Windows.Forms.Label labelAirSuperiority;
+        private System.Windows.Forms.Label label27;
     }
 }
 

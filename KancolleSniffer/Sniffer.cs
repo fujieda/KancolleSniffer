@@ -43,7 +43,7 @@ namespace KancolleSniffer
 
         public Sniffer()
         {
-            _shipInfo = new ShipInfo(_shipMaster);
+            _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
             _dockInfo = new DockInfo(_shipInfo);
         }
 
@@ -159,6 +159,11 @@ namespace KancolleSniffer
         public ChargeStatus[] ChargeStatuses
         {
             get { return _shipInfo.ChargeStatuses; }
+        }
+
+        public int GetAirSuperiority(int fleet)
+        {
+            return _shipInfo.GetAirSuperiority(fleet);
         }
     }
 

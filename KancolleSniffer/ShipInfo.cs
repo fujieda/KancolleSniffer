@@ -32,6 +32,8 @@ namespace KancolleSniffer
         public int Cond { get; set; }
         public int Fuel { get; set; }
         public int Bull { get; set; }
+        public int[] OnSlot { get; set; }
+        public int[] Slot { get; set; }
     }
 
     public struct ChargeStatus
@@ -46,10 +48,12 @@ namespace KancolleSniffer
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
         private readonly DateTime[][] _recoveryTimes = {new DateTime[3], new DateTime[3], new DateTime[3], new DateTime[3]};
         private readonly ShipMaster _shipMaster;
+        private readonly ItemInfo _itemInfo;
 
-        public ShipInfo(ShipMaster shipMaster)
+        public ShipInfo(ShipMaster shipMaster, ItemInfo itemInfo)
         {
             _shipMaster = shipMaster;
+            _itemInfo = itemInfo;
 
             for (var i = 0; i < _decks.Length; i++)
                 _decks[i] = new[] {-1, -1, -1, -1, -1, -1};
@@ -96,7 +100,9 @@ namespace KancolleSniffer
                     NowHp = (int)entry.api_nowhp,
                     Cond = (int)entry.api_cond,
                     Fuel = (int)entry.api_fuel,
-                    Bull = (int)entry.api_bull
+                    Bull = (int)entry.api_bull,
+                    OnSlot = (from num in (dynamic[])entry.api_onslot select (int)num).ToArray(),
+                    Slot = (from num in (dynamic[])entry.api_slot select (int)num).ToArray()
                 };
             }
             SetRecoveryTime();
@@ -168,6 +174,15 @@ namespace KancolleSniffer
             if (ratio > 0)
                 return 3;
             return 4;
+        }
+
+        public int GetAirSuperiority(int fleet)
+        {
+            return (from id in _decks[fleet]
+                where _shipInfo.ContainsKey(id)
+                    let ship = _shipInfo[id]
+                from slot in ship.Slot.Zip(ship.OnSlot, (s, o) => new {slot = s, onslot = o})
+                select (int)Math.Floor(_itemInfo.GetTyKu(slot.slot) * Math.Sqrt(slot.onslot))).Sum();
         }
     }
 }

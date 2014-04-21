@@ -166,9 +166,10 @@ namespace KancolleSniffer
             var cond = new[] {labelCond1, labelCond2, labelCond3, labelCond4, labelCond5, labelCond6};
             var next = new[] {labelNextLv1, labelNextLv2, labelNextLv3, labelNextLv4, labelNextLv5, labelNextLv6};
 
+            var statuses = _sniffer.GetShipStatuses(_currentFleet);
             for (var i = 0; i < name.Length; i++)
             {
-                var stat = _sniffer.GetShipStatuses(_currentFleet)[i];
+                var stat = statuses[i];
                 name[i].Text = stat.Name;
                 lv[i].Text = stat.Level.ToString("D");
                 SetHpLavel(hp[i], stat.NowHp, stat.MaxHp);
@@ -181,6 +182,7 @@ namespace KancolleSniffer
                     SetCondLabel(cond[i], stat.Cond);
                 next[i].Text = stat.ExpToNext.ToString("D");
             }
+            labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
         }
 
         private void UpdateChargeInfo()

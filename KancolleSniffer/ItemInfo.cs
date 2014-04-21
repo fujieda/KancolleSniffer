@@ -1,4 +1,4 @@
-// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -15,11 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+
 namespace KancolleSniffer
 {
     public class ItemInfo
     {
         private int _nowShips;
+        private readonly Dictionary<int,int> _itemSpecs = new Dictionary<int, int>();
 
         public int NowShips
         {
@@ -78,6 +81,17 @@ namespace KancolleSniffer
         public void InspectSlotItem(dynamic json)
         {
             NowItems = ((object[])json).Length;
+            foreach (var entry in json)
+            {
+                if ((int)entry.api_type[0] == 3) // 艦載機
+                    _itemSpecs[(int)entry.api_id] = (int)entry.api_tyku;                
+            }
+        }
+
+        public int GetTyKu(int id)
+        {
+            int tyku;
+            return _itemSpecs.TryGetValue(id, out tyku) ? tyku : 0;
         }
     }
 }
