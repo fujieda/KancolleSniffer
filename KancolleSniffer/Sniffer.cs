@@ -52,6 +52,7 @@ namespace KancolleSniffer
             if (uri.EndsWith("api_get_master/ship"))
             {
                 _shipMaster.InspectShip(json);
+                IsMasterAvailable = true;
                 return UpdateInfo.None;
             }
             if (uri.EndsWith("api_get_member/basic"))
@@ -112,14 +113,14 @@ namespace KancolleSniffer
         public void SaveMaster()
         {
             _missionInfo.SaveNames();
-            _shipMaster.Save();
         }
 
         public void LoadMaster()
         {
             _missionInfo.LoadNames();
-            _shipMaster.Load();
         }
+
+        public bool IsMasterAvailable { get; private set; }
 
         public NameAndTimer[] NDock
         {

@@ -61,6 +61,8 @@ namespace KancolleSniffer
                 return;
             json = json.api_data;
             UpdateInfo update = _sniffer.Sniff(oSession.url, json);
+            if (!_sniffer.IsMasterAvailable)
+                return;
             if ((update & UpdateInfo.Item) != 0)
                 Invoke(new Action(UpdateItemInfo));
             if ((update & UpdateInfo.Mission) != 0)
@@ -124,11 +126,14 @@ namespace KancolleSniffer
 
         private void timerMain_Tick(object sender, EventArgs e)
         {
-            UpdateTimers();
+            if (_sniffer.IsMasterAvailable)
+                UpdateTimers();
         }
 
         private void UpdateItemInfo()
         {
+            if (_sniffer.IsMasterAvailable)
+                labelLogin.Visible = false;
             var item = _sniffer.Item;
             labelNumOfShips.Text = string.Format("{0:D}/{1:D}", item.NowShips, item.MaxShips);
             labelNumOfShips.ForeColor = item.TooManyShips ? Color.Red : Color.Black;
@@ -320,6 +325,8 @@ namespace KancolleSniffer
             foreach (var label in _labelCheckFleets)
                 label.Visible = false;
             _labelCheckFleets[fleet].Visible = true;
+            if (!_sniffer.IsMasterAvailable)
+                return;
             UpdateShipInfo();
             UpdateCondTimers();
         }

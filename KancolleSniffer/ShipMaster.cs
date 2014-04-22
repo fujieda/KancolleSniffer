@@ -16,19 +16,12 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
-using Codeplex.Data;
 
 namespace KancolleSniffer
 {
     public class ShipMaster
     {
         private readonly Dictionary<int, ShipSpec> _shipSpecs = new Dictionary<int, ShipSpec>();
-
-        private readonly string _shipMasterFile =
-            Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "shipmaster.json");
 
         public void InspectShip(dynamic json)
         {
@@ -45,32 +38,6 @@ namespace KancolleSniffer
         {
             ShipSpec spec;
             return _shipSpecs.TryGetValue(id, out spec) ? spec : new ShipSpec {Name = "不明"};
-        }
-
-        public void Load()
-        {
-            try
-            {
-                InspectShip(DynamicJson.Parse(File.ReadAllText(_shipMasterFile)));
-            }
-            catch (FileNotFoundException)
-            {
-            }
-        }
-
-        public void Save()
-        {
-            var ship = from data in _shipSpecs
-                let val = data.Value
-                select
-                    new
-                    {
-                        api_id = data.Key,
-                        api_name = val.Name,
-                        api_fuel_max = val.FuelMax,
-                        api_bull_max = val.BullMax
-                    };
-            File.WriteAllText(_shipMasterFile, DynamicJson.Serialize(ship));
         }
     }
 
