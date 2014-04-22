@@ -72,12 +72,12 @@ namespace KancolleSniffer
                 if (mission[0] == 0)
                 {
                     _missions[id].Name = "";
-                    _missions[id].Timer.EndTime = 0;
+                    _missions[id].Timer.SetEndTime(0);
                     continue;
                 }
                 string name;
                 _missions[id].Name = _missionNames.TryGetValue((int)mission[1], out name) ? name : "不明";
-                _missions[id].Timer.EndTime = mission[2];
+                _missions[id].Timer.SetEndTime(mission[2]);
             }
         }
 

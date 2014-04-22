@@ -191,19 +191,16 @@ namespace KancolleSniffer
             _spare = TimeSpan.FromSeconds(spare);
         }
 
-        public double EndTime
+        public void SetEndTime(double time)
         {
-            set
-            {
-// ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (value != 0)
-                    _endTime = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(value / 1000);
-                else
-                {
-                    _endTime = DateTime.MinValue;
-                    _ringed = false;
-                }
-            }
+            SetEndTime((int)time == 0 ? DateTime.MinValue : new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(time / 1000));
+        }
+
+        public void SetEndTime(DateTime time)
+        {
+            _endTime = time;
+            if (_endTime == DateTime.MinValue)
+                _ringed = false;
         }
 
         public void Update()

@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
+using System;
 using System.Linq;
 
 namespace KancolleSniffer
@@ -41,7 +41,7 @@ namespace KancolleSniffer
             foreach (var entry in json)
             {
                 var id = (int)entry.api_id;
-                _ndocTimers[id - 1].EndTime = (double)entry.api_complete_time;
+                _ndocTimers[id - 1].SetEndTime(entry.api_complete_time);
                 _ndoc[id - 1] = (int)entry.api_ship_id;
             }
         }
@@ -58,7 +58,14 @@ namespace KancolleSniffer
         public void InspectKDock(dynamic json)
         {
             foreach (var entry in json)
-                _kdocTimers[(int)entry.api_id - 1].EndTime = (double)entry.api_complete_time;
+            {
+                var timer = _kdocTimers[(int)entry.api_id - 1];
+                var complete = (double)entry.api_complete_time;
+                if ((int)complete == 0 && (int)entry.api_created_ship_id != 0)
+                    timer.SetEndTime(DateTime.Now.AddHours(-1)); // 過去の時刻を設定する
+                else
+                    timer.SetEndTime(complete);
+            }
         }
 
         public RingTimer[] KDock
