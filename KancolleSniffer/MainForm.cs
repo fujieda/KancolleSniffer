@@ -34,6 +34,7 @@ namespace KancolleSniffer
         private readonly int _labelRightDistance;
         private int _currentFleet;
         private readonly Label[] _labelCheckFleets;
+        private bool _started;
 
         public MainForm()
         {
@@ -57,29 +58,34 @@ namespace KancolleSniffer
                 return;
             response = response.Remove(0, "svdata=".Length);
             var json = DynamicJson.Parse(response);
-            if (!json.IsDefined("api_data"))
+            var request = oSession.GetRequestBodyAsString();
+            var update = (Sniffer.Update)_sniffer.Sniff(oSession.url, request, json);
+            if (update == Sniffer.Update.Start)
+            {
+                Invoke(new Action(() => {labelLogin.Visible = false;}));
+                _started = true;
                 return;
-            json = json.api_data;
-            UpdateInfo update = _sniffer.Sniff(oSession.url, json);
-            if (!_sniffer.IsMasterAvailable)
+            }
+            if (!_started)
                 return;
-            if ((update & UpdateInfo.Item) != 0)
-                Invoke(new Action(UpdateItemInfo));
-            if ((update & UpdateInfo.Mission) != 0)
-                Invoke(new Action(UpdateMissionLabels));
-            if ((update & UpdateInfo.NDock) != 0)
-                Invoke(new Action(UpdateNDocLabels));
-            if ((update & UpdateInfo.Ship) != 0)
-                Invoke(new Action(UpdateShipInfo));
-            if ((update & UpdateInfo.Quest) != 0)
-                Invoke(new Action(UpdateQuestList));
-            if ((update & UpdateInfo.Charge) != 0)
-                Invoke(new Action(UpdateChargeInfo));
+            Action action = null;
+            if ((update & Sniffer.Update.Item) != 0)
+                action += UpdateItemInfo;
+            if ((update & Sniffer.Update.Timer) != 0)
+                action += UpdateTimers;
+            if ((update & Sniffer.Update.NDock) != 0)
+                action += UpdateNDocLabels;
+            if ((update & Sniffer.Update.Mission) != 0)
+                action += UpdateMissionLabels;
+            if ((update & Sniffer.Update.QuestList) != 0)
+                action += UpdateQuestList;
+            if ((update & Sniffer.Update.Ship) != 0)
+                action += UpdateShipInfo;
+            Invoke(action);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            _sniffer.LoadMaster();
             _config.Load();
             ApplyConfig();
             FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
@@ -88,7 +94,6 @@ namespace KancolleSniffer
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             FiddlerApplication.Shutdown();
-            _sniffer.SaveMaster();
             _config.Save();
         }
 
@@ -126,14 +131,12 @@ namespace KancolleSniffer
 
         private void timerMain_Tick(object sender, EventArgs e)
         {
-            if (_sniffer.IsMasterAvailable)
+            if (_started)
                 UpdateTimers();
         }
 
         private void UpdateItemInfo()
         {
-            if (_sniffer.IsMasterAvailable)
-                labelLogin.Visible = false;
             var item = _sniffer.Item;
             labelNumOfShips.Text = string.Format("{0:D}/{1:D}", item.NowShips, item.MaxShips);
             labelNumOfShips.ForeColor = item.TooManyShips ? Color.Red : Color.Black;
@@ -188,6 +191,7 @@ namespace KancolleSniffer
                 next[i].Text = stat.ExpToNext.ToString("D");
             }
             labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
+            UpdateChargeInfo();
         }
 
         private void UpdateChargeInfo()
@@ -325,7 +329,7 @@ namespace KancolleSniffer
             foreach (var label in _labelCheckFleets)
                 label.Visible = false;
             _labelCheckFleets[fleet].Visible = true;
-            if (!_sniffer.IsMasterAvailable)
+            if (!_started)
                 return;
             UpdateShipInfo();
             UpdateCondTimers();

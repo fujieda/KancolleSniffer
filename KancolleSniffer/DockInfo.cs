@@ -51,7 +51,7 @@ namespace KancolleSniffer
             get
             {
                 return _ndoc.Zip(_ndocTimers,
-                    (id, timer) => new NameAndTimer {Name = _shipInfo.GetNameById(id), Timer = timer}).ToArray();
+                    (id, timer) => new NameAndTimer {Name = id == 0 ? "" : _shipInfo[id].Name, Timer = timer}).ToArray();
             }
         }
 

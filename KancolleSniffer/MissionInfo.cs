@@ -16,10 +16,6 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
-using Codeplex.Data;
 
 namespace KancolleSniffer
 {
@@ -28,36 +24,16 @@ namespace KancolleSniffer
         private readonly Dictionary<int, string> _missionNames = new Dictionary<int, string>();
         private readonly NameAndTimer[] _missions = new NameAndTimer[3];
 
-        private readonly string _missionNamesFile =
-            Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "missions.json");
-
         public MissionInfo()
         {
             for (var i = 0; i < _missions.Length; i++)
                 _missions[i] = new NameAndTimer();
         }
 
-        public void InspectMission(dynamic json)
+        public void InspectMaster(dynamic json)
         {
             foreach (var entry in json)
                 _missionNames[(int)entry.api_id] = (string)entry.api_name;
-        }
-
-        public void LoadNames()
-        {
-            try
-            {
-                InspectMission(DynamicJson.Parse(File.ReadAllText(_missionNamesFile)));
-            }
-            catch (FileNotFoundException)
-            {
-            }
-        }
-
-        public void SaveNames()
-        {
-            var ship = from data in _missionNames select new {api_id = data.Key, api_name = data.Value};
-            File.WriteAllText(_missionNamesFile, DynamicJson.Serialize(ship));
         }
 
         public void InspectDeck(dynamic json)

@@ -23,21 +23,26 @@ namespace KancolleSniffer
     {
         private readonly Dictionary<int, ShipSpec> _shipSpecs = new Dictionary<int, ShipSpec>();
 
-        public void InspectShip(dynamic json)
+        public void Inspect(dynamic json)
         {
             foreach (var entry in json)
+            {
                 _shipSpecs[(int)entry.api_id] = new ShipSpec
                 {
                     Name = entry.api_name,
                     FuelMax = (int)entry.api_fuel_max,
                     BullMax = (int)entry.api_bull_max
-                };
+                };                
+            }
         }
 
-        public ShipSpec GetSpec(int id)
+        public ShipSpec this[int id]
         {
-            ShipSpec spec;
-            return _shipSpecs.TryGetValue(id, out spec) ? spec : new ShipSpec {Name = "不明"};
+            get
+            {
+                ShipSpec spec;
+                return _shipSpecs.TryGetValue(id, out spec) ? spec : new ShipSpec { Name = "不明" };                
+            }
         }
     }
 

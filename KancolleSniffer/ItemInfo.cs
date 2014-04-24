@@ -23,6 +23,14 @@ namespace KancolleSniffer
     {
         private int _nowShips;
         private readonly Dictionary<int,int> _itemSpecs = new Dictionary<int, int>();
+        private readonly Dictionary<int, int> _itemIds = new Dictionary<int, int>();
+
+        public int MaxShips { get; private set; }
+        public int MarginShips { get; set; }
+        public bool NeedRing { get; set; }
+        public int NowItems { get; set; }
+        public int MaxItems { get; private set; }
+        public int NumBuckets { get; private set; }
 
         public int NowShips
         {
@@ -35,15 +43,9 @@ namespace KancolleSniffer
                     NeedRing = _nowShips < limit && value >= limit;
                 }
                 _nowShips = value;
+
             }
         }
-
-        public int MaxShips { get; set; }
-        public int MarginShips { get; set; }
-        public bool NeedRing { get; set; }
-        public int NowItems { get; set; }
-        public int MaxItems { get; set; }
-        public int NumBuckets { get; set; }
 
         public bool TooManyShips
         {
@@ -60,13 +62,6 @@ namespace KancolleSniffer
             MaxShips = (int)json.api_max_chara;
             MaxItems = (int)json.api_max_slotitem;
         }
-        public void InspectRecord(dynamic json)
-        {
-            NowShips = (int)json.api_ship[0];
-            MaxShips = (int)json.api_ship[1];
-            NowItems = (int)json.api_slotitem[0];
-            MaxItems = (int)json.api_slotitem[1];
-        }
 
         public void InspectMaterial(dynamic json)
         {
@@ -78,9 +73,8 @@ namespace KancolleSniffer
             }
         }
 
-        public void InspectSlotItem(dynamic json)
+        public void InspectMaster(dynamic json)
         {
-            NowItems = ((object[])json).Length;
             foreach (var entry in json)
             {
                 if ((int)entry.api_type[0] == 3) // 艦載機
@@ -88,10 +82,43 @@ namespace KancolleSniffer
             }
         }
 
+        public void InspectSlotItem(dynamic json, bool full = false)
+        {
+            if (!json.IsArray)
+                json = new[] {json};
+            if (full)
+                NowItems = ((object[])json).Length;
+            foreach (var entry in json)
+                _itemIds[(int)entry.api_id] = (int)entry.api_slotitem_id;
+        }
+
+        public void InspectShip(dynamic json)
+        {
+            NowShips = ((object[])json).Length;
+        }
+
+        public void InspectCreateItem(dynamic json)
+        {
+            if (!json.IsDefined("api_slot_item"))
+                return;
+            InspectSlotItem(json.api_slot_item);
+            NowItems++;
+
+        }
+
+        public void InspectGetShip(dynamic json)
+        {
+            InspectSlotItem(json.api_slotitem);
+            NowItems += ((object[])json.api_slotitem).Length;
+            NowShips += 1;
+        }
+
         public int GetTyKu(int id)
         {
+            int item;
             int tyku;
-            return _itemSpecs.TryGetValue(id, out tyku) ? tyku : 0;
+            return _itemIds.TryGetValue(id, out item) ? _itemSpecs.TryGetValue(item, out tyku) ? tyku : 0 : 0;
         }
+
     }
 }

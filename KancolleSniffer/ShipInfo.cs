@@ -18,10 +18,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 
 namespace KancolleSniffer
 {
-    public struct ShipStatus
+    public class ShipStatus
     {
         public int ShipId { get; set; }
         public string Name { get; set; }
@@ -64,12 +65,6 @@ namespace KancolleSniffer
             return _recoveryTimes[fleet];
         }
 
-        public string GetNameById(int id)
-        {
-            ShipStatus ship;
-            return _shipInfo.TryGetValue(id, out ship) ? _shipMaster.GetSpec(ship.ShipId).Name : "";
-        }
-
         public void InspectDeck(dynamic json)
         {
             foreach (var entry in json)
@@ -81,19 +76,16 @@ namespace KancolleSniffer
             }
         }
 
-        public int NumShips
+        public void InspectShip(dynamic json)
         {
-            get { return _shipInfo.Count; }
-        }
-
-        public void InspectShipInfo(dynamic json)
-        {
-            _shipInfo.Clear();
+            if (!json.IsArray)
+                json = new[] {json};
             foreach (var entry in json)
             {
                 _shipInfo[(int)entry.api_id] = new ShipStatus
                 {
                     ShipId = (int)entry.api_ship_id,
+                    Name = _shipMaster[(int)entry.api_ship_id].Name,
                     Level = (int)entry.api_lv,
                     ExpToNext = (int)entry.api_exp[1],
                     MaxHp = (int)entry.api_maxhp,
@@ -106,6 +98,77 @@ namespace KancolleSniffer
                 };
             }
             SetRecoveryTime();
+        }
+
+        public void InspectCharge(dynamic json)
+        {
+            foreach (var entry in json.api_ship)
+            {
+                var status = _shipInfo[(int)entry.api_id];
+                status.Bull = (int)entry.api_bull;
+                status.Fuel = (int)entry.api_fuel;
+                status.OnSlot = (from num in (dynamic[])entry.api_onslot select (int)num).ToArray();
+            }
+        }
+
+        public void InspectChange(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var fleet = int.Parse(values["api_id"]) - 1;
+            var idx = int.Parse(values["api_ship_idx"]);
+            var ship = int.Parse(values["api_ship_id"]);
+            if (idx != -1)
+            {
+                if (ship != -1)
+                {
+                    var prev = _decks[fleet][idx];
+                    foreach (var deck in _decks)
+                        for (var i = 0; i < deck.Length; i++)
+                            if (deck[i] == ship)
+                            {
+                                deck[i] = prev;
+                                goto last;
+                            }
+                }
+            last:
+                _decks[fleet][idx] = ship;
+
+            }
+            else
+            {
+                var deck = _decks[fleet];
+                for (var i = 1; i < deck.Length; i++)
+                    deck[i] = -1;
+            }
+        }
+
+        public void InspectPowerup(string request, dynamic json)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var ships = values["api_id_items"].Split(',');
+            _itemInfo.NowShips -= ships.Length;
+            _itemInfo.NowItems -= (from s in ships select SlotItemCount(int.Parse(s))).Sum();
+            InspectDeck(json.api_deck);
+            InspectShip(json.api_ship);
+        }
+
+        public void InspectDestroyShip(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var id = int.Parse(values["api_ship_id"]);
+            _itemInfo.NowShips -= 1;
+            _itemInfo.NowItems -= SlotItemCount(id);
+            foreach (var deck in _decks)
+            {
+                for (var i = 0; i < deck.Length; i++)
+                    if (deck[i] == id)
+                        deck[i] = -1;
+            }
+        }
+
+        private int SlotItemCount(int id)
+        {
+            return _shipInfo[id].Slot.Count(item => item != -1);
         }
 
         private void SetRecoveryTime()
@@ -132,13 +195,12 @@ namespace KancolleSniffer
 
         public ShipStatus[] GetShipStatuses(int fleet)
         {
-            return _decks[fleet].Select(id =>
-            {
-                ShipStatus status;
-                if (_shipInfo.TryGetValue(id, out status))
-                    status.Name = _shipMaster.GetSpec(status.ShipId).Name;
-                return status;
-            }).ToArray();
+            return _decks[fleet].Select(id => (id == -1) ? new ShipStatus() : _shipInfo[id]).ToArray();
+        }
+
+        public ShipStatus this[int idx]
+        {
+            get { return _shipInfo[idx]; }
         }
 
         public ChargeStatus[] ChargeStatuses
@@ -153,7 +215,7 @@ namespace KancolleSniffer
                         ShipStatus status;
                         if (!_shipInfo.TryGetValue(id, out status))
                             continue;
-                        var spec = _shipMaster.GetSpec(status.ShipId);
+                        var spec = _shipMaster[status.ShipId];
                         result.Fuel = Math.Max(CalcChargeState(status.Fuel, spec.FuelMax), result.Fuel);
                         result.Bull = Math.Max(CalcChargeState(status.Bull, spec.BullMax), result.Bull);
                     }

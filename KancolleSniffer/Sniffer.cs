@@ -19,21 +19,9 @@ using System;
 
 namespace KancolleSniffer
 {
-    [Flags]
-    public enum UpdateInfo
-    {
-        None = 0,
-        Item = 1,
-        Ship = 2,
-        Timer = 4,
-        Quest = 8,
-        NDock = 16,
-        Mission = 32,
-        Charge = 64
-    }
-
     public class Sniffer
     {
+        private bool _start;
         private readonly ShipMaster _shipMaster = new ShipMaster();
         private readonly ItemInfo _itemInfo = new ItemInfo();
         private readonly QuestInfo _questInfo = new QuestInfo();
@@ -41,86 +29,135 @@ namespace KancolleSniffer
         private readonly ShipInfo _shipInfo;
         private readonly DockInfo _dockInfo;
 
+        [Flags]
+        public enum Update
+        {
+            None = 0,
+            Start = 1,
+            Item = 2,
+            Ship = 4,
+            Timer = 8,
+            NDock = 16,
+            Mission = 32,
+            QuestList = 64,
+            All = 127
+        }
+
         public Sniffer()
         {
             _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
             _dockInfo = new DockInfo(_shipInfo);
         }
 
-        public UpdateInfo Sniff(string uri, dynamic json)
+        public Update Sniff(string url, string request, dynamic json)
         {
-            if (uri.EndsWith("api_get_master/ship"))
-            {
-                _shipMaster.InspectShip(json);
-                IsMasterAvailable = true;
-                return UpdateInfo.None;
-            }
-            if (uri.EndsWith("api_get_member/basic"))
-            {
-                _itemInfo.InspectBasic(json);
-                return UpdateInfo.Item;
-            }
-            if (uri.EndsWith("api_get_member/record"))
-            {
-                _itemInfo.InspectRecord(json);
-                return UpdateInfo.Item;
-            }
-            if (uri.EndsWith("api_get_member/material"))
-            {
-                _itemInfo.InspectMaterial(json);
-                return UpdateInfo.Item;
-            }
-            if (uri.EndsWith("api_get_member/slotitem"))
-            {
-                _itemInfo.InspectSlotItem(json);
-                return UpdateInfo.Item;
-            }
-            if (uri.EndsWith("api_get_member/questlist"))
-            {
-                _questInfo.Inspect(json);
-                return UpdateInfo.Quest;
-            }
-            if (uri.EndsWith("api_get_member/ndock"))
-            {
-                _dockInfo.InspectNDock(json);
-                return UpdateInfo.NDock | UpdateInfo.Timer;
-            }
-            if (uri.EndsWith("api_get_member/kdock"))
-            {
-                _dockInfo.InspectKDock(json);
-                return UpdateInfo.Timer;
-            }
-            if (uri.EndsWith("api_get_master/mission"))
-            {
-                _missionInfo.InspectMission(json);
-                return UpdateInfo.Mission;
-            }
-            if (uri.Contains("api_get_member/deck"))
-            {
-                _missionInfo.InspectDeck(json);
-                _shipInfo.InspectDeck(json);
-                return UpdateInfo.Mission | UpdateInfo.Ship | UpdateInfo.Charge;
-            }
-            if (uri.EndsWith("api_get_member/ship2") || uri.EndsWith("api_get_member/ship3"))
-            {
-                _shipInfo.InspectShipInfo(uri.EndsWith("ship3") ? json.api_ship_data : json);
-                _itemInfo.NowShips = _shipInfo.NumShips;
-                return UpdateInfo.Ship | UpdateInfo.Item | UpdateInfo.Timer | UpdateInfo.NDock | UpdateInfo.Charge;
-            }
-            return UpdateInfo.None;
-        }
+            var data = json.IsDefined("api_data") ? json.api_data : new object();
 
-        public void SaveMaster()
-        {
-            _missionInfo.SaveNames();
+            if (url.EndsWith("api_start2"))
+            {
+                _start = true;
+                _shipMaster.Inspect(data.api_mst_ship);
+                _missionInfo.InspectMaster(data.api_mst_mission);
+                _itemInfo.InspectMaster(data.api_mst_slotitem);
+                return Update.Start;
+            }
+            if (!_start)
+                return Update.None;
+            if (url.EndsWith("api_port/port"))
+            {
+                _itemInfo.InspectBasic(data.api_basic);
+                _itemInfo.InspectMaterial(data.api_material);
+                _itemInfo.InspectShip(data.api_ship);
+                _shipInfo.InspectShip(data.api_ship);
+                _shipInfo.InspectDeck(data.api_deck_port);
+                _missionInfo.InspectDeck(data.api_deck_port);
+                _dockInfo.InspectNDock(data.api_ndock);
+                return Update.All;
+            }
+            if (url.EndsWith("api_get_member/basic"))
+            {
+                _itemInfo.InspectBasic(data);
+                return Update.None;
+            }
+            if (url.EndsWith("api_get_member/slot_item"))
+            {
+                _itemInfo.InspectSlotItem(data, true);
+                return Update.None;
+            }
+            if (url.EndsWith("api_get_member/kdock"))
+            {
+                _dockInfo.InspectKDock(data);
+                return Update.Timer;
+            }
+            if (url.EndsWith("api_get_member/ndock"))
+            {
+                _dockInfo.InspectNDock(data);
+                return Update.NDock | Update.Timer;
+            }
+            if (url.EndsWith("api_req_hensei/change"))
+            {
+                _shipInfo.InspectChange(request);
+                return Update.Ship;
+            }
+            if (url.EndsWith("api_get_member/questlist"))
+            {
+                _questInfo.Inspect(data);
+                return Update.QuestList;
+            }
+            if (url.EndsWith("api_get_member/deck"))
+            {
+                _missionInfo.InspectDeck(data);
+                return Update.Mission | Update.Timer;
+            }
+            if (url.EndsWith("api_get_member/ship2"))
+            {
+                // ここだけjsonなので注意
+                _shipInfo.InspectShip(json.api_data);
+                _itemInfo.InspectShip(json.api_data);
+                _shipInfo.InspectDeck(json.api_data_deck);
+                return Update.Ship | Update.Item;
+            }
+            if (url.EndsWith("api_get_member/ship3"))
+            {
+                // 一隻分のデータしか来ないので艦娘数は数えない
+                _shipInfo.InspectDeck(data.api_deck_data);
+                _shipInfo.InspectShip(data.api_ship_data);
+                return Update.Ship;
+            }
+            if (url.EndsWith("api_req_hokyu/charge"))
+            {
+                _shipInfo.InspectCharge(data);
+                return Update.Ship;
+            }
+            if (url.EndsWith("api_req_kousyou/createitem"))
+            {
+                _itemInfo.InspectCreateItem(data);
+                return Update.Item;
+            }
+            if (url.EndsWith("api_req_kousyou/getship"))
+            {
+                _itemInfo.InspectGetShip(data);
+                _shipInfo.InspectShip(data.api_ship);
+                _dockInfo.InspectKDock(data.api_kdock);
+                return Update.Item | Update.Timer;
+            }
+            if (url.EndsWith("api_req_kousyou/destroyship"))
+            {
+                _shipInfo.InspectDestroyShip(request);
+                return Update.Item | Update.Ship;
+            }
+            if (url.EndsWith("api_req_kousyou/destroyitem2"))
+            {
+                _itemInfo.NowItems -= 1;
+                return Update.Item;
+            }
+            if (url.EndsWith("api_req_kaisou/powerup"))
+            {
+                _shipInfo.InspectPowerup(request, data);
+                return Update.Item | Update.Ship;
+            }
+            return Update.None;
         }
-
-        public void LoadMaster()
-        {
-            _missionInfo.LoadNames();
-        }
-
-        public bool IsMasterAvailable { get; private set; }
 
         public NameAndTimer[] NDock
         {
@@ -193,7 +230,9 @@ namespace KancolleSniffer
 
         public void SetEndTime(double time)
         {
-            SetEndTime((int)time == 0 ? DateTime.MinValue : new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(time / 1000));
+            SetEndTime((int)time == 0
+                ? DateTime.MinValue
+                : new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(time / 1000));
         }
 
         public void SetEndTime(DateTime time)
