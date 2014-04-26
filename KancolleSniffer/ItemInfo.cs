@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.Web;
 
 namespace KancolleSniffer
 {
@@ -111,6 +112,12 @@ namespace KancolleSniffer
             InspectSlotItem(json.api_slotitem);
             NowItems += ((object[])json.api_slotitem).Length;
             NowShips += 1;
+        }
+
+        public void InspectDestroyItem(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            NowItems -= values["api_slotitem_ids"].Split(',').Length;
         }
 
         public int GetTyKu(int id)

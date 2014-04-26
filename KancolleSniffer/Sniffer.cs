@@ -148,7 +148,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_kousyou/destroyitem2"))
             {
-                _itemInfo.NowItems -= 1;
+                _itemInfo.InspectDestroyItem(request);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_kaisou/powerup"))
