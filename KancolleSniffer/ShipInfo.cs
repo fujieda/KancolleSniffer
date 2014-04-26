@@ -117,9 +117,22 @@ namespace KancolleSniffer
             var fleet = int.Parse(values["api_id"]) - 1;
             var idx = int.Parse(values["api_ship_idx"]);
             var ship = int.Parse(values["api_ship_id"]);
-            if (idx != -1)
+            if (idx == -1)
             {
-                if (ship != -1)
+                var deck = _decks[fleet];
+                for (var i = 1; i < deck.Length; i++)
+                    deck[i] = -1;                
+            }
+            else
+            {
+                if (ship == -1)
+                {
+                    var deck = _decks[fleet];
+                    for (var i = idx; i < deck.Length - 1; i++)
+                        deck[i] = deck[i + 1];
+                    deck[deck.Length - 1] = -1;
+                }
+                else
                 {
                     var prev = _decks[fleet][idx];
                     foreach (var deck in _decks)
@@ -129,16 +142,9 @@ namespace KancolleSniffer
                                 deck[i] = prev;
                                 goto last;
                             }
+                last:
+                    _decks[fleet][idx] = ship;
                 }
-            last:
-                _decks[fleet][idx] = ship;
-
-            }
-            else
-            {
-                var deck = _decks[fleet];
-                for (var i = 1; i < deck.Length; i++)
-                    deck[i] = -1;
             }
         }
 
