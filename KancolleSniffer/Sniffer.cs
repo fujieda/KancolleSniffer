@@ -156,6 +156,11 @@ namespace KancolleSniffer
                 _shipInfo.InspectPowerup(request, data);
                 return Update.Item | Update.Ship;
             }
+            if (url.EndsWith("api_req_nyukyo/start"))
+            {
+                _shipInfo.InspectNyukyo(request);
+                return Update.Item | Update.Ship;
+            }
             return Update.None;
         }
 

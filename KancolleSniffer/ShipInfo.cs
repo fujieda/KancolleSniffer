@@ -166,6 +166,15 @@ namespace KancolleSniffer
             }
         }
 
+        public void InspectNyukyo(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var id = int.Parse(values["api_ship_id"]);
+            if (int.Parse(values["api_highspeed"]) == 0)
+                return;
+            _shipInfo[id].NowHp = _shipInfo[id].MaxHp;
+        }
+
         private int SlotItemCount(int id)
         {
             return _shipInfo[id].Slot.Count(item => item != -1);
