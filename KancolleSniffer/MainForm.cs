@@ -266,10 +266,7 @@ namespace KancolleSniffer
 
         private void SetTimerLabel(Label label, RingTimer timer)
         {
-            if (timer.NeedRing)
-                label.ForeColor = Color.Red;
-            if (!timer.IsSet)
-                label.ForeColor = Color.Black;
+            label.ForeColor = timer.IsFinished ? Color.Red : Color.Black;
             label.Text = timer.ToString();
         }
 
