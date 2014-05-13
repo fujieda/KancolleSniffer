@@ -178,7 +178,11 @@ namespace KancolleSniffer
             var id = int.Parse(values["api_ship_id"]);
             if (int.Parse(values["api_highspeed"]) == 0)
                 return;
-            _shipInfo[id].NowHp = _shipInfo[id].MaxHp;
+            var ship = _shipInfo[id];
+            ship.NowHp = ship.MaxHp;
+            if (ship.Cond < 40)
+                ship.Cond = 40;
+            _itemInfo.NumBuckets--;
         }
 
         private int SlotItemCount(int id)

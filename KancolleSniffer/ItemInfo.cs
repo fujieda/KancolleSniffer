@@ -31,7 +31,7 @@ namespace KancolleSniffer
         public bool NeedRing { get; set; }
         public int NowItems { get; set; }
         public int MaxItems { get; private set; }
-        public int NumBuckets { get; private set; }
+        public int NumBuckets { get; set; }
 
         public int NowShips
         {
