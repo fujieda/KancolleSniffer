@@ -119,7 +119,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_get_member/ship3"))
             {
-                // 一隻分のデータしか来ないので艦娘数は数えない
+                // 一隻分のデータしか来ないことがあるので艦娘数は数えない
                 _shipInfo.InspectDeck(data.api_deck_data);
                 _shipInfo.InspectShip(data.api_ship_data);
                 return Update.Ship;

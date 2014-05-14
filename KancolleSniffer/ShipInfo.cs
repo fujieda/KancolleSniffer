@@ -168,7 +168,11 @@ namespace KancolleSniffer
             {
                 for (var i = 0; i < deck.Length; i++)
                     if (deck[i] == id)
-                        deck[i] = -1;
+                    {
+                        for (var j = i; j < deck.Length - 1; j++)
+                            deck[j] = deck[j + 1];
+                        deck[deck.Length - 1] = -1;
+                    }
             }
         }
 
