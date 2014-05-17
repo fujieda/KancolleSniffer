@@ -67,9 +67,7 @@ namespace KancolleSniffer
             {
                 _itemInfo.InspectBasic(data.api_basic);
                 _itemInfo.InspectMaterial(data.api_material);
-                _itemInfo.InspectShip(data.api_ship);
-                _shipInfo.InspectShip(data.api_ship);
-                _shipInfo.InspectDeck(data.api_deck_port);
+                _shipInfo.InspectShip(data);
                 _missionInfo.InspectDeck(data.api_deck_port);
                 _dockInfo.InspectNDock(data.api_ndock);
                 return Update.All;
@@ -112,16 +110,12 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/ship2"))
             {
                 // ここだけjsonなので注意
-                _shipInfo.InspectShip(json.api_data);
-                _itemInfo.InspectShip(json.api_data);
-                _shipInfo.InspectDeck(json.api_data_deck);
+                _shipInfo.InspectShip(json);
                 return Update.Ship | Update.Item;
             }
             if (url.EndsWith("api_get_member/ship3"))
             {
-                // 一隻分のデータしか来ないことがあるので艦娘数は数えない
-                _shipInfo.InspectDeck(data.api_deck_data);
-                _shipInfo.InspectShip(data.api_ship_data);
+                _shipInfo.InspectShip(data);
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_hokyu/charge"))
@@ -137,7 +131,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_kousyou/getship"))
             {
                 _itemInfo.InspectGetShip(data);
-                _shipInfo.InspectShip(data.api_ship);
+                _shipInfo.InspectShip(data);
                 _dockInfo.InspectKDock(data.api_kdock);
                 return Update.Item | Update.Timer;
             }

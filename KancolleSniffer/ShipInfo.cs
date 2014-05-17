@@ -65,7 +65,33 @@ namespace KancolleSniffer
             return _recoveryTimes[fleet];
         }
 
-        public void InspectDeck(dynamic json)
+        public void InspectShip(dynamic json)
+        {
+            if (json.api_deck_port()) // port
+            {
+                InspectShipData(json.api_ship);
+                InspectDeck(json.api_deck_port);
+                _itemInfo.NowShips = ((object[])json.api_ship).Length;
+            }
+            else if (json.api_data()) // ship2
+            {
+                InspectShipData(json.api_data);
+                InspectDeck(json.api_data_deck);
+                _itemInfo.NowShips = ((object[])json.api_data).Length;
+            }
+            else if (json.api_ship_data()) // ship3
+            {
+                // 一隻分のデータしか来ないことがあるので艦娘数を数えない
+                InspectShipData(json.api_ship_data);
+                InspectDeck(json.api_deck_data);
+            }
+            else if (json.api_ship()) // getship
+            {
+                InspectShipData(new[] {json.api_ship});
+            }
+        }
+
+        private void InspectDeck(dynamic json)
         {
             foreach (var entry in json)
             {
@@ -76,7 +102,7 @@ namespace KancolleSniffer
             }
         }
 
-        public void InspectShip(dynamic json)
+        private void InspectShipData(dynamic json)
         {
             if (!json.IsArray)
                 json = new[] {json};

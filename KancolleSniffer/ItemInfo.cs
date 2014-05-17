@@ -44,7 +44,6 @@ namespace KancolleSniffer
                     NeedRing = _nowShips < limit && value >= limit;
                 }
                 _nowShips = value;
-
             }
         }
 
@@ -93,18 +92,12 @@ namespace KancolleSniffer
                 _itemIds[(int)entry.api_id] = (int)entry.api_slotitem_id;
         }
 
-        public void InspectShip(dynamic json)
-        {
-            NowShips = ((object[])json).Length;
-        }
-
         public void InspectCreateItem(dynamic json)
         {
             if (!json.IsDefined("api_slot_item"))
                 return;
             InspectSlotItem(json.api_slot_item);
             NowItems++;
-
         }
 
         public void InspectGetShip(dynamic json)
