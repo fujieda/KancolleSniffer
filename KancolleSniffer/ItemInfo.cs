@@ -20,10 +20,16 @@ using System.Web;
 
 namespace KancolleSniffer
 {
+    public struct ItemSpec
+    {
+        public string Name;
+        public int TyKu;
+    }
+
     public class ItemInfo
     {
         private int _nowShips;
-        private readonly Dictionary<int,int> _itemSpecs = new Dictionary<int, int>();
+        private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
         private readonly Dictionary<int, int> _itemIds = new Dictionary<int, int>();
 
         public int MaxShips { get; private set; }
@@ -77,8 +83,11 @@ namespace KancolleSniffer
         {
             foreach (var entry in json)
             {
-                if ((int)entry.api_type[0] == 3) // 艦載機
-                    _itemSpecs[(int)entry.api_id] = (int)entry.api_tyku;                
+                _itemSpecs[(int)entry.api_id] = new ItemSpec
+                {
+                    Name = (string)entry.api_name,
+                    TyKu = (int)entry.api_type[0] == 3 ? (int)entry.api_tyku : 0 // 艦載機のみ
+                };
             }
         }
 
@@ -113,12 +122,16 @@ namespace KancolleSniffer
             NowItems -= values["api_slotitem_ids"].Split(',').Length;
         }
 
-        public int GetTyKu(int id)
+        public ItemSpec this[int id]
         {
-            int item;
-            int tyku;
-            return _itemIds.TryGetValue(id, out item) ? _itemSpecs.TryGetValue(item, out tyku) ? tyku : 0 : 0;
+            get
+            {
+                int itemId;
+                ItemSpec spec;
+                if (_itemIds.TryGetValue(id, out itemId) && _itemSpecs.TryGetValue(itemId, out spec))
+                    return spec;
+                return new ItemSpec();
+            }
         }
-
     }
 }

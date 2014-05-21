@@ -62,7 +62,7 @@ namespace KancolleSniffer
             var update = (Sniffer.Update)_sniffer.Sniff(oSession.url, request, json);
             if (update == Sniffer.Update.Start)
             {
-                Invoke(new Action(() => {labelLogin.Visible = false;}));
+                Invoke(new Action(() => { labelLogin.Visible = false; }));
                 _started = true;
                 return;
             }
@@ -180,8 +180,8 @@ namespace KancolleSniffer
                 var stat = statuses[i];
                 name[i].Text = stat.Name;
                 lv[i].Text = stat.Level.ToString("D");
-                SetHpLavel(hp[i], stat.NowHp, stat.MaxHp);
-                if (stat.Name == null)
+                SetHpLavel(hp[i], stat);
+                if (stat.MaxHp == 0)
                 {
                     cond[i].Text = "0";
                     cond[i].BackColor = DefaultBackColor;
@@ -192,6 +192,8 @@ namespace KancolleSniffer
             }
             labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
             UpdateChargeInfo();
+            UpdateCondTimers();
+            UpdateAkashiTimer();
         }
 
         private void UpdateChargeInfo()
@@ -207,13 +209,11 @@ namespace KancolleSniffer
             }
         }
 
-        private void SetHpLavel(Label label, int now, int max)
+        private void SetHpLavel(Label label, ShipStatus status)
         {
-            label.Text = string.Format("{0:D}/{1:D}", now, max);
-            var damage = max == 0 ? 1 : (double)now / max;
-            label.BackColor = damage > 0.75
-                ? DefaultBackColor
-                : damage > 0.5 ? Color.FromArgb(255, 240, 240, 100) : damage > 0.25 ? Color.Orange : Color.Red;
+            var colors = new[] {DefaultBackColor, Color.FromArgb(255, 240, 240, 100), Color.Orange, Color.Red};
+            label.Text = string.Format("{0:D}/{1:D}", status.NowHp, status.MaxHp);
+            label.BackColor = colors[status.DamageLevel];
         }
 
         private void SetCondLabel(Label label, int cond)
@@ -262,6 +262,7 @@ namespace KancolleSniffer
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
+            UpdateAkashiTimer();
         }
 
         private void SetTimerLabel(Label label, RingTimer timer)
@@ -277,6 +278,24 @@ namespace KancolleSniffer
                 new[] {labelCondTimer1, labelCondTimer2, labelCondTimer3}.Zip(_sniffer.GetRecoveryTimes(_currentFleet),
                     (label, time) => new {label, time}))
                 entry.label.Text = entry.time > now ? (entry.time - now).ToString(@"mm\:ss") : "00:00";
+        }
+
+        private void UpdateAkashiTimer()
+        {
+            if (!_sniffer.GetShipStatuses(_currentFleet)[0].Name.StartsWith("明石"))
+            {
+                labelAkashiTimer.Visible = false;
+                return;
+            }
+            labelAkashiTimer.Visible = true;
+            var start = _sniffer.GetAkashiStartTime(_currentFleet);
+            if (start == DateTime.MinValue)
+            {
+                labelAkashiTimer.Text = "00:00:00";
+                return;
+            }
+            var span = DateTime.Now - start;
+            labelAkashiTimer.Text = span.Days == 0 ? span.ToString(@"hh\:mm\:ss") : span.ToString(@"d\.hh\:mm");
         }
 
         private void UpdateQuestList()
@@ -329,7 +348,6 @@ namespace KancolleSniffer
             if (!_started)
                 return;
             UpdateShipInfo();
-            UpdateCondTimers();
         }
     }
 }

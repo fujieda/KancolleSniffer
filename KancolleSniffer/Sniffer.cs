@@ -28,6 +28,7 @@ namespace KancolleSniffer
         private readonly MissionInfo _missionInfo = new MissionInfo();
         private readonly ShipInfo _shipInfo;
         private readonly DockInfo _dockInfo;
+        private readonly AkashiTimer _akashiTimer;
 
         [Flags]
         public enum Update
@@ -47,6 +48,7 @@ namespace KancolleSniffer
         {
             _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
             _dockInfo = new DockInfo(_shipInfo);
+            _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo, _missionInfo);
         }
 
         public Update Sniff(string url, string request, dynamic json)
@@ -70,6 +72,7 @@ namespace KancolleSniffer
                 _shipInfo.InspectShip(data);
                 _missionInfo.InspectDeck(data.api_deck_port);
                 _dockInfo.InspectNDock(data.api_ndock);
+                _akashiTimer.SetTimer(true);
                 return Update.All;
             }
             if (url.EndsWith("api_get_member/basic"))
@@ -90,11 +93,13 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/ndock"))
             {
                 _dockInfo.InspectNDock(data);
+                _akashiTimer.SetTimer();
                 return Update.NDock | Update.Timer;
             }
             if (url.EndsWith("api_req_hensei/change"))
             {
                 _shipInfo.InspectChange(request);
+                _akashiTimer.SetTimer();
                 return Update.Ship;
             }
             if (url.EndsWith("api_get_member/questlist"))
@@ -105,17 +110,20 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/deck"))
             {
                 _missionInfo.InspectDeck(data);
+                _akashiTimer.SetTimer();
                 return Update.Mission | Update.Timer;
             }
             if (url.EndsWith("api_get_member/ship2"))
             {
                 // ここだけjsonなので注意
                 _shipInfo.InspectShip(json);
-                return Update.Ship | Update.Item;
+                _akashiTimer.SetTimer();
+                return Update.Ship;
             }
             if (url.EndsWith("api_get_member/ship3"))
             {
                 _shipInfo.InspectShip(data);
+                _akashiTimer.SetTimer();
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_hokyu/charge"))
@@ -138,6 +146,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_kousyou/destroyship"))
             {
                 _shipInfo.InspectDestroyShip(request);
+                _akashiTimer.SetTimer();
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_kousyou/destroyitem2"))
@@ -201,6 +210,11 @@ namespace KancolleSniffer
         public int GetAirSuperiority(int fleet)
         {
             return _shipInfo.GetAirSuperiority(fleet);
+        }
+
+        public DateTime GetAkashiStartTime(int fleet)
+        {
+            return _akashiTimer[fleet];
         }
     }
 

@@ -48,6 +48,7 @@ namespace KancolleSniffer
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panelHeadquarters = new System.Windows.Forms.Panel();
+            this.labelLogin = new System.Windows.Forms.Label();
             this.labelNumOfBuckets = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.labelNumOfEquips = new System.Windows.Forms.Label();
@@ -55,6 +56,7 @@ namespace KancolleSniffer
             this.labelNumOfShips = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panelFleet1 = new System.Windows.Forms.Panel();
+            this.labelAkashiTimer = new System.Windows.Forms.Label();
             this.labelAirSuperiority = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
@@ -174,7 +176,6 @@ namespace KancolleSniffer
             this.labelFleet3 = new System.Windows.Forms.Label();
             this.labelCheckFleet2 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
-            this.labelLogin = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelDock.SuspendLayout();
@@ -199,6 +200,16 @@ namespace KancolleSniffer
             this.panelHeadquarters.Name = "panelHeadquarters";
             this.panelHeadquarters.Size = new System.Drawing.Size(263, 35);
             this.panelHeadquarters.TabIndex = 0;
+            // 
+            // labelLogin
+            // 
+            this.labelLogin.AutoSize = true;
+            this.labelLogin.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.labelLogin.Location = new System.Drawing.Point(6, 4);
+            this.labelLogin.Name = "labelLogin";
+            this.labelLogin.Size = new System.Drawing.Size(203, 26);
+            this.labelLogin.TabIndex = 23;
+            this.labelLogin.Text = "艦これにログインしてください。\r\nログイン中ならログインし直してください。";
             // 
             // labelNumOfBuckets
             // 
@@ -257,6 +268,7 @@ namespace KancolleSniffer
             // panelFleet1
             // 
             this.panelFleet1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelFleet1.Controls.Add(this.labelAkashiTimer);
             this.panelFleet1.Controls.Add(this.labelAirSuperiority);
             this.panelFleet1.Controls.Add(this.label27);
             this.panelFleet1.Controls.Add(this.label21);
@@ -303,6 +315,16 @@ namespace KancolleSniffer
             this.panelFleet1.Name = "panelFleet1";
             this.panelFleet1.Size = new System.Drawing.Size(259, 134);
             this.panelFleet1.TabIndex = 2;
+            // 
+            // labelAkashiTimer
+            // 
+            this.labelAkashiTimer.Location = new System.Drawing.Point(49, 20);
+            this.labelAkashiTimer.Name = "labelAkashiTimer";
+            this.labelAkashiTimer.Size = new System.Drawing.Size(45, 12);
+            this.labelAkashiTimer.TabIndex = 23;
+            this.labelAkashiTimer.Text = "00:00:00";
+            this.labelAkashiTimer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelAkashiTimer.Visible = false;
             // 
             // labelAirSuperiority
             // 
@@ -1386,16 +1408,6 @@ namespace KancolleSniffer
             this.labelFleet2.Text = "第二艦隊";
             this.labelFleet2.Click += new System.EventHandler(this.labelFleet_Click);
             // 
-            // labelLogin
-            // 
-            this.labelLogin.AutoSize = true;
-            this.labelLogin.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelLogin.Location = new System.Drawing.Point(6, 4);
-            this.labelLogin.Name = "labelLogin";
-            this.labelLogin.Size = new System.Drawing.Size(203, 26);
-            this.labelLogin.TabIndex = 23;
-            this.labelLogin.Text = "艦これにログインしてください。\r\nログイン中ならログインし直してください。";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1578,6 +1590,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelAirSuperiority;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label labelLogin;
+        private System.Windows.Forms.Label labelAkashiTimer;
     }
 }
 

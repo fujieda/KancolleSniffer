@@ -55,6 +55,11 @@ namespace KancolleSniffer
             }
         }
 
+        public bool InNDock(int id)
+        {
+            return _ndoc.Any(n => n == id);
+        }
+
         public void InspectKDock(dynamic json)
         {
             foreach (var entry in json)

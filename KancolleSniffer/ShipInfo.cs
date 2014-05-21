@@ -35,6 +35,15 @@ namespace KancolleSniffer
         public int Bull { get; set; }
         public int[] OnSlot { get; set; }
         public int[] Slot { get; set; }
+
+        public int DamageLevel
+        {
+            get
+            {
+                var ratio = MaxHp == 0 ? 1 : (double)NowHp / MaxHp;
+                return ratio > 0.75 ? 0 : ratio > 0.5 ? 1 : ratio > 0.25 ? 2 : 3;
+            }
+        }
     }
 
     public struct ChargeStatus
@@ -45,9 +54,18 @@ namespace KancolleSniffer
 
     public class ShipInfo
     {
-        private readonly int[][] _decks = new int[4][];
+        public const int FleetCount = 4;
+        public const int MemberCount = 6;
+
+        private readonly int[][] _decks = new int[FleetCount][];
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
-        private readonly DateTime[][] _recoveryTimes = {new DateTime[3], new DateTime[3], new DateTime[3], new DateTime[3]};
+
+        private readonly DateTime[][] _recoveryTimes =
+        {
+            new DateTime[3], new DateTime[3], new DateTime[3],
+            new DateTime[3]
+        };
+
         private readonly ShipMaster _shipMaster;
         private readonly ItemInfo _itemInfo;
 
@@ -56,8 +74,13 @@ namespace KancolleSniffer
             _shipMaster = shipMaster;
             _itemInfo = itemInfo;
 
-            for (var i = 0; i < _decks.Length; i++)
-                _decks[i] = new[] {-1, -1, -1, -1, -1, -1};
+            for (var fleet = 0; fleet < FleetCount; fleet++)
+            {
+                var deck = new int[MemberCount];
+                for (var i = 0; i < deck.Length; i++)
+                    deck[i] = -1;
+                _decks[fleet] = deck;
+            }
         }
 
         public DateTime[] GetRecoveryTimes(int fleet)
@@ -95,8 +118,8 @@ namespace KancolleSniffer
         {
             foreach (var entry in json)
             {
-                var fleet = (int)entry.api_id;
-                var deck = _decks[fleet - 1];
+                var fleet = (int)entry.api_id - 1;
+                var deck = _decks[fleet];
                 for (var i = 0; i < deck.Length; i++)
                     deck[i] = (int)entry.api_ship[i];
             }
@@ -104,8 +127,6 @@ namespace KancolleSniffer
 
         private void InspectShipData(dynamic json)
         {
-            if (!json.IsArray)
-                json = new[] {json};
             foreach (var entry in json)
             {
                 _shipInfo[(int)entry.api_id] = new ShipStatus
@@ -203,6 +224,11 @@ namespace KancolleSniffer
             }
         }
 
+        private int SlotItemCount(int id)
+        {
+            return _shipInfo[id].Slot.Count(item => item != -1);
+        }
+
         public void InspectNyukyo(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
@@ -216,18 +242,13 @@ namespace KancolleSniffer
             _itemInfo.NumBuckets--;
         }
 
-        private int SlotItemCount(int id)
-        {
-            return _shipInfo[id].Slot.Count(item => item != -1);
-        }
-
         private void SetRecoveryTime()
         {
             for (var fleet = 0; fleet < 4; fleet++)
             {
                 var cond =
-                    (from id in _decks[fleet] where _shipInfo.ContainsKey(id) select _shipInfo[id].Cond).DefaultIfEmpty(49)
-                        .Min();
+                    (from id in _decks[fleet] where _shipInfo.ContainsKey(id) select _shipInfo[id].Cond)
+                        .DefaultIfEmpty(49).Min();
                 if (cond < 49 && _recoveryTimes[fleet][2] != DateTime.MinValue) // 計時中
                 {
                     // コンディション値から推定される残り時刻と経過時間の差
@@ -245,7 +266,12 @@ namespace KancolleSniffer
 
         public ShipStatus[] GetShipStatuses(int fleet)
         {
-            return _decks[fleet].Select(id => (id == -1) ? new ShipStatus() : _shipInfo[id]).ToArray();
+            return _decks[fleet].Select(id => (id == -1) ? new ShipStatus {Name = ""} : _shipInfo[id]).ToArray();
+        }
+
+        public int[] GetDeck(int fleet)
+        {
+            return _decks[fleet];
         }
 
         public ShipStatus this[int idx]
@@ -264,7 +290,7 @@ namespace KancolleSniffer
                         let spec = _shipMaster[status.ShipId]
                         select new {status.Bull, status.Fuel, spec.BullMax, spec.FuelMax})
                         .Aggregate(
-                            new ChargeStatus(), (result, next) => new ChargeStatus()
+                            new ChargeStatus(), (result, next) => new ChargeStatus
                             {
                                 Bull = Math.Max(result.Bull, CalcChargeState(next.Bull, next.BullMax)),
                                 Fuel = Math.Max(result.Fuel, CalcChargeState(next.Fuel, next.FuelMax))
@@ -290,9 +316,9 @@ namespace KancolleSniffer
         {
             return (from id in _decks[fleet]
                 where _shipInfo.ContainsKey(id)
-                    let ship = _shipInfo[id]
+                let ship = _shipInfo[id]
                 from slot in ship.Slot.Zip(ship.OnSlot, (s, o) => new {slot = s, onslot = o})
-                select (int)Math.Floor(_itemInfo.GetTyKu(slot.slot) * Math.Sqrt(slot.onslot))).Sum();
+                select (int)Math.Floor(_itemInfo[slot.slot].TyKu * Math.Sqrt(slot.onslot))).Sum();
         }
     }
 }

@@ -61,5 +61,12 @@ namespace KancolleSniffer
         {
             get { return _missions; }
         }
+
+        public bool InMission(int fleet)
+        {
+            if (fleet == 0)
+                return false;
+            return _missions[fleet - 1].Name != "";
+        }
     }
 }
