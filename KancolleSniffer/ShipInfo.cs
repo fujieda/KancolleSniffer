@@ -256,20 +256,18 @@ namespace KancolleSniffer
         {
             get
             {
-                return _decks.Select(deck =>
-                {
-                    var result = new ChargeStatus();
-                    foreach (var id in deck)
-                    {
-                        ShipStatus status;
-                        if (!_shipInfo.TryGetValue(id, out status))
-                            continue;
-                        var spec = _shipMaster[status.ShipId];
-                        result.Fuel = Math.Max(CalcChargeState(status.Fuel, spec.FuelMax), result.Fuel);
-                        result.Bull = Math.Max(CalcChargeState(status.Bull, spec.BullMax), result.Bull);
-                    }
-                    return result;
-                }).ToArray();
+                return (from deck in _decks
+                    select (from id in deck
+                        where id != -1
+                        let status = _shipInfo[id]
+                        let spec = _shipMaster[status.ShipId]
+                        select new {status.Bull, status.Fuel, spec.BullMax, spec.FuelMax})
+                        .Aggregate(
+                            new ChargeStatus(), (result, next) => new ChargeStatus()
+                            {
+                                Bull = Math.Max(result.Bull, CalcChargeState(next.Bull, next.BullMax)),
+                                Fuel = Math.Max(result.Fuel, CalcChargeState(next.Fuel, next.FuelMax))
+                            })).ToArray();
             }
         }
 
