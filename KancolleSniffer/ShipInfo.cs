@@ -147,31 +147,32 @@ namespace KancolleSniffer
             {
                 var deck = _decks[fleet];
                 for (var i = 1; i < deck.Length; i++)
-                    deck[i] = -1;                
+                    deck[i] = -1;
+                return;
             }
-            else
+            if (ship == -1)
             {
-                if (ship == -1)
-                {
-                    var deck = _decks[fleet];
-                    for (var i = idx; i < deck.Length - 1; i++)
-                        deck[i] = deck[i + 1];
-                    deck[deck.Length - 1] = -1;
-                }
-                else
-                {
-                    var prev = _decks[fleet][idx];
-                    foreach (var deck in _decks)
-                        for (var i = 0; i < deck.Length; i++)
-                            if (deck[i] == ship)
-                            {
-                                deck[i] = prev;
-                                goto last;
-                            }
-                last:
-                    _decks[fleet][idx] = ship;
-                }
+                RemoveShip(fleet, idx);
+                return;
             }
+            for (var f = 0; f < _decks.Length; f++)
+                for (var i = 0; i < _decks[f].Length; i++)
+                    if (_decks[f][i] == ship) // 入れ替えの場合
+                    {
+                        if ((_decks[f][i] = _decks[fleet][idx]) == -1)
+                            RemoveShip(f, i);
+                        goto last;
+                    }
+            last:
+            _decks[fleet][idx] = ship;
+        }
+
+        private void RemoveShip(int fleet, int idx)
+        {
+            var deck = _decks[fleet];
+            for (var i = idx; i < deck.Length - 1; i++)
+                deck[i] = deck[i + 1];
+            deck[deck.Length - 1] = -1;
         }
 
         public void InspectPowerup(string request, dynamic json)
