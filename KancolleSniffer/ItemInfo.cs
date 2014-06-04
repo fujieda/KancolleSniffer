@@ -86,7 +86,7 @@ namespace KancolleSniffer
                 _itemSpecs[(int)entry.api_id] = new ItemSpec
                 {
                     Name = (string)entry.api_name,
-                    TyKu = (int)entry.api_type[0] == 3 ? (int)entry.api_tyku : 0 // 艦載機のみ
+                    TyKu = (int)entry.api_type[0] == 3 || (int)entry.api_type[2] == 11 ? (int)entry.api_tyku : 0 // 艦載機と水上爆撃機のみ
                 };
             }
         }
