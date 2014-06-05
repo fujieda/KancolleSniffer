@@ -360,14 +360,16 @@ namespace KancolleSniffer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(264, 373);
-            this.ControlBox = false;
             this.Controls.Add(this.groupBoxShow);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.groupBoxSound);
             this.Controls.Add(this.groupBoxNotification);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ConfigDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "設定";
             this.Load += new System.EventHandler(this.ConfigDialog_Load);
             this.groupBoxNotification.ResumeLayout(false);
