@@ -148,6 +148,7 @@ namespace KancolleSniffer
             }
             labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowItems, item.MaxItems);
             labelNumOfBuckets.Text = item.NumBuckets.ToString("D");
+            labelAchievement.Text = _sniffer.Achievement.ToString("F1");
         }
 
         private void UpdateMissionLabels()

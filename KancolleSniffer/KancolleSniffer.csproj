@@ -56,6 +56,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Achievement.cs" />
     <Compile Include="AkashiTimer.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigDialog.cs">

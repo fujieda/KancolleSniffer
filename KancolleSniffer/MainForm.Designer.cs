@@ -176,6 +176,8 @@ namespace KancolleSniffer
             this.labelFleet3 = new System.Windows.Forms.Label();
             this.labelCheckFleet2 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
+            this.label28 = new System.Windows.Forms.Label();
+            this.labelAchievement = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelDock.SuspendLayout();
@@ -190,6 +192,8 @@ namespace KancolleSniffer
             // 
             this.panelHeadquarters.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelHeadquarters.Controls.Add(this.labelLogin);
+            this.panelHeadquarters.Controls.Add(this.labelAchievement);
+            this.panelHeadquarters.Controls.Add(this.label28);
             this.panelHeadquarters.Controls.Add(this.labelNumOfBuckets);
             this.panelHeadquarters.Controls.Add(this.label3);
             this.panelHeadquarters.Controls.Add(this.labelNumOfEquips);
@@ -213,7 +217,7 @@ namespace KancolleSniffer
             // 
             // labelNumOfBuckets
             // 
-            this.labelNumOfBuckets.Location = new System.Drawing.Point(120, 19);
+            this.labelNumOfBuckets.Location = new System.Drawing.Point(118, 19);
             this.labelNumOfBuckets.Name = "labelNumOfBuckets";
             this.labelNumOfBuckets.Size = new System.Drawing.Size(29, 12);
             this.labelNumOfBuckets.TabIndex = 5;
@@ -223,7 +227,7 @@ namespace KancolleSniffer
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(116, 4);
+            this.label3.Location = new System.Drawing.Point(114, 4);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(33, 12);
             this.label3.TabIndex = 4;
@@ -231,7 +235,7 @@ namespace KancolleSniffer
             // 
             // labelNumOfEquips
             // 
-            this.labelNumOfEquips.Location = new System.Drawing.Point(55, 19);
+            this.labelNumOfEquips.Location = new System.Drawing.Point(57, 19);
             this.labelNumOfEquips.Name = "labelNumOfEquips";
             this.labelNumOfEquips.Size = new System.Drawing.Size(47, 12);
             this.labelNumOfEquips.TabIndex = 3;
@@ -241,7 +245,7 @@ namespace KancolleSniffer
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(61, 4);
+            this.label2.Location = new System.Drawing.Point(63, 4);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(41, 12);
             this.label2.TabIndex = 2;
@@ -249,7 +253,7 @@ namespace KancolleSniffer
             // 
             // labelNumOfShips
             // 
-            this.labelNumOfShips.Location = new System.Drawing.Point(0, 19);
+            this.labelNumOfShips.Location = new System.Drawing.Point(2, 19);
             this.labelNumOfShips.Name = "labelNumOfShips";
             this.labelNumOfShips.Size = new System.Drawing.Size(47, 12);
             this.labelNumOfShips.TabIndex = 1;
@@ -259,7 +263,7 @@ namespace KancolleSniffer
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 4);
+            this.label1.Location = new System.Drawing.Point(8, 4);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(41, 12);
             this.label1.TabIndex = 0;
@@ -1407,6 +1411,24 @@ namespace KancolleSniffer
             this.labelFleet2.Text = "第二艦隊";
             this.labelFleet2.Click += new System.EventHandler(this.labelFleet_Click);
             // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(162, 4);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(29, 12);
+            this.label28.TabIndex = 6;
+            this.label28.Text = "戦果";
+            // 
+            // labelAchievement
+            // 
+            this.labelAchievement.Location = new System.Drawing.Point(148, 19);
+            this.labelAchievement.Name = "labelAchievement";
+            this.labelAchievement.Size = new System.Drawing.Size(43, 12);
+            this.labelAchievement.TabIndex = 7;
+            this.labelAchievement.Text = "0.0";
+            this.labelAchievement.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1590,6 +1612,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label labelLogin;
         private System.Windows.Forms.Label labelAkashiTimer;
+        private System.Windows.Forms.Label labelAchievement;
+        private System.Windows.Forms.Label label28;
     }
 }
 
