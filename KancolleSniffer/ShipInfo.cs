@@ -176,16 +176,25 @@ namespace KancolleSniffer
                 RemoveShip(fleet, idx);
                 return;
             }
-            for (var f = 0; f < _decks.Length; f++)
-                for (var i = 0; i < _decks[f].Length; i++)
-                    if (_decks[f][i] == ship) // 入れ替えの場合
-                    {
-                        if ((_decks[f][i] = _decks[fleet][idx]) == -1)
-                            RemoveShip(f, i);
-                        goto last;
-                    }
-            last:
+            AlterShip(ship, (f, i) =>
+            {
+                // 入れ替えの場合
+                if ((_decks[f][i] = _decks[fleet][idx]) == -1)
+                    RemoveShip(f, i);
+            });
             _decks[fleet][idx] = ship;
+        }
+
+        private void AlterShip(int ship, Action<int, int> action)
+        {
+            for (var f = 0; f < _decks.Length; f++)
+            {
+                var i = Array.FindIndex(_decks[f], id => id == ship);
+                if (i < 0)
+                    continue;
+                action(f, i);
+                return;
+            }
         }
 
         private void RemoveShip(int fleet, int idx)
@@ -209,19 +218,10 @@ namespace KancolleSniffer
         public void InspectDestroyShip(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
-            var id = int.Parse(values["api_ship_id"]);
+            var ship = int.Parse(values["api_ship_id"]);
             _itemInfo.NowShips -= 1;
-            _itemInfo.NowItems -= SlotItemCount(id);
-            foreach (var deck in _decks)
-            {
-                for (var i = 0; i < deck.Length; i++)
-                    if (deck[i] == id)
-                    {
-                        for (var j = i; j < deck.Length - 1; j++)
-                            deck[j] = deck[j + 1];
-                        deck[deck.Length - 1] = -1;
-                    }
-            }
+            _itemInfo.NowItems -= SlotItemCount(ship);
+            AlterShip(ship, RemoveShip);
         }
 
         private int SlotItemCount(int id)
