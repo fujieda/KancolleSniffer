@@ -76,6 +76,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuestInfo.cs" />
+    <Compile Include="ConditionTimer.cs" />
     <Compile Include="ShipInfo.cs" />
     <Compile Include="ShipMaster.cs" />
     <Compile Include="Sniffer.cs" />

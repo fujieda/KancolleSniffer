@@ -59,12 +59,7 @@ namespace KancolleSniffer
 
         private readonly int[][] _decks = new int[FleetCount][];
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
-
-        private readonly DateTime[][] _recoveryTimes =
-        {
-            new DateTime[3], new DateTime[3], new DateTime[3],
-            new DateTime[3]
-        };
+        private readonly ConditionTimer _conditionTimer;
 
         private readonly ShipMaster _shipMaster;
         private readonly ItemInfo _itemInfo;
@@ -73,6 +68,7 @@ namespace KancolleSniffer
         {
             _shipMaster = shipMaster;
             _itemInfo = itemInfo;
+            _conditionTimer = new ConditionTimer(this);
 
             for (var fleet = 0; fleet < FleetCount; fleet++)
             {
@@ -81,11 +77,6 @@ namespace KancolleSniffer
                     deck[i] = -1;
                 _decks[fleet] = deck;
             }
-        }
-
-        public DateTime[] GetRecoveryTimes(int fleet)
-        {
-            return _recoveryTimes[fleet];
         }
 
         public void InspectShip(dynamic json)
@@ -144,7 +135,7 @@ namespace KancolleSniffer
                     Slot = (from num in (dynamic[])entry.api_slot select (int)num).ToArray()
                 };
             }
-            SetRecoveryTime();
+            _conditionTimer.SetTimer();
         }
 
         public void InspectCharge(dynamic json)
@@ -164,6 +155,7 @@ namespace KancolleSniffer
             var fleet = int.Parse(values["api_id"]) - 1;
             var idx = int.Parse(values["api_ship_idx"]);
             var ship = int.Parse(values["api_ship_id"]);
+            _conditionTimer.Disable(fleet);
             if (idx == -1)
             {
                 var deck = _decks[fleet];
@@ -181,6 +173,7 @@ namespace KancolleSniffer
                 // 入れ替えの場合
                 if ((_decks[f][i] = _decks[fleet][idx]) == -1)
                     RemoveShip(f, i);
+                _conditionTimer.Disable(f);
             });
             _decks[fleet][idx] = ship;
         }
@@ -203,6 +196,7 @@ namespace KancolleSniffer
             for (var i = idx; i < deck.Length - 1; i++)
                 deck[i] = deck[i + 1];
             deck[deck.Length - 1] = -1;
+            _conditionTimer.Disable(fleet);
         }
 
         public void InspectPowerup(string request, dynamic json)
@@ -242,28 +236,6 @@ namespace KancolleSniffer
             _itemInfo.NumBuckets--;
         }
 
-        private void SetRecoveryTime()
-        {
-            for (var fleet = 0; fleet < 4; fleet++)
-            {
-                var cond =
-                    (from id in _decks[fleet] where _shipInfo.ContainsKey(id) select _shipInfo[id].Cond)
-                        .DefaultIfEmpty(49).Min();
-                if (cond < 49 && _recoveryTimes[fleet][2] != DateTime.MinValue) // 計時中
-                {
-                    // コンディション値から推定される残り時刻と経過時間の差
-                    var diff = TimeSpan.FromMinutes((49 - cond + 2) / 3 * 3) - (_recoveryTimes[fleet][2] - DateTime.Now);
-                    if (diff >= TimeSpan.Zero && diff <= TimeSpan.FromMinutes(3)) // 差が0以上3分以内ならタイマーを更新しない。
-                        return;
-                }
-                var thresh = new[] {30, 40, 49};
-                for (var i = 0; i < thresh.Length; i++)
-                    _recoveryTimes[fleet][i] = cond < thresh[i]
-                        ? DateTime.Now.AddMinutes((thresh[i] - cond + 2) / 3 * 3)
-                        : DateTime.MinValue;
-            }
-        }
-
         public ShipStatus[] GetShipStatuses(int fleet)
         {
             return _decks[fleet].Select(id => (id == -1) ? new ShipStatus {Name = ""} : _shipInfo[id]).ToArray();
@@ -277,6 +249,11 @@ namespace KancolleSniffer
         public ShipStatus this[int idx]
         {
             get { return _shipInfo[idx]; }
+        }
+
+        public string[] GetConditionTimers(int fleet)
+        {
+            return _conditionTimer.GetTimerStrings(fleet);
         }
 
         public ChargeStatus[] ChargeStatuses

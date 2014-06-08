@@ -274,11 +274,10 @@ namespace KancolleSniffer
 
         private void UpdateCondTimers()
         {
-            var now = DateTime.Now;
             foreach (var entry in
-                new[] {labelCondTimer1, labelCondTimer2, labelCondTimer3}.Zip(_sniffer.GetRecoveryTimes(_currentFleet),
-                    (label, time) => new {label, time}))
-                entry.label.Text = entry.time > now ? (entry.time - now).ToString(@"mm\:ss") : "00:00";
+                new[] {labelCondTimer1, labelCondTimer2, labelCondTimer3}.Zip(
+                    _sniffer.GetConditionTimers(_currentFleet), (label, timer) => new {label, timer}))
+                entry.label.Text = entry.timer;
         }
 
         private void UpdateAkashiTimer()

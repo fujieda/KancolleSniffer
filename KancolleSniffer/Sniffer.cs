@@ -194,9 +194,9 @@ namespace KancolleSniffer
             get { return _missionInfo.Missions; }
         }
 
-        public DateTime[] GetRecoveryTimes(int fleet)
+        public string[] GetConditionTimers(int fleet)
         {
-            return _shipInfo.GetRecoveryTimes(fleet);
+            return _shipInfo.GetConditionTimers(fleet);
         }
 
         public ShipStatus[] GetShipStatuses(int fleet)
