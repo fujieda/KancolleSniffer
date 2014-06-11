@@ -30,5 +30,10 @@ namespace KancolleSniffer
             if (_start == 0)
                 _start = _current;
         }
+
+        public void Reset()
+        {
+            _start = _current;
+        }
     }
 }

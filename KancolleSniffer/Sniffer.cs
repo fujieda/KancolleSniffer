@@ -220,6 +220,11 @@ namespace KancolleSniffer
         }
 
         public double Achievement { get { return _achievement.Value; } }
+
+        public void ResetAchievement()
+        {
+            _achievement.Reset();
+        }
     }
 
     public class NameAndTimer

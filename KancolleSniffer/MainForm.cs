@@ -349,5 +349,11 @@ namespace KancolleSniffer
                 return;
             UpdateShipInfo();
         }
+
+        private void labelResetAchievement_Click(object sender, EventArgs e)
+        {
+            _sniffer.ResetAchievement();
+            UpdateItemInfo();
+        }
     }
 }
