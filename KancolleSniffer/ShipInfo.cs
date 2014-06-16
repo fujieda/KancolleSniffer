@@ -155,12 +155,12 @@ namespace KancolleSniffer
             var fleet = int.Parse(values["api_id"]) - 1;
             var idx = int.Parse(values["api_ship_idx"]);
             var ship = int.Parse(values["api_ship_id"]);
-            _conditionTimer.Disable(fleet);
             if (idx == -1)
             {
                 var deck = _decks[fleet];
                 for (var i = 1; i < deck.Length; i++)
                     deck[i] = -1;
+                _conditionTimer.Invalidate(fleet);
                 return;
             }
             if (ship == -1)
@@ -173,9 +173,11 @@ namespace KancolleSniffer
                 // 入れ替えの場合
                 if ((_decks[f][i] = _decks[fleet][idx]) == -1)
                     RemoveShip(f, i);
-                _conditionTimer.Disable(f);
+                if (f != fleet)
+                    _conditionTimer.Invalidate(f);
             });
             _decks[fleet][idx] = ship;
+            _conditionTimer.Invalidate(fleet);
         }
 
         private void AlterShip(int ship, Action<int, int> action)
@@ -196,7 +198,7 @@ namespace KancolleSniffer
             for (var i = idx; i < deck.Length - 1; i++)
                 deck[i] = deck[i + 1];
             deck[deck.Length - 1] = -1;
-            _conditionTimer.Disable(fleet);
+            _conditionTimer.Invalidate(fleet);
         }
 
         public void InspectPowerup(string request, dynamic json)

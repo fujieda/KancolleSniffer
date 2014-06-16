@@ -8,6 +8,7 @@ namespace KancolleSniffer
         private readonly ShipInfo _shipInfo;
         private readonly DateTime[][] _times = new DateTime[ShipInfo.FleetCount][];
         private readonly bool[] _enable = new bool[ShipInfo.FleetCount];
+        private readonly int[] _cond = new int[ShipInfo.FleetCount];
 
         public ConditionTimer(ShipInfo shipInfo)
         {
@@ -21,9 +22,7 @@ namespace KancolleSniffer
             for (var fleet = 0; fleet < ShipInfo.FleetCount; fleet++)
             {
                 _enable[fleet] = true;
-                var cond =
-                    (from id in _shipInfo.GetDeck(fleet) where id != -1 select _shipInfo[id].Cond)
-                        .DefaultIfEmpty(49).Min();
+                var cond = _cond[fleet] = CondMin(fleet);
                 var time49 = _times[fleet][2];
                 if (cond < 49 && time49 != DateTime.MinValue) // 計時中
                 {
@@ -40,9 +39,15 @@ namespace KancolleSniffer
             }
         }
 
-        public void Disable(int fleet)
+        public void Invalidate(int fleet)
         {
-            _enable[fleet] = false;
+            _enable[fleet] = _cond[fleet] == CondMin(fleet);
+        }
+
+        private int CondMin(int fleet)
+        {
+            return (from id in _shipInfo.GetDeck(fleet) where id != -1 select _shipInfo[id].Cond)
+                .DefaultIfEmpty(49).Min();
         }
 
         public string[] GetTimerStrings(int fleet)
