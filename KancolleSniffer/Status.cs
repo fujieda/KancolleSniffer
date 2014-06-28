@@ -15,35 +15,35 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+using System.IO;
+using System.Windows.Forms;
+using Codeplex.Data;
+
 namespace KancolleSniffer
 {
-    public class Achievement
+    public class Status
     {
-        private int _start;
-        private int _current;
+        private readonly string _statusFileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),
+            "status.json");
 
-        public double Value { get { return (_current - _start) / 1428.0; } }
+        public int ExperiencePoint { get; set; }
 
-        public void InspectBasic(dynamic json)
+        public void Load()
         {
-            _current = (int)json.api_experience;
-            if (_start == 0)
-                _start = _current;
+            try
+            {
+                var obj = (Status)DynamicJson.Parse(File.ReadAllText(_statusFileName));
+                foreach (var property in GetType().GetProperties())
+                    property.SetValue(this, property.GetValue(obj, null), null);
+            }
+            catch (FileNotFoundException)
+            {
+            }
         }
 
-        public void Reset()
+        public void Save()
         {
-            _start = _current;
-        }
-
-        public void SaveState(Status status)
-        {
-            status.ExperiencePoint = _start;
-        }
-
-        public void LoadState(Status status)
-        {
-            _start = status.ExperiencePoint;
+            File.WriteAllText(_statusFileName, DynamicJson.Serialize(this));
         }
     }
 }

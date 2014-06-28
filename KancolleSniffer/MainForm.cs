@@ -88,6 +88,7 @@ namespace KancolleSniffer
         {
             _config.Load();
             ApplyConfig();
+            _sniffer.LoadState();
             FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
         }
 
@@ -95,6 +96,7 @@ namespace KancolleSniffer
         {
             FiddlerApplication.Shutdown();
             _config.Save();
+            _sniffer.SaveState();
         }
 
         private void labelHP_SizeChanged(object sender, EventArgs e)

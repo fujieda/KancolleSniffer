@@ -30,6 +30,7 @@ namespace KancolleSniffer
         private readonly DockInfo _dockInfo;
         private readonly AkashiTimer _akashiTimer;
         private readonly Achievement _achievement = new Achievement();
+        private readonly Status _status = new Status();
 
         [Flags]
         public enum Update
@@ -50,6 +51,18 @@ namespace KancolleSniffer
             _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
             _dockInfo = new DockInfo(_shipInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo, _missionInfo);
+        }
+
+        public void SaveState()
+        {
+            _achievement.SaveState(_status);
+            _status.Save();
+        }
+
+        public void LoadState()
+        {
+            _status.Load();
+            _achievement.LoadState(_status);
         }
 
         public Update Sniff(string url, string request, dynamic json)
@@ -219,7 +232,10 @@ namespace KancolleSniffer
             return _akashiTimer[fleet];
         }
 
-        public double Achievement { get { return _achievement.Value; } }
+        public double Achievement
+        {
+            get { return _achievement.Value; }
+        }
 
         public void ResetAchievement()
         {
