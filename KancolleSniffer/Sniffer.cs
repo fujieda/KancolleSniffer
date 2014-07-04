@@ -133,7 +133,7 @@ namespace KancolleSniffer
                 // ここだけjsonなので注意
                 _shipInfo.InspectShip(json);
                 _akashiTimer.SetTimer();
-                return Update.Ship;
+                return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_get_member/ship3"))
             {
