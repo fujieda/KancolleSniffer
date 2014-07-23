@@ -111,9 +111,11 @@ namespace KancolleSniffer
 
         public void InspectGetShip(dynamic json)
         {
+            NowShips += 1;
+            if (json.api_slotitem == null) // まるゆにはスロットがない
+                return;
             InspectSlotItem(json.api_slotitem);
             NowItems += ((object[])json.api_slotitem).Length;
-            NowShips += 1;
         }
 
         public void InspectDestroyItem(string request)
