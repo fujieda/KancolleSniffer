@@ -77,7 +77,7 @@ namespace KancolleSniffer
             var targets = deck.Take(cap).Where(id => id != -1 && !_dockInfo.InNDock(id)).ToArray();
             var totalHp = (from id in targets
                 let status = _shipInfo[id]
-                where status.NowHp < status.MaxHp && status.DamageLevel < 2
+                where status.NowHp < status.MaxHp && status.DamageLevel < ShipStatus.Damage.Half
                 select status.NowHp).Sum();
             if (totalHp == 0)
             {

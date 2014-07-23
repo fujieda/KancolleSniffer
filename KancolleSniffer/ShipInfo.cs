@@ -36,13 +36,23 @@ namespace KancolleSniffer
         public int[] OnSlot { get; set; }
         public int[] Slot { get; set; }
 
-        public int DamageLevel
+        public Damage DamageLevel
         {
-            get
-            {
-                var ratio = MaxHp == 0 ? 1 : (double)NowHp / MaxHp;
-                return ratio > 0.75 ? 0 : ratio > 0.5 ? 1 : ratio > 0.25 ? 2 : 3;
-            }
+            get { return CalcDamage(NowHp, MaxHp); }
+        }
+
+        public enum Damage
+        {
+            Minor,
+            Small,
+            Half,
+            Badly
+        }
+
+        public static Damage CalcDamage(int now, int max)
+        {
+            var ratio = max == 0 ? 1 : (double)now / max;
+            return ratio > 0.75 ? Damage.Minor : ratio > 0.5 ? Damage.Small : ratio > 0.25 ? Damage.Half : Damage.Badly;
         }
     }
 
@@ -240,7 +250,7 @@ namespace KancolleSniffer
 
         public ShipStatus[] GetShipStatuses(int fleet)
         {
-            return _decks[fleet].Select(id => (id == -1) ? new ShipStatus {Name = ""} : _shipInfo[id]).ToArray();
+            return (from id in _decks[fleet] where id != -1 select _shipInfo[id]).ToArray();
         }
 
         public int[] GetDeck(int fleet)

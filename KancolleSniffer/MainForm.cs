@@ -179,14 +179,16 @@ namespace KancolleSniffer
             var next = new[] {labelNextLv1, labelNextLv2, labelNextLv3, labelNextLv4, labelNextLv5, labelNextLv6};
 
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
+            var empty = new ShipStatus();
             for (var i = 0; i < name.Length; i++)
             {
-                var stat = statuses[i];
+                var stat = i < statuses.Length ? statuses[i] : empty;
                 name[i].Text = stat.Name;
                 lv[i].Text = stat.Level.ToString("D");
                 SetHpLavel(hp[i], stat);
-                if (stat.MaxHp == 0)
+                if (stat == empty)
                 {
+                    // SetCondLabelでは背景色が赤になってしまう
                     cond[i].Text = "0";
                     cond[i].BackColor = DefaultBackColor;
                 }
@@ -217,7 +219,7 @@ namespace KancolleSniffer
         {
             var colors = new[] {DefaultBackColor, Color.FromArgb(255, 240, 240, 100), Color.Orange, Color.Red};
             label.Text = string.Format("{0:D}/{1:D}", status.NowHp, status.MaxHp);
-            label.BackColor = colors[status.DamageLevel];
+            label.BackColor = colors[(int)status.DamageLevel];
         }
 
         private void SetCondLabel(Label label, int cond)
@@ -285,7 +287,8 @@ namespace KancolleSniffer
 
         private void UpdateAkashiTimer()
         {
-            if (!_sniffer.GetShipStatuses(_currentFleet)[0].Name.StartsWith("明石"))
+            var stat = _sniffer.GetShipStatuses(_currentFleet);
+            if (stat.Length == 0 || !stat[0].Name.StartsWith("明石"))
             {
                 labelAkashiTimer.Visible = false;
                 return;
