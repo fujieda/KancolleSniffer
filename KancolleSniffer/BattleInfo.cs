@@ -126,9 +126,7 @@ namespace KancolleSniffer
             {
                 Friend = (from status in _shipInfo.GetShipStatuses((int)json.api_dock_id - 1)
                     select _shipMaster[status.ShipId].IsSubmarine).ToArray(),
-                Enemy = (from id in (int[])json.api_ship_ke
-                    where id != -1
-                    select _shipMaster[id].IsSubmarine).ToArray()
+                Enemy = (from id in (int[])json.api_ship_ke where id != -1 select _shipMaster[id].IsSubmarine).ToArray()
             };
         }
 

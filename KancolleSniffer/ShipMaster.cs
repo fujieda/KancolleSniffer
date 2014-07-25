@@ -35,15 +35,12 @@ namespace KancolleSniffer
                     ShipType = (int)entry.api_stype,
                 };
             }
+            _shipSpecs[-1] = new ShipSpec {Name = "不明"};
         }
 
         public ShipSpec this[int id]
         {
-            get
-            {
-                ShipSpec spec;
-                return _shipSpecs.TryGetValue(id, out spec) ? spec : new ShipSpec {Name = "不明"};
-            }
+            get { return _shipSpecs[id]; }
         }
     }
 

@@ -65,8 +65,7 @@ namespace KancolleSniffer
         {
             var deck = _shipInfo.GetDeck(fleet);
             var fs = deck[0];
-            if (fs == -1 || !_shipInfo[fs].Name.StartsWith("明石") || _dockInfo.InNDock(fs) ||
-                _missionInfo.InMission(fleet))
+            if (!_shipInfo[fs].Name.StartsWith("明石") || _dockInfo.InNDock(fs) || _missionInfo.InMission(fleet))
             {
                 InvalidateTimer(fleet);
                 return;
@@ -74,7 +73,7 @@ namespace KancolleSniffer
             if (_repairStatuses[fleet].DeckChanged(deck))
                 InvalidateTimer(fleet);
             var cap = _shipInfo[fs].Slot.Count(item => _itemInfo[item].Name == "艦艇修理施設") + 2;
-            var targets = deck.Take(cap).Where(id => id != -1 && !_dockInfo.InNDock(id)).ToArray();
+            var targets = deck.Take(cap).Where(id => !_dockInfo.InNDock(id)).ToArray();
             var totalHp = (from id in targets
                 let status = _shipInfo[id]
                 where status.NowHp < status.MaxHp && status.DamageLevel < ShipStatus.Damage.Half

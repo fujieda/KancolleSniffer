@@ -57,7 +57,7 @@ namespace KancolleSniffer
 
         public bool InNDock(int id)
         {
-            return _ndoc.Any(n => n == id);
+            return _ndoc.Any(n => n == id); // 空のドックのidは0
         }
 
         public void InspectKDock(dynamic json)

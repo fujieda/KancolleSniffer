@@ -89,6 +89,7 @@ namespace KancolleSniffer
                     TyKu = (int)entry.api_type[0] == 3 || (int)entry.api_type[2] == 11 ? (int)entry.api_tyku : 0 // 艦載機と水上爆撃機のみ
                 };
             }
+            _itemSpecs[-1] = new ItemSpec();
         }
 
         public void InspectSlotItem(dynamic json, bool full = false)
@@ -99,6 +100,7 @@ namespace KancolleSniffer
                 NowItems = ((object[])json).Length;
             foreach (var entry in json)
                 _itemIds[(int)entry.api_id] = (int)entry.api_slotitem_id;
+            _itemIds[-1] = -1;
         }
 
         public void InspectCreateItem(dynamic json)
@@ -126,14 +128,12 @@ namespace KancolleSniffer
 
         public ItemSpec this[int id]
         {
-            get
-            {
-                int itemId;
-                ItemSpec spec;
-                if (_itemIds.TryGetValue(id, out itemId) && _itemSpecs.TryGetValue(itemId, out spec))
-                    return spec;
-                return new ItemSpec();
-            }
+            get { return GetSpecById(id); }
+        }
+
+        public ItemSpec GetSpecById(int id)
+        {
+            return _itemSpecs[_itemIds[id]];
         }
     }
 }

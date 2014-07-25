@@ -144,6 +144,7 @@ namespace KancolleSniffer
                     OnSlot = (from num in (dynamic[])entry.api_onslot select (int)num).ToArray(),
                     Slot = (from num in (dynamic[])entry.api_slot select (int)num).ToArray()
                 };
+                _shipInfo[-1] = new ShipStatus {Name = "不明"};
             }
             _conditionTimer.SetTimer();
         }
@@ -304,7 +305,7 @@ namespace KancolleSniffer
         public int GetAirSuperiority(int fleet)
         {
             return (from id in _decks[fleet]
-                where _shipInfo.ContainsKey(id)
+                where id != -1
                 let ship = _shipInfo[id]
                 from slot in ship.Slot.Zip(ship.OnSlot, (s, o) => new {slot = s, onslot = o})
                 select (int)Math.Floor(_itemInfo[slot.slot].TyKu * Math.Sqrt(slot.onslot))).Sum();
