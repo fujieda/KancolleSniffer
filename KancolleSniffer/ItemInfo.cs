@@ -135,5 +135,10 @@ namespace KancolleSniffer
         {
             return _itemSpecs[_itemIds[id]];
         }
+
+        public ItemSpec GetSpecByItemId(int id)
+        {
+            return _itemSpecs[id];
+        }
     }
 }

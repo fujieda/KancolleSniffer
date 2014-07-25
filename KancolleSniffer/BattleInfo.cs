@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Linq;
 
 namespace KancolleSniffer
@@ -23,18 +24,23 @@ namespace KancolleSniffer
     {
         private readonly ShipMaster _shipMaster;
         private readonly ShipInfo _shipInfo;
+        private readonly ItemInfo _itemInfo;
         public bool InBattle { get; set; }
         public string Formation { get; private set; }
         public int DelayInFormation { get; private set; }
+        public int EnemyAirSuperiority { get; private set; }
+        public int DelayInAirSuperiority { get; private set; }
 
         private struct Delay
         {
-            public const int Basic = 7200;
+            public const int Basic = 4100;
+            public const int Formation = 1100;
             public const int Tau = 200;
             public const int SearchAirSuccess = 5700;
             public const int SearchAirFailure = 4900;
             public const int SearchSuccess = 5400;
             public const int Submarine = 2500;
+            public const int Emergence = 2000;
             public const int AirFight = 8700;
             public const int AirFightBoth = 2700;
             public const int Support = 9800;
@@ -42,53 +48,70 @@ namespace KancolleSniffer
             public const int Cutin = 4900;
         }
 
-        public BattleInfo(ShipMaster shipMaster, ShipInfo shipInfo)
+        public BattleInfo(ShipMaster shipMaster, ShipInfo shipInfo, ItemInfo itemInfo)
         {
             _shipMaster = shipMaster;
             _shipInfo = shipInfo;
+            _itemInfo = itemInfo;
         }
 
         public void InspectBattle(dynamic json)
         {
             InBattle = true;
-            var delay = Delay.Basic;
+            Formation = FormationName(json);
+            EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
+            SetDelay(json);
+        }
+
+        private string FormationName(dynamic json)
+        {
             switch ((int)json.api_formation[2])
             {
                 case 1:
-                    Formation = "同航戦";
-                    break;
+                    return "同航戦";
                 case 2:
-                    Formation = "反航戦";
-                    break;
+                    return "反航戦";
                 case 3:
-                    Formation = "T字有利";
-                    delay += Delay.Tau;
-                    break;
+                    return "T字有利";
                 case 4:
-                    Formation = "T字不利";
-                    delay += Delay.Tau;
-                    break;
+                    return "T字不利";
             }
+            return "";
+        }
+
+        private void SetDelay(dynamic json)
+        {
+            // 敵出現まで
+            var delay = Delay.Basic;
+            if ((int)json.api_formation[2] >= 3)
+                delay += Delay.Tau;
             var subm = (SubmarineFlags)CheckSubmarine(json);
-            delay += SearchDelay(json) + SupportDelay(json) + CutinDelay(json) + subm.SubmarineDelay();
-            if (!subm.PreventOpeningAttack)
-                delay += OpeningAttackDelay(json);
+            bool success;
+            delay += SearchDelay(json, out success) + subm.AddtionalDelay;
+            DelayInAirSuperiority = delay + (success ? 0 : Delay.Emergence); // 失敗すると出現が遅れる
+            // 敵艦隊発見以降
+            delay += Delay.Emergence + Delay.Formation + SupportDelay(json) + CutinDelay(json);
             if (!subm.PreventAirFight)
                 delay += AirFightDelay(json);
+            if (!subm.PreventOpeningAttack)
+                delay += OpeningAttackDelay(json);
             DelayInFormation = delay;
         }
 
-        private int SearchDelay(dynamic json)
+        private int SearchDelay(dynamic json, out bool success)
         {
+            success = false;
             switch ((int)json.api_search[0])
             {
                 case 1: // 索敵機による索敵成功
                 case 2: // 索敵機未帰還あり
+                    success = true;
                     return Delay.SearchAirSuccess;
                 case 3: // 索敵機未帰還
                 case 4: // 索敵機による索敵失敗
                     return Delay.SearchAirFailure;
                 case 5: // 索敵力による索敵成功
+                    success = true;
                     return Delay.SearchSuccess;
             }
             return 0;
@@ -104,9 +127,10 @@ namespace KancolleSniffer
             public bool[] Friend;
             public bool[] Enemy;
 
-            public int SubmarineDelay()
+            public int AddtionalDelay
             {
-                return Friend.Any(x => x) || Enemy.Any(x => x) ? Delay.Submarine : 0; // どちらかに潜水艦                
+                get { return Friend.Any(x => x) || Enemy.Any(x => x) ? Delay.Submarine : 0; }
+                // どちらかに潜水艦                
             }
 
             public bool PreventAirFight
@@ -185,6 +209,14 @@ namespace KancolleSniffer
                     return true;
             }
             return false;
+        }
+
+        private int CalcEnemyAirSuperiority(dynamic json)
+        {
+            var maxEq = ((int[])json.api_ship_ke).Skip(1).SelectMany(id => _shipMaster[id].MaxEq);
+            var equips = ((int[][])json.api_eSlot).SelectMany(x => x);
+            return (from slot in equips.Zip(maxEq, (id, max) => new {id, max})
+                select (int)Math.Floor(_itemInfo.GetSpecByItemId(slot.id).TyKu * Math.Sqrt(slot.max))).Sum();
         }
     }
 }

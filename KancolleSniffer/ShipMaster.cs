@@ -21,6 +21,7 @@ namespace KancolleSniffer
 {
     public class ShipMaster
     {
+        public const int NumSlots = 5;
         private readonly Dictionary<int, ShipSpec> _shipSpecs = new Dictionary<int, ShipSpec>();
 
         public void Inspect(dynamic json)
@@ -32,10 +33,11 @@ namespace KancolleSniffer
                     Name = entry.api_name,
                     FuelMax = (int)entry.api_fuel_max,
                     BullMax = (int)entry.api_bull_max,
+                    MaxEq = (int[])entry.api_maxeq,
                     ShipType = (int)entry.api_stype,
                 };
             }
-            _shipSpecs[-1] = new ShipSpec {Name = "不明"};
+            _shipSpecs[-1] = new ShipSpec {Name = "不明", MaxEq = new int[NumSlots]};
         }
 
         public ShipSpec this[int id]
@@ -49,6 +51,7 @@ namespace KancolleSniffer
         public string Name { get; set; }
         public int FuelMax { get; set; }
         public int BullMax { get; set; }
+        public int[] MaxEq { get; set; }
         public int ShipType { get; set; }
 
         public bool IsSubmarine

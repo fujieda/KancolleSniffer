@@ -119,7 +119,6 @@ namespace KancolleSniffer
             Application.Exit();
         }
 
-
         private void ConfigToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_configDialog.ShowDialog(this) == DialogResult.OK)
@@ -207,16 +206,24 @@ namespace KancolleSniffer
         private void UpdateBattleInfo()
         {
             labelFormation.Text = "";
+            labelEnemyAirSuperiority.Text = "";
             panelBattleInfo.Visible = _sniffer.Battle.InBattle;
             if (!_sniffer.Battle.InBattle)
                 return;
-            var timer = new Timer {Interval = _sniffer.Battle.DelayInFormation};
-            timer.Tick += (sender, args) =>
+            var tf = new Timer {Interval = _sniffer.Battle.DelayInFormation};
+            tf.Tick += (sender, args) =>
             {
                 labelFormation.Text = _sniffer.Battle.Formation;
-                timer.Stop();
+                tf.Stop();
             };
-            timer.Start();
+            tf.Start();
+            var ta = new Timer {Interval = _sniffer.Battle.DelayInAirSuperiority};
+            ta.Tick += (sender, args) =>
+            {
+                labelEnemyAirSuperiority.Text = _sniffer.Battle.EnemyAirSuperiority.ToString("D");
+                ta.Stop();
+            };
+            ta.Start();
         }
 
         private void UpdateChargeInfo()

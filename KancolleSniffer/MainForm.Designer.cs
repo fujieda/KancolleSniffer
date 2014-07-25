@@ -59,6 +59,11 @@ namespace KancolleSniffer
             this.labelNumOfShips = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panelFleet1 = new System.Windows.Forms.Panel();
+            this.panelBattleInfo = new System.Windows.Forms.Panel();
+            this.labelEnemyAirSuperiority = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
+            this.labelFormation = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.labelAkashiTimer = new System.Windows.Forms.Label();
             this.labelAirSuperiority = new System.Windows.Forms.Label();
@@ -179,18 +184,15 @@ namespace KancolleSniffer
             this.labelFleet3 = new System.Windows.Forms.Label();
             this.labelCheckFleet2 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
-            this.panelBattleInfo = new System.Windows.Forms.Panel();
-            this.label29 = new System.Windows.Forms.Label();
-            this.labelFormation = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
+            this.panelBattleInfo.SuspendLayout();
             this.panelDock.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.contextMenuStripToolTip.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.panelBattleInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelHeadquarters
@@ -355,6 +357,51 @@ namespace KancolleSniffer
             this.panelFleet1.Name = "panelFleet1";
             this.panelFleet1.Size = new System.Drawing.Size(245, 136);
             this.panelFleet1.TabIndex = 2;
+            // 
+            // panelBattleInfo
+            // 
+            this.panelBattleInfo.Controls.Add(this.labelEnemyAirSuperiority);
+            this.panelBattleInfo.Controls.Add(this.label30);
+            this.panelBattleInfo.Controls.Add(this.labelFormation);
+            this.panelBattleInfo.Controls.Add(this.label29);
+            this.panelBattleInfo.Location = new System.Drawing.Point(66, 119);
+            this.panelBattleInfo.Name = "panelBattleInfo";
+            this.panelBattleInfo.Size = new System.Drawing.Size(175, 12);
+            this.panelBattleInfo.TabIndex = 40;
+            this.panelBattleInfo.Visible = false;
+            // 
+            // labelEnemyAirSuperiority
+            // 
+            this.labelEnemyAirSuperiority.Location = new System.Drawing.Point(141, 0);
+            this.labelEnemyAirSuperiority.Name = "labelEnemyAirSuperiority";
+            this.labelEnemyAirSuperiority.Size = new System.Drawing.Size(23, 12);
+            this.labelEnemyAirSuperiority.TabIndex = 3;
+            this.labelEnemyAirSuperiority.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(99, 0);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(41, 12);
+            this.label30.TabIndex = 2;
+            this.label30.Text = "敵制空";
+            // 
+            // labelFormation
+            // 
+            this.labelFormation.Location = new System.Drawing.Point(44, 0);
+            this.labelFormation.Name = "labelFormation";
+            this.labelFormation.Size = new System.Drawing.Size(48, 12);
+            this.labelFormation.TabIndex = 1;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(1, 0);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(41, 12);
+            this.label29.TabIndex = 0;
+            this.label29.Text = "交戦形";
             // 
             // label19
             // 
@@ -1447,32 +1494,6 @@ namespace KancolleSniffer
             this.labelFleet2.Text = "第二艦隊";
             this.labelFleet2.Click += new System.EventHandler(this.labelFleet_Click);
             // 
-            // panelBattleInfo
-            // 
-            this.panelBattleInfo.Controls.Add(this.labelFormation);
-            this.panelBattleInfo.Controls.Add(this.label29);
-            this.panelBattleInfo.Location = new System.Drawing.Point(66, 119);
-            this.panelBattleInfo.Name = "panelBattleInfo";
-            this.panelBattleInfo.Size = new System.Drawing.Size(175, 12);
-            this.panelBattleInfo.TabIndex = 40;
-            this.panelBattleInfo.Visible = false;
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(1, 0);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(41, 12);
-            this.label29.TabIndex = 0;
-            this.label29.Text = "戦闘中";
-            // 
-            // labelFormation
-            // 
-            this.labelFormation.Location = new System.Drawing.Point(44, 0);
-            this.labelFormation.Name = "labelFormation";
-            this.labelFormation.Size = new System.Drawing.Size(48, 12);
-            this.labelFormation.TabIndex = 1;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1510,6 +1531,8 @@ namespace KancolleSniffer
             this.panelHeadquarters.PerformLayout();
             this.panelFleet1.ResumeLayout(false);
             this.panelFleet1.PerformLayout();
+            this.panelBattleInfo.ResumeLayout(false);
+            this.panelBattleInfo.PerformLayout();
             this.panelDock.ResumeLayout(false);
             this.panelDock.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -1520,8 +1543,6 @@ namespace KancolleSniffer
             this.contextMenuStripToolTip.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            this.panelBattleInfo.ResumeLayout(false);
-            this.panelBattleInfo.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1664,6 +1685,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.Panel panelBattleInfo;
         private System.Windows.Forms.Label labelFormation;
         private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Label labelEnemyAirSuperiority;
+        private System.Windows.Forms.Label label30;
     }
 }
 

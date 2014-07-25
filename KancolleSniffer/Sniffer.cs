@@ -53,7 +53,7 @@ namespace KancolleSniffer
             _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
             _dockInfo = new DockInfo(_shipInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo, _missionInfo);
-            _battleInfo = new BattleInfo(_shipMaster, _shipInfo);
+            _battleInfo = new BattleInfo(_shipMaster, _shipInfo, _itemInfo);
         }
 
         public void SaveState()
