@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.IO;
 using System.Windows.Forms;
 using Codeplex.Data;
@@ -27,6 +28,7 @@ namespace KancolleSniffer
             "status.json");
 
         public int ExperiencePoint { get; set; }
+        public DateTime LastResetTime { get; set; }
 
         public void Load()
         {

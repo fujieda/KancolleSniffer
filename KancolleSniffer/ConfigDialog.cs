@@ -17,6 +17,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
@@ -38,6 +39,9 @@ namespace KancolleSniffer
             groupBoxSound.Enabled = checkBoxSound.Checked = config.PlaySound;
             numericUpDownMarginShips.Value = config.MarginShips;
 
+            checkBoxReset02.Checked = config.ResetHours.Any(x => x == 2);
+            checkBoxReset14.Checked = config.ResetHours.Any(x => x == 14);
+
             numericUpDownSoundVolume.Value = config.SoundVolume;
             textBoxMissionSoundFile.Text = config.MissionSoundFile;
             textBoxNDockSoundFile.Text = config.NDockSoundFile;
@@ -54,6 +58,12 @@ namespace KancolleSniffer
             config.ShowBaloonTip = checkBoxBalloon.Checked;
             config.PlaySound = checkBoxSound.Checked;
             config.MarginShips = (int)numericUpDownMarginShips.Value;
+
+            config.ResetHours.Clear();
+            if (checkBoxReset02.Checked)
+                config.ResetHours.Add(2);
+            if (checkBoxReset14.Checked)
+                config.ResetHours.Add(14);
 
             config.SoundVolume = (int)numericUpDownSoundVolume.Value;
             config.MissionSoundFile = textBoxMissionSoundFile.Text;

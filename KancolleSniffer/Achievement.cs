@@ -15,35 +15,56 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+
 namespace KancolleSniffer
 {
     public class Achievement
     {
         private int _start;
         private int _current;
+        private DateTime _lastReset;
 
         public double Value { get { return (_current - _start) / 1428.0; } }
+        public List<int> ResetHours { get; set; }
 
         public void InspectBasic(dynamic json)
         {
             _current = (int)json.api_experience;
             if (_start == 0)
-                _start = _current;
+                Reset(_current);
+            foreach (var hour in ResetHours)
+            {
+                var time = DateTime.Today.AddHours(hour);
+                if (DateTime.Now >= time && _lastReset < time)
+                    Reset(_current);
+            }
         }
 
         public void Reset()
         {
-            _start = _current;
+            Reset(_current);
+        }
+
+        private void Reset(int current)
+        {
+            _start = current;
+            _lastReset = DateTime.Now;
         }
 
         public void SaveState(Status status)
         {
             status.ExperiencePoint = _start;
+            status.LastResetTime = _lastReset;
         }
 
         public void LoadState(Status status)
         {
             _start = status.ExperiencePoint;
+            _lastReset = status.LastResetTime;
+            if (_lastReset == DateTime.MinValue)
+                _lastReset = DateTime.Now;
         }
     }
 }

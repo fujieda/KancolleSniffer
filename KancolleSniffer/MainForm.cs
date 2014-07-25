@@ -129,6 +129,7 @@ namespace KancolleSniffer
             TopMost = _config.TopMost;
             _wmp.settings.volume = _config.SoundVolume;
             _sniffer.Item.MarginShips = _config.MarginShips;
+            _sniffer.Achievement.ResetHours = _config.ResetHours;
         }
 
         private void timerMain_Tick(object sender, EventArgs e)
@@ -150,7 +151,7 @@ namespace KancolleSniffer
             }
             labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowItems, item.MaxItems);
             labelNumOfBuckets.Text = item.NumBuckets.ToString("D");
-            labelAchievement.Text = _sniffer.Achievement.ToString("F1");
+            labelAchievement.Text = _sniffer.Achievement.Value.ToString("F1");
         }
 
         private void UpdateMissionLabels()
@@ -354,7 +355,7 @@ namespace KancolleSniffer
 
         private void labelResetAchievement_Click(object sender, EventArgs e)
         {
-            _sniffer.ResetAchievement();
+            _sniffer.Achievement.Reset();
             UpdateItemInfo();
         }
     }

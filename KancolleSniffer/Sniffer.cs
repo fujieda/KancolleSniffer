@@ -232,14 +232,9 @@ namespace KancolleSniffer
             return _akashiTimer[fleet];
         }
 
-        public double Achievement
+        public Achievement Achievement
         {
-            get { return _achievement.Value; }
-        }
-
-        public void ResetAchievement()
-        {
-            _achievement.Reset();
+            get { return _achievement; }
         }
     }
 

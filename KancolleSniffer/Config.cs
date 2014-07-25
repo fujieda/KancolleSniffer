@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Codeplex.Data;
@@ -30,6 +31,7 @@ namespace KancolleSniffer
         public bool ShowBaloonTip { get; set; }
         public bool PlaySound { get; set; }
         public int MarginShips { get; set; }
+        public List<int> ResetHours { get; set; }
         public int SoundVolume { get; set; }
         public string MissionSoundFile { get; set; }
         public string NDockSoundFile { get; set; }
@@ -40,6 +42,7 @@ namespace KancolleSniffer
         {
             FlashWindow = ShowBaloonTip = PlaySound = true;
             MarginShips = 4;
+            ResetHours = new List<int>();
             SoundVolume = 100;
             var dir = Path.GetDirectoryName(Application.ExecutablePath);
 // ReSharper disable AssignNullToNotNullAttribute
