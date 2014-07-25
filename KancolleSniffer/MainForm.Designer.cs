@@ -48,6 +48,8 @@ namespace KancolleSniffer
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panelHeadquarters = new System.Windows.Forms.Panel();
+            this.labelLogin = new System.Windows.Forms.Label();
+            this.labelResetAchievement = new System.Windows.Forms.Label();
             this.labelAchievement = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
             this.labelNumOfBuckets = new System.Windows.Forms.Label();
@@ -56,7 +58,6 @@ namespace KancolleSniffer
             this.label2 = new System.Windows.Forms.Label();
             this.labelNumOfShips = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.labelLogin = new System.Windows.Forms.Label();
             this.panelFleet1 = new System.Windows.Forms.Panel();
             this.label19 = new System.Windows.Forms.Label();
             this.labelAkashiTimer = new System.Windows.Forms.Label();
@@ -178,7 +179,9 @@ namespace KancolleSniffer
             this.labelFleet3 = new System.Windows.Forms.Label();
             this.labelCheckFleet2 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
-            this.labelResetAchievement = new System.Windows.Forms.Label();
+            this.panelBattleInfo = new System.Windows.Forms.Panel();
+            this.label29 = new System.Windows.Forms.Label();
+            this.labelFormation = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelDock.SuspendLayout();
@@ -187,6 +190,7 @@ namespace KancolleSniffer
             this.panel3.SuspendLayout();
             this.contextMenuStripToolTip.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.panelBattleInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelHeadquarters
@@ -206,6 +210,27 @@ namespace KancolleSniffer
             this.panelHeadquarters.Name = "panelHeadquarters";
             this.panelHeadquarters.Size = new System.Drawing.Size(245, 35);
             this.panelHeadquarters.TabIndex = 0;
+            // 
+            // labelLogin
+            // 
+            this.labelLogin.AutoSize = true;
+            this.labelLogin.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.labelLogin.Location = new System.Drawing.Point(6, 4);
+            this.labelLogin.Name = "labelLogin";
+            this.labelLogin.Size = new System.Drawing.Size(203, 26);
+            this.labelLogin.TabIndex = 23;
+            this.labelLogin.Text = "艦これにログインしてください。\r\nログイン中ならログインし直してください。";
+            // 
+            // labelResetAchievement
+            // 
+            this.labelResetAchievement.AutoSize = true;
+            this.labelResetAchievement.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelResetAchievement.Location = new System.Drawing.Point(192, 16);
+            this.labelResetAchievement.Name = "labelResetAchievement";
+            this.labelResetAchievement.Size = new System.Drawing.Size(15, 14);
+            this.labelResetAchievement.TabIndex = 8;
+            this.labelResetAchievement.Text = "↺";
+            this.labelResetAchievement.Click += new System.EventHandler(this.labelResetAchievement_Click);
             // 
             // labelAchievement
             // 
@@ -279,19 +304,10 @@ namespace KancolleSniffer
             this.label1.TabIndex = 0;
             this.label1.Text = "艦娘数";
             // 
-            // labelLogin
-            // 
-            this.labelLogin.AutoSize = true;
-            this.labelLogin.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelLogin.Location = new System.Drawing.Point(6, 4);
-            this.labelLogin.Name = "labelLogin";
-            this.labelLogin.Size = new System.Drawing.Size(203, 26);
-            this.labelLogin.TabIndex = 23;
-            this.labelLogin.Text = "艦これにログインしてください。\r\nログイン中ならログインし直してください。";
-            // 
             // panelFleet1
             // 
             this.panelFleet1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelFleet1.Controls.Add(this.panelBattleInfo);
             this.panelFleet1.Controls.Add(this.label19);
             this.panelFleet1.Controls.Add(this.labelAkashiTimer);
             this.panelFleet1.Controls.Add(this.labelAirSuperiority);
@@ -1431,16 +1447,31 @@ namespace KancolleSniffer
             this.labelFleet2.Text = "第二艦隊";
             this.labelFleet2.Click += new System.EventHandler(this.labelFleet_Click);
             // 
-            // labelResetAchievement
+            // panelBattleInfo
             // 
-            this.labelResetAchievement.AutoSize = true;
-            this.labelResetAchievement.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelResetAchievement.Location = new System.Drawing.Point(192, 16);
-            this.labelResetAchievement.Name = "labelResetAchievement";
-            this.labelResetAchievement.Size = new System.Drawing.Size(15, 14);
-            this.labelResetAchievement.TabIndex = 8;
-            this.labelResetAchievement.Text = "↺";
-            this.labelResetAchievement.Click += new System.EventHandler(this.labelResetAchievement_Click);
+            this.panelBattleInfo.Controls.Add(this.labelFormation);
+            this.panelBattleInfo.Controls.Add(this.label29);
+            this.panelBattleInfo.Location = new System.Drawing.Point(66, 119);
+            this.panelBattleInfo.Name = "panelBattleInfo";
+            this.panelBattleInfo.Size = new System.Drawing.Size(175, 12);
+            this.panelBattleInfo.TabIndex = 40;
+            this.panelBattleInfo.Visible = false;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(1, 0);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(41, 12);
+            this.label29.TabIndex = 0;
+            this.label29.Text = "戦闘中";
+            // 
+            // labelFormation
+            // 
+            this.labelFormation.Location = new System.Drawing.Point(44, 0);
+            this.labelFormation.Name = "labelFormation";
+            this.labelFormation.Size = new System.Drawing.Size(48, 12);
+            this.labelFormation.TabIndex = 1;
             // 
             // MainForm
             // 
@@ -1489,6 +1520,8 @@ namespace KancolleSniffer
             this.contextMenuStripToolTip.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.panelBattleInfo.ResumeLayout(false);
+            this.panelBattleInfo.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1628,6 +1661,9 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelAchievement;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Label labelResetAchievement;
+        private System.Windows.Forms.Panel panelBattleInfo;
+        private System.Windows.Forms.Label labelFormation;
+        private System.Windows.Forms.Label label29;
     }
 }
 

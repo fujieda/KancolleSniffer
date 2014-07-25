@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Achievement.cs" />
     <Compile Include="AkashiTimer.cs" />
+    <Compile Include="BattleInfo.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigDialog.cs">
       <SubType>Form</SubType>

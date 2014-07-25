@@ -31,8 +31,9 @@ namespace KancolleSniffer
                 {
                     Name = entry.api_name,
                     FuelMax = (int)entry.api_fuel_max,
-                    BullMax = (int)entry.api_bull_max
-                };                
+                    BullMax = (int)entry.api_bull_max,
+                    ShipType = (int)entry.api_stype,
+                };
             }
         }
 
@@ -41,7 +42,7 @@ namespace KancolleSniffer
             get
             {
                 ShipSpec spec;
-                return _shipSpecs.TryGetValue(id, out spec) ? spec : new ShipSpec { Name = "不明" };                
+                return _shipSpecs.TryGetValue(id, out spec) ? spec : new ShipSpec {Name = "不明"};
             }
         }
     }
@@ -51,5 +52,11 @@ namespace KancolleSniffer
         public string Name { get; set; }
         public int FuelMax { get; set; }
         public int BullMax { get; set; }
+        public int ShipType { get; set; }
+
+        public bool IsSubmarine
+        {
+            get { return ShipType == 13 || ShipType == 14; }
+        }
     }
 }

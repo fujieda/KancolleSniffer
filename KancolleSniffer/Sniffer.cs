@@ -30,6 +30,7 @@ namespace KancolleSniffer
         private readonly DockInfo _dockInfo;
         private readonly AkashiTimer _akashiTimer;
         private readonly Achievement _achievement = new Achievement();
+        private readonly BattleInfo _battleInfo;
         private readonly Status _status = new Status();
 
         [Flags]
@@ -43,7 +44,8 @@ namespace KancolleSniffer
             NDock = 16,
             Mission = 32,
             QuestList = 64,
-            All = 127
+            Battle = 128,
+            All = 255
         }
 
         public Sniffer()
@@ -51,6 +53,7 @@ namespace KancolleSniffer
             _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
             _dockInfo = new DockInfo(_shipInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo, _missionInfo);
+            _battleInfo = new BattleInfo(_shipMaster, _shipInfo);
         }
 
         public void SaveState()
@@ -88,6 +91,7 @@ namespace KancolleSniffer
                 _dockInfo.InspectNDock(data.api_ndock);
                 _akashiTimer.SetTimer(true);
                 _achievement.InspectBasic(data.api_basic);
+                _battleInfo.InBattle = false;
                 return Update.All;
             }
             if (url.EndsWith("api_get_member/basic"))
@@ -133,7 +137,8 @@ namespace KancolleSniffer
                 // ここだけjsonなので注意
                 _shipInfo.InspectShip(json);
                 _akashiTimer.SetTimer();
-                return Update.Item | Update.Ship;
+                _battleInfo.InBattle = false;
+                return Update.Item | Update.Ship | Update.Battle;
             }
             if (url.EndsWith("api_get_member/ship3"))
             {
@@ -178,6 +183,11 @@ namespace KancolleSniffer
             {
                 _shipInfo.InspectNyukyo(request);
                 return Update.Item | Update.Ship;
+            }
+            if (url.EndsWith("api_req_sortie/battle") || url.EndsWith("api_req_practice/battle"))
+            {
+                _battleInfo.InspectBattle(data);
+                return Update.Battle;
             }
             return Update.None;
         }
@@ -235,6 +245,11 @@ namespace KancolleSniffer
         public Achievement Achievement
         {
             get { return _achievement; }
+        }
+
+        public BattleInfo Battle
+        {
+            get { return _battleInfo; }
         }
     }
 

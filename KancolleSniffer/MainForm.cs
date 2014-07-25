@@ -81,6 +81,8 @@ namespace KancolleSniffer
                 action += UpdateQuestList;
             if ((update & Sniffer.Update.Ship) != 0)
                 action += UpdateShipInfo;
+            if ((update & Sniffer.Update.Battle) != 0)
+                action += UpdateBattleInfo;
             Invoke(action);
         }
 
@@ -200,6 +202,21 @@ namespace KancolleSniffer
             UpdateChargeInfo();
             UpdateCondTimers();
             UpdateAkashiTimer();
+        }
+
+        private void UpdateBattleInfo()
+        {
+            labelFormation.Text = "";
+            panelBattleInfo.Visible = _sniffer.Battle.InBattle;
+            if (!_sniffer.Battle.InBattle)
+                return;
+            var timer = new Timer {Interval = _sniffer.Battle.DelayInFormation};
+            timer.Tick += (sender, args) =>
+            {
+                labelFormation.Text = _sniffer.Battle.Formation;
+                timer.Stop();
+            };
+            timer.Start();
         }
 
         private void UpdateChargeInfo()
