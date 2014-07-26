@@ -39,7 +39,8 @@ namespace KancolleSniffer
         public MainForm()
         {
             InitializeComponent();
-            FiddlerApplication.AfterSessionComplete += FiddlerApplication_AfterSessionComplete;
+            FiddlerApplication.BeforeRequest += FiddlerApplication_BeforeRequest;
+            FiddlerApplication.BeforeResponse += FiddlerApplication_BeforeResponse;
             _wmp.PlayStateChange += new EventHandler(_wmp_PlayStateChange);
             _configDialog.Tag = _config;
             _labelRightDistance = labelHP1.Parent.Width - labelHP1.Right;
@@ -49,7 +50,20 @@ namespace KancolleSniffer
                 label.Tag = i++;
         }
 
-        private void FiddlerApplication_AfterSessionComplete(Session oSession)
+        private void FiddlerApplication_BeforeRequest(Session oSession)
+        {
+            var path = oSession.PathAndQuery;
+            if (!path.StartsWith("/kcsapi/api_")) // 艦これのAPI以外は無視する
+            {
+                oSession.Ignore();
+                return;
+            }
+            // 戦闘開始のタイミングのずれを防ぐためにバッファする
+            if (path.EndsWith("api_req_sortie/battle") || path.EndsWith("api_req_practice/battle"))
+                oSession.bBufferResponse = true;
+        }
+
+        private void FiddlerApplication_BeforeResponse(Session oSession)
         {
             if (!oSession.bHasResponse || !oSession.uriContains("/kcsapi/api_"))
                 return;
