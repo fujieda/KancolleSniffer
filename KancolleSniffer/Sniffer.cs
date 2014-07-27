@@ -189,6 +189,10 @@ namespace KancolleSniffer
                 _battleInfo.InspectBattle(data);
                 return Update.Battle;
             }
+            if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_practice/battleresult"))
+            {
+                return Update.Ship;
+            }
             return Update.None;
         }
 

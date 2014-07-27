@@ -61,6 +61,7 @@ namespace KancolleSniffer
             Formation = FormationName(json);
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
             SetDelay(json);
+            CauseDamage(json);
         }
 
         private string FormationName(dynamic json)
@@ -217,6 +218,39 @@ namespace KancolleSniffer
             var equips = ((int[][])json.api_eSlot).SelectMany(x => x);
             return (from slot in equips.Zip(maxEq, (id, max) => new {id, max})
                 select (int)Math.Floor(_itemInfo.GetSpecByItemId(slot.id).TyKu * Math.Sqrt(slot.max))).Sum();
+        }
+
+        private void CauseDamage(dynamic json)
+        {
+            var ships = _shipInfo.GetShipStatuses((int)json.api_dock_id - 1);
+            if (json.api_kouku.api_stage3 != null)
+                CauseSimpleDamage(ships, json.api_kouku.api_stage3.api_fdam);
+            if (json.api_opening_atack != null)
+                CauseSimpleDamage(ships, json.api_opening_atack.api_fdam);
+            if (json.api_hougeki1 != null)
+                CauseHougekiDamage(ships, json.api_hougeki1.api_df_list, json.api_hougeki1.api_damage);
+            if (json.api_hougeki2 != null)
+                CauseHougekiDamage(ships, json.api_hougeki2.api_df_list, json.api_hougeki2.api_damage);
+            if (json.api_raigeki != null)
+                CauseSimpleDamage(ships, json.api_raigeki.api_fdam);
+        }
+
+        private void CauseSimpleDamage(ShipStatus[] ships, dynamic rawDamage)
+        {
+            var damage = (int[])rawDamage;
+            for (var i = 0; i < ships.Length; i++)
+                ships[i].NowHp -= damage[i + 1];
+        }
+
+        private void CauseHougekiDamage(ShipStatus[] ships, dynamic rawTergets, dynamic rawDamages)
+        {
+            var targets = ((dynamic[])rawTergets).Skip(1).SelectMany(x=> (int[])x);
+            var damages = ((dynamic[])rawDamages).Skip(1).SelectMany(x => (double[])x);
+            foreach (var hit in targets.Zip(damages, (t, d) => new {t, d}))
+            {
+                if (hit.t - 1 < ships.Length)
+                    ships[hit.t - 1].NowHp -= (int)hit.d;                
+            }
         }
     }
 }
