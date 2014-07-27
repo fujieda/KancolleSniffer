@@ -47,6 +47,7 @@ namespace KancolleSniffer
             textBoxNDockSoundFile.Text = config.NDockSoundFile;
             textBoxKDockSoundFile.Text = config.KDockSoundFile;
             textBoxMaxShipsSoundFile.Text = config.MaxShipsSoundFile;
+            textBoxDamagedShipSoundFile.Text = config.DamagedShipSoundFile;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -70,6 +71,7 @@ namespace KancolleSniffer
             config.NDockSoundFile = textBoxNDockSoundFile.Text;
             config.KDockSoundFile = textBoxKDockSoundFile.Text;
             config.MaxShipsSoundFile = textBoxMaxShipsSoundFile.Text;
+            config.DamagedShipSoundFile = textBoxDamagedShipSoundFile.Text;
         }
 
         private void checkBoxSound_CheckedChanged(object sender, EventArgs e)
@@ -95,6 +97,11 @@ namespace KancolleSniffer
         private void buttonMaxShipsOpenFile_Click(object sender, EventArgs e)
         {
             ChooseSoundFile(textBoxMaxShipsSoundFile);
+        }
+
+        private void buttonDamagedShipOpenFile_Click(object sender, EventArgs e)
+        {
+            ChooseSoundFile(textBoxDamagedShipSoundFile);
         }
 
         private void ChooseSoundFile(TextBox textBox)

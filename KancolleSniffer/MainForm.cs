@@ -211,6 +211,8 @@ namespace KancolleSniffer
                     SetCondLabel(cond[i], stat.Cond);
                 next[i].Text = stat.ExpToNext.ToString("D");
             }
+            if (_sniffer.Battle.HasDamagedShip)
+                Ring("大破した艦娘がいます", string.Join(" ", _sniffer.Battle.DamagedShipNames), _config.DamagedShipSoundFile);
             labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
             UpdateChargeInfo();
             UpdateCondTimers();

@@ -37,6 +37,7 @@ namespace KancolleSniffer
         public string NDockSoundFile { get; set; }
         public string KDockSoundFile { get; set; }
         public string MaxShipsSoundFile { get; set; }
+        public string DamagedShipSoundFile { get; set; }
 
         public Config()
         {
@@ -50,6 +51,7 @@ namespace KancolleSniffer
             NDockSoundFile = Path.Combine(dir, "nyuukyo.mp3");
             KDockSoundFile = Path.Combine(dir, "kenzou.mp3");
             MaxShipsSoundFile = Path.Combine(dir, "kanmusu.mp3");
+            DamagedShipSoundFile = Path.Combine(dir, "taiha.mp3");
 // ReSharper restore AssignNullToNotNullAttribute
         }
 

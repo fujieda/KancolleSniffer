@@ -92,6 +92,7 @@ namespace KancolleSniffer
                 _akashiTimer.SetTimer(true);
                 _achievement.InspectBasic(data.api_basic);
                 _battleInfo.InBattle = false;
+                _battleInfo.HasDamagedShip = false;
                 return Update.All;
             }
             if (url.EndsWith("api_get_member/basic"))

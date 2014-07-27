@@ -30,6 +30,8 @@ namespace KancolleSniffer
         public int DelayInFormation { get; private set; }
         public int EnemyAirSuperiority { get; private set; }
         public int DelayInAirSuperiority { get; private set; }
+        public bool HasDamagedShip { get; set; }
+        public string[] DamagedShipNames { get; private set; }
 
         private struct Delay
         {
@@ -233,6 +235,9 @@ namespace KancolleSniffer
                 CauseHougekiDamage(ships, json.api_hougeki2.api_df_list, json.api_hougeki2.api_damage);
             if (json.api_raigeki != null)
                 CauseSimpleDamage(ships, json.api_raigeki.api_fdam);
+            DamagedShipNames =
+                (from ship in ships where ship.DamageLevel == ShipStatus.Damage.Badly select ship.Name).ToArray();
+            HasDamagedShip = DamagedShipNames.Any();
         }
 
         private void CauseSimpleDamage(ShipStatus[] ships, dynamic rawDamage)
@@ -244,12 +249,12 @@ namespace KancolleSniffer
 
         private void CauseHougekiDamage(ShipStatus[] ships, dynamic rawTergets, dynamic rawDamages)
         {
-            var targets = ((dynamic[])rawTergets).Skip(1).SelectMany(x=> (int[])x);
+            var targets = ((dynamic[])rawTergets).Skip(1).SelectMany(x => (int[])x);
             var damages = ((dynamic[])rawDamages).Skip(1).SelectMany(x => (double[])x);
             foreach (var hit in targets.Zip(damages, (t, d) => new {t, d}))
             {
                 if (hit.t - 1 < ships.Length)
-                    ships[hit.t - 1].NowHp -= (int)hit.d;                
+                    ships[hit.t - 1].NowHp -= (int)hit.d;
             }
         }
     }
