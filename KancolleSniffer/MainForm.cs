@@ -166,7 +166,10 @@ namespace KancolleSniffer
             }
             labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowItems, item.MaxItems);
             labelNumOfBuckets.Text = item.NumBuckets.ToString("D");
-            labelAchievement.Text = _sniffer.Achievement.Value.ToString("F1");
+            var ac = _sniffer.Achievement.Value;
+            if (ac >= 10000)
+                ac = 9999;
+            labelAchievement.Text = ac >= 1000 ? ac.ToString("D") : ac.ToString("F1");
         }
 
         private void UpdateMissionLabels()
