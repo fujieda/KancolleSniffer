@@ -59,6 +59,7 @@ namespace KancolleSniffer
         public void SaveState()
         {
             _achievement.SaveState(_status);
+            _itemInfo.SaveState(_status);
             _status.Save();
         }
 
@@ -66,6 +67,7 @@ namespace KancolleSniffer
         {
             _status.Load();
             _achievement.LoadState(_status);
+            _itemInfo.LoadSate(_status);
         }
 
         public Update Sniff(string url, string request, dynamic json)

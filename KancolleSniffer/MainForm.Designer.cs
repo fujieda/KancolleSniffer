@@ -184,6 +184,8 @@ namespace KancolleSniffer
             this.labelFleet3 = new System.Windows.Forms.Label();
             this.labelCheckFleet2 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
+            this.labelBucketHistoryButton = new System.Windows.Forms.Label();
+            this.labelBucketHistory = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -199,6 +201,7 @@ namespace KancolleSniffer
             // 
             this.panelHeadquarters.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelHeadquarters.Controls.Add(this.labelLogin);
+            this.panelHeadquarters.Controls.Add(this.labelBucketHistoryButton);
             this.panelHeadquarters.Controls.Add(this.labelResetAchievement);
             this.panelHeadquarters.Controls.Add(this.labelAchievement);
             this.panelHeadquarters.Controls.Add(this.label28);
@@ -215,11 +218,10 @@ namespace KancolleSniffer
             // 
             // labelLogin
             // 
-            this.labelLogin.AutoSize = true;
             this.labelLogin.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelLogin.Location = new System.Drawing.Point(3, 3);
+            this.labelLogin.Location = new System.Drawing.Point(6, 3);
             this.labelLogin.Name = "labelLogin";
-            this.labelLogin.Size = new System.Drawing.Size(203, 26);
+            this.labelLogin.Size = new System.Drawing.Size(210, 26);
             this.labelLogin.TabIndex = 23;
             this.labelLogin.Text = "艦これにログインしてください。\r\nログイン中ならログインし直してください。";
             // 
@@ -227,7 +229,7 @@ namespace KancolleSniffer
             // 
             this.labelResetAchievement.AutoSize = true;
             this.labelResetAchievement.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelResetAchievement.Location = new System.Drawing.Point(191, 15);
+            this.labelResetAchievement.Location = new System.Drawing.Point(200, 15);
             this.labelResetAchievement.Name = "labelResetAchievement";
             this.labelResetAchievement.Size = new System.Drawing.Size(15, 14);
             this.labelResetAchievement.TabIndex = 8;
@@ -236,17 +238,16 @@ namespace KancolleSniffer
             // 
             // labelAchievement
             // 
-            this.labelAchievement.Location = new System.Drawing.Point(159, 18);
+            this.labelAchievement.Location = new System.Drawing.Point(168, 18);
             this.labelAchievement.Name = "labelAchievement";
             this.labelAchievement.Size = new System.Drawing.Size(31, 12);
             this.labelAchievement.TabIndex = 7;
-            this.labelAchievement.Text = "0.0";
             this.labelAchievement.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label28
             // 
             this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(161, 3);
+            this.label28.Location = new System.Drawing.Point(170, 3);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(29, 12);
             this.label28.TabIndex = 6;
@@ -1494,12 +1495,35 @@ namespace KancolleSniffer
             this.labelFleet2.Text = "第二艦隊";
             this.labelFleet2.Click += new System.EventHandler(this.labelFleet_Click);
             // 
+            // labelBucketHistoryButton
+            // 
+            this.labelBucketHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelBucketHistoryButton.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.labelBucketHistoryButton.Image = ((System.Drawing.Image)(resources.GetObject("labelBucketHistoryButton.Image")));
+            this.labelBucketHistoryButton.Location = new System.Drawing.Point(146, 15);
+            this.labelBucketHistoryButton.Name = "labelBucketHistoryButton";
+            this.labelBucketHistoryButton.Size = new System.Drawing.Size(14, 14);
+            this.labelBucketHistoryButton.TabIndex = 9;
+            this.labelBucketHistoryButton.Click += new System.EventHandler(this.labelBucketHistoryButton_Click);
+            // 
+            // labelBucketHistory
+            // 
+            this.labelBucketHistory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelBucketHistory.Location = new System.Drawing.Point(106, 36);
+            this.labelBucketHistory.Name = "labelBucketHistory";
+            this.labelBucketHistory.Size = new System.Drawing.Size(61, 28);
+            this.labelBucketHistory.TabIndex = 42;
+            this.labelBucketHistory.Text = "+100 今日\r\n+100 今週";
+            this.labelBucketHistory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelBucketHistory.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(250, 484);
             this.ContextMenuStrip = this.contextMenuStripToolTip;
+            this.Controls.Add(this.labelBucketHistory);
             this.Controls.Add(this.labelCheckFleet2);
             this.Controls.Add(this.labelFleet2);
             this.Controls.Add(this.labelCheckFleet3);
@@ -1687,6 +1711,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Label labelEnemyAirSuperiority;
         private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label labelBucketHistoryButton;
+        private System.Windows.Forms.Label labelBucketHistory;
     }
 }
 

@@ -19,6 +19,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Codeplex.Data;
 using Fiddler;
@@ -403,6 +404,27 @@ namespace KancolleSniffer
         {
             _sniffer.Achievement.Reset();
             UpdateItemInfo();
+        }
+
+        private void labelBucketHistoryButton_Click(object sender, EventArgs e)
+        {
+            if (labelBucketHistory.Visible)
+            {
+                labelBucketHistory.Visible = false;
+                labelBucketHistoryButton.BackColor = DefaultBackColor;
+            }
+            else
+            {
+                labelBucketHistory.Visible = true;
+                labelBucketHistoryButton.BackColor = SystemColors.ActiveCaption;
+                var day = _sniffer.Item.NumBuckets - _sniffer.Item.BucketsInMorning;
+                var week = _sniffer.Item.NumBuckets - _sniffer.Item.BucketsOnMonday;
+                if (day >= 1000)
+                    day = 999;
+                if (week >= 1000)
+                    week = 999;
+                labelBucketHistory.Text = string.Format("{0:+#;-#;±0} 今日\n{1:+#;-#;±0} 今週", day, week);
+            }
         }
     }
 }

@@ -29,6 +29,9 @@ namespace KancolleSniffer
 
         public int ExperiencePoint { get; set; }
         public DateTime LastResetTime { get; set; }
+        public int BucketsInMorning { get; set; }
+        public int BucketsOnMonday { get; set; }
+        public DateTime BacketsLastSetTime { get; set; }
 
         public void Load()
         {

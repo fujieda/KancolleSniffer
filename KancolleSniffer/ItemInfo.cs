@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using System.Web;
 
@@ -31,13 +32,36 @@ namespace KancolleSniffer
         private int _nowShips;
         private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
         private readonly Dictionary<int, int> _itemIds = new Dictionary<int, int>();
+        private int _numBuckets;
+        private DateTime _bucketsLastSetTime;
 
         public int MaxShips { get; private set; }
         public int MarginShips { get; set; }
         public bool NeedRing { get; set; }
         public int NowItems { get; set; }
         public int MaxItems { get; private set; }
-        public int NumBuckets { get; set; }
+        public int BucketsOnMonday { get; set; }
+        public int BucketsInMorning { get; set; }
+
+        public int NumBuckets
+        {
+            get
+            {
+                return _numBuckets;
+            }
+            set
+            {
+                var morning = DateTime.Today.AddHours(5);
+                var dow = (int)morning.DayOfWeek;
+                var monday = morning.AddDays(dow == 0 ? -6 : -dow + 1);
+                if (DateTime.Now >= monday && _bucketsLastSetTime < monday)
+                    BucketsOnMonday = _numBuckets;
+                if (DateTime.Now >= morning && _bucketsLastSetTime < morning)
+                    BucketsInMorning = _numBuckets;
+                _numBuckets = value;
+                _bucketsLastSetTime = DateTime.Now;
+            }
+        }
 
         public int NowShips
         {
@@ -139,6 +163,20 @@ namespace KancolleSniffer
         public ItemSpec GetSpecByItemId(int id)
         {
             return _itemSpecs[id];
+        }
+
+        public void SaveState(Status status)
+        {
+            status.BucketsOnMonday = BucketsOnMonday;
+            status.BucketsInMorning = BucketsInMorning;
+            status.BacketsLastSetTime = _bucketsLastSetTime;
+        }
+
+        public void LoadSate(Status status)
+        {
+            BucketsOnMonday = status.BucketsOnMonday;
+            BucketsInMorning = status.BucketsInMorning;
+            _bucketsLastSetTime = status.BacketsLastSetTime;
         }
     }
 }
