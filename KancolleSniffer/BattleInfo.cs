@@ -47,7 +47,7 @@ namespace KancolleSniffer
             public const int AirFightBoth = 2700;
             public const int Support = 9800;
             public const int OpeningAttack = 3500;
-            public const int Cutin = 4900;
+            public const int Cutin = 4500;
         }
 
         public BattleInfo(ShipMaster shipMaster, ShipInfo shipInfo, ItemInfo itemInfo)
