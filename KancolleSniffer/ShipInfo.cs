@@ -158,6 +158,9 @@ namespace KancolleSniffer
                 status.Fuel = (int)entry.api_fuel;
                 status.OnSlot = (from num in (dynamic[])entry.api_onslot select (int)num).ToArray();
             }
+            var material = (int[])json.api_material;
+            for (var i = 0; i < material.Length; i++)
+                _itemInfo.MaterialHistory[i].Now = material[i];
         }
 
         public void InspectChange(string request)
@@ -222,13 +225,17 @@ namespace KancolleSniffer
             InspectShip(json.api_ship);
         }
 
-        public void InspectDestroyShip(string request)
+        public void InspectDestroyShip(string request, dynamic json)
         {
             var values = HttpUtility.ParseQueryString(request);
             var ship = int.Parse(values["api_ship_id"]);
             _itemInfo.NowShips -= 1;
             _itemInfo.NowItems -= SlotItemCount(ship);
             AlterShip(ship, RemoveShip);
+
+            var material = (int[])json.api_material;
+            for (var i = 0; i < material.Length; i++)
+                _itemInfo.MaterialHistory[i].Now = material[i];
         }
 
         private int SlotItemCount(int id)
@@ -246,7 +253,7 @@ namespace KancolleSniffer
             ship.NowHp = ship.MaxHp;
             if (ship.Cond < 40)
                 ship.Cond = 40;
-            _itemInfo.NumBuckets--;
+            _itemInfo.MaterialHistory[(int)Material.Bucket].Now--;
         }
 
         public ShipStatus[] GetShipStatuses(int fleet)

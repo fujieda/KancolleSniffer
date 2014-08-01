@@ -51,7 +51,7 @@ namespace KancolleSniffer
         public Sniffer()
         {
             _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
-            _dockInfo = new DockInfo(_shipInfo);
+            _dockInfo = new DockInfo(_shipInfo, _itemInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo, _missionInfo);
             _battleInfo = new BattleInfo(_shipMaster, _shipInfo, _itemInfo);
         }
@@ -152,7 +152,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_hokyu/charge"))
             {
                 _shipInfo.InspectCharge(data);
-                return Update.Ship;
+                return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_kousyou/createitem"))
             {
@@ -168,13 +168,13 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_kousyou/destroyship"))
             {
-                _shipInfo.InspectDestroyShip(request);
+                _shipInfo.InspectDestroyShip(request, data);
                 _akashiTimer.SetTimer();
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_kousyou/destroyitem2"))
             {
-                _itemInfo.InspectDestroyItem(request);
+                _itemInfo.InspectDestroyItem(request, data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_kaisou/powerup"))
@@ -195,6 +195,11 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_practice/battleresult"))
             {
                 return Update.Ship;
+            }
+            if (url.EndsWith("api_req_mission/result"))
+            {
+                _itemInfo.InspectMissionResult(data);
+                return Update.Item;
             }
             return Update.None;
         }

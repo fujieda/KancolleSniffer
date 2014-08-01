@@ -49,6 +49,7 @@ namespace KancolleSniffer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panelHeadquarters = new System.Windows.Forms.Panel();
             this.labelLogin = new System.Windows.Forms.Label();
+            this.labelBucketHistoryButton = new System.Windows.Forms.Label();
             this.labelResetAchievement = new System.Windows.Forms.Label();
             this.labelAchievement = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
@@ -107,6 +108,12 @@ namespace KancolleSniffer
             this.labelShip3 = new System.Windows.Forms.Label();
             this.labelShip2 = new System.Windows.Forms.Label();
             this.labelShip1 = new System.Windows.Forms.Label();
+            this.panelMaterialHistory = new System.Windows.Forms.Panel();
+            this.labelBouxiteHistory = new System.Windows.Forms.Label();
+            this.labelSteelHistory = new System.Windows.Forms.Label();
+            this.labelBulletHistory = new System.Windows.Forms.Label();
+            this.label35 = new System.Windows.Forms.Label();
+            this.labelFuelHistory = new System.Windows.Forms.Label();
             this.labelRepair = new System.Windows.Forms.Label();
             this.panelDock = new System.Windows.Forms.Panel();
             this.labelRepairShip4 = new System.Windows.Forms.Label();
@@ -184,11 +191,13 @@ namespace KancolleSniffer
             this.labelFleet3 = new System.Windows.Forms.Label();
             this.labelCheckFleet2 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
-            this.labelBucketHistoryButton = new System.Windows.Forms.Label();
             this.labelBucketHistory = new System.Windows.Forms.Label();
+            this.label36 = new System.Windows.Forms.Label();
+            this.labelMaterialHistoryButton = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
+            this.panelMaterialHistory.SuspendLayout();
             this.panelDock.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -224,6 +233,17 @@ namespace KancolleSniffer
             this.labelLogin.Size = new System.Drawing.Size(210, 26);
             this.labelLogin.TabIndex = 23;
             this.labelLogin.Text = "艦これにログインしてください。\r\nログイン中ならログインし直してください。";
+            // 
+            // labelBucketHistoryButton
+            // 
+            this.labelBucketHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelBucketHistoryButton.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.labelBucketHistoryButton.Image = ((System.Drawing.Image)(resources.GetObject("labelBucketHistoryButton.Image")));
+            this.labelBucketHistoryButton.Location = new System.Drawing.Point(146, 15);
+            this.labelBucketHistoryButton.Name = "labelBucketHistoryButton";
+            this.labelBucketHistoryButton.Size = new System.Drawing.Size(14, 14);
+            this.labelBucketHistoryButton.TabIndex = 9;
+            this.labelBucketHistoryButton.Click += new System.EventHandler(this.labelBucketHistoryButton_Click);
             // 
             // labelResetAchievement
             // 
@@ -791,6 +811,65 @@ namespace KancolleSniffer
             this.labelShip1.Name = "labelShip1";
             this.labelShip1.Size = new System.Drawing.Size(77, 12);
             this.labelShip1.TabIndex = 0;
+            // 
+            // panelMaterialHistory
+            // 
+            this.panelMaterialHistory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelMaterialHistory.Controls.Add(this.labelBouxiteHistory);
+            this.panelMaterialHistory.Controls.Add(this.labelSteelHistory);
+            this.panelMaterialHistory.Controls.Add(this.labelBulletHistory);
+            this.panelMaterialHistory.Controls.Add(this.label35);
+            this.panelMaterialHistory.Controls.Add(this.labelFuelHistory);
+            this.panelMaterialHistory.Location = new System.Drawing.Point(56, 206);
+            this.panelMaterialHistory.Name = "panelMaterialHistory";
+            this.panelMaterialHistory.Size = new System.Drawing.Size(188, 40);
+            this.panelMaterialHistory.TabIndex = 41;
+            this.panelMaterialHistory.Visible = false;
+            // 
+            // labelBouxiteHistory
+            // 
+            this.labelBouxiteHistory.Location = new System.Drawing.Point(118, 2);
+            this.labelBouxiteHistory.Name = "labelBouxiteHistory";
+            this.labelBouxiteHistory.Size = new System.Drawing.Size(41, 36);
+            this.labelBouxiteHistory.TabIndex = 7;
+            this.labelBouxiteHistory.Text = "ボーキ";
+            this.labelBouxiteHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // labelSteelHistory
+            // 
+            this.labelSteelHistory.Location = new System.Drawing.Point(79, 2);
+            this.labelSteelHistory.Name = "labelSteelHistory";
+            this.labelSteelHistory.Size = new System.Drawing.Size(41, 36);
+            this.labelSteelHistory.TabIndex = 6;
+            this.labelSteelHistory.Text = "鋼材";
+            this.labelSteelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // labelBulletHistory
+            // 
+            this.labelBulletHistory.Location = new System.Drawing.Point(40, 2);
+            this.labelBulletHistory.Name = "labelBulletHistory";
+            this.labelBulletHistory.Size = new System.Drawing.Size(41, 36);
+            this.labelBulletHistory.TabIndex = 5;
+            this.labelBulletHistory.Text = "弾薬";
+            this.labelBulletHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(158, 14);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(29, 24);
+            this.label35.TabIndex = 4;
+            this.label35.Text = "今日\r\n今週";
+            // 
+            // labelFuelHistory
+            // 
+            this.labelFuelHistory.Location = new System.Drawing.Point(1, 2);
+            this.labelFuelHistory.Name = "labelFuelHistory";
+            this.labelFuelHistory.Size = new System.Drawing.Size(41, 36);
+            this.labelFuelHistory.TabIndex = 0;
+            this.labelFuelHistory.Text = "燃料";
+            this.labelFuelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // labelRepair
             // 
@@ -1495,17 +1574,6 @@ namespace KancolleSniffer
             this.labelFleet2.Text = "第二艦隊";
             this.labelFleet2.Click += new System.EventHandler(this.labelFleet_Click);
             // 
-            // labelBucketHistoryButton
-            // 
-            this.labelBucketHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelBucketHistoryButton.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelBucketHistoryButton.Image = ((System.Drawing.Image)(resources.GetObject("labelBucketHistoryButton.Image")));
-            this.labelBucketHistoryButton.Location = new System.Drawing.Point(146, 15);
-            this.labelBucketHistoryButton.Name = "labelBucketHistoryButton";
-            this.labelBucketHistoryButton.Size = new System.Drawing.Size(14, 14);
-            this.labelBucketHistoryButton.TabIndex = 9;
-            this.labelBucketHistoryButton.Click += new System.EventHandler(this.labelBucketHistoryButton_Click);
-            // 
             // labelBucketHistory
             // 
             this.labelBucketHistory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1517,12 +1585,35 @@ namespace KancolleSniffer
             this.labelBucketHistory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.labelBucketHistory.Visible = false;
             // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(201, 194);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(29, 12);
+            this.label36.TabIndex = 43;
+            this.label36.Text = "資材";
+            // 
+            // labelMaterialHistoryButton
+            // 
+            this.labelMaterialHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelMaterialHistoryButton.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.labelMaterialHistoryButton.Image = ((System.Drawing.Image)(resources.GetObject("labelMaterialHistoryButton.Image")));
+            this.labelMaterialHistoryButton.Location = new System.Drawing.Point(230, 192);
+            this.labelMaterialHistoryButton.Name = "labelMaterialHistoryButton";
+            this.labelMaterialHistoryButton.Size = new System.Drawing.Size(14, 14);
+            this.labelMaterialHistoryButton.TabIndex = 10;
+            this.labelMaterialHistoryButton.Click += new System.EventHandler(this.labelMaterialHistoryButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(250, 484);
             this.ContextMenuStrip = this.contextMenuStripToolTip;
+            this.Controls.Add(this.labelMaterialHistoryButton);
+            this.Controls.Add(this.label36);
+            this.Controls.Add(this.panelMaterialHistory);
             this.Controls.Add(this.labelBucketHistory);
             this.Controls.Add(this.labelCheckFleet2);
             this.Controls.Add(this.labelFleet2);
@@ -1557,6 +1648,8 @@ namespace KancolleSniffer
             this.panelFleet1.PerformLayout();
             this.panelBattleInfo.ResumeLayout(false);
             this.panelBattleInfo.PerformLayout();
+            this.panelMaterialHistory.ResumeLayout(false);
+            this.panelMaterialHistory.PerformLayout();
             this.panelDock.ResumeLayout(false);
             this.panelDock.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -1713,6 +1806,14 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.Label labelBucketHistoryButton;
         private System.Windows.Forms.Label labelBucketHistory;
+        private System.Windows.Forms.Panel panelMaterialHistory;
+        private System.Windows.Forms.Label labelBouxiteHistory;
+        private System.Windows.Forms.Label labelSteelHistory;
+        private System.Windows.Forms.Label labelBulletHistory;
+        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.Label labelFuelHistory;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.Label labelMaterialHistoryButton;
     }
 }
 

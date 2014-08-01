@@ -19,7 +19,6 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Codeplex.Data;
 using Fiddler;
@@ -156,6 +155,20 @@ namespace KancolleSniffer
 
         private void UpdateItemInfo()
         {
+            UpdateNumOfShips();
+            var item = _sniffer.Item;
+            labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowItems, item.MaxItems);
+            labelNumOfBuckets.Text = item.MaterialHistory[(int)Material.Bucket].Now.ToString("D");
+            UpdateBucketHistory();
+            var ac = _sniffer.Achievement.Value;
+            if (ac >= 10000)
+                ac = 9999;
+            labelAchievement.Text = ac >= 1000 ? ac.ToString("D") : ac.ToString("F1");
+            UpdateMaterialHistry();
+        }
+
+        private void UpdateNumOfShips()
+        {
             var item = _sniffer.Item;
             labelNumOfShips.Text = string.Format("{0:D}/{1:D}", item.NowShips, item.MaxShips);
             labelNumOfShips.ForeColor = item.TooManyShips ? Color.Red : Color.Black;
@@ -164,13 +177,36 @@ namespace KancolleSniffer
                 var message = string.Format("残り{0:D}隻", _sniffer.Item.MaxShips - _sniffer.Item.NowShips);
                 Ring("艦娘が多すぎます", message, _config.MaxShipsSoundFile);
                 item.NeedRing = false;
+            }            
+        }
+
+        private void UpdateBucketHistory()
+        {
+            var count = _sniffer.Item.MaterialHistory[(int)Material.Bucket];
+            var day = count.Now - count.BegOfDay;
+            var week = count.Now - count.BegOfWeek;
+            if (day >= 1000)
+                day = 999;
+            if (week >= 1000)
+                week = 999;
+            labelBucketHistory.Text = string.Format("{0:+#;-#;±0} 今日\n{1:+#;-#;±0} 今週", day, week);
+        }
+
+        private void UpdateMaterialHistry()
+        {
+            var labels = new[] { labelFuelHistory, labelBulletHistory, labelSteelHistory, labelBouxiteHistory };
+            var text = new[] { "燃料", "弾薬", "鋼材", "ボーキ" };
+            for (var i = 0; i < labels.Length; i++)
+            {
+                var count = _sniffer.Item.MaterialHistory[i];
+                var day = count.Now - count.BegOfDay;
+                if (day >= 100000)
+                    day = 99999;
+                var week = count.Now - count.BegOfWeek;
+                if (week >= 100000)
+                    week = 99999;
+                labels[i].Text = string.Format("{0}\n{1:+#;-#;±0}\n{2:+#;-#;±0}", text[i], day, week);
             }
-            labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowItems, item.MaxItems);
-            labelNumOfBuckets.Text = item.NumBuckets.ToString("D");
-            var ac = _sniffer.Achievement.Value;
-            if (ac >= 10000)
-                ac = 9999;
-            labelAchievement.Text = ac >= 1000 ? ac.ToString("D") : ac.ToString("F1");
         }
 
         private void UpdateMissionLabels()
@@ -417,13 +453,20 @@ namespace KancolleSniffer
             {
                 labelBucketHistory.Visible = true;
                 labelBucketHistoryButton.BackColor = SystemColors.ActiveCaption;
-                var day = _sniffer.Item.NumBuckets - _sniffer.Item.BucketsInMorning;
-                var week = _sniffer.Item.NumBuckets - _sniffer.Item.BucketsOnMonday;
-                if (day >= 1000)
-                    day = 999;
-                if (week >= 1000)
-                    week = 999;
-                labelBucketHistory.Text = string.Format("{0:+#;-#;±0} 今日\n{1:+#;-#;±0} 今週", day, week);
+            }
+        }
+
+        private void labelMaterialHistoryButton_Click(object sender, EventArgs e)
+        {
+            if (panelMaterialHistory.Visible)
+            {
+                panelMaterialHistory.Visible = false;
+                labelMaterialHistoryButton.BackColor = DefaultBackColor;
+            }
+            else
+            {
+                panelMaterialHistory.Visible = true;
+                labelMaterialHistoryButton.BackColor = SystemColors.ActiveCaption;
             }
         }
     }

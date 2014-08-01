@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2013, 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -32,36 +32,13 @@ namespace KancolleSniffer
         private int _nowShips;
         private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
         private readonly Dictionary<int, int> _itemIds = new Dictionary<int, int>();
-        private int _numBuckets;
-        private DateTime _bucketsLastSetTime;
 
         public int MaxShips { get; private set; }
         public int MarginShips { get; set; }
         public bool NeedRing { get; set; }
         public int NowItems { get; set; }
         public int MaxItems { get; private set; }
-        public int BucketsOnMonday { get; set; }
-        public int BucketsInMorning { get; set; }
-
-        public int NumBuckets
-        {
-            get
-            {
-                return _numBuckets;
-            }
-            set
-            {
-                var morning = DateTime.Today.AddHours(5);
-                var dow = (int)morning.DayOfWeek;
-                var monday = morning.AddDays(dow == 0 ? -6 : -dow + 1);
-                if (DateTime.Now >= monday && _bucketsLastSetTime < monday)
-                    BucketsOnMonday = _numBuckets;
-                if (DateTime.Now >= morning && _bucketsLastSetTime < morning)
-                    BucketsInMorning = _numBuckets;
-                _numBuckets = value;
-                _bucketsLastSetTime = DateTime.Now;
-            }
-        }
+        public MaterialCount[] MaterialHistory { get; private set; }
 
         public int NowShips
         {
@@ -84,6 +61,9 @@ namespace KancolleSniffer
 
         public ItemInfo()
         {
+            MaterialHistory = new MaterialCount[Enum.GetValues(typeof (Material)).Length];
+            foreach (Material m in Enum.GetValues(typeof (Material)))
+                MaterialHistory[(int)m] = new MaterialCount();
             MarginShips = 4;
         }
 
@@ -96,11 +76,7 @@ namespace KancolleSniffer
         public void InspectMaterial(dynamic json)
         {
             foreach (var entry in json)
-            {
-                if ((int)entry.api_id != 6)
-                    continue;
-                NumBuckets = (int)entry.api_value;
-            }
+                MaterialHistory[(int)entry.api_id - 1].Now = (int)entry.api_value;
         }
 
         public void InspectMaster(dynamic json)
@@ -110,7 +86,8 @@ namespace KancolleSniffer
                 _itemSpecs[(int)entry.api_id] = new ItemSpec
                 {
                     Name = (string)entry.api_name,
-                    TyKu = (int)entry.api_type[0] == 3 || (int)entry.api_type[2] == 11 ? (int)entry.api_tyku : 0 // 艦載機と水上爆撃機のみ
+                    TyKu = (int)entry.api_type[0] == 3 || (int)entry.api_type[2] == 11 ? (int)entry.api_tyku : 0
+                    // 艦載機と水上爆撃機のみ
                 };
             }
             _itemSpecs[-1] = new ItemSpec();
@@ -144,10 +121,20 @@ namespace KancolleSniffer
             NowItems += ((object[])json.api_slotitem).Length;
         }
 
-        public void InspectDestroyItem(string request)
+        public void InspectDestroyItem(string request, dynamic json)
         {
             var values = HttpUtility.ParseQueryString(request);
             NowItems -= values["api_slotitem_ids"].Split(',').Length;
+            var get = (int[])json.api_get_material;
+            for (var i = 0; i < get.Length; i++)
+                MaterialHistory[i].Now += get[i];
+        }
+
+        public void InspectMissionResult(dynamic json)
+        {
+            var get = (int[])json.api_get_material;
+            for (var i = 0; i < get.Length; i++)
+                MaterialHistory[i].Now += get[i];
         }
 
         public ItemSpec this[int id]
@@ -167,16 +154,58 @@ namespace KancolleSniffer
 
         public void SaveState(Status status)
         {
-            status.BucketsOnMonday = BucketsOnMonday;
-            status.BucketsInMorning = BucketsInMorning;
-            status.BacketsLastSetTime = _bucketsLastSetTime;
+            status.MatreialHistory = MaterialHistory;
         }
 
         public void LoadSate(Status status)
         {
-            BucketsOnMonday = status.BucketsOnMonday;
-            BucketsInMorning = status.BucketsInMorning;
-            _bucketsLastSetTime = status.BacketsLastSetTime;
+            if (status.MatreialHistory != null)
+                MaterialHistory = status.MatreialHistory;
+        }
+    }
+
+    public enum Material
+    {
+        Fuel,
+        Bullet,
+        Steal,
+        Bouxite,
+        Development,
+        Bucket,
+        Burner,
+    }
+
+    public class MaterialCount
+    {
+        private int _now;
+
+        public int BegOfDay { get; set; }
+        public int BegOfWeek { get; set; }
+        public DateTime LastSet { get; set; }
+
+        public int Now
+        {
+            get { return _now; }
+            set
+            {
+                if (!Status.Restoring) // JSONから値を復旧するときは履歴に触らない
+                {
+                    UpdateHistory();
+                    LastSet = DateTime.Now;
+                }
+                _now = value;
+            }
+        }
+
+        public void UpdateHistory()
+        {
+            var morning = DateTime.Today.AddHours(5);
+            var dow = (int)morning.DayOfWeek;
+            var monday = morning.AddDays(dow == 0 ? -6 : -dow + 1);
+            if (DateTime.Now >= morning && LastSet < morning)
+                BegOfDay = _now;
+            if (DateTime.Now >= monday && LastSet < monday)
+                BegOfWeek = _now;
         }
     }
 }

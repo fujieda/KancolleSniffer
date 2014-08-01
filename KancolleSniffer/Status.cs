@@ -27,19 +27,20 @@ namespace KancolleSniffer
         private readonly string _statusFileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),
             "status.json");
 
+        public static bool Restoring { get; set; }
         public int ExperiencePoint { get; set; }
         public DateTime LastResetTime { get; set; }
-        public int BucketsInMorning { get; set; }
-        public int BucketsOnMonday { get; set; }
-        public DateTime BacketsLastSetTime { get; set; }
+        public MaterialCount[] MatreialHistory { get; set; }
 
         public void Load()
         {
             try
             {
+                Restoring = true;
                 var obj = (Status)DynamicJson.Parse(File.ReadAllText(_statusFileName));
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(obj, null), null);
+                Restoring = false;
             }
             catch (FileNotFoundException)
             {
