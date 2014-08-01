@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Codeplex.Data;
@@ -26,6 +27,7 @@ namespace KancolleSniffer
     {
         private readonly string _configFileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "config.json");
 
+        public Point Location { get; set; }
         public bool TopMost { get; set; }
         public bool FlashWindow { get; set; }
         public bool ShowBaloonTip { get; set; }
@@ -41,6 +43,7 @@ namespace KancolleSniffer
 
         public Config()
         {
+            Location = new Point(int.MinValue, int.MinValue);
             FlashWindow = ShowBaloonTip = PlaySound = true;
             MarginShips = 4;
             ResetHours = new List<int>();

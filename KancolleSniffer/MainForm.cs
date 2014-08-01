@@ -111,6 +111,7 @@ namespace KancolleSniffer
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             FiddlerApplication.Shutdown();
+            _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.Save();
             _sniffer.SaveState();
         }
@@ -145,6 +146,17 @@ namespace KancolleSniffer
             _wmp.settings.volume = _config.SoundVolume;
             _sniffer.Item.MarginShips = _config.MarginShips;
             _sniffer.Achievement.ResetHours = _config.ResetHours;
+            if (_config.Location.X == int.MinValue)
+                return;
+            var newBounds = Bounds;
+            newBounds.Location = _config.Location;
+            if (IsVisibleOnAnyScreen(newBounds))
+                Location = _config.Location;
+        }
+
+        private bool IsVisibleOnAnyScreen(Rectangle rect)
+        {
+            return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
         }
 
         private void timerMain_Tick(object sender, EventArgs e)
