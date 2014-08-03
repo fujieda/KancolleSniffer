@@ -67,37 +67,40 @@ namespace KancolleSniffer
         {
             if (!oSession.bHasResponse || !oSession.uriContains("/kcsapi/api_"))
                 return;
-            var response = oSession.GetResponseBodyAsString();
+            Invoke(new Action<Session>(ProcessRequest), oSession);
+        }
+
+        private void ProcessRequest(Session session)
+        {
+            var response = session.GetResponseBodyAsString();
             if (!response.StartsWith("svdata="))
                 return;
             response = response.Remove(0, "svdata=".Length);
             var json = DynamicJson.Parse(response);
-            var request = oSession.GetRequestBodyAsString();
-            var update = (Sniffer.Update)_sniffer.Sniff(oSession.url, request, json);
+            var request = session.GetRequestBodyAsString();
+            var update = (Sniffer.Update)_sniffer.Sniff(session.url, request, json);
             if (update == Sniffer.Update.Start)
             {
-                Invoke(new Action(() => { labelLogin.Visible = false; }));
+                labelLogin.Visible = false;
                 _started = true;
                 return;
             }
             if (!_started)
                 return;
-            Action action = null;
             if ((update & Sniffer.Update.Item) != 0)
-                action += UpdateItemInfo;
+                UpdateItemInfo();
             if ((update & Sniffer.Update.Timer) != 0)
-                action += UpdateTimers;
+                UpdateTimers();
             if ((update & Sniffer.Update.NDock) != 0)
-                action += UpdateNDocLabels;
+                UpdateNDocLabels();
             if ((update & Sniffer.Update.Mission) != 0)
-                action += UpdateMissionLabels;
+                UpdateMissionLabels();
             if ((update & Sniffer.Update.QuestList) != 0)
-                action += UpdateQuestList;
+                UpdateQuestList();
             if ((update & Sniffer.Update.Ship) != 0)
-                action += UpdateShipInfo;
+                UpdateShipInfo();
             if ((update & Sniffer.Update.Battle) != 0)
-                action += UpdateBattleInfo;
-            Invoke(action);
+                UpdateBattleInfo();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
