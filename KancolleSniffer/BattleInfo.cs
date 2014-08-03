@@ -86,6 +86,11 @@ namespace KancolleSniffer
         {
             // 敵出現まで
             var delay = Delay.Basic;
+            if (json.api_hougeki()) // 夜戦
+            {
+                DelayInAirSuperiority = DelayInFormation = delay;
+                return;
+            }
             if ((int)json.api_formation[2] >= 3)
                 delay += Delay.Tau;
             var subm = (SubmarineFlags)CheckSubmarine(json);
@@ -224,17 +229,26 @@ namespace KancolleSniffer
 
         private void CauseDamage(dynamic json)
         {
-            var ships = _shipInfo.GetShipStatuses((int)json.api_dock_id - 1);
-            if (json.api_kouku.api_stage3 != null)
-                CauseSimpleDamage(ships, json.api_kouku.api_stage3.api_fdam);
-            if (json.api_opening_atack != null)
-                CauseSimpleDamage(ships, json.api_opening_atack.api_fdam);
-            if (json.api_hougeki1 != null)
-                CauseHougekiDamage(ships, json.api_hougeki1.api_df_list, json.api_hougeki1.api_damage);
-            if (json.api_hougeki2 != null)
-                CauseHougekiDamage(ships, json.api_hougeki2.api_df_list, json.api_hougeki2.api_damage);
-            if (json.api_raigeki != null)
-                CauseSimpleDamage(ships, json.api_raigeki.api_fdam);
+            bool midnight = json.api_hougeki();
+            var ships = _shipInfo.GetShipStatuses((int)(midnight ? json.api_deck_id : json.api_dock_id) - 1); // 昼戦はtypoしている
+            if (midnight)
+            {
+                CauseHougekiDamage(ships, json.api_hougeki);
+            }
+            else // 昼戦
+            {
+                ships = _shipInfo.GetShipStatuses((int)json.api_dock_id - 1);
+                if (json.api_kouku.api_stage3 != null)
+                    CauseSimpleDamage(ships, json.api_kouku.api_stage3.api_fdam);
+                if (json.api_opening_atack != null)
+                    CauseSimpleDamage(ships, json.api_opening_atack.api_fdam);
+                if (json.api_hougeki1 != null)
+                    CauseHougekiDamage(ships, json.api_hougeki1);
+                if (json.api_hougeki2 != null)
+                    CauseHougekiDamage(ships, json.api_hougeki2);
+                if (json.api_raigeki != null)
+                    CauseSimpleDamage(ships, json.api_raigeki.api_fdam);
+            }
             DamagedShipNames =
                 (from ship in ships where ship.DamageLevel == ShipStatus.Damage.Badly select ship.Name).ToArray();
             HasDamagedShip = DamagedShipNames.Any();
@@ -247,10 +261,10 @@ namespace KancolleSniffer
                 ships[i].NowHp -= damage[i + 1];
         }
 
-        private void CauseHougekiDamage(ShipStatus[] ships, dynamic rawTergets, dynamic rawDamages)
+        private void CauseHougekiDamage(ShipStatus[] ships, dynamic hougeki)
         {
-            var targets = ((dynamic[])rawTergets).Skip(1).SelectMany(x => (int[])x);
-            var damages = ((dynamic[])rawDamages).Skip(1).SelectMany(x => (double[])x);
+            var targets = ((dynamic[])hougeki.api_df_list).Skip(1).SelectMany(x => (int[])x);
+            var damages = ((dynamic[])hougeki.api_damage).Skip(1).SelectMany(x => (double[])x);
             foreach (var hit in targets.Zip(damages, (t, d) => new {t, d}))
             {
                 if (hit.t - 1 < ships.Length)

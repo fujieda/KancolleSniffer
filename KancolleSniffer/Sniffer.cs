@@ -187,7 +187,8 @@ namespace KancolleSniffer
                 _shipInfo.InspectNyukyo(request);
                 return Update.Item | Update.Ship;
             }
-            if (url.EndsWith("api_req_sortie/battle") || url.EndsWith("api_req_practice/battle"))
+            if (url.EndsWith("api_req_sortie/battle") || url.EndsWith("api_req_practice/battle") ||
+                url.EndsWith("api_req_battle_midnight/sp_midnight") || url.EndsWith("api_req_practice/midnight_battle"))
             {
                 _battleInfo.InspectBattle(data);
                 return Update.Battle;
