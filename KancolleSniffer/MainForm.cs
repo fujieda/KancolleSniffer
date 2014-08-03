@@ -149,6 +149,8 @@ namespace KancolleSniffer
             _wmp.settings.volume = _config.SoundVolume;
             _sniffer.Item.MarginShips = _config.MarginShips;
             _sniffer.Achievement.ResetHours = _config.ResetHours;
+            _sniffer.LogFile = _config.Logging ? _config.LogFile : null;
+                
             if (_config.Location.X == int.MinValue)
                 return;
             var newBounds = Bounds;

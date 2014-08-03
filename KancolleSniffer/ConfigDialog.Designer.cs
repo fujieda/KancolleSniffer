@@ -45,6 +45,7 @@ namespace KancolleSniffer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBoxNotification = new System.Windows.Forms.GroupBox();
             this.numericUpDownMarginShips = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
@@ -53,6 +54,9 @@ namespace KancolleSniffer
             this.checkBoxBalloon = new System.Windows.Forms.CheckBox();
             this.checkBoxFlash = new System.Windows.Forms.CheckBox();
             this.groupBoxSound = new System.Windows.Forms.GroupBox();
+            this.buttonDamagedShipOpenFile = new System.Windows.Forms.Button();
+            this.textBoxDamagedShipSoundFile = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.numericUpDownSoundVolume = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.buttonMaxShipsOpenFile = new System.Windows.Forms.Button();
@@ -76,15 +80,15 @@ namespace KancolleSniffer
             this.label8 = new System.Windows.Forms.Label();
             this.checkBoxReset14 = new System.Windows.Forms.CheckBox();
             this.checkBoxReset02 = new System.Windows.Forms.CheckBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.textBoxDamagedShipSoundFile = new System.Windows.Forms.TextBox();
-            this.buttonDamagedShipOpenFile = new System.Windows.Forms.Button();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.DebugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxNotification.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).BeginInit();
             this.groupBoxSound.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSoundVolume)).BeginInit();
             this.groupBoxShow.SuspendLayout();
             this.groupBoxAchievement.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxNotification
@@ -192,6 +196,32 @@ namespace KancolleSniffer
             this.groupBoxSound.TabIndex = 1;
             this.groupBoxSound.TabStop = false;
             this.groupBoxSound.Text = "サウンド";
+            // 
+            // buttonDamagedShipOpenFile
+            // 
+            this.buttonDamagedShipOpenFile.Location = new System.Drawing.Point(191, 135);
+            this.buttonDamagedShipOpenFile.Name = "buttonDamagedShipOpenFile";
+            this.buttonDamagedShipOpenFile.Size = new System.Drawing.Size(41, 23);
+            this.buttonDamagedShipOpenFile.TabIndex = 16;
+            this.buttonDamagedShipOpenFile.Text = "参照";
+            this.buttonDamagedShipOpenFile.UseVisualStyleBackColor = true;
+            this.buttonDamagedShipOpenFile.Click += new System.EventHandler(this.buttonDamagedShipOpenFile_Click);
+            // 
+            // textBoxDamagedShipSoundFile
+            // 
+            this.textBoxDamagedShipSoundFile.Location = new System.Drawing.Point(41, 137);
+            this.textBoxDamagedShipSoundFile.Name = "textBoxDamagedShipSoundFile";
+            this.textBoxDamagedShipSoundFile.Size = new System.Drawing.Size(144, 19);
+            this.textBoxDamagedShipSoundFile.TabIndex = 15;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 140);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(29, 12);
+            this.label9.TabIndex = 14;
+            this.label9.Text = "大破";
             // 
             // numericUpDownSoundVolume
             // 
@@ -405,31 +435,19 @@ namespace KancolleSniffer
             this.checkBoxReset02.Text = "2時";
             this.checkBoxReset02.UseVisualStyleBackColor = true;
             // 
-            // label9
+            // contextMenuStrip
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 140);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(29, 12);
-            this.label9.TabIndex = 14;
-            this.label9.Text = "大破";
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DebugToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(149, 26);
             // 
-            // textBoxDamagedShipSoundFile
+            // DebugToolStripMenuItem
             // 
-            this.textBoxDamagedShipSoundFile.Location = new System.Drawing.Point(41, 137);
-            this.textBoxDamagedShipSoundFile.Name = "textBoxDamagedShipSoundFile";
-            this.textBoxDamagedShipSoundFile.Size = new System.Drawing.Size(144, 19);
-            this.textBoxDamagedShipSoundFile.TabIndex = 15;
-            // 
-            // buttonDamagedShipOpenFile
-            // 
-            this.buttonDamagedShipOpenFile.Location = new System.Drawing.Point(191, 135);
-            this.buttonDamagedShipOpenFile.Name = "buttonDamagedShipOpenFile";
-            this.buttonDamagedShipOpenFile.Size = new System.Drawing.Size(41, 23);
-            this.buttonDamagedShipOpenFile.TabIndex = 16;
-            this.buttonDamagedShipOpenFile.Text = "参照";
-            this.buttonDamagedShipOpenFile.UseVisualStyleBackColor = true;
-            this.buttonDamagedShipOpenFile.Click += new System.EventHandler(this.buttonDamagedShipOpenFile_Click);
+            this.DebugToolStripMenuItem.Name = "DebugToolStripMenuItem";
+            this.DebugToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.DebugToolStripMenuItem.Text = "デバッグ設定";
+            this.DebugToolStripMenuItem.Click += new System.EventHandler(this.DebugToolStripMenuItem_Click);
             // 
             // ConfigDialog
             // 
@@ -438,6 +456,7 @@ namespace KancolleSniffer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(252, 412);
+            this.ContextMenuStrip = this.contextMenuStrip;
             this.Controls.Add(this.groupBoxAchievement);
             this.Controls.Add(this.groupBoxShow);
             this.Controls.Add(this.buttonCancel);
@@ -461,6 +480,7 @@ namespace KancolleSniffer
             this.groupBoxShow.PerformLayout();
             this.groupBoxAchievement.ResumeLayout(false);
             this.groupBoxAchievement.PerformLayout();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -501,5 +521,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Button buttonDamagedShipOpenFile;
         private System.Windows.Forms.TextBox textBoxDamagedShipSoundFile;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem DebugToolStripMenuItem;
     }
 }

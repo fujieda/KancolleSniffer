@@ -24,6 +24,8 @@ namespace KancolleSniffer
 {
     public partial class ConfigDialog : Form
     {
+        readonly DebugDialog _debugDialog = new DebugDialog();
+
         public ConfigDialog()
         {
             InitializeComponent();
@@ -48,6 +50,9 @@ namespace KancolleSniffer
             textBoxKDockSoundFile.Text = config.KDockSoundFile;
             textBoxMaxShipsSoundFile.Text = config.MaxShipsSoundFile;
             textBoxDamagedShipSoundFile.Text = config.DamagedShipSoundFile;
+
+            _debugDialog.Logging = config.Logging;
+            _debugDialog.LogFile = config.LogFile;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -72,6 +77,9 @@ namespace KancolleSniffer
             config.KDockSoundFile = textBoxKDockSoundFile.Text;
             config.MaxShipsSoundFile = textBoxMaxShipsSoundFile.Text;
             config.DamagedShipSoundFile = textBoxDamagedShipSoundFile.Text;
+
+            config.Logging = _debugDialog.Logging;
+            config.LogFile = _debugDialog.LogFile;
         }
 
         private void checkBoxSound_CheckedChanged(object sender, EventArgs e)
@@ -110,6 +118,11 @@ namespace KancolleSniffer
             openFileDialog.InitialDirectory = Path.GetDirectoryName(textBox.Text) ?? "";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
                 textBox.Text = openFileDialog.FileName;
+        }
+
+        private void DebugToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _debugDialog.ShowDialog(this);
         }
     }
 }

@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.IO;
 
 namespace KancolleSniffer
 {
@@ -73,6 +74,9 @@ namespace KancolleSniffer
         public Update Sniff(string url, string request, dynamic json)
         {
             var data = json.IsDefined("api_data") ? json.api_data : new object();
+
+            if (LogFile != null)
+                File.AppendAllText(LogFile, string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", url, request, json.ToString()));
 
             if (url.EndsWith("api_start2"))
             {
@@ -264,6 +268,8 @@ namespace KancolleSniffer
         {
             get { return _battleInfo; }
         }
+
+        public string LogFile { get; set; }
     }
 
     public class NameAndTimer
