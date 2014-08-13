@@ -157,6 +157,7 @@ namespace KancolleSniffer
             newBounds.Location = _config.Location;
             if (IsVisibleOnAnyScreen(newBounds))
                 Location = _config.Location;
+            _config.Location = new Point(int.MinValue, int.MinValue); // 二回目以降は無視させる
         }
 
         private bool IsVisibleOnAnyScreen(Rectangle rect)
