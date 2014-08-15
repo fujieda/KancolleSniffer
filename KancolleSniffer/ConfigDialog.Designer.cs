@@ -82,6 +82,7 @@ namespace KancolleSniffer
             this.checkBoxReset02 = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.DebugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buttonResetAchievement = new System.Windows.Forms.Button();
             this.groupBoxNotification.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).BeginInit();
             this.groupBoxSound.SuspendLayout();
@@ -396,6 +397,7 @@ namespace KancolleSniffer
             // 
             // groupBoxAchievement
             // 
+            this.groupBoxAchievement.Controls.Add(this.buttonResetAchievement);
             this.groupBoxAchievement.Controls.Add(this.label8);
             this.groupBoxAchievement.Controls.Add(this.checkBoxReset14);
             this.groupBoxAchievement.Controls.Add(this.checkBoxReset02);
@@ -445,9 +447,19 @@ namespace KancolleSniffer
             // DebugToolStripMenuItem
             // 
             this.DebugToolStripMenuItem.Name = "DebugToolStripMenuItem";
-            this.DebugToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.DebugToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.DebugToolStripMenuItem.Text = "デバッグ設定";
             this.DebugToolStripMenuItem.Click += new System.EventHandler(this.DebugToolStripMenuItem_Click);
+            // 
+            // buttonResetAchievement
+            // 
+            this.buttonResetAchievement.Location = new System.Drawing.Point(179, 14);
+            this.buttonResetAchievement.Name = "buttonResetAchievement";
+            this.buttonResetAchievement.Size = new System.Drawing.Size(44, 22);
+            this.buttonResetAchievement.TabIndex = 4;
+            this.buttonResetAchievement.Text = "今すぐ";
+            this.buttonResetAchievement.UseVisualStyleBackColor = true;
+            this.buttonResetAchievement.Click += new System.EventHandler(this.buttonResetAchievement_Click);
             // 
             // ConfigDialog
             // 
@@ -523,5 +535,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem DebugToolStripMenuItem;
+        private System.Windows.Forms.Button buttonResetAchievement;
     }
 }

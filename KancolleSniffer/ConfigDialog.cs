@@ -24,62 +24,62 @@ namespace KancolleSniffer
 {
     public partial class ConfigDialog : Form
     {
-        readonly DebugDialog _debugDialog = new DebugDialog();
+        private readonly DebugDialog _debugDialog = new DebugDialog();
+        private readonly Config _config;
+        private readonly MainForm _main;
 
-        public ConfigDialog()
+        public ConfigDialog(Config config, MainForm main)
         {
             InitializeComponent();
+            _config = config;
+            _main = main;
         }
 
         private void ConfigDialog_Load(object sender, EventArgs e)
         {
-            var config = (Config)Tag;
+            checkBoxTopMost.Checked = _config.TopMost;
+            checkBoxFlash.Checked = _config.FlashWindow;
+            checkBoxBalloon.Checked = _config.ShowBaloonTip;
+            groupBoxSound.Enabled = checkBoxSound.Checked = _config.PlaySound;
+            numericUpDownMarginShips.Value = _config.MarginShips;
 
-            checkBoxTopMost.Checked = config.TopMost;
-            checkBoxFlash.Checked = config.FlashWindow;
-            checkBoxBalloon.Checked = config.ShowBaloonTip;
-            groupBoxSound.Enabled = checkBoxSound.Checked = config.PlaySound;
-            numericUpDownMarginShips.Value = config.MarginShips;
+            checkBoxReset02.Checked = _config.ResetHours.Any(x => x == 2);
+            checkBoxReset14.Checked = _config.ResetHours.Any(x => x == 14);
 
-            checkBoxReset02.Checked = config.ResetHours.Any(x => x == 2);
-            checkBoxReset14.Checked = config.ResetHours.Any(x => x == 14);
+            numericUpDownSoundVolume.Value = _config.SoundVolume;
+            textBoxMissionSoundFile.Text = _config.MissionSoundFile;
+            textBoxNDockSoundFile.Text = _config.NDockSoundFile;
+            textBoxKDockSoundFile.Text = _config.KDockSoundFile;
+            textBoxMaxShipsSoundFile.Text = _config.MaxShipsSoundFile;
+            textBoxDamagedShipSoundFile.Text = _config.DamagedShipSoundFile;
 
-            numericUpDownSoundVolume.Value = config.SoundVolume;
-            textBoxMissionSoundFile.Text = config.MissionSoundFile;
-            textBoxNDockSoundFile.Text = config.NDockSoundFile;
-            textBoxKDockSoundFile.Text = config.KDockSoundFile;
-            textBoxMaxShipsSoundFile.Text = config.MaxShipsSoundFile;
-            textBoxDamagedShipSoundFile.Text = config.DamagedShipSoundFile;
-
-            _debugDialog.Logging = config.Logging;
-            _debugDialog.LogFile = config.LogFile;
+            _debugDialog.Logging = _config.Logging;
+            _debugDialog.LogFile = _config.LogFile;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            var config = (Config)Tag;
+            _config.TopMost = checkBoxTopMost.Checked;
+            _config.FlashWindow = checkBoxFlash.Checked;
+            _config.ShowBaloonTip = checkBoxBalloon.Checked;
+            _config.PlaySound = checkBoxSound.Checked;
+            _config.MarginShips = (int)numericUpDownMarginShips.Value;
 
-            config.TopMost = checkBoxTopMost.Checked;
-            config.FlashWindow = checkBoxFlash.Checked;
-            config.ShowBaloonTip = checkBoxBalloon.Checked;
-            config.PlaySound = checkBoxSound.Checked;
-            config.MarginShips = (int)numericUpDownMarginShips.Value;
-
-            config.ResetHours.Clear();
+            _config.ResetHours.Clear();
             if (checkBoxReset02.Checked)
-                config.ResetHours.Add(2);
+                _config.ResetHours.Add(2);
             if (checkBoxReset14.Checked)
-                config.ResetHours.Add(14);
+                _config.ResetHours.Add(14);
 
-            config.SoundVolume = (int)numericUpDownSoundVolume.Value;
-            config.MissionSoundFile = textBoxMissionSoundFile.Text;
-            config.NDockSoundFile = textBoxNDockSoundFile.Text;
-            config.KDockSoundFile = textBoxKDockSoundFile.Text;
-            config.MaxShipsSoundFile = textBoxMaxShipsSoundFile.Text;
-            config.DamagedShipSoundFile = textBoxDamagedShipSoundFile.Text;
+            _config.SoundVolume = (int)numericUpDownSoundVolume.Value;
+            _config.MissionSoundFile = textBoxMissionSoundFile.Text;
+            _config.NDockSoundFile = textBoxNDockSoundFile.Text;
+            _config.KDockSoundFile = textBoxKDockSoundFile.Text;
+            _config.MaxShipsSoundFile = textBoxMaxShipsSoundFile.Text;
+            _config.DamagedShipSoundFile = textBoxDamagedShipSoundFile.Text;
 
-            config.Logging = _debugDialog.Logging;
-            config.LogFile = _debugDialog.LogFile;
+            _config.Logging = _debugDialog.Logging;
+            _config.LogFile = _debugDialog.LogFile;
         }
 
         private void checkBoxSound_CheckedChanged(object sender, EventArgs e)
@@ -123,6 +123,11 @@ namespace KancolleSniffer
         private void DebugToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _debugDialog.ShowDialog(this);
+        }
+
+        private void buttonResetAchievement_Click(object sender, EventArgs e)
+        {
+            _main.ResetAchievemnt();
         }
     }
 }

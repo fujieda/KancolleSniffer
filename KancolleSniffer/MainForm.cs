@@ -30,7 +30,7 @@ namespace KancolleSniffer
         private readonly Sniffer _sniffer = new Sniffer();
         private readonly dynamic _wmp = Activator.CreateInstance(Type.GetTypeFromProgID("WMPlayer.OCX.7"));
         private readonly Config _config = new Config();
-        private readonly ConfigDialog _configDialog = new ConfigDialog();
+        private readonly ConfigDialog _configDialog;
         private readonly int _labelRightDistance;
         private int _currentFleet;
         private readonly Label[] _labelCheckFleets;
@@ -42,7 +42,7 @@ namespace KancolleSniffer
             FiddlerApplication.BeforeRequest += FiddlerApplication_BeforeRequest;
             FiddlerApplication.BeforeResponse += FiddlerApplication_BeforeResponse;
             _wmp.PlayStateChange += new EventHandler(_wmp_PlayStateChange);
-            _configDialog.Tag = _config;
+            _configDialog = new ConfigDialog(_config, this);
             _labelRightDistance = labelHP1.Parent.Width - labelHP1.Right;
             _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
             var i = 0;
@@ -454,12 +454,6 @@ namespace KancolleSniffer
             UpdateShipInfo();
         }
 
-        private void labelResetAchievement_Click(object sender, EventArgs e)
-        {
-            _sniffer.Achievement.Reset();
-            UpdateItemInfo();
-        }
-
         private void labelBucketHistoryButton_Click(object sender, EventArgs e)
         {
             if (labelBucketHistory.Visible)
@@ -486,6 +480,12 @@ namespace KancolleSniffer
                 panelMaterialHistory.Visible = true;
                 labelMaterialHistoryButton.BackColor = SystemColors.ActiveCaption;
             }
+        }
+
+        public void ResetAchievemnt()
+        {
+            _sniffer.Achievement.Reset();
+            UpdateItemInfo();
         }
     }
 }

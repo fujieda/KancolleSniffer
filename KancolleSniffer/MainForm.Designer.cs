@@ -50,7 +50,6 @@ namespace KancolleSniffer
             this.panelHeadquarters = new System.Windows.Forms.Panel();
             this.labelLogin = new System.Windows.Forms.Label();
             this.labelBucketHistoryButton = new System.Windows.Forms.Label();
-            this.labelResetAchievement = new System.Windows.Forms.Label();
             this.labelAchievement = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
             this.labelNumOfBuckets = new System.Windows.Forms.Label();
@@ -211,7 +210,6 @@ namespace KancolleSniffer
             this.panelHeadquarters.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelHeadquarters.Controls.Add(this.labelLogin);
             this.panelHeadquarters.Controls.Add(this.labelBucketHistoryButton);
-            this.panelHeadquarters.Controls.Add(this.labelResetAchievement);
             this.panelHeadquarters.Controls.Add(this.labelAchievement);
             this.panelHeadquarters.Controls.Add(this.label28);
             this.panelHeadquarters.Controls.Add(this.labelNumOfBuckets);
@@ -244,17 +242,6 @@ namespace KancolleSniffer
             this.labelBucketHistoryButton.Size = new System.Drawing.Size(14, 14);
             this.labelBucketHistoryButton.TabIndex = 9;
             this.labelBucketHistoryButton.Click += new System.EventHandler(this.labelBucketHistoryButton_Click);
-            // 
-            // labelResetAchievement
-            // 
-            this.labelResetAchievement.AutoSize = true;
-            this.labelResetAchievement.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelResetAchievement.Location = new System.Drawing.Point(200, 15);
-            this.labelResetAchievement.Name = "labelResetAchievement";
-            this.labelResetAchievement.Size = new System.Drawing.Size(15, 14);
-            this.labelResetAchievement.TabIndex = 8;
-            this.labelResetAchievement.Text = "↺";
-            this.labelResetAchievement.Click += new System.EventHandler(this.labelResetAchievement_Click);
             // 
             // labelAchievement
             // 
@@ -1798,7 +1785,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelAkashiTimer;
         private System.Windows.Forms.Label labelAchievement;
         private System.Windows.Forms.Label label28;
-        private System.Windows.Forms.Label labelResetAchievement;
         private System.Windows.Forms.Panel panelBattleInfo;
         private System.Windows.Forms.Label labelFormation;
         private System.Windows.Forms.Label label29;
