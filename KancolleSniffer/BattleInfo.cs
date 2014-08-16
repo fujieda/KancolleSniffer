@@ -93,14 +93,14 @@ namespace KancolleSniffer
                 DelayInAirSuperiority = DelayInFormation = delay;
                 return;
             }
-            if ((int)json.api_formation[2] >= 3)
-                delay += Delay.Tau;
             var subm = (SubmarineFlags)CheckSubmarine(json);
             bool success;
             delay += SearchDelay(json, out success) + subm.AddtionalDelay;
             DelayInAirSuperiority = delay + (success ? 0 : Delay.Emergence); // 失敗すると出現が遅れる
             // 敵艦隊発見以降
             delay += Delay.Emergence + Delay.Formation + SupportDelay(json) + CutinDelay(json);
+            if ((int)json.api_formation[2] >= 3)
+                delay += Delay.Tau;
             if (!subm.PreventAirFight)
                 delay += AirFightDelay(json);
             if (!subm.PreventOpeningAttack)
