@@ -66,6 +66,15 @@ namespace KancolleSniffer
             CauseDamage(json);
         }
 
+        public void InspectCombinedBattle(dynamic json)
+        {
+            InBattle = true;
+            Formation = FormationName(json);
+            EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
+            DelayInFormation = DelayInAirSuperiority = Delay.Basic;
+            CauseDamageCombined(json);
+        }
+
         private string FormationName(dynamic json)
         {
             if (!json.api_formation()) // 演習の夜戦
@@ -275,6 +284,48 @@ namespace KancolleSniffer
                 if (hit.t - 1 < ships.Length)
                     ships[hit.t - 1].NowHp -= (int)hit.d;
             }
+        }
+
+        private void CauseDamageCombined(dynamic json)
+        {
+            bool midnight = json.api_hougeki();
+            var hontai = _shipInfo.GetShipStatuses(0);
+            var goei = _shipInfo.GetShipStatuses(1);
+            if (midnight)
+            {
+                CauseHougekiDamage(goei, json.api_hougeki);
+            }
+            else // 昼戦
+            {
+                var kouku = json.api_kouku;
+                if (kouku.api_stage3 != null)
+                    CauseSimpleDamage(hontai, kouku.api_stage3.api_fdam);
+                if (kouku.api_stage3_combined != null)
+                    CauseSimpleDamage(goei, kouku.api_stage3_combined.api_fdam);
+                if (json.api_kouku2()) // 航空戦2回目
+                {
+                    kouku = json.api_kouku2;
+                    if (kouku.api_stage3 != null)
+                        CauseSimpleDamage(hontai, kouku.api_stage3.api_fdam);
+                    if (kouku.api_stage3_combined != null)
+                        CauseSimpleDamage(goei, kouku.api_stage3_combined.api_fdam);
+                }
+                if (!json.api_opening_atack()) // 航空戦のみ
+                    return;
+                if (json.api_opening_atack != null)
+                    CauseSimpleDamage(goei, json.api_opening_atack.api_fdam);
+                if (json.api_hougeki1 != null)
+                    CauseHougekiDamage(goei, json.api_hougeki1);
+                if (json.api_hougeki2() && json.api_hougeki2 != null)
+                    CauseHougekiDamage(hontai, json.api_hougeki2);
+                if (json.api_hougeki3() && json.api_hougeki3 != null)
+                    CauseHougekiDamage(hontai, json.api_hougeki3);
+                if (json.api_raigeki != null)
+                    CauseSimpleDamage(goei, json.api_raigeki.api_fdam);
+            }
+            DamagedShipNames =
+                (from ship in hontai.Concat(goei) where ship.DamageLevel == ShipStatus.Damage.Badly select ship.Name).ToArray();
+            HasDamagedShip = DamagedShipNames.Any();
         }
     }
 }

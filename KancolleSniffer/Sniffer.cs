@@ -76,7 +76,10 @@ namespace KancolleSniffer
             var data = json.IsDefined("api_data") ? json.api_data : new object();
 
             if (LogFile != null)
-                File.AppendAllText(LogFile, string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", url, request, json.ToString()));
+            {
+                File.AppendAllText(LogFile,
+                    string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", url, request, json.ToString()));                
+            }
 
             if (url.EndsWith("api_start2"))
             {
@@ -191,8 +194,7 @@ namespace KancolleSniffer
                 _shipInfo.InspectNyukyo(request);
                 return Update.Item | Update.Ship;
             }
-            if (url.EndsWith("api_req_sortie/battle") || url.EndsWith("api_req_practice/battle") ||
-                url.EndsWith("api_req_battle_midnight/sp_midnight") || url.EndsWith("api_req_practice/midnight_battle"))
+            if (IsNormalBattleAPI(url))
             {
                 _battleInfo.InspectBattle(data);
                 return Update.Battle;
@@ -206,7 +208,35 @@ namespace KancolleSniffer
                 _itemInfo.InspectMissionResult(data);
                 return Update.Item;
             }
+            if (IsCombinedBattleAPI(url))
+            {
+                _battleInfo.InspectCombinedBattle(data);
+                return Update.Battle;
+            }
+            if (url.EndsWith("api_req_combined_battle/battleresult"))
+            {
+                return Update.Ship;
+            }
             return Update.None;
+        }
+
+        public bool IsBattleAPI(string url)
+        {
+            return IsNormalBattleAPI(url) || IsCombinedBattleAPI(url);
+        }
+
+        public bool IsNormalBattleAPI(string url)
+        {
+            return url.EndsWith("api_req_sortie/battle") || url.EndsWith("api_req_practice/battle") ||
+                   url.EndsWith("api_req_battle_midnight/sp_midnight") ||
+                   url.EndsWith("api_req_practice/midnight_battle");
+        }
+
+        public bool IsCombinedBattleAPI(string url)
+        {
+            return url.EndsWith("api_req_combined_battle/battle") || url.EndsWith("api_req_combined_battle/airbattle") ||
+                   url.EndsWith("api_req_combined_battle/midnight_battle") ||
+                   url.EndsWith("api_req_combined_battle/sp_midnight");
         }
 
         public NameAndTimer[] NDock

@@ -59,7 +59,7 @@ namespace KancolleSniffer
                 return;
             }
             // 戦闘開始のタイミングのずれを防ぐためにバッファする
-            if (path.EndsWith("api_req_sortie/battle") || path.EndsWith("api_req_practice/battle"))
+            if (_sniffer.IsBattleAPI(path))
                 oSession.bBufferResponse = true;
         }
 
