@@ -68,6 +68,8 @@ namespace KancolleSniffer
 
         private string FormationName(dynamic json)
         {
+            if (!json.api_formation()) // 演習の夜戦
+                return "";
             switch ((int)json.api_formation[2])
             {
                 case 1:
