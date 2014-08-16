@@ -158,7 +158,7 @@ namespace KancolleSniffer
         {
             return new SubmarineFlags
             {
-                Friend = (from status in _shipInfo.GetShipStatuses((int)json.api_dock_id - 1)
+                Friend = (from status in _shipInfo.GetShipStatuses((int)DeckId(json))
                     select _shipMaster[status.ShipId].IsSubmarine).ToArray(),
                 Enemy = (from id in (int[])json.api_ship_ke where id != -1 select _shipMaster[id].IsSubmarine).ToArray()
             };
@@ -231,15 +231,13 @@ namespace KancolleSniffer
 
         private void CauseDamage(dynamic json)
         {
-            bool midnight = json.api_hougeki();
-            var ships = _shipInfo.GetShipStatuses((int)(midnight ? json.api_deck_id : json.api_dock_id) - 1); // 昼戦はtypoしている
-            if (midnight)
+            var ships = _shipInfo.GetShipStatuses((int)DeckId(json));
+            if (json.api_hougeki()) // 夜戦
             {
                 CauseHougekiDamage(ships, json.api_hougeki);
             }
             else // 昼戦
             {
-                ships = _shipInfo.GetShipStatuses((int)json.api_dock_id - 1);
                 if (json.api_kouku.api_stage3 != null)
                     CauseSimpleDamage(ships, json.api_kouku.api_stage3.api_fdam);
                 if (json.api_opening_atack != null)
@@ -254,6 +252,11 @@ namespace KancolleSniffer
             DamagedShipNames =
                 (from ship in ships where ship.DamageLevel == ShipStatus.Damage.Badly select ship.Name).ToArray();
             HasDamagedShip = DamagedShipNames.Any();
+        }
+
+        private int DeckId(dynamic json)
+        {
+            return (int)(json.api_dock_id() ? json.api_dock_id : json.api_deck_id) - 1; // 昼戦はtypoをしている
         }
 
         private void CauseSimpleDamage(ShipStatus[] ships, dynamic rawDamage)
