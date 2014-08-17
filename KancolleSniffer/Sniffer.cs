@@ -201,6 +201,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_practice/battleresult"))
             {
+                _battleInfo.CauseDamage();
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_mission/result"))
@@ -215,6 +216,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_combined_battle/battleresult"))
             {
+                _battleInfo.CauseDamageCombined();
                 return Update.Ship;
             }
             return Update.None;

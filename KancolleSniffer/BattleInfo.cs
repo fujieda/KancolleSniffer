@@ -25,6 +25,7 @@ namespace KancolleSniffer
         private readonly ShipMaster _shipMaster;
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
+        private dynamic _prevBattle;
         public bool InBattle { get; set; }
         public string Formation { get; private set; }
         public int DelayInFormation { get; private set; }
@@ -63,7 +64,7 @@ namespace KancolleSniffer
             Formation = FormationName(json);
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
             SetDelay(json);
-            CauseDamage(json);
+            _prevBattle = json;
         }
 
         public void InspectCombinedBattle(dynamic json)
@@ -72,7 +73,7 @@ namespace KancolleSniffer
             Formation = FormationName(json);
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
             DelayInFormation = DelayInAirSuperiority = Delay.Basic;
-            CauseDamageCombined(json);
+            _prevBattle = json;
         }
 
         private string FormationName(dynamic json)
@@ -238,8 +239,11 @@ namespace KancolleSniffer
                 select (int)Math.Floor(_itemInfo.GetSpecByItemId(slot.id).TyKu * Math.Sqrt(slot.max))).Sum();
         }
 
-        private void CauseDamage(dynamic json)
+        public void CauseDamage()
         {
+            var json = _prevBattle;
+            if (json == null)
+                return;
             var ships = _shipInfo.GetShipStatuses((int)DeckId(json));
             if (json.api_hougeki()) // 夜戦
             {
@@ -286,8 +290,11 @@ namespace KancolleSniffer
             }
         }
 
-        private void CauseDamageCombined(dynamic json)
+        public void CauseDamageCombined()
         {
+            var json = _prevBattle;
+            if (json == null)
+                return;
             bool midnight = json.api_hougeki();
             var hontai = _shipInfo.GetShipStatuses(0);
             var goei = _shipInfo.GetShipStatuses(1);
