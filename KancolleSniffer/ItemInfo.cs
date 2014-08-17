@@ -132,6 +132,8 @@ namespace KancolleSniffer
 
         public void InspectMissionResult(dynamic json)
         {
+            if ((int)json.api_clear_result == 0) // 失敗
+                return;
             var get = (int[])json.api_get_material;
             for (var i = 0; i < get.Length; i++)
                 MaterialHistory[i].Now += get[i];
