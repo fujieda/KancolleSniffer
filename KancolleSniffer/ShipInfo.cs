@@ -179,34 +179,37 @@ namespace KancolleSniffer
             }
             if (ship == -1)
             {
-                RemoveShip(fleet, idx);
+                WithdrowShip(fleet, idx);
                 return;
             }
-            AlterShip(ship, (f, i) =>
+            int oi;
+            var of = FindFleet(ship, out oi);
+            if (of != -1)
             {
                 // 入れ替えの場合
-                if ((_decks[f][i] = _decks[fleet][idx]) == -1)
-                    RemoveShip(f, i);
-                if (f != fleet)
-                    _conditionTimer.Invalidate(f);
-            });
+                if ((_decks[of][oi] = _decks[fleet][idx]) == -1)
+                    WithdrowShip(of, oi);
+                if (of != fleet)
+                    _conditionTimer.Invalidate(of);
+            };
             _decks[fleet][idx] = ship;
             _conditionTimer.Invalidate(fleet);
         }
 
-        private void AlterShip(int ship, Action<int, int> action)
+        private int FindFleet(int ship, out int idx)
         {
             for (var f = 0; f < _decks.Length; f++)
             {
-                var i = Array.FindIndex(_decks[f], id => id == ship);
-                if (i < 0)
+                idx = Array.FindIndex(_decks[f], id => id == ship);
+                if (idx < 0)
                     continue;
-                action(f, i);
-                return;
+                return f;
             }
+            idx = -1;
+            return -1;
         }
 
-        private void RemoveShip(int fleet, int idx)
+        private void WithdrowShip(int fleet, int idx)
         {
             var deck = _decks[fleet];
             for (var i = idx; i < deck.Length - 1; i++)
@@ -231,7 +234,10 @@ namespace KancolleSniffer
             var ship = int.Parse(values["api_ship_id"]);
             _itemInfo.NowShips -= 1;
             _itemInfo.NowItems -= SlotItemCount(ship);
-            AlterShip(ship, RemoveShip);
+            int oi;
+            var of = FindFleet(ship, out oi);
+            if (of != -1)
+                WithdrowShip(of, oi);
 
             var material = (int[])json.api_material;
             for (var i = 0; i < material.Length; i++)
