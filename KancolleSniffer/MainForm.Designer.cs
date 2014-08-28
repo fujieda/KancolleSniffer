@@ -193,6 +193,9 @@ namespace KancolleSniffer
             this.labelBucketHistory = new System.Windows.Forms.Label();
             this.label36 = new System.Windows.Forms.Label();
             this.labelMaterialHistoryButton = new System.Windows.Forms.Label();
+            this.panelDamagedShipList = new System.Windows.Forms.Panel();
+            this.labelDamgedShipListButton = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelFleet1.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -882,9 +885,9 @@ namespace KancolleSniffer
             this.panelDock.Controls.Add(this.label7);
             this.panelDock.Controls.Add(this.label6);
             this.panelDock.Controls.Add(this.label5);
-            this.panelDock.Location = new System.Drawing.Point(7, 249);
+            this.panelDock.Location = new System.Drawing.Point(6, 249);
             this.panelDock.Name = "panelDock";
-            this.panelDock.Size = new System.Drawing.Size(153, 65);
+            this.panelDock.Size = new System.Drawing.Size(154, 65);
             this.panelDock.TabIndex = 4;
             // 
             // labelRepairShip4
@@ -1592,15 +1595,47 @@ namespace KancolleSniffer
             this.labelMaterialHistoryButton.TabIndex = 10;
             this.labelMaterialHistoryButton.Click += new System.EventHandler(this.labelMaterialHistoryButton_Click);
             // 
+            // panelDamagedShipList
+            // 
+            this.panelDamagedShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelDamagedShipList.Location = new System.Drawing.Point(26, 247);
+            this.panelDamagedShipList.Name = "panelDamagedShipList";
+            this.panelDamagedShipList.Size = new System.Drawing.Size(134, 19);
+            this.panelDamagedShipList.TabIndex = 44;
+            this.panelDamagedShipList.Visible = false;
+            // 
+            // labelDamgedShipListButton
+            // 
+            this.labelDamgedShipListButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelDamgedShipListButton.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.labelDamgedShipListButton.Image = ((System.Drawing.Image)(resources.GetObject("labelDamgedShipListButton.Image")));
+            this.labelDamgedShipListButton.Location = new System.Drawing.Point(146, 233);
+            this.labelDamgedShipListButton.Name = "labelDamgedShipListButton";
+            this.labelDamgedShipListButton.Size = new System.Drawing.Size(14, 14);
+            this.labelDamgedShipListButton.TabIndex = 45;
+            this.labelDamgedShipListButton.Click += new System.EventHandler(this.labelDamgedShipListButton_Click);
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(105, 235);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(41, 12);
+            this.label31.TabIndex = 46;
+            this.label31.Text = "要修復";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(250, 484);
             this.ContextMenuStrip = this.contextMenuStripToolTip;
+            this.Controls.Add(this.panelMaterialHistory);
+            this.Controls.Add(this.panelDamagedShipList);
+            this.Controls.Add(this.label31);
+            this.Controls.Add(this.labelDamgedShipListButton);
             this.Controls.Add(this.labelMaterialHistoryButton);
             this.Controls.Add(this.label36);
-            this.Controls.Add(this.panelMaterialHistory);
             this.Controls.Add(this.labelBucketHistory);
             this.Controls.Add(this.labelCheckFleet2);
             this.Controls.Add(this.labelFleet2);
@@ -1800,6 +1835,9 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFuelHistory;
         private System.Windows.Forms.Label label36;
         private System.Windows.Forms.Label labelMaterialHistoryButton;
+        private System.Windows.Forms.Panel panelDamagedShipList;
+        private System.Windows.Forms.Label labelDamgedShipListButton;
+        private System.Windows.Forms.Label label31;
     }
 }
 

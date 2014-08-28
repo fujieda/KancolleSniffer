@@ -34,6 +34,7 @@ namespace KancolleSniffer
         private readonly int _labelRightDistance;
         private int _currentFleet;
         private readonly Label[] _labelCheckFleets;
+        private readonly Label[][] _damagedShipList = new Label[14][];
         private bool _started;
 
         public MainForm()
@@ -48,6 +49,7 @@ namespace KancolleSniffer
             var i = 0;
             foreach (var label in new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4})
                 label.Tag = i++;
+            CreateDamagedShipList();
         }
 
         private void FiddlerApplication_BeforeRequest(Session oSession)
@@ -275,6 +277,7 @@ namespace KancolleSniffer
             UpdateChargeInfo();
             UpdateCondTimers();
             UpdateAkashiTimer();
+            UpdateDamagedShipList();
         }
 
         private void UpdateBattleInfo()
@@ -402,6 +405,49 @@ namespace KancolleSniffer
             labelAkashiTimer.Text = span.Days == 0 ? span.ToString(@"hh\:mm\:ss") : span.ToString(@"d\.hh\:mm");
         }
 
+        public void CreateDamagedShipList()
+        {
+            var parent = panelDamagedShipList;
+            parent.SuspendLayout();
+            for (var i = 0; i < _damagedShipList.Length; i++)
+            {
+                var y = 3 + i * 16;
+                const int height = 12;
+                parent.Controls.AddRange(_damagedShipList[i] = new[]
+                {
+                    new Label {Location = new Point(1, y), Size = new Size(11, height)},
+                    new Label {Location = new Point(10, y), Size = new Size(77, height)},
+                    new Label {Location = new Point(86, y), Size = new Size(45, height)}
+                });
+            }
+            parent.ResumeLayout();
+        }
+
+        private void UpdateDamagedShipList()
+        {
+            var parent = panelDamagedShipList;
+            var list = _sniffer.DamagedShipList;
+            var num = Math.Min(list.Length, _damagedShipList.Length);
+            const int width = 134;
+            if (num == 0)
+            {
+                parent.Size = new Size(width, 19);
+                _damagedShipList[0][0].Text = "";
+                _damagedShipList[0][1].Text = "なし";
+                _damagedShipList[0][2].Text = "";
+                return;
+            }
+            parent.Size = new Size(width, num * 16 + 3);
+            var fn = new[] { "", "1", "2", "3", "4" };
+            for (var i = 0; i < num; i++)
+            {
+                var entry = _damagedShipList[i];
+                entry[0].Text = fn[list[i].Fleet + 1];
+                entry[1].Text = list[i].Name;
+                entry[2].Text = list[i].Time.ToString(@"hh\:mm\:ss");
+            }
+        }
+
         private void UpdateQuestList()
         {
             var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5};
@@ -486,6 +532,20 @@ namespace KancolleSniffer
         {
             _sniffer.Achievement.Reset();
             UpdateItemInfo();
+        }
+
+        private void labelDamgedShipListButton_Click(object sender, EventArgs e)
+        {
+            if (panelDamagedShipList.Visible)
+            {
+                panelDamagedShipList.Visible = false;
+                labelDamgedShipListButton.BackColor = DefaultBackColor;
+            }
+            else
+            {
+                panelDamagedShipList.Visible = true;
+                labelDamgedShipListButton.BackColor = SystemColors.ActiveCaption;
+            }
         }
     }
 }

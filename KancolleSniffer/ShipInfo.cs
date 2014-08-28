@@ -62,6 +62,20 @@ namespace KancolleSniffer
         public int Bull { get; set; }
     }
 
+    public class RepairStatus
+    {
+        public int Fleet { private set; get; }
+        public string Name { private set; get; }
+        public TimeSpan Time { private set; get; }
+
+        public RepairStatus(int fleet, string name, TimeSpan time)
+        {
+            Fleet = fleet;
+            Name = name;
+            Time = time;
+        }
+    }
+
     public class ShipInfo
     {
         public const int FleetCount = 4;
@@ -224,6 +238,8 @@ namespace KancolleSniffer
             var ships = values["api_id_items"].Split(',');
             _itemInfo.NowShips -= ships.Length;
             _itemInfo.NowItems -= (from s in ships select SlotItemCount(int.Parse(s))).Sum();
+            foreach (var ship in ships)
+                _shipInfo.Remove(int.Parse(ship));
             InspectDeck(json.api_deck);
             InspectShip(json.api_ship);
         }
@@ -238,6 +254,7 @@ namespace KancolleSniffer
             var of = FindFleet(ship, out oi);
             if (of != -1)
                 WithdrowShip(of, oi);
+            _shipInfo.Remove(ship);
 
             var material = (int[])json.api_material;
             for (var i = 0; i < material.Length; i++)
@@ -322,6 +339,25 @@ namespace KancolleSniffer
                 let ship = _shipInfo[id]
                 from slot in ship.Slot.Zip(ship.OnSlot, (s, o) => new {slot = s, onslot = o})
                 select (int)Math.Floor(_itemInfo[slot.slot].TyKu * Math.Sqrt(slot.onslot))).Sum();
+        }
+
+        public RepairStatus[] GetDamagedShipList(DockInfo dockInfo)
+        {
+                int oi;
+                return (from entry in _shipInfo
+                    let status = entry.Value
+                    where status.NowHp < status.MaxHp && !dockInfo.InNDock(entry.Key)
+                    select new RepairStatus(FindFleet(entry.Key, out oi), status.Name, RepairTime(status))).
+                    OrderByDescending(entry => entry.Time).ToArray();
+        }
+
+        public TimeSpan RepairTime(ShipStatus status)
+        {
+            var weight = _shipMaster[status.ShipId].RepairWeight;
+            var level = status.Level < 12
+                ? status.Level * 10
+                : status.Level * 5 + Math.Floor(Math.Sqrt(status.Level - 11)) * 10 + 50;
+            return TimeSpan.FromSeconds(Math.Floor(level * weight * (status.MaxHp - status.NowHp)) + 30);
         }
     }
 }

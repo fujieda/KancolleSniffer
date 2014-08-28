@@ -123,7 +123,7 @@ namespace KancolleSniffer
             {
                 _dockInfo.InspectNDock(data);
                 _akashiTimer.SetTimer();
-                return Update.NDock | Update.Timer;
+                return Update.NDock | Update.Timer | Update.Ship;
             }
             if (url.EndsWith("api_req_hensei/change"))
             {
@@ -284,6 +284,11 @@ namespace KancolleSniffer
         public int GetAirSuperiority(int fleet)
         {
             return _shipInfo.GetAirSuperiority(fleet);
+        }
+
+        public RepairStatus[] DamagedShipList
+        {
+            get { return _shipInfo.GetDamagedShipList(_dockInfo); }
         }
 
         public DateTime GetAkashiStartTime(int fleet)
