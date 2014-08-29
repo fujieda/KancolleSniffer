@@ -287,20 +287,14 @@ namespace KancolleSniffer
             panelBattleInfo.Visible = _sniffer.Battle.InBattle;
             if (!_sniffer.Battle.InBattle)
                 return;
-            var tf = new Timer {Interval = _sniffer.Battle.DelayInFormation};
-            tf.Tick += (sender, args) =>
+            var t = new Timer {Interval = 2000}; // 艦隊が表示されるまで遅延させる
+            t.Tick += (sender, args) =>
             {
                 labelFormation.Text = _sniffer.Battle.Formation;
-                tf.Stop();
-            };
-            tf.Start();
-            var ta = new Timer {Interval = _sniffer.Battle.DelayInAirSuperiority};
-            ta.Tick += (sender, args) =>
-            {
                 labelEnemyAirSuperiority.Text = _sniffer.Battle.EnemyAirSuperiority.ToString("D");
-                ta.Stop();
+                t.Stop();
             };
-            ta.Start();
+            t.Start();
         }
 
         private void UpdateChargeInfo()
