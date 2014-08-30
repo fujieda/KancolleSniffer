@@ -438,7 +438,8 @@ namespace KancolleSniffer
                 var entry = _damagedShipList[i];
                 entry[0].Text = fn[list[i].Fleet + 1];
                 entry[1].Text = list[i].Name;
-                entry[2].Text = list[i].Time.ToString(@"hh\:mm\:ss");
+                var time = list[i].Time;
+                entry[2].Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)time.TotalHours, time);
             }
         }
 
