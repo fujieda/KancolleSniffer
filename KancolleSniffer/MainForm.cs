@@ -148,7 +148,6 @@ namespace KancolleSniffer
         private void ApplyConfig()
         {
             TopMost = _config.TopMost;
-            _wmp.settings.volume = _config.SoundVolume;
             _sniffer.Item.MarginShips = _config.MarginShips;
             _sniffer.Achievement.ResetHours = _config.ResetHours;
             _sniffer.LogFile = _config.Logging ? _config.LogFile : null;
@@ -470,6 +469,7 @@ namespace KancolleSniffer
                 notifyIconMain.ShowBalloonTip(20000, baloonTitle, baloonMessage, ToolTipIcon.Info);
             if (_config.PlaySound && File.Exists(soundFile))
             {
+                _wmp.settings.volume = _config.SoundVolume;
                 _wmp.URL = soundFile;
                 _wmp.controls.play();
             }
