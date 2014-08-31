@@ -205,7 +205,7 @@ namespace KancolleSniffer
                     WithdrowShip(of, oi);
                 if (of != fleet)
                     _conditionTimer.Invalidate(of);
-            };
+            }
             _decks[fleet][idx] = ship;
             _conditionTimer.Invalidate(fleet);
         }
@@ -264,19 +264,6 @@ namespace KancolleSniffer
         private int SlotItemCount(int id)
         {
             return _shipInfo[id].Slot.Count(item => item != -1);
-        }
-
-        public void InspectNyukyo(string request)
-        {
-            var values = HttpUtility.ParseQueryString(request);
-            var id = int.Parse(values["api_ship_id"]);
-            if (int.Parse(values["api_highspeed"]) == 0)
-                return;
-            var ship = _shipInfo[id];
-            ship.NowHp = ship.MaxHp;
-            if (ship.Cond < 40)
-                ship.Cond = 40;
-            _itemInfo.MaterialHistory[(int)Material.Bucket].Now--;
         }
 
         public ShipStatus[] GetShipStatuses(int fleet)

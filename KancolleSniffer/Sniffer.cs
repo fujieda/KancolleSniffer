@@ -191,8 +191,13 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_nyukyo/start"))
             {
-                _shipInfo.InspectNyukyo(request);
+                _dockInfo.InspectNyukyo(request);
                 return Update.Item | Update.Ship;
+            }
+            if (url.EndsWith("api_req_nyukyo/speedchange"))
+            {
+                _dockInfo.InspectSpeedChange(request);
+                return Update.NDock | Update.Timer | Update.Ship;
             }
             if (IsNormalBattleAPI(url))
             {

@@ -17,6 +17,7 @@
 
 using System;
 using System.Linq;
+using System.Web;
 
 namespace KancolleSniffer
 {
@@ -54,6 +55,32 @@ namespace KancolleSniffer
                 }
                 _ndoc[id] = (int)entry.api_ship_id;
             }
+        }
+
+        public void InspectNyukyo(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            if (int.Parse(values["api_highspeed"]) == 0)
+                return;
+            RecoverShip(int.Parse(values["api_ship_id"]));
+            _itemInfo.MaterialHistory[(int)Material.Bucket].Now--;
+        }
+
+        public void InspectSpeedChange(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var dock = int.Parse(values["api_ndock_id"]) - 1;
+            RecoverShip(_ndoc[dock]);
+            _ndoc[dock] = 0;
+            _ndocTimers[dock].SetEndTime(0);
+        }
+
+        private void RecoverShip(int id)
+        {
+            var ship = _shipInfo[id];
+            ship.NowHp = ship.MaxHp;
+            if (ship.Cond < 40)
+                ship.Cond = 40;
         }
 
         public NameAndTimer[] NDock
