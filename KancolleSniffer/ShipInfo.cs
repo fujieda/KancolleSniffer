@@ -24,8 +24,13 @@ namespace KancolleSniffer
 {
     public class ShipStatus
     {
-        public int ShipId { get; set; }
-        public string Name { get; set; }
+        public ShipSpec Spec { get; set; }
+
+        public string Name
+        {
+            get { return Spec.Name; }
+        }
+
         public int Level { get; set; }
         public int ExpToNext { get; set; }
         public int MaxHp { get; set; }
@@ -53,6 +58,16 @@ namespace KancolleSniffer
         {
             var ratio = max == 0 ? 1 : (double)now / max;
             return ratio > 0.75 ? Damage.Minor : ratio > 0.5 ? Damage.Small : ratio > 0.25 ? Damage.Half : Damage.Badly;
+        }
+
+        public TimeSpan RepairTime
+        {
+            get
+            {
+                var weight = Spec.RepairWeight;
+                var level = Level < 12 ? Level * 10 : Level * 5 + Math.Floor(Math.Sqrt(Level - 11)) * 10 + 50;
+                return TimeSpan.FromSeconds(Math.Floor(level * weight * (MaxHp - NowHp)) + 30);
+            }
         }
     }
 
@@ -146,8 +161,7 @@ namespace KancolleSniffer
             {
                 _shipInfo[(int)entry.api_id] = new ShipStatus
                 {
-                    ShipId = (int)entry.api_ship_id,
-                    Name = _shipMaster[(int)entry.api_ship_id].Name,
+                    Spec = _shipMaster[(int)entry.api_ship_id],
                     Level = (int)entry.api_lv,
                     ExpToNext = (int)entry.api_exp[1],
                     MaxHp = (int)entry.api_maxhp,
@@ -158,7 +172,7 @@ namespace KancolleSniffer
                     OnSlot = (from num in (dynamic[])entry.api_onslot select (int)num).ToArray(),
                     Slot = (from num in (dynamic[])entry.api_slot select (int)num).ToArray()
                 };
-                _shipInfo[-1] = new ShipStatus {Name = "不明"};
+                _shipInfo[-1] = new ShipStatus {Spec = _shipMaster[-1]};
             }
             _conditionTimer.SetTimer();
         }
@@ -294,8 +308,7 @@ namespace KancolleSniffer
                     select (from id in deck
                         where id != -1
                         let status = _shipInfo[id]
-                        let spec = _shipMaster[status.ShipId]
-                        select new {status.Bull, status.Fuel, spec.BullMax, spec.FuelMax})
+                        select new {status.Bull, status.Fuel, status.Spec.BullMax, status.Spec.FuelMax})
                         .Aggregate(
                             new ChargeStatus(), (result, next) => new ChargeStatus
                             {
@@ -330,21 +343,12 @@ namespace KancolleSniffer
 
         public RepairStatus[] GetDamagedShipList(DockInfo dockInfo)
         {
-                int oi;
-                return (from entry in _shipInfo
-                    let status = entry.Value
-                    where status.NowHp < status.MaxHp && !dockInfo.InNDock(entry.Key)
-                    select new RepairStatus(FindFleet(entry.Key, out oi), status.Name, RepairTime(status))).
-                    OrderByDescending(entry => entry.Time).ToArray();
-        }
-
-        public TimeSpan RepairTime(ShipStatus status)
-        {
-            var weight = _shipMaster[status.ShipId].RepairWeight;
-            var level = status.Level < 12
-                ? status.Level * 10
-                : status.Level * 5 + Math.Floor(Math.Sqrt(status.Level - 11)) * 10 + 50;
-            return TimeSpan.FromSeconds(Math.Floor(level * weight * (status.MaxHp - status.NowHp)) + 30);
+            int oi;
+            return (from entry in _shipInfo
+                let status = entry.Value
+                where status.NowHp < status.MaxHp && !dockInfo.InNDock(entry.Key)
+                select new RepairStatus(FindFleet(entry.Key, out oi), status.Name, status.RepairTime)).
+                OrderByDescending(entry => entry.Time).ToArray();
         }
     }
 }
