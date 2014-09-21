@@ -65,7 +65,6 @@ namespace KancolleSniffer
             this.labelFormation = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
-            this.labelAkashiTimer = new System.Windows.Forms.Label();
             this.labelAirSuperiority = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
@@ -322,7 +321,6 @@ namespace KancolleSniffer
             this.panelFleet1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelFleet1.Controls.Add(this.panelBattleInfo);
             this.panelFleet1.Controls.Add(this.label19);
-            this.panelFleet1.Controls.Add(this.labelAkashiTimer);
             this.panelFleet1.Controls.Add(this.labelAirSuperiority);
             this.panelFleet1.Controls.Add(this.label27);
             this.panelFleet1.Controls.Add(this.label21);
@@ -422,16 +420,6 @@ namespace KancolleSniffer
             this.label19.Size = new System.Drawing.Size(29, 12);
             this.label19.TabIndex = 34;
             this.label19.Text = "疲労";
-            // 
-            // labelAkashiTimer
-            // 
-            this.labelAkashiTimer.Location = new System.Drawing.Point(48, 20);
-            this.labelAkashiTimer.Name = "labelAkashiTimer";
-            this.labelAkashiTimer.Size = new System.Drawing.Size(45, 12);
-            this.labelAkashiTimer.TabIndex = 23;
-            this.labelAkashiTimer.Text = "00:00:00";
-            this.labelAkashiTimer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelAkashiTimer.Visible = false;
             // 
             // labelAirSuperiority
             // 
@@ -1817,7 +1805,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelAirSuperiority;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label labelLogin;
-        private System.Windows.Forms.Label labelAkashiTimer;
         private System.Windows.Forms.Label labelAchievement;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Panel panelBattleInfo;

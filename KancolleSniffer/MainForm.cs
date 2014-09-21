@@ -34,7 +34,9 @@ namespace KancolleSniffer
         private readonly int _labelRightDistance;
         private int _currentFleet;
         private readonly Label[] _labelCheckFleets;
+        private readonly Label[] _labelHPs;
         private readonly Label[][] _damagedShipList = new Label[14][];
+        private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
         private bool _started;
 
         public MainForm()
@@ -46,10 +48,13 @@ namespace KancolleSniffer
             _configDialog = new ConfigDialog(_config, this);
             _labelRightDistance = labelHP1.Parent.Width - labelHP1.Right;
             _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
+            _labelHPs = new[] {labelHP1, labelHP2, labelHP3, labelHP4, labelHP5, labelHP6};
+
             var i = 0;
             foreach (var label in new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4})
                 label.Tag = i++;
             CreateDamagedShipList();
+            CreateAkashiTimers();
         }
 
         private void FiddlerApplication_BeforeRequest(Session oSession)
@@ -151,7 +156,7 @@ namespace KancolleSniffer
             _sniffer.Item.MarginShips = _config.MarginShips;
             _sniffer.Achievement.ResetHours = _config.ResetHours;
             _sniffer.LogFile = _config.Logging ? _config.LogFile : null;
-                
+
             if (_config.Location.X == int.MinValue)
                 return;
             var newBounds = Bounds;
@@ -196,7 +201,7 @@ namespace KancolleSniffer
                 var message = string.Format("残り{0:D}隻", _sniffer.Item.MaxShips - _sniffer.Item.NowShips);
                 Ring("艦娘が多すぎます", message, _config.MaxShipsSoundFile);
                 item.NeedRing = false;
-            }            
+            }
         }
 
         private void UpdateBucketHistory()
@@ -213,8 +218,8 @@ namespace KancolleSniffer
 
         private void UpdateMaterialHistry()
         {
-            var labels = new[] { labelFuelHistory, labelBulletHistory, labelSteelHistory, labelBouxiteHistory };
-            var text = new[] { "燃料", "弾薬", "鋼材", "ボーキ" };
+            var labels = new[] {labelFuelHistory, labelBulletHistory, labelSteelHistory, labelBouxiteHistory};
+            var text = new[] {"燃料", "弾薬", "鋼材", "ボーキ"};
             for (var i = 0; i < labels.Length; i++)
             {
                 var count = _sniffer.Item.MaterialHistory[i];
@@ -248,7 +253,6 @@ namespace KancolleSniffer
         {
             var name = new[] {labelShip1, labelShip2, labelShip3, labelShip4, labelShip5, labelShip6};
             var lv = new[] {labelLv1, labelLv2, labelLv3, labelLv4, labelLv5, labelLv6};
-            var hp = new[] {labelHP1, labelHP2, labelHP3, labelHP4, labelHP5, labelHP6};
             var cond = new[] {labelCond1, labelCond2, labelCond3, labelCond4, labelCond5, labelCond6};
             var next = new[] {labelNextLv1, labelNextLv2, labelNextLv3, labelNextLv4, labelNextLv5, labelNextLv6};
 
@@ -259,7 +263,7 @@ namespace KancolleSniffer
                 var stat = i < statuses.Length ? statuses[i] : empty;
                 name[i].Text = stat.Name;
                 lv[i].Text = stat.Level.ToString("D");
-                SetHpLavel(hp[i], stat);
+                SetHpLavel(_labelHPs[i], stat);
                 if (stat == empty)
                 {
                     // SetCondLabelでは背景色が赤になってしまう
@@ -311,9 +315,14 @@ namespace KancolleSniffer
 
         private void SetHpLavel(Label label, ShipStatus status)
         {
+            SetHpLavel(label, status.NowHp, status.MaxHp);
+        }
+
+        private void SetHpLavel(Label label, int now, int max)
+        {
             var colors = new[] {DefaultBackColor, Color.FromArgb(255, 240, 240, 100), Color.Orange, Color.Red};
-            label.Text = string.Format("{0:D}/{1:D}", status.NowHp, status.MaxHp);
-            label.BackColor = colors[(int)status.DamageLevel];
+            label.Text = string.Format("{0:D}/{1:D}", now, max);
+            label.BackColor = colors[(int)ShipStatus.CalcDamage(now, max)];
         }
 
         private void SetCondLabel(Label label, int cond)
@@ -379,23 +388,52 @@ namespace KancolleSniffer
                 entry.label.Text = entry.timer;
         }
 
+        private void CreateAkashiTimers()
+        {
+            var parent = panelFleet1;
+            parent.SuspendLayout();
+            for (var i = 0; i < _akashiTimers.Length; i++)
+            {
+                const int width = 31, height = 12;
+                const int x = 56;
+                var y = 20 + 16 * i;
+                parent.Controls.Add(
+                    _akashiTimers[i] =
+                        new Label {Location = new Point(x, y), Size = new Size(width, height), Visible = false});
+                parent.Controls.SetChildIndex(_akashiTimers[i], 0);
+            }
+            parent.ResumeLayout();
+        }
+
         private void UpdateAkashiTimer()
         {
-            var stat = _sniffer.GetShipStatuses(_currentFleet);
-            if (stat.Length == 0 || !stat[0].Name.StartsWith("明石"))
+            var timers = _sniffer.GetAkashiTimers(_currentFleet);
+            var statuses = _sniffer.GetShipStatuses(_currentFleet);
+            for (var i = 0; i < _akashiTimers.Length; i++)
             {
-                labelAkashiTimer.Visible = false;
-                return;
+                var label = _akashiTimers[i];
+                var labelHp = _labelHPs[i];
+                if (timers == null || i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
+                {
+                    label.Visible = false;
+                    label.ForeColor = DefaultForeColor;
+                    labelHp.ForeColor = DefaultForeColor;
+                    continue;
+                }
+                var timer = timers[i];
+                var stat = statuses[i];
+                label.Visible = true;
+                label.Text = timer.Span.ToString(@"mm\:ss");
+                if (timer.Diff == 0)
+                {
+                    label.ForeColor = DefaultForeColor;
+                    labelHp.ForeColor = DefaultForeColor;
+                    continue;
+                }
+                label.ForeColor = Color.Gray;
+                labelHp.ForeColor = Color.Gray;
+                SetHpLavel(labelHp, stat.NowHp + timer.Diff, stat.MaxHp);
             }
-            labelAkashiTimer.Visible = true;
-            var start = _sniffer.GetAkashiStartTime(_currentFleet);
-            if (start == DateTime.MinValue)
-            {
-                labelAkashiTimer.Text = "00:00:00";
-                return;
-            }
-            var span = DateTime.Now - start;
-            labelAkashiTimer.Text = span.Days == 0 ? span.ToString(@"hh\:mm\:ss") : span.ToString(@"d\.hh\:mm");
         }
 
         public void CreateDamagedShipList()
@@ -431,7 +469,7 @@ namespace KancolleSniffer
                 return;
             }
             parent.Size = new Size(width, num * 16 + 3);
-            var fn = new[] { "", "1", "2", "3", "4" };
+            var fn = new[] {"", "1", "2", "3", "4"};
             for (var i = 0; i < num; i++)
             {
                 var entry = _damagedShipList[i];

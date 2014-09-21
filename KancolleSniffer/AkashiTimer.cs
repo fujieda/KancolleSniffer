@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KancolleSniffer
@@ -28,15 +29,47 @@ namespace KancolleSniffer
         private readonly MissionInfo _missionInfo;
         private readonly RepairStatus[] _repairStatuses = new RepairStatus[ShipInfo.FleetCount];
 
-        private struct RepairStatus
+        public class RepairTime
         {
-            public DateTime Timer { get; set; }
+            public int Diff { get; set; }
+            public DateTime Time { get; set; }
+
+            public RepairTime(int diff, DateTime time)
+            {
+                Diff = diff;
+                Time = time;
+            }
+        }
+
+        public class RepairSpan
+        {
+            public int Diff { get; set; }
+            public TimeSpan Span { get; set; }
+
+            public RepairSpan(int diff, TimeSpan span)
+            {
+                Diff = diff;
+                Span = span;
+            }
+
+            public RepairSpan(RepairTime time)
+            {
+                Diff = time.Diff;
+                Span = TimeSpan.FromSeconds(Math.Ceiling((time.Time - DateTime.Now).TotalSeconds));
+            }
+        }
+
+        private class RepairStatus
+        {
+            public DateTime Start { get; set; }
+            public RepairTime[][] Times { get; set; }
             public int TotalHp { get; set; }
-            public int[] Deck { private get; set; }
+            public int[] Deck { get; set; }
 
             public void Invalidate()
             {
-                Timer = DateTime.MinValue;
+                Start = DateTime.MinValue;
+                Times = null;
                 TotalHp = 0;
                 Deck = null;
             }
@@ -53,6 +86,8 @@ namespace KancolleSniffer
             _itemInfo = item;
             _dockInfo = dock;
             _missionInfo = mission;
+            for (var i = 0; i < _repairStatuses.Length; i++)
+                _repairStatuses[i] = new RepairStatus();
         }
 
         public void SetTimer(bool port = false)
@@ -73,20 +108,16 @@ namespace KancolleSniffer
             if (_repairStatuses[fleet].DeckChanged(deck))
                 InvalidateTimer(fleet);
             var cap = _shipInfo[fs].Slot.Count(item => _itemInfo[item].Name == "艦艇修理施設") + 2;
-            var targets = deck.Take(cap).Where(id => !_dockInfo.InNDock(id)).ToArray();
-            var totalHp = (from id in targets
-                let status = _shipInfo[id]
-                where status.NowHp < status.MaxHp && status.DamageLevel < ShipStatus.Damage.Half
-                select status.NowHp).Sum();
+            var target = (from id in deck.Take(cap) select IsRepairable(id) ? id : -1).ToList();
+            var totalHp = target.Sum(id => _shipInfo[id].NowHp);
             if (totalHp == 0)
             {
                 InvalidateTimer(fleet);
                 return;
             }
             var r = _repairStatuses[fleet];
-            if (r.TotalHp == totalHp)
+            if (totalHp == r.TotalHp)
                 return;
-            var timer = r.Timer;
             /*
              * 母港に遷移したときに、耐久値が回復しているか修理開始から20分経過しているときに
              * タイマーをリスタートする。
@@ -98,15 +129,39 @@ namespace KancolleSniffer
              *    反映されて回復が起こったことがわからない。耐久値の回復だけを基準にすると
              *    リスタートできないので、20分経過していたらリスタートする。
             */
-            if (timer == DateTime.MinValue ||
-                (port && (totalHp > r.TotalHp || (DateTime.Now - timer).TotalMinutes > 20)))
-                timer = DateTime.Now;
-            _repairStatuses[fleet] = new RepairStatus
+            if (r.Start == DateTime.MinValue ||
+                (port && (totalHp > r.TotalHp || (DateTime.Now - r.Start).TotalMinutes > 20)))
             {
-                Timer = timer,
-                TotalHp = totalHp,
-                Deck = deck.ToArray()
-            };
+                r.Start = DateTime.Now;
+                r.Times = EnumTimers(target).ToArray();
+            }
+            else if (totalHp < r.TotalHp && r.Times != null)
+            {
+                // 修理対象から外れた艦のタイマーを消す。
+                r.Times = target.Zip(r.Times, (id, times) => id != -1 ? times : null).ToArray();
+            }
+            r.TotalHp = totalHp;
+            r.Deck = deck.ToArray();
+        }
+
+        private bool IsRepairable(int id)
+        {
+            var s = _shipInfo[id];
+            return !_dockInfo.InNDock(id) && s.NowHp < s.MaxHp && s.DamageLevel < ShipStatus.Damage.Half;
+        }
+
+        private IEnumerable<RepairTime[]> EnumTimers(IEnumerable<int> deck)
+        {
+            return from id in deck
+                let s = _shipInfo[id]
+                let damage = s.MaxHp - s.NowHp
+                let first = new RepairTime(0, DateTime.Now.AddMinutes(20))
+                select damage == 0
+                    ? null
+                    : new[] {first}.Concat(from d in Enumerable.Range(2, damage < 2 ? 0 : damage - 1)
+                        let span = s.RepairTime(d) + TimeSpan.FromSeconds((d - 1) * 10 * s.Spec.RepairWeight)
+                        where span.TotalSeconds > 20 * 60
+                        select new RepairTime(d - 1, DateTime.Now + span)).ToArray();
         }
 
         private void InvalidateTimer(int fleet)
@@ -114,9 +169,17 @@ namespace KancolleSniffer
             _repairStatuses[fleet].Invalidate();
         }
 
-        public DateTime this[int fleet]
+        public RepairSpan[] GetTimers(int fleet)
         {
-            get { return _repairStatuses[fleet].Timer; }
+            var repair = _repairStatuses[fleet];
+            if (repair.Times == null)
+                return null;
+            return (from e in repair.Times.Zip(repair.Deck, (times, id) => new {times, id})
+                select e.times == null || _dockInfo.InNDock(e.id)
+                    ? new RepairSpan(0, TimeSpan.MinValue)
+                    : (from t in e.times select new RepairSpan(t)).FirstOrDefault(s => s.Span > TimeSpan.Zero)
+                      ?? new RepairSpan(e.times.Last().Diff + 1, TimeSpan.Zero)
+                ).ToArray();
         }
     }
 }

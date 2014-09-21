@@ -60,14 +60,16 @@ namespace KancolleSniffer
             return ratio > 0.75 ? Damage.Minor : ratio > 0.5 ? Damage.Small : ratio > 0.25 ? Damage.Half : Damage.Badly;
         }
 
-        public TimeSpan RepairTime
+        public TimeSpan RepairTime()
         {
-            get
-            {
-                var weight = Spec.RepairWeight;
-                var level = Level < 12 ? Level * 10 : Level * 5 + Math.Floor(Math.Sqrt(Level - 11)) * 10 + 50;
-                return TimeSpan.FromSeconds(Math.Floor(level * weight * (MaxHp - NowHp)) + 30);
-            }
+            return RepairTime(MaxHp - NowHp);
+        }
+
+        public TimeSpan RepairTime(int damage)
+        {
+            var weight = Spec.RepairWeight;
+            var level = Level < 12 ? Level * 10 : Level * 5 + Math.Floor(Math.Sqrt(Level - 11)) * 10 + 50;
+            return TimeSpan.FromSeconds(Math.Floor(level * weight * damage) + 30);
         }
     }
 
@@ -347,7 +349,7 @@ namespace KancolleSniffer
             return (from entry in _shipInfo
                 let status = entry.Value
                 where status.NowHp < status.MaxHp && !dockInfo.InNDock(entry.Key)
-                select new RepairStatus(FindFleet(entry.Key, out oi), status.Name, status.RepairTime)).
+                select new RepairStatus(FindFleet(entry.Key, out oi), status.Name, status.RepairTime())).
                 OrderByDescending(entry => entry.Time).ToArray();
         }
     }

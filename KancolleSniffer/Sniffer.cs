@@ -197,6 +197,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_nyukyo/start"))
             {
                 _dockInfo.InspectNyukyo(request);
+                _akashiTimer.SetTimer();
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_nyukyo/speedchange"))
@@ -301,9 +302,9 @@ namespace KancolleSniffer
             get { return _shipInfo.GetDamagedShipList(_dockInfo); }
         }
 
-        public DateTime GetAkashiStartTime(int fleet)
+        public AkashiTimer.RepairSpan[] GetAkashiTimers(int fleet)
         {
-            return _akashiTimer[fleet];
+            return _akashiTimer.GetTimers(fleet);
         }
 
         public Achievement Achievement
