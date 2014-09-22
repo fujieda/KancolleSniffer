@@ -156,6 +156,11 @@ namespace KancolleSniffer
                 _akashiTimer.SetTimer();
                 return Update.Ship;
             }
+            if (url.EndsWith("api_get_member/material"))
+            {
+                _itemInfo.InspectMaterial(data);
+                return Update.Item;
+            }
             if (url.EndsWith("api_req_hokyu/charge"))
             {
                 _shipInfo.InspectCharge(data);
