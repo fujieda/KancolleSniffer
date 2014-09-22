@@ -62,7 +62,7 @@ namespace KancolleSniffer
             var values = HttpUtility.ParseQueryString(request);
             if (int.Parse(values["api_highspeed"]) == 0)
                 return;
-            RecoverShip(int.Parse(values["api_ship_id"]));
+            _shipInfo.ApplyBucket(int.Parse(values["api_ship_id"]));
             _itemInfo.MaterialHistory[(int)Material.Bucket].Now--;
         }
 
@@ -70,18 +70,10 @@ namespace KancolleSniffer
         {
             var values = HttpUtility.ParseQueryString(request);
             var dock = int.Parse(values["api_ndock_id"]) - 1;
-            RecoverShip(_ndoc[dock]);
+            _shipInfo.ApplyBucket(_ndoc[dock]);
             _ndoc[dock] = 0;
             _ndocTimers[dock].SetEndTime(0);
             _itemInfo.MaterialHistory[(int)Material.Bucket].Now--;
-        }
-
-        private void RecoverShip(int id)
-        {
-            var ship = _shipInfo[id];
-            ship.NowHp = ship.MaxHp;
-            if (ship.Cond < 40)
-                ship.Cond = 40;
         }
 
         public NameAndTimer[] NDock

@@ -282,6 +282,14 @@ namespace KancolleSniffer
             return _shipInfo[id].Slot.Count(item => item != -1);
         }
 
+        public void ApplyBucket(int id)
+        {
+            var s = _shipInfo[id];
+            s.NowHp = s.MaxHp;
+            s.Cond = Math.Max(40, s.Cond);
+            _conditionTimer.SetTimer();
+        }
+
         public ShipStatus[] GetShipStatuses(int fleet)
         {
             return (from id in _decks[fleet] where id != -1 select _shipInfo[id]).ToArray();
