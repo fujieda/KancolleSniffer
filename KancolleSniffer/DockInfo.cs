@@ -73,6 +73,7 @@ namespace KancolleSniffer
             RecoverShip(_ndoc[dock]);
             _ndoc[dock] = 0;
             _ndocTimers[dock].SetEndTime(0);
+            _itemInfo.MaterialHistory[(int)Material.Bucket].Now--;
         }
 
         private void RecoverShip(int id)
