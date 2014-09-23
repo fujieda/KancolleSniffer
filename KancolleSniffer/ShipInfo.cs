@@ -124,12 +124,14 @@ namespace KancolleSniffer
         {
             if (json.api_deck_port()) // port
             {
+                _shipInfo.Clear();
                 InspectShipData(json.api_ship);
                 InspectDeck(json.api_deck_port);
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
             }
             else if (json.api_data()) // ship2
             {
+                _shipInfo.Clear();
                 InspectShipData(json.api_data);
                 InspectDeck(json.api_data_deck);
                 _itemInfo.NowShips = ((object[])json.api_data).Length;
