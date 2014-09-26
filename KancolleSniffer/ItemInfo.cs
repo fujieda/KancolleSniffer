@@ -106,6 +106,9 @@ namespace KancolleSniffer
 
         public void InspectCreateItem(dynamic json)
         {
+            var m = (dynamic[])json.api_material;
+            for (var i = 0; i < m.Length; i++)
+                MaterialHistory[i].Now = (int)m[i];
             if (!json.IsDefined("api_slot_item"))
                 return;
             InspectSlotItem(json.api_slot_item);
