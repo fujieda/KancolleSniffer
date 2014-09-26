@@ -165,7 +165,7 @@ namespace KancolleSniffer
         public void LoadSate(Status status)
         {
             if (status.MatreialHistory != null)
-                MaterialHistory = status.MatreialHistory;
+                status.MatreialHistory.CopyTo(MaterialHistory, 0);
         }
     }
 
@@ -178,6 +178,7 @@ namespace KancolleSniffer
         Development,
         Bucket,
         Burner,
+        Irago,
     }
 
     public class MaterialCount
