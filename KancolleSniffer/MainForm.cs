@@ -116,6 +116,7 @@ namespace KancolleSniffer
         {
             _config.Load();
             ApplyConfig();
+            ApplyLogSetting();
             _sniffer.LoadState();
             FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
         }
@@ -157,7 +158,6 @@ namespace KancolleSniffer
             TopMost = _config.TopMost;
             _sniffer.Item.MarginShips = _config.MarginShips;
             _sniffer.Achievement.ResetHours = _config.ResetHours;
-            _sniffer.LogFile = _config.Logging ? _config.LogFile : null;
 
             if (_config.Location.X == int.MinValue)
                 return;
@@ -166,6 +166,11 @@ namespace KancolleSniffer
             if (IsVisibleOnAnyScreen(newBounds))
                 Location = _config.Location;
             _config.Location = new Point(int.MinValue, int.MinValue); // 二回目以降は無視させる
+        }
+
+        public void ApplyLogSetting()
+        {
+            _sniffer.LogFile = _config.Logging ? _config.LogFile : null;
         }
 
         private bool IsVisibleOnAnyScreen(Rectangle rect)

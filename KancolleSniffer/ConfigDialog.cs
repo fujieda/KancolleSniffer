@@ -24,7 +24,7 @@ namespace KancolleSniffer
 {
     public partial class ConfigDialog : Form
     {
-        private readonly DebugDialog _debugDialog = new DebugDialog();
+        private readonly DebugDialog _debugDialog;
         private readonly Config _config;
         private readonly MainForm _main;
 
@@ -33,6 +33,7 @@ namespace KancolleSniffer
             InitializeComponent();
             _config = config;
             _main = main;
+            _debugDialog = new DebugDialog(config, main);
         }
 
         private void ConfigDialog_Load(object sender, EventArgs e)
@@ -52,9 +53,6 @@ namespace KancolleSniffer
             textBoxKDockSoundFile.Text = _config.KDockSoundFile;
             textBoxMaxShipsSoundFile.Text = _config.MaxShipsSoundFile;
             textBoxDamagedShipSoundFile.Text = _config.DamagedShipSoundFile;
-
-            _debugDialog.Logging = _config.Logging;
-            _debugDialog.LogFile = _config.LogFile;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -77,9 +75,6 @@ namespace KancolleSniffer
             _config.KDockSoundFile = textBoxKDockSoundFile.Text;
             _config.MaxShipsSoundFile = textBoxMaxShipsSoundFile.Text;
             _config.DamagedShipSoundFile = textBoxDamagedShipSoundFile.Text;
-
-            _config.Logging = _debugDialog.Logging;
-            _config.LogFile = _debugDialog.LogFile;
         }
 
         private void checkBoxSound_CheckedChanged(object sender, EventArgs e)

@@ -6,24 +6,27 @@ namespace KancolleSniffer
 {
     public partial class DebugDialog : Form
     {
-        public bool Logging { get; set; }
-        public string LogFile { get; set; }
+        private readonly Config _config;
+        private readonly MainForm _main;
 
-        public DebugDialog()
+        public DebugDialog(Config config, MainForm main)
         {
             InitializeComponent();
+            _config = config;
+            _main = main;
         }
 
         private void DebugDialog_Load(object sender, EventArgs e)
         {
-            checkBoxLogging.Checked = Logging;
-            textBoxLogFile.Text = LogFile;
+            checkBoxLogging.Checked = _config.Logging;
+            textBoxLogFile.Text = _config.LogFile;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            Logging = checkBoxLogging.Checked;
-            LogFile = textBoxLogFile.Text;
+            _config.Logging = checkBoxLogging.Checked;
+            _config.LogFile = textBoxLogFile.Text;
+            _main.ApplyLogSetting();
         }
 
         private void buttonLogFileOpenFile_Click(object sender, EventArgs e)
