@@ -125,22 +125,22 @@ namespace KancolleSniffer
             if (json.api_deck_port()) // port
             {
                 _shipInfo.Clear();
-                InspectShipData(json.api_ship);
                 InspectDeck(json.api_deck_port);
+                InspectShipData(json.api_ship);
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
             }
             else if (json.api_data()) // ship2
             {
                 _shipInfo.Clear();
-                InspectShipData(json.api_data);
                 InspectDeck(json.api_data_deck);
+                InspectShipData(json.api_data);
                 _itemInfo.NowShips = ((object[])json.api_data).Length;
             }
             else if (json.api_ship_data()) // ship3
             {
                 // 一隻分のデータしか来ないことがあるので艦娘数を数えない
-                InspectShipData(json.api_ship_data);
                 InspectDeck(json.api_deck_data);
+                InspectShipData(json.api_ship_data);
             }
             else if (json.api_ship()) // getship
             {
