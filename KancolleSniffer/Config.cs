@@ -23,6 +23,22 @@ using Codeplex.Data;
 
 namespace KancolleSniffer
 {
+    public class ProxyConfig
+    {
+        public bool Auto { get; set; }
+        public int Listen { get; set; }
+        public bool UseUpstream { get; set; }
+        public int UpstreamPort { get; set; }
+
+        public ProxyConfig()
+        {
+            Auto = true;
+            Listen = 8080;
+            UseUpstream = false;
+            UpstreamPort = 8888;
+        }
+    }
+
     public class Config
     {
         private readonly string _configFileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "config.json");
@@ -42,6 +58,7 @@ namespace KancolleSniffer
         public string DamagedShipSoundFile { get; set; }
         public bool Logging { get; set; }
         public string LogFile { get; set; }
+        public ProxyConfig Proxy { get; set; }
 
         public Config()
         {
@@ -59,6 +76,7 @@ namespace KancolleSniffer
             DamagedShipSoundFile = Path.Combine(dir, "taiha.mp3");
             LogFile = Path.Combine(dir, "log.txt");
 // ReSharper restore AssignNullToNotNullAttribute
+            Proxy = new ProxyConfig();
         }
 
         public void Load()

@@ -533,7 +533,7 @@ namespace KancolleSniffer
             if (num == 0)
             {
                 parent.Size = new Size(width, 19);
-                var labels =_damagedShipList[0];
+                var labels = _damagedShipList[0];
                 labels[fleet].Text = "";
                 SetShipName(labels[name], "なし");
                 labels[time].Text = "";

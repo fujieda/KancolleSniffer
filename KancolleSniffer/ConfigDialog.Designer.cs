@@ -77,12 +77,13 @@ namespace KancolleSniffer
             this.groupBoxShow = new System.Windows.Forms.GroupBox();
             this.checkBoxTopMost = new System.Windows.Forms.CheckBox();
             this.groupBoxAchievement = new System.Windows.Forms.GroupBox();
+            this.buttonResetAchievement = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.checkBoxReset14 = new System.Windows.Forms.CheckBox();
             this.checkBoxReset02 = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ProxyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DebugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buttonResetAchievement = new System.Windows.Forms.Button();
             this.groupBoxNotification.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).BeginInit();
             this.groupBoxSound.SuspendLayout();
@@ -408,6 +409,16 @@ namespace KancolleSniffer
             this.groupBoxAchievement.TabStop = false;
             this.groupBoxAchievement.Text = "戦果";
             // 
+            // buttonResetAchievement
+            // 
+            this.buttonResetAchievement.Location = new System.Drawing.Point(179, 14);
+            this.buttonResetAchievement.Name = "buttonResetAchievement";
+            this.buttonResetAchievement.Size = new System.Drawing.Size(44, 22);
+            this.buttonResetAchievement.TabIndex = 4;
+            this.buttonResetAchievement.Text = "今すぐ";
+            this.buttonResetAchievement.UseVisualStyleBackColor = true;
+            this.buttonResetAchievement.Click += new System.EventHandler(this.buttonResetAchievement_Click);
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -440,26 +451,24 @@ namespace KancolleSniffer
             // contextMenuStrip
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ProxyToolStripMenuItem,
             this.DebugToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(149, 26);
+            this.contextMenuStrip.Size = new System.Drawing.Size(168, 70);
+            // 
+            // ProxyToolStripMenuItem
+            // 
+            this.ProxyToolStripMenuItem.Name = "ProxyToolStripMenuItem";
+            this.ProxyToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.ProxyToolStripMenuItem.Text = "プロキシ設定(&P)";
+            this.ProxyToolStripMenuItem.Click += new System.EventHandler(this.ProxyToolStripMenuItem_Click);
             // 
             // DebugToolStripMenuItem
             // 
             this.DebugToolStripMenuItem.Name = "DebugToolStripMenuItem";
-            this.DebugToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.DebugToolStripMenuItem.Text = "デバッグ設定";
+            this.DebugToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.DebugToolStripMenuItem.Text = "デバッグ設定(&D)";
             this.DebugToolStripMenuItem.Click += new System.EventHandler(this.DebugToolStripMenuItem_Click);
-            // 
-            // buttonResetAchievement
-            // 
-            this.buttonResetAchievement.Location = new System.Drawing.Point(179, 14);
-            this.buttonResetAchievement.Name = "buttonResetAchievement";
-            this.buttonResetAchievement.Size = new System.Drawing.Size(44, 22);
-            this.buttonResetAchievement.TabIndex = 4;
-            this.buttonResetAchievement.Text = "今すぐ";
-            this.buttonResetAchievement.UseVisualStyleBackColor = true;
-            this.buttonResetAchievement.Click += new System.EventHandler(this.buttonResetAchievement_Click);
             // 
             // ConfigDialog
             // 
@@ -536,5 +545,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem DebugToolStripMenuItem;
         private System.Windows.Forms.Button buttonResetAchievement;
+        private System.Windows.Forms.ToolStripMenuItem ProxyToolStripMenuItem;
     }
 }

@@ -24,16 +24,16 @@ namespace KancolleSniffer
 {
     public partial class ConfigDialog : Form
     {
-        private readonly DebugDialog _debugDialog;
         private readonly Config _config;
         private readonly MainForm _main;
+        private DebugDialog _debugDialog;
+        private ProxyDialog _proxyDialog;
 
         public ConfigDialog(Config config, MainForm main)
         {
             InitializeComponent();
             _config = config;
             _main = main;
-            _debugDialog = new DebugDialog(config, main);
         }
 
         private void ConfigDialog_Load(object sender, EventArgs e)
@@ -117,12 +117,21 @@ namespace KancolleSniffer
 
         private void DebugToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_debugDialog == null)
+                _debugDialog = new DebugDialog(_config, _main);
             _debugDialog.ShowDialog(this);
         }
 
         private void buttonResetAchievement_Click(object sender, EventArgs e)
         {
             _main.ResetAchievemnt();
+        }
+
+        private void ProxyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_proxyDialog == null)
+                _proxyDialog = new ProxyDialog(_config.Proxy, _main);
+            _proxyDialog.ShowDialog(this);
         }
     }
 }
