@@ -45,7 +45,9 @@ namespace KancolleSniffer
             {
                 var id = (int)entry.api_id - 1;
                 _ndocTimers[id].SetEndTime(entry.api_complete_time);
-                if (_ndoc[id] == 0) // 新たな入渠なら資源を減らす
+                var prev = _ndoc[id];
+                _ndoc[id] = (int)entry.api_ship_id;
+                if (prev == 0 && _ndoc[id] != 0) // 新たな入渠なら資源を減らす
                 {
                     var history = _itemInfo.MaterialHistory;
                     history[0].Now -= (int)entry.api_item1;
@@ -53,7 +55,10 @@ namespace KancolleSniffer
                     history[2].Now -= (int)entry.api_item3;
                     history[3].Now -= (int)entry.api_item4;
                 }
-                _ndoc[id] = (int)entry.api_ship_id;
+                else if (prev != 0 && _ndoc[id] == 0) // 修復完了
+                {
+                    _shipInfo.RepairShip(prev);
+                }
             }
         }
 
@@ -62,7 +67,7 @@ namespace KancolleSniffer
             var values = HttpUtility.ParseQueryString(request);
             if (int.Parse(values["api_highspeed"]) == 0)
                 return;
-            _shipInfo.ApplyBucket(int.Parse(values["api_ship_id"]));
+            _shipInfo.RepairShip(int.Parse(values["api_ship_id"]));
             _itemInfo.MaterialHistory[(int)Material.Bucket].Now--;
         }
 
@@ -70,7 +75,7 @@ namespace KancolleSniffer
         {
             var values = HttpUtility.ParseQueryString(request);
             var dock = int.Parse(values["api_ndock_id"]) - 1;
-            _shipInfo.ApplyBucket(_ndoc[dock]);
+            _shipInfo.RepairShip(_ndoc[dock]);
             _ndoc[dock] = 0;
             _ndocTimers[dock].SetEndTime(0);
             _itemInfo.MaterialHistory[(int)Material.Bucket].Now--;

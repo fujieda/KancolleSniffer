@@ -284,7 +284,7 @@ namespace KancolleSniffer
             return _shipInfo[id].Slot.Count(item => item != -1);
         }
 
-        public void ApplyBucket(int id)
+        public void RepairShip(int id)
         {
             var s = _shipInfo[id];
             s.NowHp = s.MaxHp;
