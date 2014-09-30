@@ -297,7 +297,7 @@ namespace KancolleSniffer
             return _shipInfo.GetAirSuperiority(fleet);
         }
 
-        public RepairStatus[] DamagedShipList
+        public DamageStatus[] DamagedShipList
         {
             get { return _shipInfo.GetDamagedShipList(_dockInfo); }
         }

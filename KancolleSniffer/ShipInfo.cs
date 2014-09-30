@@ -79,17 +79,19 @@ namespace KancolleSniffer
         public int Bull { get; set; }
     }
 
-    public class RepairStatus
+    public class DamageStatus
     {
         public int Fleet { private set; get; }
         public string Name { private set; get; }
-        public TimeSpan Time { private set; get; }
+        public ShipStatus.Damage DamageLevel { private set; get; }
+        public TimeSpan RepairTime { private set; get; }
 
-        public RepairStatus(int fleet, string name, TimeSpan time)
+        public DamageStatus(int fleet, string name, ShipStatus.Damage damage, TimeSpan time)
         {
             Fleet = fleet;
             Name = name;
-            Time = time;
+            DamageLevel = damage;
+            RepairTime = time;
         }
     }
 
@@ -353,14 +355,14 @@ namespace KancolleSniffer
                 select (int)Math.Floor(_itemInfo[slot.slot].TyKu * Math.Sqrt(slot.onslot))).Sum();
         }
 
-        public RepairStatus[] GetDamagedShipList(DockInfo dockInfo)
+        public DamageStatus[] GetDamagedShipList(DockInfo dockInfo)
         {
             int oi;
             return (from entry in _shipInfo
-                let status = entry.Value
-                where status.NowHp < status.MaxHp && !dockInfo.InNDock(entry.Key)
-                select new RepairStatus(FindFleet(entry.Key, out oi), status.Name, status.RepairTime())).
-                OrderByDescending(entry => entry.Time).ToArray();
+                let s = entry.Value
+                where s.NowHp < s.MaxHp && !dockInfo.InNDock(entry.Key)
+                select new DamageStatus(FindFleet(entry.Key, out oi), s.Name, s.DamageLevel, s.RepairTime())).
+                OrderByDescending(entry => entry.RepairTime).ToArray();
         }
     }
 }

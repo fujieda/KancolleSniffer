@@ -243,13 +243,28 @@ namespace KancolleSniffer
             {
                 var y = 20 + 16 * i;
                 const int height = 12;
-                parent.Controls.AddRange(_shipInfoLabels[i] = new []
+                parent.Controls.AddRange(_shipInfoLabels[i] = new[]
                 {
-                    new Label{Location = new Point(130, y), AutoSize = true},
-                    new Label{Location = new Point(136, y), Size = new Size(23, height), TextAlign = ContentAlignment.MiddleRight},
-                    new Label{Location = new Point(170, y), Size = new Size(23, height), TextAlign = ContentAlignment.MiddleRight},
-                    new Label{Location = new Point(195, y), Size = new Size(41, height), TextAlign = ContentAlignment.MiddleRight},
-                    new Label{Location = new Point(2, y), AutoSize = true} // 名前のZ-orderを下に
+                    new Label {Location = new Point(130, y), AutoSize = true},
+                    new Label
+                    {
+                        Location = new Point(136, y),
+                        Size = new Size(23, height),
+                        TextAlign = ContentAlignment.MiddleRight
+                    },
+                    new Label
+                    {
+                        Location = new Point(170, y),
+                        Size = new Size(23, height),
+                        TextAlign = ContentAlignment.MiddleRight
+                    },
+                    new Label
+                    {
+                        Location = new Point(195, y),
+                        Size = new Size(41, height),
+                        TextAlign = ContentAlignment.MiddleRight
+                    },
+                    new Label {Location = new Point(2, y), AutoSize = true} // 名前のZ-orderを下に
                 });
                 _shipInfoLabels[i][0].SizeChanged += labelHP_SizeChanged;
             }
@@ -363,11 +378,10 @@ namespace KancolleSniffer
                 var y = 3 + i * 15;
                 parent.Controls.AddRange(
                     _ndockLabels[i] = new[]
-                        {
-                            new Label {Location = new Point(106, y), AutoSize = true, Text = "00:00:00"},
-                            new Label {Location = new Point(30, y), AutoSize = true} // 名前のZ-orderを下に
-                        });
-
+                    {
+                        new Label {Location = new Point(106, y), AutoSize = true, Text = "00:00:00"},
+                        new Label {Location = new Point(30, y), AutoSize = true} // 名前のZ-orderを下に
+                    });
             }
         }
 
@@ -380,8 +394,8 @@ namespace KancolleSniffer
         private void UpdateMissionLabels()
         {
             foreach (var entry in
-                new[] { labelMissionName1, labelMissionName2, labelMissionName3 }.Zip(_sniffer.Missions,
-                    (label, mission) => new { label, mission.Name }))
+                new[] {labelMissionName1, labelMissionName2, labelMissionName3}.Zip(_sniffer.Missions,
+                    (label, mission) => new {label, mission.Name}))
                 entry.label.Text = entry.Name;
         }
 
@@ -496,7 +510,8 @@ namespace KancolleSniffer
                 parent.Controls.AddRange(_damagedShipList[i] = new[]
                 {
                     new Label {Location = new Point(1, y), Size = new Size(11, height)},
-                    new Label {Location = new Point(86, y), Size = new Size(45, height)},
+                    new Label {Location = new Point(79, y), Size = new Size(45, height)},
+                    new Label {Location = new Point(123, y), Size = new Size(5, height - 1)},
                     new Label {Location = new Point(10, y), AutoSize = true}
                 });
             }
@@ -505,6 +520,7 @@ namespace KancolleSniffer
 
         private void UpdateDamagedShipList()
         {
+            const int fleet = 0, name = 3, time = 1, damage = 2;
             var parent = panelDamagedShipList;
             var list = _sniffer.DamagedShipList;
             var num = Math.Min(list.Length, _damagedShipList.Length);
@@ -512,20 +528,25 @@ namespace KancolleSniffer
             if (num == 0)
             {
                 parent.Size = new Size(width, 19);
-                _damagedShipList[0][0].Text = "";
-                _damagedShipList[0][2].Text = "なし";
-                _damagedShipList[0][1].Text = "";
+                var labels =_damagedShipList[0];
+                labels[fleet].Text = "";
+                SetShipName(labels[name], "なし");
+                labels[time].Text = "";
+                labels[damage].BackColor = DefaultBackColor;
                 return;
             }
             parent.Size = new Size(width, num * 16 + 3);
-            var fn = new[] { "", "1", "2", "3", "4" };
+            var fn = new[] {"", "1", "2", "3", "4"};
+            var colors = new[] {DefaultBackColor, Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red};
             for (var i = 0; i < num; i++)
             {
+                var e = list[i];
                 var labels = _damagedShipList[i];
-                labels[0].Text = fn[list[i].Fleet + 1];
-                SetShipName(labels[2], list[i].Name);
-                var time = list[i].Time;
-                labels[1].Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)time.TotalHours, time);
+                labels[fleet].Text = fn[e.Fleet + 1];
+                SetShipName(labels[name], e.Name);
+                var t = e.RepairTime;
+                labels[time].Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)t.TotalHours, t);
+                labels[damage].BackColor = colors[(int)e.DamageLevel];
             }
         }
 
