@@ -61,22 +61,64 @@ namespace KancolleSniffer
 
         private class RepairStatus
         {
+            private readonly DockInfo _dockInfo;
+            private ShipStatus[] _target;
+            private RepairTime[][] _times;
             public DateTime Start { get; set; }
-            public RepairTime[][] Times { get; set; }
-            public int TotalHp { get; set; }
-            public int[] Deck { get; set; }
+            public int[] Deck { private get; set; }
+
+            public int TotalHp
+            {
+                get { return _target == null ? 0 : _target.Sum(s => s.NowHp); }
+            }
+
+            public RepairStatus(DockInfo dockInfo)
+            {
+                _dockInfo = dockInfo;
+            }
 
             public void Invalidate()
             {
                 Start = DateTime.MinValue;
-                Times = null;
-                TotalHp = 0;
                 Deck = null;
+                _target = null;
+                _times = null;
             }
 
             public bool DeckChanged(int[] deck)
             {
                 return Deck != null && Deck.Where((t, i) => deck[i] != t).Any();
+            }
+
+            public void UpdateTarget(ShipStatus[] target)
+            {
+                _target = target;
+                UpdateTimes();
+            }
+
+            private void UpdateTimes()
+            {
+                _times = (from s in _target
+                    let damage = s.MaxHp - s.NowHp
+                    let first = new RepairTime(0, Start.AddMinutes(20))
+                    select damage == 0
+                        ? null
+                        : new[] {first}.Concat(from d in Enumerable.Range(2, damage < 2 ? 0 : damage - 1)
+                            let span = s.RepairTime(d) + TimeSpan.FromSeconds((d - 1) * 10 * s.Spec.RepairWeight)
+                            where span.TotalSeconds > 20 * 60
+                            select new RepairTime(d - 1, Start + span)).ToArray()).ToArray();
+            }
+
+            public RepairSpan[] GetTimers()
+            {
+                if (_times == null)
+                    return null;
+                return (from e in _times.Zip(Deck, (times, id) => new { times, id })
+                        select e.times == null || _dockInfo.InNDock(e.id)
+                            ? new RepairSpan(0, TimeSpan.MinValue)
+                            : (from t in e.times select new RepairSpan(t)).FirstOrDefault(s => s.Span > TimeSpan.Zero)
+                              ?? new RepairSpan(e.times.Last().Diff + 1, TimeSpan.Zero)
+                    ).ToArray();
             }
         }
 
@@ -87,7 +129,7 @@ namespace KancolleSniffer
             _dockInfo = dock;
             _missionInfo = mission;
             for (var i = 0; i < _repairStatuses.Length; i++)
-                _repairStatuses[i] = new RepairStatus();
+                _repairStatuses[i] = new RepairStatus(dock);
         }
 
         public void SetTimer(bool port = false)
@@ -99,24 +141,25 @@ namespace KancolleSniffer
         private void SetTimer(int fleet, bool port)
         {
             var deck = _shipInfo.GetDeck(fleet);
+            var repair = _repairStatuses[fleet];
             var fs = deck[0];
             if (!_shipInfo[fs].Name.StartsWith("明石") || _dockInfo.InNDock(fs) || _missionInfo.InMission(fleet))
             {
-                InvalidateTimer(fleet);
+                repair.Invalidate();
                 return;
             }
-            if (_repairStatuses[fleet].DeckChanged(deck))
-                InvalidateTimer(fleet);
+            if (repair.DeckChanged(deck))
+                repair.Invalidate();
+            repair.Deck = deck.ToArray();
             var cap = _shipInfo[fs].Slot.Count(item => _itemInfo[item].Name == "艦艇修理施設") + 2;
-            var target = (from id in deck.Take(cap) select IsRepairable(id) ? id : -1).ToList();
-            var totalHp = target.Sum(id => _shipInfo[id].NowHp);
+            var target = (from id in deck.Take(cap) select IsRepairable(id) ? _shipInfo[id] : new ShipStatus()).ToArray();
+            var totalHp = target.Sum(s => s.NowHp);
             if (totalHp == 0)
             {
-                InvalidateTimer(fleet);
+                repair.Invalidate();
                 return;
             }
-            var r = _repairStatuses[fleet];
-            if (totalHp == r.TotalHp)
+            if (totalHp == repair.TotalHp)
                 return;
             /*
              * 母港に遷移したときに、耐久値が回復しているか修理開始から20分経過しているときに
@@ -129,19 +172,10 @@ namespace KancolleSniffer
              *    反映されて回復が起こったことがわからない。耐久値の回復だけを基準にすると
              *    リスタートできないので、20分経過していたらリスタートする。
             */
-            if (r.Start == DateTime.MinValue ||
-                (port && (totalHp > r.TotalHp || (DateTime.Now - r.Start).TotalMinutes > 20)))
-            {
-                r.Start = DateTime.Now;
-                r.Times = EnumTimers(target).ToArray();
-            }
-            else if (totalHp < r.TotalHp && r.Times != null)
-            {
-                // 修理対象から外れた艦のタイマーを消す。
-                r.Times = target.Zip(r.Times, (id, times) => id != -1 ? times : null).ToArray();
-            }
-            r.TotalHp = totalHp;
-            r.Deck = deck.ToArray();
+            if (repair.Start == DateTime.MinValue ||
+                (port && (totalHp > repair.TotalHp || (DateTime.Now - repair.Start).TotalMinutes > 20)))
+                repair.Start = DateTime.Now;
+            repair.UpdateTarget(target);
         }
 
         private bool IsRepairable(int id)
@@ -150,36 +184,9 @@ namespace KancolleSniffer
             return !_dockInfo.InNDock(id) && s.NowHp < s.MaxHp && s.DamageLevel < ShipStatus.Damage.Half;
         }
 
-        private IEnumerable<RepairTime[]> EnumTimers(IEnumerable<int> deck)
-        {
-            return from id in deck
-                let s = _shipInfo[id]
-                let damage = s.MaxHp - s.NowHp
-                let first = new RepairTime(0, DateTime.Now.AddMinutes(20))
-                select damage == 0
-                    ? null
-                    : new[] {first}.Concat(from d in Enumerable.Range(2, damage < 2 ? 0 : damage - 1)
-                        let span = s.RepairTime(d) + TimeSpan.FromSeconds((d - 1) * 10 * s.Spec.RepairWeight)
-                        where span.TotalSeconds > 20 * 60
-                        select new RepairTime(d - 1, DateTime.Now + span)).ToArray();
-        }
-
-        private void InvalidateTimer(int fleet)
-        {
-            _repairStatuses[fleet].Invalidate();
-        }
-
         public RepairSpan[] GetTimers(int fleet)
         {
-            var repair = _repairStatuses[fleet];
-            if (repair.Times == null)
-                return null;
-            return (from e in repair.Times.Zip(repair.Deck, (times, id) => new {times, id})
-                select e.times == null || _dockInfo.InNDock(e.id)
-                    ? new RepairSpan(0, TimeSpan.MinValue)
-                    : (from t in e.times select new RepairSpan(t)).FirstOrDefault(s => s.Span > TimeSpan.Zero)
-                      ?? new RepairSpan(e.times.Last().Diff + 1, TimeSpan.Zero)
-                ).ToArray();
+            return _repairStatuses[fleet].GetTimers();
         }
     }
 }
