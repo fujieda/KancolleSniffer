@@ -73,39 +73,9 @@ namespace KancolleSniffer
             this.labelCondTimer2 = new System.Windows.Forms.Label();
             this.labelCondTimer1 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
-            this.labelCond6 = new System.Windows.Forms.Label();
-            this.labelCond5 = new System.Windows.Forms.Label();
-            this.labelCond4 = new System.Windows.Forms.Label();
-            this.labelCond2 = new System.Windows.Forms.Label();
-            this.labelCond3 = new System.Windows.Forms.Label();
-            this.labelCond1 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.labelNextLv6 = new System.Windows.Forms.Label();
-            this.labelNextLv5 = new System.Windows.Forms.Label();
-            this.labelNextLv4 = new System.Windows.Forms.Label();
-            this.labelNextLv3 = new System.Windows.Forms.Label();
-            this.labelNextLv2 = new System.Windows.Forms.Label();
-            this.labelNextLv1 = new System.Windows.Forms.Label();
-            this.labelHP6 = new System.Windows.Forms.Label();
-            this.labelHP5 = new System.Windows.Forms.Label();
-            this.labelHP4 = new System.Windows.Forms.Label();
-            this.labelHP3 = new System.Windows.Forms.Label();
-            this.labelHP2 = new System.Windows.Forms.Label();
-            this.labelHP1 = new System.Windows.Forms.Label();
-            this.labelLv6 = new System.Windows.Forms.Label();
-            this.labelLv5 = new System.Windows.Forms.Label();
-            this.labelLv4 = new System.Windows.Forms.Label();
-            this.labelLv2 = new System.Windows.Forms.Label();
-            this.labelLv3 = new System.Windows.Forms.Label();
-            this.labelLv1 = new System.Windows.Forms.Label();
-            this.labelShip6 = new System.Windows.Forms.Label();
-            this.labelShip5 = new System.Windows.Forms.Label();
-            this.labelShip4 = new System.Windows.Forms.Label();
-            this.labelShip3 = new System.Windows.Forms.Label();
-            this.labelShip2 = new System.Windows.Forms.Label();
-            this.labelShip1 = new System.Windows.Forms.Label();
             this.panelMaterialHistory = new System.Windows.Forms.Panel();
             this.labelBouxiteHistory = new System.Windows.Forms.Label();
             this.labelSteelHistory = new System.Windows.Forms.Label();
@@ -114,14 +84,6 @@ namespace KancolleSniffer
             this.labelFuelHistory = new System.Windows.Forms.Label();
             this.labelRepair = new System.Windows.Forms.Label();
             this.panelDock = new System.Windows.Forms.Panel();
-            this.labelRepairShip4 = new System.Windows.Forms.Label();
-            this.labelRepairShip3 = new System.Windows.Forms.Label();
-            this.labelRepairShip2 = new System.Windows.Forms.Label();
-            this.labelRepairShip1 = new System.Windows.Forms.Label();
-            this.labelRepair3 = new System.Windows.Forms.Label();
-            this.labelRepair4 = new System.Windows.Forms.Label();
-            this.labelRepair2 = new System.Windows.Forms.Label();
-            this.labelRepair1 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -329,39 +291,9 @@ namespace KancolleSniffer
             this.panelFleet1.Controls.Add(this.labelCondTimer2);
             this.panelFleet1.Controls.Add(this.labelCondTimer1);
             this.panelFleet1.Controls.Add(this.label17);
-            this.panelFleet1.Controls.Add(this.labelCond6);
-            this.panelFleet1.Controls.Add(this.labelCond5);
-            this.panelFleet1.Controls.Add(this.labelCond4);
-            this.panelFleet1.Controls.Add(this.labelCond2);
-            this.panelFleet1.Controls.Add(this.labelCond3);
-            this.panelFleet1.Controls.Add(this.labelCond1);
             this.panelFleet1.Controls.Add(this.label16);
             this.panelFleet1.Controls.Add(this.label18);
             this.panelFleet1.Controls.Add(this.label4);
-            this.panelFleet1.Controls.Add(this.labelNextLv6);
-            this.panelFleet1.Controls.Add(this.labelNextLv5);
-            this.panelFleet1.Controls.Add(this.labelNextLv4);
-            this.panelFleet1.Controls.Add(this.labelNextLv3);
-            this.panelFleet1.Controls.Add(this.labelNextLv2);
-            this.panelFleet1.Controls.Add(this.labelNextLv1);
-            this.panelFleet1.Controls.Add(this.labelHP6);
-            this.panelFleet1.Controls.Add(this.labelHP5);
-            this.panelFleet1.Controls.Add(this.labelHP4);
-            this.panelFleet1.Controls.Add(this.labelHP3);
-            this.panelFleet1.Controls.Add(this.labelHP2);
-            this.panelFleet1.Controls.Add(this.labelHP1);
-            this.panelFleet1.Controls.Add(this.labelLv6);
-            this.panelFleet1.Controls.Add(this.labelLv5);
-            this.panelFleet1.Controls.Add(this.labelLv4);
-            this.panelFleet1.Controls.Add(this.labelLv2);
-            this.panelFleet1.Controls.Add(this.labelLv3);
-            this.panelFleet1.Controls.Add(this.labelLv1);
-            this.panelFleet1.Controls.Add(this.labelShip6);
-            this.panelFleet1.Controls.Add(this.labelShip5);
-            this.panelFleet1.Controls.Add(this.labelShip4);
-            this.panelFleet1.Controls.Add(this.labelShip3);
-            this.panelFleet1.Controls.Add(this.labelShip2);
-            this.panelFleet1.Controls.Add(this.labelShip1);
             this.panelFleet1.Location = new System.Drawing.Point(6, 57);
             this.panelFleet1.Name = "panelFleet1";
             this.panelFleet1.Size = new System.Drawing.Size(238, 134);
@@ -493,60 +425,6 @@ namespace KancolleSniffer
             this.label17.TabIndex = 20;
             this.label17.Text = "状態";
             // 
-            // labelCond6
-            // 
-            this.labelCond6.Location = new System.Drawing.Point(136, 100);
-            this.labelCond6.Name = "labelCond6";
-            this.labelCond6.Size = new System.Drawing.Size(23, 12);
-            this.labelCond6.TabIndex = 26;
-            this.labelCond6.Text = "0";
-            this.labelCond6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelCond5
-            // 
-            this.labelCond5.Location = new System.Drawing.Point(136, 84);
-            this.labelCond5.Name = "labelCond5";
-            this.labelCond5.Size = new System.Drawing.Size(23, 12);
-            this.labelCond5.TabIndex = 25;
-            this.labelCond5.Text = "0";
-            this.labelCond5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelCond4
-            // 
-            this.labelCond4.Location = new System.Drawing.Point(136, 68);
-            this.labelCond4.Name = "labelCond4";
-            this.labelCond4.Size = new System.Drawing.Size(23, 12);
-            this.labelCond4.TabIndex = 24;
-            this.labelCond4.Text = "0";
-            this.labelCond4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelCond2
-            // 
-            this.labelCond2.Location = new System.Drawing.Point(136, 36);
-            this.labelCond2.Name = "labelCond2";
-            this.labelCond2.Size = new System.Drawing.Size(23, 12);
-            this.labelCond2.TabIndex = 22;
-            this.labelCond2.Text = "0";
-            this.labelCond2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelCond3
-            // 
-            this.labelCond3.Location = new System.Drawing.Point(136, 52);
-            this.labelCond3.Name = "labelCond3";
-            this.labelCond3.Size = new System.Drawing.Size(23, 12);
-            this.labelCond3.TabIndex = 23;
-            this.labelCond3.Text = "0";
-            this.labelCond3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelCond1
-            // 
-            this.labelCond1.Location = new System.Drawing.Point(136, 20);
-            this.labelCond1.Name = "labelCond1";
-            this.labelCond1.Size = new System.Drawing.Size(23, 12);
-            this.labelCond1.TabIndex = 21;
-            this.labelCond1.Text = "0";
-            this.labelCond1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // label16
             // 
             this.label16.AutoSize = true;
@@ -573,222 +451,6 @@ namespace KancolleSniffer
             this.label4.Size = new System.Drawing.Size(34, 12);
             this.label4.TabIndex = 6;
             this.label4.Text = "レベル";
-            // 
-            // labelNextLv6
-            // 
-            this.labelNextLv6.Location = new System.Drawing.Point(195, 100);
-            this.labelNextLv6.Name = "labelNextLv6";
-            this.labelNextLv6.Size = new System.Drawing.Size(41, 12);
-            this.labelNextLv6.TabIndex = 33;
-            this.labelNextLv6.Text = "0";
-            this.labelNextLv6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelNextLv5
-            // 
-            this.labelNextLv5.Location = new System.Drawing.Point(195, 84);
-            this.labelNextLv5.Name = "labelNextLv5";
-            this.labelNextLv5.Size = new System.Drawing.Size(41, 12);
-            this.labelNextLv5.TabIndex = 32;
-            this.labelNextLv5.Text = "0";
-            this.labelNextLv5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelNextLv4
-            // 
-            this.labelNextLv4.Location = new System.Drawing.Point(195, 68);
-            this.labelNextLv4.Name = "labelNextLv4";
-            this.labelNextLv4.Size = new System.Drawing.Size(41, 12);
-            this.labelNextLv4.TabIndex = 31;
-            this.labelNextLv4.Text = "0";
-            this.labelNextLv4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelNextLv3
-            // 
-            this.labelNextLv3.Location = new System.Drawing.Point(195, 52);
-            this.labelNextLv3.Name = "labelNextLv3";
-            this.labelNextLv3.Size = new System.Drawing.Size(41, 12);
-            this.labelNextLv3.TabIndex = 30;
-            this.labelNextLv3.Text = "0";
-            this.labelNextLv3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelNextLv2
-            // 
-            this.labelNextLv2.Location = new System.Drawing.Point(195, 36);
-            this.labelNextLv2.Name = "labelNextLv2";
-            this.labelNextLv2.Size = new System.Drawing.Size(41, 12);
-            this.labelNextLv2.TabIndex = 29;
-            this.labelNextLv2.Text = "0";
-            this.labelNextLv2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelNextLv1
-            // 
-            this.labelNextLv1.Location = new System.Drawing.Point(195, 20);
-            this.labelNextLv1.Name = "labelNextLv1";
-            this.labelNextLv1.Size = new System.Drawing.Size(41, 12);
-            this.labelNextLv1.TabIndex = 28;
-            this.labelNextLv1.Text = "0";
-            this.labelNextLv1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelHP6
-            // 
-            this.labelHP6.AutoSize = true;
-            this.labelHP6.Location = new System.Drawing.Point(107, 100);
-            this.labelHP6.Name = "labelHP6";
-            this.labelHP6.Size = new System.Drawing.Size(23, 12);
-            this.labelHP6.TabIndex = 19;
-            this.labelHP6.Text = "0/0";
-            this.labelHP6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelHP6.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
-            // 
-            // labelHP5
-            // 
-            this.labelHP5.AutoSize = true;
-            this.labelHP5.Location = new System.Drawing.Point(107, 84);
-            this.labelHP5.Name = "labelHP5";
-            this.labelHP5.Size = new System.Drawing.Size(23, 12);
-            this.labelHP5.TabIndex = 18;
-            this.labelHP5.Text = "0/0";
-            this.labelHP5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelHP5.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
-            // 
-            // labelHP4
-            // 
-            this.labelHP4.AutoSize = true;
-            this.labelHP4.Location = new System.Drawing.Point(107, 68);
-            this.labelHP4.Name = "labelHP4";
-            this.labelHP4.Size = new System.Drawing.Size(23, 12);
-            this.labelHP4.TabIndex = 17;
-            this.labelHP4.Text = "0/0";
-            this.labelHP4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelHP4.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
-            // 
-            // labelHP3
-            // 
-            this.labelHP3.AutoSize = true;
-            this.labelHP3.Location = new System.Drawing.Point(107, 52);
-            this.labelHP3.Name = "labelHP3";
-            this.labelHP3.Size = new System.Drawing.Size(23, 12);
-            this.labelHP3.TabIndex = 16;
-            this.labelHP3.Text = "0/0";
-            this.labelHP3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelHP3.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
-            // 
-            // labelHP2
-            // 
-            this.labelHP2.AutoSize = true;
-            this.labelHP2.Location = new System.Drawing.Point(107, 36);
-            this.labelHP2.Name = "labelHP2";
-            this.labelHP2.Size = new System.Drawing.Size(23, 12);
-            this.labelHP2.TabIndex = 15;
-            this.labelHP2.Text = "0/0";
-            this.labelHP2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelHP2.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
-            // 
-            // labelHP1
-            // 
-            this.labelHP1.AutoSize = true;
-            this.labelHP1.Location = new System.Drawing.Point(107, 20);
-            this.labelHP1.Name = "labelHP1";
-            this.labelHP1.Size = new System.Drawing.Size(23, 12);
-            this.labelHP1.TabIndex = 14;
-            this.labelHP1.Text = "0/0";
-            this.labelHP1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelHP1.SizeChanged += new System.EventHandler(this.labelHP_SizeChanged);
-            // 
-            // labelLv6
-            // 
-            this.labelLv6.Location = new System.Drawing.Point(170, 100);
-            this.labelLv6.Name = "labelLv6";
-            this.labelLv6.Size = new System.Drawing.Size(23, 12);
-            this.labelLv6.TabIndex = 12;
-            this.labelLv6.Text = "0";
-            this.labelLv6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelLv5
-            // 
-            this.labelLv5.Location = new System.Drawing.Point(170, 84);
-            this.labelLv5.Name = "labelLv5";
-            this.labelLv5.Size = new System.Drawing.Size(23, 12);
-            this.labelLv5.TabIndex = 11;
-            this.labelLv5.Text = "0";
-            this.labelLv5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelLv4
-            // 
-            this.labelLv4.Location = new System.Drawing.Point(170, 68);
-            this.labelLv4.Name = "labelLv4";
-            this.labelLv4.Size = new System.Drawing.Size(23, 12);
-            this.labelLv4.TabIndex = 10;
-            this.labelLv4.Text = "0";
-            this.labelLv4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelLv2
-            // 
-            this.labelLv2.Location = new System.Drawing.Point(170, 36);
-            this.labelLv2.Name = "labelLv2";
-            this.labelLv2.Size = new System.Drawing.Size(23, 12);
-            this.labelLv2.TabIndex = 8;
-            this.labelLv2.Text = "0";
-            this.labelLv2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelLv3
-            // 
-            this.labelLv3.Location = new System.Drawing.Point(170, 52);
-            this.labelLv3.Name = "labelLv3";
-            this.labelLv3.Size = new System.Drawing.Size(23, 12);
-            this.labelLv3.TabIndex = 9;
-            this.labelLv3.Text = "0";
-            this.labelLv3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelLv1
-            // 
-            this.labelLv1.Location = new System.Drawing.Point(170, 20);
-            this.labelLv1.Name = "labelLv1";
-            this.labelLv1.Size = new System.Drawing.Size(23, 12);
-            this.labelLv1.TabIndex = 7;
-            this.labelLv1.Text = "0";
-            this.labelLv1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelShip6
-            // 
-            this.labelShip6.Location = new System.Drawing.Point(2, 100);
-            this.labelShip6.Name = "labelShip6";
-            this.labelShip6.Size = new System.Drawing.Size(77, 12);
-            this.labelShip6.TabIndex = 5;
-            // 
-            // labelShip5
-            // 
-            this.labelShip5.Location = new System.Drawing.Point(2, 84);
-            this.labelShip5.Name = "labelShip5";
-            this.labelShip5.Size = new System.Drawing.Size(77, 12);
-            this.labelShip5.TabIndex = 4;
-            // 
-            // labelShip4
-            // 
-            this.labelShip4.Location = new System.Drawing.Point(2, 68);
-            this.labelShip4.Name = "labelShip4";
-            this.labelShip4.Size = new System.Drawing.Size(77, 12);
-            this.labelShip4.TabIndex = 3;
-            // 
-            // labelShip3
-            // 
-            this.labelShip3.Location = new System.Drawing.Point(2, 52);
-            this.labelShip3.Name = "labelShip3";
-            this.labelShip3.Size = new System.Drawing.Size(77, 12);
-            this.labelShip3.TabIndex = 2;
-            // 
-            // labelShip2
-            // 
-            this.labelShip2.Location = new System.Drawing.Point(2, 36);
-            this.labelShip2.Name = "labelShip2";
-            this.labelShip2.Size = new System.Drawing.Size(77, 12);
-            this.labelShip2.TabIndex = 1;
-            // 
-            // labelShip1
-            // 
-            this.labelShip1.Location = new System.Drawing.Point(2, 20);
-            this.labelShip1.Name = "labelShip1";
-            this.labelShip1.Size = new System.Drawing.Size(77, 12);
-            this.labelShip1.TabIndex = 0;
             // 
             // panelMaterialHistory
             // 
@@ -861,14 +523,6 @@ namespace KancolleSniffer
             // panelDock
             // 
             this.panelDock.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelDock.Controls.Add(this.labelRepairShip4);
-            this.panelDock.Controls.Add(this.labelRepairShip3);
-            this.panelDock.Controls.Add(this.labelRepairShip2);
-            this.panelDock.Controls.Add(this.labelRepairShip1);
-            this.panelDock.Controls.Add(this.labelRepair3);
-            this.panelDock.Controls.Add(this.labelRepair4);
-            this.panelDock.Controls.Add(this.labelRepair2);
-            this.panelDock.Controls.Add(this.labelRepair1);
             this.panelDock.Controls.Add(this.label8);
             this.panelDock.Controls.Add(this.label7);
             this.panelDock.Controls.Add(this.label6);
@@ -877,70 +531,6 @@ namespace KancolleSniffer
             this.panelDock.Name = "panelDock";
             this.panelDock.Size = new System.Drawing.Size(154, 65);
             this.panelDock.TabIndex = 4;
-            // 
-            // labelRepairShip4
-            // 
-            this.labelRepairShip4.Location = new System.Drawing.Point(30, 49);
-            this.labelRepairShip4.Name = "labelRepairShip4";
-            this.labelRepairShip4.Size = new System.Drawing.Size(77, 12);
-            this.labelRepairShip4.TabIndex = 7;
-            // 
-            // labelRepairShip3
-            // 
-            this.labelRepairShip3.Location = new System.Drawing.Point(30, 35);
-            this.labelRepairShip3.Name = "labelRepairShip3";
-            this.labelRepairShip3.Size = new System.Drawing.Size(77, 12);
-            this.labelRepairShip3.TabIndex = 6;
-            // 
-            // labelRepairShip2
-            // 
-            this.labelRepairShip2.Location = new System.Drawing.Point(30, 19);
-            this.labelRepairShip2.Name = "labelRepairShip2";
-            this.labelRepairShip2.Size = new System.Drawing.Size(77, 12);
-            this.labelRepairShip2.TabIndex = 5;
-            // 
-            // labelRepairShip1
-            // 
-            this.labelRepairShip1.Location = new System.Drawing.Point(30, 3);
-            this.labelRepairShip1.Name = "labelRepairShip1";
-            this.labelRepairShip1.Size = new System.Drawing.Size(77, 12);
-            this.labelRepairShip1.TabIndex = 4;
-            // 
-            // labelRepair3
-            // 
-            this.labelRepair3.Location = new System.Drawing.Point(106, 35);
-            this.labelRepair3.Name = "labelRepair3";
-            this.labelRepair3.Size = new System.Drawing.Size(45, 12);
-            this.labelRepair3.TabIndex = 10;
-            this.labelRepair3.Text = "00:00:00";
-            this.labelRepair3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelRepair4
-            // 
-            this.labelRepair4.Location = new System.Drawing.Point(106, 49);
-            this.labelRepair4.Name = "labelRepair4";
-            this.labelRepair4.Size = new System.Drawing.Size(45, 12);
-            this.labelRepair4.TabIndex = 11;
-            this.labelRepair4.Text = "00:00:00";
-            this.labelRepair4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelRepair2
-            // 
-            this.labelRepair2.Location = new System.Drawing.Point(106, 19);
-            this.labelRepair2.Name = "labelRepair2";
-            this.labelRepair2.Size = new System.Drawing.Size(45, 12);
-            this.labelRepair2.TabIndex = 9;
-            this.labelRepair2.Text = "00:00:00";
-            this.labelRepair2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelRepair1
-            // 
-            this.labelRepair1.Location = new System.Drawing.Point(106, 3);
-            this.labelRepair1.Name = "labelRepair1";
-            this.labelRepair1.Size = new System.Drawing.Size(45, 12);
-            this.labelRepair1.TabIndex = 8;
-            this.labelRepair1.Text = "00:00:00";
-            this.labelRepair1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label8
             // 
@@ -1685,31 +1275,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelNumOfShips;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panelFleet1;
-        private System.Windows.Forms.Label labelShip6;
-        private System.Windows.Forms.Label labelShip5;
-        private System.Windows.Forms.Label labelShip4;
-        private System.Windows.Forms.Label labelShip3;
-        private System.Windows.Forms.Label labelShip2;
-        private System.Windows.Forms.Label labelShip1;
-        private System.Windows.Forms.Label labelLv1;
-        private System.Windows.Forms.Label labelHP6;
-        private System.Windows.Forms.Label labelHP5;
-        private System.Windows.Forms.Label labelHP4;
-        private System.Windows.Forms.Label labelHP3;
-        private System.Windows.Forms.Label labelHP2;
-        private System.Windows.Forms.Label labelHP1;
-        private System.Windows.Forms.Label labelLv6;
-        private System.Windows.Forms.Label labelLv5;
-        private System.Windows.Forms.Label labelLv4;
-        private System.Windows.Forms.Label labelLv2;
-        private System.Windows.Forms.Label labelLv3;
-        private System.Windows.Forms.Label labelNextLv1;
         private System.Windows.Forms.Label labelRepair;
         private System.Windows.Forms.Panel panelDock;
-        private System.Windows.Forms.Label labelRepair3;
-        private System.Windows.Forms.Label labelRepair4;
-        private System.Windows.Forms.Label labelRepair2;
-        private System.Windows.Forms.Label labelRepair1;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
@@ -1725,11 +1292,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelConstruct1;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label labelQuest;
-        private System.Windows.Forms.Label labelNextLv6;
-        private System.Windows.Forms.Label labelNextLv5;
-        private System.Windows.Forms.Label labelNextLv4;
-        private System.Windows.Forms.Label labelNextLv3;
-        private System.Windows.Forms.Label labelNextLv2;
         private System.Windows.Forms.Label labelMission;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label14;
@@ -1753,19 +1315,9 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelProgress3;
         private System.Windows.Forms.Label labelProgress2;
         private System.Windows.Forms.Label labelProgress1;
-        private System.Windows.Forms.Label labelRepairShip4;
-        private System.Windows.Forms.Label labelRepairShip3;
-        private System.Windows.Forms.Label labelRepairShip2;
-        private System.Windows.Forms.Label labelRepairShip1;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label labelCond6;
-        private System.Windows.Forms.Label labelCond5;
-        private System.Windows.Forms.Label labelCond4;
-        private System.Windows.Forms.Label labelCond2;
-        private System.Windows.Forms.Label labelCond3;
-        private System.Windows.Forms.Label labelCond1;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label labelCondTimer2;
         private System.Windows.Forms.Label labelCondTimer1;

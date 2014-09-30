@@ -31,12 +31,13 @@ namespace KancolleSniffer
         private readonly dynamic _wmp = Activator.CreateInstance(Type.GetTypeFromProgID("WMPlayer.OCX.7"));
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
-        private readonly int _labelRightDistance;
+        private int _labelRightDistance;
         private int _currentFleet;
         private readonly Label[] _labelCheckFleets;
-        private readonly Label[] _labelHPs;
+        private readonly Label[][] _shipInfoLabels = new Label[ShipInfo.MemberCount][];
         private readonly Label[][] _damagedShipList = new Label[14][];
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
+        private readonly Label[][] _ndockLabels = new Label[DockInfo.DockCount][];
         private bool _started;
 
         public MainForm()
@@ -46,15 +47,15 @@ namespace KancolleSniffer
             FiddlerApplication.BeforeResponse += FiddlerApplication_BeforeResponse;
             _wmp.PlayStateChange += new EventHandler(_wmp_PlayStateChange);
             _configDialog = new ConfigDialog(_config, this);
-            _labelRightDistance = labelHP1.Parent.Width - labelHP1.Right;
             _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
-            _labelHPs = new[] {labelHP1, labelHP2, labelHP3, labelHP4, labelHP5, labelHP6};
 
             var i = 0;
             foreach (var label in new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4})
                 label.Tag = i++;
+            CreateShipInfoLabels();
             CreateDamagedShipList();
             CreateAkashiTimers();
+            CreateNDockLabels();
         }
 
         private void FiddlerApplication_BeforeRequest(Session oSession)
@@ -233,46 +234,48 @@ namespace KancolleSniffer
             }
         }
 
-        private void UpdateMissionLabels()
+        private void CreateShipInfoLabels()
         {
-            foreach (var entry in
-                new[] {labelMissionName1, labelMissionName2, labelMissionName3}.Zip(_sniffer.Missions,
-                    (label, mission) => new {label, mission.Name}))
-                entry.label.Text = entry.Name;
-        }
-
-        private void UpdateNDocLabels()
-        {
-            foreach (var entry in
-                new[] {labelRepairShip1, labelRepairShip2, labelRepairShip3, labelRepairShip4}.Zip(_sniffer.NDock,
-                    (label, ndock) => new {label, ndock.Name}))
-                entry.label.Text = entry.Name;
+            var parent = panelFleet1;
+            parent.SuspendLayout();
+            for (var i = 0; i < _shipInfoLabels.Length; i++)
+            {
+                var y = 20 + 16 * i;
+                const int height = 12;
+                parent.Controls.AddRange(_shipInfoLabels[i] = new []
+                {
+                    new Label{Location = new Point(130, y), AutoSize = true},
+                    new Label{Location = new Point(136, y), Size = new Size(23, height), TextAlign = ContentAlignment.MiddleRight},
+                    new Label{Location = new Point(170, y), Size = new Size(23, height), TextAlign = ContentAlignment.MiddleRight},
+                    new Label{Location = new Point(195, y), Size = new Size(41, height), TextAlign = ContentAlignment.MiddleRight},
+                    new Label{Location = new Point(2, y), AutoSize = true} // 名前のZ-orderを下に
+                });
+                _shipInfoLabels[i][0].SizeChanged += labelHP_SizeChanged;
+            }
+            _labelRightDistance = parent.Width - _shipInfoLabels[0][0].Right;
+            parent.ResumeLayout();
         }
 
         private void UpdateShipInfo()
         {
-            var name = new[] {labelShip1, labelShip2, labelShip3, labelShip4, labelShip5, labelShip6};
-            var lv = new[] {labelLv1, labelLv2, labelLv3, labelLv4, labelLv5, labelLv6};
-            var cond = new[] {labelCond1, labelCond2, labelCond3, labelCond4, labelCond5, labelCond6};
-            var next = new[] {labelNextLv1, labelNextLv2, labelNextLv3, labelNextLv4, labelNextLv5, labelNextLv6};
-
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             var empty = new ShipStatus();
-            for (var i = 0; i < name.Length; i++)
+            for (var i = 0; i < _shipInfoLabels.Length; i++)
             {
+                var labels = _shipInfoLabels[i];
                 var stat = i < statuses.Length ? statuses[i] : empty;
-                name[i].Text = stat.Name;
-                lv[i].Text = stat.Level.ToString("D");
-                SetHpLavel(_labelHPs[i], stat);
+                labels[4].Text = stat.Name;
+                SetHpLabel(labels[0], stat);
                 if (stat == empty)
                 {
                     // SetCondLabelでは背景色が赤になってしまう
-                    cond[i].Text = "0";
-                    cond[i].BackColor = DefaultBackColor;
+                    labels[1].Text = "0";
+                    labels[1].BackColor = DefaultBackColor;
                 }
                 else
-                    SetCondLabel(cond[i], stat.Cond);
-                next[i].Text = stat.ExpToNext.ToString("D");
+                    SetCondLabel(labels[1], stat.Cond);
+                labels[2].Text = stat.Level.ToString("D");
+                labels[3].Text = stat.ExpToNext.ToString("D");
             }
             if (_sniffer.Battle.HasDamagedShip)
                 Ring("大破した艦娘がいます", string.Join(" ", _sniffer.Battle.DamagedShipNames), _config.DamagedShipSoundFile);
@@ -313,12 +316,12 @@ namespace KancolleSniffer
             }
         }
 
-        private void SetHpLavel(Label label, ShipStatus status)
+        private void SetHpLabel(Label label, ShipStatus status)
         {
-            SetHpLavel(label, status.NowHp, status.MaxHp);
+            SetHpLabel(label, status.NowHp, status.MaxHp);
         }
 
-        private void SetHpLavel(Label label, int now, int max)
+        private void SetHpLabel(Label label, int now, int max)
         {
             var colors = new[] {DefaultBackColor, Color.FromArgb(255, 240, 240, 100), Color.Orange, Color.Red};
             label.Text = string.Format("{0:D}/{1:D}", now, max);
@@ -335,6 +338,36 @@ namespace KancolleSniffer
                     : cond >= 20 ? Color.Orange : Color.Red;
         }
 
+        private void CreateNDockLabels()
+        {
+            var parent = panelDock;
+            for (var i = 0; i < _ndockLabels.Length; i++)
+            {
+                var y = 3 + i * 15;
+                parent.Controls.AddRange(
+                    _ndockLabels[i] = new[]
+                        {
+                            new Label {Location = new Point(106, y), AutoSize = true, Text = "00:00:00"},
+                            new Label {Location = new Point(30, y), AutoSize = true} // 名前のZ-orderを下に
+                        });
+
+            }
+        }
+
+        private void UpdateNDocLabels()
+        {
+            for (var i = 0; i < _ndockLabels.Length; i++)
+                _ndockLabels[i][1].Text = _sniffer.NDock[i].Name;
+        }
+
+        private void UpdateMissionLabels()
+        {
+            foreach (var entry in
+                new[] { labelMissionName1, labelMissionName2, labelMissionName3 }.Zip(_sniffer.Missions,
+                    (label, mission) => new { label, mission.Name }))
+                entry.label.Text = entry.Name;
+        }
+
         private void UpdateTimers()
         {
             foreach (var entry in
@@ -348,12 +381,11 @@ namespace KancolleSniffer
                 Ring("遠征が終わりました", entry.Name, _config.MissionSoundFile);
                 entry.Timer.NeedRing = false;
             }
-            foreach (var entry in
-                new[] {labelRepair1, labelRepair2, labelRepair3, labelRepair4}.Zip(_sniffer.NDock,
-                    (label, ndock) => new {label, ndock.Name, ndock.Timer}))
+            for (var i = 0; i < _ndockLabels.Length; i++)
             {
+                var entry = _sniffer.NDock[i];
                 entry.Timer.Update();
-                SetTimerLabel(entry.label, entry.Timer);
+                SetTimerLabel(_ndockLabels[i][0], entry.Timer);
                 if (!entry.Timer.NeedRing)
                     continue;
                 Ring("入渠が終わりました", entry.Name, _config.NDockSoundFile);
@@ -412,7 +444,7 @@ namespace KancolleSniffer
             for (var i = 0; i < _akashiTimers.Length; i++)
             {
                 var label = _akashiTimers[i];
-                var labelHp = _labelHPs[i];
+                var labelHp = _shipInfoLabels[i][0];
                 if (timers == null || i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
                 {
                     label.Visible = false;
@@ -432,7 +464,7 @@ namespace KancolleSniffer
                 }
                 label.ForeColor = Color.Gray;
                 labelHp.ForeColor = Color.Gray;
-                SetHpLavel(labelHp, stat.NowHp + timer.Diff, stat.MaxHp);
+                SetHpLabel(labelHp, stat.NowHp + timer.Diff, stat.MaxHp);
             }
         }
 

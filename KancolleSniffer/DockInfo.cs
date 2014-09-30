@@ -23,11 +23,12 @@ namespace KancolleSniffer
 {
     public class DockInfo
     {
+        public const int DockCount = 4;
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
-        private readonly int[] _ndoc = new int[4];
-        private readonly RingTimer[] _ndocTimers = new RingTimer[4];
-        private readonly RingTimer[] _kdocTimers = new RingTimer[4];
+        private readonly int[] _ndoc = new int[DockCount];
+        private readonly RingTimer[] _ndocTimers = new RingTimer[DockCount];
+        private readonly RingTimer[] _kdocTimers = new RingTimer[DockCount];
 
         public DockInfo(ShipInfo shipInfo, ItemInfo itemInfo)
         {
