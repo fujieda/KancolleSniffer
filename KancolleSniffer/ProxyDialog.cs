@@ -6,7 +6,7 @@ namespace KancolleSniffer
     public partial class ProxyDialog : Form
     {
         private readonly ProxyConfig _config;
-        private MainForm _main;
+        private readonly MainForm _main;
 
         public ProxyDialog(ProxyConfig config, MainForm main)
         {
@@ -55,6 +55,7 @@ namespace KancolleSniffer
             _config.UseUpstream = radioButtonUpstreamOn.Checked;
             if (_config.UseUpstream)
                 _config.UpstreamPort = port;
+            _main.ApplyProxySetting();
             DialogResult = DialogResult.OK;
         }
 

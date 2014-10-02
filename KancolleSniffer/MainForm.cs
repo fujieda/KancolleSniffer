@@ -62,6 +62,11 @@ namespace KancolleSniffer
         private void FiddlerApplication_BeforeRequest(Session oSession)
         {
             var path = oSession.PathAndQuery;
+            var proxy = _config.Proxy;
+            if (proxy.UseUpstream && (path.StartsWith("/kcsapi/api_") ||
+                                      path.StartsWith("/kcs/resources/") || path.StartsWith("/kcs/sound/")))
+                // この二つはMyFleetGirlsに必要
+                oSession["x-overrideGateway"] = string.Format("localhost:{0:D}", proxy.UpstreamPort); // 上流プロキシを設定する
             if (!path.StartsWith("/kcsapi/api_")) // 艦これのAPI以外は無視する
             {
                 oSession.Ignore();
@@ -118,15 +123,28 @@ namespace KancolleSniffer
             ApplyConfig();
             ApplyLogSetting();
             _sniffer.LoadState();
-            FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
+            StartProxy();
+        }
+
+        private void StartProxy()
+        {
+            if (_config.Proxy.Auto)
+                FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
+            else
+                FiddlerApplication.Startup(_config.Proxy.Listen, FiddlerCoreStartupFlags.None);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            FiddlerApplication.Shutdown();
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.Save();
             _sniffer.SaveState();
+            ShutdownProxy();
+        }
+
+        private void ShutdownProxy()
+        {
+            FiddlerApplication.Shutdown();
         }
 
         private void labelHP_SizeChanged(object sender, EventArgs e)
@@ -171,6 +189,12 @@ namespace KancolleSniffer
         public void ApplyLogSetting()
         {
             _sniffer.LogFile = _config.Logging ? _config.LogFile : null;
+        }
+
+        public void ApplyProxySetting()
+        {
+            ShutdownProxy();
+            StartProxy();
         }
 
         private bool IsVisibleOnAnyScreen(Rectangle rect)
