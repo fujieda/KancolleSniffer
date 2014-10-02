@@ -19,6 +19,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Codeplex.Data;
 using Fiddler;
@@ -264,7 +265,7 @@ namespace KancolleSniffer
             {
                 var labels = _shipInfoLabels[i];
                 var stat = i < statuses.Length ? statuses[i] : empty;
-                labels[4].Text = stat.Name;
+                SetShipName(labels[4], stat.Name);
                 SetHpLabel(labels[0], stat);
                 if (stat == empty)
                 {
@@ -316,6 +317,22 @@ namespace KancolleSniffer
             }
         }
 
+        private void SetShipName(Label label, string name)
+        {
+            var lu = name != null && new Regex(@"^\p{Lu}").IsMatch(name);
+            if (lu && label.Font.Equals(DefaultFont))
+            {
+                label.Location += new Size(0, -1);
+                label.Font = new Font("Tahoma", 8);
+            }
+            else if (!lu && !label.Font.Equals(DefaultFont))
+            {
+                label.Location += new Size(0, 1);
+                label.Font = DefaultFont;
+            }
+            label.Text = name;
+        }
+
         private void SetHpLabel(Label label, ShipStatus status)
         {
             SetHpLabel(label, status.NowHp, status.MaxHp);
@@ -357,7 +374,7 @@ namespace KancolleSniffer
         private void UpdateNDocLabels()
         {
             for (var i = 0; i < _ndockLabels.Length; i++)
-                _ndockLabels[i][1].Text = _sniffer.NDock[i].Name;
+                SetShipName(_ndockLabels[i][1], _sniffer.NDock[i].Name);
         }
 
         private void UpdateMissionLabels()
@@ -479,8 +496,8 @@ namespace KancolleSniffer
                 parent.Controls.AddRange(_damagedShipList[i] = new[]
                 {
                     new Label {Location = new Point(1, y), Size = new Size(11, height)},
-                    new Label {Location = new Point(10, y), Size = new Size(77, height)},
-                    new Label {Location = new Point(86, y), Size = new Size(45, height)}
+                    new Label {Location = new Point(86, y), Size = new Size(45, height)},
+                    new Label {Location = new Point(10, y), AutoSize = true}
                 });
             }
             parent.ResumeLayout();
@@ -496,19 +513,19 @@ namespace KancolleSniffer
             {
                 parent.Size = new Size(width, 19);
                 _damagedShipList[0][0].Text = "";
-                _damagedShipList[0][1].Text = "なし";
-                _damagedShipList[0][2].Text = "";
+                _damagedShipList[0][2].Text = "なし";
+                _damagedShipList[0][1].Text = "";
                 return;
             }
             parent.Size = new Size(width, num * 16 + 3);
-            var fn = new[] {"", "1", "2", "3", "4"};
+            var fn = new[] { "", "1", "2", "3", "4" };
             for (var i = 0; i < num; i++)
             {
-                var entry = _damagedShipList[i];
-                entry[0].Text = fn[list[i].Fleet + 1];
-                entry[1].Text = list[i].Name;
+                var labels = _damagedShipList[i];
+                labels[0].Text = fn[list[i].Fleet + 1];
+                SetShipName(labels[2], list[i].Name);
                 var time = list[i].Time;
-                entry[2].Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)time.TotalHours, time);
+                labels[1].Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)time.TotalHours, time);
             }
         }
 
