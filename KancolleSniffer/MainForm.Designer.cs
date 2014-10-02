@@ -529,13 +529,13 @@ namespace KancolleSniffer
             this.panelDock.Controls.Add(this.label5);
             this.panelDock.Location = new System.Drawing.Point(6, 249);
             this.panelDock.Name = "panelDock";
-            this.panelDock.Size = new System.Drawing.Size(154, 65);
+            this.panelDock.Size = new System.Drawing.Size(154, 64);
             this.panelDock.TabIndex = 4;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(2, 49);
+            this.label8.Location = new System.Drawing.Point(2, 48);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(29, 12);
             this.label8.TabIndex = 3;
@@ -544,7 +544,7 @@ namespace KancolleSniffer
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(2, 35);
+            this.label7.Location = new System.Drawing.Point(2, 33);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(29, 12);
             this.label7.TabIndex = 2;
@@ -553,7 +553,7 @@ namespace KancolleSniffer
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(2, 19);
+            this.label6.Location = new System.Drawing.Point(2, 18);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(29, 12);
             this.label6.TabIndex = 1;
@@ -581,12 +581,12 @@ namespace KancolleSniffer
             this.panel1.Controls.Add(this.label9);
             this.panel1.Location = new System.Drawing.Point(164, 249);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(80, 65);
+            this.panel1.Size = new System.Drawing.Size(80, 64);
             this.panel1.TabIndex = 7;
             // 
             // labelConstruct3
             // 
-            this.labelConstruct3.Location = new System.Drawing.Point(33, 34);
+            this.labelConstruct3.Location = new System.Drawing.Point(33, 33);
             this.labelConstruct3.Name = "labelConstruct3";
             this.labelConstruct3.Size = new System.Drawing.Size(45, 12);
             this.labelConstruct3.TabIndex = 6;
@@ -596,7 +596,7 @@ namespace KancolleSniffer
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(2, 49);
+            this.label12.Location = new System.Drawing.Point(2, 48);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(29, 12);
             this.label12.TabIndex = 3;
@@ -604,7 +604,7 @@ namespace KancolleSniffer
             // 
             // labelConstruct4
             // 
-            this.labelConstruct4.Location = new System.Drawing.Point(33, 49);
+            this.labelConstruct4.Location = new System.Drawing.Point(33, 48);
             this.labelConstruct4.Name = "labelConstruct4";
             this.labelConstruct4.Size = new System.Drawing.Size(45, 12);
             this.labelConstruct4.TabIndex = 7;
@@ -614,7 +614,7 @@ namespace KancolleSniffer
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(2, 35);
+            this.label11.Location = new System.Drawing.Point(2, 33);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(29, 12);
             this.label11.TabIndex = 2;
@@ -622,7 +622,7 @@ namespace KancolleSniffer
             // 
             // labelConstruct2
             // 
-            this.labelConstruct2.Location = new System.Drawing.Point(33, 19);
+            this.labelConstruct2.Location = new System.Drawing.Point(33, 18);
             this.labelConstruct2.Name = "labelConstruct2";
             this.labelConstruct2.Size = new System.Drawing.Size(45, 12);
             this.labelConstruct2.TabIndex = 5;
@@ -632,7 +632,7 @@ namespace KancolleSniffer
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(2, 19);
+            this.label10.Location = new System.Drawing.Point(2, 18);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(29, 12);
             this.label10.TabIndex = 1;
@@ -668,7 +668,7 @@ namespace KancolleSniffer
             // labelQuest
             // 
             this.labelQuest.AutoSize = true;
-            this.labelQuest.Location = new System.Drawing.Point(8, 385);
+            this.labelQuest.Location = new System.Drawing.Point(8, 382);
             this.labelQuest.Name = "labelQuest";
             this.labelQuest.Size = new System.Drawing.Size(29, 12);
             this.labelQuest.TabIndex = 8;
@@ -677,7 +677,7 @@ namespace KancolleSniffer
             // labelMission
             // 
             this.labelMission.AutoSize = true;
-            this.labelMission.Location = new System.Drawing.Point(8, 317);
+            this.labelMission.Location = new System.Drawing.Point(8, 316);
             this.labelMission.Name = "labelMission";
             this.labelMission.Size = new System.Drawing.Size(29, 12);
             this.labelMission.TabIndex = 10;
@@ -695,21 +695,21 @@ namespace KancolleSniffer
             this.panel2.Controls.Add(this.label15);
             this.panel2.Controls.Add(this.label14);
             this.panel2.Controls.Add(this.label13);
-            this.panel2.Location = new System.Drawing.Point(6, 331);
+            this.panel2.Location = new System.Drawing.Point(6, 330);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(238, 51);
+            this.panel2.Size = new System.Drawing.Size(238, 49);
             this.panel2.TabIndex = 11;
             // 
             // labelMissionName3
             // 
-            this.labelMissionName3.Location = new System.Drawing.Point(60, 35);
+            this.labelMissionName3.Location = new System.Drawing.Point(60, 33);
             this.labelMissionName3.Name = "labelMissionName3";
             this.labelMissionName3.Size = new System.Drawing.Size(133, 12);
             this.labelMissionName3.TabIndex = 5;
             // 
             // labelMissionName2
             // 
-            this.labelMissionName2.Location = new System.Drawing.Point(60, 19);
+            this.labelMissionName2.Location = new System.Drawing.Point(60, 18);
             this.labelMissionName2.Name = "labelMissionName2";
             this.labelMissionName2.Size = new System.Drawing.Size(133, 12);
             this.labelMissionName2.TabIndex = 4;
@@ -723,7 +723,7 @@ namespace KancolleSniffer
             // 
             // labelMission3
             // 
-            this.labelMission3.Location = new System.Drawing.Point(191, 35);
+            this.labelMission3.Location = new System.Drawing.Point(191, 33);
             this.labelMission3.Name = "labelMission3";
             this.labelMission3.Size = new System.Drawing.Size(45, 12);
             this.labelMission3.TabIndex = 8;
@@ -732,7 +732,7 @@ namespace KancolleSniffer
             // 
             // labelMission2
             // 
-            this.labelMission2.Location = new System.Drawing.Point(191, 19);
+            this.labelMission2.Location = new System.Drawing.Point(191, 18);
             this.labelMission2.Name = "labelMission2";
             this.labelMission2.Size = new System.Drawing.Size(45, 12);
             this.labelMission2.TabIndex = 7;
@@ -751,7 +751,7 @@ namespace KancolleSniffer
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(2, 35);
+            this.label15.Location = new System.Drawing.Point(2, 33);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(53, 12);
             this.label15.TabIndex = 2;
@@ -760,7 +760,7 @@ namespace KancolleSniffer
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(2, 19);
+            this.label14.Location = new System.Drawing.Point(2, 18);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(53, 12);
             this.label14.TabIndex = 1;
@@ -794,7 +794,7 @@ namespace KancolleSniffer
             this.panel3.Controls.Add(this.labelQuest3);
             this.panel3.Controls.Add(this.labelQuest2);
             this.panel3.Controls.Add(this.labelQuest1);
-            this.panel3.Location = new System.Drawing.Point(6, 399);
+            this.panel3.Location = new System.Drawing.Point(6, 396);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(238, 79);
             this.panel3.TabIndex = 13;
@@ -1206,7 +1206,7 @@ namespace KancolleSniffer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(250, 484);
+            this.ClientSize = new System.Drawing.Size(250, 481);
             this.ContextMenuStrip = this.contextMenuStripToolTip;
             this.Controls.Add(this.panelMaterialHistory);
             this.Controls.Add(this.panelDamagedShipList);
