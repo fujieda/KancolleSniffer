@@ -1176,9 +1176,9 @@ namespace KancolleSniffer
             // panelDamagedShipList
             // 
             this.panelDamagedShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelDamagedShipList.Location = new System.Drawing.Point(29, 247);
+            this.panelDamagedShipList.Location = new System.Drawing.Point(26, 247);
             this.panelDamagedShipList.Name = "panelDamagedShipList";
-            this.panelDamagedShipList.Size = new System.Drawing.Size(131, 19);
+            this.panelDamagedShipList.Size = new System.Drawing.Size(134, 19);
             this.panelDamagedShipList.TabIndex = 44;
             this.panelDamagedShipList.Visible = false;
             // 
