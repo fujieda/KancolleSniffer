@@ -508,7 +508,6 @@ namespace KancolleSniffer
                 if (timers == null || i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
                 {
                     label.Visible = false;
-                    label.ForeColor = DefaultForeColor;
                     labelHp.ForeColor = DefaultForeColor;
                     continue;
                 }
@@ -518,12 +517,10 @@ namespace KancolleSniffer
                 label.Text = timer.Span.ToString(@"mm\:ss");
                 if (timer.Diff == 0)
                 {
-                    label.ForeColor = DefaultForeColor;
                     labelHp.ForeColor = DefaultForeColor;
                     continue;
                 }
-                label.ForeColor = Color.Gray;
-                labelHp.ForeColor = Color.Gray;
+                labelHp.ForeColor = Color.DimGray;
                 SetHpLabel(labelHp, stat.NowHp + timer.Diff, stat.MaxHp);
             }
         }
