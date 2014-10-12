@@ -149,7 +149,10 @@ namespace KancolleSniffer
 
         public ItemSpec GetSpecById(int id)
         {
-            return _itemSpecs[_itemIds[id]];
+            int itemId;
+            if (!_itemIds.TryGetValue(id, out itemId))
+                itemId = -1;
+            return _itemSpecs[itemId];
         }
 
         public ItemSpec GetSpecByItemId(int id)
