@@ -104,7 +104,7 @@ namespace KancolleSniffer
                     select damage == 0
                         ? null
                         : new[] {first}.Concat(from d in Enumerable.Range(2, damage < 2 ? 0 : damage - 1)
-                            let span = s.RepairTime(d) + TimeSpan.FromSeconds((d - 1) * 10 * s.Spec.RepairWeight)
+                            let span = s.RepairTime(d) + TimeSpan.FromSeconds(30)
                             where span.TotalSeconds > 20 * 60
                             select new RepairTime(d - 1, Start + span)).ToArray()).ToArray();
             }
