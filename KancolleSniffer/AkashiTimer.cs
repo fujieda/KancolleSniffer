@@ -16,7 +16,6 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace KancolleSniffer
@@ -61,9 +60,11 @@ namespace KancolleSniffer
 
         private class RepairStatus
         {
+            private readonly ShipInfo _shipInfo;
             private readonly DockInfo _dockInfo;
             private ShipStatus[] _target;
             private RepairTime[][] _times;
+            private DateTime _prev;
             public DateTime Start { get; set; }
             public int[] Deck { private get; set; }
 
@@ -72,9 +73,10 @@ namespace KancolleSniffer
                 get { return _target == null ? 0 : _target.Sum(s => s.NowHp); }
             }
 
-            public RepairStatus(DockInfo dockInfo)
+            public RepairStatus(ShipInfo ship, DockInfo dock)
             {
-                _dockInfo = dockInfo;
+                _shipInfo = ship;
+                _dockInfo = dock;
             }
 
             public void Invalidate()
@@ -120,6 +122,27 @@ namespace KancolleSniffer
                               ?? new RepairSpan(e.times.Last().Diff + 1, TimeSpan.Zero)
                     ).ToArray();
             }
+
+            public string GetNotice()
+            {
+                var now = DateTime.Now;
+                if (Start == DateTime.MinValue)
+                    return "";
+                var pr = _prev;
+                _prev = now;
+                if (pr == DateTime.MinValue)
+                    return "";
+                 var m20 = TimeSpan.FromMinutes(20);
+                if (pr - Start < m20 && now - Start >= m20)
+                    return "20分経過しました。";
+                var margin = TimeSpan.Zero;
+                var msg = string.Join(" ", from e in _times.Zip(Deck, (times, id) => new {times, id})
+                    where
+                        e.times != null && !_dockInfo.InNDock(e.id) &&
+                        e.times.Any(rt => rt.Time - pr > margin && rt.Time - now <= margin)
+                    select _shipInfo[e.id].Name);
+                return msg == "" ? "" : "修理進行: " + msg;
+            }
         }
 
         public AkashiTimer(ShipInfo ship, ItemInfo item, DockInfo dock, MissionInfo mission)
@@ -129,7 +152,7 @@ namespace KancolleSniffer
             _dockInfo = dock;
             _missionInfo = mission;
             for (var i = 0; i < _repairStatuses.Length; i++)
-                _repairStatuses[i] = new RepairStatus(dock);
+                _repairStatuses[i] = new RepairStatus(ship, dock);
         }
 
         public void SetTimer(bool port = false)
@@ -187,6 +210,11 @@ namespace KancolleSniffer
         public RepairSpan[] GetTimers(int fleet)
         {
             return _repairStatuses[fleet].GetTimers();
+        }
+
+        public string[] GetNotice()
+        {
+             return _repairStatuses.Select(repair => repair.GetNotice()).ToArray();
         }
     }
 }

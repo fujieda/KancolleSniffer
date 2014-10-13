@@ -307,6 +307,11 @@ namespace KancolleSniffer
             return _akashiTimer.GetTimers(fleet);
         }
 
+        public string[] GetAkashiTimerNotice()
+        {
+            return _akashiTimer.GetNotice();
+        }
+
         public Achievement Achievement
         {
             get { return _achievement; }

@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -39,6 +40,7 @@ namespace KancolleSniffer
         private readonly Label[][] _damagedShipList = new Label[14][];
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
         private readonly Label[][] _ndockLabels = new Label[DockInfo.DockCount][];
+        private readonly Queue<string[]> _akashiTimerNoticeQueue = new Queue<string[]>();
         private bool _started;
 
         public MainForm()
@@ -523,6 +525,23 @@ namespace KancolleSniffer
                 labelHp.ForeColor = Color.DimGray;
                 SetHpLabel(labelHp, stat.NowHp + timer.Diff, stat.MaxHp);
             }
+            var msgs = _sniffer.GetAkashiTimerNotice();
+            var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
+            for (var i = 0; i < fn.Length; i++)
+            {
+                if (msgs[i] == "")
+                    continue;
+                var sound = msgs[i] == "20分経過しました。" ? "20min.mp3" : "syuuri.mp3";
+                _akashiTimerNoticeQueue.Enqueue(new[] {"泊地修理 " + fn[i], msgs[i], sound});
+                _akashiTimerNoticeQueue.Enqueue(new[] {""}); //連続する通知の間隔をあける
+                _akashiTimerNoticeQueue.Enqueue(new[] {""});
+            }
+            if (_akashiTimerNoticeQueue.Count == 0)
+                return;
+            var e = _akashiTimerNoticeQueue.Dequeue();
+            if (e[0] == "")
+                return;
+            Ring(e[0], e[1], e[2]);
         }
 
         public void CreateDamagedShipList()
