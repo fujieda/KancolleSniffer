@@ -54,23 +54,12 @@ namespace KancolleSniffer
             this.checkBoxBalloon = new System.Windows.Forms.CheckBox();
             this.checkBoxFlash = new System.Windows.Forms.CheckBox();
             this.groupBoxSound = new System.Windows.Forms.GroupBox();
-            this.buttonDamagedShipOpenFile = new System.Windows.Forms.Button();
-            this.textBoxDamagedShipSoundFile = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
+            this.buttonPlay = new System.Windows.Forms.Button();
+            this.listBoxSoundFile = new System.Windows.Forms.ListBox();
+            this.buttonOpenFile = new System.Windows.Forms.Button();
+            this.textBoxSoundFile = new System.Windows.Forms.TextBox();
             this.numericUpDownSoundVolume = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.buttonMaxShipsOpenFile = new System.Windows.Forms.Button();
-            this.textBoxMaxShipsSoundFile = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.buttonKDockOpenFile = new System.Windows.Forms.Button();
-            this.textBoxKDockSoundFile = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.buttonNDockOpenFile = new System.Windows.Forms.Button();
-            this.textBoxNDockSoundFile = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.buttonMissionOpenFile = new System.Windows.Forms.Button();
-            this.textBoxMissionSoundFile = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -175,55 +164,56 @@ namespace KancolleSniffer
             // 
             // groupBoxSound
             // 
-            this.groupBoxSound.Controls.Add(this.buttonDamagedShipOpenFile);
-            this.groupBoxSound.Controls.Add(this.textBoxDamagedShipSoundFile);
-            this.groupBoxSound.Controls.Add(this.label9);
+            this.groupBoxSound.Controls.Add(this.buttonPlay);
+            this.groupBoxSound.Controls.Add(this.listBoxSoundFile);
+            this.groupBoxSound.Controls.Add(this.buttonOpenFile);
+            this.groupBoxSound.Controls.Add(this.textBoxSoundFile);
             this.groupBoxSound.Controls.Add(this.numericUpDownSoundVolume);
             this.groupBoxSound.Controls.Add(this.label3);
-            this.groupBoxSound.Controls.Add(this.buttonMaxShipsOpenFile);
-            this.groupBoxSound.Controls.Add(this.textBoxMaxShipsSoundFile);
-            this.groupBoxSound.Controls.Add(this.label7);
-            this.groupBoxSound.Controls.Add(this.buttonKDockOpenFile);
-            this.groupBoxSound.Controls.Add(this.textBoxKDockSoundFile);
-            this.groupBoxSound.Controls.Add(this.label6);
-            this.groupBoxSound.Controls.Add(this.buttonNDockOpenFile);
-            this.groupBoxSound.Controls.Add(this.textBoxNDockSoundFile);
-            this.groupBoxSound.Controls.Add(this.label5);
-            this.groupBoxSound.Controls.Add(this.buttonMissionOpenFile);
-            this.groupBoxSound.Controls.Add(this.textBoxMissionSoundFile);
-            this.groupBoxSound.Controls.Add(this.label4);
             this.groupBoxSound.Location = new System.Drawing.Point(6, 208);
             this.groupBoxSound.Name = "groupBoxSound";
-            this.groupBoxSound.Size = new System.Drawing.Size(240, 165);
+            this.groupBoxSound.Size = new System.Drawing.Size(240, 138);
             this.groupBoxSound.TabIndex = 1;
             this.groupBoxSound.TabStop = false;
             this.groupBoxSound.Text = "サウンド";
             // 
-            // buttonDamagedShipOpenFile
+            // buttonPlay
             // 
-            this.buttonDamagedShipOpenFile.Location = new System.Drawing.Point(191, 135);
-            this.buttonDamagedShipOpenFile.Name = "buttonDamagedShipOpenFile";
-            this.buttonDamagedShipOpenFile.Size = new System.Drawing.Size(41, 23);
-            this.buttonDamagedShipOpenFile.TabIndex = 16;
-            this.buttonDamagedShipOpenFile.Text = "参照";
-            this.buttonDamagedShipOpenFile.UseVisualStyleBackColor = true;
-            this.buttonDamagedShipOpenFile.Click += new System.EventHandler(this.buttonDamagedShipOpenFile_Click);
+            this.buttonPlay.Location = new System.Drawing.Point(91, 13);
+            this.buttonPlay.Name = "buttonPlay";
+            this.buttonPlay.Size = new System.Drawing.Size(37, 23);
+            this.buttonPlay.TabIndex = 18;
+            this.buttonPlay.Text = "再生";
+            this.buttonPlay.UseVisualStyleBackColor = true;
+            this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
-            // textBoxDamagedShipSoundFile
+            // listBoxSoundFile
             // 
-            this.textBoxDamagedShipSoundFile.Location = new System.Drawing.Point(41, 137);
-            this.textBoxDamagedShipSoundFile.Name = "textBoxDamagedShipSoundFile";
-            this.textBoxDamagedShipSoundFile.Size = new System.Drawing.Size(144, 19);
-            this.textBoxDamagedShipSoundFile.TabIndex = 15;
+            this.listBoxSoundFile.FormattingEnabled = true;
+            this.listBoxSoundFile.ItemHeight = 12;
+            this.listBoxSoundFile.Location = new System.Drawing.Point(6, 41);
+            this.listBoxSoundFile.Name = "listBoxSoundFile";
+            this.listBoxSoundFile.Size = new System.Drawing.Size(228, 64);
+            this.listBoxSoundFile.TabIndex = 17;
+            this.listBoxSoundFile.SelectedIndexChanged += new System.EventHandler(this.listBoxSoundFile_SelectedIndexChanged);
             // 
-            // label9
+            // buttonOpenFile
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 140);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(29, 12);
-            this.label9.TabIndex = 14;
-            this.label9.Text = "大破";
+            this.buttonOpenFile.Location = new System.Drawing.Point(189, 109);
+            this.buttonOpenFile.Name = "buttonOpenFile";
+            this.buttonOpenFile.Size = new System.Drawing.Size(45, 23);
+            this.buttonOpenFile.TabIndex = 16;
+            this.buttonOpenFile.Text = "参照...";
+            this.buttonOpenFile.UseVisualStyleBackColor = true;
+            this.buttonOpenFile.Click += new System.EventHandler(this.buttonOpenFile_Click);
+            // 
+            // textBoxSoundFile
+            // 
+            this.textBoxSoundFile.Location = new System.Drawing.Point(6, 111);
+            this.textBoxSoundFile.Name = "textBoxSoundFile";
+            this.textBoxSoundFile.Size = new System.Drawing.Size(179, 19);
+            this.textBoxSoundFile.TabIndex = 15;
+            this.textBoxSoundFile.TextChanged += new System.EventHandler(this.textBoxSoundFile_TextChanged);
             // 
             // numericUpDownSoundVolume
             // 
@@ -243,114 +233,10 @@ namespace KancolleSniffer
             this.label3.TabIndex = 0;
             this.label3.Text = "音量";
             // 
-            // buttonMaxShipsOpenFile
-            // 
-            this.buttonMaxShipsOpenFile.Location = new System.Drawing.Point(191, 111);
-            this.buttonMaxShipsOpenFile.Name = "buttonMaxShipsOpenFile";
-            this.buttonMaxShipsOpenFile.Size = new System.Drawing.Size(41, 23);
-            this.buttonMaxShipsOpenFile.TabIndex = 13;
-            this.buttonMaxShipsOpenFile.Text = "参照";
-            this.buttonMaxShipsOpenFile.UseVisualStyleBackColor = true;
-            this.buttonMaxShipsOpenFile.Click += new System.EventHandler(this.buttonMaxShipsOpenFile_Click);
-            // 
-            // textBoxMaxShipsSoundFile
-            // 
-            this.textBoxMaxShipsSoundFile.Location = new System.Drawing.Point(41, 113);
-            this.textBoxMaxShipsSoundFile.Name = "textBoxMaxShipsSoundFile";
-            this.textBoxMaxShipsSoundFile.Size = new System.Drawing.Size(144, 19);
-            this.textBoxMaxShipsSoundFile.TabIndex = 12;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 116);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(29, 12);
-            this.label7.TabIndex = 11;
-            this.label7.Text = "艦数";
-            // 
-            // buttonKDockOpenFile
-            // 
-            this.buttonKDockOpenFile.Location = new System.Drawing.Point(191, 87);
-            this.buttonKDockOpenFile.Name = "buttonKDockOpenFile";
-            this.buttonKDockOpenFile.Size = new System.Drawing.Size(41, 23);
-            this.buttonKDockOpenFile.TabIndex = 10;
-            this.buttonKDockOpenFile.Text = "参照";
-            this.buttonKDockOpenFile.UseVisualStyleBackColor = true;
-            this.buttonKDockOpenFile.Click += new System.EventHandler(this.buttonKDockOpenFile_Click);
-            // 
-            // textBoxKDockSoundFile
-            // 
-            this.textBoxKDockSoundFile.Location = new System.Drawing.Point(41, 89);
-            this.textBoxKDockSoundFile.Name = "textBoxKDockSoundFile";
-            this.textBoxKDockSoundFile.Size = new System.Drawing.Size(144, 19);
-            this.textBoxKDockSoundFile.TabIndex = 9;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 92);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(29, 12);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "建造";
-            // 
-            // buttonNDockOpenFile
-            // 
-            this.buttonNDockOpenFile.Location = new System.Drawing.Point(191, 63);
-            this.buttonNDockOpenFile.Name = "buttonNDockOpenFile";
-            this.buttonNDockOpenFile.Size = new System.Drawing.Size(41, 23);
-            this.buttonNDockOpenFile.TabIndex = 7;
-            this.buttonNDockOpenFile.Text = "参照";
-            this.buttonNDockOpenFile.UseVisualStyleBackColor = true;
-            this.buttonNDockOpenFile.Click += new System.EventHandler(this.buttonNDockOpenFile_Click);
-            // 
-            // textBoxNDockSoundFile
-            // 
-            this.textBoxNDockSoundFile.Location = new System.Drawing.Point(41, 65);
-            this.textBoxNDockSoundFile.Name = "textBoxNDockSoundFile";
-            this.textBoxNDockSoundFile.Size = new System.Drawing.Size(144, 19);
-            this.textBoxNDockSoundFile.TabIndex = 6;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 68);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(29, 12);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "入渠";
-            // 
-            // buttonMissionOpenFile
-            // 
-            this.buttonMissionOpenFile.Location = new System.Drawing.Point(191, 39);
-            this.buttonMissionOpenFile.Name = "buttonMissionOpenFile";
-            this.buttonMissionOpenFile.Size = new System.Drawing.Size(41, 23);
-            this.buttonMissionOpenFile.TabIndex = 4;
-            this.buttonMissionOpenFile.Text = "参照";
-            this.buttonMissionOpenFile.UseVisualStyleBackColor = true;
-            this.buttonMissionOpenFile.Click += new System.EventHandler(this.buttonMissionOpenFile_Click);
-            // 
-            // textBoxMissionSoundFile
-            // 
-            this.textBoxMissionSoundFile.Location = new System.Drawing.Point(41, 41);
-            this.textBoxMissionSoundFile.Name = "textBoxMissionSoundFile";
-            this.textBoxMissionSoundFile.Size = new System.Drawing.Size(144, 19);
-            this.textBoxMissionSoundFile.TabIndex = 3;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 44);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 12);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "遠征";
-            // 
             // buttonOk
             // 
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(90, 380);
+            this.buttonOk.Location = new System.Drawing.Point(87, 355);
             this.buttonOk.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
@@ -362,7 +248,7 @@ namespace KancolleSniffer
             // buttonCancel
             // 
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(171, 380);
+            this.buttonCancel.Location = new System.Drawing.Point(165, 355);
             this.buttonCancel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
@@ -454,12 +340,12 @@ namespace KancolleSniffer
             this.ProxyToolStripMenuItem,
             this.DebugToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(168, 70);
+            this.contextMenuStrip.Size = new System.Drawing.Size(168, 48);
             // 
             // ProxyToolStripMenuItem
             // 
             this.ProxyToolStripMenuItem.Name = "ProxyToolStripMenuItem";
-            this.ProxyToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.ProxyToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.ProxyToolStripMenuItem.Text = "プロキシ設定(&P)";
             this.ProxyToolStripMenuItem.Click += new System.EventHandler(this.ProxyToolStripMenuItem_Click);
             // 
@@ -476,7 +362,7 @@ namespace KancolleSniffer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(252, 412);
+            this.ClientSize = new System.Drawing.Size(252, 387);
             this.ContextMenuStrip = this.contextMenuStrip;
             this.Controls.Add(this.groupBoxAchievement);
             this.Controls.Add(this.groupBoxShow);
@@ -513,18 +399,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.CheckBox checkBoxBalloon;
         private System.Windows.Forms.CheckBox checkBoxSound;
         private System.Windows.Forms.GroupBox groupBoxSound;
-        private System.Windows.Forms.Button buttonKDockOpenFile;
-        private System.Windows.Forms.TextBox textBoxKDockSoundFile;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button buttonNDockOpenFile;
-        private System.Windows.Forms.TextBox textBoxNDockSoundFile;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button buttonMissionOpenFile;
-        private System.Windows.Forms.TextBox textBoxMissionSoundFile;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button buttonMaxShipsOpenFile;
-        private System.Windows.Forms.TextBox textBoxMaxShipsSoundFile;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label label1;
@@ -539,12 +413,13 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox checkBoxReset14;
         private System.Windows.Forms.CheckBox checkBoxReset02;
-        private System.Windows.Forms.Button buttonDamagedShipOpenFile;
-        private System.Windows.Forms.TextBox textBoxDamagedShipSoundFile;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button buttonOpenFile;
+        private System.Windows.Forms.TextBox textBoxSoundFile;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem DebugToolStripMenuItem;
         private System.Windows.Forms.Button buttonResetAchievement;
         private System.Windows.Forms.ToolStripMenuItem ProxyToolStripMenuItem;
+        private System.Windows.Forms.ListBox listBoxSoundFile;
+        private System.Windows.Forms.Button buttonPlay;
     }
 }

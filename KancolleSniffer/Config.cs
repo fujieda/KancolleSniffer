@@ -56,6 +56,8 @@ namespace KancolleSniffer
         public string KDockSoundFile { get; set; }
         public string MaxShipsSoundFile { get; set; }
         public string DamagedShipSoundFile { get; set; }
+        public string Akashi20MinSoundFile { get; set; }
+        public string AkashiProgressSoundFile { get; set; }
         public bool Logging { get; set; }
         public string LogFile { get; set; }
         public ProxyConfig Proxy { get; set; }
@@ -74,6 +76,8 @@ namespace KancolleSniffer
             KDockSoundFile = Path.Combine(dir, "kenzou.mp3");
             MaxShipsSoundFile = Path.Combine(dir, "kanmusu.mp3");
             DamagedShipSoundFile = Path.Combine(dir, "taiha.mp3");
+            Akashi20MinSoundFile = Path.Combine(dir, "20min.mp3");
+            AkashiProgressSoundFile = Path.Combine(dir, "syuuri.mp3");
             LogFile = Path.Combine(dir, "log.txt");
 // ReSharper restore AssignNullToNotNullAttribute
             Proxy = new ProxyConfig();

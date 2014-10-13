@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -28,12 +29,14 @@ namespace KancolleSniffer
         private readonly MainForm _main;
         private DebugDialog _debugDialog;
         private ProxyDialog _proxyDialog;
+        private readonly Dictionary<string, string> _soundSetting = new Dictionary<string, string>();
 
         public ConfigDialog(Config config, MainForm main)
         {
             InitializeComponent();
             _config = config;
             _main = main;
+            listBoxSoundFile.Items.AddRange(new object[] {"遠征終了", "入渠終了", "建造完了", "艦娘数超過", "大破警告", "泊地修理20分経過", "泊地修理進行"});
         }
 
         private void ConfigDialog_Load(object sender, EventArgs e)
@@ -48,11 +51,15 @@ namespace KancolleSniffer
             checkBoxReset14.Checked = _config.ResetHours.Any(x => x == 14);
 
             numericUpDownSoundVolume.Value = _config.SoundVolume;
-            textBoxMissionSoundFile.Text = _config.MissionSoundFile;
-            textBoxNDockSoundFile.Text = _config.NDockSoundFile;
-            textBoxKDockSoundFile.Text = _config.KDockSoundFile;
-            textBoxMaxShipsSoundFile.Text = _config.MaxShipsSoundFile;
-            textBoxDamagedShipSoundFile.Text = _config.DamagedShipSoundFile;
+
+            _soundSetting["遠征終了"] = _config.MissionSoundFile;
+            _soundSetting["入渠終了"] = _config.NDockSoundFile;
+            _soundSetting["建造完了"] = _config.KDockSoundFile;
+            _soundSetting["艦娘数超過"] = _config.MaxShipsSoundFile;
+            _soundSetting["大破警告"] = _config.DamagedShipSoundFile;
+            _soundSetting["泊地修理20分経過"] = _config.Akashi20MinSoundFile;
+            _soundSetting["泊地修理進行"] = _config.AkashiProgressSoundFile;
+            listBoxSoundFile.SelectedIndex = 0;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -70,11 +77,14 @@ namespace KancolleSniffer
                 _config.ResetHours.Add(14);
 
             _config.SoundVolume = (int)numericUpDownSoundVolume.Value;
-            _config.MissionSoundFile = textBoxMissionSoundFile.Text;
-            _config.NDockSoundFile = textBoxNDockSoundFile.Text;
-            _config.KDockSoundFile = textBoxKDockSoundFile.Text;
-            _config.MaxShipsSoundFile = textBoxMaxShipsSoundFile.Text;
-            _config.DamagedShipSoundFile = textBoxDamagedShipSoundFile.Text;
+
+            _config.MissionSoundFile = _soundSetting["遠征終了"];
+            _config.NDockSoundFile = _soundSetting["入渠終了"];
+            _config.KDockSoundFile = _soundSetting["建造完了"];
+            _config.MaxShipsSoundFile = _soundSetting["艦娘数超過"];
+            _config.DamagedShipSoundFile = _soundSetting["大破警告"];
+            _config.Akashi20MinSoundFile = _soundSetting["泊地修理20分経過"];
+            _config.AkashiProgressSoundFile = _soundSetting["泊地修理進行"];
         }
 
         private void checkBoxSound_CheckedChanged(object sender, EventArgs e)
@@ -82,37 +92,31 @@ namespace KancolleSniffer
             groupBoxSound.Enabled = checkBoxSound.Checked;
         }
 
-        private void buttonMissionOpenFile_Click(object sender, EventArgs e)
+        private void textBoxSoundFile_TextChanged(object sender, EventArgs e)
         {
-            ChooseSoundFile(textBoxMissionSoundFile);
+            _soundSetting[(string)listBoxSoundFile.SelectedItem] = textBoxSoundFile.Text;
         }
 
-        private void buttonNDockOpenFile_Click(object sender, EventArgs e)
+        private void listBoxSoundFile_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ChooseSoundFile(textBoxNDockSoundFile);
+            textBoxSoundFile.Text = _soundSetting[(string)listBoxSoundFile.SelectedItem];
+            textBoxSoundFile.Select(textBoxSoundFile.Text.Length, 0);
         }
 
-        private void buttonKDockOpenFile_Click(object sender, EventArgs e)
+        private void buttonOpenFile_Click(object sender, EventArgs e)
         {
-            ChooseSoundFile(textBoxKDockSoundFile);
+            openFileDialog.FileName = textBoxSoundFile.Text;
+            openFileDialog.InitialDirectory = Path.GetDirectoryName(textBoxSoundFile.Text) ?? "";
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+                return;
+            textBoxSoundFile.Text = openFileDialog.FileName;
+            textBoxSoundFile.Select(textBoxSoundFile.Text.Length, 0);
         }
 
-        private void buttonMaxShipsOpenFile_Click(object sender, EventArgs e)
-        {
-            ChooseSoundFile(textBoxMaxShipsSoundFile);
-        }
 
-        private void buttonDamagedShipOpenFile_Click(object sender, EventArgs e)
+        private void buttonPlay_Click(object sender, EventArgs e)
         {
-            ChooseSoundFile(textBoxDamagedShipSoundFile);
-        }
-
-        private void ChooseSoundFile(TextBox textBox)
-        {
-            openFileDialog.FileName = textBox.Text;
-            openFileDialog.InitialDirectory = Path.GetDirectoryName(textBox.Text) ?? "";
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-                textBox.Text = openFileDialog.FileName;
+            _main.PlaySound(_soundSetting[(string)listBoxSoundFile.SelectedItem], (int)numericUpDownSoundVolume.Value);
         }
 
         private void DebugToolStripMenuItem_Click(object sender, EventArgs e)

@@ -531,7 +531,7 @@ namespace KancolleSniffer
             {
                 if (msgs[i] == "")
                     continue;
-                var sound = msgs[i] == "20分経過しました。" ? "20min.mp3" : "syuuri.mp3";
+                var sound = msgs[i] == "20分経過しました。" ? _config.Akashi20MinSoundFile : _config.AkashiProgressSoundFile;
                 _akashiTimerNoticeQueue.Enqueue(new[] {"泊地修理 " + fn[i], msgs[i], sound});
                 _akashiTimerNoticeQueue.Enqueue(new[] {""}); //連続する通知の間隔をあける
                 _akashiTimerNoticeQueue.Enqueue(new[] {""});
@@ -620,12 +620,17 @@ namespace KancolleSniffer
                 Win32API.FlashWindow(Handle);
             if (_config.ShowBaloonTip)
                 notifyIconMain.ShowBalloonTip(20000, baloonTitle, baloonMessage, ToolTipIcon.Info);
-            if (_config.PlaySound && File.Exists(soundFile))
-            {
-                _wmp.settings.volume = _config.SoundVolume;
-                _wmp.URL = soundFile;
-                _wmp.controls.play();
-            }
+            if (_config.PlaySound)
+                PlaySound(soundFile, _config.SoundVolume);
+        }
+
+        public void PlaySound(string file, int volume)
+        {
+            if (!File.Exists(file))
+                return;
+            _wmp.settings.volume = volume;
+            _wmp.URL = file;
+            _wmp.controls.play();
         }
 
         private void _wmp_PlayStateChange(object sender, EventArgs e)
