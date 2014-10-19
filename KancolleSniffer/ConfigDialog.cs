@@ -42,6 +42,7 @@ namespace KancolleSniffer
         private void ConfigDialog_Load(object sender, EventArgs e)
         {
             checkBoxTopMost.Checked = _config.TopMost;
+            checkBoxHideOnMinimized.Checked = _config.HideOnMinimized;
             checkBoxFlash.Checked = _config.FlashWindow;
             checkBoxBalloon.Checked = _config.ShowBaloonTip;
             groupBoxSound.Enabled = checkBoxSound.Checked = _config.PlaySound;
@@ -65,6 +66,7 @@ namespace KancolleSniffer
         private void buttonOk_Click(object sender, EventArgs e)
         {
             _config.TopMost = checkBoxTopMost.Checked;
+            _config.HideOnMinimized = checkBoxHideOnMinimized.Checked;
             _config.FlashWindow = checkBoxFlash.Checked;
             _config.ShowBaloonTip = checkBoxBalloon.Checked;
             _config.PlaySound = checkBoxSound.Checked;

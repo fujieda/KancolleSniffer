@@ -149,6 +149,12 @@ namespace KancolleSniffer
             FiddlerApplication.Shutdown();
         }
 
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (_config.HideOnMinimized && WindowState == FormWindowState.Minimized)
+                ShowInTaskbar = false;
+        }
+
         private void labelHP_SizeChanged(object sender, EventArgs e)
         {
             var label = (Label)sender;
@@ -157,8 +163,13 @@ namespace KancolleSniffer
 
         private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (WindowState == FormWindowState.Minimized)
-                WindowState = FormWindowState.Normal;
+            NotifyIconOpenToolStripMenuItem_Click(sender, e);
+        }
+
+        private void NotifyIconOpenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowInTaskbar = true;
+            WindowState = FormWindowState.Normal;
             Activate();
         }
 
