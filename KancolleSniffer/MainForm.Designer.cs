@@ -160,6 +160,7 @@ namespace KancolleSniffer
             this.panelDamagedShipList = new System.Windows.Forms.Panel();
             this.labelDamgedShipListButton = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
+            this.ShipListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -912,22 +913,23 @@ namespace KancolleSniffer
             // contextMenuStripMain
             // 
             this.contextMenuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ShipListToolStripMenuItem,
             this.ConfigToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.contextMenuStripMain.Name = "contextMenuStripToolTip";
-            this.contextMenuStripMain.Size = new System.Drawing.Size(120, 48);
+            this.contextMenuStripMain.Size = new System.Drawing.Size(153, 92);
             // 
             // ConfigToolStripMenuItem
             // 
             this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
-            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.ConfigToolStripMenuItem.Text = "設定(&O)";
             this.ConfigToolStripMenuItem.Click += new System.EventHandler(this.ConfigToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.ExitToolStripMenuItem.Text = "終了(&X)";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -1239,6 +1241,13 @@ namespace KancolleSniffer
             this.label31.TabIndex = 46;
             this.label31.Text = "要修復";
             // 
+            // ShipListToolStripMenuItem
+            // 
+            this.ShipListToolStripMenuItem.Name = "ShipListToolStripMenuItem";
+            this.ShipListToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ShipListToolStripMenuItem.Text = "艦娘一覧(&L)";
+            this.ShipListToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1419,6 +1428,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.ContextMenuStrip contextMenuStripNotifyIcon;
         private System.Windows.Forms.ToolStripMenuItem NotifyIconOpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NotifyIconExitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ShipListToolStripMenuItem;
     }
 }
 

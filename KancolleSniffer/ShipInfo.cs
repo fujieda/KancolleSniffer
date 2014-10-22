@@ -24,6 +24,8 @@ namespace KancolleSniffer
 {
     public class ShipStatus
     {
+        public int Id { get; set; }
+        public int Fleet { get; set; } // ShipListだけで使う
         public ShipSpec Spec { get; set; }
 
         public string Name
@@ -193,6 +195,7 @@ namespace KancolleSniffer
             {
                 _shipInfo[(int)entry.api_id] = new ShipStatus
                 {
+                    Id = (int)entry.api_id,
                     Spec = _shipMaster[(int)entry.api_ship_id],
                     Level = (int)entry.api_lv,
                     ExpToNext = (int)entry.api_exp[1],
@@ -335,6 +338,20 @@ namespace KancolleSniffer
             get { return _shipInfo[idx]; }
         }
 
+        public ShipStatus[] ShipList
+        {
+            get
+            {
+                return _shipInfo.Values.Where(s => s.Level != 0).Select(s =>
+                {
+                    int oi;
+                    var f = FindFleet(s.Id, out oi);
+                    s.Fleet = f;
+                    return s;
+                }).ToArray();
+            }
+        }
+
         public string[] GetConditionTimers(int fleet)
         {
             return _conditionTimer.GetTimerStrings(fleet);
@@ -368,10 +385,9 @@ namespace KancolleSniffer
         public DamageStatus[] GetDamagedShipList(DockInfo dockInfo)
         {
             int oi;
-            return (from entry in _shipInfo
-                let s = entry.Value
-                where s.NowHp < s.MaxHp && !dockInfo.InNDock(entry.Key)
-                select new DamageStatus(FindFleet(entry.Key, out oi), s.Name, s.DamageLevel, s.RepairTime())).
+            return (from s in _shipInfo.Values
+                where s.NowHp < s.MaxHp && !dockInfo.InNDock(s.Id)
+                select new DamageStatus(FindFleet(s.Id, out oi), s.Name, s.DamageLevel, s.RepairTime())).
                 OrderByDescending(entry => entry.RepairTime).ToArray();
         }
     }

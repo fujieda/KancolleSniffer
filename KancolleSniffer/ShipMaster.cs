@@ -30,6 +30,7 @@ namespace KancolleSniffer
             {
                 _shipSpecs[(int)entry.api_id] = new ShipSpec
                 {
+                    Id = (int)entry.api_id,
                     Name = entry.api_name,
                     FuelMax = (int)entry.api_fuel_max,
                     BullMax = (int)entry.api_bull_max,
@@ -48,6 +49,7 @@ namespace KancolleSniffer
 
     public struct ShipSpec
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public int FuelMax { get; set; }
         public int BullMax { get; set; }

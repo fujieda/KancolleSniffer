@@ -76,6 +76,12 @@
     </Compile>
     <Compile Include="DockInfo.cs" />
     <Compile Include="ShipInfoLabels.cs" />
+    <Compile Include="ShipListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShipListForm.Designer.cs">
+      <DependentUpon>ShipListForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +110,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DebugDialog.resx">
       <DependentUpon>DebugDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShipListForm.resx">
+      <DependentUpon>ShipListForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

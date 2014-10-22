@@ -38,6 +38,7 @@ namespace KancolleSniffer
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         private readonly ShipInfoLabels _shipInfoLabels;
+        private readonly ShipListForm _shipListForm;
         private readonly Queue<string[]> _akashiTimerNoticeQueue = new Queue<string[]>();
         private bool _started;
 
@@ -57,6 +58,7 @@ namespace KancolleSniffer
             CreateDamagedShipList();
             CreateAkashiTimers();
             CreateNDockLabels();
+            _shipListForm = new ShipListForm(_sniffer);
         }
 
         private void FiddlerApplication_BeforeRequest(Session oSession)
@@ -283,6 +285,7 @@ namespace KancolleSniffer
             UpdateCondTimers();
             UpdateAkashiTimer();
             UpdateDamagedShipList();
+            _shipListForm.UpdateList();
         }
 
         private void UpdateBattleInfo()
@@ -613,6 +616,13 @@ namespace KancolleSniffer
                 panelDamagedShipList.Visible = true;
                 labelDamgedShipListButton.BackColor = SystemColors.ActiveCaption;
             }
+        }
+
+        private void ShipListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _shipListForm.Show();
+            _shipListForm.UpdateList();
+            _shipListForm.Activate();
         }
     }
 }
