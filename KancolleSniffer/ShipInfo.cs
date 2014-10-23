@@ -77,6 +77,32 @@ namespace KancolleSniffer
     {
         public int Fuel { get; set; }
         public int Bull { get; set; }
+
+        public ChargeStatus(ShipStatus status): this()
+        {
+            Fuel = CalcChargeState(status.Fuel, status.Spec.FuelMax);
+            Bull = CalcChargeState(status.Bull, status.Spec.BullMax);
+        }
+
+        public ChargeStatus(int fuel, int bull): this()
+        {
+            Fuel = fuel;
+            Bull = bull;
+        }
+
+        private int CalcChargeState(int now, int full)
+        {
+            if (full == 0 || now == full)
+                return 0;
+            var ratio = (double)now / full;
+            if (ratio >= 7.0 / 9)
+                return 1;
+            if (ratio >= 3.0 / 9)
+                return 2;
+            if (ratio > 0)
+                return 3;
+            return 4;
+        }
     }
 
     public class DamageStatus
@@ -319,31 +345,15 @@ namespace KancolleSniffer
             get
             {
                 return (from deck in _decks
-                    select (from id in deck
-                        where id != -1
-                        let status = _shipInfo[id]
-                        select new {status.Bull, status.Fuel, status.Spec.BullMax, status.Spec.FuelMax})
+                    let flag = new ChargeStatus(_shipInfo[deck[0]])
+                    let others = (from id in deck.Skip(1)
+                        select new ChargeStatus(_shipInfo[id]))
                         .Aggregate(
-                            new ChargeStatus(), (result, next) => new ChargeStatus
-                            {
-                                Bull = Math.Max(result.Bull, CalcChargeState(next.Bull, next.BullMax)),
-                                Fuel = Math.Max(result.Fuel, CalcChargeState(next.Fuel, next.FuelMax))
-                            })).ToArray();
+                            (result, next) =>
+                                new ChargeStatus(Math.Max(result.Fuel, next.Fuel), Math.Max(result.Bull, next.Bull)))
+                    select new ChargeStatus(flag.Fuel != 0 ? flag.Fuel : others.Fuel + 5,
+                        flag.Bull != 0 ? flag.Bull : others.Bull + 5)).ToArray();
             }
-        }
-
-        private int CalcChargeState(int now, int full)
-        {
-            if (full == 0 || now == full)
-                return 0;
-            var ratio = (double)now / full;
-            if (ratio >= 7.0 / 9)
-                return 1;
-            if (ratio >= 3.0 / 9)
-                return 2;
-            if (ratio > 0)
-                return 3;
-            return 4;
         }
 
         public int GetAirSuperiority(int fleet)

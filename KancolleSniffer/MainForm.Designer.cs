@@ -965,7 +965,7 @@ namespace KancolleSniffer
             this.labelBull4.ImageList = this.imageListBull;
             this.labelBull4.Location = new System.Drawing.Point(218, 4);
             this.labelBull4.Name = "labelBull4";
-            this.labelBull4.Size = new System.Drawing.Size(14, 15);
+            this.labelBull4.Size = new System.Drawing.Size(15, 15);
             this.labelBull4.TabIndex = 11;
             // 
             // imageListBull
@@ -977,13 +977,18 @@ namespace KancolleSniffer
             this.imageListBull.Images.SetKeyName(2, "弾薬橙14.png");
             this.imageListBull.Images.SetKeyName(3, "弾薬赤14.png");
             this.imageListBull.Images.SetKeyName(4, "弾薬灰14.png");
+            this.imageListBull.Images.SetKeyName(5, "透明14.png");
+            this.imageListBull.Images.SetKeyName(6, "弾薬薄黄14.png");
+            this.imageListBull.Images.SetKeyName(7, "弾薬薄橙14.png");
+            this.imageListBull.Images.SetKeyName(8, "弾薬薄赤14.png");
+            this.imageListBull.Images.SetKeyName(9, "弾薬薄灰14.png");
             // 
             // labelBull3
             // 
             this.labelBull3.ImageList = this.imageListBull;
             this.labelBull3.Location = new System.Drawing.Point(160, 4);
             this.labelBull3.Name = "labelBull3";
-            this.labelBull3.Size = new System.Drawing.Size(14, 15);
+            this.labelBull3.Size = new System.Drawing.Size(15, 15);
             this.labelBull3.TabIndex = 10;
             // 
             // labelBull2
@@ -991,7 +996,7 @@ namespace KancolleSniffer
             this.labelBull2.ImageList = this.imageListBull;
             this.labelBull2.Location = new System.Drawing.Point(102, 4);
             this.labelBull2.Name = "labelBull2";
-            this.labelBull2.Size = new System.Drawing.Size(14, 15);
+            this.labelBull2.Size = new System.Drawing.Size(15, 15);
             this.labelBull2.TabIndex = 9;
             // 
             // labelBull1
@@ -999,7 +1004,7 @@ namespace KancolleSniffer
             this.labelBull1.ImageList = this.imageListBull;
             this.labelBull1.Location = new System.Drawing.Point(44, 4);
             this.labelBull1.Name = "labelBull1";
-            this.labelBull1.Size = new System.Drawing.Size(14, 15);
+            this.labelBull1.Size = new System.Drawing.Size(15, 15);
             this.labelBull1.TabIndex = 8;
             // 
             // labelFuel4
@@ -1020,6 +1025,11 @@ namespace KancolleSniffer
             this.imageListFuel.Images.SetKeyName(2, "燃料橙14.png");
             this.imageListFuel.Images.SetKeyName(3, "燃料赤14.png");
             this.imageListFuel.Images.SetKeyName(4, "燃料灰14.png");
+            this.imageListFuel.Images.SetKeyName(5, "透明14.png");
+            this.imageListFuel.Images.SetKeyName(6, "燃料薄黄14.png");
+            this.imageListFuel.Images.SetKeyName(7, "燃料薄橙14.png");
+            this.imageListFuel.Images.SetKeyName(8, "燃料薄赤14.png");
+            this.imageListFuel.Images.SetKeyName(9, "燃料薄灰14.png");
             // 
             // labelFuel3
             // 
