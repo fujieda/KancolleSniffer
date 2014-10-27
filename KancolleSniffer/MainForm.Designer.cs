@@ -58,7 +58,7 @@ namespace KancolleSniffer
             this.label2 = new System.Windows.Forms.Label();
             this.labelNumOfShips = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.panelFleet1 = new System.Windows.Forms.Panel();
+            this.panelShipInfo = new System.Windows.Forms.Panel();
             this.panelBattleInfo = new System.Windows.Forms.Panel();
             this.labelEnemyAirSuperiority = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
@@ -161,7 +161,7 @@ namespace KancolleSniffer
             this.labelDamgedShipListButton = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
-            this.panelFleet1.SuspendLayout();
+            this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
             this.panelMaterialHistory.SuspendLayout();
             this.panelDock.SuspendLayout();
@@ -282,26 +282,26 @@ namespace KancolleSniffer
             this.label1.TabIndex = 0;
             this.label1.Text = "艦娘数";
             // 
-            // panelFleet1
+            // panelShipInfo
             // 
-            this.panelFleet1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelFleet1.Controls.Add(this.panelBattleInfo);
-            this.panelFleet1.Controls.Add(this.label19);
-            this.panelFleet1.Controls.Add(this.labelAirSuperiority);
-            this.panelFleet1.Controls.Add(this.label27);
-            this.panelFleet1.Controls.Add(this.label21);
-            this.panelFleet1.Controls.Add(this.labelCondTimer3);
-            this.panelFleet1.Controls.Add(this.label20);
-            this.panelFleet1.Controls.Add(this.labelCondTimer2);
-            this.panelFleet1.Controls.Add(this.labelCondTimer1);
-            this.panelFleet1.Controls.Add(this.label17);
-            this.panelFleet1.Controls.Add(this.label16);
-            this.panelFleet1.Controls.Add(this.label18);
-            this.panelFleet1.Controls.Add(this.label4);
-            this.panelFleet1.Location = new System.Drawing.Point(6, 57);
-            this.panelFleet1.Name = "panelFleet1";
-            this.panelFleet1.Size = new System.Drawing.Size(238, 134);
-            this.panelFleet1.TabIndex = 2;
+            this.panelShipInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelShipInfo.Controls.Add(this.panelBattleInfo);
+            this.panelShipInfo.Controls.Add(this.label19);
+            this.panelShipInfo.Controls.Add(this.labelAirSuperiority);
+            this.panelShipInfo.Controls.Add(this.label27);
+            this.panelShipInfo.Controls.Add(this.label21);
+            this.panelShipInfo.Controls.Add(this.labelCondTimer3);
+            this.panelShipInfo.Controls.Add(this.label20);
+            this.panelShipInfo.Controls.Add(this.labelCondTimer2);
+            this.panelShipInfo.Controls.Add(this.labelCondTimer1);
+            this.panelShipInfo.Controls.Add(this.label17);
+            this.panelShipInfo.Controls.Add(this.label16);
+            this.panelShipInfo.Controls.Add(this.label18);
+            this.panelShipInfo.Controls.Add(this.label4);
+            this.panelShipInfo.Location = new System.Drawing.Point(6, 57);
+            this.panelShipInfo.Name = "panelShipInfo";
+            this.panelShipInfo.Size = new System.Drawing.Size(238, 134);
+            this.panelShipInfo.TabIndex = 2;
             // 
             // panelBattleInfo
             // 
@@ -1269,7 +1269,7 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelConstruct);
             this.Controls.Add(this.panelDock);
             this.Controls.Add(this.labelRepair);
-            this.Controls.Add(this.panelFleet1);
+            this.Controls.Add(this.panelShipInfo);
             this.Controls.Add(this.labelFleet1);
             this.Controls.Add(this.panelHeadquarters);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -1282,8 +1282,8 @@ namespace KancolleSniffer
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.panelHeadquarters.ResumeLayout(false);
             this.panelHeadquarters.PerformLayout();
-            this.panelFleet1.ResumeLayout(false);
-            this.panelFleet1.PerformLayout();
+            this.panelShipInfo.ResumeLayout(false);
+            this.panelShipInfo.PerformLayout();
             this.panelBattleInfo.ResumeLayout(false);
             this.panelBattleInfo.PerformLayout();
             this.panelMaterialHistory.ResumeLayout(false);
@@ -1313,7 +1313,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelNumOfShips;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Panel panelFleet1;
+        private System.Windows.Forms.Panel panelShipInfo;
         private System.Windows.Forms.Label labelRepair;
         private System.Windows.Forms.Panel panelDock;
         private System.Windows.Forms.Label label8;

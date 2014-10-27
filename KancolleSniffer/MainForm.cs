@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Codeplex.Data;
 using Fiddler;
@@ -33,13 +32,12 @@ namespace KancolleSniffer
         private readonly dynamic _wmp = Activator.CreateInstance(Type.GetTypeFromProgID("WMPlayer.OCX.7"));
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
-        private int _labelRightDistance;
         private int _currentFleet;
         private readonly Label[] _labelCheckFleets;
-        private readonly Label[][] _shipInfoLabels = new Label[ShipInfo.MemberCount][];
-        private readonly Label[][] _damagedShipList = new Label[14][];
+        private readonly ShipLabel[][] _damagedShipList = new ShipLabel[14][];
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
-        private readonly Label[][] _ndockLabels = new Label[DockInfo.DockCount][];
+        private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
+        private readonly ShipInfoLabels _shipInfoLabels;
         private readonly Queue<string[]> _akashiTimerNoticeQueue = new Queue<string[]>();
         private bool _started;
 
@@ -55,7 +53,7 @@ namespace KancolleSniffer
             var i = 0;
             foreach (var label in new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4})
                 label.Tag = i++;
-            CreateShipInfoLabels();
+            _shipInfoLabels = new ShipInfoLabels(panelShipInfo);
             CreateDamagedShipList();
             CreateAkashiTimers();
             CreateNDockLabels();
@@ -153,12 +151,6 @@ namespace KancolleSniffer
         {
             if (_config.HideOnMinimized && WindowState == FormWindowState.Minimized)
                 ShowInTaskbar = false;
-        }
-
-        private void labelHP_SizeChanged(object sender, EventArgs e)
-        {
-            var label = (Label)sender;
-            label.Location = new Point(label.Parent.Width - _labelRightDistance - label.Width, label.Top);
         }
 
         private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -277,64 +269,10 @@ namespace KancolleSniffer
             }
         }
 
-        private void CreateShipInfoLabels()
-        {
-            var parent = panelFleet1;
-            parent.SuspendLayout();
-            for (var i = 0; i < _shipInfoLabels.Length; i++)
-            {
-                var y = 20 + 16 * i;
-                const int height = 12;
-                parent.Controls.AddRange(_shipInfoLabels[i] = new[]
-                {
-                    new Label {Location = new Point(130, y), AutoSize = true},
-                    new Label
-                    {
-                        Location = new Point(136, y),
-                        Size = new Size(23, height),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new Label
-                    {
-                        Location = new Point(170, y),
-                        Size = new Size(23, height),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new Label
-                    {
-                        Location = new Point(195, y),
-                        Size = new Size(41, height),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new Label {Location = new Point(2, y), AutoSize = true} // 名前のZ-orderを下に
-                });
-                _shipInfoLabels[i][0].SizeChanged += labelHP_SizeChanged;
-            }
-            _labelRightDistance = parent.Width - _shipInfoLabels[0][0].Right;
-            parent.ResumeLayout();
-        }
-
         private void UpdateShipInfo()
         {
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
-            var empty = new ShipStatus();
-            for (var i = 0; i < _shipInfoLabels.Length; i++)
-            {
-                var labels = _shipInfoLabels[i];
-                var stat = i < statuses.Length ? statuses[i] : empty;
-                SetShipName(labels[4], stat.Name);
-                SetHpLabel(labels[0], stat);
-                if (stat == empty)
-                {
-                    // SetCondLabelでは背景色が赤になってしまう
-                    labels[1].Text = "0";
-                    labels[1].BackColor = DefaultBackColor;
-                }
-                else
-                    SetCondLabel(labels[1], stat.Cond);
-                labels[2].Text = stat.Level.ToString("D");
-                labels[3].Text = stat.ExpToNext.ToString("D");
-            }
+            _shipInfoLabels.SetShipInfo(statuses);
             if (_sniffer.Battle.HasDamagedShip)
                 Ring("大破した艦娘がいます", string.Join(" ", _sniffer.Battle.DamagedShipNames), _config.DamagedShipSoundFile);
             labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
@@ -374,44 +312,6 @@ namespace KancolleSniffer
             }
         }
 
-        private void SetShipName(Label label, string name)
-        {
-            var lu = name != null && new Regex(@"^\p{Lu}").IsMatch(name);
-            if (lu && label.Font.Equals(DefaultFont))
-            {
-                label.Location += new Size(0, -1);
-                label.Font = new Font("Tahoma", 8);
-            }
-            else if (!lu && !label.Font.Equals(DefaultFont))
-            {
-                label.Location += new Size(0, 1);
-                label.Font = DefaultFont;
-            }
-            label.Text = name;
-        }
-
-        private void SetHpLabel(Label label, ShipStatus status)
-        {
-            SetHpLabel(label, status.NowHp, status.MaxHp);
-        }
-
-        private void SetHpLabel(Label label, int now, int max)
-        {
-            var colors = new[] {DefaultBackColor, Color.FromArgb(255, 240, 240, 100), Color.Orange, Color.Red};
-            label.Text = string.Format("{0:D}/{1:D}", now, max);
-            label.BackColor = colors[(int)ShipStatus.CalcDamage(now, max)];
-        }
-
-        private void SetCondLabel(Label label, int cond)
-        {
-            label.Text = cond.ToString("D");
-            label.BackColor = cond >= 50
-                ? Color.Yellow
-                : cond >= 30
-                    ? DefaultBackColor
-                    : cond >= 20 ? Color.Orange : Color.Red;
-        }
-
         private void CreateNDockLabels()
         {
             var parent = panelDock;
@@ -421,8 +321,8 @@ namespace KancolleSniffer
                 parent.Controls.AddRange(
                     _ndockLabels[i] = new[]
                     {
-                        new Label {Location = new Point(106, y), AutoSize = true, Text = "00:00:00"},
-                        new Label {Location = new Point(30, y), AutoSize = true} // 名前のZ-orderを下に
+                        new ShipLabel {Location = new Point(106, y), AutoSize = true, Text = "00:00:00"},
+                        new ShipLabel {Location = new Point(30, y), AutoSize = true} // 名前のZ-orderを下に
                     });
             }
         }
@@ -430,7 +330,7 @@ namespace KancolleSniffer
         private void UpdateNDocLabels()
         {
             for (var i = 0; i < _ndockLabels.Length; i++)
-                SetShipName(_ndockLabels[i][1], _sniffer.NDock[i].Name);
+                _ndockLabels[i][1].SetName(_sniffer.NDock[i].Name);
         }
 
         private void UpdateMissionLabels()
@@ -495,7 +395,7 @@ namespace KancolleSniffer
 
         private void CreateAkashiTimers()
         {
-            var parent = panelFleet1;
+            var parent = panelShipInfo;
             parent.SuspendLayout();
             for (var i = 0; i < _akashiTimers.Length; i++)
             {
@@ -517,7 +417,7 @@ namespace KancolleSniffer
             for (var i = 0; i < _akashiTimers.Length; i++)
             {
                 var label = _akashiTimers[i];
-                var labelHp = _shipInfoLabels[i][0];
+                var labelHp = _shipInfoLabels.GetHpLabel(i);
                 if (timers == null || i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
                 {
                     label.Visible = false;
@@ -534,7 +434,7 @@ namespace KancolleSniffer
                     continue;
                 }
                 labelHp.ForeColor = Color.DimGray;
-                SetHpLabel(labelHp, stat.NowHp + timer.Diff, stat.MaxHp);
+                labelHp.SetHp(stat.NowHp + timer.Diff, stat.MaxHp);
             }
             var msgs = _sniffer.GetAkashiTimerNotice();
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
@@ -565,10 +465,10 @@ namespace KancolleSniffer
                 const int height = 12;
                 parent.Controls.AddRange(_damagedShipList[i] = new[]
                 {
-                    new Label {Location = new Point(1, y), Size = new Size(11, height)},
-                    new Label {Location = new Point(79, y), Size = new Size(45, height)},
-                    new Label {Location = new Point(123, y), Size = new Size(5, height - 1)},
-                    new Label {Location = new Point(10, y), AutoSize = true}
+                    new ShipLabel {Location = new Point(1, y), Size = new Size(11, height)},
+                    new ShipLabel {Location = new Point(79, y), Size = new Size(45, height)},
+                    new ShipLabel {Location = new Point(123, y), Size = new Size(5, height - 1)},
+                    new ShipLabel {Location = new Point(10, y), AutoSize = true}
                 });
             }
             parent.ResumeLayout();
@@ -586,7 +486,7 @@ namespace KancolleSniffer
                 parent.Size = new Size(width, 19);
                 var labels = _damagedShipList[0];
                 labels[fleet].Text = "";
-                SetShipName(labels[name], "なし");
+                labels[name].SetName("なし");
                 labels[time].Text = "";
                 labels[damage].BackColor = DefaultBackColor;
                 return;
@@ -599,7 +499,7 @@ namespace KancolleSniffer
                 var e = list[i];
                 var labels = _damagedShipList[i];
                 labels[fleet].Text = fn[e.Fleet + 1];
-                SetShipName(labels[name], e.Name);
+                labels[name].SetName(e.Name);
                 var t = e.RepairTime;
                 labels[time].Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)t.TotalHours, t);
                 labels[damage].BackColor = colors[(int)e.DamageLevel];
