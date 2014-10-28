@@ -64,8 +64,8 @@ namespace KancolleSniffer
             var path = oSession.PathAndQuery;
             var proxy = _config.Proxy;
             if (proxy.UseUpstream && (path.StartsWith("/kcsapi/api_") ||
+                                      // この二つはMyFleetGirlsに必要
                                       path.StartsWith("/kcs/resources/") || path.StartsWith("/kcs/sound/")))
-                // この二つはMyFleetGirlsに必要
                 oSession["x-overrideGateway"] = string.Format("localhost:{0:D}", proxy.UpstreamPort); // 上流プロキシを設定する
             if (!path.StartsWith("/kcsapi/api_")) // 艦これのAPI以外は無視する
             {
@@ -120,6 +120,7 @@ namespace KancolleSniffer
         private void MainForm_Load(object sender, EventArgs e)
         {
             _config.Load();
+            RestoreLocation();
             ApplyConfig();
             ApplyLogSetting();
             _sniffer.LoadState();
@@ -176,19 +177,21 @@ namespace KancolleSniffer
                 ApplyConfig();
         }
 
-        private void ApplyConfig()
+        private void RestoreLocation()
         {
-            TopMost = _config.TopMost;
-            _sniffer.Item.MarginShips = _config.MarginShips;
-            _sniffer.Achievement.ResetHours = _config.ResetHours;
-
             if (_config.Location.X == int.MinValue)
                 return;
             var newBounds = Bounds;
             newBounds.Location = _config.Location;
             if (IsVisibleOnAnyScreen(newBounds))
                 Location = _config.Location;
-            _config.Location = new Point(int.MinValue, int.MinValue); // 二回目以降は無視させる
+        }
+
+        private void ApplyConfig()
+        {
+            TopMost = _config.TopMost;
+            _sniffer.Item.MarginShips = _config.MarginShips;
+            _sniffer.Achievement.ResetHours = _config.ResetHours;
         }
 
         public void ApplyLogSetting()
