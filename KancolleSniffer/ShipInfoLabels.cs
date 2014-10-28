@@ -72,6 +72,11 @@ namespace KancolleSniffer
             return _labels[idx][0];
         }
 
+        public ShipLabel GetNameLabel(int idx)
+        {
+            return _labels[idx][4];
+        }
+
         private void labelHP_SizeChanged(object sender, EventArgs e)
         {
             var label = (Label)sender;

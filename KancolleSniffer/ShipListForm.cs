@@ -29,6 +29,7 @@ namespace KancolleSniffer
         private readonly Config _config;
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private const int HpLabelRight = 126;
+        private ShipStatus[] _currentList;
 
         public ShipListForm(Sniffer sniffer, Config config)
         {
@@ -107,10 +108,10 @@ namespace KancolleSniffer
 
         private void SetShipLabels()
         {
-            var shipList = _sniffer.ShipList;
             var fn = new[] {"", "1", "2", "3", "4"};
             var i = 0;
-            foreach (var s in shipList.OrderBy(s => s, new CompareShipByExp()))
+            _currentList = _sniffer.ShipList.OrderBy(s => s, new CompareShipByExp()).ToArray();
+            foreach (var s in _currentList)
             {
                 var labels = _labelList[i++];
                 labels[0].Text = fn[s.Fleet + 1];
@@ -147,6 +148,15 @@ namespace KancolleSniffer
             config.Size = bounds.Size;
             Hide();
             e.Cancel = true;
+        }
+
+        public void ShowShip(int id)
+        {
+            var i = Array.FindIndex(_currentList, s => s.Id == id);
+            if (i == -1)
+                return;
+            var y = 16 * i;
+            panelShipList.AutoScrollPosition = new Point(0, y);
         }
     }
 }

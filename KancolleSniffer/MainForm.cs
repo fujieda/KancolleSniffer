@@ -51,10 +51,16 @@ namespace KancolleSniffer
             _configDialog = new ConfigDialog(_config, this);
             _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
 
-            var i = 0;
-            foreach (var label in new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4})
-                label.Tag = i++;
+            var labels = new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4};
+            for (var i = 0; i < labels.Length; i++)
+                labels[i].Tag = i;
             _shipInfoLabels = new ShipInfoLabels(panelShipInfo);
+            for (var i = 0; i < ShipInfo.MemberCount; i++)
+            {
+                var label = _shipInfoLabels.GetNameLabel(i);
+                var tmp = i;
+                label.Click += (o, e) => ShowShipOnShipList(tmp);
+            }
             CreateDamagedShipList();
             CreateAkashiTimers();
             CreateNDockLabels();
@@ -217,6 +223,16 @@ namespace KancolleSniffer
         {
             if (_started)
                 UpdateTimers();
+        }
+
+        private void ShowShipOnShipList(int idx)
+        {
+            if (!_shipListForm.Visible)
+                return;
+            var statuses = _sniffer.GetShipStatuses(_currentFleet);
+            if (statuses.Length <= idx)
+                return;
+            _shipListForm.ShowShip(statuses[idx].Id);
         }
 
         private void UpdateItemInfo()
