@@ -58,7 +58,7 @@ namespace KancolleSniffer
             CreateDamagedShipList();
             CreateAkashiTimers();
             CreateNDockLabels();
-            _shipListForm = new ShipListForm(_sniffer);
+            _shipListForm = new ShipListForm(_sniffer, _config);
         }
 
         private void FiddlerApplication_BeforeRequest(Session oSession)
@@ -139,6 +139,7 @@ namespace KancolleSniffer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            _shipListForm.Close();
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.Save();
             _sniffer.SaveState();
@@ -207,7 +208,7 @@ namespace KancolleSniffer
             StartProxy();
         }
 
-        private bool IsVisibleOnAnyScreen(Rectangle rect)
+        public static bool IsVisibleOnAnyScreen(Rectangle rect)
         {
             return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
         }

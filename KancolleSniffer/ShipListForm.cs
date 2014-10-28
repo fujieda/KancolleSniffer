@@ -26,13 +26,15 @@ namespace KancolleSniffer
     public partial class ShipListForm : Form
     {
         private readonly Sniffer _sniffer;
+        private readonly Config _config;
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private const int HpLabelRight = 126;
 
-        public ShipListForm(Sniffer sniffer)
+        public ShipListForm(Sniffer sniffer, Config config)
         {
             InitializeComponent();
             _sniffer = sniffer;
+            _config = config;
         }
 
         public void UpdateList()
@@ -126,8 +128,23 @@ namespace KancolleSniffer
             label.Location = new Point(HpLabelRight - label.Width, label.Top);
         }
 
+        private void ShipListForm_Load(object sender, EventArgs e)
+        {
+            var config = _config.ShipList;
+            if (config.Location.X == int.MinValue)
+                return;
+            var bounds = new Rectangle(config.Location, config.Size);
+            if (MainForm.IsVisibleOnAnyScreen(bounds))
+                Location = bounds.Location;
+            Size = bounds.Size;
+        }
+
         private void ShipListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            var config = _config.ShipList;
+            var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
+            config.Location = bounds.Location;
+            config.Size = bounds.Size;
             Hide();
             e.Cancel = true;
         }

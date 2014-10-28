@@ -39,6 +39,17 @@ namespace KancolleSniffer
         }
     }
 
+    public class ShipListConfig
+    {
+        public Point Location { get; set; }
+        public Size Size { get; set; }
+
+        public ShipListConfig()
+        {
+            Location = new Point(int.MinValue, int.MinValue);
+        }
+    }
+
     public class Config
     {
         private readonly string _configFileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "config.json");
@@ -62,6 +73,7 @@ namespace KancolleSniffer
         public bool Logging { get; set; }
         public string LogFile { get; set; }
         public ProxyConfig Proxy { get; set; }
+        public ShipListConfig ShipList { get; set; }
 
         public Config()
         {
@@ -82,6 +94,7 @@ namespace KancolleSniffer
             LogFile = Path.Combine(dir, "log.txt");
 // ReSharper restore AssignNullToNotNullAttribute
             Proxy = new ProxyConfig();
+            ShipList = new ShipListConfig();
         }
 
         public void Load()

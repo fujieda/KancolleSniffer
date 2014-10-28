@@ -115,6 +115,7 @@ namespace KancolleSniffer
             this.Name = "ShipListForm";
             this.Text = "艦娘一覧";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ShipListForm_FormClosing);
+            this.Load += new System.EventHandler(this.ShipListForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
