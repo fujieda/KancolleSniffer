@@ -201,6 +201,11 @@ namespace KancolleSniffer
             panelShipList.AutoScrollPosition = new Point(0, y);
         }
 
+        private void panelShipList_MouseEnter(object sender, EventArgs e)
+        {
+            panelShipList.Focus();
+        }
+
         private void checkBoxShipType_CheckedChanged(object sender, EventArgs e)
         {
             _config.ShipList.ShipType = checkBoxShipType.Checked;
