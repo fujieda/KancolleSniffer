@@ -43,6 +43,7 @@ namespace KancolleSniffer
     {
         public Point Location { get; set; }
         public Size Size { get; set; }
+        public bool ShipType { get; set; }
 
         public ShipListConfig()
         {

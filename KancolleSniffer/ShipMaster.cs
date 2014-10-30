@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace KancolleSniffer
 {
@@ -23,6 +24,7 @@ namespace KancolleSniffer
     {
         public const int NumSlots = 5;
         private readonly Dictionary<int, ShipSpec> _shipSpecs = new Dictionary<int, ShipSpec>();
+        private readonly Dictionary<int, ShipType> _stype = new Dictionary<int, ShipType>();
 
         public void Inspect(dynamic json)
         {
@@ -41,9 +43,20 @@ namespace KancolleSniffer
             _shipSpecs[-1] = new ShipSpec {Name = "不明", MaxEq = new int[NumSlots]};
         }
 
+        public void InspectStype(dynamic json)
+        {
+            foreach (var entry in json)
+                _stype[(int)entry.api_id] = new ShipType {Id = (int)entry.api_id, Name = entry.api_name};
+        }
+
         public ShipSpec this[int id]
         {
             get { return _shipSpecs[id]; }
+        }
+
+        public ShipType[] ShipTypeList
+        {
+            get { return _stype.Values.ToArray(); }
         }
     }
 
@@ -63,7 +76,8 @@ namespace KancolleSniffer
 
         public double RepairWeight
         {
-            get {
+            get
+            {
                 switch (ShipType)
                 {
                     case 13: // 潜水艦
@@ -91,5 +105,11 @@ namespace KancolleSniffer
                 return 1.0;
             }
         }
+    }
+
+    public struct ShipType
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

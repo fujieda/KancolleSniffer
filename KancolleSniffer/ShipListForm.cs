@@ -36,26 +36,41 @@ namespace KancolleSniffer
             InitializeComponent();
             _sniffer = sniffer;
             _config = config;
+            checkBoxShipType.Checked = config.ShipList.ShipType;
         }
 
         public void UpdateList()
         {
             if (!Visible)
                 return;
+            CreateList();
             CreateListLabels();
             SetShipLabels();
+        }
+
+        private void CreateList()
+        {
+            var ships = (IEnumerable<ShipStatus>)_sniffer.ShipList;
+            if (!_config.ShipList.ShipType)
+            {
+                _currentList = ships.OrderBy(s => s, new CompareShipByExp()).ToArray();
+                return;
+            }
+            var types = from id in (from s in ships select s.Spec.ShipType).Distinct()
+                join stype in _sniffer.ShipTypeList on id equals stype.Id
+                select new ShipStatus {Spec = new ShipSpec {Name = stype.Name, ShipType = stype.Id}, Level = 1000};
+            _currentList = ships.Concat(types).OrderBy(s => s, new CompareShipByType()).ToArray();
         }
 
         private void CreateListLabels()
         {
             panelShipList.SuspendLayout();
-            for (var i = _labelList.Count; i < _sniffer.Item.MaxShips; i++)
+            for (var i = _labelList.Count; i < _currentList.Length; i++)
             {
                 const int height = 12;
                 var y = 3 + 16 * i + panelShipList.AutoScrollPosition.Y;
                 var labels = new[]
                 {
-                    new ShipLabel {Location = new Point(1, y), Size = new Size(11, height)},
                     new ShipLabel {Location = new Point(HpLabelRight, y), AutoSize = true},
                     new ShipLabel
                     {
@@ -75,14 +90,15 @@ namespace KancolleSniffer
                         Size = new Size(41, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
-                    new ShipLabel {Location = new Point(10, y), AutoSize = true}
+                    new ShipLabel {Location = new Point(10, y), AutoSize = true},
+                    new ShipLabel {Location = new Point(1, y), AutoSize = true}
                 };
                 _labelList.Add(labels);
                 // ReSharper disable once CoVariantArrayConversion
                 panelShipList.Controls.AddRange(labels);
-                labels[1].SizeChanged += labelHP_SizeChanged;
+                labels[0].SizeChanged += labelHP_SizeChanged;
             }
-            for (var i = _labelList.Count; i > _sniffer.Item.MaxShips; i--)
+            for (var i = _labelList.Count; i > _currentList.Length; i--)
             {
                 foreach (var label in _labelList[i - 1])
                 {
@@ -106,20 +122,46 @@ namespace KancolleSniffer
             }
         }
 
+        private class CompareShipByType : IComparer<ShipStatus>
+        {
+            public int Compare(ShipStatus a, ShipStatus b)
+            {
+                if (a.Spec.ShipType != b.Spec.ShipType)
+                    return a.Spec.ShipType - b.Spec.ShipType;
+                if (a.Level != b.Level)
+                    return b.Level - a.Level;
+                if (a.ExpToNext != b.ExpToNext)
+                    return a.ExpToNext - b.ExpToNext;
+                return a.Spec.Id - b.Spec.Id;
+            }
+        }
+
         private void SetShipLabels()
         {
             var fn = new[] {"", "1", "2", "3", "4"};
             var i = 0;
-            _currentList = _sniffer.ShipList.OrderBy(s => s, new CompareShipByExp()).ToArray();
             foreach (var s in _currentList)
             {
                 var labels = _labelList[i++];
-                labels[0].Text = fn[s.Fleet + 1];
-                labels[1].SetHp(s);
-                labels[2].SetCond(s);
-                labels[3].SetLevel(s);
-                labels[4].SetExpToNext(s);
-                labels[5].SetName(s);
+                if (s.Level == 1000)
+                {
+                    for (var c = 0; c <= 3; c++)
+                    {
+                        labels[c].Text = "";
+                        labels[c].BackColor = DefaultBackColor;
+                    }
+                    labels[4].SetName("");
+                    labels[5].Text = s.Name;
+                    labels[5].BackColor = Color.FromArgb(255, 220, 220, 220);
+                    continue;
+                }
+                labels[0].SetHp(s);
+                labels[1].SetCond(s);
+                labels[2].SetLevel(s);
+                labels[3].SetExpToNext(s);
+                labels[4].SetName(s);
+                labels[5].Text = fn[s.Fleet + 1];
+                labels[5].BackColor = DefaultBackColor;
             }
         }
 
@@ -157,6 +199,12 @@ namespace KancolleSniffer
                 return;
             var y = 16 * i;
             panelShipList.AutoScrollPosition = new Point(0, y);
+        }
+
+        private void checkBoxShipType_CheckedChanged(object sender, EventArgs e)
+        {
+            _config.ShipList.ShipType = checkBoxShipType.Checked;
+            UpdateList();
         }
     }
 }
