@@ -39,7 +39,7 @@ namespace KancolleSniffer
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         private readonly ShipInfoLabels _shipInfoLabels;
         private readonly ShipListForm _shipListForm;
-        private readonly Queue<string[]> _akashiTimerNoticeQueue = new Queue<string[]>();
+        private readonly NoticeQueue _noticeQueue;
         private bool _started;
 
         public MainForm()
@@ -65,6 +65,7 @@ namespace KancolleSniffer
             CreateAkashiTimers();
             CreateNDockLabels();
             _shipListForm = new ShipListForm(_sniffer, _config);
+            _noticeQueue = new NoticeQueue(Ring);
         }
 
         private void FiddlerApplication_BeforeRequest(Session oSession)
@@ -257,7 +258,7 @@ namespace KancolleSniffer
             if (item.NeedRing)
             {
                 var message = string.Format("残り{0:D}隻", _sniffer.Item.MaxShips - _sniffer.Item.NowShips);
-                Ring("艦娘が多すぎます", message, _config.MaxShipsSoundFile);
+                _noticeQueue.Enqueue("艦娘が多すぎます", message, _config.MaxShipsSoundFile);
                 item.NeedRing = false;
             }
         }
@@ -296,7 +297,8 @@ namespace KancolleSniffer
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             _shipInfoLabels.SetShipInfo(statuses);
             if (_sniffer.Battle.HasDamagedShip)
-                Ring("大破した艦娘がいます", string.Join(" ", _sniffer.Battle.DamagedShipNames), _config.DamagedShipSoundFile);
+                _noticeQueue.Enqueue("大破した艦娘がいます", string.Join(" ", _sniffer.Battle.DamagedShipNames),
+                    _config.DamagedShipSoundFile);
             labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
             UpdateChargeInfo();
             UpdateCondTimers();
@@ -374,7 +376,7 @@ namespace KancolleSniffer
                 SetTimerLabel(entry.label, entry.Timer);
                 if (!entry.Timer.NeedRing)
                     continue;
-                Ring("遠征が終わりました", entry.Name, _config.MissionSoundFile);
+                _noticeQueue.Enqueue("遠征が終わりました", entry.Name, _config.MissionSoundFile);
                 entry.Timer.NeedRing = false;
             }
             for (var i = 0; i < _ndockLabels.Length; i++)
@@ -384,7 +386,7 @@ namespace KancolleSniffer
                 SetTimerLabel(_ndockLabels[i][0], entry.Timer);
                 if (!entry.Timer.NeedRing)
                     continue;
-                Ring("入渠が終わりました", entry.Name, _config.NDockSoundFile);
+                _noticeQueue.Enqueue("入渠が終わりました", entry.Name, _config.NDockSoundFile);
                 entry.Timer.NeedRing = false;
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
@@ -395,7 +397,7 @@ namespace KancolleSniffer
                 SetTimerLabel(kdock[i], timer);
                 if (!timer.NeedRing)
                     continue;
-                Ring("建造が終わりました", string.Format("第{0:D}ドック", i + 1), _config.KDockSoundFile);
+                _noticeQueue.Enqueue("建造が終わりました", string.Format("第{0:D}ドック", i + 1), _config.KDockSoundFile);
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
@@ -466,16 +468,8 @@ namespace KancolleSniffer
                 if (msgs[i] == "")
                     continue;
                 var sound = msgs[i] == "20分経過しました。" ? _config.Akashi20MinSoundFile : _config.AkashiProgressSoundFile;
-                _akashiTimerNoticeQueue.Enqueue(new[] {"泊地修理 " + fn[i], msgs[i], sound});
-                _akashiTimerNoticeQueue.Enqueue(new[] {""}); //連続する通知の間隔をあける
-                _akashiTimerNoticeQueue.Enqueue(new[] {""});
+                _noticeQueue.Enqueue("泊地修理 " + fn[i], msgs[i], sound);
             }
-            if (_akashiTimerNoticeQueue.Count == 0)
-                return;
-            var e = _akashiTimerNoticeQueue.Dequeue();
-            if (e[0] == "")
-                return;
-            Ring(e[0], e[1], e[2]);
         }
 
         public void CreateDamagedShipList()
@@ -544,6 +538,43 @@ namespace KancolleSniffer
                 else
                 {
                     name[i].Text = progress[i].Text = "";
+                }
+            }
+        }
+
+        private class NoticeQueue
+        {
+            private readonly Action<string, string, string> _ring;
+            private readonly Queue<Tuple<string, string, string>> _queue = new Queue<Tuple<string, string, string>>();
+            private readonly Timer _timer = new Timer {Interval = 2000};
+
+            public NoticeQueue(Action<string, string, string> ring)
+            {
+                _ring = ring;
+                _timer.Tick += TimerOnTick;
+            }
+
+            private void TimerOnTick(object obj, EventArgs e)
+            {
+                if (_queue.Count == 0)
+                {
+                    _timer.Stop();
+                    return;
+                }
+                var notice = _queue.Dequeue();
+                _ring(notice.Item1, notice.Item2, notice.Item3);
+            }
+
+            public void Enqueue(string title, string message, string soundFile)
+            {
+                if (_timer.Enabled)
+                {
+                    _queue.Enqueue(new Tuple<string, string, string>(title, message, soundFile));
+                }
+                else
+                {
+                    _ring(title, message, soundFile);
+                    _timer.Start();
                 }
             }
         }
