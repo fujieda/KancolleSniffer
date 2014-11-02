@@ -36,7 +36,11 @@ namespace KancolleSniffer
             InitializeComponent();
             _config = config;
             _main = main;
-            listBoxSoundFile.Items.AddRange(new object[] {"遠征終了", "入渠終了", "建造完了", "艦娘数超過", "大破警告", "泊地修理20分経過", "泊地修理進行"});
+            listBoxSoundFile.Items.AddRange(new object[]
+            {
+                "遠征終了", "入渠終了", "建造完了", "艦娘数超過", "装備数超過",
+                "大破警告", "泊地修理20分経過", "泊地修理進行"
+            });
         }
 
         private void ConfigDialog_Load(object sender, EventArgs e)
@@ -47,6 +51,7 @@ namespace KancolleSniffer
             checkBoxBalloon.Checked = _config.ShowBaloonTip;
             groupBoxSound.Enabled = checkBoxSound.Checked = _config.PlaySound;
             numericUpDownMarginShips.Value = _config.MarginShips;
+            numericUpDownMarginEquips.Value = _config.MarginEquips;
 
             checkBoxReset02.Checked = _config.ResetHours.Any(x => x == 2);
             checkBoxReset14.Checked = _config.ResetHours.Any(x => x == 14);
@@ -57,6 +62,7 @@ namespace KancolleSniffer
             _soundSetting["入渠終了"] = _config.NDockSoundFile;
             _soundSetting["建造完了"] = _config.KDockSoundFile;
             _soundSetting["艦娘数超過"] = _config.MaxShipsSoundFile;
+            _soundSetting["装備数超過"] = _config.MaxEquipsSoundFile;
             _soundSetting["大破警告"] = _config.DamagedShipSoundFile;
             _soundSetting["泊地修理20分経過"] = _config.Akashi20MinSoundFile;
             _soundSetting["泊地修理進行"] = _config.AkashiProgressSoundFile;
@@ -71,6 +77,7 @@ namespace KancolleSniffer
             _config.ShowBaloonTip = checkBoxBalloon.Checked;
             _config.PlaySound = checkBoxSound.Checked;
             _config.MarginShips = (int)numericUpDownMarginShips.Value;
+            _config.MarginEquips = (int)numericUpDownMarginEquips.Value;
 
             _config.ResetHours.Clear();
             if (checkBoxReset02.Checked)
@@ -84,6 +91,7 @@ namespace KancolleSniffer
             _config.NDockSoundFile = _soundSetting["入渠終了"];
             _config.KDockSoundFile = _soundSetting["建造完了"];
             _config.MaxShipsSoundFile = _soundSetting["艦娘数超過"];
+            _config.MaxEquipsSoundFile = _soundSetting["装備数超過"];
             _config.DamagedShipSoundFile = _soundSetting["大破警告"];
             _config.Akashi20MinSoundFile = _soundSetting["泊地修理20分経過"];
             _config.AkashiProgressSoundFile = _soundSetting["泊地修理進行"];

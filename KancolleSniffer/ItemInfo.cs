@@ -29,15 +29,16 @@ namespace KancolleSniffer
 
     public class ItemInfo
     {
-        private int _nowShips;
+        private int _nowShips, _nowEquips;
         private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
         private readonly Dictionary<int, int> _itemIds = new Dictionary<int, int>();
 
         public int MaxShips { get; private set; }
         public int MarginShips { get; set; }
-        public bool NeedRing { get; set; }
-        public int NowItems { get; set; }
-        public int MaxItems { get; private set; }
+        public bool RingShips { get; set; }
+        public int MaxEquips { get; private set; }
+        public int MarginEquips { get; set; }
+        public bool RingEquips { get; set; }
         public MaterialCount[] MaterialHistory { get; private set; }
 
         public int NowShips
@@ -48,7 +49,7 @@ namespace KancolleSniffer
                 if (MaxShips != 0)
                 {
                     var limit = MaxShips - MarginShips;
-                    NeedRing = _nowShips < limit && value >= limit;
+                    RingShips = _nowShips < limit && value >= limit;
                 }
                 _nowShips = value;
             }
@@ -57,6 +58,25 @@ namespace KancolleSniffer
         public bool TooManyShips
         {
             get { return MaxShips != 0 && NowShips >= MaxShips - MarginShips; }
+        }
+
+        public int NowEquips
+        {
+            get { return _nowEquips; }
+            set
+            {
+                if (MaxEquips != 0)
+                {
+                    var limit = MaxEquips - MarginEquips;
+                    RingEquips = _nowEquips < limit && value >= limit;
+                }
+                _nowEquips = value;
+            }
+        }
+
+        public bool TooManyEquips
+        {
+            get { return MaxEquips != 0 && NowEquips >= MaxEquips - MarginEquips; }
         }
 
         public ItemInfo()
@@ -70,7 +90,7 @@ namespace KancolleSniffer
         public void InspectBasic(dynamic json)
         {
             MaxShips = (int)json.api_max_chara;
-            MaxItems = (int)json.api_max_slotitem;
+            MaxEquips = (int)json.api_max_slotitem;
         }
 
         public void InspectMaterial(dynamic json)
@@ -98,7 +118,7 @@ namespace KancolleSniffer
             if (!json.IsArray)
                 json = new[] {json};
             if (full)
-                NowItems = ((object[])json).Length;
+                NowEquips = ((object[])json).Length;
             foreach (var entry in json)
                 _itemIds[(int)entry.api_id] = (int)entry.api_slotitem_id;
             _itemIds[-1] = -1;
@@ -112,7 +132,7 @@ namespace KancolleSniffer
             if (!json.IsDefined("api_slot_item"))
                 return;
             InspectSlotItem(json.api_slot_item);
-            NowItems++;
+            NowEquips++;
         }
 
         public void InspectGetShip(dynamic json)
@@ -121,13 +141,13 @@ namespace KancolleSniffer
             if (json.api_slotitem == null) // まるゆにはスロットがない
                 return;
             InspectSlotItem(json.api_slotitem);
-            NowItems += ((object[])json.api_slotitem).Length;
+            NowEquips += ((object[])json.api_slotitem).Length;
         }
 
         public void InspectDestroyItem(string request, dynamic json)
         {
             var values = HttpUtility.ParseQueryString(request);
-            NowItems -= values["api_slotitem_ids"].Split(',').Length;
+            NowEquips -= values["api_slotitem_ids"].Split(',').Length;
             var get = (int[])json.api_get_material;
             for (var i = 0; i < get.Length; i++)
                 MaterialHistory[i].Now += get[i];

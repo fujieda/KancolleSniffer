@@ -62,12 +62,14 @@ namespace KancolleSniffer
         public bool ShowBaloonTip { get; set; }
         public bool PlaySound { get; set; }
         public int MarginShips { get; set; }
+        public int MarginEquips { get; set; }
         public List<int> ResetHours { get; set; }
         public int SoundVolume { get; set; }
         public string MissionSoundFile { get; set; }
         public string NDockSoundFile { get; set; }
         public string KDockSoundFile { get; set; }
         public string MaxShipsSoundFile { get; set; }
+        public string MaxEquipsSoundFile { get; set; }
         public string DamagedShipSoundFile { get; set; }
         public string Akashi20MinSoundFile { get; set; }
         public string AkashiProgressSoundFile { get; set; }
@@ -81,6 +83,7 @@ namespace KancolleSniffer
             Location = new Point(int.MinValue, int.MinValue);
             FlashWindow = ShowBaloonTip = PlaySound = true;
             MarginShips = 4;
+            MarginEquips = 10;
             ResetHours = new List<int>();
             SoundVolume = 100;
             var dir = Path.GetDirectoryName(Application.ExecutablePath);
@@ -89,6 +92,7 @@ namespace KancolleSniffer
             NDockSoundFile = Path.Combine(dir, "nyuukyo.mp3");
             KDockSoundFile = Path.Combine(dir, "kenzou.mp3");
             MaxShipsSoundFile = Path.Combine(dir, "kanmusu.mp3");
+            MaxEquipsSoundFile = Path.Combine(dir, "soubi.mp3");
             DamagedShipSoundFile = Path.Combine(dir, "taiha.mp3");
             Akashi20MinSoundFile = Path.Combine(dir, "20min.mp3");
             AkashiProgressSoundFile = Path.Combine(dir, "syuuri.mp3");

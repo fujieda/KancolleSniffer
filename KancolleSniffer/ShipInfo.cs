@@ -286,7 +286,7 @@ namespace KancolleSniffer
             var values = HttpUtility.ParseQueryString(request);
             var ships = values["api_id_items"].Split(',');
             _itemInfo.NowShips -= ships.Length;
-            _itemInfo.NowItems -= (from s in ships select SlotItemCount(int.Parse(s))).Sum();
+            _itemInfo.NowEquips -= (from s in ships select SlotItemCount(int.Parse(s))).Sum();
             foreach (var ship in ships)
                 _shipInfo.Remove(int.Parse(ship));
             InspectDeck(json.api_deck);
@@ -298,7 +298,7 @@ namespace KancolleSniffer
             var values = HttpUtility.ParseQueryString(request);
             var ship = int.Parse(values["api_ship_id"]);
             _itemInfo.NowShips -= 1;
-            _itemInfo.NowItems -= SlotItemCount(ship);
+            _itemInfo.NowEquips -= SlotItemCount(ship);
             int oi;
             var of = FindFleet(ship, out oi);
             if (of != -1)

@@ -64,6 +64,7 @@ namespace KancolleSniffer
             this.buttonCancel = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBoxShow = new System.Windows.Forms.GroupBox();
+            this.checkBoxHideOnMinimized = new System.Windows.Forms.CheckBox();
             this.checkBoxTopMost = new System.Windows.Forms.CheckBox();
             this.groupBoxAchievement = new System.Windows.Forms.GroupBox();
             this.buttonResetAchievement = new System.Windows.Forms.Button();
@@ -73,7 +74,9 @@ namespace KancolleSniffer
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ProxyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DebugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkBoxHideOnMinimized = new System.Windows.Forms.CheckBox();
+            this.numericUpDownMarginEquips = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.groupBoxNotification.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).BeginInit();
             this.groupBoxSound.SuspendLayout();
@@ -81,26 +84,30 @@ namespace KancolleSniffer
             this.groupBoxShow.SuspendLayout();
             this.groupBoxAchievement.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginEquips)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBoxNotification
             // 
+            this.groupBoxNotification.Controls.Add(this.label5);
+            this.groupBoxNotification.Controls.Add(this.numericUpDownMarginEquips);
+            this.groupBoxNotification.Controls.Add(this.label4);
             this.groupBoxNotification.Controls.Add(this.numericUpDownMarginShips);
             this.groupBoxNotification.Controls.Add(this.label2);
             this.groupBoxNotification.Controls.Add(this.label1);
             this.groupBoxNotification.Controls.Add(this.checkBoxSound);
             this.groupBoxNotification.Controls.Add(this.checkBoxBalloon);
             this.groupBoxNotification.Controls.Add(this.checkBoxFlash);
-            this.groupBoxNotification.Location = new System.Drawing.Point(6, 74);
+            this.groupBoxNotification.Location = new System.Drawing.Point(6, 71);
             this.groupBoxNotification.Name = "groupBoxNotification";
-            this.groupBoxNotification.Size = new System.Drawing.Size(240, 108);
+            this.groupBoxNotification.Size = new System.Drawing.Size(240, 126);
             this.groupBoxNotification.TabIndex = 0;
             this.groupBoxNotification.TabStop = false;
             this.groupBoxNotification.Text = "通知";
             // 
             // numericUpDownMarginShips
             // 
-            this.numericUpDownMarginShips.Location = new System.Drawing.Point(120, 82);
+            this.numericUpDownMarginShips.Location = new System.Drawing.Point(76, 81);
             this.numericUpDownMarginShips.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.numericUpDownMarginShips.Maximum = new decimal(new int[] {
             99,
@@ -115,27 +122,26 @@ namespace KancolleSniffer
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(156, 84);
+            this.label2.Location = new System.Drawing.Point(113, 83);
             this.label2.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(70, 12);
+            this.label2.Size = new System.Drawing.Size(17, 12);
             this.label2.TabIndex = 5;
-            this.label2.Text = "隻で通知する";
+            this.label2.Text = "隻";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 84);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.label1.Location = new System.Drawing.Point(4, 83);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(116, 12);
+            this.label1.Size = new System.Drawing.Size(72, 12);
             this.label1.TabIndex = 3;
-            this.label1.Text = "最大保有艦数まで残り";
+            this.label1.Text = "上限まで艦娘";
             // 
             // checkBoxSound
             // 
             this.checkBoxSound.AutoSize = true;
-            this.checkBoxSound.Location = new System.Drawing.Point(6, 62);
+            this.checkBoxSound.Location = new System.Drawing.Point(6, 60);
             this.checkBoxSound.Name = "checkBoxSound";
             this.checkBoxSound.Size = new System.Drawing.Size(113, 16);
             this.checkBoxSound.TabIndex = 2;
@@ -146,7 +152,7 @@ namespace KancolleSniffer
             // checkBoxBalloon
             // 
             this.checkBoxBalloon.AutoSize = true;
-            this.checkBoxBalloon.Location = new System.Drawing.Point(6, 40);
+            this.checkBoxBalloon.Location = new System.Drawing.Point(6, 39);
             this.checkBoxBalloon.Name = "checkBoxBalloon";
             this.checkBoxBalloon.Size = new System.Drawing.Size(172, 16);
             this.checkBoxBalloon.TabIndex = 1;
@@ -165,13 +171,14 @@ namespace KancolleSniffer
             // 
             // groupBoxSound
             // 
+            this.groupBoxSound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBoxSound.Controls.Add(this.buttonPlay);
             this.groupBoxSound.Controls.Add(this.listBoxSoundFile);
             this.groupBoxSound.Controls.Add(this.buttonOpenFile);
             this.groupBoxSound.Controls.Add(this.textBoxSoundFile);
             this.groupBoxSound.Controls.Add(this.numericUpDownSoundVolume);
             this.groupBoxSound.Controls.Add(this.label3);
-            this.groupBoxSound.Location = new System.Drawing.Point(6, 232);
+            this.groupBoxSound.Location = new System.Drawing.Point(6, 245);
             this.groupBoxSound.Name = "groupBoxSound";
             this.groupBoxSound.Size = new System.Drawing.Size(240, 138);
             this.groupBoxSound.TabIndex = 1;
@@ -236,8 +243,9 @@ namespace KancolleSniffer
             // 
             // buttonOk
             // 
+            this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(87, 379);
+            this.buttonOk.Location = new System.Drawing.Point(87, 392);
             this.buttonOk.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
@@ -248,8 +256,9 @@ namespace KancolleSniffer
             // 
             // buttonCancel
             // 
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(165, 379);
+            this.buttonCancel.Location = new System.Drawing.Point(165, 392);
             this.buttonCancel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
@@ -269,10 +278,20 @@ namespace KancolleSniffer
             this.groupBoxShow.Controls.Add(this.checkBoxTopMost);
             this.groupBoxShow.Location = new System.Drawing.Point(6, 6);
             this.groupBoxShow.Name = "groupBoxShow";
-            this.groupBoxShow.Size = new System.Drawing.Size(240, 64);
+            this.groupBoxShow.Size = new System.Drawing.Size(240, 61);
             this.groupBoxShow.TabIndex = 4;
             this.groupBoxShow.TabStop = false;
             this.groupBoxShow.Text = "表示";
+            // 
+            // checkBoxHideOnMinimized
+            // 
+            this.checkBoxHideOnMinimized.AutoSize = true;
+            this.checkBoxHideOnMinimized.Location = new System.Drawing.Point(6, 39);
+            this.checkBoxHideOnMinimized.Name = "checkBoxHideOnMinimized";
+            this.checkBoxHideOnMinimized.Size = new System.Drawing.Size(188, 16);
+            this.checkBoxHideOnMinimized.TabIndex = 1;
+            this.checkBoxHideOnMinimized.Text = "最小化時にタスクバーに表示しない";
+            this.checkBoxHideOnMinimized.UseVisualStyleBackColor = true;
             // 
             // checkBoxTopMost
             // 
@@ -290,9 +309,9 @@ namespace KancolleSniffer
             this.groupBoxAchievement.Controls.Add(this.label8);
             this.groupBoxAchievement.Controls.Add(this.checkBoxReset14);
             this.groupBoxAchievement.Controls.Add(this.checkBoxReset02);
-            this.groupBoxAchievement.Location = new System.Drawing.Point(6, 186);
+            this.groupBoxAchievement.Location = new System.Drawing.Point(6, 201);
             this.groupBoxAchievement.Name = "groupBoxAchievement";
-            this.groupBoxAchievement.Size = new System.Drawing.Size(240, 42);
+            this.groupBoxAchievement.Size = new System.Drawing.Size(240, 40);
             this.groupBoxAchievement.TabIndex = 5;
             this.groupBoxAchievement.TabStop = false;
             this.groupBoxAchievement.Text = "戦果";
@@ -301,7 +320,7 @@ namespace KancolleSniffer
             // 
             this.buttonResetAchievement.Location = new System.Drawing.Point(179, 14);
             this.buttonResetAchievement.Name = "buttonResetAchievement";
-            this.buttonResetAchievement.Size = new System.Drawing.Size(44, 22);
+            this.buttonResetAchievement.Size = new System.Drawing.Size(44, 20);
             this.buttonResetAchievement.TabIndex = 4;
             this.buttonResetAchievement.Text = "今すぐ";
             this.buttonResetAchievement.UseVisualStyleBackColor = true;
@@ -310,7 +329,7 @@ namespace KancolleSniffer
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 19);
+            this.label8.Location = new System.Drawing.Point(6, 18);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(56, 12);
             this.label8.TabIndex = 3;
@@ -319,7 +338,7 @@ namespace KancolleSniffer
             // checkBoxReset14
             // 
             this.checkBoxReset14.AutoSize = true;
-            this.checkBoxReset14.Location = new System.Drawing.Point(125, 18);
+            this.checkBoxReset14.Location = new System.Drawing.Point(125, 17);
             this.checkBoxReset14.Name = "checkBoxReset14";
             this.checkBoxReset14.Size = new System.Drawing.Size(48, 16);
             this.checkBoxReset14.TabIndex = 2;
@@ -329,7 +348,7 @@ namespace KancolleSniffer
             // checkBoxReset02
             // 
             this.checkBoxReset02.AutoSize = true;
-            this.checkBoxReset02.Location = new System.Drawing.Point(77, 18);
+            this.checkBoxReset02.Location = new System.Drawing.Point(77, 17);
             this.checkBoxReset02.Name = "checkBoxReset02";
             this.checkBoxReset02.Size = new System.Drawing.Size(42, 16);
             this.checkBoxReset02.TabIndex = 1;
@@ -358,15 +377,37 @@ namespace KancolleSniffer
             this.DebugToolStripMenuItem.Text = "デバッグ設定(&D)";
             this.DebugToolStripMenuItem.Click += new System.EventHandler(this.DebugToolStripMenuItem_Click);
             // 
-            // checkBoxHideOnMinimized
+            // numericUpDownMarginEquips
             // 
-            this.checkBoxHideOnMinimized.AutoSize = true;
-            this.checkBoxHideOnMinimized.Location = new System.Drawing.Point(6, 40);
-            this.checkBoxHideOnMinimized.Name = "checkBoxHideOnMinimized";
-            this.checkBoxHideOnMinimized.Size = new System.Drawing.Size(188, 16);
-            this.checkBoxHideOnMinimized.TabIndex = 1;
-            this.checkBoxHideOnMinimized.Text = "最小化時にタスクバーに表示しない";
-            this.checkBoxHideOnMinimized.UseVisualStyleBackColor = true;
+            this.numericUpDownMarginEquips.Location = new System.Drawing.Point(76, 101);
+            this.numericUpDownMarginEquips.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.numericUpDownMarginEquips.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.numericUpDownMarginEquips.Name = "numericUpDownMarginEquips";
+            this.numericUpDownMarginEquips.Size = new System.Drawing.Size(36, 19);
+            this.numericUpDownMarginEquips.TabIndex = 8;
+            this.numericUpDownMarginEquips.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(113, 103);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(70, 12);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "個で通知する";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(47, 103);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 12);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "装備";
             // 
             // ConfigDialog
             // 
@@ -374,7 +415,7 @@ namespace KancolleSniffer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(252, 411);
+            this.ClientSize = new System.Drawing.Size(252, 424);
             this.ContextMenuStrip = this.contextMenuStrip;
             this.Controls.Add(this.groupBoxAchievement);
             this.Controls.Add(this.groupBoxShow);
@@ -400,6 +441,7 @@ namespace KancolleSniffer
             this.groupBoxAchievement.ResumeLayout(false);
             this.groupBoxAchievement.PerformLayout();
             this.contextMenuStrip.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginEquips)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -434,5 +476,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.ListBox listBoxSoundFile;
         private System.Windows.Forms.Button buttonPlay;
         private System.Windows.Forms.CheckBox checkBoxHideOnMinimized;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numericUpDownMarginEquips;
+        private System.Windows.Forms.Label label4;
     }
 }

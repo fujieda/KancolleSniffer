@@ -201,6 +201,7 @@ namespace KancolleSniffer
         {
             TopMost = _config.TopMost;
             _sniffer.Item.MarginShips = _config.MarginShips;
+            _sniffer.Item.MarginEquips = _config.MarginEquips;
             _sniffer.Achievement.ResetHours = _config.ResetHours;
         }
 
@@ -239,9 +240,8 @@ namespace KancolleSniffer
         private void UpdateItemInfo()
         {
             UpdateNumOfShips();
-            var item = _sniffer.Item;
-            labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowItems, item.MaxItems);
-            labelNumOfBuckets.Text = item.MaterialHistory[(int)Material.Bucket].Now.ToString("D");
+            UpdateNumOfEquips();
+            labelNumOfBuckets.Text = _sniffer.Item.MaterialHistory[(int)Material.Bucket].Now.ToString("D");
             UpdateBucketHistory();
             var ac = _sniffer.Achievement.Value;
             if (ac >= 10000)
@@ -255,11 +255,24 @@ namespace KancolleSniffer
             var item = _sniffer.Item;
             labelNumOfShips.Text = string.Format("{0:D}/{1:D}", item.NowShips, item.MaxShips);
             labelNumOfShips.ForeColor = item.TooManyShips ? Color.Red : Color.Black;
-            if (item.NeedRing)
+            if (item.RingShips)
             {
                 var message = string.Format("残り{0:D}隻", _sniffer.Item.MaxShips - _sniffer.Item.NowShips);
                 _noticeQueue.Enqueue("艦娘が多すぎます", message, _config.MaxShipsSoundFile);
-                item.NeedRing = false;
+                item.RingShips = false;
+            }
+        }
+
+        private void UpdateNumOfEquips()
+        {
+            var item = _sniffer.Item;
+            labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowEquips, item.MaxEquips);
+            labelNumOfEquips.ForeColor = item.TooManyEquips ? Color.Red : Color.Black;
+            if (item.RingEquips)
+            {
+                var message = string.Format("残り{0:D}個", _sniffer.Item.MaxEquips - _sniffer.Item.NowEquips);
+                _noticeQueue.Enqueue("装備が多すぎます", message, _config.MaxEquipsSoundFile);
+                item.RingEquips = false;
             }
         }
 
