@@ -64,14 +64,10 @@ namespace KancolleSniffer
             this.label30 = new System.Windows.Forms.Label();
             this.labelFormation = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
             this.labelAirSuperiority = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.labelCondTimer3 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.labelCondTimer2 = new System.Windows.Forms.Label();
-            this.labelCondTimer1 = new System.Windows.Forms.Label();
+            this.labelCondTimerTitle = new System.Windows.Forms.Label();
+            this.labelCondTimer = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
@@ -127,6 +123,7 @@ namespace KancolleSniffer
             this.NotifyIconOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NotifyIconExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripMain = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ShipListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label22 = new System.Windows.Forms.Label();
@@ -160,7 +157,6 @@ namespace KancolleSniffer
             this.panelDamagedShipList = new System.Windows.Forms.Panel();
             this.labelDamgedShipListButton = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
-            this.ShipListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -287,14 +283,10 @@ namespace KancolleSniffer
             // 
             this.panelShipInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelShipInfo.Controls.Add(this.panelBattleInfo);
-            this.panelShipInfo.Controls.Add(this.label19);
             this.panelShipInfo.Controls.Add(this.labelAirSuperiority);
             this.panelShipInfo.Controls.Add(this.label27);
-            this.panelShipInfo.Controls.Add(this.label21);
-            this.panelShipInfo.Controls.Add(this.labelCondTimer3);
-            this.panelShipInfo.Controls.Add(this.label20);
-            this.panelShipInfo.Controls.Add(this.labelCondTimer2);
-            this.panelShipInfo.Controls.Add(this.labelCondTimer1);
+            this.panelShipInfo.Controls.Add(this.labelCondTimerTitle);
+            this.panelShipInfo.Controls.Add(this.labelCondTimer);
             this.panelShipInfo.Controls.Add(this.label17);
             this.panelShipInfo.Controls.Add(this.label16);
             this.panelShipInfo.Controls.Add(this.label18);
@@ -310,7 +302,7 @@ namespace KancolleSniffer
             this.panelBattleInfo.Controls.Add(this.label30);
             this.panelBattleInfo.Controls.Add(this.labelFormation);
             this.panelBattleInfo.Controls.Add(this.label29);
-            this.panelBattleInfo.Location = new System.Drawing.Point(63, 117);
+            this.panelBattleInfo.Location = new System.Drawing.Point(64, 117);
             this.panelBattleInfo.Name = "panelBattleInfo";
             this.panelBattleInfo.Size = new System.Drawing.Size(171, 12);
             this.panelBattleInfo.TabIndex = 40;
@@ -349,15 +341,6 @@ namespace KancolleSniffer
             this.label29.TabIndex = 0;
             this.label29.Text = "交戦形";
             // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(64, 117);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(29, 12);
-            this.label19.TabIndex = 34;
-            this.label19.Text = "疲労";
-            // 
             // labelAirSuperiority
             // 
             this.labelAirSuperiority.Location = new System.Drawing.Point(29, 117);
@@ -376,50 +359,22 @@ namespace KancolleSniffer
             this.label27.TabIndex = 23;
             this.label27.Text = "制空";
             // 
-            // label21
+            // labelCondTimerTitle
             // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(180, 117);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(28, 12);
-            this.label21.TabIndex = 39;
-            this.label21.Text = "隠れ";
+            this.labelCondTimerTitle.AutoSize = true;
+            this.labelCondTimerTitle.Location = new System.Drawing.Point(148, 117);
+            this.labelCondTimerTitle.Name = "labelCondTimerTitle";
+            this.labelCondTimerTitle.Size = new System.Drawing.Size(0, 12);
+            this.labelCondTimerTitle.TabIndex = 39;
             // 
-            // labelCondTimer3
+            // labelCondTimer
             // 
-            this.labelCondTimer3.Location = new System.Drawing.Point(205, 117);
-            this.labelCondTimer3.Name = "labelCondTimer3";
-            this.labelCondTimer3.Size = new System.Drawing.Size(31, 12);
-            this.labelCondTimer3.TabIndex = 38;
-            this.labelCondTimer3.Text = "00:00";
-            this.labelCondTimer3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(122, 117);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(29, 12);
-            this.label20.TabIndex = 36;
-            this.label20.Text = "間宮";
-            // 
-            // labelCondTimer2
-            // 
-            this.labelCondTimer2.Location = new System.Drawing.Point(148, 117);
-            this.labelCondTimer2.Name = "labelCondTimer2";
-            this.labelCondTimer2.Size = new System.Drawing.Size(31, 12);
-            this.labelCondTimer2.TabIndex = 37;
-            this.labelCondTimer2.Text = "00:00";
-            this.labelCondTimer2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelCondTimer1
-            // 
-            this.labelCondTimer1.Location = new System.Drawing.Point(90, 117);
-            this.labelCondTimer1.Name = "labelCondTimer1";
-            this.labelCondTimer1.Size = new System.Drawing.Size(31, 12);
-            this.labelCondTimer1.TabIndex = 35;
-            this.labelCondTimer1.Text = "00:00";
-            this.labelCondTimer1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelCondTimer.Location = new System.Drawing.Point(206, 117);
+            this.labelCondTimer.Name = "labelCondTimer";
+            this.labelCondTimer.Size = new System.Drawing.Size(31, 12);
+            this.labelCondTimer.TabIndex = 38;
+            this.labelCondTimer.Text = "00:00";
+            this.labelCondTimer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label17
             // 
@@ -917,19 +872,26 @@ namespace KancolleSniffer
             this.ConfigToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.contextMenuStripMain.Name = "contextMenuStripToolTip";
-            this.contextMenuStripMain.Size = new System.Drawing.Size(153, 92);
+            this.contextMenuStripMain.Size = new System.Drawing.Size(142, 70);
+            // 
+            // ShipListToolStripMenuItem
+            // 
+            this.ShipListToolStripMenuItem.Name = "ShipListToolStripMenuItem";
+            this.ShipListToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.ShipListToolStripMenuItem.Text = "艦娘一覧(&L)";
+            this.ShipListToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
             // 
             // ConfigToolStripMenuItem
             // 
             this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
-            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.ConfigToolStripMenuItem.Text = "設定(&O)";
             this.ConfigToolStripMenuItem.Click += new System.EventHandler(this.ConfigToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.ExitToolStripMenuItem.Text = "終了(&X)";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -1241,13 +1203,6 @@ namespace KancolleSniffer
             this.label31.TabIndex = 46;
             this.label31.Text = "要修復";
             // 
-            // ShipListToolStripMenuItem
-            // 
-            this.ShipListToolStripMenuItem.Name = "ShipListToolStripMenuItem";
-            this.ShipListToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.ShipListToolStripMenuItem.Text = "艦娘一覧(&L)";
-            this.ShipListToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1367,12 +1322,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label labelCondTimer2;
-        private System.Windows.Forms.Label labelCondTimer1;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label labelCondTimer3;
+        private System.Windows.Forms.Label labelCondTimerTitle;
+        private System.Windows.Forms.Label labelCondTimer;
         private System.Windows.Forms.NotifyIcon notifyIconMain;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripMain;
         private System.Windows.Forms.ToolStripMenuItem ConfigToolStripMenuItem;

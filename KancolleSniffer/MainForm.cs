@@ -425,10 +425,22 @@ namespace KancolleSniffer
 
         private void UpdateCondTimers()
         {
-            foreach (var entry in
-                new[] {labelCondTimer1, labelCondTimer2, labelCondTimer3}.Zip(
-                    _sniffer.GetConditionTimers(_currentFleet), (label, timer) => new {label, timer}))
-                entry.label.Text = entry.timer;
+            var timer = _sniffer.GetConditionTimers(_currentFleet);
+            var now = DateTime.Now;
+            if (timer == DateTime.MinValue)
+            {
+                labelCondTimerTitle.Text = "";
+                labelCondTimer.Text = "";
+                return;
+            }
+            if (timer - now >= TimeSpan.FromMinutes(9))
+            {
+                labelCondTimerTitle.Text = "状態40まで";
+                labelCondTimer.Text = (timer - now - TimeSpan.FromMinutes(9)).ToString(@"mm\:ss");
+                return;
+            }
+            labelCondTimerTitle.Text = "状態49まで";
+            labelCondTimer.Text = (timer - now >= TimeSpan.Zero ? (timer - now) : TimeSpan.Zero).ToString(@"mm\:ss");
         }
 
         private void CreateAkashiTimers()

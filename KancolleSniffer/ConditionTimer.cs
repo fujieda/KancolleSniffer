@@ -6,15 +6,13 @@ namespace KancolleSniffer
     public class ConditionTimer
     {
         private readonly ShipInfo _shipInfo;
-        private readonly DateTime[][] _times = new DateTime[ShipInfo.FleetCount][];
+        private readonly DateTime[] _times = new DateTime[ShipInfo.FleetCount];
         private readonly bool[] _enable = new bool[ShipInfo.FleetCount];
         private readonly int[] _cond = new int[ShipInfo.FleetCount];
 
         public ConditionTimer(ShipInfo shipInfo)
         {
             _shipInfo = shipInfo;
-            for (var f = 0; f < _times.Length; f++)
-                _times[f] = new DateTime[3];
         }
 
         public void SetTimer()
@@ -23,18 +21,15 @@ namespace KancolleSniffer
             {
                 _enable[fleet] = true;
                 var cond = _cond[fleet] = CondMin(fleet);
-                var time49 = _times[fleet][2];
-                if (cond < 49 && time49 != DateTime.MinValue) // 計時中
+                if (cond < 49 && _times[fleet] != DateTime.MinValue) // 計時中
                 {
                     // コンディション値から推定される残り時刻と経過時間の差
-                    var diff = TimeSpan.FromMinutes((49 - cond + 2) / 3 * 3) - (time49 - DateTime.Now);
+                    var diff = TimeSpan.FromMinutes((49 - cond + 2) / 3 * 3) - (_times[fleet] - DateTime.Now);
                     if (diff >= TimeSpan.Zero && diff <= TimeSpan.FromMinutes(3)) // 差が0以上3分以内ならタイマーを更新しない。
                         return;
                 }
-                var thresh = new[] {30, 40, 49};
-                for (var i = 0; i < thresh.Length; i++)
-                    _times[fleet][i] = cond < thresh[i]
-                        ? DateTime.Now.AddMinutes((thresh[i] - cond + 2) / 3 * 3)
+                _times[fleet] = cond < 49
+                        ? DateTime.Now.AddMinutes((49 - cond + 2) / 3 * 3)
                         : DateTime.MinValue;
             }
         }
@@ -50,14 +45,9 @@ namespace KancolleSniffer
                 .DefaultIfEmpty(49).Min();
         }
 
-        public string[] GetTimerStrings(int fleet)
+        public DateTime GetTimer(int fleet)
         {
-            if (!_enable[fleet])
-                return new[] {"無効", "無効", "無効"};
-            var now = DateTime.Now;
-            return
-                (from time in _times[fleet] select time > now ? (time - now).ToString(@"mm\:ss") : "00:00")
-                    .ToArray();
+            return _enable[fleet] ? _times[fleet] : DateTime.MinValue;
         }
     }
 }
