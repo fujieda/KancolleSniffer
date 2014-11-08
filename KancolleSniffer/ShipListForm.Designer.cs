@@ -82,7 +82,7 @@ namespace KancolleSniffer
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(29, 12);
             this.label2.TabIndex = 13;
-            this.label2.Text = "状態";
+            this.label2.Text = "cond";
             // 
             // label4
             // 

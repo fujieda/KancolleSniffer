@@ -383,7 +383,7 @@ namespace KancolleSniffer
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(29, 12);
             this.label17.TabIndex = 20;
-            this.label17.Text = "状態";
+            this.label17.Text = "cond";
             // 
             // label16
             // 

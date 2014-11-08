@@ -435,11 +435,11 @@ namespace KancolleSniffer
             }
             if (timer - now >= TimeSpan.FromMinutes(9))
             {
-                labelCondTimerTitle.Text = "状態40まで";
+                labelCondTimerTitle.Text = "cond40まで";
                 labelCondTimer.Text = (timer - now - TimeSpan.FromMinutes(9)).ToString(@"mm\:ss");
                 return;
             }
-            labelCondTimerTitle.Text = "状態49まで";
+            labelCondTimerTitle.Text = "cond49まで";
             labelCondTimer.Text = (timer - now >= TimeSpan.Zero ? (timer - now) : TimeSpan.Zero).ToString(@"mm\:ss");
         }
 
