@@ -425,7 +425,7 @@ namespace KancolleSniffer
 
         private void UpdateCondTimers()
         {
-            var timer = _sniffer.GetConditionTimers(_currentFleet);
+            var timer = _sniffer.GetConditionTimer(_currentFleet);
             var now = DateTime.Now;
             if (timer == DateTime.MinValue)
             {
@@ -433,14 +433,27 @@ namespace KancolleSniffer
                 labelCondTimer.Text = "";
                 return;
             }
-            if (timer - now >= TimeSpan.FromMinutes(9))
+            var span = TimeSpan.FromSeconds(Math.Ceiling((timer - now).TotalSeconds));
+            if (span >= TimeSpan.FromMinutes(9))
             {
                 labelCondTimerTitle.Text = "cond40まで";
-                labelCondTimer.Text = (timer - now - TimeSpan.FromMinutes(9)).ToString(@"mm\:ss");
-                return;
+                labelCondTimer.Text = (span - TimeSpan.FromMinutes(9)).ToString(@"mm\:ss");
             }
-            labelCondTimerTitle.Text = "cond49まで";
-            labelCondTimer.Text = (timer - now >= TimeSpan.Zero ? (timer - now) : TimeSpan.Zero).ToString(@"mm\:ss");
+            else
+            {
+                labelCondTimerTitle.Text = "cond49まで";
+                labelCondTimer.Text = (span >= TimeSpan.Zero ? span : TimeSpan.Zero).ToString(@"mm\:ss");
+            }
+            var notice = _sniffer.GetConditionNotice();
+            if (notice == null)
+                return;
+            var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
+            for (var i = 0; i < fn.Length; i++)
+            {
+                if (!_config.NotifyConditions.Contains(notice[i]))
+                    return;
+                _noticeQueue.Enqueue("疲労が回復しました", fn[i] + " cond" + notice[i].ToString("D"), _config.ConditionSoundFile);
+            }
         }
 
         private void CreateAkashiTimers()

@@ -352,9 +352,14 @@ namespace KancolleSniffer
             }
         }
 
-        public DateTime GetConditionTimer(int fleet)
+        public DateTime GetConditionTiemr(int fleet)
         {
             return _conditionTimer.GetTimer(fleet);
+        }
+
+        public int[] GetConditionNotice()
+        {
+            return _conditionTimer.GetNotice();
         }
 
         public ChargeStatus[] ChargeStatuses

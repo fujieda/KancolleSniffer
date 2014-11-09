@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
@@ -39,7 +38,7 @@ namespace KancolleSniffer
             listBoxSoundFile.Items.AddRange(new object[]
             {
                 "遠征終了", "入渠終了", "建造完了", "艦娘数超過", "装備数超過",
-                "大破警告", "泊地修理20分経過", "泊地修理進行"
+                "大破警告", "泊地修理20分経過", "泊地修理進行", "疲労回復"
             });
         }
 
@@ -52,9 +51,10 @@ namespace KancolleSniffer
             groupBoxSound.Enabled = checkBoxSound.Checked = _config.PlaySound;
             numericUpDownMarginShips.Value = _config.MarginShips;
             numericUpDownMarginEquips.Value = _config.MarginEquips;
-
-            checkBoxReset02.Checked = _config.ResetHours.Any(x => x == 2);
-            checkBoxReset14.Checked = _config.ResetHours.Any(x => x == 14);
+            checkBoxCond40.Checked = _config.NotifyConditions.Contains(40);
+            checkBoxCond49.Checked = _config.NotifyConditions.Contains(49);
+            checkBoxReset02.Checked = _config.ResetHours.Contains(2);
+            checkBoxReset14.Checked = _config.ResetHours.Contains(14);
 
             numericUpDownSoundVolume.Value = _config.SoundVolume;
 
@@ -66,6 +66,8 @@ namespace KancolleSniffer
             _soundSetting["大破警告"] = _config.DamagedShipSoundFile;
             _soundSetting["泊地修理20分経過"] = _config.Akashi20MinSoundFile;
             _soundSetting["泊地修理進行"] = _config.AkashiProgressSoundFile;
+            _soundSetting["疲労回復"] = _config.ConditionSoundFile;
+
             listBoxSoundFile.SelectedIndex = 0;
         }
 
@@ -78,6 +80,12 @@ namespace KancolleSniffer
             _config.PlaySound = checkBoxSound.Checked;
             _config.MarginShips = (int)numericUpDownMarginShips.Value;
             _config.MarginEquips = (int)numericUpDownMarginEquips.Value;
+
+            _config.NotifyConditions.Clear();
+            if (checkBoxCond40.Checked)
+                _config.NotifyConditions.Add(40);
+            if (checkBoxCond49.Checked)
+                _config.NotifyConditions.Add(49);
 
             _config.ResetHours.Clear();
             if (checkBoxReset02.Checked)
@@ -95,6 +103,7 @@ namespace KancolleSniffer
             _config.DamagedShipSoundFile = _soundSetting["大破警告"];
             _config.Akashi20MinSoundFile = _soundSetting["泊地修理20分経過"];
             _config.AkashiProgressSoundFile = _soundSetting["泊地修理進行"];
+            _config.ConditionSoundFile = _soundSetting["疲労回復"];
         }
 
         private void checkBoxSound_CheckedChanged(object sender, EventArgs e)

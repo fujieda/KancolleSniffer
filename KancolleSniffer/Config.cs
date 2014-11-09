@@ -63,6 +63,7 @@ namespace KancolleSniffer
         public bool PlaySound { get; set; }
         public int MarginShips { get; set; }
         public int MarginEquips { get; set; }
+        public List<int> NotifyConditions { get; set; }
         public List<int> ResetHours { get; set; }
         public int SoundVolume { get; set; }
         public string MissionSoundFile { get; set; }
@@ -73,6 +74,7 @@ namespace KancolleSniffer
         public string DamagedShipSoundFile { get; set; }
         public string Akashi20MinSoundFile { get; set; }
         public string AkashiProgressSoundFile { get; set; }
+        public string ConditionSoundFile { get; set; }
         public bool Logging { get; set; }
         public string LogFile { get; set; }
         public ProxyConfig Proxy { get; set; }
@@ -84,6 +86,7 @@ namespace KancolleSniffer
             FlashWindow = ShowBaloonTip = PlaySound = true;
             MarginShips = 4;
             MarginEquips = 10;
+            NotifyConditions = new List<int>(new[]{40, 49});
             ResetHours = new List<int>();
             SoundVolume = 100;
             var dir = Path.GetDirectoryName(Application.ExecutablePath);
@@ -96,6 +99,7 @@ namespace KancolleSniffer
             DamagedShipSoundFile = Path.Combine(dir, "taiha.mp3");
             Akashi20MinSoundFile = Path.Combine(dir, "20min.mp3");
             AkashiProgressSoundFile = Path.Combine(dir, "syuuri.mp3");
+            ConditionSoundFile = Path.Combine(dir, "hirou.mp3");
             LogFile = Path.Combine(dir, "log.txt");
 // ReSharper restore AssignNullToNotNullAttribute
             Proxy = new ProxyConfig();
