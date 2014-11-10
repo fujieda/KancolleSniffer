@@ -47,6 +47,7 @@ namespace KancolleSniffer
         {
             foreach (var entry in json)
                 _stype[(int)entry.api_id] = new ShipType {Id = (int)entry.api_id, Name = entry.api_name};
+            _stype[8] = new ShipType {Id = 8, Name = "高速戦艦"};
         }
 
         public ShipSpec this[int id]
