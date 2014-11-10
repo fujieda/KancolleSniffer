@@ -194,6 +194,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_kaisou/powerup"))
             {
                 _shipInfo.InspectPowerup(request, data);
+                _akashiTimer.SetTimer();
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_nyukyo/start"))
