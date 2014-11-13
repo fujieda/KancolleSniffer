@@ -157,7 +157,7 @@ namespace KancolleSniffer
         {
             if (json.api_deck_port()) // port
             {
-                _shipInfo.Clear();
+                ClearShipInfo();
                 for (var i = 0; i < FleetCount; i++)
                     _inSortie[i] = false;
                 InspectDeck(json.api_deck_port);
@@ -167,7 +167,7 @@ namespace KancolleSniffer
             }
             else if (json.api_data()) // ship2
             {
-                _shipInfo.Clear();
+                ClearShipInfo();
                 InspectDeck(json.api_data_deck);
                 InspectShipData(json.api_data);
                 _itemInfo.NowShips = ((object[])json.api_data).Length;
@@ -182,6 +182,12 @@ namespace KancolleSniffer
             {
                 InspectShipData(new[] {json.api_ship});
             }
+        }
+
+        private void ClearShipInfo()
+        {
+            _shipInfo.Clear();
+            _shipInfo[-1] = new ShipStatus {Spec = _shipMaster[-1], Slot = new int[0], OnSlot = new int[0]};
         }
 
         public void InspectDeck(dynamic json)
@@ -217,7 +223,6 @@ namespace KancolleSniffer
                     Slot = (from num in (dynamic[])entry.api_slot select (int)num).ToArray(),
                     LoS = (int)entry.api_sakuteki[0]
                 };
-                _shipInfo[-1] = new ShipStatus {Spec = _shipMaster[-1], Slot = new int[0], OnSlot = new int[0]};
             }
             _conditionTimer.SetTimer();
         }
