@@ -86,7 +86,7 @@ namespace KancolleSniffer
             FlashWindow = ShowBaloonTip = PlaySound = true;
             MarginShips = 4;
             MarginEquips = 10;
-            NotifyConditions = new List<int>(new[]{40, 49});
+            NotifyConditions = new List<int>(new[] {40, 49});
             ResetHours = new List<int>();
             SoundVolume = 100;
             var dir = Path.GetDirectoryName(Application.ExecutablePath);

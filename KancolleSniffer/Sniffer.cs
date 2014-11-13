@@ -318,6 +318,11 @@ namespace KancolleSniffer
             return _shipInfo.GetAirSuperiority(fleet);
         }
 
+        public double GetFleetLineOfSights(int fleet)
+        {
+            return _shipInfo.GetLineOfSights(fleet);
+        }
+
         public DamageStatus[] DamagedShipList
         {
             get { return _shipInfo.GetDamagedShipList(_dockInfo); }

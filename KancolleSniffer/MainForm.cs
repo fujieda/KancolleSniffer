@@ -313,11 +313,18 @@ namespace KancolleSniffer
                 _noticeQueue.Enqueue("大破した艦娘がいます", string.Join(" ", _sniffer.Battle.DamagedShipNames),
                     _config.DamagedShipSoundFile);
             labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
+            UpdateLoS();
             UpdateChargeInfo();
             UpdateCondTimers();
             UpdateAkashiTimer();
             UpdateDamagedShipList();
             _shipListForm.UpdateList();
+        }
+
+        private void UpdateLoS()
+        {
+            var los = _sniffer.GetFleetLineOfSights(_currentFleet);
+            labelLoS.Text = los >= 100 ? los.ToString("F4") : los.ToString("F5");
         }
 
         private void UpdateBattleInfo()

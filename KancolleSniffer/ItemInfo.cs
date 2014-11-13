@@ -24,7 +24,47 @@ namespace KancolleSniffer
     public struct ItemSpec
     {
         public string Name;
-        public int TyKu;
+        public int Type;
+        public int AntiAir;
+        public int LoS;
+
+        public bool CanAirCombat()
+        {
+            switch (Type)
+            {
+                case 6: // 艦戦
+                case 7: // 艦爆
+                case 8: // 艦攻
+                case 11: // 水爆
+                    return true;
+            }
+            return false;
+        }
+
+        // http://ch.nicovideo.jp/biikame/blomaga/ar663428
+        public double LoSScaleFactor()
+        {
+            switch (Type)
+            {
+                case 7: // 艦爆
+                    return 1.0376255;
+                case 8: // 艦攻
+                    return 1.3677954;
+                case 9: // 艦偵
+                    return 1.6592780;
+                case 10: // 水偵
+                    return 2.0000000;
+                case 11: // 水爆
+                    return 1.7787282;
+                case 12: // 小型電探
+                    return 1.0045358;
+                case 13: // 大型電探
+                    return 0.9906638;
+            }
+            if (Name == "探照灯")
+                return 0.9067950;
+            return 0;
+        }
     }
 
     public class ItemInfo
@@ -106,8 +146,9 @@ namespace KancolleSniffer
                 _itemSpecs[(int)entry.api_id] = new ItemSpec
                 {
                     Name = (string)entry.api_name,
-                    TyKu = (int)entry.api_type[0] == 3 || (int)entry.api_type[2] == 11 ? (int)entry.api_tyku : 0
-                    // 艦載機と水上爆撃機のみ
+                    Type = (int)entry.api_type[2],
+                    AntiAir = (int)entry.api_tyku,
+                    LoS = (int)entry.api_saku
                 };
             }
             _itemSpecs[-1] = new ItemSpec();

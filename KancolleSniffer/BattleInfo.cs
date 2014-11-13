@@ -78,7 +78,9 @@ namespace KancolleSniffer
             var maxEq = ((int[])json.api_ship_ke).Skip(1).SelectMany(id => _shipMaster[id].MaxEq);
             var equips = ((int[][])json.api_eSlot).SelectMany(x => x);
             return (from slot in equips.Zip(maxEq, (id, max) => new {id, max})
-                select (int)Math.Floor(_itemInfo.GetSpecByItemId(slot.id).TyKu * Math.Sqrt(slot.max))).Sum();
+                let spec = _itemInfo.GetSpecByItemId(slot.id)
+                where spec.CanAirCombat()
+                select (int)Math.Floor(spec.AntiAir * Math.Sqrt(slot.max))).DefaultIfEmpty().Sum();
         }
 
         public void CauseDamage()

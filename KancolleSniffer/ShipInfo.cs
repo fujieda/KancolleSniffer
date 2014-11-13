@@ -42,6 +42,7 @@ namespace KancolleSniffer
         public int Bull { get; set; }
         public int[] OnSlot { get; set; }
         public int[] Slot { get; set; }
+        public int LoS { get; set; }
 
         public Damage DamageLevel
         {
@@ -135,6 +136,7 @@ namespace KancolleSniffer
         private readonly ItemInfo _itemInfo;
         private readonly bool[] _inMission = new bool[FleetCount];
         private readonly bool[] _inSortie = new bool[FleetCount];
+        private int _hqLevel;
 
         public ShipInfo(ShipMaster shipMaster, ItemInfo itemInfo)
         {
@@ -160,6 +162,7 @@ namespace KancolleSniffer
                     _inSortie[i] = false;
                 InspectDeck(json.api_deck_port);
                 InspectShipData(json.api_ship);
+                InspectBasic(json.api_basic);
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
             }
             else if (json.api_data()) // ship2
@@ -211,11 +214,17 @@ namespace KancolleSniffer
                     Fuel = (int)entry.api_fuel,
                     Bull = (int)entry.api_bull,
                     OnSlot = (from num in (dynamic[])entry.api_onslot select (int)num).ToArray(),
-                    Slot = (from num in (dynamic[])entry.api_slot select (int)num).ToArray()
+                    Slot = (from num in (dynamic[])entry.api_slot select (int)num).ToArray(),
+                    LoS = (int)entry.api_sakuteki[0]
                 };
-                _shipInfo[-1] = new ShipStatus {Spec = _shipMaster[-1]};
+                _shipInfo[-1] = new ShipStatus {Spec = _shipMaster[-1], Slot = new int[0], OnSlot = new int[0]};
             }
             _conditionTimer.SetTimer();
+        }
+
+        private void InspectBasic(dynamic json)
+        {
+            _hqLevel = (int)json.api_level;
         }
 
         public void InspectCharge(dynamic json)
@@ -405,10 +414,11 @@ namespace KancolleSniffer
         public int GetAirSuperiority(int fleet)
         {
             return (from id in _decks[fleet]
-                where id != -1
                 let ship = _shipInfo[id]
                 from slot in ship.Slot.Zip(ship.OnSlot, (s, o) => new {slot = s, onslot = o})
-                select (int)Math.Floor(_itemInfo[slot.slot].TyKu * Math.Sqrt(slot.onslot))).Sum();
+                let item = _itemInfo[slot.slot]
+                where item.CanAirCombat()
+                select (int)Math.Floor(item.AntiAir * Math.Sqrt(slot.onslot))).DefaultIfEmpty().Sum();
         }
 
         public DamageStatus[] GetDamagedShipList(DockInfo dockInfo)
@@ -418,6 +428,23 @@ namespace KancolleSniffer
                 where s.NowHp < s.MaxHp && !dockInfo.InNDock(s.Id)
                 select new DamageStatus(FindFleet(s.Id, out oi), s.Name, s.DamageLevel, s.RepairTime())).
                 OrderByDescending(entry => entry.RepairTime).ToArray();
+        }
+
+        public double GetLineOfSights(int fleet)
+        {
+            var result = 0.0;
+            foreach (var s in _decks[fleet].Select(id => _shipInfo[id]))
+            {
+                var items = 0;
+                foreach (var spec in s.Slot.Select(t => _itemInfo[t]))
+                {
+                    items += spec.LoS;
+                    result += spec.LoS * spec.LoSScaleFactor();
+                }
+                result += Math.Sqrt(s.LoS - items) * 1.6841056;
+
+            }
+            return result + (_hqLevel + 4) / 5 * 5 * -0.6142467;
         }
     }
 }
