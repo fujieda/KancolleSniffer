@@ -191,6 +191,11 @@ namespace KancolleSniffer
                 _itemInfo.InspectDestroyItem(request, data);
                 return Update.Item;
             }
+            if (url.EndsWith("api_req_kousyou/remodel_slot"))
+            {
+                _itemInfo.InspectRemodelSlot(data);
+                return Update.Item;
+            }
             if (url.EndsWith("api_req_kaisou/powerup"))
             {
                 _shipInfo.InspectPowerup(request, data);

@@ -153,6 +153,13 @@ namespace KancolleSniffer
                 MaterialHistory[i].Now += get[i];
         }
 
+        public void InspectRemodelSlot(dynamic json)
+        {
+            if (!json.api_use_slot_id())
+                return;
+            NowEquips -= ((object[])json.api_use_slot_id).Length;
+        }
+
         public void InspectMissionResult(dynamic json)
         {
             if ((int)json.api_clear_result == 0) // 失敗
@@ -201,7 +208,7 @@ namespace KancolleSniffer
         Development,
         Bucket,
         Burner,
-        Irago,
+        Screw,
     }
 
     public class MaterialCount
