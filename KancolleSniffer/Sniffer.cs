@@ -210,17 +210,15 @@ namespace KancolleSniffer
             if (IsNormalBattleAPI(url))
             {
                 _battleInfo.InspectBattle(data);
-                return Update.Battle;
+                if (!url.EndsWith("api_req_practice/battle"))
+                    return Update.Battle;
+                _shipInfo.StartSortie(request);
+                return Update.Battle | Update.Timer;
             }
             if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_practice/battleresult"))
             {
                 _battleInfo.CauseDamage();
                 return Update.Ship;
-            }
-            if (url.EndsWith("api_req_mission/result"))
-            {
-                _itemInfo.InspectMissionResult(data);
-                return Update.Item;
             }
             if (IsCombinedBattleAPI(url))
             {
@@ -231,6 +229,16 @@ namespace KancolleSniffer
             {
                 _battleInfo.CauseDamageCombined();
                 return Update.Ship;
+            }
+            if (url.EndsWith("api_req_map/start"))
+            {
+                _shipInfo.StartSortie(request);
+                return Update.Timer;
+            }
+            if (url.EndsWith("api_req_mission/result"))
+            {
+                _itemInfo.InspectMissionResult(data);
+                return Update.Item;
             }
             return Update.None;
         }

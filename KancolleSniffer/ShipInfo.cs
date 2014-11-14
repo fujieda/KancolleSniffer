@@ -80,13 +80,13 @@ namespace KancolleSniffer
         public int Fuel { get; set; }
         public int Bull { get; set; }
 
-        public ChargeStatus(ShipStatus status): this()
+        public ChargeStatus(ShipStatus status) : this()
         {
             Fuel = CalcChargeState(status.Fuel, status.Spec.FuelMax);
             Bull = CalcChargeState(status.Bull, status.Spec.BullMax);
         }
 
-        public ChargeStatus(int fuel, int bull): this()
+        public ChargeStatus(int fuel, int bull) : this()
         {
             Fuel = fuel;
             Bull = bull;
@@ -134,6 +134,7 @@ namespace KancolleSniffer
         private readonly ShipMaster _shipMaster;
         private readonly ItemInfo _itemInfo;
         private readonly bool[] _inMission = new bool[FleetCount];
+        private readonly bool[] _inSortie = new bool[FleetCount];
 
         public ShipInfo(ShipMaster shipMaster, ItemInfo itemInfo)
         {
@@ -155,6 +156,8 @@ namespace KancolleSniffer
             if (json.api_deck_port()) // port
             {
                 _shipInfo.Clear();
+                for (var i = 0; i < FleetCount; i++)
+                    _inSortie[i] = false;
                 InspectDeck(json.api_deck_port);
                 InspectShipData(json.api_ship);
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
@@ -186,6 +189,9 @@ namespace KancolleSniffer
                 var deck = _decks[fleet];
                 for (var i = 0; i < deck.Length; i++)
                     deck[i] = (int)entry.api_ship[i];
+                _inMission[fleet] = (int)entry.api_mission[0] != 0;
+                if (_inMission[fleet])
+                    _conditionTimer.Disable(fleet);
             }
         }
 
@@ -315,6 +321,14 @@ namespace KancolleSniffer
             return _shipInfo[id].Slot.Count(item => item != -1);
         }
 
+        public void StartSortie(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var fleet = int.Parse(values["api_deck_id"]) - 1;
+            _conditionTimer.Disable(fleet);
+            _inSortie[fleet] = true;
+        }
+
         public void RepairShip(int id)
         {
             var s = _shipInfo[id];
@@ -341,6 +355,11 @@ namespace KancolleSniffer
         public bool InMission(int fleet)
         {
             return _inMission[fleet];
+        }
+
+        public bool InSortie(int fleet)
+        {
+            return _inSortie[fleet];
         }
 
         public ShipStatus[] ShipList

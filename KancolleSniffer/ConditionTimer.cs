@@ -22,6 +22,8 @@ namespace KancolleSniffer
             {
                 if (!_enable[fleet]) // タイマーが無効なら前回の残り時間を無効にする
                     _prevLeftTimes[fleet] = TimeSpan.MinValue;
+                if (_shipInfo.InMission(fleet) || _shipInfo.InSortie(fleet))
+                    continue;
                 _enable[fleet] = true;
                 var cond = _cond[fleet] = CondMin(fleet);
                 if (cond < 49 && _times[fleet] != DateTime.MinValue) // 計時中
@@ -40,6 +42,11 @@ namespace KancolleSniffer
         public void Invalidate(int fleet)
         {
             _enable[fleet] = _cond[fleet] == CondMin(fleet);
+        }
+
+        public void Disable(int fleet)
+        {
+            _enable[fleet] = false;
         }
 
         private int CondMin(int fleet)
