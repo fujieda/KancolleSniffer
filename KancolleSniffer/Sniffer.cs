@@ -53,7 +53,7 @@ namespace KancolleSniffer
         {
             _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
             _dockInfo = new DockInfo(_shipInfo, _itemInfo);
-            _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo, _missionInfo);
+            _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo);
             _battleInfo = new BattleInfo(_shipMaster, _shipInfo, _itemInfo);
         }
 
@@ -139,6 +139,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_get_member/deck"))
             {
+                _shipInfo.InspectDeck(data);
                 _missionInfo.InspectDeck(data);
                 _akashiTimer.SetTimer();
                 return Update.Mission | Update.Timer;

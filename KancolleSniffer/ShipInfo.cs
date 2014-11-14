@@ -131,9 +131,9 @@ namespace KancolleSniffer
         private readonly int[][] _decks = new int[FleetCount][];
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
         private readonly ConditionTimer _conditionTimer;
-
         private readonly ShipMaster _shipMaster;
         private readonly ItemInfo _itemInfo;
+        private readonly bool[] _inMission = new bool[FleetCount];
 
         public ShipInfo(ShipMaster shipMaster, ItemInfo itemInfo)
         {
@@ -178,7 +178,7 @@ namespace KancolleSniffer
             }
         }
 
-        private void InspectDeck(dynamic json)
+        public void InspectDeck(dynamic json)
         {
             foreach (var entry in json)
             {
@@ -336,6 +336,11 @@ namespace KancolleSniffer
         public ShipStatus this[int idx]
         {
             get { return _shipInfo[idx]; }
+        }
+
+        public bool InMission(int fleet)
+        {
+            return _inMission[fleet];
         }
 
         public ShipStatus[] ShipList

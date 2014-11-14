@@ -25,7 +25,6 @@ namespace KancolleSniffer
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
         private readonly DockInfo _dockInfo;
-        private readonly MissionInfo _missionInfo;
         private readonly RepairStatus[] _repairStatuses = new RepairStatus[ShipInfo.FleetCount];
 
         public class RepairTime
@@ -135,12 +134,11 @@ namespace KancolleSniffer
             }
         }
 
-        public AkashiTimer(ShipInfo ship, ItemInfo item, DockInfo dock, MissionInfo mission)
+        public AkashiTimer(ShipInfo ship, ItemInfo item, DockInfo dock)
         {
             _shipInfo = ship;
             _itemInfo = item;
             _dockInfo = dock;
-            _missionInfo = mission;
             for (var i = 0; i < _repairStatuses.Length; i++)
                 _repairStatuses[i] = new RepairStatus();
         }
@@ -156,7 +154,7 @@ namespace KancolleSniffer
             var deck = _shipInfo.GetDeck(fleet);
             var repair = _repairStatuses[fleet];
             var fs = deck[0];
-            if (!_shipInfo[fs].Name.StartsWith("明石") || _dockInfo.InNDock(fs) || _missionInfo.InMission(fleet))
+            if (!_shipInfo[fs].Name.StartsWith("明石") || _dockInfo.InNDock(fs) || _shipInfo.InMission(fleet))
             {
                 repair.Invalidate();
                 return;
