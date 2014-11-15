@@ -78,7 +78,7 @@ namespace KancolleSniffer
             if (LogFile != null)
             {
                 File.AppendAllText(LogFile,
-                    string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", url, request, json.ToString()));                
+                    string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", url, request, json.ToString()));
             }
 
             if (url.EndsWith("api_start2"))
@@ -228,7 +228,7 @@ namespace KancolleSniffer
             }
             if (IsCombinedBattleAPI(url))
             {
-                _battleInfo.InspectCombinedBattle(data);
+                _battleInfo.InspectCombinedBattle(data, url.EndsWith("battle_water"));
                 return Update.Battle;
             }
             if (url.EndsWith("api_req_combined_battle/battleresult"))
@@ -263,7 +263,9 @@ namespace KancolleSniffer
 
         public bool IsCombinedBattleAPI(string url)
         {
-            return url.EndsWith("api_req_combined_battle/battle") || url.EndsWith("api_req_combined_battle/airbattle") ||
+            return url.EndsWith("api_req_combined_battle/battle") ||
+                   url.EndsWith("api_req_combined_battle/airbattle") ||
+                   url.EndsWith("api_req_combined_battle/battle_water") ||
                    url.EndsWith("api_req_combined_battle/midnight_battle") ||
                    url.EndsWith("api_req_combined_battle/sp_midnight");
         }
