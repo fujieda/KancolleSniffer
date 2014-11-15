@@ -350,9 +350,10 @@ namespace KancolleSniffer
             // 
             this.labelLoS.Location = new System.Drawing.Point(86, 117);
             this.labelLoS.Name = "labelLoS";
-            this.labelLoS.Size = new System.Drawing.Size(55, 12);
+            this.labelLoS.Size = new System.Drawing.Size(37, 12);
             this.labelLoS.TabIndex = 42;
-            this.labelLoS.Text = "0.00000";
+            this.labelLoS.Text = "0.0";
+            this.labelLoS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label19
             // 

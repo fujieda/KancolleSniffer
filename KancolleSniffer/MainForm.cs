@@ -323,8 +323,7 @@ namespace KancolleSniffer
 
         private void UpdateLoS()
         {
-            var los = _sniffer.GetFleetLineOfSights(_currentFleet);
-            labelLoS.Text = los >= 100 ? los.ToString("F4") : los.ToString("F5");
+            labelLoS.Text = _sniffer.GetFleetLineOfSights(_currentFleet).ToString("F1");
         }
 
         private void UpdateBattleInfo()
