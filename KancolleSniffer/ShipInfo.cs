@@ -449,7 +449,7 @@ namespace KancolleSniffer
                 result += Math.Sqrt(s.LoS - items) * 1.6841056;
 
             }
-            return result + (_hqLevel + 4) / 5 * 5 * -0.6142467;
+            return result > 0 ? result + (_hqLevel + 4) / 5 * 5 * -0.6142467 : 0.0;
         }
     }
 }
