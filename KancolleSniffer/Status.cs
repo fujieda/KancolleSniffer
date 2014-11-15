@@ -40,10 +40,13 @@ namespace KancolleSniffer
                 var obj = (Status)DynamicJson.Parse(File.ReadAllText(_statusFileName));
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(obj, null), null);
-                Restoring = false;
             }
             catch (FileNotFoundException)
             {
+            }
+            finally
+            {
+                Restoring = false;
             }
         }
 

@@ -267,22 +267,27 @@ namespace KancolleSniffer
             {
                 if (!Status.Restoring) // JSONから値を復旧するときは履歴に触らない
                 {
-                    UpdateHistory();
+                    UpdateHistory(value, _now);
                     LastSet = DateTime.Now;
                 }
                 _now = value;
             }
         }
 
-        public void UpdateHistory()
+        private void UpdateHistory(int now, int prev)
         {
+            if (LastSet == DateTime.MinValue)
+            {
+                BegOfDay = BegOfWeek = now;
+                return;
+            }
             var morning = DateTime.Today.AddHours(5);
             var dow = (int)morning.DayOfWeek;
             var monday = morning.AddDays(dow == 0 ? -6 : -dow + 1);
             if (DateTime.Now >= morning && LastSet < morning)
-                BegOfDay = _now;
+                BegOfDay = prev;
             if (DateTime.Now >= monday && LastSet < monday)
-                BegOfWeek = _now;
+                BegOfWeek = prev;
         }
     }
 }
