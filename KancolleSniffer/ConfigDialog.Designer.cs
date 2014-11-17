@@ -80,6 +80,7 @@ namespace KancolleSniffer
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ProxyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DebugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkBoxAutoScale = new System.Windows.Forms.CheckBox();
             this.groupBoxNotification.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginEquips)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).BeginInit();
@@ -104,7 +105,7 @@ namespace KancolleSniffer
             this.groupBoxNotification.Controls.Add(this.checkBoxSound);
             this.groupBoxNotification.Controls.Add(this.checkBoxBalloon);
             this.groupBoxNotification.Controls.Add(this.checkBoxFlash);
-            this.groupBoxNotification.Location = new System.Drawing.Point(6, 71);
+            this.groupBoxNotification.Location = new System.Drawing.Point(6, 92);
             this.groupBoxNotification.Name = "groupBoxNotification";
             this.groupBoxNotification.Size = new System.Drawing.Size(240, 147);
             this.groupBoxNotification.TabIndex = 0;
@@ -238,14 +239,13 @@ namespace KancolleSniffer
             // 
             // groupBoxSound
             // 
-            this.groupBoxSound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBoxSound.Controls.Add(this.buttonPlay);
             this.groupBoxSound.Controls.Add(this.listBoxSoundFile);
             this.groupBoxSound.Controls.Add(this.buttonOpenFile);
             this.groupBoxSound.Controls.Add(this.textBoxSoundFile);
             this.groupBoxSound.Controls.Add(this.numericUpDownSoundVolume);
             this.groupBoxSound.Controls.Add(this.label3);
-            this.groupBoxSound.Location = new System.Drawing.Point(6, 266);
+            this.groupBoxSound.Location = new System.Drawing.Point(6, 287);
             this.groupBoxSound.Name = "groupBoxSound";
             this.groupBoxSound.Size = new System.Drawing.Size(240, 138);
             this.groupBoxSound.TabIndex = 1;
@@ -312,7 +312,7 @@ namespace KancolleSniffer
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(87, 413);
+            this.buttonOk.Location = new System.Drawing.Point(87, 434);
             this.buttonOk.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
@@ -325,7 +325,7 @@ namespace KancolleSniffer
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(165, 413);
+            this.buttonCancel.Location = new System.Drawing.Point(165, 434);
             this.buttonCancel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
@@ -341,11 +341,12 @@ namespace KancolleSniffer
             // 
             // groupBoxShow
             // 
+            this.groupBoxShow.Controls.Add(this.checkBoxAutoScale);
             this.groupBoxShow.Controls.Add(this.checkBoxHideOnMinimized);
             this.groupBoxShow.Controls.Add(this.checkBoxTopMost);
             this.groupBoxShow.Location = new System.Drawing.Point(6, 6);
             this.groupBoxShow.Name = "groupBoxShow";
-            this.groupBoxShow.Size = new System.Drawing.Size(240, 61);
+            this.groupBoxShow.Size = new System.Drawing.Size(240, 82);
             this.groupBoxShow.TabIndex = 4;
             this.groupBoxShow.TabStop = false;
             this.groupBoxShow.Text = "表示";
@@ -376,7 +377,7 @@ namespace KancolleSniffer
             this.groupBoxAchievement.Controls.Add(this.label8);
             this.groupBoxAchievement.Controls.Add(this.checkBoxReset14);
             this.groupBoxAchievement.Controls.Add(this.checkBoxReset02);
-            this.groupBoxAchievement.Location = new System.Drawing.Point(6, 222);
+            this.groupBoxAchievement.Location = new System.Drawing.Point(6, 243);
             this.groupBoxAchievement.Name = "groupBoxAchievement";
             this.groupBoxAchievement.Size = new System.Drawing.Size(240, 40);
             this.groupBoxAchievement.TabIndex = 5;
@@ -444,13 +445,23 @@ namespace KancolleSniffer
             this.DebugToolStripMenuItem.Text = "デバッグ設定(&D)";
             this.DebugToolStripMenuItem.Click += new System.EventHandler(this.DebugToolStripMenuItem_Click);
             // 
+            // checkBoxAutoScale
+            // 
+            this.checkBoxAutoScale.AutoSize = true;
+            this.checkBoxAutoScale.Location = new System.Drawing.Point(6, 60);
+            this.checkBoxAutoScale.Name = "checkBoxAutoScale";
+            this.checkBoxAutoScale.Size = new System.Drawing.Size(180, 16);
+            this.checkBoxAutoScale.TabIndex = 2;
+            this.checkBoxAutoScale.Text = "DPIに応じて拡大する(要再起動)";
+            this.checkBoxAutoScale.UseVisualStyleBackColor = true;
+            // 
             // ConfigDialog
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(252, 445);
+            this.ClientSize = new System.Drawing.Size(252, 466);
             this.ContextMenuStrip = this.contextMenuStrip;
             this.Controls.Add(this.groupBoxAchievement);
             this.Controls.Add(this.groupBoxShow);
@@ -517,5 +528,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkBoxCond49;
         private System.Windows.Forms.CheckBox checkBoxCond40;
+        private System.Windows.Forms.CheckBox checkBoxAutoScale;
     }
 }

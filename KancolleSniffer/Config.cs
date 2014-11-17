@@ -58,6 +58,7 @@ namespace KancolleSniffer
         public Point Location { get; set; }
         public bool TopMost { get; set; }
         public bool HideOnMinimized { get; set; }
+        public bool AutoScale { get; set; }
         public bool FlashWindow { get; set; }
         public bool ShowBaloonTip { get; set; }
         public bool PlaySound { get; set; }

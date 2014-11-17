@@ -46,6 +46,7 @@ namespace KancolleSniffer
         {
             checkBoxTopMost.Checked = _config.TopMost;
             checkBoxHideOnMinimized.Checked = _config.HideOnMinimized;
+            checkBoxAutoScale.Checked = _config.AutoScale;
             checkBoxFlash.Checked = _config.FlashWindow;
             checkBoxBalloon.Checked = _config.ShowBaloonTip;
             groupBoxSound.Enabled = checkBoxSound.Checked = _config.PlaySound;
@@ -75,6 +76,7 @@ namespace KancolleSniffer
         {
             _config.TopMost = checkBoxTopMost.Checked;
             _config.HideOnMinimized = checkBoxHideOnMinimized.Checked;
+            _config.AutoScale = checkBoxAutoScale.Checked;
             _config.FlashWindow = checkBoxFlash.Checked;
             _config.ShowBaloonTip = checkBoxBalloon.Checked;
             _config.PlaySound = checkBoxSound.Checked;

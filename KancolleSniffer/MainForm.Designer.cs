@@ -190,20 +190,21 @@ namespace KancolleSniffer
             this.panelHeadquarters.Name = "panelHeadquarters";
             this.panelHeadquarters.Size = new System.Drawing.Size(238, 33);
             this.panelHeadquarters.TabIndex = 0;
+            this.panelHeadquarters.Layout += new System.Windows.Forms.LayoutEventHandler(this.panelHeadQuarters_Layout);
             // 
             // labelLogin
             // 
             this.labelLogin.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelLogin.Location = new System.Drawing.Point(6, 3);
+            this.labelLogin.Location = new System.Drawing.Point(6, 2);
             this.labelLogin.Name = "labelLogin";
-            this.labelLogin.Size = new System.Drawing.Size(210, 26);
+            this.labelLogin.Size = new System.Drawing.Size(210, 28);
             this.labelLogin.TabIndex = 23;
             this.labelLogin.Text = "艦これにログインしてください。\r\nログイン中ならログインし直してください。";
+            this.labelLogin.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelBucketHistoryButton
             // 
             this.labelBucketHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelBucketHistoryButton.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.labelBucketHistoryButton.Image = ((System.Drawing.Image)(resources.GetObject("labelBucketHistoryButton.Image")));
             this.labelBucketHistoryButton.Location = new System.Drawing.Point(146, 15);
             this.labelBucketHistoryButton.Name = "labelBucketHistoryButton";
@@ -391,11 +392,11 @@ namespace KancolleSniffer
             // 
             // labelCondTimer
             // 
+            this.labelCondTimer.AutoSize = true;
             this.labelCondTimer.Location = new System.Drawing.Point(206, 117);
             this.labelCondTimer.Name = "labelCondTimer";
-            this.labelCondTimer.Size = new System.Drawing.Size(31, 12);
+            this.labelCondTimer.Size = new System.Drawing.Size(0, 12);
             this.labelCondTimer.TabIndex = 38;
-            this.labelCondTimer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label17
             // 
@@ -567,12 +568,12 @@ namespace KancolleSniffer
             // 
             // labelConstruct3
             // 
+            this.labelConstruct3.AutoSize = true;
             this.labelConstruct3.Location = new System.Drawing.Point(33, 33);
             this.labelConstruct3.Name = "labelConstruct3";
             this.labelConstruct3.Size = new System.Drawing.Size(45, 12);
             this.labelConstruct3.TabIndex = 6;
             this.labelConstruct3.Text = "00:00:00";
-            this.labelConstruct3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label12
             // 
@@ -585,12 +586,12 @@ namespace KancolleSniffer
             // 
             // labelConstruct4
             // 
+            this.labelConstruct4.AutoSize = true;
             this.labelConstruct4.Location = new System.Drawing.Point(33, 48);
             this.labelConstruct4.Name = "labelConstruct4";
             this.labelConstruct4.Size = new System.Drawing.Size(45, 12);
             this.labelConstruct4.TabIndex = 7;
             this.labelConstruct4.Text = "00:00:00";
-            this.labelConstruct4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label11
             // 
@@ -603,12 +604,12 @@ namespace KancolleSniffer
             // 
             // labelConstruct2
             // 
+            this.labelConstruct2.AutoSize = true;
             this.labelConstruct2.Location = new System.Drawing.Point(33, 18);
             this.labelConstruct2.Name = "labelConstruct2";
             this.labelConstruct2.Size = new System.Drawing.Size(45, 12);
             this.labelConstruct2.TabIndex = 5;
             this.labelConstruct2.Text = "00:00:00";
-            this.labelConstruct2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label10
             // 
@@ -621,12 +622,12 @@ namespace KancolleSniffer
             // 
             // labelConstruct1
             // 
+            this.labelConstruct1.AutoSize = true;
             this.labelConstruct1.Location = new System.Drawing.Point(33, 3);
             this.labelConstruct1.Name = "labelConstruct1";
             this.labelConstruct1.Size = new System.Drawing.Size(45, 12);
             this.labelConstruct1.TabIndex = 4;
             this.labelConstruct1.Text = "00:00:00";
-            this.labelConstruct1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label9
             // 
@@ -704,30 +705,30 @@ namespace KancolleSniffer
             // 
             // labelMission3
             // 
+            this.labelMission3.AutoSize = true;
             this.labelMission3.Location = new System.Drawing.Point(191, 33);
             this.labelMission3.Name = "labelMission3";
             this.labelMission3.Size = new System.Drawing.Size(45, 12);
             this.labelMission3.TabIndex = 8;
             this.labelMission3.Text = "00:00:00";
-            this.labelMission3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelMission2
             // 
+            this.labelMission2.AutoSize = true;
             this.labelMission2.Location = new System.Drawing.Point(191, 18);
             this.labelMission2.Name = "labelMission2";
             this.labelMission2.Size = new System.Drawing.Size(45, 12);
             this.labelMission2.TabIndex = 7;
             this.labelMission2.Text = "00:00:00";
-            this.labelMission2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelMission1
             // 
+            this.labelMission1.AutoSize = true;
             this.labelMission1.Location = new System.Drawing.Point(191, 3);
             this.labelMission1.Name = "labelMission1";
             this.labelMission1.Size = new System.Drawing.Size(45, 12);
             this.labelMission1.TabIndex = 6;
             this.labelMission1.Text = "00:00:00";
-            this.labelMission1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label15
             // 
@@ -1187,7 +1188,6 @@ namespace KancolleSniffer
             // labelMaterialHistoryButton
             // 
             this.labelMaterialHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelMaterialHistoryButton.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.labelMaterialHistoryButton.Image = ((System.Drawing.Image)(resources.GetObject("labelMaterialHistoryButton.Image")));
             this.labelMaterialHistoryButton.Location = new System.Drawing.Point(230, 192);
             this.labelMaterialHistoryButton.Name = "labelMaterialHistoryButton";
@@ -1207,7 +1207,6 @@ namespace KancolleSniffer
             // labelDamgedShipListButton
             // 
             this.labelDamgedShipListButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelDamgedShipListButton.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.labelDamgedShipListButton.Image = ((System.Drawing.Image)(resources.GetObject("labelDamgedShipListButton.Image")));
             this.labelDamgedShipListButton.Location = new System.Drawing.Point(146, 233);
             this.labelDamgedShipListButton.Name = "labelDamgedShipListButton";

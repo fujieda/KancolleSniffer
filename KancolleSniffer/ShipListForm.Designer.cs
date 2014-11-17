@@ -105,7 +105,7 @@ namespace KancolleSniffer
             // checkBoxShipType
             // 
             this.checkBoxShipType.AutoSize = true;
-            this.checkBoxShipType.Location = new System.Drawing.Point(10, 7);
+            this.checkBoxShipType.Location = new System.Drawing.Point(10, 6);
             this.checkBoxShipType.Name = "checkBoxShipType";
             this.checkBoxShipType.Size = new System.Drawing.Size(48, 16);
             this.checkBoxShipType.TabIndex = 15;

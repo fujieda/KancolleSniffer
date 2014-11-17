@@ -129,6 +129,17 @@ namespace KancolleSniffer
         private void MainForm_Load(object sender, EventArgs e)
         {
             _config.Load();
+            ShipLabel.AutoScale = _config.AutoScale;
+            if (!_config.AutoScale)
+            {
+                // DPIに応じて拡大したくないときはフォントを小さくする
+                Font = new Font(DefaultFont.Name, 9 / ShipLabel.AutoScaleFactor.Height);
+                labelLogin.Font = new Font(DefaultFont.Name, 9.75f / ShipLabel.AutoScaleFactor.Height);
+            }
+            else
+            {
+                PerformAutoScale();
+            }
             RestoreLocation();
             ApplyConfig();
             ApplyLogSetting();
@@ -527,7 +538,7 @@ namespace KancolleSniffer
                 parent.Controls.AddRange(_damagedShipList[i] = new[]
                 {
                     new ShipLabel {Location = new Point(1, y), Size = new Size(11, height)},
-                    new ShipLabel {Location = new Point(79, y), Size = new Size(45, height)},
+                    new ShipLabel {Location = new Point(79, y), AutoSize = true},
                     new ShipLabel {Location = new Point(123, y), Size = new Size(5, height - 1)},
                     new ShipLabel {Location = new Point(10, y), AutoSize = true}
                 });
@@ -541,10 +552,10 @@ namespace KancolleSniffer
             var parent = panelDamagedShipList;
             var list = _sniffer.DamagedShipList;
             var num = Math.Min(list.Length, _damagedShipList.Length);
-            const int width = 134;
+            var width = (int)Math.Round(ShipLabel.AutoScaleFactor.Width * 134);
             if (num == 0)
             {
-                parent.Size = new Size(width, 19);
+                parent.Size = new Size(width, (int)Math.Round(ShipLabel.AutoScaleFactor.Height * 19));
                 var labels = _damagedShipList[0];
                 labels[fleet].Text = "";
                 labels[name].SetName("なし");
@@ -552,7 +563,7 @@ namespace KancolleSniffer
                 labels[damage].BackColor = DefaultBackColor;
                 return;
             }
-            parent.Size = new Size(width, num * 16 + 3);
+            parent.Size = new Size(width, (int)Math.Round(ShipLabel.AutoScaleFactor.Height * (num * 16 + 3)));
             var fn = new[] {"", "1", "2", "3", "4"};
             var colors = new[] {DefaultBackColor, Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red};
             for (var i = 0; i < num; i++)
@@ -715,6 +726,13 @@ namespace KancolleSniffer
             _shipListForm.Show();
             _shipListForm.UpdateList();
             _shipListForm.Activate();
+        }
+
+        private void panelHeadQuarters_Layout(object sender, LayoutEventArgs e)
+        {
+            // MainFormのレイアウト終了時に1.0に戻ってしまうので、ここで取得する。
+            if (ShipLabel.AutoScaleFactor == Size.Empty)
+                ShipLabel.AutoScaleFactor = AutoScaleFactor;
         }
     }
 }
