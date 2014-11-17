@@ -194,6 +194,8 @@ namespace KancolleSniffer
             }
             panelShipList.Width = panelWidth;
             Width = panelWidth + 12 + (Width - ClientSize.Width);
+            MinimumSize = new Size(Width, 0);
+            MaximumSize = new Size(Width, int.MaxValue);
             var config = _config.ShipList;
             if (config.Location.X == int.MinValue)
                 return;
