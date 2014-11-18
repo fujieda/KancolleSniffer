@@ -482,14 +482,14 @@ namespace KancolleSniffer
             parent.SuspendLayout();
             for (var i = 0; i < _akashiTimers.Length; i++)
             {
-                const int width = 31, height = 12;
                 const int x = 56;
                 var y = 20 + 16 * i;
                 parent.Controls.Add(
-                    _akashiTimers[i] =
-                        new Label {Location = new Point(x, y), Size = new Size(width, height), Visible = false});
+                    _akashiTimers[i] = new Label {Location = new Point(x, y), AutoSize = true, Visible = false});
                 parent.Controls.SetChildIndex(_akashiTimers[i], 0);
             }
+            foreach (var label in _akashiTimers)
+                label.Scale(_scaleFactor);
             parent.ResumeLayout();
         }
 
