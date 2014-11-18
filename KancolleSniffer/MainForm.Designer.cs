@@ -190,7 +190,6 @@ namespace KancolleSniffer
             this.panelHeadquarters.Name = "panelHeadquarters";
             this.panelHeadquarters.Size = new System.Drawing.Size(238, 33);
             this.panelHeadquarters.TabIndex = 0;
-            this.panelHeadquarters.Layout += new System.Windows.Forms.LayoutEventHandler(this.panelHeadQuarters_Layout);
             // 
             // labelLogin
             // 

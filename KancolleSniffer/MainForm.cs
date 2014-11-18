@@ -41,6 +41,7 @@ namespace KancolleSniffer
         private readonly ShipListForm _shipListForm;
         private readonly NoticeQueue _noticeQueue;
         private bool _started;
+        private readonly SizeF _scaleFactor;
 
         public MainForm()
         {
@@ -50,6 +51,11 @@ namespace KancolleSniffer
             _wmp.PlayStateChange += new EventHandler(_wmp_PlayStateChange);
             _configDialog = new ConfigDialog(_config, this);
             _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
+
+            // この時点でAutoScaleDimensions == CurrentAutoScaleDimensionsなので、
+            // MainForm.Designer.csのAutoScaleDimensionsの6f,12fを使う。
+            _scaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / 6f, CurrentAutoScaleDimensions.Height / 12f);
+            ShipLabel.ScaleFactor = _scaleFactor;
 
             var labels = new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4};
             for (var i = 0; i < labels.Length; i++)
@@ -129,16 +135,11 @@ namespace KancolleSniffer
         private void MainForm_Load(object sender, EventArgs e)
         {
             _config.Load();
-            ShipLabel.AutoScale = _config.AutoScale;
             if (!_config.AutoScale)
             {
                 // DPIに応じて拡大したくないときはフォントを小さくする
-                Font = new Font(DefaultFont.Name, 9 / ShipLabel.AutoScaleFactor.Height);
-                labelLogin.Font = new Font(DefaultFont.Name, 9.75f / ShipLabel.AutoScaleFactor.Height);
-            }
-            else
-            {
-                PerformAutoScale();
+                Font = new Font(DefaultFont.Name, 9 / _scaleFactor.Height);
+                labelLogin.Font = new Font(DefaultFont.Name, 9.75f / _scaleFactor.Height);
             }
             RestoreLocation();
             ApplyConfig();
@@ -379,6 +380,8 @@ namespace KancolleSniffer
                         new ShipLabel {Location = new Point(106, y), AutoSize = true, Text = "00:00:00"},
                         new ShipLabel {Location = new Point(30, y), AutoSize = true} // 名前のZ-orderを下に
                     });
+                foreach (var label in _ndockLabels[i])
+                    label.Scale(_scaleFactor);
             }
         }
 
@@ -542,6 +545,8 @@ namespace KancolleSniffer
                     new ShipLabel {Location = new Point(123, y), Size = new Size(5, height - 1)},
                     new ShipLabel {Location = new Point(10, y), AutoSize = true}
                 });
+                foreach (var label in _damagedShipList[i])
+                    label.Scale(_scaleFactor);
             }
             parent.ResumeLayout();
         }
@@ -552,10 +557,10 @@ namespace KancolleSniffer
             var parent = panelDamagedShipList;
             var list = _sniffer.DamagedShipList;
             var num = Math.Min(list.Length, _damagedShipList.Length);
-            var width = (int)Math.Round(ShipLabel.AutoScaleFactor.Width * 134);
+            var width = (int)Math.Round(_scaleFactor.Width * 134);
             if (num == 0)
             {
-                parent.Size = new Size(width, (int)Math.Round(ShipLabel.AutoScaleFactor.Height * 19));
+                parent.Size = new Size(width, (int)Math.Round(_scaleFactor.Height * 19));
                 var labels = _damagedShipList[0];
                 labels[fleet].Text = "";
                 labels[name].SetName("なし");
@@ -563,7 +568,7 @@ namespace KancolleSniffer
                 labels[damage].BackColor = DefaultBackColor;
                 return;
             }
-            parent.Size = new Size(width, (int)Math.Round(ShipLabel.AutoScaleFactor.Height * (num * 16 + 3)));
+            parent.Size = new Size(width, (int)Math.Round(_scaleFactor.Height * (num * 16 + 3)));
             var fn = new[] {"", "1", "2", "3", "4"};
             var colors = new[] {DefaultBackColor, Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red};
             for (var i = 0; i < num; i++)
@@ -726,13 +731,6 @@ namespace KancolleSniffer
             _shipListForm.Show();
             _shipListForm.UpdateList();
             _shipListForm.Activate();
-        }
-
-        private void panelHeadQuarters_Layout(object sender, LayoutEventArgs e)
-        {
-            // MainFormのレイアウト終了時に1.0に戻ってしまうので、ここで取得する。
-            if (ShipLabel.AutoScaleFactor == Size.Empty)
-                ShipLabel.AutoScaleFactor = AutoScaleFactor;
         }
     }
 }

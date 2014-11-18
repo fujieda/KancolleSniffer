@@ -63,6 +63,8 @@ namespace KancolleSniffer
                     new ShipLabel {Location = new Point(2, y), AutoSize = true} // 名前のZ-orderを下に
                 });
                 _labels[i][0].SizeChanged += labelHP_SizeChanged;
+                foreach (var label in _labels[i])
+                    label.Scale(ShipLabel.ScaleFactor);
             }
             parent.ResumeLayout();
         }
@@ -80,10 +82,9 @@ namespace KancolleSniffer
         private void labelHP_SizeChanged(object sender, EventArgs e)
         {
             var label = (Label)sender;
-            label.Location =
-                new Point(
-                    (int)Math.Round(LabelHpRight * (ShipLabel.AutoScale ? ShipLabel.AutoScaleFactor.Width : 1f)) -
-                    label.Width, label.Top);
+            // フォントが縮小されていたら横幅を広げない
+            var scale = !label.Font.Equals(Control.DefaultFont) ? 1f : ShipLabel.ScaleFactor.Width;
+            label.Location = new Point((int)Math.Round(LabelHpRight * scale) - label.Width, label.Top);
         }
 
         public void SetShipInfo(ShipStatus[] statuses)
@@ -105,8 +106,7 @@ namespace KancolleSniffer
     [System.ComponentModel.DesignerCategory("Code")]
     public class ShipLabel : Label
     {
-        public static bool AutoScale { get; set; }
-        public static SizeF AutoScaleFactor { get; set; }
+        public static SizeF ScaleFactor { get; set; }
 
         public void SetName(ShipStatus status)
         {
@@ -118,25 +118,16 @@ namespace KancolleSniffer
             var lu = name != null && new Regex(@"^\p{Lu}").IsMatch(name);
             if (lu && Font.Equals(Parent.Font))
             {
-                Location += new Size(0, (int)Math.Round(-1 * AutoScaleFactor.Height));
-                Font = new Font("Tahoma", AutoScale ? 8 : 8 / AutoScaleFactor.Height);
+                Location += new Size(0, (int)Math.Round(-1 * ScaleFactor.Height));
+                var scale = Font.Size / DefaultFont.Size;
+                Font = new Font("Tahoma", 8 * scale);
             }
             else if (!lu && !Font.Equals(Parent.Font))
             {
-                Location += new Size(0, (int)Math.Round(1 * AutoScaleFactor.Height));
+                Location += new Size(0, (int)Math.Round(1 * ScaleFactor.Height));
                 Font = Parent.Font;
             }
             Text = name;
-        }
-
-        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
-        {
-            if (!AutoScale)
-                return;
-            Size = new Size((int)Math.Round(Size.Width * AutoScaleFactor.Width),
-                (int)Math.Round(Size.Height * AutoScaleFactor.Height));
-            Location = new Point((int)Math.Round(Location.X * AutoScaleFactor.Width),
-                (int)Math.Round(Location.Y * AutoScaleFactor.Height));
         }
 
         public void SetHp(ShipStatus status)
