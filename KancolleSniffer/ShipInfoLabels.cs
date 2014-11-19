@@ -82,8 +82,8 @@ namespace KancolleSniffer
         private void labelHP_SizeChanged(object sender, EventArgs e)
         {
             var label = (Label)sender;
-            // フォントが縮小されていたら横幅を広げない
-            var scale = !label.Font.Equals(Control.DefaultFont) ? 1f : ShipLabel.ScaleFactor.Width;
+            // フォントが縮小されていなかったら移動幅を広げる
+            var scale = label.Font.Equals(Control.DefaultFont) ? ShipLabel.ScaleFactor.Width : 1f;
             label.Location = new Point((int)Math.Round(LabelHpRight * scale) - label.Width, label.Top);
         }
 
@@ -116,15 +116,16 @@ namespace KancolleSniffer
         public void SetName(string name)
         {
             var lu = name != null && new Regex(@"^\p{Lu}").IsMatch(name);
+            // フォントが縮小されていなかったら移動幅を広げる
+            var shift = Parent.Font.Equals(DefaultFont) ? (int)Math.Round(ScaleFactor.Height) : 1;
             if (lu && Font.Equals(Parent.Font))
             {
-                Location += new Size(0, (int)Math.Round(-1 * ScaleFactor.Height));
-                var scale = Font.Size / DefaultFont.Size;
-                Font = new Font("Tahoma", 8 * scale);
+                Location += new Size(0, -shift);
+                Font = new Font("Tahoma", 8f * Font.Height / DefaultFont.Height);
             }
             else if (!lu && !Font.Equals(Parent.Font))
             {
-                Location += new Size(0, (int)Math.Round(1 * ScaleFactor.Height));
+                Location += new Size(0, shift);
                 Font = Parent.Font;
             }
             Text = name;

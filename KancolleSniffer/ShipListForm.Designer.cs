@@ -105,12 +105,12 @@ namespace KancolleSniffer
             // checkBoxShipType
             // 
             this.checkBoxShipType.AutoSize = true;
+            this.checkBoxShipType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBoxShipType.Location = new System.Drawing.Point(10, 6);
             this.checkBoxShipType.Name = "checkBoxShipType";
-            this.checkBoxShipType.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxShipType.Size = new System.Drawing.Size(45, 16);
             this.checkBoxShipType.TabIndex = 15;
             this.checkBoxShipType.Text = "艦種";
-            this.checkBoxShipType.UseVisualStyleBackColor = true;
             this.checkBoxShipType.CheckedChanged += new System.EventHandler(this.checkBoxShipType_CheckedChanged);
             // 
             // ShipListForm
