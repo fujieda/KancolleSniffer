@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KancolleSniffer
@@ -27,6 +28,7 @@ namespace KancolleSniffer
         private readonly ItemInfo _itemInfo;
         private dynamic _prevBattle;
         private bool _isSurfaceFleet;
+        private readonly List<int> _escapingShips = new List<int>();
         public bool InBattle { get; set; }
         public string Formation { get; private set; }
         public int EnemyAirSuperiority { get; private set; }
@@ -55,6 +57,24 @@ namespace KancolleSniffer
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
             _prevBattle = json;
             _isSurfaceFleet = surfaceFleet;
+        }
+
+        public void InspectCombinedBattleResult(dynamic json)
+        {
+            _escapingShips.Clear();
+            CauseDamageCombined();
+            if ((int)json.api_escape_flag == 0)
+                return;
+            var damaged = (int)json.api_escape.api_escape_idx[0] - 1;
+            _escapingShips.Add(_shipInfo.GetDeck(damaged / 6)[damaged % 6]);
+            var escort = (int)json.api_escape.api_tow_idx[0] - 1;
+            _escapingShips.Add(_shipInfo.GetDeck(escort / 6)[escort % 6]);
+        }
+
+        public void CauseCombinedBattleEscape()
+        {
+            _shipInfo.SetEscapedShips(_escapingShips);
+            UpdateDamgedShipNames(_shipInfo.GetShipStatuses(0).Concat(_shipInfo.GetShipStatuses(1)));
         }
 
         private string FormationName(dynamic json)
@@ -108,8 +128,12 @@ namespace KancolleSniffer
                 if (json.api_raigeki != null)
                     CauseSimpleDamage(ships, json.api_raigeki.api_fdam);
             }
-            DamagedShipNames =
-                (from ship in ships where ship.DamageLevel == ShipStatus.Damage.Badly select ship.Name).ToArray();
+            UpdateDamgedShipNames(ships);
+        }
+
+        private void UpdateDamgedShipNames(IEnumerable<ShipStatus> ships)
+        {
+            DamagedShipNames = (from ship in ships where ship.DamageLevel == ShipStatus.Damage.Badly select ship.Name).ToArray();
             HasDamagedShip = DamagedShipNames.Any();
         }
 
@@ -146,9 +170,7 @@ namespace KancolleSniffer
                 CauseDamageCombinedSurfaceFleet(_prevBattle, hontai, goei);
             else
                 CauseDamageCombinedTaskFleet(_prevBattle, hontai, goei);
-            DamagedShipNames =
-                (from ship in hontai.Concat(goei) where ship.DamageLevel == ShipStatus.Damage.Badly select ship.Name).ToArray();
-            HasDamagedShip = DamagedShipNames.Any();
+            UpdateDamgedShipNames(hontai.Concat(goei));
         }
 
         private void CauseDamageCombinedTaskFleet(dynamic json, ShipStatus[] hontai, ShipStatus[] goei)

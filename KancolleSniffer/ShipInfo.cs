@@ -137,6 +137,7 @@ namespace KancolleSniffer
         private readonly bool[] _inMission = new bool[FleetCount];
         private readonly bool[] _inSortie = new bool[FleetCount];
         private int _hqLevel;
+        private readonly List<int> _escapedShips = new List<int>();
 
         public ShipInfo(ShipMaster shipMaster, ItemInfo itemInfo)
         {
@@ -353,7 +354,7 @@ namespace KancolleSniffer
 
         public ShipStatus[] GetShipStatuses(int fleet)
         {
-            return (from id in _decks[fleet] where id != -1 select _shipInfo[id]).ToArray();
+            return (from id in _decks[fleet] where id != -1 select _escapedShips.Contains(id) ? new ShipStatus() : _shipInfo[id]).ToArray();
         }
 
         public int[] GetDeck(int fleet)
@@ -450,6 +451,17 @@ namespace KancolleSniffer
 
             }
             return result > 0 ? result + (_hqLevel + 4) / 5 * 5 * -0.6142467 : 0.0;
+        }
+
+        public void SetEscapedShips(List<int> ships)
+        {
+            _escapedShips.Clear();
+            _escapedShips.AddRange(ships);
+        }
+
+        public void ClearEscapedShips()
+        {
+            _escapedShips.Clear();
         }
     }
 }

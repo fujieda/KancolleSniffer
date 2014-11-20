@@ -103,6 +103,7 @@ namespace KancolleSniffer
                 _achievement.InspectBasic(data.api_basic);
                 _battleInfo.InBattle = false;
                 _battleInfo.HasDamagedShip = false;
+                _shipInfo.ClearEscapedShips();
                 return Update.All;
             }
             if (url.EndsWith("api_get_member/basic"))
@@ -233,8 +234,13 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_combined_battle/battleresult"))
             {
-                _battleInfo.CauseDamageCombined();
+                _battleInfo.InspectCombinedBattleResult(data);
                 return Update.Ship;
+            }
+            if (url.EndsWith("api_req_combined_battle/goback_port"))
+            {
+                _battleInfo.CauseCombinedBattleEscape();
+                return Update.None;
             }
             if (url.EndsWith("api_req_map/start"))
             {
