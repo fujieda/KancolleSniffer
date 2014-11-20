@@ -160,6 +160,7 @@ namespace KancolleSniffer
             this.labelDamgedShipListButton = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.toolTipLoS = new System.Windows.Forms.ToolTip(this.components);
+            this.labelPlayLog = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -176,6 +177,7 @@ namespace KancolleSniffer
             // panelHeadquarters
             // 
             this.panelHeadquarters.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelHeadquarters.Controls.Add(this.labelPlayLog);
             this.panelHeadquarters.Controls.Add(this.labelLogin);
             this.panelHeadquarters.Controls.Add(this.labelBucketHistoryButton);
             this.panelHeadquarters.Controls.Add(this.labelAchievement);
@@ -1222,6 +1224,16 @@ namespace KancolleSniffer
             this.label31.TabIndex = 46;
             this.label31.Text = "要修復";
             // 
+            // labelPlayLog
+            // 
+            this.labelPlayLog.AutoSize = true;
+            this.labelPlayLog.Location = new System.Drawing.Point(224, 2);
+            this.labelPlayLog.Name = "labelPlayLog";
+            this.labelPlayLog.Size = new System.Drawing.Size(11, 12);
+            this.labelPlayLog.TabIndex = 24;
+            this.labelPlayLog.Text = "*";
+            this.labelPlayLog.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1402,6 +1414,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelLoS;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.ToolTip toolTipLoS;
+        private System.Windows.Forms.Label labelPlayLog;
     }
 }
 

@@ -42,6 +42,8 @@ namespace KancolleSniffer
         private readonly NoticeQueue _noticeQueue;
         private bool _started;
         private readonly SizeF _scaleFactor;
+        private string _logFile;
+        private IEnumerator<string> _playLog;
 
         public MainForm()
         {
@@ -107,7 +109,16 @@ namespace KancolleSniffer
             response = response.Remove(0, "svdata=".Length);
             var json = DynamicJson.Parse(response);
             var request = session.GetRequestBodyAsString();
-            var update = (Sniffer.Update)_sniffer.Sniff(session.url, request, json);
+            if (_logFile != null)
+            {
+                File.AppendAllText(_logFile,
+                    string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", session.url, request, json.ToString()));
+            }
+            UpdateInfo(_sniffer.Sniff(session.url, request, json));
+        }
+
+        private void UpdateInfo(Sniffer.Update update)
+        {
             if (update == Sniffer.Update.Start)
             {
                 labelLogin.Visible = false;
@@ -219,7 +230,7 @@ namespace KancolleSniffer
 
         public void ApplyLogSetting()
         {
-            _sniffer.LogFile = _config.Logging ? _config.LogFile : null;
+            _logFile = _config.Logging ? _config.LogFile : null;
         }
 
         public void ApplyProxySetting()
@@ -237,6 +248,31 @@ namespace KancolleSniffer
         {
             if (_started)
                 UpdateTimers();
+            if (_playLog == null || _configDialog.Visible)
+            {
+                labelPlayLog.Visible = false;
+                return;
+            }
+            PlayLog();
+        }
+
+        public void SetPlayLog(string file)
+        {
+            _playLog = File.ReadLines(file).GetEnumerator();
+        }
+
+        private void PlayLog()
+        {
+            var lines = new List<string>();
+            foreach (var s in new[] {"url: ", "request: ", "response: "})
+            {
+                if (!_playLog.MoveNext() || !_playLog.Current.StartsWith(s))
+                    return;
+                lines.Add(_playLog.Current.Substring(s.Count()));
+            }
+            labelPlayLog.Visible = !labelPlayLog.Visible;
+            var json = DynamicJson.Parse(lines[2]);
+            UpdateInfo(_sniffer.Sniff(lines[0], lines[1], json));
         }
 
         private void ShowShipOnShipList(int idx)

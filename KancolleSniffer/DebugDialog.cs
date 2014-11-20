@@ -36,6 +36,11 @@ namespace KancolleSniffer
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                 textBoxLogFile.Text = openFileDialog.FileName;
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            _main.SetPlayLog(textBoxLogFile.Text);
+        }
     }
 
 }
