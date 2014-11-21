@@ -36,7 +36,6 @@ namespace KancolleSniffer
             InitializeComponent();
             _sniffer = sniffer;
             _config = config;
-            checkBoxShipType.Checked = config.ShipList.ShipType;
         }
 
         public void UpdateList()
@@ -197,6 +196,7 @@ namespace KancolleSniffer
             MinimumSize = new Size(Width, 0);
             MaximumSize = new Size(Width, int.MaxValue);
             var config = _config.ShipList;
+            checkBoxShipType.Checked = config.ShipType;
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);
