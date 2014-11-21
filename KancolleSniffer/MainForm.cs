@@ -72,7 +72,7 @@ namespace KancolleSniffer
             CreateDamagedShipList();
             CreateAkashiTimers();
             CreateNDockLabels();
-            _shipListForm = new ShipListForm(_sniffer, _config);
+            _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
         }
 
@@ -169,7 +169,7 @@ namespace KancolleSniffer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _shipListForm.Close();
+            e.Cancel = false;
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.Save();
             _sniffer.SaveState();
@@ -222,7 +222,7 @@ namespace KancolleSniffer
 
         private void ApplyConfig()
         {
-            TopMost = _config.TopMost;
+            _shipListForm.TopMost = TopMost = _config.TopMost;
             _sniffer.Item.MarginShips = _config.MarginShips;
             _sniffer.Item.MarginEquips = _config.MarginEquips;
             _sniffer.Achievement.ResetHours = _config.ResetHours;
