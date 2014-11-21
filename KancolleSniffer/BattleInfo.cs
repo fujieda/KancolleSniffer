@@ -47,6 +47,7 @@ namespace KancolleSniffer
             InBattle = true;
             Formation = FormationName(json);
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
+            CauseDamage();
             _prevBattle = json;
         }
 
@@ -55,6 +56,7 @@ namespace KancolleSniffer
             InBattle = true;
             Formation = FormationName(json);
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
+            CauseDamageCombined();
             _prevBattle = json;
             _isSurfaceFleet = surfaceFleet;
         }
@@ -129,11 +131,13 @@ namespace KancolleSniffer
                     CauseSimpleDamage(ships, json.api_raigeki.api_fdam);
             }
             UpdateDamgedShipNames(ships);
+            _prevBattle = null;
         }
 
         private void UpdateDamgedShipNames(IEnumerable<ShipStatus> ships)
         {
-            DamagedShipNames = (from ship in ships where ship.DamageLevel == ShipStatus.Damage.Badly select ship.Name).ToArray();
+            DamagedShipNames =
+                (from ship in ships where ship.DamageLevel == ShipStatus.Damage.Badly select ship.Name).ToArray();
             HasDamagedShip = DamagedShipNames.Any();
         }
 
@@ -171,6 +175,7 @@ namespace KancolleSniffer
             else
                 CauseDamageCombinedTaskFleet(_prevBattle, hontai, goei);
             UpdateDamgedShipNames(hontai.Concat(goei));
+            _prevBattle = null;
         }
 
         private void CauseDamageCombinedTaskFleet(dynamic json, ShipStatus[] hontai, ShipStatus[] goei)
