@@ -29,6 +29,7 @@ namespace KancolleSniffer
         private readonly Config _config;
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private const int HpLabelRight = 126;
+        private const int PanelWidth = 235;
         private ShipStatus[] _currentList;
 
         public ShipListForm(Sniffer sniffer, Config config)
@@ -66,8 +67,8 @@ namespace KancolleSniffer
             panelShipList.SuspendLayout();
             for (var i = _labelList.Count; i < _currentList.Length; i++)
             {
-                const int height = 12;
-                var y = 3 + 16 * i +
+                const int height = 12, lh = 16;
+                var y = 3 + lh * i +
                     (int)Math.Round(panelShipList.AutoScrollPosition.Y / (_config.AutoScale ? ShipLabel.ScaleFactor.Height : 1f));
                 var labels = new[]
                 {
@@ -91,7 +92,8 @@ namespace KancolleSniffer
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new ShipLabel {Location = new Point(10, y), AutoSize = true},
-                    new ShipLabel {Location = new Point(1, y), AutoSize = true}
+                    new ShipLabel {Location = new Point(1, y), AutoSize = true},
+                    new ShipLabel{Location = new Point(0, y - 1), Size = new Size(PanelWidth - 3, lh - 1)}
                 };
                 _labelList.Add(labels);
                 if (_config.AutoScale)
@@ -102,6 +104,11 @@ namespace KancolleSniffer
                 // ReSharper disable once CoVariantArrayConversion
                 panelShipList.Controls.AddRange(labels);
                 labels[0].SizeChanged += labelHP_SizeChanged;
+                foreach (var label in labels)
+                {
+                    label.PresetColor =
+                        label.BackColor = i % 2 == 1 ? SystemColors.Control : SystemColors.ControlLightLight;
+                }
             }
             for (var i = _labelList.Count; i > _currentList.Length; i--)
             {
@@ -150,14 +157,13 @@ namespace KancolleSniffer
                 var labels = _labelList[i++];
                 if (s.Level == 1000)
                 {
-                    for (var c = 0; c <= 3; c++)
+                    for (var c = 0; c < 6; c++)
                     {
                         labels[c].Text = "";
-                        labels[c].BackColor = DefaultBackColor;
+                        labels[c].BackColor = labels[c].PresetColor;
                     }
                     labels[4].SetName("");
                     labels[5].Text = s.Name;
-                    labels[5].BackColor = Color.FromArgb(255, 220, 220, 220);
                     continue;
                 }
                 labels[0].SetHp(s);
@@ -166,7 +172,6 @@ namespace KancolleSniffer
                 labels[3].SetExpToNext(s);
                 labels[4].SetName(s);
                 labels[5].Text = fn[s.Fleet + 1];
-                labels[5].BackColor = DefaultBackColor;
             }
         }
 
@@ -180,7 +185,7 @@ namespace KancolleSniffer
 
         private void ShipListForm_Load(object sender, EventArgs e)
         {
-            var panelWidth = 235 + SystemInformation.VerticalScrollBarWidth;
+            var panelWidth = PanelWidth + SystemInformation.VerticalScrollBarWidth;
             if (!_config.AutoScale)
             {
                 // DPIに応じて拡大したくないときはフォントを小さくする

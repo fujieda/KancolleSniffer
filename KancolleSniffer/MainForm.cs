@@ -35,7 +35,6 @@ namespace KancolleSniffer
         private int _currentFleet;
         private readonly Label[] _labelCheckFleets;
         private readonly ShipLabel[][] _damagedShipList = new ShipLabel[14][];
-        private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         private readonly ShipInfoLabels _shipInfoLabels;
         private readonly ShipListForm _shipListForm;
@@ -70,7 +69,6 @@ namespace KancolleSniffer
                 label.Click += (o, e) => ShowShipOnShipList(tmp);
             }
             CreateDamagedShipList();
-            CreateAkashiTimers();
             CreateNDockLabels();
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
@@ -357,16 +355,35 @@ namespace KancolleSniffer
         {
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             _shipInfoLabels.SetShipInfo(statuses);
-            if (_sniffer.Battle.HasDamagedShip)
-                _noticeQueue.Enqueue("大破した艦娘がいます", string.Join(" ", _sniffer.Battle.DamagedShipNames),
-                    _config.DamagedShipSoundFile);
+            NotifyDamagedShip();
+            _shipInfoLabels.SetAkashiTimer(statuses, _sniffer.GetAkashiTimers(_currentFleet));
+            NotifyAkashiTimer();
             labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
             UpdateLoS();
             UpdateChargeInfo();
             UpdateCondTimers();
-            UpdateAkashiTimer();
             UpdateDamagedShipList();
             _shipListForm.UpdateList();
+        }
+
+        private void NotifyDamagedShip()
+        {
+            if (_sniffer.Battle.HasDamagedShip)
+                _noticeQueue.Enqueue("大破した艦娘がいます", string.Join(" ", _sniffer.Battle.DamagedShipNames),
+                    _config.DamagedShipSoundFile);            
+        }
+
+        private void NotifyAkashiTimer()
+        {
+            var msgs = _sniffer.GetAkashiTimerNotice();
+            var fn = new[] { "第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊" };
+            for (var i = 0; i < fn.Length; i++)
+            {
+                if (msgs[i] == "")
+                    continue;
+                var sound = msgs[i] == "20分経過しました。" ? _config.Akashi20MinSoundFile : _config.AkashiProgressSoundFile;
+                _noticeQueue.Enqueue("泊地修理 " + fn[i], msgs[i], sound);
+            }            
         }
 
         private void UpdateLoS()
@@ -470,7 +487,8 @@ namespace KancolleSniffer
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
-            UpdateAkashiTimer();
+            _shipInfoLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet),
+                _sniffer.GetAkashiTimers(_currentFleet));
         }
 
         private void SetTimerLabel(Label label, RingTimer timer)
@@ -512,60 +530,6 @@ namespace KancolleSniffer
             }
         }
 
-        private void CreateAkashiTimers()
-        {
-            var parent = panelShipInfo;
-            parent.SuspendLayout();
-            for (var i = 0; i < _akashiTimers.Length; i++)
-            {
-                const int x = 56;
-                var y = 20 + 16 * i;
-                parent.Controls.Add(
-                    _akashiTimers[i] = new Label {Location = new Point(x, y), AutoSize = true, Visible = false});
-                parent.Controls.SetChildIndex(_akashiTimers[i], 0);
-            }
-            foreach (var label in _akashiTimers)
-                label.Scale(_scaleFactor);
-            parent.ResumeLayout();
-        }
-
-        private void UpdateAkashiTimer()
-        {
-            var timers = _sniffer.GetAkashiTimers(_currentFleet);
-            var statuses = _sniffer.GetShipStatuses(_currentFleet);
-            for (var i = 0; i < _akashiTimers.Length; i++)
-            {
-                var label = _akashiTimers[i];
-                var labelHp = _shipInfoLabels.GetHpLabel(i);
-                if (timers == null || i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
-                {
-                    label.Visible = false;
-                    labelHp.ForeColor = DefaultForeColor;
-                    continue;
-                }
-                var timer = timers[i];
-                var stat = statuses[i];
-                label.Visible = true;
-                label.Text = timer.Span.ToString(@"mm\:ss");
-                if (timer.Diff == 0)
-                {
-                    labelHp.ForeColor = DefaultForeColor;
-                    continue;
-                }
-                labelHp.ForeColor = Color.DimGray;
-                labelHp.SetHp(stat.NowHp + timer.Diff, stat.MaxHp);
-            }
-            var msgs = _sniffer.GetAkashiTimerNotice();
-            var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
-            for (var i = 0; i < fn.Length; i++)
-            {
-                if (msgs[i] == "")
-                    continue;
-                var sound = msgs[i] == "20分経過しました。" ? _config.Akashi20MinSoundFile : _config.AkashiProgressSoundFile;
-                _noticeQueue.Enqueue("泊地修理 " + fn[i], msgs[i], sound);
-            }
-        }
-
         public void CreateDamagedShipList()
         {
             var parent = panelDamagedShipList;
@@ -579,10 +543,15 @@ namespace KancolleSniffer
                     new ShipLabel {Location = new Point(1, y), Size = new Size(11, height)},
                     new ShipLabel {Location = new Point(79, y), AutoSize = true},
                     new ShipLabel {Location = new Point(123, y), Size = new Size(5, height - 1)},
-                    new ShipLabel {Location = new Point(10, y), AutoSize = true}
+                    new ShipLabel {Location = new Point(10, y), AutoSize = true},
+                    new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, height + 3)}
                 });
                 foreach (var label in _damagedShipList[i])
+                {
                     label.Scale(_scaleFactor);
+                    label.PresetColor =
+                        label.BackColor = i % 2 == 1 ? SystemColors.Control : SystemColors.ControlLightLight;
+                }
             }
             parent.ResumeLayout();
         }
@@ -601,12 +570,12 @@ namespace KancolleSniffer
                 labels[fleet].Text = "";
                 labels[name].SetName("なし");
                 labels[time].Text = "";
-                labels[damage].BackColor = DefaultBackColor;
+                labels[damage].BackColor = labels[damage].PresetColor;
                 return;
             }
             parent.Size = new Size(width, (int)Math.Round(_scaleFactor.Height * (num * 16 + 3)));
+            var colors = new[] {Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red};
             var fn = new[] {"", "1", "2", "3", "4"};
-            var colors = new[] {DefaultBackColor, Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red};
             for (var i = 0; i < num; i++)
             {
                 var e = list[i];
@@ -615,7 +584,9 @@ namespace KancolleSniffer
                 labels[name].SetName(e.Name);
                 var t = e.RepairTime;
                 labels[time].Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)t.TotalHours, t);
-                labels[damage].BackColor = colors[(int)e.DamageLevel];
+                labels[damage].BackColor = (int)e.DamageLevel == 0
+                    ? labels[damage].PresetColor
+                    : colors[(int)e.DamageLevel - 1];
             }
         }
 
