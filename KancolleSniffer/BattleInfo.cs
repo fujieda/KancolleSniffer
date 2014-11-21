@@ -155,7 +155,7 @@ namespace KancolleSniffer
             var damages = ((dynamic[])hougeki.api_damage).Skip(1).SelectMany(x => (double[])x);
             foreach (var hit in targets.Zip(damages, (t, d) => new {t, d}))
             {
-                if (hit.t - 1 < ships.Length)
+                if (1 <= hit.t && hit.t <= ships.Length)
                     ships[hit.t - 1].NowHp -= (int)hit.d;
             }
         }
