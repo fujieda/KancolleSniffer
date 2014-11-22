@@ -61,13 +61,7 @@ namespace KancolleSniffer
             var labels = new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4};
             for (var i = 0; i < labels.Length; i++)
                 labels[i].Tag = i;
-            _shipInfoLabels = new ShipInfoLabels(panelShipInfo);
-            for (var i = 0; i < ShipInfo.MemberCount; i++)
-            {
-                var label = _shipInfoLabels.GetNameLabel(i);
-                var tmp = i;
-                label.Click += (o, e) => ShowShipOnShipList(tmp);
-            }
+            _shipInfoLabels = new ShipInfoLabels(panelShipInfo, ShowShipOnShipList);
             CreateDamagedShipList();
             CreateNDockLabels();
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
@@ -273,10 +267,11 @@ namespace KancolleSniffer
             UpdateInfo(_sniffer.Sniff(lines[0], lines[1], json));
         }
 
-        private void ShowShipOnShipList(int idx)
+        private void ShowShipOnShipList(object sender, EventArgs ev)
         {
             if (!_shipListForm.Visible)
                 return;
+            var idx = (int)((Control)sender).Tag;
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             if (statuses.Length <= idx)
                 return;

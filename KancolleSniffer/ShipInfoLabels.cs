@@ -29,13 +29,13 @@ namespace KancolleSniffer
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
         private readonly Color[] _columnColors = {SystemColors.Control, SystemColors.ControlLightLight};
 
-        public ShipInfoLabels(Control parent)
+        public ShipInfoLabels(Control parent, EventHandler onClick)
         {
-            CreateLabels(parent);
+            CreateLabels(parent, onClick);
             CreateAkashiTimers(parent);
         }
 
-        private void CreateLabels(Control parent)
+        private void CreateLabels(Control parent, EventHandler onClick)
         {
             parent.SuspendLayout();
             const int top = 3, height = 12, lh = 16;
@@ -82,18 +82,14 @@ namespace KancolleSniffer
                 });
                 _labels[i][0].SizeChanged += labelHP_SizeChanged;
                 foreach (var label in _labels[i])
-                    label.Scale(ShipLabel.ScaleFactor);
-                foreach (var label in _labels[i])
                 {
+                    label.Scale(ShipLabel.ScaleFactor);
                     label.PresetColor = label.BackColor = _columnColors[i % 2];
+                    label.Tag = i;
+                    label.Click += onClick;
                 }
             }
             parent.ResumeLayout();
-        }
-
-        public ShipLabel GetNameLabel(int idx)
-        {
-            return _labels[idx][4];
         }
 
         private void labelHP_SizeChanged(object sender, EventArgs e)
