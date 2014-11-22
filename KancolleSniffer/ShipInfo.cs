@@ -165,6 +165,7 @@ namespace KancolleSniffer
                 InspectShipData(json.api_ship);
                 InspectBasic(json.api_basic);
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
+                _conditionTimer.SetTimer();
             }
             else if (json.api_data()) // ship2
             {
@@ -172,6 +173,7 @@ namespace KancolleSniffer
                 InspectDeck(json.api_data_deck);
                 InspectShipData(json.api_data);
                 _itemInfo.NowShips = ((object[])json.api_data).Length;
+                _conditionTimer.SetTimer();
             }
             else if (json.api_ship_data()) // ship3
             {
@@ -225,7 +227,6 @@ namespace KancolleSniffer
                     LoS = (int)entry.api_sakuteki[0]
                 };
             }
-            _conditionTimer.SetTimer();
         }
 
         private void InspectBasic(dynamic json)
