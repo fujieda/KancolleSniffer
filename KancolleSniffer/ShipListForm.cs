@@ -214,10 +214,12 @@ namespace KancolleSniffer
         {
             var config = _config.ShipList;
             var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
+            e.Cancel = true;
+            if (!Visible)
+                return;
             config.Location = bounds.Location;
             config.Size = bounds.Size;
             Hide();
-            e.Cancel = true;
         }
 
         public void ShowShip(int id)
