@@ -324,7 +324,7 @@ namespace KancolleSniffer
             return _shipInfo.GetLineOfSights(fleet);
         }
 
-        public DamageStatus[] DamagedShipList
+        public ShipStatus[] DamagedShipList
         {
             get { return _shipInfo.GetDamagedShipList(_dockInfo); }
         }

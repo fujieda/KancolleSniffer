@@ -63,12 +63,12 @@ namespace KancolleSniffer
             return ratio > 0.75 ? Damage.Minor : ratio > 0.5 ? Damage.Small : ratio > 0.25 ? Damage.Half : Damage.Badly;
         }
 
-        public TimeSpan RepairTime()
+        public TimeSpan RepairTime
         {
-            return RepairTime(MaxHp - NowHp);
+            get { return CalcRepairTime(MaxHp - NowHp); }
         }
 
-        public TimeSpan RepairTime(int damage)
+        public TimeSpan CalcRepairTime(int damage)
         {
             var weight = Spec.RepairWeight;
             var level = Level < 12 ? Level * 10 : Level * 5 + Math.Floor(Math.Sqrt(Level - 11)) * 10 + 50;
@@ -105,22 +105,6 @@ namespace KancolleSniffer
             if (ratio > 0)
                 return 3;
             return 4;
-        }
-    }
-
-    public class DamageStatus
-    {
-        public int Fleet { private set; get; }
-        public string Name { private set; get; }
-        public ShipStatus.Damage DamageLevel { private set; get; }
-        public TimeSpan RepairTime { private set; get; }
-
-        public DamageStatus(int fleet, string name, ShipStatus.Damage damage, TimeSpan time)
-        {
-            Fleet = fleet;
-            Name = name;
-            DamageLevel = damage;
-            RepairTime = time;
         }
     }
 
@@ -428,13 +412,11 @@ namespace KancolleSniffer
                 select (int)Math.Floor(item.AntiAir * Math.Sqrt(slot.onslot))).DefaultIfEmpty().Sum();
         }
 
-        public DamageStatus[] GetDamagedShipList(DockInfo dockInfo)
+        public ShipStatus[] GetDamagedShipList(DockInfo dockInfo)
         {
-            int oi;
-            return (from s in _shipInfo.Values
+            return (from s in ShipList
                 where s.NowHp < s.MaxHp && !dockInfo.InNDock(s.Id)
-                select new DamageStatus(FindFleet(s.Id, out oi), s.Name, s.DamageLevel, s.RepairTime())).
-                OrderByDescending(entry => entry.RepairTime).ToArray();
+                select s).OrderByDescending(s => s.RepairTime).ToArray();
         }
 
         public double GetLineOfSights(int fleet)
