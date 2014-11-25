@@ -48,7 +48,7 @@ namespace KancolleSniffer
         {
             InitializeComponent();
             FiddlerApplication.BeforeRequest += FiddlerApplication_BeforeRequest;
-            FiddlerApplication.BeforeResponse += FiddlerApplication_BeforeResponse;
+            FiddlerApplication.AfterSessionComplete += FiddlerApplication_AfterSessionComplete;
             _wmp.PlayStateChange += new EventHandler(_wmp_PlayStateChange);
             _configDialog = new ConfigDialog(_config, this);
             _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
@@ -77,16 +77,10 @@ namespace KancolleSniffer
                                       path.StartsWith("/kcs/resources/") || path.StartsWith("/kcs/sound/")))
                 oSession["x-overrideGateway"] = string.Format("localhost:{0:D}", proxy.UpstreamPort); // 上流プロキシを設定する
             if (!path.StartsWith("/kcsapi/api_")) // 艦これのAPI以外は無視する
-            {
                 oSession.Ignore();
-                return;
-            }
-            // 戦闘開始のタイミングのずれを防ぐためにバッファする
-            if (_sniffer.IsBattleAPI(path))
-                oSession.bBufferResponse = true;
         }
 
-        private void FiddlerApplication_BeforeResponse(Session oSession)
+        private void FiddlerApplication_AfterSessionComplete(Session oSession)
         {
             if (!oSession.bHasResponse || !oSession.uriContains("/kcsapi/api_"))
                 return;
