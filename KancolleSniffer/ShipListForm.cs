@@ -41,8 +41,6 @@ namespace KancolleSniffer
 
         public void UpdateList()
         {
-            if (!Visible)
-                return;
             CreateList();
             CreateListLabels();
             SetShipLabels();

@@ -358,7 +358,8 @@ namespace KancolleSniffer
             UpdateChargeInfo();
             UpdateCondTimers();
             UpdateDamagedShipList();
-            _shipListForm.UpdateList();
+            if (_shipListForm.Visible)
+                _shipListForm.UpdateList();
         }
 
         private void NotifyDamagedShip()
@@ -730,8 +731,8 @@ namespace KancolleSniffer
 
         private void ShipListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _shipListForm.Show();
             _shipListForm.UpdateList();
+            _shipListForm.Show();
             if (_shipListForm.WindowState == FormWindowState.Minimized)
                 _shipListForm.WindowState = FormWindowState.Normal;
             _shipListForm.Activate();
