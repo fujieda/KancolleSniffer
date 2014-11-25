@@ -732,6 +732,8 @@ namespace KancolleSniffer
         {
             _shipListForm.Show();
             _shipListForm.UpdateList();
+            if (_shipListForm.WindowState == FormWindowState.Minimized)
+                _shipListForm.WindowState = FormWindowState.Normal;
             _shipListForm.Activate();
         }
     }
