@@ -122,6 +122,7 @@ namespace KancolleSniffer
         private readonly bool[] _inSortie = new bool[FleetCount];
         private int _hqLevel;
         private readonly List<int> _escapedShips = new List<int>();
+        private int _combinedFleetType;
 
         public ShipInfo(ShipMaster shipMaster, ItemInfo itemInfo)
         {
@@ -148,6 +149,7 @@ namespace KancolleSniffer
                 InspectDeck(json.api_deck_port);
                 InspectShipData(json.api_ship);
                 InspectBasic(json.api_basic);
+                _combinedFleetType = json.api_combined_flag() ? (int)json.api_combined_flag : 0;
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
                 _conditionTimer.SetTimer();
             }
@@ -325,8 +327,17 @@ namespace KancolleSniffer
         {
             var values = HttpUtility.ParseQueryString(request);
             var fleet = int.Parse(values["api_deck_id"]) - 1;
-            _conditionTimer.Disable(fleet);
-            _inSortie[fleet] = true;
+            if (_combinedFleetType == 0)
+            {
+                _conditionTimer.Disable(fleet);
+                _inSortie[fleet] = true;
+            }
+            else
+            {
+                _conditionTimer.Disable(0);
+                _conditionTimer.Disable(1);
+                _inSortie[0] = _inSortie[1] = true;
+            }
         }
 
         public void RepairShip(int id)
