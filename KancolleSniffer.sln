@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KancolleSniffer", "KancolleSniffer\KancolleSniffer.csproj", "{C2DD27CE-5AB7-408B-B60C-F3BE22B01E85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KancolleSniffer.Test", "KancolleSniffer.Test\KancolleSniffer.Test.csproj", "{C28C111B-2CB5-4000-8F3A-BF4000789B13}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C2DD27CE-5AB7-408B-B60C-F3BE22B01E85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2DD27CE-5AB7-408B-B60C-F3BE22B01E85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2DD27CE-5AB7-408B-B60C-F3BE22B01E85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C28C111B-2CB5-4000-8F3A-BF4000789B13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C28C111B-2CB5-4000-8F3A-BF4000789B13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C28C111B-2CB5-4000-8F3A-BF4000789B13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C28C111B-2CB5-4000-8F3A-BF4000789B13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
