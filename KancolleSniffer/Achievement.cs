@@ -29,6 +29,11 @@ namespace KancolleSniffer
         public double Value { get { return (_current - _start) / 1428.0; } }
         public List<int> ResetHours { get; set; }
 
+        public Achievement()
+        {
+            ResetHours = new List<int>();
+        }
+
         public void InspectBasic(dynamic json)
         {
             _current = (int)json.api_experience;

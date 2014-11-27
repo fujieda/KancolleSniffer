@@ -125,6 +125,7 @@ namespace KancolleSniffer
             foreach (Material m in Enum.GetValues(typeof (Material)))
                 MaterialHistory[(int)m] = new MaterialCount();
             MarginShips = 4;
+            MarginEquips = 10;
         }
 
         public void InspectBasic(dynamic json)
