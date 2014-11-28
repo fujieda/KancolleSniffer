@@ -134,6 +134,12 @@ namespace KancolleSniffer
             _prevBattle = null;
         }
 
+        public void CausePracticeDamage()
+        {
+            CauseDamage();
+            HasDamagedShip = false;
+        }
+
         private void UpdateDamgedShipNames(IEnumerable<ShipStatus> ships)
         {
             DamagedShipNames =

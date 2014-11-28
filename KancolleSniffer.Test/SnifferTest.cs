@@ -49,11 +49,22 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void DamageInPracticeNotSpillIntoSortie()
         {
-            var expected = new[] { 31, 15, 15 };
+            var expected = new[] {31, 15, 15};
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "battle_001");
             var result = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
             PAssert.That(() => (expected.SequenceEqual(result)));
+        }
+
+        /// <summary>
+        /// 演習では大破警告を出さない
+        /// </summary>
+        [TestMethod]
+        public void IgnoreDamagedShipsInPractice()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "practice_001");
+            PAssert.That(() => !sniffer.Battle.HasDamagedShip);
         }
     }
 }
