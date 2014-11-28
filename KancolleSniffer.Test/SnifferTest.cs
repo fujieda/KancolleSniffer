@@ -66,5 +66,18 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "practice_001");
             PAssert.That(() => !sniffer.Battle.HasDamagedShip);
         }
+
+        /// <summary>
+        /// 夜戦のダメージを戦闘結果に反映する
+        /// </summary>
+        [TestMethod]
+        public void CaptureDamageInNightCombat()
+        {
+            var expected = new[] {28, 1, 13};
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "battle_002");
+            var result = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
+            PAssert.That(() => (expected.SequenceEqual(result)));
+        }
     }
 }

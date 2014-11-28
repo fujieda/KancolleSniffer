@@ -261,6 +261,7 @@ namespace KancolleSniffer
         public bool IsNormalBattleAPI(string url)
         {
             return url.EndsWith("api_req_sortie/battle") || url.EndsWith("api_req_practice/battle") ||
+                   url.EndsWith("api_req_battle_midnight/battle") ||
                    url.EndsWith("api_req_battle_midnight/sp_midnight") ||
                    url.EndsWith("api_req_practice/midnight_battle");
         }

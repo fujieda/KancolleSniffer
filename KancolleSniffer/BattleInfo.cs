@@ -149,7 +149,11 @@ namespace KancolleSniffer
 
         private int DeckId(dynamic json)
         {
-            return (int)(json.api_dock_id() ? json.api_dock_id : json.api_deck_id) - 1; // 昼戦はtypoをしている
+            if (json.api_dock_id()) // 昼戦はtypoしている
+                return (int)json.api_dock_id - 1;
+            if (json.api_deck_id is string) // 通常の夜戦では文字列
+                return int.Parse(json.api_deck_id) - 1;
+            return (int)json.api_deck_id - 1;
         }
 
         private void CauseSimpleDamage(ShipStatus[] ships, dynamic rawDamage)
