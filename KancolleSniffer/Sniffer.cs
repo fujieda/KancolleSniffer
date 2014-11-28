@@ -215,7 +215,7 @@ namespace KancolleSniffer
                 _shipInfo.StartSortie(request);
                 return Update.Battle | Update.Timer;
             }
-            if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_practice/battleresult"))
+            if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_practice/battle_result"))
             {
                 _battleInfo.CauseDamage();
                 return Update.Ship;

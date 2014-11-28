@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using Codeplex.Data;
+using ExpressionToCodeLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test
@@ -39,6 +41,19 @@ namespace KancolleSniffer.Test
                 var json = DynamicJson.Parse(triple[2]);
                 sniffer.Sniff(triple[0], triple[1], json);
             }
+        }
+
+        /// <summary>
+        ///  演習で受けたダメージが次の戦闘の結果に影響しない
+        /// </summary>
+        [TestMethod]
+        public void DamageInPracticeNotSpillIntoSortie()
+        {
+            var expected = new[] { 31, 15, 15 };
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "battle_001");
+            var result = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
+            PAssert.That(() => (expected.SequenceEqual(result)));
         }
     }
 }
