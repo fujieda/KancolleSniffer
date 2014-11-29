@@ -253,7 +253,10 @@ namespace KancolleSniffer
             foreach (var s in new[] {"url: ", "request: ", "response: "})
             {
                 if (!_playLog.MoveNext() || !_playLog.Current.StartsWith(s))
+                {
+                    labelPlayLog.Visible = false;
                     return;
+                }
                 lines.Add(_playLog.Current.Substring(s.Count()));
             }
             labelPlayLog.Visible = !labelPlayLog.Visible;
@@ -360,20 +363,20 @@ namespace KancolleSniffer
         {
             if (_sniffer.Battle.HasDamagedShip)
                 _noticeQueue.Enqueue("大破した艦娘がいます", string.Join(" ", _sniffer.Battle.DamagedShipNames),
-                    _config.DamagedShipSoundFile);            
+                    _config.DamagedShipSoundFile);
         }
 
         private void NotifyAkashiTimer()
         {
             var msgs = _sniffer.GetAkashiTimerNotice();
-            var fn = new[] { "第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊" };
+            var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             for (var i = 0; i < fn.Length; i++)
             {
                 if (msgs[i] == "")
                     continue;
                 var sound = msgs[i] == "20分経過しました。" ? _config.Akashi20MinSoundFile : _config.AkashiProgressSoundFile;
                 _noticeQueue.Enqueue("泊地修理 " + fn[i], msgs[i], sound);
-            }            
+            }
         }
 
         private void UpdateLoS()
