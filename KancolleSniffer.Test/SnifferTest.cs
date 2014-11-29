@@ -126,5 +126,16 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "combined_air_002");
             AssertEauqlCombinedResult(sniffer, new[] {13, 87, 90, 59, 69, 86}, new[] {47, 41, 5, 20, 43, 29});
         }
+
+        /// <summary>
+        /// 夜戦の間に昼戦の戦闘結果を見せない
+        /// </summary>
+        [TestMethod]
+        public void BattleResultNotVisibleInNightCombat()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "battle_003");
+            AssertEqualBattleResult(sniffer, new []{32, 16, 13});
+        }
     }
 }
