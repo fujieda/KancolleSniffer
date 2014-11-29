@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
 using Codeplex.Data;
 using ExpressionToCodeLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -73,11 +72,59 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void CaptureDamageInNightCombat()
         {
-            var expected = new[] {28, 1, 13};
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "battle_002");
+            AssertEqualBattleResult(sniffer, new[] {28, 1, 13});
+        }
+
+        private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected)
+        {
             var result = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
             PAssert.That(() => (expected.SequenceEqual(result)));
+        }
+
+        /// <summary>
+        /// 連合艦隊(水上打撃部隊)による戦闘のダメージを結果に反映する
+        /// </summary>
+        [TestMethod]
+        public void CombinedFleetSurface()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_surface_001");
+            AssertEauqlCombinedResult(sniffer, new[] {40, 77, 77, 33, 51, 47}, new[] {39, 35, 11, 39, 37, 40});
+            SniffLogFile(sniffer, "combined_surface_002");
+            AssertEauqlCombinedResult(sniffer, new[] {40, 77, 77, 33, 15, 6}, new[] {39, 35, 4, 3, 14, 40});
+        }
+
+        private void AssertEauqlCombinedResult(Sniffer sniffer, IEnumerable<int> expected0, IEnumerable<int> expected1)
+        {
+            var result0 = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
+            var result1 = sniffer.GetShipStatuses(1).Select(s => s.NowHp);
+            PAssert.That(() => (expected0.SequenceEqual(result0) && expected1.SequenceEqual(result1)));
+        }
+
+        /// <summary>
+        /// 開幕夜戦のダメージを戦闘結果に反映する
+        /// </summary>
+        [TestMethod]
+        public void SpMidnight()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "sp_midnight_001");
+            AssertEqualBattleResult(sniffer, new[] {1});
+        }
+
+        /// <summary>
+        /// 連合艦隊(空母機動部隊)による戦闘のダメージを結果に反映する
+        /// </summary>
+        [TestMethod]
+        public void CombinedFleetAir()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_air_001");
+            AssertEauqlCombinedResult(sniffer, new[] {40, 98, 90, 66, 78, 86}, new[] {47, 41, 5, 42, 43, 29});
+            SniffLogFile(sniffer, "combined_air_002");
+            AssertEauqlCombinedResult(sniffer, new[] {13, 87, 90, 59, 69, 86}, new[] {47, 41, 5, 20, 43, 29});
         }
     }
 }
