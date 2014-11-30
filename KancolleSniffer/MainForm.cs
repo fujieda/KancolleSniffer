@@ -348,8 +348,7 @@ namespace KancolleSniffer
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             _shipInfoLabels.SetShipInfo(statuses);
             NotifyDamagedShip();
-            _shipInfoLabels.SetAkashiTimer(statuses, _sniffer.GetAkashiTimers(_currentFleet));
-            NotifyAkashiTimer();
+            UpdateAkashiTimer();
             labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
             UpdateLoS();
             UpdateChargeInfo();
@@ -480,8 +479,7 @@ namespace KancolleSniffer
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
-            _shipInfoLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet),
-                _sniffer.GetAkashiTimers(_currentFleet));
+            UpdateAkashiTimer();
         }
 
         private void SetTimerLabel(Label label, RingTimer timer)
@@ -521,6 +519,13 @@ namespace KancolleSniffer
                     return;
                 _noticeQueue.Enqueue("疲労が回復しました", fn[i] + " cond" + notice[i].ToString("D"), _config.ConditionSoundFile);
             }
+        }
+
+        private void UpdateAkashiTimer()
+        {
+            _shipInfoLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet),
+                _sniffer.GetAkashiTimers(_currentFleet));
+            NotifyAkashiTimer();
         }
 
         public void CreateDamagedShipList()
