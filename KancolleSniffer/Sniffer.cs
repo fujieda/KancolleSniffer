@@ -315,6 +315,11 @@ namespace KancolleSniffer
             return _shipInfo.GetShipStatuses(fleet);
         }
 
+        public int[] GetDeck(int fleet)
+        {
+            return _shipInfo.GetDeck(fleet);
+        }
+
         public ChargeStatus[] ChargeStatuses
         {
             get { return _shipInfo.ChargeStatuses; }

@@ -255,16 +255,16 @@ namespace KancolleSniffer
             }
             int oi;
             var of = FindFleet(ship, out oi);
-            if (of != -1)
-            {
-                // 入れ替えの場合
-                if ((_decks[of][oi] = _decks[fleet][idx]) == -1)
-                    WithdrowShip(of, oi);
-                if (of != fleet)
-                    _conditionTimer.Invalidate(of);
-            }
+            var orig = _decks[fleet][idx];
             _decks[fleet][idx] = ship;
             _conditionTimer.Invalidate(fleet);
+            if (of == -1)
+                return;
+            // 入れ替えの場合
+            if ((_decks[of][oi] = orig) == -1)
+                WithdrowShip(of, oi);
+            if (of != fleet)
+                _conditionTimer.Invalidate(of);
         }
 
         private int FindFleet(int ship, out int idx)
