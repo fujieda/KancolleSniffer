@@ -105,7 +105,7 @@ namespace KancolleSniffer
                 foreach (var label in labels)
                 {
                     label.PresetColor =
-                        label.BackColor = i % 2 == 1 ? SystemColors.Control : SystemColors.ControlLightLight;
+                        label.BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2];
                 }
             }
             for (var i = _labelList.Count; i > _currentList.Length; i--)

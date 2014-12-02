@@ -547,8 +547,7 @@ namespace KancolleSniffer
                 foreach (var label in _damagedShipList[i])
                 {
                     label.Scale(_scaleFactor);
-                    label.PresetColor =
-                        label.BackColor = i % 2 == 1 ? SystemColors.Control : SystemColors.ControlLightLight;
+                    label.PresetColor = label.BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2];
                 }
             }
             parent.ResumeLayout();

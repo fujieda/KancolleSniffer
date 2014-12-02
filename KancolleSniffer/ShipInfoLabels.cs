@@ -27,7 +27,7 @@ namespace KancolleSniffer
         private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
         private const int LabelHpRight = 130;
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
-        private readonly Color[] _columnColors = {SystemColors.Control, SystemColors.ControlLightLight};
+        public static Color[] ColumnColors = {SystemColors.Control, Color.FromArgb(255, 250, 250, 250)};
 
         public ShipInfoLabels(Control parent, EventHandler onClick)
         {
@@ -50,7 +50,7 @@ namespace KancolleSniffer
             foreach (var label in headings)
             {
                 label.Scale(ShipLabel.ScaleFactor);
-                label.BackColor = SystemColors.ControlLightLight;
+                label.BackColor = ColumnColors[1];
             }
             parent.Controls.AddRange(headings);
             for (var i = 0; i < _labels.Length; i++)
@@ -84,7 +84,7 @@ namespace KancolleSniffer
                 foreach (var label in _labels[i])
                 {
                     label.Scale(ShipLabel.ScaleFactor);
-                    label.PresetColor = label.BackColor = _columnColors[i % 2];
+                    label.PresetColor = label.BackColor = ColumnColors[i % 2];
                     label.Tag = i;
                     label.Click += onClick;
                 }
@@ -126,7 +126,7 @@ namespace KancolleSniffer
                 parent.Controls.Add(
                     label = _akashiTimers[i] = new Label {Location = new Point(x, y), AutoSize = true, Visible = false});
                 parent.Controls.SetChildIndex(label, 0);
-                label.BackColor = _columnColors[i % 2];
+                label.BackColor = ColumnColors[i % 2];
             }
             foreach (var label in _akashiTimers)
                 label.Scale(ShipLabel.ScaleFactor);
