@@ -48,6 +48,7 @@ namespace KancolleSniffer
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panelHeadquarters = new System.Windows.Forms.Panel();
+            this.labelPlayLog = new System.Windows.Forms.Label();
             this.labelLogin = new System.Windows.Forms.Label();
             this.labelBucketHistoryButton = new System.Windows.Forms.Label();
             this.labelAchievement = new System.Windows.Forms.Label();
@@ -156,7 +157,6 @@ namespace KancolleSniffer
             this.labelDamgedShipListButton = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.toolTipLoS = new System.Windows.Forms.ToolTip(this.components);
-            this.labelPlayLog = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -188,6 +188,16 @@ namespace KancolleSniffer
             this.panelHeadquarters.Name = "panelHeadquarters";
             this.panelHeadquarters.Size = new System.Drawing.Size(238, 33);
             this.panelHeadquarters.TabIndex = 0;
+            // 
+            // labelPlayLog
+            // 
+            this.labelPlayLog.AutoSize = true;
+            this.labelPlayLog.Location = new System.Drawing.Point(224, 2);
+            this.labelPlayLog.Name = "labelPlayLog";
+            this.labelPlayLog.Size = new System.Drawing.Size(11, 12);
+            this.labelPlayLog.TabIndex = 24;
+            this.labelPlayLog.Text = "*";
+            this.labelPlayLog.Visible = false;
             // 
             // labelLogin
             // 
@@ -644,21 +654,21 @@ namespace KancolleSniffer
             // 
             this.labelMissionName3.Location = new System.Drawing.Point(60, 33);
             this.labelMissionName3.Name = "labelMissionName3";
-            this.labelMissionName3.Size = new System.Drawing.Size(133, 12);
+            this.labelMissionName3.Size = new System.Drawing.Size(132, 12);
             this.labelMissionName3.TabIndex = 5;
             // 
             // labelMissionName2
             // 
             this.labelMissionName2.Location = new System.Drawing.Point(60, 18);
             this.labelMissionName2.Name = "labelMissionName2";
-            this.labelMissionName2.Size = new System.Drawing.Size(133, 12);
+            this.labelMissionName2.Size = new System.Drawing.Size(132, 12);
             this.labelMissionName2.TabIndex = 4;
             // 
             // labelMissionName1
             // 
             this.labelMissionName1.Location = new System.Drawing.Point(60, 3);
             this.labelMissionName1.Name = "labelMissionName1";
-            this.labelMissionName1.Size = new System.Drawing.Size(133, 12);
+            this.labelMissionName1.Size = new System.Drawing.Size(132, 12);
             this.labelMissionName1.TabIndex = 3;
             // 
             // labelMission3
@@ -1180,16 +1190,6 @@ namespace KancolleSniffer
             this.label31.Size = new System.Drawing.Size(41, 12);
             this.label31.TabIndex = 46;
             this.label31.Text = "要修復";
-            // 
-            // labelPlayLog
-            // 
-            this.labelPlayLog.AutoSize = true;
-            this.labelPlayLog.Location = new System.Drawing.Point(224, 2);
-            this.labelPlayLog.Name = "labelPlayLog";
-            this.labelPlayLog.Size = new System.Drawing.Size(11, 12);
-            this.labelPlayLog.TabIndex = 24;
-            this.labelPlayLog.Text = "*";
-            this.labelPlayLog.Visible = false;
             // 
             // MainForm
             // 

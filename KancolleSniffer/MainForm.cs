@@ -132,12 +132,6 @@ namespace KancolleSniffer
         private void MainForm_Load(object sender, EventArgs e)
         {
             _config.Load();
-            if (!_config.AutoScale)
-            {
-                // DPIに応じて拡大したくないときはフォントを小さくする
-                Font = new Font(DefaultFont.Name, 9 / _scaleFactor.Height);
-                labelLogin.Font = new Font(DefaultFont.Name, 9.75f / _scaleFactor.Height);
-            }
             RestoreLocation();
             ApplyConfig();
             ApplyLogSetting();
@@ -559,10 +553,9 @@ namespace KancolleSniffer
             var parent = panelDamagedShipList;
             var list = _sniffer.DamagedShipList;
             var num = Math.Min(list.Length, _damagedShipList.Length);
-            var width = (int)Math.Round(_scaleFactor.Width * 134);
             if (num == 0)
             {
-                parent.Size = new Size(width, (int)Math.Round(_scaleFactor.Height * 19));
+                parent.Size = new Size(parent.Width, (int)Math.Round(_scaleFactor.Height * 19));
                 var labels = _damagedShipList[0];
                 labels[fleet].Text = "";
                 labels[name].SetName("なし");
@@ -570,7 +563,7 @@ namespace KancolleSniffer
                 labels[damage].BackColor = labels[damage].PresetColor;
                 return;
             }
-            parent.Size = new Size(width, (int)Math.Round(_scaleFactor.Height * (num * 16 + 3)));
+            parent.Size = new Size(parent.Width, (int)Math.Round(_scaleFactor.Height * (num * 16 + 3)));
             var colors = new[] {Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red};
             var fn = new[] {"", "1", "2", "3", "4"};
             for (var i = 0; i < num; i++)

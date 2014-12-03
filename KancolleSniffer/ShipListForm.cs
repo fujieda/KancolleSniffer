@@ -67,7 +67,7 @@ namespace KancolleSniffer
             {
                 const int height = 12, lh = 16;
                 var y = 3 + lh * i +
-                    (int)Math.Round(panelShipList.AutoScrollPosition.Y / (_config.AutoScale ? ShipLabel.ScaleFactor.Height : 1f));
+                        (int)Math.Round(panelShipList.AutoScrollPosition.Y / ShipLabel.ScaleFactor.Height);
                 var labels = new[]
                 {
                     new ShipLabel {Location = new Point(HpLabelRight, y), AutoSize = true},
@@ -91,14 +91,11 @@ namespace KancolleSniffer
                     },
                     new ShipLabel {Location = new Point(10, y), AutoSize = true},
                     new ShipLabel {Location = new Point(1, y), AutoSize = true},
-                    new ShipLabel{Location = new Point(0, y - 1), Size = new Size(PanelWidth - 3, lh - 1)}
+                    new ShipLabel {Location = new Point(0, y - 1), Size = new Size(PanelWidth - 3, lh - 1)}
                 };
                 _labelList.Add(labels);
-                if (_config.AutoScale)
-                {
-                    foreach (var label in labels)
-                        label.Scale(ShipLabel.ScaleFactor);
-                }
+                foreach (var label in labels)
+                    label.Scale(ShipLabel.ScaleFactor);
                 // ReSharper disable once CoVariantArrayConversion
                 panelShipList.Controls.AddRange(labels);
                 labels[0].SizeChanged += labelHP_SizeChanged;
@@ -177,25 +174,13 @@ namespace KancolleSniffer
         {
             var label = (Label)sender;
             label.Location = new Point(
-                (int)Math.Round(HpLabelRight * (_config.AutoScale ? ShipLabel.ScaleFactor.Width : 1f)) -
-                label.Width, label.Top);
+                (int)Math.Round(HpLabelRight * ShipLabel.ScaleFactor.Width - label.Width), label.Top);
         }
 
         private void ShipListForm_Load(object sender, EventArgs e)
         {
-            var panelWidth = PanelWidth + SystemInformation.VerticalScrollBarWidth;
-            if (!_config.AutoScale)
-            {
-                // DPIに応じて拡大したくないときはフォントを小さくする
-                Font = new Font(DefaultFont.Name, DefaultFont.Size / ShipLabel.ScaleFactor.Height);
-            }
-            else
-            {
-                // フォントサイズに合わせて拡大する
-                panelWidth = (int)Math.Round(panelWidth * ShipLabel.ScaleFactor.Width);
-            }
-            panelShipList.Width = panelWidth;
-            Width = panelWidth + 12 + (Width - ClientSize.Width);
+            panelShipList.Width = (int)Math.Round(PanelWidth * ShipLabel.ScaleFactor.Width) + SystemInformation.VerticalScrollBarWidth;
+            Width = panelShipList.Width + 12 + (Width - ClientSize.Width);
             MinimumSize = new Size(Width, 0);
             MaximumSize = new Size(Width, int.MaxValue);
             var config = _config.ShipList;
@@ -225,7 +210,7 @@ namespace KancolleSniffer
             var i = Array.FindIndex(_currentList, s => s.Id == id);
             if (i == -1)
                 return;
-            var y = (int)Math.Round((_config.AutoScale ? ShipLabel.ScaleFactor.Height : 1f) * 16 * i);
+            var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * 16 * i);
             panelShipList.AutoScrollPosition = new Point(0, y);
         }
 
