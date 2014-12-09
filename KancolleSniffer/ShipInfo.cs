@@ -70,9 +70,17 @@ namespace KancolleSniffer
 
         public TimeSpan CalcRepairTime(int damage)
         {
-            var weight = Spec.RepairWeight;
-            var level = Level < 12 ? Level * 10 : Level * 5 + Math.Floor(Math.Sqrt(Level - 11)) * 10 + 50;
-            return TimeSpan.FromSeconds(Math.Floor(level * weight * damage) + 30);
+            return TimeSpan.FromSeconds(RepairSecPerHp * damage + 30);
+        }
+
+        public double RepairSecPerHp
+        {
+            get
+            {
+                var weight = Spec.RepairWeight;
+                var level = Level < 12 ? Level * 10 : Level * 5 + Math.Floor(Math.Sqrt(Level - 11)) * 10 + 50;
+                return level * weight;
+            }
         }
     }
 

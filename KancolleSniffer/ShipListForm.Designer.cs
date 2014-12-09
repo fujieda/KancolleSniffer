@@ -58,7 +58,13 @@ namespace KancolleSniffer
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.comboBoxGroup = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.panelRepairHeader = new System.Windows.Forms.Panel();
+            this.label10 = new System.Windows.Forms.Label();
             this.panelGroupHeader.SuspendLayout();
+            this.panelRepairHeader.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelShipList
@@ -125,16 +131,16 @@ namespace KancolleSniffer
             this.panelGroupHeader.Controls.Add(this.label8);
             this.panelGroupHeader.Controls.Add(this.label7);
             this.panelGroupHeader.Controls.Add(this.label6);
-            this.panelGroupHeader.Location = new System.Drawing.Point(104, 3);
+            this.panelGroupHeader.Location = new System.Drawing.Point(103, 3);
             this.panelGroupHeader.Name = "panelGroupHeader";
-            this.panelGroupHeader.Size = new System.Drawing.Size(136, 19);
+            this.panelGroupHeader.Size = new System.Drawing.Size(137, 19);
             this.panelGroupHeader.TabIndex = 16;
             this.panelGroupHeader.Visible = false;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(103, 5);
+            this.label9.Location = new System.Drawing.Point(104, 5);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(13, 12);
             this.label9.TabIndex = 4;
@@ -143,7 +149,7 @@ namespace KancolleSniffer
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(73, 5);
+            this.label8.Location = new System.Drawing.Point(74, 5);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(13, 12);
             this.label8.TabIndex = 3;
@@ -152,7 +158,7 @@ namespace KancolleSniffer
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(43, 5);
+            this.label7.Location = new System.Drawing.Point(44, 5);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(13, 12);
             this.label7.TabIndex = 2;
@@ -161,7 +167,7 @@ namespace KancolleSniffer
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(13, 5);
+            this.label6.Location = new System.Drawing.Point(14, 5);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(13, 12);
             this.label6.TabIndex = 1;
@@ -178,7 +184,8 @@ namespace KancolleSniffer
             "B",
             "C",
             "D",
-            "設定"});
+            "設定",
+            "修復"});
             this.comboBoxGroup.Location = new System.Drawing.Point(6, 4);
             this.comboBoxGroup.Name = "comboBoxGroup";
             this.comboBoxGroup.Size = new System.Drawing.Size(48, 20);
@@ -186,11 +193,60 @@ namespace KancolleSniffer
             this.comboBoxGroup.SelectedIndexChanged += new System.EventHandler(this.comboBoxGroup_SelectedIndexChanged);
             this.comboBoxGroup.DropDownClosed += new System.EventHandler(this.comboBoxGroup_DropDownClosed);
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(1, 5);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(29, 12);
+            this.label11.TabIndex = 17;
+            this.label11.Text = "耐久";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(28, 5);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(34, 12);
+            this.label12.TabIndex = 17;
+            this.label12.Text = "レベル";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(68, 5);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(29, 12);
+            this.label13.TabIndex = 18;
+            this.label13.Text = "入渠";
+            // 
+            // panelRepairHeader
+            // 
+            this.panelRepairHeader.Controls.Add(this.label10);
+            this.panelRepairHeader.Controls.Add(this.label13);
+            this.panelRepairHeader.Controls.Add(this.label12);
+            this.panelRepairHeader.Controls.Add(this.label11);
+            this.panelRepairHeader.Location = new System.Drawing.Point(103, 3);
+            this.panelRepairHeader.Name = "panelRepairHeader";
+            this.panelRepairHeader.Size = new System.Drawing.Size(137, 19);
+            this.panelRepairHeader.TabIndex = 2;
+            this.panelRepairHeader.Visible = false;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(102, 5);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(35, 12);
+            this.label10.TabIndex = 19;
+            this.label10.Text = "/耐久";
+            // 
             // ShipListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(263, 262);
+            this.Controls.Add(this.panelRepairHeader);
             this.Controls.Add(this.panelGroupHeader);
             this.Controls.Add(this.checkBoxShipType);
             this.Controls.Add(this.label4);
@@ -209,6 +265,8 @@ namespace KancolleSniffer
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ShipListForm_KeyPress);
             this.panelGroupHeader.ResumeLayout(false);
             this.panelGroupHeader.PerformLayout();
+            this.panelRepairHeader.ResumeLayout(false);
+            this.panelRepairHeader.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,5 +286,10 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox comboBoxGroup;
+        private System.Windows.Forms.Panel panelRepairHeader;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
     }
 }

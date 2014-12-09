@@ -225,5 +225,11 @@ namespace KancolleSniffer
         {
             Text = status.ExpToNext.ToString("D");
         }
+
+        public void SetRepairTime(ShipStatus status)
+        {
+            var t = status.RepairTime;
+            Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)t.TotalHours, t);
+        }
     }
 }

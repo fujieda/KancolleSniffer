@@ -36,6 +36,8 @@ namespace KancolleSniffer
         private readonly List<Panel> _labelPanelList = new List<Panel>();
         private readonly List<CheckBox[]> _checkBoxesList = new List<CheckBox[]>();
         private readonly List<Panel> _checkBoxPanelList = new List<Panel>();
+        private readonly List<ShipLabel[]> _repairLabelList = new List<ShipLabel[]>();
+        private readonly List<Panel> _repairPanelList = new List<Panel>();
         public const int GroupCount = 4;
         private readonly HashSet<int>[] _groupSettings = new HashSet<int>[GroupCount];
 
@@ -55,16 +57,16 @@ namespace KancolleSniffer
 
         private void CreateList()
         {
-            var ships = FilterByGroup(_sniffer.ShipList).ToArray();
+            var ships = InRepairList() ?_sniffer.DamagedShipList : FilterByGroup(_sniffer.ShipList).ToArray();
             if (!_config.ShipList.ShipType)
             {
-                _currentList = ships.OrderBy(s => s, new CompareShipByExp()).ToArray();
+                _currentList = ships.OrderBy(s => s, new CompareShip(false, InRepairList())).ToArray();
                 return;
             }
             var types = from id in (from s in ships select s.Spec.ShipType).Distinct()
                 join stype in _sniffer.ShipTypeList on id equals stype.Id
-                select new ShipStatus {Spec = new ShipSpec {Name = stype.Name, ShipType = stype.Id}, Level = 1000};
-            _currentList = ships.Concat(types).OrderBy(s => s, new CompareShipByType()).ToArray();
+                select new ShipStatus {Spec = new ShipSpec {Name = stype.Name, ShipType = stype.Id}, Level = 1000, NowHp = -1000};
+            _currentList = ships.Concat(types).OrderBy(s => s, new CompareShip(true, InRepairList())).ToArray();
         }
 
         private IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships)
@@ -75,12 +77,38 @@ namespace KancolleSniffer
             return from s in ships where _groupSettings[g].Contains(s.Id) select s;
         }
 
+        private class CompareShip : IComparer<ShipStatus>
+        {
+            private readonly bool _type;
+            private readonly bool _repair;
+
+            public CompareShip(bool type, bool repair)
+            {
+                _type = type;
+                _repair = repair;
+            }
+
+            public int Compare(ShipStatus a, ShipStatus b)
+            {
+                if (_type && a.Spec.ShipType != b.Spec.ShipType)
+                    return a.Spec.ShipType - b.Spec.ShipType;
+                if (_repair && a.RepairTime != b.RepairTime)
+                    return (int)(b.RepairTime - a.RepairTime).TotalSeconds;
+                if (a.Level != b.Level)
+                    return b.Level - a.Level;
+                if (a.ExpToNext != b.ExpToNext)
+                    return a.ExpToNext - b.ExpToNext;
+                return a.Spec.Id - b.Spec.Id;
+            }
+        }
+
         private void CreateListLabels()
         {
             panelShipList.SuspendLayout();
             for (var i = _labelList.Count; i < _currentList.Length; i++)
             {
                 CreateCheckBoxes(i);
+                CreateRepairLabels(i);
                 CreateShipLabels(i);
             }
             panelShipList.ResumeLayout();
@@ -116,6 +144,48 @@ namespace KancolleSniffer
 // ReSharper disable once CoVariantArrayConversion
             cbp.Controls.AddRange(cb);
             panelShipList.Controls.Add(cbp);
+        }
+
+        private void CreateRepairLabels(int i)
+        {
+            var y = 3 + LineHeight * i;
+            const int height = LabelHeight;
+            var rpp = new Panel
+            {
+                Location = new Point(128, y),
+                Size = new Size(PanelWidth - 128, height),
+                BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2],
+                Visible = false
+            };
+            rpp.Scale(ShipLabel.ScaleFactor);
+            rpp.Tag = rpp.Location.Y;
+            var rpl = new[]
+            {
+                new ShipLabel
+                {
+                    Location = new Point(1, 1),
+                    Size = new Size(23, height),
+                    TextAlign = ContentAlignment.MiddleRight
+                },
+                new ShipLabel
+                {
+                    Location = new Point(27, 1),
+                    Size = new Size(45, height),
+                    TextAlign = ContentAlignment.MiddleRight
+                },
+                new ShipLabel {Location = new Point(73, 1), AutoSize = true}
+            };
+            foreach (var label in rpl)
+            {
+                label.Scale(ShipLabel.ScaleFactor);
+                label.PresetColor =
+                    label.BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2];
+            }
+            _repairLabelList.Add(rpl);
+            _repairPanelList.Add(rpp);
+// ReSharper disable once CoVariantArrayConversion
+            rpp.Controls.AddRange(rpl);
+            panelShipList.Controls.Add(rpp);
         }
 
         private void CreateShipLabels(int i)
@@ -171,35 +241,10 @@ namespace KancolleSniffer
             labels[0].SizeChanged += labelHP_SizeChanged;
         }
 
-        private class CompareShipByExp : IComparer<ShipStatus>
-        {
-            public int Compare(ShipStatus a, ShipStatus b)
-            {
-                if (a.Level != b.Level)
-                    return b.Level - a.Level;
-                if (a.ExpToNext != b.ExpToNext)
-                    return a.ExpToNext - b.ExpToNext;
-                return a.Spec.Id - b.Spec.Id;
-            }
-        }
-
-        private class CompareShipByType : IComparer<ShipStatus>
-        {
-            public int Compare(ShipStatus a, ShipStatus b)
-            {
-                if (a.Spec.ShipType != b.Spec.ShipType)
-                    return a.Spec.ShipType - b.Spec.ShipType;
-                if (a.Level != b.Level)
-                    return b.Level - a.Level;
-                if (a.ExpToNext != b.ExpToNext)
-                    return a.ExpToNext - b.ExpToNext;
-                return a.Spec.Id - b.Spec.Id;
-            }
-        }
-
         private void SetShipLabels()
         {
             panelGroupHeader.Visible = InGroupConfig();
+            panelRepairHeader.Visible = InRepairList();
             panelShipList.SuspendLayout();
             var fn = new[] {"", "1", "2", "3", "4"};
             for (var i = 0; i < _currentList.Length; i++)
@@ -215,11 +260,17 @@ namespace KancolleSniffer
                 {
                     cbp.Location = new Point(cbp.Left, (int)cbp.Tag + panelShipList.AutoScrollPosition.Y);
                 }
+                var rpp = _repairPanelList[i];
+                if (rpp.Visible == false && InRepairList())
+                {
+                    rpp.Location = new Point(rpp.Left, (int)rpp.Tag + panelShipList.AutoScrollPosition.Y);
+                }
                 var s = _currentList[i];
                 var labels = _labelList[i];
                 if (s.Level == 1000)
                 {
                     cbp.Visible = false;
+                    rpp.Visible = false;
                     for (var c = 0; c < 6; c++)
                     {
                         labels[c].Text = "";
@@ -230,11 +281,20 @@ namespace KancolleSniffer
                     continue;
                 }
                 cbp.Visible = InGroupConfig();
+                rpp.Visible = InRepairList();
                 if (InGroupConfig())
                 {
                     var cb = _checkBoxesList[i];
                     for (var j = 0; j < cb.Length; j++)
                         cb[j].Checked = _groupSettings[j].Contains(s.Id);
+                }
+                else if (InRepairList())
+                {
+                    var rpl = _repairLabelList[i];
+                    labels[0].SetHp(s);
+                    rpl[0].SetLevel(s);
+                    rpl[1].SetRepairTime(s);
+                    rpl[2].Text = TimeSpan.FromSeconds(s.RepairSecPerHp).ToString(@"mm\:ss");
                 }
                 else
                 {
@@ -250,6 +310,7 @@ namespace KancolleSniffer
             {
                 _labelPanelList[i].Visible = false;
                 _checkBoxPanelList[i].Visible = false;
+                _repairPanelList[i].Visible = false;
             }
             panelShipList.ResumeLayout();
         }
@@ -257,6 +318,11 @@ namespace KancolleSniffer
         private bool InGroupConfig()
         {
             return comboBoxGroup.Text == "設定";
+        }
+
+        private bool InRepairList()
+        {
+            return comboBoxGroup.Text == "修復";
         }
 
         private void labelHP_SizeChanged(object sender, EventArgs e)
@@ -297,7 +363,7 @@ namespace KancolleSniffer
                     break;
                 if (all.Count() > 0)
                     _groupSettings[i].IntersectWith(all);
-                config.ShipGroup[i] = _groupSettings[i].ToList();                
+                config.ShipGroup[i] = _groupSettings[i].ToList();
             }
             e.Cancel = true;
             if (!Visible)
@@ -347,7 +413,7 @@ namespace KancolleSniffer
 
         private void ShipListForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'E'}, x => x == char.ToUpper(e.KeyChar));
+            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'E', 'R'}, x => x == char.ToUpper(e.KeyChar));
             if (g == -1)
                 return;
             comboBoxGroup.SelectedIndex = g;

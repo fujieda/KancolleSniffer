@@ -569,15 +569,14 @@ namespace KancolleSniffer
             var fn = new[] {"", "1", "2", "3", "4"};
             for (var i = 0; i < num; i++)
             {
-                var e = list[i];
+                var s = list[i];
                 var labels = _damagedShipList[i];
-                labels[fleet].Text = fn[e.Fleet + 1];
-                labels[name].SetName(e.Name);
-                var t = e.RepairTime;
-                labels[time].Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)t.TotalHours, t);
-                labels[damage].BackColor = (int)e.DamageLevel == 0
+                labels[fleet].Text = fn[s.Fleet + 1];
+                labels[name].SetName(s);
+                labels[time].SetRepairTime(s);
+                labels[damage].BackColor = (int)s.DamageLevel == 0
                     ? labels[damage].PresetColor
-                    : colors[(int)e.DamageLevel - 1];
+                    : colors[(int)s.DamageLevel - 1];
             }
         }
 
