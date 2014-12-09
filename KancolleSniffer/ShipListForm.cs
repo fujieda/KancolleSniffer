@@ -344,5 +344,14 @@ namespace KancolleSniffer
         {
             ActiveControl = panelShipList;
         }
+
+        private void ShipListForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'E'}, x => x == char.ToUpper(e.KeyChar));
+            if (g == -1)
+                return;
+            comboBoxGroup.SelectedIndex = g;
+            ActiveControl = panelShipList;
+        }
     }
 }

@@ -200,11 +200,13 @@ namespace KancolleSniffer
             this.Controls.Add(this.panelShipList);
             this.Controls.Add(this.comboBoxGroup);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "ShipListForm";
             this.Text = "艦娘一覧";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ShipListForm_FormClosing);
             this.Load += new System.EventHandler(this.ShipListForm_Load);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ShipListForm_KeyPress);
             this.panelGroupHeader.ResumeLayout(false);
             this.panelGroupHeader.PerformLayout();
             this.ResumeLayout(false);
