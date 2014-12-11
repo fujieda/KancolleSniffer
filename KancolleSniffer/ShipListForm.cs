@@ -35,6 +35,7 @@ namespace KancolleSniffer
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private readonly List<Panel> _labelPanelList = new List<Panel>();
         private readonly List<CheckBox[]> _checkBoxesList = new List<CheckBox[]>();
+        private readonly List<ShipLabel> _configLabelList = new List<ShipLabel>();
         private readonly List<Panel> _checkBoxPanelList = new List<Panel>();
         private readonly List<ShipLabel[]> _repairLabelList = new List<ShipLabel[]>();
         private readonly List<Panel> _repairPanelList = new List<Panel>();
@@ -107,43 +108,53 @@ namespace KancolleSniffer
             panelShipList.SuspendLayout();
             for (var i = _labelList.Count; i < _currentList.Length; i++)
             {
-                CreateCheckBoxes(i);
+                CreateConfigComponents(i);
                 CreateRepairLabels(i);
                 CreateShipLabels(i);
             }
             panelShipList.ResumeLayout();
         }
 
-        private void CreateCheckBoxes(int i)
+        private void CreateConfigComponents(int i)
         {
             var y = 3 + LineHeight * i;
-            var cb = new CheckBox[GroupCount];
-            var cbp = new Panel
+            var cfgp = new Panel
             {
                 Location = new Point(79, y),
                 Size = new Size(153, LabelHeight),
                 BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2],
                 Visible = false
             };
-            cbp.Scale(ShipLabel.ScaleFactor);
-            cbp.Tag = cbp.Location.Y;
+            cfgp.Scale(ShipLabel.ScaleFactor);
+            cfgp.Tag = cfgp.Location.Y;
+            var label = new ShipLabel
+            {
+                Location = new Point(18, 0),
+                Size = new Size(23, LabelHeight),
+                TextAlign = ContentAlignment.MiddleRight,
+                BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2],
+            };
+            label.Scale(ShipLabel.ScaleFactor);
+            var cb = new CheckBox[GroupCount];
             for (var j = 0; j < cb.Length; j++)
             {
                 cb[j] = new CheckBox
                 {
-                    Location = new Point(31 + j * 30, 0),
+                    Location = new Point(60 + j * 24, 0),
                     FlatStyle = FlatStyle.Flat,
-                    Size = new Size(15, 14),
+                    Size = new Size(12, 11),
                     Tag = i * 10 + j
                 };
                 cb[j].Scale(ShipLabel.ScaleFactor);
                 cb[j].CheckedChanged += checkboxGroup_CheckedChanged;
             }
+            _configLabelList.Add(label);
             _checkBoxesList.Add(cb);
-            _checkBoxPanelList.Add(cbp);
+            _checkBoxPanelList.Add(cfgp);
+            cfgp.Controls.Add(label);
 // ReSharper disable once CoVariantArrayConversion
-            cbp.Controls.AddRange(cb);
-            panelShipList.Controls.Add(cbp);
+            cfgp.Controls.AddRange(cb);
+            panelShipList.Controls.Add(cfgp);
         }
 
         private void CreateRepairLabels(int i)
@@ -284,6 +295,7 @@ namespace KancolleSniffer
                 rpp.Visible = InRepairList();
                 if (InGroupConfig())
                 {
+                    _configLabelList[i].SetLevel(s);
                     var cb = _checkBoxesList[i];
                     for (var j = 0; j < cb.Length; j++)
                         cb[j].Checked = _groupSettings[j].Contains(s.Id);
