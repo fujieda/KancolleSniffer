@@ -78,6 +78,7 @@
       <DependentUpon>DebugDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="DockInfo.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="ShipInfoLabels.cs" />
     <Compile Include="ShipListForm.cs">
       <SubType>Form</SubType>

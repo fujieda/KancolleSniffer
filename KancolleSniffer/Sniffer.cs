@@ -31,6 +31,7 @@ namespace KancolleSniffer
         private readonly AkashiTimer _akashiTimer;
         private readonly Achievement _achievement = new Achievement();
         private readonly BattleInfo _battleInfo;
+        private readonly Logger _logger;
         private readonly Status _status = new Status();
 
         [Flags]
@@ -54,6 +55,7 @@ namespace KancolleSniffer
             _dockInfo = new DockInfo(_shipInfo, _itemInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo);
             _battleInfo = new BattleInfo(_shipMaster, _shipInfo, _itemInfo);
+            _logger = new Logger();
         }
 
         public void SaveState()
@@ -248,6 +250,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_mission/result"))
             {
                 _itemInfo.InspectMissionResult(data);
+                _logger.InspectMissionResult(data);
                 return Update.Item;
             }
             return Update.None;
@@ -368,6 +371,16 @@ namespace KancolleSniffer
         public BattleInfo Battle
         {
             get { return _battleInfo; }
+        }
+
+        public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)
+        {
+            _logger.SetWriter(writer, nowFunc);
+        }
+
+        public void SkipMaster()
+        {
+            _start = true;
         }
     }
 
