@@ -25,7 +25,6 @@ namespace KancolleSniffer
     public class ShipInfoLabels
     {
         private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
-        private const int LabelHpRight = 130;
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
         public static Color[] ColumnColors = {SystemColors.Control, Color.FromArgb(255, 250, 250, 250)};
 
@@ -58,7 +57,7 @@ namespace KancolleSniffer
                 var y = top + lh * (i + 1);
                 parent.Controls.AddRange(_labels[i] = new[]
                 {
-                    new ShipLabel {Location = new Point(LabelHpRight, y), AutoSize = true},
+                    new ShipLabel {Location = new Point(130, y), AutoSize = true, AnchorRight = true},
                     new ShipLabel
                     {
                         Location = new Point(136, y),
@@ -80,7 +79,6 @@ namespace KancolleSniffer
                     new ShipLabel {Location = new Point(2, y), AutoSize = true}, // 名前のZ-orderを下に
                     new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, lh - 1)}
                 });
-                _labels[i][0].SizeChanged += labelHP_SizeChanged;
                 foreach (var label in _labels[i])
                 {
                     label.Scale(ShipLabel.ScaleFactor);
@@ -90,13 +88,6 @@ namespace KancolleSniffer
                 }
             }
             parent.ResumeLayout();
-        }
-
-        private void labelHP_SizeChanged(object sender, EventArgs e)
-        {
-            var label = (Label)sender;
-            label.Location =
-                new Point((int)Math.Round(LabelHpRight * ShipLabel.ScaleFactor.Width) - label.Width, label.Top);
         }
 
         public void SetShipInfo(ShipStatus[] statuses)
@@ -164,6 +155,9 @@ namespace KancolleSniffer
     {
         public static SizeF ScaleFactor { get; set; }
         public Color PresetColor { get; set; }
+        public bool AnchorRight { get; set; }
+        private int _right = int.MinValue;
+        private int _left;
 
         public void SetName(ShipStatus status)
         {
@@ -230,6 +224,23 @@ namespace KancolleSniffer
         {
             var t = status.RepairTime;
             Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)t.TotalHours, t);
+        }
+
+        protected override void OnLayout(LayoutEventArgs levent)
+        {
+            base.OnLayout(levent);
+            if (!AnchorRight)
+                return;
+            if (_right == int.MinValue || _left != Left)
+            {
+                _right = Right;
+                _left = Left;
+                return;
+            }
+            if (_right == Right)
+                return;
+            _left -= Right - _right;
+            Location = new Point(_left, Top);
         }
     }
 }
