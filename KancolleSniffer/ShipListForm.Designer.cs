@@ -53,6 +53,7 @@ namespace KancolleSniffer
             this.label3 = new System.Windows.Forms.Label();
             this.checkBoxShipType = new System.Windows.Forms.CheckBox();
             this.panelGroupHeader = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -63,7 +64,6 @@ namespace KancolleSniffer
             this.label13 = new System.Windows.Forms.Label();
             this.panelRepairHeader = new System.Windows.Forms.Panel();
             this.label10 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
             this.SuspendLayout();
@@ -139,6 +139,15 @@ namespace KancolleSniffer
             this.panelGroupHeader.TabIndex = 16;
             this.panelGroupHeader.Visible = false;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(1, 5);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(34, 12);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "レベル";
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -198,7 +207,7 @@ namespace KancolleSniffer
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(1, 5);
+            this.label11.Location = new System.Drawing.Point(108, 4);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(29, 12);
             this.label11.TabIndex = 17;
@@ -207,7 +216,7 @@ namespace KancolleSniffer
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(28, 5);
+            this.label12.Location = new System.Drawing.Point(64, 5);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(34, 12);
             this.label12.TabIndex = 17;
@@ -216,7 +225,7 @@ namespace KancolleSniffer
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(68, 5);
+            this.label13.Location = new System.Drawing.Point(1, 5);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(29, 12);
             this.label13.TabIndex = 18;
@@ -225,9 +234,9 @@ namespace KancolleSniffer
             // panelRepairHeader
             // 
             this.panelRepairHeader.Controls.Add(this.label10);
-            this.panelRepairHeader.Controls.Add(this.label13);
             this.panelRepairHeader.Controls.Add(this.label12);
             this.panelRepairHeader.Controls.Add(this.label11);
+            this.panelRepairHeader.Controls.Add(this.label13);
             this.panelRepairHeader.Location = new System.Drawing.Point(103, 3);
             this.panelRepairHeader.Name = "panelRepairHeader";
             this.panelRepairHeader.Size = new System.Drawing.Size(137, 19);
@@ -237,20 +246,11 @@ namespace KancolleSniffer
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(102, 5);
+            this.label10.Location = new System.Drawing.Point(30, 4);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(35, 12);
             this.label10.TabIndex = 19;
             this.label10.Text = "/耐久";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(1, 5);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(34, 12);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "レベル";
             // 
             // ShipListForm
             // 

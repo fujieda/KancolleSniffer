@@ -120,7 +120,7 @@ namespace KancolleSniffer
             var cfgp = new Panel
             {
                 Location = new Point(79, y),
-                Size = new Size(153, LabelHeight),
+                Size = new Size(PanelWidth - 79, LabelHeight),
                 BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2],
                 Visible = false
             };
@@ -162,8 +162,8 @@ namespace KancolleSniffer
             const int height = LabelHeight;
             var rpp = new Panel
             {
-                Location = new Point(128, y),
-                Size = new Size(PanelWidth - 128, height),
+                Location = new Point(79, y),
+                Size = new Size(PanelWidth - 79, height),
                 BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2],
                 Visible = false
             };
@@ -171,19 +171,15 @@ namespace KancolleSniffer
             rpp.Tag = rpp.Location.Y;
             var rpl = new[]
             {
+                new ShipLabel {Location = new Point(1, 1), AutoSize = true},
+                new ShipLabel {Location = new Point(47, 1), AutoSize = true},
                 new ShipLabel
                 {
-                    Location = new Point(1, 1),
+                    Location = new Point(85, 1),
                     Size = new Size(23, height),
                     TextAlign = ContentAlignment.MiddleRight
                 },
-                new ShipLabel
-                {
-                    Location = new Point(27, 1),
-                    Size = new Size(45, height),
-                    TextAlign = ContentAlignment.MiddleRight
-                },
-                new ShipLabel {Location = new Point(73, 1), AutoSize = true}
+                new ShipLabel {Location = new Point(152, 1), AutoSize = true, AnchorRight = true}
             };
             _repairLabelList.Add(rpl);
             _repairPanelList.Add(rpp);
@@ -301,10 +297,10 @@ namespace KancolleSniffer
                 else if (InRepairList())
                 {
                     var rpl = _repairLabelList[i];
-                    labels[0].SetHp(s);
-                    rpl[0].SetLevel(s);
-                    rpl[1].SetRepairTime(s);
-                    rpl[2].Text = TimeSpan.FromSeconds(s.RepairSecPerHp).ToString(@"mm\:ss");
+                    rpl[0].SetRepairTime(s);
+                    rpl[1].Text = TimeSpan.FromSeconds(s.RepairSecPerHp).ToString(@"mm\:ss");
+                    rpl[2].SetLevel(s);
+                    rpl[3].SetHp(s);
                 }
                 else
                 {
