@@ -417,8 +417,8 @@ namespace KancolleSniffer
                 parent.Controls.AddRange(
                     _ndockLabels[i] = new[]
                     {
-                        new ShipLabel {Location = new Point(106, y), AutoSize = true, Text = "00:00:00"},
-                        new ShipLabel {Location = new Point(30, y), AutoSize = true} // 名前のZ-orderを下に
+                        new ShipLabel {Location = new Point(93, y), AutoSize = true, Text = "00:00:00"},
+                        new ShipLabel {Location = new Point(29, y), AutoSize = true} // 名前のZ-orderを下に
                     });
                 foreach (var label in _ndockLabels[i])
                     label.Scale(_scaleFactor);

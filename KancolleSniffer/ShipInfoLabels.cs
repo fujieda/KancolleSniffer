@@ -40,10 +40,10 @@ namespace KancolleSniffer
             const int top = 3, height = 12, lh = 16;
             Control[] headings =
             {
-                new Label {Location = new Point(101, top), Text = "耐久", AutoSize = true},
-                new Label {Location = new Point(131, top), Text = "cond", AutoSize = true},
-                new Label {Location = new Point(159, top), Text = "レベル", AutoSize = true},
-                new Label {Location = new Point(195, top), Text = "経験値", AutoSize = true},
+                new Label {Location = new Point(109, top), Text = "HP", AutoSize = true},
+                new Label {Location = new Point(128, top), Text = "cond", AutoSize = true},
+                new Label {Location = new Point(163, top), Text = "Lv", AutoSize = true},
+                new Label {Location = new Point(194, top), Text = "Exp", AutoSize = true},
                 new Label {Location = new Point(0, 1), Size = new Size(parent.Width, lh - 1)}
             };
             foreach (var label in headings)
@@ -57,22 +57,22 @@ namespace KancolleSniffer
                 var y = top + lh * (i + 1);
                 parent.Controls.AddRange(_labels[i] = new[]
                 {
-                    new ShipLabel {Location = new Point(130, y), AutoSize = true, AnchorRight = true},
+                    new ShipLabel {Location = new Point(129, y), AutoSize = true, AnchorRight = true},
                     new ShipLabel
                     {
-                        Location = new Point(136, y),
+                        Location = new Point(132, y),
                         Size = new Size(23, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new ShipLabel
                     {
-                        Location = new Point(170, y),
+                        Location = new Point(157, y),
                         Size = new Size(23, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new ShipLabel
                     {
-                        Location = new Point(195, y),
+                        Location = new Point(177, y),
                         Size = new Size(41, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
@@ -110,7 +110,7 @@ namespace KancolleSniffer
             parent.SuspendLayout();
             for (var i = 0; i < _akashiTimers.Length; i++)
             {
-                const int x = 56;
+                const int x = 54;
                 var y = 20 + 16 * i;
                 Label label;
                 parent.Controls.Add(
