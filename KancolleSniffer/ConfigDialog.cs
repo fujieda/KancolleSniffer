@@ -144,7 +144,8 @@ namespace KancolleSniffer
         {
             if (_debugDialog == null)
                 _debugDialog = new DebugDialog(_config, _main);
-            _debugDialog.ShowDialog(this);
+            if (_debugDialog.ShowDialog(this) == DialogResult.Abort)
+                DialogResult = DialogResult.Cancel;
         }
 
         private void buttonResetAchievement_Click(object sender, EventArgs e)

@@ -35,7 +35,7 @@
             this.buttonLogFileOpenFile = new System.Windows.Forms.Button();
             this.textBoxLogFile = new System.Windows.Forms.TextBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonPlayLog = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // checkBoxLogging
@@ -95,16 +95,20 @@
             this.textBoxLogFile.Size = new System.Drawing.Size(144, 19);
             this.textBoxLogFile.TabIndex = 5;
             // 
-            // button1
+            // openFileDialog
             // 
-            this.button1.AutoSize = true;
-            this.button1.Location = new System.Drawing.Point(130, 6);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(67, 23);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "ログの再生";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.openFileDialog.CheckFileExists = false;
+            // 
+            // buttonPlayLog
+            // 
+            this.buttonPlayLog.AutoSize = true;
+            this.buttonPlayLog.Location = new System.Drawing.Point(130, 6);
+            this.buttonPlayLog.Name = "buttonPlayLog";
+            this.buttonPlayLog.Size = new System.Drawing.Size(67, 23);
+            this.buttonPlayLog.TabIndex = 7;
+            this.buttonPlayLog.Text = "ログの再生";
+            this.buttonPlayLog.UseVisualStyleBackColor = true;
+            this.buttonPlayLog.Click += new System.EventHandler(this.button1_Click);
             // 
             // DebugDialog
             // 
@@ -113,7 +117,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(203, 102);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonPlayLog);
             this.Controls.Add(this.buttonLogFileOpenFile);
             this.Controls.Add(this.textBoxLogFile);
             this.Controls.Add(this.buttonCancel);
@@ -141,6 +145,6 @@
         private System.Windows.Forms.Button buttonLogFileOpenFile;
         private System.Windows.Forms.TextBox textBoxLogFile;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonPlayLog;
     }
 }

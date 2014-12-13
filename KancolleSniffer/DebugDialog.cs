@@ -40,6 +40,7 @@ namespace KancolleSniffer
         private void button1_Click(object sender, EventArgs e)
         {
             _main.SetPlayLog(textBoxLogFile.Text);
+            DialogResult = DialogResult.Abort;
         }
     }
 
