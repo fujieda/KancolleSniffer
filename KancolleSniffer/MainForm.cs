@@ -133,6 +133,7 @@ namespace KancolleSniffer
         {
             _config.Load();
             RestoreLocation();
+            _sniffer.EnableLog(LogType.All);
             ApplyConfig();
             ApplyLogSetting();
             _sniffer.LoadState();

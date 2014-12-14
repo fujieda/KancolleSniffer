@@ -33,7 +33,7 @@ namespace KancolleSniffer
                 _shipSpecs[(int)entry.api_id] = new ShipSpec
                 {
                     Id = (int)entry.api_id,
-                    Name = entry.api_name,
+                    Name = ShipName(entry),
                     FuelMax = (int)entry.api_fuel_max,
                     BullMax = (int)entry.api_bull_max,
                     MaxEq = (int[])entry.api_maxeq,
@@ -41,6 +41,16 @@ namespace KancolleSniffer
                 };
             }
             _shipSpecs[-1] = new ShipSpec {Name = "不明", MaxEq = new int[NumSlots]};
+        }
+
+        // 深海棲艦の名前にelite/flagshipを付ける
+        private string ShipName(dynamic json)
+        {
+            var name = json.api_name;
+            var flagship = json.api_yomi;
+            if ((int)json.api_id <= 500 || flagship == "-" || flagship == "")
+                return name;
+            return name + "(" + flagship + ")";
         }
 
         public void InspectStype(dynamic json)

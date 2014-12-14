@@ -16,10 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Codeplex.Data;
 using ExpressionToCodeLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -29,16 +26,6 @@ namespace KancolleSniffer.Test
     [TestClass]
     public class LoggerTest
     {
-        private IEnumerable<string> ReadLogFile(string name)
-        {
-            using (var file = SnifferTest.OpenLogFile(name))
-            {
-                string line;
-                while ((line = file.ReadLine()) != null)
-                    yield return line;
-            }
-        }
-
         [TestMethod]
         public void InspectMissionResult()
         {
@@ -51,6 +38,7 @@ namespace KancolleSniffer.Test
                 header = h;
             }, () => new DateTime(2015, 1, 1));
             sniffer.SkipMaster();
+            sniffer.EnableLog(LogType.Mission);
             SnifferTest.SniffLogFile(sniffer, "mission_result_001");
             PAssert.That(() => "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材" == header);
             PAssert.That(() => "2015-01-01 00:00:00,成功,長距離練習航海,0,100,30,0,0,0,0|" +
@@ -124,6 +112,46 @@ namespace KancolleSniffer.Test
             PAssert.That(() =>
                 "2015-01-01 00:00:00,成功,長距離練習航海,0,100,30,0,0,0,0\r\n" +
                 "2015-01-01 00:00:00,成功,長距離練習航海,0,100,30,0,0,1,0\r\n" == result);
+        }
+
+        [TestMethod]
+        public void InspectBattleResult()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "battle_004");
+            PAssert.That(() => "2015-01-01 00:00:00,珊瑚諸島沖,1,,S,同航戦,単縦陣,単縦陣,敵前衛艦隊,重巡洋艦,青葉," +
+                               "武蔵改(Lv133),86/106,扶桑改二(Lv87),77/77,北上改二(Lv113),49/49,飛龍改二(Lv133),63/74,蒼龍改二(Lv133),74/74,龍鳳改(Lv97),48/48," +
+                               "軽巡ヘ級(flagship),57/57,重巡リ級(flagship),76/76,重巡リ級(flagship),76/76,雷巡チ級(elite),50/50,駆逐ニ級(elite),45/45,駆逐ニ級(elite),45/45|" +
+                               "2015-01-01 00:00:00,珊瑚諸島沖,2,,B,反航戦,単横陣,単横陣,敵潜水艦隊,,," +
+                               "武蔵改(Lv133),86/106,扶桑改二(Lv87),77/77,北上改二(Lv113),46/49,飛龍改二(Lv133),63/74,蒼龍改二(Lv133),74/74,龍鳳改(Lv97),48/48," +
+                               "潜水ヨ級(flagship),44/44,潜水カ級(elite),27/27,潜水カ級(elite),27/27,潜水カ級(elite),27/27,潜水カ級,19/19,潜水カ級,19/19|" +
+                               "2015-01-01 00:00:00,珊瑚諸島沖,4,,S,反航戦,単縦陣,単縦陣,敵水上打撃部隊,戦艦,扶桑," +
+                               "武蔵改(Lv133),86/106,扶桑改二(Lv87),77/77,北上改二(Lv113),46/49,飛龍改二(Lv133),63/74,蒼龍改二(Lv133),45/74,龍鳳改(Lv97),48/48," +
+                               "戦艦タ級(flagship),90/90,重巡リ級(flagship),76/76,重巡リ級(flagship),76/76,雷巡チ級(elite),50/50,駆逐ロ級(flagship),43/43,駆逐ニ級(elite),45/45|" +
+                               "2015-01-01 00:00:00,珊瑚諸島沖,10,ボス,S,反航戦,単縦陣,単縦陣,敵機動部隊本隊,戦艦,山城," +
+                               "武蔵改(Lv133),86/106,扶桑改二(Lv87),77/77,北上改二(Lv113),46/49,飛龍改二(Lv133),63/74,蒼龍改二(Lv133),39/74,龍鳳改(Lv97),48/48," +
+                               "装甲空母姫,270/270,空母ヲ級(elite),88/88,戦艦タ級(flagship),90/90,重巡リ級(elite),60/60,軽巡ホ級(flagship),53/53,駆逐ハ級(flagship),47/47|"
+                               == result);
+        }
+
+        [TestMethod]
+        public void InspectCombinedBattleResult()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "combined_surface_001");
+            PAssert.That(() => "2015-01-01 00:00:00,南西方面海域,3,,S,同航戦,第四警戒航行序列,単縦陣,ピケット水雷戦隊 A群,,," +
+                               "あきつ丸改(Lv68),40/40,山城改二(Lv85),77/77,扶桑改二(Lv85),77/77,利根改二(Lv117),59/66,筑摩改二(Lv117),51/65,神通改二(Lv97),47/50," +
+                               "軽巡ツ級(elite),66/66,軽巡ト級(elite),55/55,駆逐イ級後期型,35/35,駆逐イ級後期型,35/35,駆逐イ級後期型,35/35,駆逐イ級後期型,35/35|" +
+                               "2015-01-01 00:00:00,南西方面海域,7,,S,同航戦,第四警戒航行序列,複縦陣,任務部隊 D群,駆逐艦,満潮," +
+                               "あきつ丸改(Lv68),40/40,山城改二(Lv85),77/77,扶桑改二(Lv85),77/77,利根改二(Lv117),33/66,筑摩改二(Lv117),51/65,神通改二(Lv97),47/50," +
+                               "戦艦タ級(flagship),90/90,軽母ヌ級(flagship),84/84,軽巡ト級(elite),55/55,軽巡ト級(elite),55/55,駆逐ロ級後期型,37/37,駆逐ロ級後期型,37/37|"
+                               == result);
         }
     }
 }

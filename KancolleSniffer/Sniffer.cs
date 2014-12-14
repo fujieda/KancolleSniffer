@@ -55,7 +55,7 @@ namespace KancolleSniffer
             _dockInfo = new DockInfo(_shipInfo, _itemInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo);
             _battleInfo = new BattleInfo(_shipMaster, _shipInfo, _itemInfo);
-            _logger = new Logger();
+            _logger = new Logger(_shipMaster, _shipInfo);
         }
 
         public void SaveState()
@@ -213,13 +213,17 @@ namespace KancolleSniffer
             {
                 _battleInfo.InspectBattle(data);
                 if (!url.EndsWith("api_req_practice/battle"))
+                {
+                    _logger.InspectBattle(data);
                     return Update.Battle;
+                }
                 _shipInfo.StartSortie(request); // 演習を出撃中とみなす
                 return Update.Battle | Update.Timer;
             }
             if (url.EndsWith("api_req_sortie/battleresult"))
             {
                 _battleInfo.CauseDamage();
+                _logger.InspectBattleResult(data);
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_practice/battle_result"))
@@ -230,11 +234,13 @@ namespace KancolleSniffer
             if (IsCombinedBattleAPI(url))
             {
                 _battleInfo.InspectCombinedBattle(data, url.EndsWith("battle_water"));
+                _logger.InspectBattle(data);
                 return Update.Battle;
             }
             if (url.EndsWith("api_req_combined_battle/battleresult"))
             {
                 _battleInfo.InspectCombinedBattleResult(data);
+                _logger.InspectBattleResult(data);
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_combined_battle/goback_port"))
@@ -245,7 +251,13 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_map/start"))
             {
                 _shipInfo.StartSortie(request);
+                _logger.InspectMap(data);
                 return Update.Timer;
+            }
+            if (url.EndsWith("api_req_map/next"))
+            {
+                _logger.InspectMap(data);
+                return Update.None;
             }
             if (url.EndsWith("api_req_mission/result"))
             {
@@ -381,6 +393,11 @@ namespace KancolleSniffer
         public void SkipMaster()
         {
             _start = true;
+        }
+
+        public void EnableLog(LogType type)
+        {
+            _logger.EnableLog(type);
         }
     }
 
