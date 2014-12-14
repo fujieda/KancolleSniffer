@@ -566,12 +566,11 @@ namespace KancolleSniffer
             }
             parent.Size = new Size(parent.Width, (int)Math.Round(_scaleFactor.Height * (num * 16 + 3)));
             var colors = new[] {Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red};
-            var fn = new[] {"", "1", "2", "3", "4"};
             for (var i = 0; i < num; i++)
             {
                 var s = list[i];
                 var labels = _damagedShipList[i];
-                labels[fleet].Text = fn[s.Fleet + 1];
+                labels[fleet].SetFleet(s);
                 labels[name].SetName(s);
                 labels[time].SetRepairTime(s);
                 labels[damage].BackColor = (int)s.DamageLevel == 0

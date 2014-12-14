@@ -226,6 +226,11 @@ namespace KancolleSniffer
             Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)t.TotalHours, t);
         }
 
+        public void SetFleet(ShipStatus status)
+        {
+            Text = new[] {"", "1", "2", "3", "4"}[status.Fleet + 1];
+        }
+
         protected override void OnLayout(LayoutEventArgs levent)
         {
             base.OnLayout(levent);
