@@ -13,7 +13,8 @@ namespace KancolleSniffer
         None = 0,
         Mission = 1,
         Battle = 2,
-        All = 3,
+        Material = 4,
+        All = 7,
     }
 
     public class Logger
@@ -182,6 +183,16 @@ namespace KancolleSniffer
                 default:
                     return "同航戦";
             }
+        }
+
+        public void InspectMaterial(dynamic json)
+        {
+            if ((_logType & LogType.Material) == 0)
+                return;
+            _writer("資材ログ",
+                _nowFunc().ToString(DateTimeFormat) + "," +
+                string.Join(",", ((dynamic[])json).Select(e => (int)e.api_value)),
+                "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材");
         }
     }
 

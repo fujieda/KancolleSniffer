@@ -91,6 +91,7 @@ namespace KancolleSniffer
             {
                 _itemInfo.InspectBasic(data.api_basic);
                 _itemInfo.InspectMaterial(data.api_material);
+                _logger.InspectMaterial(data.api_material);
                 _shipInfo.InspectShip(data);
                 _missionInfo.InspectDeck(data.api_deck_port);
                 _dockInfo.InspectNDock(data.api_ndock);
@@ -157,6 +158,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/material"))
             {
                 _itemInfo.InspectMaterial(data);
+                _logger.InspectMaterial(data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_hokyu/charge"))

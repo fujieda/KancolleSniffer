@@ -153,5 +153,18 @@ namespace KancolleSniffer.Test
                                "戦艦タ級(flagship),90/90,軽母ヌ級(flagship),84/84,軽巡ト級(elite),55/55,軽巡ト級(elite),55/55,駆逐ロ級後期型,37/37,駆逐ロ級後期型,37/37|"
                                == result);
         }
+
+        [TestMethod]
+        public void InspectMaterial()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            sniffer.EnableLog(LogType.Material);
+            SnifferTest.SniffLogFile(sniffer, "misc_001");
+            PAssert.That(() => "2015-01-01 00:00:00,25305,24843,25187,40657,1406,1522,2140,9|" +
+                               "2015-01-01 00:00:00,24811,24479,24914,40557,1407,1521,2141,9|"
+                               == result);
+        }
     }
 }
