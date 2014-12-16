@@ -27,10 +27,17 @@ namespace KancolleSniffer
     {
         private readonly Sniffer _sniffer;
         private readonly Config _config;
-        private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
+        private const int LabelHeight = 12;
+        private const int LineHeight = 16;
         private const int HpLabelRight = 126;
-        private const int PanelWidth = 235;
+        private const int PanelWidth = 232;
         private ShipStatus[] _currentList;
+        private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
+        private readonly List<Panel> _labelPanelList = new List<Panel>();
+        private readonly List<CheckBox[]> _checkBoxesList = new List<CheckBox[]>();
+        private readonly List<Panel> _checkBoxPanelList = new List<Panel>();
+        public const int GroupCount = 4;
+        private readonly HashSet<int>[] _groupSettings = new HashSet<int>[GroupCount];
 
         public ShipListForm(Sniffer sniffer, Config config)
         {
@@ -48,7 +55,7 @@ namespace KancolleSniffer
 
         private void CreateList()
         {
-            var ships = (IEnumerable<ShipStatus>)_sniffer.ShipList;
+            var ships = FilterByGroup(_sniffer.ShipList).ToArray();
             if (!_config.ShipList.ShipType)
             {
                 _currentList = ships.OrderBy(s => s, new CompareShipByExp()).ToArray();
@@ -60,61 +67,108 @@ namespace KancolleSniffer
             _currentList = ships.Concat(types).OrderBy(s => s, new CompareShipByType()).ToArray();
         }
 
+        private IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships)
+        {
+            var g = Array.FindIndex(new[] {"A", "B", "C", "D"}, x => x == comboBoxGroup.Text);
+            if (g == -1)
+                return ships;
+            return from s in ships where _groupSettings[g].Contains(s.Id) select s;
+        }
+
         private void CreateListLabels()
         {
             panelShipList.SuspendLayout();
             for (var i = _labelList.Count; i < _currentList.Length; i++)
             {
-                const int height = 12, lh = 16;
-                var y = 3 + lh * i +
-                        (int)Math.Round(panelShipList.AutoScrollPosition.Y / ShipLabel.ScaleFactor.Height);
-                var labels = new[]
-                {
-                    new ShipLabel {Location = new Point(HpLabelRight, y), AutoSize = true},
-                    new ShipLabel
-                    {
-                        Location = new Point(132, y),
-                        Size = new Size(23, height),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new ShipLabel
-                    {
-                        Location = new Point(166, y),
-                        Size = new Size(23, height),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new ShipLabel
-                    {
-                        Location = new Point(191, y),
-                        Size = new Size(41, height),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new ShipLabel {Location = new Point(10, y), AutoSize = true},
-                    new ShipLabel {Location = new Point(1, y), AutoSize = true},
-                    new ShipLabel {Location = new Point(0, y - 1), Size = new Size(PanelWidth - 3, lh - 1)}
-                };
-                _labelList.Add(labels);
-                foreach (var label in labels)
-                    label.Scale(ShipLabel.ScaleFactor);
-                // ReSharper disable once CoVariantArrayConversion
-                panelShipList.Controls.AddRange(labels);
-                labels[0].SizeChanged += labelHP_SizeChanged;
-                foreach (var label in labels)
-                {
-                    label.PresetColor =
-                        label.BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2];
-                }
-            }
-            for (var i = _labelList.Count; i > _currentList.Length; i--)
-            {
-                foreach (var label in _labelList[i - 1])
-                {
-                    panelShipList.Controls.Remove(label);
-                    label.Dispose();
-                }
-                _labelList.RemoveAt(i - 1);
+                CreateCheckBoxes(i);
+                CreateShipLabels(i);
             }
             panelShipList.ResumeLayout();
+        }
+
+        private void CreateCheckBoxes(int i)
+        {
+            var y = 3 + LineHeight * i;
+            var cb = new CheckBox[GroupCount];
+            var cbp = new Panel
+            {
+                Location = new Point(79, y),
+                Size = new Size(153, LabelHeight),
+                BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2],
+                Visible = false
+            };
+            cbp.Scale(ShipLabel.ScaleFactor);
+            cbp.Tag = cbp.Location.Y;
+            for (var j = 0; j < cb.Length; j++)
+            {
+                cb[j] = new CheckBox
+                {
+                    Location = new Point(31 + j * 30, 0),
+                    FlatStyle = FlatStyle.Flat,
+                    Size = new Size(15, 14),
+                    Tag = i * 10 + j
+                };
+                cb[j].Scale(ShipLabel.ScaleFactor);
+                cb[j].CheckedChanged += checkboxGroup_CheckedChanged;
+            }
+            _checkBoxesList.Add(cb);
+            _checkBoxPanelList.Add(cbp);
+// ReSharper disable once CoVariantArrayConversion
+            cbp.Controls.AddRange(cb);
+            panelShipList.Controls.Add(cbp);
+        }
+
+        private void CreateShipLabels(int i)
+        {
+            var y = 3 + LineHeight * i;
+            const int height = LabelHeight;
+            const int lh = LineHeight;
+            var lbp = new Panel
+            {
+                Location = new Point(0, y - 1),
+                Size = new Size(PanelWidth, lh),
+                BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2],
+                Visible = false
+            };
+            lbp.Scale(ShipLabel.ScaleFactor);
+            lbp.Tag = lbp.Location.Y;
+            var labels = new[]
+            {
+                new ShipLabel {Location = new Point(HpLabelRight, 1), AutoSize = true},
+                new ShipLabel
+                {
+                    Location = new Point(132, 1),
+                    Size = new Size(23, height),
+                    TextAlign = ContentAlignment.MiddleRight
+                },
+                new ShipLabel
+                {
+                    Location = new Point(166, 1),
+                    Size = new Size(23, height),
+                    TextAlign = ContentAlignment.MiddleRight
+                },
+                new ShipLabel
+                {
+                    Location = new Point(191, 1),
+                    Size = new Size(41, height),
+                    TextAlign = ContentAlignment.MiddleRight
+                },
+                new ShipLabel {Location = new Point(10, 1), AutoSize = true},
+                new ShipLabel {Location = new Point(1, 1), AutoSize = true},
+                new ShipLabel {Location = new Point(0, 0), Size = new Size(PanelWidth, lh - 1)}
+            };
+            foreach (var label in labels)
+            {
+                label.Scale(ShipLabel.ScaleFactor);
+                label.PresetColor =
+                    label.BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2];
+            }
+            _labelList.Add(labels);
+            _labelPanelList.Add(lbp);
+// ReSharper disable once CoVariantArrayConversion
+            lbp.Controls.AddRange(labels);
+            panelShipList.Controls.Add(lbp);
+            labels[0].SizeChanged += labelHP_SizeChanged;
         }
 
         private class CompareShipByExp : IComparer<ShipStatus>
@@ -145,13 +199,27 @@ namespace KancolleSniffer
 
         private void SetShipLabels()
         {
+            panelGroupHeader.Visible = InGroupConfig();
+            panelShipList.SuspendLayout();
             var fn = new[] {"", "1", "2", "3", "4"};
-            var i = 0;
-            foreach (var s in _currentList)
+            for (var i = 0; i < _currentList.Length; i++)
             {
-                var labels = _labelList[i++];
+                var lbp = _labelPanelList[i];
+                if (lbp.Visible == false)
+                {
+                    lbp.Location = new Point(lbp.Left, (int)lbp.Tag + panelShipList.AutoScrollPosition.Y);
+                    lbp.Visible = true;
+                }
+                var cbp = _checkBoxPanelList[i];
+                if (cbp.Visible == false && InGroupConfig())
+                {
+                    cbp.Location = new Point(cbp.Left, (int)cbp.Tag + panelShipList.AutoScrollPosition.Y);
+                }
+                var s = _currentList[i];
+                var labels = _labelList[i];
                 if (s.Level == 1000)
                 {
+                    cbp.Visible = false;
                     for (var c = 0; c < 6; c++)
                     {
                         labels[c].Text = "";
@@ -161,13 +229,34 @@ namespace KancolleSniffer
                     labels[5].Text = s.Name;
                     continue;
                 }
-                labels[0].SetHp(s);
-                labels[1].SetCond(s);
-                labels[2].SetLevel(s);
-                labels[3].SetExpToNext(s);
+                cbp.Visible = InGroupConfig();
+                if (InGroupConfig())
+                {
+                    var cb = _checkBoxesList[i];
+                    for (var j = 0; j < cb.Length; j++)
+                        cb[j].Checked = _groupSettings[j].Contains(s.Id);
+                }
+                else
+                {
+                    labels[0].SetHp(s);
+                    labels[1].SetCond(s);
+                    labels[2].SetLevel(s);
+                    labels[3].SetExpToNext(s);
+                }
                 labels[4].SetName(s);
                 labels[5].Text = fn[s.Fleet + 1];
             }
+            for (var i = _currentList.Length; i < _labelPanelList.Count; i++)
+            {
+                _labelPanelList[i].Visible = false;
+                _checkBoxPanelList[i].Visible = false;
+            }
+            panelShipList.ResumeLayout();
+        }
+
+        private bool InGroupConfig()
+        {
+            return comboBoxGroup.Text == "設定";
         }
 
         private void labelHP_SizeChanged(object sender, EventArgs e)
@@ -179,13 +268,17 @@ namespace KancolleSniffer
 
         private void ShipListForm_Load(object sender, EventArgs e)
         {
-            panelShipList.Width = (int)Math.Round(PanelWidth * ShipLabel.ScaleFactor.Width) + SystemInformation.VerticalScrollBarWidth;
+            panelShipList.Width = (int)Math.Round(PanelWidth * ShipLabel.ScaleFactor.Width) + 3 +
+                                  SystemInformation.VerticalScrollBarWidth;
             Width = panelShipList.Width + 12 + (Width - ClientSize.Width);
             MinimumSize = new Size(Width, 0);
             MaximumSize = new Size(Width, int.MaxValue);
             var config = _config.ShipList;
             checkBoxShipType.Checked = config.ShipType;
             ActiveControl = panelShipList;
+            for (var i = 0; i < GroupCount; i++)
+                _groupSettings[i] = new HashSet<int>(config.ShipGroup[i]);
+            comboBoxGroup.SelectedIndex = 0;
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);
@@ -197,10 +290,19 @@ namespace KancolleSniffer
         private void ShipListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             var config = _config.ShipList;
-            var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
+            var all = _sniffer.ShipList.Select(s => s.Id).ToArray();
+            for (var i = 0; i < GroupCount; i++)
+            {
+                if (_groupSettings[i] == null)
+                    break;
+                if (all.Count() > 0)
+                    _groupSettings[i].IntersectWith(all);
+                config.ShipGroup[i] = _groupSettings[i].ToList();                
+            }
             e.Cancel = true;
             if (!Visible)
                 return;
+            var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
             config.Location = bounds.Location;
             config.Size = bounds.Size;
             Hide();
@@ -219,6 +321,27 @@ namespace KancolleSniffer
         {
             _config.ShipList.ShipType = checkBoxShipType.Checked;
             UpdateList();
+            ActiveControl = panelShipList;
+        }
+
+        private void checkboxGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            var cb = (CheckBox)sender;
+            var group = (int)cb.Tag % 10;
+            var idx = (int)cb.Tag / 10;
+            if (cb.Checked)
+                _groupSettings[group].Add(_currentList[idx].Id);
+            else
+                _groupSettings[group].Remove(_currentList[idx].Id);
+        }
+
+        private void comboBoxGroup_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateList();
+        }
+
+        private void comboBoxGroup_DropDownClosed(object sender, EventArgs e)
+        {
             ActiveControl = panelShipList;
         }
     }

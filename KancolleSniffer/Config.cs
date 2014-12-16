@@ -44,10 +44,14 @@ namespace KancolleSniffer
         public Point Location { get; set; }
         public Size Size { get; set; }
         public bool ShipType { get; set; }
+        public List<int>[] ShipGroup { get; set; }
 
         public ShipListConfig()
         {
             Location = new Point(int.MinValue, int.MinValue);
+            ShipGroup = new List<int>[ShipListForm.GroupCount];
+            for (var i = 0; i < ShipGroup.Length; i++)
+                ShipGroup[i] = new List<int>();
         }
     }
 
