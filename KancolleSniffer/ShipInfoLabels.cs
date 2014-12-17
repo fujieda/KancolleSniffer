@@ -124,7 +124,6 @@ namespace KancolleSniffer
                 Label label;
                 parent.Controls.Add(
                     label = _akashiTimers[i] = new Label {Location = new Point(x, y), AutoSize = true, Visible = false});
-                parent.Controls.SetChildIndex(label, 0);
                 label.BackColor = ColumnColors[i % 2];
             }
             foreach (var label in _akashiTimers)
@@ -147,6 +146,7 @@ namespace KancolleSniffer
                 var timer = timers[i];
                 var stat = statuses[i];
                 label.Visible = true;
+                label.BringToFront();
                 label.Text = timer.Span.ToString(@"mm\:ss");
                 if (timer.Diff == 0)
                 {

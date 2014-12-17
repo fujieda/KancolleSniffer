@@ -384,6 +384,7 @@ namespace KancolleSniffer
             panelBattleInfo.Visible = _sniffer.Battle.InBattle;
             if (!_sniffer.Battle.InBattle)
                 return;
+            panelBattleInfo.BringToFront();
             var t = new Timer {Interval = 2000}; // 艦隊が表示されるまで遅延させる
             t.Tick += (sender, args) =>
             {
@@ -685,6 +686,7 @@ namespace KancolleSniffer
             else
             {
                 labelBucketHistory.Visible = true;
+                labelBucketHistory.BringToFront();
                 labelBucketHistoryButton.BackColor = SystemColors.ActiveCaption;
             }
         }
@@ -699,6 +701,7 @@ namespace KancolleSniffer
             else
             {
                 panelMaterialHistory.Visible = true;
+                panelMaterialHistory.BringToFront();
                 labelMaterialHistoryButton.BackColor = SystemColors.ActiveCaption;
             }
         }
@@ -719,6 +722,7 @@ namespace KancolleSniffer
             else
             {
                 panelDamagedShipList.Visible = true;
+                panelDamagedShipList.BringToFront();
                 labelDamgedShipListButton.BackColor = SystemColors.ActiveCaption;
             }
         }
