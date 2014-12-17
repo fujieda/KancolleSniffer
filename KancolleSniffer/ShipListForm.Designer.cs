@@ -64,7 +64,6 @@ namespace KancolleSniffer
             this.panelShipList.Name = "panelShipList";
             this.panelShipList.Size = new System.Drawing.Size(252, 233);
             this.panelShipList.TabIndex = 0;
-            this.panelShipList.MouseEnter += new System.EventHandler(this.panelShipList_MouseEnter);
             // 
             // label1
             // 

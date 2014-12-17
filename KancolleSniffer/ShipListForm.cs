@@ -185,6 +185,7 @@ namespace KancolleSniffer
             MaximumSize = new Size(Width, int.MaxValue);
             var config = _config.ShipList;
             checkBoxShipType.Checked = config.ShipType;
+            ActiveControl = panelShipList;
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);
@@ -214,15 +215,11 @@ namespace KancolleSniffer
             panelShipList.AutoScrollPosition = new Point(0, y);
         }
 
-        private void panelShipList_MouseEnter(object sender, EventArgs e)
-        {
-            panelShipList.Focus();
-        }
-
         private void checkBoxShipType_CheckedChanged(object sender, EventArgs e)
         {
             _config.ShipList.ShipType = checkBoxShipType.Checked;
             UpdateList();
+            ActiveControl = panelShipList;
         }
     }
 }
