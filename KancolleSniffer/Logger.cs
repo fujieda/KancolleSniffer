@@ -16,7 +16,8 @@ namespace KancolleSniffer
         Battle = 2,
         Material = 4,
         CreateItem = 8,
-        All = 15,
+        CreateShip = 16,
+        All = 31,
     }
 
     public class Logger
@@ -31,6 +32,7 @@ namespace KancolleSniffer
         private dynamic _battle;
         private dynamic _map;
         private dynamic _basic;
+        private int _kdockId;
 
         public Logger(ShipMaster master, ShipInfo ship, ItemInfo item)
         {
@@ -224,6 +226,29 @@ namespace KancolleSniffer
                     values["api_item1"], values["api_item2"], values["api_item3"], values["api_item4"],
                     Secretary(), _basic.api_level),
                 "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv");
+        }
+
+
+        public void InspectCreateShip(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            _kdockId = int.Parse(values["api_kdock_id"]);
+        }
+
+        public void InspectKDock(dynamic json)
+        {
+            if ((_logType & LogType.CreateShip) == 0 || _basic == null || _kdockId == 0)
+                return;
+            var kdock = ((dynamic[])json).First(e => e.api_id == _kdockId);
+            var material = Enumerable.Range(1, 5).Select(i => (int)kdock["api_item" + i]).ToArray();
+            var ship = _shipMaster[(int)kdock.api_created_ship_id];
+            var avail = ((dynamic[])json).Count(e => (int)e.api_state == 0);
+            _writer("建造報告書",
+                _nowFunc().ToString(DateTimeFormat) + "," +
+                string.Join(",", material.First() >= 1500 ? "大型艦建造" : "通常艦建造",
+                    ship.Name, ship.ShipTypeName, string.Join(",", material), avail, Secretary(), _basic.api_level),
+                "日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv");
+            _kdockId = 0;
         }
 
         private string Secretary()

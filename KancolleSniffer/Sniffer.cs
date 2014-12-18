@@ -116,6 +116,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/kdock"))
             {
                 _dockInfo.InspectKDock(data);
+                _logger.InspectKDock(data);
                 return Update.Timer;
             }
             if (url.EndsWith("api_get_member/ndock"))
@@ -195,6 +196,11 @@ namespace KancolleSniffer
             {
                 _itemInfo.InspectRemodelSlot(data);
                 return Update.Item;
+            }
+            if (url.EndsWith("api_req_kousyou/createship"))
+            {
+                _logger.InspectCreateShip(request);
+                return Update.None;
             }
             if (url.EndsWith("api_req_kaisou/powerup"))
             {
