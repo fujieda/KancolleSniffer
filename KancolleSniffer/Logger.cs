@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Linq;
+using System.Web;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
@@ -14,7 +15,8 @@ namespace KancolleSniffer
         Mission = 1,
         Battle = 2,
         Material = 4,
-        All = 7,
+        CreateItem = 8,
+        All = 15,
     }
 
     public class Logger
@@ -22,16 +24,19 @@ namespace KancolleSniffer
         private LogType _logType;
         private readonly ShipMaster _shipMaster;
         private readonly ShipInfo _shipInfo;
+        private readonly ItemInfo _itemInfo;
         private Action<string, string, string> _writer;
         private Func<DateTime> _nowFunc;
         private const string DateTimeFormat = @"yyyy\-MM\-dd HH\:mm\:ss";
         private dynamic _battle;
         private dynamic _map;
+        private dynamic _basic;
 
-        public Logger(ShipMaster master, ShipInfo ship)
+        public Logger(ShipMaster master, ShipInfo ship, ItemInfo item)
         {
             _shipMaster = master;
             _shipInfo = ship;
+            _itemInfo = item;
             _writer = new LogWriter().Write;
             _nowFunc = () => DateTime.Now;
         }
@@ -193,6 +198,38 @@ namespace KancolleSniffer
                 _nowFunc().ToString(DateTimeFormat) + "," +
                 string.Join(",", ((dynamic[])json).Select(e => (int)e.api_value)),
                 "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材");
+        }
+
+        public void InspectBasic(dynamic json)
+        {
+            _basic = json;
+        }
+
+        public void InspectCreateItem(string request, dynamic json)
+        {
+            if ((_logType & LogType.CreateItem) == 0)
+                return;
+            var values = HttpUtility.ParseQueryString(request);
+            var name = "失敗";
+            var type = "";
+            if (json.api_slot_item())
+            {
+                var spec = _itemInfo.GetSpecByItemId((int)json.api_slot_item.api_slotitem_id);
+                name = spec.Name;
+                type = spec.TypeName;
+            }
+            _writer("開発報告書",
+                _nowFunc().ToString(DateTimeFormat) + "," +
+                string.Join(",", name, type,
+                    values["api_item1"], values["api_item2"], values["api_item3"], values["api_item4"],
+                    Secretary(), _basic.api_level),
+                "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv");
+        }
+
+        private string Secretary()
+        {
+            var ship = _shipInfo.GetShipStatuses(0)[0];
+            return ship.Name + "(" + ship.Level + ")";
         }
     }
 

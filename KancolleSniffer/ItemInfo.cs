@@ -25,6 +25,7 @@ namespace KancolleSniffer
     {
         public string Name;
         public int Type;
+        public string TypeName;
         public int AntiAir;
         public int LoS;
 
@@ -142,12 +143,16 @@ namespace KancolleSniffer
 
         public void InspectMaster(dynamic json)
         {
-            foreach (var entry in json)
+            var dict = new Dictionary<int, string>();
+            foreach (var entry in json.api_mst_slotitem_equiptype)
+                dict[(int)entry.api_id] = entry.api_name;
+            foreach (var entry in json.api_mst_slotitem)
             {
                 _itemSpecs[(int)entry.api_id] = new ItemSpec
                 {
                     Name = (string)entry.api_name,
                     Type = (int)entry.api_type[2],
+                    TypeName = dict[(int)entry.api_type[2]],
                     AntiAir = (int)entry.api_tyku,
                     LoS = (int)entry.api_saku
                 };

@@ -166,5 +166,18 @@ namespace KancolleSniffer.Test
                                "2015-01-01 00:00:00,24811,24479,24914,40557,1407,1521,2141,9|"
                                == result);
         }
+
+        [TestMethod]
+        public void InspectCreateItem()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            sniffer.EnableLog(LogType.CreateItem);
+            SnifferTest.SniffLogFile(sniffer, "createitem_001");
+            PAssert.That(() => "2015-01-01 00:00:00,7.7mm機銃,対空機銃,10,20,20,10,天津風改(127),114|" +
+                               "2015-01-01 00:00:00,失敗,,10,20,20,10,天津風改(127),114|"
+                               == result);
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace KancolleSniffer
             _dockInfo = new DockInfo(_shipInfo, _itemInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo);
             _battleInfo = new BattleInfo(_shipMaster, _shipInfo, _itemInfo);
-            _logger = new Logger(_shipMaster, _shipInfo);
+            _logger = new Logger(_shipMaster, _shipInfo, _itemInfo);
         }
 
         public void SaveState()
@@ -82,7 +82,7 @@ namespace KancolleSniffer
                 _shipMaster.Inspect(data.api_mst_ship);
                 _shipMaster.InspectStype(data.api_mst_stype);
                 _missionInfo.InspectMaster(data.api_mst_mission);
-                _itemInfo.InspectMaster(data.api_mst_slotitem);
+                _itemInfo.InspectMaster(data);
                 return Update.Start;
             }
             if (!_start)
@@ -91,6 +91,7 @@ namespace KancolleSniffer
             {
                 _itemInfo.InspectBasic(data.api_basic);
                 _itemInfo.InspectMaterial(data.api_material);
+                _logger.InspectBasic(data.api_basic);
                 _logger.InspectMaterial(data.api_material);
                 _shipInfo.InspectShip(data);
                 _missionInfo.InspectDeck(data.api_deck_port);
@@ -105,6 +106,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/basic"))
             {
                 _itemInfo.InspectBasic(data);
+                _logger.InspectBasic(data);
                 return Update.None;
             }
             if (url.EndsWith("api_get_member/slot_item"))
@@ -169,6 +171,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_kousyou/createitem"))
             {
                 _itemInfo.InspectCreateItem(data);
+                _logger.InspectCreateItem(request, data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_kousyou/getship"))
