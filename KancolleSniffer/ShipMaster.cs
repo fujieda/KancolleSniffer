@@ -16,7 +16,6 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace KancolleSniffer
 {
@@ -24,11 +23,14 @@ namespace KancolleSniffer
     {
         public const int NumSlots = 5;
         private readonly Dictionary<int, ShipSpec> _shipSpecs = new Dictionary<int, ShipSpec>();
-        private readonly Dictionary<int, ShipType> _stype = new Dictionary<int, ShipType>();
 
         public void Inspect(dynamic json)
         {
-            foreach (var entry in json)
+            var dict = new Dictionary<double, string>();
+            foreach (var entry in json.api_mst_stype)
+                dict[entry.api_id] = entry.api_name;
+            dict[8] = "高速戦艦" ;
+            foreach (var entry in json.api_mst_ship)
             {
                 _shipSpecs[(int)entry.api_id] = new ShipSpec
                 {
@@ -38,6 +40,7 @@ namespace KancolleSniffer
                     BullMax = (int)entry.api_bull_max,
                     MaxEq = (int[])entry.api_maxeq,
                     ShipType = (int)entry.api_stype,
+                    ShipTypeName = dict[entry.api_stype]
                 };
             }
             _shipSpecs[-1] = new ShipSpec {Name = "不明", MaxEq = new int[NumSlots]};
@@ -55,19 +58,11 @@ namespace KancolleSniffer
 
         public void InspectStype(dynamic json)
         {
-            foreach (var entry in json)
-                _stype[(int)entry.api_id] = new ShipType {Id = (int)entry.api_id, Name = entry.api_name};
-            _stype[8] = new ShipType {Id = 8, Name = "高速戦艦"};
         }
 
         public ShipSpec this[int id]
         {
             get { return _shipSpecs[id]; }
-        }
-
-        public ShipType[] ShipTypeList
-        {
-            get { return _stype.Values.ToArray(); }
         }
     }
 
@@ -79,6 +74,7 @@ namespace KancolleSniffer
         public int BullMax { get; set; }
         public int[] MaxEq { get; set; }
         public int ShipType { get; set; }
+        public string ShipTypeName { get; set; }
 
         public bool IsSubmarine
         {
@@ -116,11 +112,5 @@ namespace KancolleSniffer
                 return 1.0;
             }
         }
-    }
-
-    public struct ShipType
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
     }
 }

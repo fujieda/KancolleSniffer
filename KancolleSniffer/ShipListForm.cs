@@ -63,15 +63,14 @@ namespace KancolleSniffer
                 _currentList = ships.OrderBy(s => s, new CompareShip(false, InRepairList())).ToArray();
                 return;
             }
-            var types = from id in (from s in ships select s.Spec.ShipType).Distinct()
-                join stype in _sniffer.ShipTypeList on id equals stype.Id
-                select
+            var types = ships.Select(s => new {Id = s.Spec.ShipType, Name = s.Spec.ShipTypeName}).Distinct().
+                Select(stype =>
                     new ShipStatus
                     {
                         Spec = new ShipSpec {Name = stype.Name, ShipType = stype.Id},
                         Level = 1000,
                         NowHp = -1000
-                    };
+                    });
             _currentList = ships.Concat(types).OrderBy(s => s, new CompareShip(true, InRepairList())).ToArray();
         }
 

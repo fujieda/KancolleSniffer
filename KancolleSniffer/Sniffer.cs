@@ -79,8 +79,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_start2"))
             {
                 _start = true;
-                _shipMaster.Inspect(data.api_mst_ship);
-                _shipMaster.InspectStype(data.api_mst_stype);
+                _shipMaster.Inspect(data);
                 _missionInfo.InspectMaster(data.api_mst_mission);
                 _itemInfo.InspectMaster(data);
                 return Update.Start;
@@ -363,11 +362,6 @@ namespace KancolleSniffer
         public ShipStatus[] ShipList
         {
             get { return _shipInfo.ShipList; }
-        }
-
-        public ShipType[] ShipTypeList
-        {
-            get { return _shipMaster.ShipTypeList; }
         }
 
         public AkashiTimer.RepairSpan[] GetAkashiTimers(int fleet)
