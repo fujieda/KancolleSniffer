@@ -43,6 +43,7 @@ namespace KancolleSniffer
         private readonly SizeF _scaleFactor;
         private string _logFile;
         private IEnumerator<string> _playLog;
+        private readonly LogServer _logServer;
 
         public MainForm()
         {
@@ -66,6 +67,8 @@ namespace KancolleSniffer
             CreateNDockLabels();
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
+            _logServer = new LogServer(8081);
+            _logServer.Start();
         }
 
         private void FiddlerApplication_BeforeRequest(Session oSession)
@@ -155,6 +158,7 @@ namespace KancolleSniffer
             _config.Save();
             _sniffer.SaveState();
             ShutdownProxy();
+            _logServer.Stop();
         }
 
         private void ShutdownProxy()
