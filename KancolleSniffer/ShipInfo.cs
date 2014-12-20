@@ -82,6 +82,13 @@ namespace KancolleSniffer
                 return level * weight;
             }
         }
+
+        public void CalcMaterialsToRepair(out int fuel, out int steal)
+        {
+            var damage = MaxHp - NowHp;
+            fuel = (int)(Spec.FuelMax * 0.2 * 0.16 * damage);
+            steal = (int)(Spec.FuelMax * 0.2 * 0.3 * damage);
+        }
     }
 
     public struct ChargeStatus

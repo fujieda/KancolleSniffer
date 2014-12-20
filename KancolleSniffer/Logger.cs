@@ -33,8 +33,6 @@ namespace KancolleSniffer
         private dynamic _map;
         private dynamic _basic;
         private int _kdockId;
-        private string _materialEvent;
-        private readonly int[] _material = new int[8];
 
         public Logger(ShipMaster master, ShipInfo ship, ItemInfo item)
         {
@@ -84,11 +82,6 @@ namespace KancolleSniffer
                         rstr, json.api_quest_name, string.Join(",", material)),
                     "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材");
             }
-            if (r == 0 || (_logType & LogType.Material) == 0)
-                return;
-            for (var i = 0; i < 7; i++)
-                _material[i] += material[i];
-            OutputMaterialLog("遠征");
         }
 
         public void InspectMap(dynamic json)
@@ -207,6 +200,8 @@ namespace KancolleSniffer
 
         public void InspectCreateItem(string request, dynamic json)
         {
+            if ((_logType & LogType.CreateItem) == 0)
+                return;
             var values = HttpUtility.ParseQueryString(request);
             var name = "失敗";
             var type = "";
@@ -216,26 +211,18 @@ namespace KancolleSniffer
                 name = spec.Name;
                 type = spec.TypeName;
             }
-            ((int[])json.api_material).CopyTo(_material, 0);
-            if ((_logType & LogType.Material) != 0)
-                OutputMaterialLog("開発");
-            if ((_logType & LogType.CreateItem) != 0)
-            {
-                _writer("開発報告書",
-                    _nowFunc().ToString(DateTimeFormat) + "," +
-                    string.Join(",", name, type,
-                        values["api_item1"], values["api_item2"], values["api_item3"], values["api_item4"],
-                        Secretary(), _basic.api_level),
-                    "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv");
-            }
+            _writer("開発報告書",
+                _nowFunc().ToString(DateTimeFormat) + "," +
+                string.Join(",", name, type,
+                    values["api_item1"], values["api_item2"], values["api_item3"], values["api_item4"],
+                    Secretary(), _basic.api_level),
+                "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv");
         }
-
 
         public void InspectCreateShip(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
             _kdockId = int.Parse(values["api_kdock_id"]);
-            _materialEvent = "建造";
         }
 
         public void InspectKDock(dynamic json)
@@ -264,36 +251,13 @@ namespace KancolleSniffer
         {
             if ((_logType & LogType.Material) == 0)
                 return;
+            var material = new int[8];
             foreach (var e in json)
-                _material[(int)e.api_id - 1] = (int)e.api_value;
-            OutputMaterialLog(_materialEvent ?? "母港");
-            _materialEvent = null;
-        }
-
-        public void InspectCharge(dynamic json)
-        {
-            if ((_logType & LogType.Material) == 0)
-                return;
-            ((int[])json.api_material).CopyTo(_material, 0);
-            OutputMaterialLog("補給");
-        }
-
-        public void InspectClearItemGet()
-        {
-            _materialEvent = "任務";
-        }
-
-        public void InspectRemodeling()
-        {
-            _materialEvent = "改造";
-        }
-
-        public void OutputMaterialLog(string ev)
-        {
+                material[(int)e.api_id - 1] = (int)e.api_value;
             _writer("資材ログ",
                 _nowFunc().ToString(DateTimeFormat) + "," +
-                string.Join(",", _material) + "," + ev,
-                "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材,理由");
+                string.Join(",", material) + ",",
+                "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材");
         }
     }
 

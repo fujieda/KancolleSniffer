@@ -160,13 +160,11 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/material"))
             {
                 _itemInfo.InspectMaterial(data);
-                _logger.InspectMaterial(data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_hokyu/charge"))
             {
                 _shipInfo.InspectCharge(data);
-                _logger.InspectCharge(data);
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_kousyou/createitem"))
@@ -208,11 +206,6 @@ namespace KancolleSniffer
                 _shipInfo.InspectPowerup(request, data);
                 _akashiTimer.SetTimer();
                 return Update.Item | Update.Ship;
-            }
-            if (url.EndsWith("api_req_kaisou/remodeling"))
-            {
-                _logger.InspectRemodeling();
-                return Update.None;
             }
             if (url.EndsWith("api_req_nyukyo/start"))
             {
@@ -280,11 +273,6 @@ namespace KancolleSniffer
                 _itemInfo.InspectMissionResult(data);
                 _logger.InspectMissionResult(data);
                 return Update.Item;
-            }
-            if (url.EndsWith("api_req_quest/clearitemget"))
-            {
-                _logger.InspectClearItemGet();
-                return Update.None;
             }
             return Update.None;
         }
