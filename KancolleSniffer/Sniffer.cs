@@ -403,6 +403,16 @@ namespace KancolleSniffer
         {
             _logger.EnableLog(type);
         }
+
+        public int MaterialLogInterval
+        {
+            set { _logger.MaterialLogInterval = value; }
+        }
+
+        public string LogOutputDir
+        {
+            set { _logger.OutputDir = value; }
+        }
     }
 
     public class NameAndTimer

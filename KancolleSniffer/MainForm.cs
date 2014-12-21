@@ -41,9 +41,9 @@ namespace KancolleSniffer
         private readonly NoticeQueue _noticeQueue;
         private bool _started;
         private readonly SizeF _scaleFactor;
-        private string _logFile;
+        private string _debugLogFile;
         private IEnumerator<string> _playLog;
-        private readonly LogServer _logServer;
+        private LogServer _logServer;
 
         public MainForm()
         {
@@ -67,8 +67,6 @@ namespace KancolleSniffer
             CreateNDockLabels();
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
-            _logServer = new LogServer(8081);
-            _logServer.Start();
         }
 
         private void FiddlerApplication_BeforeRequest(Session oSession)
@@ -98,9 +96,9 @@ namespace KancolleSniffer
             response = response.Remove(0, "svdata=".Length);
             var json = DynamicJson.Parse(response);
             var request = session.GetRequestBodyAsString();
-            if (_logFile != null)
+            if (_debugLogFile != null)
             {
-                File.AppendAllText(_logFile,
+                File.AppendAllText(_debugLogFile,
                     string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", session.url, request, json.ToString()));
             }
             UpdateInfo(_sniffer.Sniff(session.url, request, json));
@@ -136,8 +134,8 @@ namespace KancolleSniffer
         {
             _config.Load();
             RestoreLocation();
-            _sniffer.EnableLog(LogType.All);
             ApplyConfig();
+            ApplyDebugLogSetting();
             ApplyLogSetting();
             _sniffer.LoadState();
             StartProxy();
@@ -213,15 +211,27 @@ namespace KancolleSniffer
             _sniffer.Achievement.ResetHours = _config.ResetHours;
         }
 
-        public void ApplyLogSetting()
+        public void ApplyDebugLogSetting()
         {
-            _logFile = _config.Logging ? _config.LogFile : null;
+            _debugLogFile = _config.DebugLogging ? _config.DebugLogFile : null;
         }
 
         public void ApplyProxySetting()
         {
             ShutdownProxy();
             StartProxy();
+        }
+
+        public void ApplyLogSetting()
+        {
+            if (_logServer != null)
+                _logServer.Stop();
+            _logServer = new LogServer(_config.Log.Listen);
+            _logServer.Start();
+            _logServer.OutputDir = _config.Log.OutputDir;
+            _sniffer.EnableLog(_config.Log.On ? LogType.All : LogType.None);
+            _sniffer.MaterialLogInterval = _config.Log.MaterialLogInterval;
+            _sniffer.LogOutputDir = _config.Log.OutputDir;
         }
 
         public static bool IsVisibleOnAnyScreen(Rectangle rect)

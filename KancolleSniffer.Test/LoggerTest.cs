@@ -56,7 +56,7 @@ namespace KancolleSniffer.Test
         public void WriteTmpFileWhenCantWriteTarget()
         {
             var mock = new Mock<LogWriter.IFile>();
-            var writer = new LogWriter(mock.Object);
+            var writer = new LogWriter(null, mock.Object);
 
             const string str = "2015-01-01 00:00:00,成功,長距離練習航海,0,100,30,0,0,0,0";
             var tmp = "";
@@ -88,7 +88,7 @@ namespace KancolleSniffer.Test
         private void MergeTmpFileMain(bool failToMerge)
         {
             var mock = new Mock<LogWriter.IFile>();
-            var writer = new LogWriter(mock.Object);
+            var writer = new LogWriter(null, mock.Object);
 
             var tmp = "2015-01-01 00:00:00,成功,長距離練習航海,0,100,30,0,0,0,0\r\n";
             var csv = "";

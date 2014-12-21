@@ -34,6 +34,17 @@ namespace KancolleSniffer
         private dynamic _basic;
         private int _kdockId;
         private DateTime _prevTime;
+        private int _materialLogInterval = 10;
+
+        public int MaterialLogInterval
+        {
+            set { _materialLogInterval = value; }
+        }
+
+        public string OutputDir
+        {
+            set { _writer = new LogWriter(value).Write; }
+        }
 
         public Logger(ShipMaster master, ShipInfo ship, ItemInfo item)
         {
@@ -253,7 +264,7 @@ namespace KancolleSniffer
             if ((_logType & LogType.Material) == 0)
                 return;
             var now = _nowFunc();
-            if (now - _prevTime < TimeSpan.FromMinutes(10))
+            if (now - _prevTime < TimeSpan.FromMinutes(_materialLogInterval))
                 return;
             _prevTime = now;
             var material = new int[8];
@@ -269,6 +280,7 @@ namespace KancolleSniffer
     public class LogWriter
     {
         private readonly IFile _file;
+        private readonly string _outputDir;
 
         public interface IFile
         {
@@ -304,15 +316,15 @@ namespace KancolleSniffer
             }
         }
 
-        public LogWriter(IFile file = null)
+        public LogWriter(string outputDir = null, IFile file = null)
         {
+            _outputDir = outputDir ?? Path.GetDirectoryName(Application.ExecutablePath);
             _file = file ?? new FileWrapper();
         }
 
         public void Write(string file, string s, string header)
         {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var path = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), file);
+            var path = Path.Combine(_outputDir, file);
             var csv = path + ".csv";
             var tmp = path + ".tmp";
             if (_file.Exists(tmp))

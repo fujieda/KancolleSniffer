@@ -79,6 +79,12 @@
     </Compile>
     <Compile Include="DockInfo.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="LogDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogDialog.Designer.cs">
+      <DependentUpon>LogDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="LogServer.cs" />
     <Compile Include="ShipInfoLabels.cs" />
     <Compile Include="ShipListForm.cs">
@@ -115,6 +121,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DebugDialog.resx">
       <DependentUpon>DebugDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogDialog.resx">
+      <DependentUpon>LogDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ShipListForm.resx">
       <DependentUpon>ShipListForm.cs</DependentUpon>

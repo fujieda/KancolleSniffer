@@ -28,6 +28,7 @@ namespace KancolleSniffer
         private readonly MainForm _main;
         private DebugDialog _debugDialog;
         private ProxyDialog _proxyDialog;
+        private LogDialog _logDialog;
         private readonly Dictionary<string, string> _soundSetting = new Dictionary<string, string>();
 
         public ConfigDialog(Config config, MainForm main)
@@ -156,6 +157,13 @@ namespace KancolleSniffer
             if (_proxyDialog == null)
                 _proxyDialog = new ProxyDialog(_config.Proxy, _main);
             _proxyDialog.ShowDialog(this);
+        }
+
+        private void ReportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_logDialog == null)
+                _logDialog = new LogDialog(_config.Log, _main);
+            _logDialog.ShowDialog(this);
         }
     }
 }

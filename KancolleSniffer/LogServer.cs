@@ -13,6 +13,13 @@ namespace KancolleSniffer
     {
         private readonly TcpListener _listener;
         private readonly Thread _thread;
+        private readonly string _indexDir = Path.GetDirectoryName(Application.ExecutablePath);
+        private string _outputDir = Path.GetDirectoryName(Application.ExecutablePath);
+
+        public string OutputDir
+        {
+            set { _outputDir = value; }
+        }
 
         public LogServer(int port)
         {
@@ -63,24 +70,19 @@ namespace KancolleSniffer
                         }
 
                         path = path == "/" ? "index.html" : path.Substring(1);
-                        // ReSharper disable once AssignNullToNotNullAttribute
-                        var full = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), path);
-                        if (!File.Exists(full))
-                        {
-                            SendError(client, "404 Not Found");
-                            continue;
-                        }
-                        if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+                        var full = Path.Combine(_indexDir, path);
+                        var csv = Path.Combine(_outputDir, path);
+                        if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
                         {
                             SendFile(client, full, "text/html");
                             continue;
                         }
-                        if (path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+                        if (path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) && File.Exists(csv))
                         {
-                            SendFile(client, full, "text/csv; charset=Shift_JIS");
+                            SendFile(client, csv, "text/csv; charset=Shift_JIS");
                             continue;
                         }
-                        if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
+                        if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
                         {
                             SendFile(client, full, "application/javascript");
                             continue;

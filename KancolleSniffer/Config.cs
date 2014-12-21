@@ -55,6 +55,24 @@ namespace KancolleSniffer
         }
     }
 
+    public class LogConfig
+    {
+        public bool On { get; set; }
+        public string OutputDir { get; set; }
+        public int MaterialLogInterval { get; set; }
+        public bool ServerOn { get; set; }
+        public int Listen { get; set; }
+
+        public LogConfig()
+        {
+            On = true;
+            OutputDir = Path.GetDirectoryName(Application.ExecutablePath);
+            MaterialLogInterval = 10;
+            ServerOn = true;
+            Listen = 8008;
+        }
+    }
+
     public class Config
     {
         private readonly string _configFileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "config.json");
@@ -79,10 +97,11 @@ namespace KancolleSniffer
         public string Akashi20MinSoundFile { get; set; }
         public string AkashiProgressSoundFile { get; set; }
         public string ConditionSoundFile { get; set; }
-        public bool Logging { get; set; }
-        public string LogFile { get; set; }
+        public bool DebugLogging { get; set; }
+        public string DebugLogFile { get; set; }
         public ProxyConfig Proxy { get; set; }
         public ShipListConfig ShipList { get; set; }
+        public LogConfig Log { get; set; }
 
         public Config()
         {
@@ -104,10 +123,11 @@ namespace KancolleSniffer
             Akashi20MinSoundFile = Path.Combine(dir, "20min.mp3");
             AkashiProgressSoundFile = Path.Combine(dir, "syuuri.mp3");
             ConditionSoundFile = Path.Combine(dir, "hirou.mp3");
-            LogFile = Path.Combine(dir, "log.txt");
+            DebugLogFile = Path.Combine(dir, "log.txt");
 // ReSharper restore AssignNullToNotNullAttribute
             Proxy = new ProxyConfig();
             ShipList = new ShipListConfig();
+            Log = new LogConfig();
         }
 
         public void Load()

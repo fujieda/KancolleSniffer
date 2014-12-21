@@ -18,15 +18,15 @@ namespace KancolleSniffer
 
         private void DebugDialog_Load(object sender, EventArgs e)
         {
-            checkBoxLogging.Checked = _config.Logging;
-            textBoxLogFile.Text = _config.LogFile;
+            checkBoxLogging.Checked = _config.DebugLogging;
+            textBoxLogFile.Text = _config.DebugLogFile;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            _config.Logging = checkBoxLogging.Checked;
-            _config.LogFile = textBoxLogFile.Text;
-            _main.ApplyLogSetting();
+            _config.DebugLogging = checkBoxLogging.Checked;
+            _config.DebugLogFile = textBoxLogFile.Text;
+            _main.ApplyDebugLogSetting();
         }
 
         private void buttonLogFileOpenFile_Click(object sender, EventArgs e)

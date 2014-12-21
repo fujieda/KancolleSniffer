@@ -80,6 +80,7 @@ namespace KancolleSniffer
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ProxyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DebugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxNotification.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginEquips)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).BeginInit();
@@ -424,10 +425,11 @@ namespace KancolleSniffer
             // contextMenuStrip
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ReportToolStripMenuItem,
             this.ProxyToolStripMenuItem,
             this.DebugToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(168, 48);
+            this.contextMenuStrip.Size = new System.Drawing.Size(168, 92);
             // 
             // ProxyToolStripMenuItem
             // 
@@ -442,6 +444,13 @@ namespace KancolleSniffer
             this.DebugToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.DebugToolStripMenuItem.Text = "デバッグ設定(&D)";
             this.DebugToolStripMenuItem.Click += new System.EventHandler(this.DebugToolStripMenuItem_Click);
+            // 
+            // ReportToolStripMenuItem
+            // 
+            this.ReportToolStripMenuItem.Name = "ReportToolStripMenuItem";
+            this.ReportToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.ReportToolStripMenuItem.Text = "報告書設定(&R)";
+            this.ReportToolStripMenuItem.Click += new System.EventHandler(this.ReportToolStripMenuItem_Click);
             // 
             // ConfigDialog
             // 
@@ -516,5 +525,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkBoxCond49;
         private System.Windows.Forms.CheckBox checkBoxCond40;
+        private System.Windows.Forms.ToolStripMenuItem ReportToolStripMenuItem;
     }
 }
