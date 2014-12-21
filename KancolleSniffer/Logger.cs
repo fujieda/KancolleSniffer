@@ -33,6 +33,7 @@ namespace KancolleSniffer
         private dynamic _map;
         private dynamic _basic;
         private int _kdockId;
+        private DateTime _prevTime;
 
         public Logger(ShipMaster master, ShipInfo ship, ItemInfo item)
         {
@@ -251,11 +252,15 @@ namespace KancolleSniffer
         {
             if ((_logType & LogType.Material) == 0)
                 return;
+            var now = _nowFunc();
+            if (now - _prevTime < TimeSpan.FromMinutes(10))
+                return;
+            _prevTime = now;
             var material = new int[8];
             foreach (var e in json)
                 material[(int)e.api_id - 1] = (int)e.api_value;
             _writer("資材ログ",
-                _nowFunc().ToString(DateTimeFormat) + "," +
+                now.ToString(DateTimeFormat) + "," +
                 string.Join(",", material) + ",",
                 "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材");
         }

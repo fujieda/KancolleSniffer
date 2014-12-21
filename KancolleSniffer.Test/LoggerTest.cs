@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using ExpressionToCodeLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -159,11 +160,19 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             var result = "";
-            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            var first = new DateTime(2015, 1, 1, 0, 0, 0);
+            var queue =
+                new Queue<DateTime>(new[] {first, first.AddMinutes(10), first.AddMinutes(15), first.AddMinutes(20)});
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, queue.Dequeue);
             sniffer.EnableLog(LogType.Material);
             SnifferTest.SniffLogFile(sniffer, "material_001");
             PAssert.That(() => "2015-01-01 00:00:00,26178,26742,21196,33750,1426,1574,2185,10,|" +
-                               "2015-01-01 00:00:00,24595,25353,18900,32025,1427,1576,2187,10,|"
+                               "2015-01-01 00:10:00,24595,25353,18900,32025,1427,1576,2187,10,|"
+                               == result);
+            SnifferTest.SniffLogFile(sniffer, "material_001");
+            PAssert.That(() => "2015-01-01 00:00:00,26178,26742,21196,33750,1426,1574,2185,10,|" +
+                               "2015-01-01 00:10:00,24595,25353,18900,32025,1427,1576,2187,10,|" +
+                               "2015-01-01 00:20:00,24595,25353,18900,32025,1427,1576,2187,10,|"
                                == result);
         }
 
