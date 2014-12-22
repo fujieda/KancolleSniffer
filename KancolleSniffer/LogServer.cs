@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -82,6 +83,12 @@ namespace KancolleSniffer
                             SendFile(client, csv, "text/csv; charset=Shift_JIS");
                             continue;
                         }
+                        if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase) &&
+                            File.Exists(full.Replace(".json", ".csv")))
+                        {
+                            SendJsonData(client, full);
+                            continue;
+                        }
                         if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
                         {
                             SendFile(client, full, "application/javascript");
@@ -125,6 +132,28 @@ namespace KancolleSniffer
             }
         }
 
+        private void SendJsonData(Socket client, string path)
+        {
+            var header = new StreamWriter(new MemoryStream(), Encoding.ASCII);
+            header.Write("HTTP/1.1 200 OK\r\n");
+            header.Write("Server: KancolleSniffer\r\n");
+            header.Write("Date: {0:R}\r\n", DateTime.Now);
+            header.Write("Content-Type: {0}\r\n", "application/json; charset=Shift_JIS");
+            header.Write("Connection: close\r\n\r\n");
+            header.Flush();
+            client.Send(((MemoryStream)header.BaseStream).ToArray());
+
+            var encoding = Encoding.GetEncoding("Shift_JIS");
+            client.Send(encoding.GetBytes("{ \"data\": [\n"));
+            var delimiter = "";
+            foreach (var line in File.ReadLines(path.Replace(".json", ".csv"), encoding).Skip(1))
+            {
+                client.Send(encoding.GetBytes(delimiter + "[\"" + string.Join("\",\"", line.Split(',')) + "\"]"));
+                delimiter = ",\n";
+            }
+            client.Send(encoding.GetBytes("]}\n"));
+        }
+
         private void SendFile(Socket client, string path, string mime)
         {
             using (var writer = new StreamWriter(new MemoryStream(), Encoding.ASCII))
@@ -136,7 +165,8 @@ namespace KancolleSniffer
                 writer.Write("Content-Type: {0}\r\n", mime);
                 writer.Write("Connection: close\r\n\r\n");
                 writer.Flush();
-                client.SendFile(path, ((MemoryStream)writer.BaseStream).ToArray(), null, TransmitFileOptions.UseDefaultWorkerThread);
+                client.SendFile(path, ((MemoryStream)writer.BaseStream).ToArray(), null,
+                    TransmitFileOptions.UseDefaultWorkerThread);
             }
         }
 
