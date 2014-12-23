@@ -60,6 +60,11 @@ namespace KancolleSniffer
             this.labelNumOfShips = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panelShipInfo = new System.Windows.Forms.Panel();
+            this.panelBattleInfo = new System.Windows.Forms.Panel();
+            this.labelEnemyAirSuperiority = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
+            this.labelFormation = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
             this.labelLoS = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.labelAirSuperiority = new System.Windows.Forms.Label();
@@ -117,7 +122,7 @@ namespace KancolleSniffer
             this.NotifyIconOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NotifyIconExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripMain = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ShipListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label22 = new System.Windows.Forms.Label();
@@ -152,13 +157,9 @@ namespace KancolleSniffer
             this.labelDamgedShipListButton = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.toolTipLoS = new System.Windows.Forms.ToolTip(this.components);
-            this.label29 = new System.Windows.Forms.Label();
-            this.labelFormation = new System.Windows.Forms.Label();
-            this.label30 = new System.Windows.Forms.Label();
-            this.labelEnemyAirSuperiority = new System.Windows.Forms.Label();
-            this.panelBattleInfo = new System.Windows.Forms.Panel();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
+            this.panelBattleInfo.SuspendLayout();
             this.panelMaterialHistory.SuspendLayout();
             this.panelDock.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -167,7 +168,6 @@ namespace KancolleSniffer
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.panelBattleInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelHeadquarters
@@ -304,6 +304,52 @@ namespace KancolleSniffer
             this.panelShipInfo.Name = "panelShipInfo";
             this.panelShipInfo.Size = new System.Drawing.Size(220, 134);
             this.panelShipInfo.TabIndex = 2;
+            // 
+            // panelBattleInfo
+            // 
+            this.panelBattleInfo.Controls.Add(this.labelEnemyAirSuperiority);
+            this.panelBattleInfo.Controls.Add(this.label30);
+            this.panelBattleInfo.Controls.Add(this.labelFormation);
+            this.panelBattleInfo.Controls.Add(this.label29);
+            this.panelBattleInfo.Location = new System.Drawing.Point(59, 116);
+            this.panelBattleInfo.Name = "panelBattleInfo";
+            this.panelBattleInfo.Size = new System.Drawing.Size(157, 14);
+            this.panelBattleInfo.TabIndex = 40;
+            this.panelBattleInfo.Visible = false;
+            // 
+            // labelEnemyAirSuperiority
+            // 
+            this.labelEnemyAirSuperiority.Location = new System.Drawing.Point(132, 1);
+            this.labelEnemyAirSuperiority.Name = "labelEnemyAirSuperiority";
+            this.labelEnemyAirSuperiority.Size = new System.Drawing.Size(23, 12);
+            this.labelEnemyAirSuperiority.TabIndex = 3;
+            this.labelEnemyAirSuperiority.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(91, 1);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(41, 12);
+            this.label30.TabIndex = 2;
+            this.label30.Text = "敵制空";
+            // 
+            // labelFormation
+            // 
+            this.labelFormation.Location = new System.Drawing.Point(40, 1);
+            this.labelFormation.Name = "labelFormation";
+            this.labelFormation.Size = new System.Drawing.Size(48, 12);
+            this.labelFormation.TabIndex = 1;
+            this.labelFormation.Text = "T字有利";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(1, 1);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(41, 12);
+            this.label29.TabIndex = 0;
+            this.label29.Text = "交戦形";
             // 
             // labelLoS
             // 
@@ -814,30 +860,30 @@ namespace KancolleSniffer
             // contextMenuStripMain
             // 
             this.contextMenuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ShipListToolStripMenuItem,
+            this.listToolStripMenuItem,
             this.ConfigToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.contextMenuStripMain.Name = "contextMenuStripToolTip";
-            this.contextMenuStripMain.Size = new System.Drawing.Size(142, 70);
+            this.contextMenuStripMain.Size = new System.Drawing.Size(153, 92);
             // 
-            // ShipListToolStripMenuItem
+            // listToolStripMenuItem
             // 
-            this.ShipListToolStripMenuItem.Name = "ShipListToolStripMenuItem";
-            this.ShipListToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
-            this.ShipListToolStripMenuItem.Text = "艦娘一覧(&L)";
-            this.ShipListToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
+            this.listToolStripMenuItem.Name = "listToolStripMenuItem";
+            this.listToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.listToolStripMenuItem.Text = "一覧(&L)";
+            this.listToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
             // 
             // ConfigToolStripMenuItem
             // 
             this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
-            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.ConfigToolStripMenuItem.Text = "設定(&O)";
             this.ConfigToolStripMenuItem.Click += new System.EventHandler(this.ConfigToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.ExitToolStripMenuItem.Text = "終了(&X)";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -1143,52 +1189,6 @@ namespace KancolleSniffer
             this.label31.TabIndex = 46;
             this.label31.Text = "要修復";
             // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(1, 1);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(41, 12);
-            this.label29.TabIndex = 0;
-            this.label29.Text = "交戦形";
-            // 
-            // labelFormation
-            // 
-            this.labelFormation.Location = new System.Drawing.Point(40, 1);
-            this.labelFormation.Name = "labelFormation";
-            this.labelFormation.Size = new System.Drawing.Size(48, 12);
-            this.labelFormation.TabIndex = 1;
-            this.labelFormation.Text = "T字有利";
-            // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(91, 1);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(41, 12);
-            this.label30.TabIndex = 2;
-            this.label30.Text = "敵制空";
-            // 
-            // labelEnemyAirSuperiority
-            // 
-            this.labelEnemyAirSuperiority.Location = new System.Drawing.Point(132, 1);
-            this.labelEnemyAirSuperiority.Name = "labelEnemyAirSuperiority";
-            this.labelEnemyAirSuperiority.Size = new System.Drawing.Size(23, 12);
-            this.labelEnemyAirSuperiority.TabIndex = 3;
-            this.labelEnemyAirSuperiority.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // panelBattleInfo
-            // 
-            this.panelBattleInfo.Controls.Add(this.labelEnemyAirSuperiority);
-            this.panelBattleInfo.Controls.Add(this.label30);
-            this.panelBattleInfo.Controls.Add(this.labelFormation);
-            this.panelBattleInfo.Controls.Add(this.label29);
-            this.panelBattleInfo.Location = new System.Drawing.Point(59, 116);
-            this.panelBattleInfo.Name = "panelBattleInfo";
-            this.panelBattleInfo.Size = new System.Drawing.Size(157, 14);
-            this.panelBattleInfo.TabIndex = 40;
-            this.panelBattleInfo.Visible = false;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1234,6 +1234,8 @@ namespace KancolleSniffer
             this.panelHeadquarters.PerformLayout();
             this.panelShipInfo.ResumeLayout(false);
             this.panelShipInfo.PerformLayout();
+            this.panelBattleInfo.ResumeLayout(false);
+            this.panelBattleInfo.PerformLayout();
             this.panelMaterialHistory.ResumeLayout(false);
             this.panelMaterialHistory.PerformLayout();
             this.panelDock.ResumeLayout(false);
@@ -1247,8 +1249,6 @@ namespace KancolleSniffer
             this.contextMenuStripMain.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            this.panelBattleInfo.ResumeLayout(false);
-            this.panelBattleInfo.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1356,7 +1356,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.ContextMenuStrip contextMenuStripNotifyIcon;
         private System.Windows.Forms.ToolStripMenuItem NotifyIconOpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NotifyIconExitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ShipListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
         private System.Windows.Forms.Label labelLoS;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.ToolTip toolTipLoS;

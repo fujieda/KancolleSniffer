@@ -369,7 +369,9 @@ namespace KancolleSniffer
 
         public ShipStatus[] GetShipStatuses(int fleet)
         {
-            return (from id in _decks[fleet] where id != -1 select _escapedShips.Contains(id) ? new ShipStatus() : _shipInfo[id]).ToArray();
+            return
+                (from id in _decks[fleet] where id != -1
+                    select _escapedShips.Contains(id) ? new ShipStatus() : _shipInfo[id]).ToArray();
         }
 
         public int[] GetDeck(int fleet)
@@ -461,7 +463,6 @@ namespace KancolleSniffer
                     result += spec.LoS * spec.LoSScaleFactor();
                 }
                 result += Math.Sqrt(s.LoS - items) * 1.6841056;
-
             }
             return result > 0 ? result + (_hqLevel + 4) / 5 * 5 * -0.6142467 : 0.0;
         }

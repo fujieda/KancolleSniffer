@@ -24,6 +24,7 @@ namespace KancolleSniffer
 {
     public class ItemSpec
     {
+        public int Id;
         public string Name;
         public int Type;
         public string TypeName;
@@ -32,6 +33,7 @@ namespace KancolleSniffer
 
         public ItemSpec()
         {
+            Id = -1;
             Name = "";
         }
 
@@ -78,10 +80,12 @@ namespace KancolleSniffer
     {
         public ItemSpec Spec { get; set; }
         public int Level { get; set; }
+        public ShipStatus Ship { get; set; }
 
         public ItemStatus()
         {
             Spec = new ItemSpec();
+            Ship = new ShipStatus();
         }
     }
 
@@ -167,6 +171,7 @@ namespace KancolleSniffer
             {
                 _itemSpecs[(int)entry.api_id] = new ItemSpec
                 {
+                    Id = (int)entry.api_id,
                     Name = (string)entry.api_name,
                     Type = (int)entry.api_type[2],
                     TypeName = dict[(int)entry.api_type[2]],
@@ -273,6 +278,16 @@ namespace KancolleSniffer
         public ItemSpec GetSpecByItemId(int id)
         {
             return _itemSpecs[id];
+        }
+
+        public ItemStatus[] GetItemList(ShipInfo ship)
+        {
+            foreach (var s in ship.ShipList)
+            {
+                foreach (var id in s.Slot)
+                    _itemInfo[id].Ship = s;
+            }
+            return _itemInfo.Where(e => e.Key != -1).Select(e => e.Value).ToArray();
         }
 
         public void SaveState(Status status)

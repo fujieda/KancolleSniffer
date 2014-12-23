@@ -369,6 +369,11 @@ namespace KancolleSniffer
             get { return _shipInfo.ShipList; }
         }
 
+        public ItemStatus[] ItemList
+        {
+            get { return _itemInfo.GetItemList(_shipInfo); }
+        }
+
         public AkashiTimer.RepairSpan[] GetAkashiTimers(int fleet)
         {
             return _akashiTimer.GetTimers(fleet);

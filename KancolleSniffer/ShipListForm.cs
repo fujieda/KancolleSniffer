@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using ContentAlignment = System.Drawing.ContentAlignment;
 
 namespace KancolleSniffer
 {
@@ -30,7 +31,7 @@ namespace KancolleSniffer
         private const int LabelHeight = 12;
         private const int LineHeight = 16;
         private const int PanelWidth = 217;
-        private ShipStatus[] _currentList;
+        private ShipStatus[] _shipList;
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private readonly List<Panel> _labelPanelList = new List<Panel>();
         private readonly List<CheckBox[]> _checkBoxesList = new List<CheckBox[]>();
@@ -40,6 +41,7 @@ namespace KancolleSniffer
         private readonly List<Panel> _repairPanelList = new List<Panel>();
         public const int GroupCount = 4;
         private readonly HashSet<int>[] _groupSettings = new HashSet<int>[GroupCount];
+        private TreeNode _itemTreeNode;
 
         public ShipListForm(Sniffer sniffer, Config config)
         {
@@ -50,17 +52,27 @@ namespace KancolleSniffer
 
         public void UpdateList()
         {
-            CreateList();
-            CreateListLabels();
-            SetShipLabels();
+            panelItemHeader.Visible = InItemList();
+            treeViewItem.Visible = InItemList();
+            if (InItemList())
+            {
+                CreateItemList();
+                SetTreeViewItem();
+            }
+            else
+            {
+                CreateShipList();
+                CreateListLabels();
+                SetShipLabels();
+            }
         }
 
-        private void CreateList()
+        private void CreateShipList()
         {
             var ships = InRepairList() ? _sniffer.DamagedShipList : FilterByGroup(_sniffer.ShipList).ToArray();
             if (!_config.ShipList.ShipType)
             {
-                _currentList = ships.OrderBy(s => s, new CompareShip(false, InRepairList())).ToArray();
+                _shipList = ships.OrderBy(s => s, new CompareShip(false, InRepairList())).ToArray();
                 return;
             }
             var types = ships.Select(s => new {Id = s.Spec.ShipType, Name = s.Spec.ShipTypeName}).Distinct().
@@ -71,7 +83,7 @@ namespace KancolleSniffer
                         Level = 1000,
                         NowHp = -1000
                     });
-            _currentList = ships.Concat(types).OrderBy(s => s, new CompareShip(true, InRepairList())).ToArray();
+            _shipList = ships.Concat(types).OrderBy(s => s, new CompareShip(true, InRepairList())).ToArray();
         }
 
         private IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships)
@@ -107,10 +119,47 @@ namespace KancolleSniffer
             }
         }
 
+        private void CreateItemList()
+        {
+            var list = from byId in
+                (from item in _sniffer.ItemList where item.Spec.Id != -1
+                    orderby item.Spec.Type, item.Spec.Id, item.Level descending, item.Ship.Spec.Id
+                    group item by new {item.Spec.Id, item.Level})
+                group byId by byId.First().Spec.Type;
+            _itemTreeNode = new TreeNode();
+            foreach (var byType in list)
+            {
+                var typeName = byType.First().First().Spec.TypeName;
+                var typeNode = new TreeNode();
+                typeNode.Name = typeNode.Text = typeName;
+                _itemTreeNode.Nodes.Add(typeNode);
+                foreach (var byItem in byType)
+                {
+                    var item = byItem.First();
+                    var itemNode = new TreeNode();
+                    itemNode.Name = itemNode.Text = item.Spec.Name + (item.Level == 0 ? "" : "★" + item.Level);
+                    typeNode.Nodes.Add(itemNode);
+
+                    var shipGroup = (from i in byItem group i.Ship by i.Ship.Id).ToArray();
+                    foreach (var name in
+                        from grp in shipGroup where grp.Key != -1
+                        let ship = grp.First()
+                        select (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") + ship.Name + "Lv" + ship.Level + "×" + grp.Count())
+                    {
+                        itemNode.Nodes.Add(name, name);
+                    }
+                    foreach (var name in (from grp in shipGroup where grp.Key == -1 select "未装備×" + grp.Count()))
+                    {
+                        itemNode.Nodes.Add(name, name);
+                    }
+                }
+            }
+        }
+
         private void CreateListLabels()
         {
             panelShipList.SuspendLayout();
-            for (var i = _labelList.Count; i < _currentList.Length; i++)
+            for (var i = _labelList.Count; i < _shipList.Length; i++)
             {
                 CreateConfigComponents(i);
                 CreateRepairLabels(i);
@@ -266,11 +315,13 @@ namespace KancolleSniffer
         {
             panelGroupHeader.Visible = InGroupConfig();
             panelRepairHeader.Visible = InRepairList();
+            panelItemHeader.Visible = InItemList();
+            treeViewItem.Visible = InItemList();
             panelShipList.SuspendLayout();
-            for (var i = 0; i < _currentList.Length; i++)
+            for (var i = 0; i < _shipList.Length; i++)
             {
                 var lbp = _labelPanelList[i];
-                if (lbp.Visible == false)
+                if (lbp.Visible == false && !InItemList())
                 {
                     lbp.Location = new Point(lbp.Left, (int)lbp.Tag + panelShipList.AutoScrollPosition.Y);
                     lbp.Visible = true;
@@ -285,7 +336,7 @@ namespace KancolleSniffer
                 {
                     rpp.Location = new Point(rpp.Left, (int)rpp.Tag + panelShipList.AutoScrollPosition.Y);
                 }
-                var s = _currentList[i];
+                var s = _shipList[i];
                 var labels = _labelList[i];
                 if (s.Level == 1000)
                 {
@@ -332,13 +383,55 @@ namespace KancolleSniffer
                 labels[4].SetName(s);
                 labels[5].SetFleet(s);
             }
-            for (var i = _currentList.Length; i < _labelPanelList.Count; i++)
+            for (var i = _shipList.Length; i < _labelPanelList.Count; i++)
             {
                 _labelPanelList[i].Visible = false;
                 _checkBoxPanelList[i].Visible = false;
                 _repairPanelList[i].Visible = false;
             }
             panelShipList.ResumeLayout();
+        }
+
+        private void SetTreeViewItem()
+        {
+            panelShipList.SuspendLayout();
+            for (var i = 0; i < _shipList.Length; i++)
+                _labelPanelList[i].Visible = _checkBoxPanelList[i].Visible = _repairPanelList[i].Visible = false;
+            panelShipList.ResumeLayout();
+            treeViewItem.BeginUpdate();
+            var save = SaveTreeViewState(treeViewItem.Nodes);
+            treeViewItem.Nodes.Clear();
+            foreach (TreeNode child in _itemTreeNode.Nodes)
+                treeViewItem.Nodes.Add(child);
+            RestoreTreeViewState(treeViewItem.Nodes, save.Nodes);
+            treeViewItem.EndUpdate();
+        }
+
+        private TreeNode SaveTreeViewState(TreeNodeCollection nodes)
+        {
+            var result = new TreeNode();
+            foreach (TreeNode child in nodes)
+            {
+                var copy = SaveTreeViewState(child.Nodes);
+                if (child.IsExpanded)
+                    copy.Expand();
+                copy.Name = child.Name;
+                result.Nodes.Add(copy);
+            }
+            return result;
+        }
+
+        private void RestoreTreeViewState(TreeNodeCollection dst, TreeNodeCollection src)
+        {
+            foreach (TreeNode d in dst)
+            {
+                var s = src[d.Name];
+                if (s == null)
+                    continue;
+                if (s.IsExpanded)
+                    d.Expand();
+                RestoreTreeViewState(d.Nodes, s.Nodes);
+            }
         }
 
         private bool InGroupConfig()
@@ -349,6 +442,11 @@ namespace KancolleSniffer
         private bool InRepairList()
         {
             return comboBoxGroup.Text == "修復";
+        }
+
+        private bool InItemList()
+        {
+            return comboBoxGroup.Text == "装備";
         }
 
         private void ShipListForm_Load(object sender, EventArgs e)
@@ -395,7 +493,7 @@ namespace KancolleSniffer
 
         public void ShowShip(int id)
         {
-            var i = Array.FindIndex(_currentList, s => s.Id == id);
+            var i = Array.FindIndex(_shipList, s => s.Id == id);
             if (i == -1)
                 return;
             var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * 16 * i);
@@ -406,7 +504,7 @@ namespace KancolleSniffer
         {
             _config.ShipList.ShipType = checkBoxShipType.Checked;
             UpdateList();
-            ActiveControl = panelShipList;
+            SetActiveControl();
         }
 
         private void checkboxGroup_CheckedChanged(object sender, EventArgs e)
@@ -415,9 +513,9 @@ namespace KancolleSniffer
             var group = (int)cb.Tag % 10;
             var idx = (int)cb.Tag / 10;
             if (cb.Checked)
-                _groupSettings[group].Add(_currentList[idx].Id);
+                _groupSettings[group].Add(_shipList[idx].Id);
             else
-                _groupSettings[group].Remove(_currentList[idx].Id);
+                _groupSettings[group].Remove(_shipList[idx].Id);
         }
 
         private void comboBoxGroup_SelectedIndexChanged(object sender, EventArgs e)
@@ -427,16 +525,23 @@ namespace KancolleSniffer
 
         private void comboBoxGroup_DropDownClosed(object sender, EventArgs e)
         {
-            ActiveControl = panelShipList;
+            SetActiveControl();
         }
 
         private void ShipListForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'E', 'R'}, x => x == char.ToUpper(e.KeyChar));
+            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W'}, x => x == char.ToUpper(e.KeyChar));
             if (g == -1)
                 return;
             comboBoxGroup.SelectedIndex = g;
-            ActiveControl = panelShipList;
+            SetActiveControl();
+            e.Handled = true;
+        }
+
+        // マウスホイールでスクロールするためにコントロールにフォーカスを合わせる。
+        private void SetActiveControl()
+        {
+            ActiveControl = InItemList() ? (Control)treeViewItem : panelShipList;
         }
     }
 }

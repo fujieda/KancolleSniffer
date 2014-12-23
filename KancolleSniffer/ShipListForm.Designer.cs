@@ -47,6 +47,7 @@ namespace KancolleSniffer
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShipListForm));
             this.panelShipList = new System.Windows.Forms.Panel();
+            this.treeViewItem = new System.Windows.Forms.TreeView();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -64,6 +65,8 @@ namespace KancolleSniffer
             this.panelRepairHeader = new System.Windows.Forms.Panel();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.panelItemHeader = new System.Windows.Forms.Panel();
+            this.panelShipList.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
             this.SuspendLayout();
@@ -74,10 +77,19 @@ namespace KancolleSniffer
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panelShipList.AutoScroll = true;
             this.panelShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelShipList.Controls.Add(this.treeViewItem);
             this.panelShipList.Location = new System.Drawing.Point(6, 23);
             this.panelShipList.Name = "panelShipList";
             this.panelShipList.Size = new System.Drawing.Size(238, 233);
             this.panelShipList.TabIndex = 0;
+            // 
+            // treeViewItem
+            // 
+            this.treeViewItem.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewItem.Location = new System.Drawing.Point(0, 0);
+            this.treeViewItem.Name = "treeViewItem";
+            this.treeViewItem.Size = new System.Drawing.Size(236, 231);
+            this.treeViewItem.TabIndex = 0;
             // 
             // label1
             // 
@@ -196,7 +208,8 @@ namespace KancolleSniffer
             "C",
             "D",
             "分類",
-            "修復"});
+            "修復",
+            "装備"});
             this.comboBoxGroup.Location = new System.Drawing.Point(6, 4);
             this.comboBoxGroup.Name = "comboBoxGroup";
             this.comboBoxGroup.Size = new System.Drawing.Size(48, 20);
@@ -252,11 +265,19 @@ namespace KancolleSniffer
             this.label11.TabIndex = 17;
             this.label11.Text = "HP";
             // 
+            // panelItemHeader
+            // 
+            this.panelItemHeader.Location = new System.Drawing.Point(58, 3);
+            this.panelItemHeader.Name = "panelItemHeader";
+            this.panelItemHeader.Size = new System.Drawing.Size(166, 19);
+            this.panelItemHeader.TabIndex = 0;
+            // 
             // ShipListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(250, 262);
+            this.Controls.Add(this.panelItemHeader);
             this.Controls.Add(this.panelRepairHeader);
             this.Controls.Add(this.panelGroupHeader);
             this.Controls.Add(this.checkBoxShipType);
@@ -270,10 +291,11 @@ namespace KancolleSniffer
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "ShipListForm";
-            this.Text = "艦娘一覧";
+            this.Text = "一覧";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ShipListForm_FormClosing);
             this.Load += new System.EventHandler(this.ShipListForm_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ShipListForm_KeyPress);
+            this.panelShipList.ResumeLayout(false);
             this.panelGroupHeader.ResumeLayout(false);
             this.panelGroupHeader.PerformLayout();
             this.panelRepairHeader.ResumeLayout(false);
@@ -303,5 +325,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Panel panelItemHeader;
+        private System.Windows.Forms.TreeView treeViewItem;
     }
 }
