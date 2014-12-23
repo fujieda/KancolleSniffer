@@ -231,10 +231,11 @@ namespace KancolleSniffer
                     Cond = (int)entry.api_cond,
                     Fuel = (int)entry.api_fuel,
                     Bull = (int)entry.api_bull,
-                    OnSlot = (from num in (dynamic[])entry.api_onslot select (int)num).ToArray(),
-                    Slot = (from num in (dynamic[])entry.api_slot select (int)num).ToArray(),
+                    OnSlot = (int[])entry.api_onslot,
+                    Slot = (int[])entry.api_slot,
                     LoS = (int)entry.api_sakuteki[0]
                 };
+                _itemInfo.CountNewItems((int[])entry.api_slot);
             }
         }
 
@@ -317,7 +318,7 @@ namespace KancolleSniffer
             var values = HttpUtility.ParseQueryString(request);
             var ships = values["api_id_items"].Split(',');
             _itemInfo.NowShips -= ships.Length;
-            _itemInfo.NowEquips -= (from s in ships select SlotItemCount(int.Parse(s))).Sum();
+            _itemInfo.DeleteItems(ships.SelectMany(s => _shipInfo[int.Parse(s)].Slot).ToArray());
             foreach (var ship in ships)
                 _shipInfo.Remove(int.Parse(ship));
             InspectDeck(json.api_deck);
@@ -328,8 +329,8 @@ namespace KancolleSniffer
         {
             var values = HttpUtility.ParseQueryString(request);
             var ship = int.Parse(values["api_ship_id"]);
-            _itemInfo.NowShips -= 1;
-            _itemInfo.NowEquips -= SlotItemCount(ship);
+            _itemInfo.NowShips--;
+            _itemInfo.DeleteItems(_shipInfo[ship].Slot);
             int oi;
             var of = FindFleet(ship, out oi);
             if (of != -1)
@@ -339,11 +340,6 @@ namespace KancolleSniffer
             var material = (int[])json.api_material;
             for (var i = 0; i < material.Length; i++)
                 _itemInfo.MaterialHistory[i].Now = material[i];
-        }
-
-        private int SlotItemCount(int id)
-        {
-            return _shipInfo[id].Slot.Count(item => item != -1);
         }
 
         public void StartSortie(string request)

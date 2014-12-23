@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 
 namespace KancolleSniffer
@@ -120,7 +121,7 @@ namespace KancolleSniffer
         public int NowEquips
         {
             get { return _nowEquips; }
-            set
+            private set
             {
                 if (MaxEquips != 0)
                 {
@@ -204,7 +205,6 @@ namespace KancolleSniffer
             if (!json.IsDefined("api_slot_item"))
                 return;
             InspectSlotItem(json.api_slot_item);
-            NowEquips++;
         }
 
         public void InspectGetShip(dynamic json)
@@ -213,13 +213,12 @@ namespace KancolleSniffer
             if (json.api_slotitem == null) // まるゆにはスロットがない
                 return;
             InspectSlotItem(json.api_slotitem);
-            NowEquips += ((object[])json.api_slotitem).Length;
         }
 
         public void InspectDestroyItem(string request, dynamic json)
         {
             var values = HttpUtility.ParseQueryString(request);
-            NowEquips -= values["api_slotitem_ids"].Split(',').Length;
+            DeleteItems(values["api_slotitem_ids"].Split(',').Select(int.Parse).ToArray());
             var get = (int[])json.api_get_material;
             for (var i = 0; i < get.Length; i++)
                 MaterialHistory[i].Now += get[i];
@@ -227,9 +226,29 @@ namespace KancolleSniffer
 
         public void InspectRemodelSlot(dynamic json)
         {
+            if (json.api_after_slot())
+                InspectSlotItem(json.api_after_slot);
             if (!json.api_use_slot_id())
                 return;
-            NowEquips -= ((object[])json.api_use_slot_id).Length;
+            DeleteItems(((int[])json.api_use_slot_id));
+        }
+
+        public void DeleteItems(int[] ids)
+        {
+            foreach (var id in ids.Where(id => id != -1))
+            {
+                _itemInfo.Remove(id);
+                NowEquips--;
+            }
+        }
+
+        public void CountNewItems(int[] ids)
+        {
+            foreach (var id in ids.Where(id => id != -1 && !_itemInfo.ContainsKey(id)))
+            {
+                _itemInfo[id] = new ItemStatus();
+                NowEquips++;
+            }
         }
 
         public void InspectMissionResult(dynamic json)
