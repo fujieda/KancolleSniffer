@@ -68,11 +68,17 @@ namespace KancolleSniffer
         }
     }
 
+    public class ItemStatus
+    {
+        public ItemSpec Spec { get; set; }
+        public int Level { get; set; }
+    }
+
     public class ItemInfo
     {
         private int _nowShips, _nowEquips;
         private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
-        private readonly Dictionary<int, int> _itemIds = new Dictionary<int, int>();
+        private readonly Dictionary<int, ItemStatus> _itemInfo = new Dictionary<int, ItemStatus>();
 
         public int MaxShips { get; private set; }
         public int MarginShips { get; set; }
@@ -165,10 +171,19 @@ namespace KancolleSniffer
             if (!json.IsArray)
                 json = new[] {json};
             if (full)
-                NowEquips = ((object[])json).Length;
+            {
+                _itemInfo.Clear();
+                _itemInfo[-1] = new ItemStatus();
+            }
             foreach (var entry in json)
-                _itemIds[(int)entry.api_id] = (int)entry.api_slotitem_id;
-            _itemIds[-1] = -1;
+            {
+                _itemInfo[(int)entry.api_id] = new ItemStatus
+                {
+                    Spec = _itemSpecs[(int)entry.api_slotitem_id],
+                    Level = entry.api_level() ? (int)entry.api_level : 0
+                };
+            }
+            NowEquips = _itemInfo.Count - 1;
         }
 
         public void InspectCreateItem(dynamic json)
@@ -223,10 +238,7 @@ namespace KancolleSniffer
 
         public ItemSpec GetSpecById(int id)
         {
-            int itemId;
-            if (!_itemIds.TryGetValue(id, out itemId))
-                itemId = -1;
-            return _itemSpecs[itemId];
+            return _itemInfo[id].Spec;
         }
 
         public ItemSpec GetSpecByItemId(int id)
