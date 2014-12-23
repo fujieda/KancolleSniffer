@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>各種報告書 - KancolleSniffer</title>
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+
+<style>
+body {
+    font-family:'Lucida Grande','Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+    line-height: 1.5;
+    font-size: 14px;
+}
+.tab {overflow: hidden; list-style-type: none; margin: 0em 2em 2em 1em; padding: 0em;}
+.tab li {background: #eee; padding: 0.3em 2.0em; float: left; margin-right: 2px;}
+.tab li.select {background: #ccc;}
+.contents {list-style-type: none; margin: 0em; padding: 0em;}
+.hide {display: none;}
+</style>
+
+</head>
+<body>
+<script>
+$(function() {
+    $.extend($.fn.dataTable.defaults, {
+        stateSave: true,
+        order: [[0, "desc"]],
+        iDisplayLength: 50,
+        aLengthMenu: [[50, 100, 200, -1],[50, 100, 200, "All"]]
+    });
+    function selectlog(i)
+    {
+        
+        if ($.fn.dataTable.isDataTable('#log' + i)) {
+            $('#log' + i).DataTable().ajax.reload();
+            return;
+        }
+        switch (i) {
+        case 0:
+            $('#log0').dataTable({
+                ajax: "./海戦・ドロップ報告書.json",
+                columns: [{data: 0}, {data: 1}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}]
+            });
+            break;
+        case 1:
+            var entries = [];
+            for (i = 0; i < 35; i++) {
+                if (i == 9 || i == 10)
+                    continue;
+                entries.push({data: i})
+            }
+            $('#log1').dataTable({
+                ajax: "./海戦・ドロップ報告書.json",
+                iDisplayLength: 50,
+                columns: entries
+            });
+            break;
+        case 2:
+            $('#log2').dataTable({
+                ajax: "./遠征報告書.json"
+            });
+            break;
+        case 3:
+            $('#log3').dataTable({
+                "ajax": "./開発報告書.json"
+            });
+            break;
+        case 4:
+            $('#log4').dataTable({
+                ajax: "./建造報告書.json"
+            });
+            break;
+        case 5:
+            $('#log5').dataTable({
+                ajax: "./資材ログ.json"
+            });
+            break;
+        } 
+    }
+    $('.tab li').click(function() {
+        var tab = $('.tab li');
+        var i = tab.index(this) % 6;
+        selectlog(i);
+        tab.removeClass('select');
+        tab.eq(i).addClass('select');
+        $('.contents li').css('display', 'none');
+        $('.contents li').eq(i).css('display', 'block');
+        sessionStorage.setItem('prevTab', i);
+    });
+    $('table').addClass('display compact cell-border');
+    var prev = sessionStorage.getItem('prevTab');
+    if (prev == null)
+        prev = 0;
+    selectlog(+prev);
+    $('.tab li').eq(prev).addClass('select');
+    $('.contents li').eq(prev).css('display', 'block');
+});
+</script>
+<ul class="tab">
+<li>ドロップ</li>
+<li>海戦</li>
+<li>遠征</li>
+<li>開発</li>
+<li>建造</li>
+<li>資材</li>
+</ul>
+
+<ul class="contents">
+<li class="hide">
+<table id="log0" cellspacing="0" width="100%">
+<thead>
+<tr><th>日付</th><th>海域</th><th>マス</th><th>ボス</th><th>ランク</th><th>ドロップ艦種</th><th>ドロップ艦娘</th></tr>
+</thead>
+</table>
+
+<li class="hide">
+<table id="log1" cellspacing="0" width="100%">
+<thead>
+<tr><th>日付</th><th>海域</th><th>マス</th><th>ボス</th><th>ランク</th><th>艦隊行動</th><th>味方陣形</th><th>敵陣形</th><th>敵艦隊</th><th>味方艦1</th><th>味方艦1HP</th><th>味方艦2</th><th>味方艦2HP</th><th>味方艦3</th><th>味方艦3HP</th><th>味方艦4</th><th>味方艦4HP</th><th>味方艦5</th><th>味方艦5HP</th><th>味方艦6</th><th>味方艦6HP</th><th>敵艦1</th><th>敵艦1HP</th><th>敵艦2</th><th>敵艦2HP</th><th>敵艦3</th><th>敵艦3HP</th><th>敵艦4</th><th>敵艦4HP</th><th>敵艦5</th><th>敵艦5HP</th><th>敵艦6</th><th>敵艦6HP</th></tr>
+</thead>
+</table>
+
+<li class="hide">
+<table id="log2" cellspacing="0" width="100%">
+<thead>
+<tr><th>日付</th><th>結果</th><th>遠征</th><th>燃料</th><th>弾薬</th><th>鋼材</th><th>ボーキ</th><th>開発資材</th><th>高速修復材</th><th>高速建造材</th></tr>
+</thead>
+</table>
+
+<li class="hide">
+<table id="log3" cellspacing="0" width="100%">
+<thead>
+<tr><th>日付</th><th>開発装備</th><th>種別</th><th>燃料</th><th>弾薬</th><th>鋼材</th><th>ボーキ</th><th>秘書艦</th><th>司令部Lv</th></tr>
+</thead>
+</table>
+
+<li class="hide">
+<table id="log4" cellspacing="0" width="100%">
+<thead>
+<tr><th>日付</th><th>種類</th><th>名前</th><th>艦種</th><th>燃料</th><th>弾薬</th><th>鋼材</th><th>ボーキ</th><th>開発資材</th><th>空きドック</th><th>秘書艦</th><th>司令部Lv</th></tr>
+</thead>
+</table>
+
+<li class="hide">
+<table id="log5" cellspacing="0" width="100%">
+<thead>
+<tr><th>日付</th><th>燃料</th><th>弾薬</th><th>鋼材</th><th>ボーキ</th><th>高速修復材</th><th>高速建造材</th><th>開発資材</th><th>改修資材</th></tr>
+</thead>
+</table>
+</ul>
+</body>
+</html>
