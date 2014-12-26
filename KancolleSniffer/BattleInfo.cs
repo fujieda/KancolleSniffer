@@ -28,6 +28,7 @@ namespace KancolleSniffer
         private readonly ItemInfo _itemInfo;
         private dynamic _day;
         private dynamic _night;
+        private bool _isSurface;
         private readonly List<int> _escapingShips = new List<int>();
         public bool InBattle { get; set; }
         public string Formation { get; private set; }
@@ -48,9 +49,14 @@ namespace KancolleSniffer
             Formation = FormationName(json);
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
             if (IsNightBattle(json))
+            {
+                CauseDamage();
                 _night = json;
+            }
             else
+            {
                 _day = json;
+            }
         }
 
         public void InspectCombinedBattle(dynamic json, bool surfaceFleet)
@@ -60,11 +66,12 @@ namespace KancolleSniffer
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
             if (IsNightBattle(json))
             {
+                CauseDamageCombined();
                 _night = json;
             }
             else
             {
-                json.is_surface = surfaceFleet;
+                _isSurface = surfaceFleet;
                 _day = json;
             }
         }
@@ -190,9 +197,7 @@ namespace KancolleSniffer
 
         public void CauseDamageCombined()
         {
-            if (_day == null)
-                return;
-            if (_day.is_surface)
+            if (_isSurface)
                 CauseDamageCombinedFleetSurface();
             else
                 CauseDamageCombinedFleetAir();

@@ -147,14 +147,14 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
-        /// 夜戦の間に昼戦の戦闘結果を見せない
+        /// 夜戦の開始時に昼戦の結果を反映する
         /// </summary>
         [TestMethod]
-        public void BattleResultNotVisibleInNightCombat()
+        public void ResultOfDayBattleShowInNightBattle()
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "battle_003");
-            AssertEqualBattleResult(sniffer, new[] {32, 16, 13});
+            AssertEqualBattleResult(sniffer, new[] {28, 2, 13});
         }
 
         /// <summary>
