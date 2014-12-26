@@ -354,17 +354,22 @@ namespace KancolleSniffer
 
         private void UpdateShipInfo()
         {
-            var statuses = _sniffer.GetShipStatuses(_currentFleet);
-            _shipInfoLabels.SetShipInfo(statuses);
+            UpdatePanelShipInfol();
             NotifyDamagedShip();
-            UpdateAkashiTimer();
-            labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
-            UpdateLoS();
             UpdateChargeInfo();
-            UpdateCondTimers();
             UpdateDamagedShipList();
             if (_shipListForm.Visible)
                 _shipListForm.UpdateList();
+        }
+
+        private void UpdatePanelShipInfol()
+        {
+            var statuses = _sniffer.GetShipStatuses(_currentFleet);
+            _shipInfoLabels.SetShipInfo(statuses);
+            labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
+            UpdateAkashiTimer();
+            UpdateLoS();
+            UpdateCondTimers();
         }
 
         private void NotifyDamagedShip()
@@ -686,7 +691,7 @@ namespace KancolleSniffer
             _labelCheckFleets[fleet].Visible = true;
             if (!_started)
                 return;
-            UpdateShipInfo();
+            UpdatePanelShipInfol();
         }
 
         private void labelBucketHistoryButton_Click(object sender, EventArgs e)
