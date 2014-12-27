@@ -21,13 +21,18 @@ using System.Web;
 
 namespace KancolleSniffer
 {
-    public struct ItemSpec
+    public class ItemSpec
     {
         public string Name;
         public int Type;
         public string TypeName;
         public int AntiAir;
         public int LoS;
+
+        public ItemSpec()
+        {
+            Name = "";
+        }
 
         public bool CanAirCombat()
         {
@@ -72,6 +77,11 @@ namespace KancolleSniffer
     {
         public ItemSpec Spec { get; set; }
         public int Level { get; set; }
+
+        public ItemStatus()
+        {
+            Spec = new ItemSpec();
+        }
     }
 
     public class ItemInfo

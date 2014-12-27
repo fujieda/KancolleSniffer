@@ -43,7 +43,7 @@ namespace KancolleSniffer
                     ShipTypeName = dict[entry.api_stype]
                 };
             }
-            _shipSpecs[-1] = new ShipSpec {Name = "不明", MaxEq = new int[NumSlots]};
+            _shipSpecs[-1] = new ShipSpec();
         }
 
         // 深海棲艦の名前にelite/flagshipを付ける
@@ -66,7 +66,7 @@ namespace KancolleSniffer
         }
     }
 
-    public struct ShipSpec
+    public class ShipSpec
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -111,6 +111,13 @@ namespace KancolleSniffer
                 }
                 return 1.0;
             }
+        }
+
+        public ShipSpec()
+        {
+            Id = -1;
+            Name = "";
+            MaxEq = new int[0];
         }
     }
 }

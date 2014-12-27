@@ -49,6 +49,14 @@ namespace KancolleSniffer
             get { return CalcDamage(NowHp, MaxHp); }
         }
 
+        public ShipStatus()
+        {
+            Id = -1;
+            Spec = new ShipSpec();
+            OnSlot = new int[0];
+            Slot = new int[0];
+        }
+
         public enum Damage
         {
             Minor,
@@ -191,7 +199,7 @@ namespace KancolleSniffer
         private void ClearShipInfo()
         {
             _shipInfo.Clear();
-            _shipInfo[-1] = new ShipStatus {Spec = _shipMaster[-1], Slot = new int[0], OnSlot = new int[0]};
+            _shipInfo[-1] = new ShipStatus();
         }
 
         public void InspectDeck(dynamic json)
