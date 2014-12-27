@@ -80,7 +80,7 @@ namespace KancolleSniffer
             this.panelShipList.Controls.Add(this.treeViewItem);
             this.panelShipList.Location = new System.Drawing.Point(6, 23);
             this.panelShipList.Name = "panelShipList";
-            this.panelShipList.Size = new System.Drawing.Size(238, 233);
+            this.panelShipList.Size = new System.Drawing.Size(238, 263);
             this.panelShipList.TabIndex = 0;
             // 
             // treeViewItem
@@ -88,7 +88,7 @@ namespace KancolleSniffer
             this.treeViewItem.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewItem.Location = new System.Drawing.Point(0, 0);
             this.treeViewItem.Name = "treeViewItem";
-            this.treeViewItem.Size = new System.Drawing.Size(236, 231);
+            this.treeViewItem.Size = new System.Drawing.Size(236, 261);
             this.treeViewItem.TabIndex = 0;
             // 
             // label1
@@ -276,7 +276,7 @@ namespace KancolleSniffer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(250, 262);
+            this.ClientSize = new System.Drawing.Size(250, 292);
             this.Controls.Add(this.panelItemHeader);
             this.Controls.Add(this.panelRepairHeader);
             this.Controls.Add(this.panelGroupHeader);
