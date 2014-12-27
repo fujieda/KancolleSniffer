@@ -282,6 +282,8 @@ namespace KancolleSniffer
 
         public ItemStatus[] GetItemList(ShipInfo ship)
         {
+            foreach (var e in _itemInfo)
+                e.Value.Ship = new ShipStatus();
             foreach (var s in ship.ShipList)
             {
                 foreach (var id in s.Slot)
