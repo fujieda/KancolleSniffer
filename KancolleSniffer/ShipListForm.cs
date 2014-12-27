@@ -42,6 +42,7 @@ namespace KancolleSniffer
         public const int GroupCount = 4;
         private readonly HashSet<int>[] _groupSettings = new HashSet<int>[GroupCount];
         private TreeNode _itemTreeNode;
+        private ItemStatus[] _prevItemList;
 
         public ShipListForm(Sniffer sniffer, Config config)
         {
@@ -56,8 +57,8 @@ namespace KancolleSniffer
             treeViewItem.Visible = InItemList();
             if (InItemList())
             {
-                CreateItemList();
-                SetTreeViewItem();
+                if (CreateItemList())
+                    SetTreeViewItem();
             }
             else
             {
@@ -119,15 +120,19 @@ namespace KancolleSniffer
             }
         }
 
-        private void CreateItemList()
+        private bool CreateItemList()
         {
-            var list = from byId in
-                (from item in _sniffer.ItemList where item.Spec.Id != -1
+            var itemList = _sniffer.ItemList;
+            if (_prevItemList != null && _prevItemList.SequenceEqual(itemList, new ItemStatusComparer()))
+                return false;
+            _prevItemList = itemList.Select(CloneItemStatus).ToArray();
+            var grouped = from byId in
+                (from item in itemList where item.Spec.Id != -1
                     orderby item.Spec.Type, item.Spec.Id, item.Level descending, item.Ship.Spec.Id
                     group item by new {item.Spec.Id, item.Level})
                 group byId by byId.First().Spec.Type;
             _itemTreeNode = new TreeNode();
-            foreach (var byType in list)
+            foreach (var byType in grouped)
             {
                 var typeName = byType.First().First().Spec.TypeName;
                 var typeNode = new TreeNode();
@@ -144,7 +149,8 @@ namespace KancolleSniffer
                     foreach (var name in
                         from grp in shipGroup where grp.Key != -1
                         let ship = grp.First()
-                        select (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") + ship.Name + "Lv" + ship.Level + "×" + grp.Count())
+                        select (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") +
+                               ship.Name + "Lv" + ship.Level + "×" + grp.Count())
                     {
                         itemNode.Nodes.Add(name, name);
                     }
@@ -153,6 +159,30 @@ namespace KancolleSniffer
                         itemNode.Nodes.Add(name, name);
                     }
                 }
+            }
+            return true;
+        }
+
+        private ItemStatus CloneItemStatus(ItemStatus org)
+        {
+            return new ItemStatus
+            {
+                Level = org.Level,
+                Spec = org.Spec,
+                Ship = new ShipStatus {Id = org.Ship.Id, Fleet = org.Ship.Fleet}
+            };
+        }
+
+        private class ItemStatusComparer : IEqualityComparer<ItemStatus>
+        {
+            public bool Equals(ItemStatus x, ItemStatus y)
+            {
+                return x.Level == y.Level && x.Spec == y.Spec && x.Ship.Id == y.Ship.Id && x.Ship.Fleet == y.Ship.Fleet;
+            }
+
+            public int GetHashCode(ItemStatus obj)
+            {
+                return obj.Level + obj.Spec.GetHashCode() + obj.Ship.GetHashCode();
             }
         }
 
