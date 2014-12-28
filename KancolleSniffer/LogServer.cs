@@ -84,9 +84,9 @@ namespace KancolleSniffer
                             continue;
                         }
                         if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase) &&
-                            File.Exists(full.Replace(".json", ".csv")))
+                            File.Exists(csv.Replace(".json", ".csv")))
                         {
-                            SendJsonData(client, full);
+                            SendJsonData(client, csv);
                             continue;
                         }
                         if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
