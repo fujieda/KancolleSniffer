@@ -221,13 +221,15 @@ namespace KancolleSniffer
             if (IsNormalBattleAPI(url))
             {
                 _battleInfo.InspectBattle(data);
-                if (url.EndsWith("api_req_practice/battle"))
-                {
-                    _shipInfo.StartSortie(request); // 演習を出撃中とみなす
-                    return Update.Ship | Update.Battle | Update.Timer;
-                }
                 _logger.InspectBattle(data);
                 return Update.Ship | Update.Battle;
+            }
+            if (url.EndsWith("api_req_practice/battle") || url.EndsWith("api_req_practice/midnight_battle"))
+            {
+                if (url.EndsWith("/battle"))
+                    _shipInfo.StartSortie(request); // 演習を出撃中とみなす
+                _battleInfo.InspectPracticeBattle(data);
+                return Update.Ship | Update.Battle | Update.Timer;
             }
             if (url.EndsWith("api_req_sortie/battleresult"))
             {
@@ -284,10 +286,9 @@ namespace KancolleSniffer
 
         public bool IsNormalBattleAPI(string url)
         {
-            return url.EndsWith("api_req_sortie/battle") || url.EndsWith("api_req_practice/battle") ||
+            return url.EndsWith("api_req_sortie/battle") ||
                    url.EndsWith("api_req_battle_midnight/battle") ||
-                   url.EndsWith("api_req_battle_midnight/sp_midnight") ||
-                   url.EndsWith("api_req_practice/midnight_battle");
+                   url.EndsWith("api_req_battle_midnight/sp_midnight");
         }
 
         public bool IsCombinedBattleAPI(string url)

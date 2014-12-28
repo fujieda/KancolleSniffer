@@ -59,6 +59,12 @@ namespace KancolleSniffer
             }
         }
 
+        public void InspectPracticeBattle(dynamic json)
+        {
+            InspectBattle(json);
+            HasDamagedShip = false;
+        }
+
         public void InspectCombinedBattle(dynamic json, bool surfaceFleet)
         {
             InBattle = true;
