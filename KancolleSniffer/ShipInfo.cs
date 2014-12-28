@@ -160,6 +160,7 @@ namespace KancolleSniffer
                     deck[i] = -1;
                 _decks[fleet] = deck;
             }
+            ClearShipInfo();
         }
 
         public void InspectShip(dynamic json)
