@@ -25,6 +25,7 @@ body {
 <body>
 <script>
 $(function() {
+    $.fn.dataTable.ext.errMode = 'throw';
     $.extend($.fn.dataTable.defaults, {
         stateSave: true,
         order: [[0, "desc"]],

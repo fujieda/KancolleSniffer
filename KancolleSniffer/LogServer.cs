@@ -83,8 +83,7 @@ namespace KancolleSniffer
                             SendFile(client, csv, "text/csv; charset=Shift_JIS");
                             continue;
                         }
-                        if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase) &&
-                            File.Exists(csv.Replace(".json", ".csv")))
+                        if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                         {
                             SendJsonData(client, csv);
                             continue;
@@ -143,13 +142,17 @@ namespace KancolleSniffer
             header.Flush();
             client.Send(((MemoryStream)header.BaseStream).ToArray());
 
+            var csv = path.Replace(".json", ".csv");
             var encoding = Encoding.GetEncoding("Shift_JIS");
             client.Send(encoding.GetBytes("{ \"data\": [\n"));
-            var delimiter = "";
-            foreach (var line in File.ReadLines(path.Replace(".json", ".csv"), encoding).Skip(1))
+            if (File.Exists(csv))
             {
-                client.Send(encoding.GetBytes(delimiter + "[\"" + string.Join("\",\"", line.Split(',')) + "\"]"));
-                delimiter = ",\n";
+                var delimiter = "";
+                foreach (var line in File.ReadLines(csv, encoding).Skip(1))
+                {
+                    client.Send(encoding.GetBytes(delimiter + "[\"" + string.Join("\",\"", line.Split(',')) + "\"]"));
+                    delimiter = ",\n";
+                }
             }
             client.Send(encoding.GetBytes("]}\n"));
         }
