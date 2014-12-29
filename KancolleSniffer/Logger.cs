@@ -83,9 +83,9 @@ namespace KancolleSniffer
                 if (flag == 1)
                     material[(int)Material.Bucket] = count;
                 else if (flag == 2)
-                    material[(int)Material.Burner] = count;
+                    material[(int)Material.Burner + 2] = count;  // 高速建造材と開発資材が反対なのでいつか直す
                 else if (flag == 3)
-                    material[(int)Material.Development] = count;
+                    material[(int)Material.Development -2] = count;
             }
             if ((_logType & LogType.Mission) != 0)
             {

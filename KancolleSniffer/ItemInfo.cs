@@ -310,9 +310,9 @@ namespace KancolleSniffer
         Bullet,
         Steal,
         Bouxite,
-        Development,
-        Bucket,
         Burner,
+        Bucket,
+        Development,
         Screw,
     }
 
