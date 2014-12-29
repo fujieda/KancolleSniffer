@@ -57,6 +57,7 @@ namespace KancolleSniffer
             treeViewItem.Visible = InItemList();
             if (InItemList())
             {
+                HideShipLabels();
                 if (CreateItemList())
                     SetTreeViewItem();
             }
@@ -422,12 +423,16 @@ namespace KancolleSniffer
             panelShipList.ResumeLayout();
         }
 
-        private void SetTreeViewItem()
+        private void HideShipLabels()
         {
             panelShipList.SuspendLayout();
             for (var i = 0; i < _shipList.Length; i++)
                 _labelPanelList[i].Visible = _checkBoxPanelList[i].Visible = _repairPanelList[i].Visible = false;
             panelShipList.ResumeLayout();
+        }
+
+        private void SetTreeViewItem()
+        {
             treeViewItem.BeginUpdate();
             var save = SaveTreeViewState(treeViewItem.Nodes);
             treeViewItem.Nodes.Clear();
