@@ -340,7 +340,6 @@ namespace KancolleSniffer
             this.labelFormation.Name = "labelFormation";
             this.labelFormation.Size = new System.Drawing.Size(48, 12);
             this.labelFormation.TabIndex = 1;
-            this.labelFormation.Text = "T字有利";
             // 
             // label29
             // 
@@ -611,7 +610,7 @@ namespace KancolleSniffer
             // labelConstruct
             // 
             this.labelConstruct.AutoSize = true;
-            this.labelConstruct.Location = new System.Drawing.Point(144, 235);
+            this.labelConstruct.Location = new System.Drawing.Point(151, 235);
             this.labelConstruct.Name = "labelConstruct";
             this.labelConstruct.Size = new System.Drawing.Size(29, 12);
             this.labelConstruct.TabIndex = 6;
@@ -864,26 +863,26 @@ namespace KancolleSniffer
             this.ConfigToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.contextMenuStripMain.Name = "contextMenuStripToolTip";
-            this.contextMenuStripMain.Size = new System.Drawing.Size(153, 92);
+            this.contextMenuStripMain.Size = new System.Drawing.Size(120, 70);
             // 
             // listToolStripMenuItem
             // 
             this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-            this.listToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.listToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.listToolStripMenuItem.Text = "一覧(&L)";
             this.listToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
             // 
             // ConfigToolStripMenuItem
             // 
             this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
-            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.ConfigToolStripMenuItem.Text = "設定(&O)";
             this.ConfigToolStripMenuItem.Click += new System.EventHandler(this.ConfigToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.ExitToolStripMenuItem.Text = "終了(&X)";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -1145,7 +1144,7 @@ namespace KancolleSniffer
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(181, 194);
+            this.label36.Location = new System.Drawing.Point(184, 194);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(29, 12);
             this.label36.TabIndex = 43;
@@ -1183,7 +1182,7 @@ namespace KancolleSniffer
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(85, 235);
+            this.label31.Location = new System.Drawing.Point(91, 235);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(41, 12);
             this.label31.TabIndex = 46;
@@ -1196,9 +1195,9 @@ namespace KancolleSniffer
             this.ClientSize = new System.Drawing.Size(232, 481);
             this.ContextMenuStrip = this.contextMenuStripMain;
             this.Controls.Add(this.panelMaterialHistory);
+            this.Controls.Add(this.labelDamgedShipListButton);
             this.Controls.Add(this.panelDamagedShipList);
             this.Controls.Add(this.label31);
-            this.Controls.Add(this.labelDamgedShipListButton);
             this.Controls.Add(this.labelMaterialHistoryButton);
             this.Controls.Add(this.label36);
             this.Controls.Add(this.labelBucketHistory);
