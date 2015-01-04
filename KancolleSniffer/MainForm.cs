@@ -59,9 +59,7 @@ namespace KancolleSniffer
             _scaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / 6f, CurrentAutoScaleDimensions.Height / 12f);
             ShipLabel.ScaleFactor = _scaleFactor;
 
-            var labels = new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4};
-            for (var i = 0; i < labels.Length; i++)
-                labels[i].Tag = i;
+            SetupFleetClick();
             _shipInfoLabels = new ShipInfoLabels(panelShipInfo, ShowShipOnShipList);
             CreateDamagedShipList();
             CreateNDockLabels();
@@ -417,14 +415,14 @@ namespace KancolleSniffer
 
         private void UpdateChargeInfo()
         {
-            var fuel = new[] {labelFuel1, labelFuel2, labelFuel3, labelFuel4};
-            var bull = new[] {labelBull1, labelBull2, labelBull3, labelBull4};
+            var fuelSq = new[] {labelFuelSq1, labelFuelSq2, labelFuelSq3, labelFuelSq4};
+            var bullSq = new[] {labelBullSq1, labelBullSq2, labelBullSq3, labelBullSq4};
 
-            for (var i = 0; i < fuel.Length; i++)
+            for (var i = 0; i < fuelSq.Length; i++)
             {
                 var stat = _sniffer.ChargeStatuses[i];
-                fuel[i].ImageIndex = stat.Fuel;
-                bull[i].ImageIndex = stat.Bull;
+                fuelSq[i].ImageIndex = stat.Fuel;
+                bullSq[i].ImageIndex = stat.Bull;
             }
         }
 
@@ -678,6 +676,24 @@ namespace KancolleSniffer
         {
             if (_wmp.playState == 8) // MediaEnded
                 _wmp.URL = ""; // 再生したファイルが差し替えできなくなるのを防ぐ。
+        }
+
+        private void SetupFleetClick()
+        {
+            var labels = new[]
+            {
+                new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4},
+                new[] {labelFuelSq1, labelFuelSq2, labelFuelSq3, labelFuelSq4},
+                new[] {labelBullSq1, labelBullSq2, labelBullSq3, labelBullSq4}
+            };
+            foreach (var a in labels)
+            {
+                for (var fleet = 0; fleet < labels[0].Length; fleet++)
+                {
+                    a[fleet].Tag = fleet;
+                    a[fleet].Click += labelFleet_Click;
+                }
+            }
         }
 
         private void labelFleet_Click(object sender, EventArgs e)
