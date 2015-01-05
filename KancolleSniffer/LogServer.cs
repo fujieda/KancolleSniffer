@@ -30,7 +30,6 @@ namespace KancolleSniffer
     public class LogServer
     {
         private readonly TcpListener _listener;
-        private readonly Thread _thread;
         private readonly string _indexDir = Path.GetDirectoryName(Application.ExecutablePath);
         private string _outputDir = Path.GetDirectoryName(Application.ExecutablePath);
 
@@ -42,86 +41,22 @@ namespace KancolleSniffer
         public LogServer(int port)
         {
             _listener = new TcpListener(IPAddress.Loopback, port);
-            _thread = new Thread(Listen);
         }
 
         public void Start()
         {
-            _thread.Start();
+            _listener.Start();
+            new Thread(Listen).Start();
         }
 
         private void Listen()
         {
             try
             {
-                _listener.Start();
                 while (true)
                 {
-                    var data = new byte[4096];
-                    var client = _listener.AcceptSocket();
-                    try
-                    {
-                        if (client.Available == 0)
-                        {
-                            Thread.Sleep(500);
-                            if (client.Available == 0)
-                                continue;
-                        }
-                        if (client.Receive(data) == 0)
-                            continue;
-                        var request = Encoding.UTF8.GetString(data).Split('\r')[0].Split(' ');
-                        if (request.Length != 3)
-                        {
-                            SendError(client, "400 Bad Request");
-                            continue;
-                        }
-                        if (!request[0].StartsWith("GET", StringComparison.OrdinalIgnoreCase))
-                        {
-                            SendError(client, "501 Not Implemented");
-                            continue;
-                        }
-                        var path = HttpUtility.UrlDecode(request[1].Split('?')[0]);
-                        if (path == null || !path.StartsWith("/"))
-                        {
-                            SendError(client, "400 Bad Request");
-                            continue;
-                        }
-
-                        path = path == "/" ? "index.html" : path.Substring(1);
-                        var full = Path.Combine(_indexDir, path);
-                        var csv = Path.Combine(_outputDir, path);
-                        if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
-                        {
-                            SendFile(client, full, "text/html");
-                            continue;
-                        }
-                        if (path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) && File.Exists(csv))
-                        {
-                            SendFile(client, csv, "text/csv; charset=Shift_JIS");
-                            continue;
-                        }
-                        if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                        {
-                            SendJsonData(client, csv);
-                            continue;
-                        }
-                        if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
-                        {
-                            SendFile(client, full, "application/javascript");
-                            continue;
-                        }
-                        SendError(client, "404 Not Found");
-                    }
-                    catch (IOException)
-                    {
-                    }
-                    catch (InvalidOperationException)
-                    {
-                    }
-                    finally
-                    {
-                        client.Close();
-                    }
+                    var socket = _listener.AcceptSocket();
+                    new Thread(Process).Start(socket);
                 }
             }
             catch (SocketException)
@@ -130,6 +65,69 @@ namespace KancolleSniffer
             finally
             {
                 _listener.Stop();
+            }
+        }
+
+        private void Process(Object obj)
+        {
+            var client = (Socket)obj;
+            var data = new byte[4096];
+            try
+            {
+                if (client.Available == 0 || client.Receive(data) == 0)
+                    return;
+                var request = Encoding.UTF8.GetString(data).Split('\r')[0].Split(' ');
+                if (request.Length != 3)
+                {
+                    SendError(client, "400 Bad Request");
+                    return;
+                }
+                if (!request[0].StartsWith("GET", StringComparison.OrdinalIgnoreCase))
+                {
+                    SendError(client, "501 Not Implemented");
+                    return;
+                }
+                var path = HttpUtility.UrlDecode(request[1].Split('?')[0]);
+                if (path == null || !path.StartsWith("/"))
+                {
+                    SendError(client, "400 Bad Request");
+                    return;
+                }
+
+                path = path == "/" ? "index.html" : path.Substring(1);
+                var full = Path.Combine(_indexDir, path);
+                var csv = Path.Combine(_outputDir, path);
+                if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
+                {
+                    SendFile(client, full, "text/html");
+                    return;
+                }
+                if (path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) && File.Exists(csv))
+                {
+                    SendFile(client, csv, "text/csv; charset=Shift_JIS");
+                    return;
+                }
+                if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                {
+                    SendJsonData(client, csv);
+                    return;
+                }
+                if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
+                {
+                    SendFile(client, full, "application/javascript");
+                    return;
+                }
+                SendError(client, "404 Not Found");
+            }
+            catch (IOException)
+            {
+            }
+            catch (SocketException)
+            {
+            }
+            finally
+            {
+                client.Close();
             }
         }
 
@@ -192,8 +190,7 @@ namespace KancolleSniffer
 
         public void Stop()
         {
-            _listener.Stop();
-            _thread.Join();
+            _listener.Server.Close();
         }
     }
 }
