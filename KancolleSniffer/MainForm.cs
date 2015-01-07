@@ -60,8 +60,8 @@ namespace KancolleSniffer
 
             SetupFleetClick();
             _shipInfoLabels = new ShipInfoLabels();
-            _shipInfoLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
             _shipInfoLabels.CreateAkashiTimers(panelShipInfo);
+            _shipInfoLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
             _shipInfoLabels.CreateDamagedShipList(panelDamagedShipList);
             CreateNDockLabels();
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
