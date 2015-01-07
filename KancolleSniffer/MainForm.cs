@@ -34,7 +34,6 @@ namespace KancolleSniffer
         private readonly ConfigDialog _configDialog;
         private int _currentFleet;
         private readonly Label[] _labelCheckFleets;
-        private readonly ShipLabel[][] _damagedShipList = new ShipLabel[14][];
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         private readonly ShipInfoLabels _shipInfoLabels;
         private readonly ShipListForm _shipListForm;
@@ -60,8 +59,10 @@ namespace KancolleSniffer
             ShipLabel.ScaleFactor = _scaleFactor;
 
             SetupFleetClick();
-            _shipInfoLabels = new ShipInfoLabels(panelShipInfo, ShowShipOnShipList);
-            CreateDamagedShipList();
+            _shipInfoLabels = new ShipInfoLabels();
+            _shipInfoLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
+            _shipInfoLabels.CreateAkashiTimers(panelShipInfo);
+            _shipInfoLabels.CreateDamagedShipList(panelDamagedShipList);
             CreateNDockLabels();
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
@@ -541,60 +542,9 @@ namespace KancolleSniffer
             NotifyAkashiTimer();
         }
 
-        public void CreateDamagedShipList()
-        {
-            var parent = panelDamagedShipList;
-            parent.SuspendLayout();
-            for (var i = 0; i < _damagedShipList.Length; i++)
-            {
-                var y = 3 + i * 16;
-                const int height = 12;
-                parent.Controls.AddRange(_damagedShipList[i] = new[]
-                {
-                    new ShipLabel {Location = new Point(1, y), Size = new Size(11, height)},
-                    new ShipLabel {Location = new Point(79, y), AutoSize = true},
-                    new ShipLabel {Location = new Point(123, y), Size = new Size(5, height - 1)},
-                    new ShipLabel {Location = new Point(10, y), AutoSize = true},
-                    new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, height + 3)}
-                });
-                foreach (var label in _damagedShipList[i])
-                {
-                    label.Scale(_scaleFactor);
-                    label.PresetColor = label.BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2];
-                }
-            }
-            parent.ResumeLayout();
-        }
-
         private void UpdateDamagedShipList()
         {
-            const int fleet = 0, name = 3, time = 1, damage = 2;
-            var parent = panelDamagedShipList;
-            var list = _sniffer.DamagedShipList;
-            var num = Math.Min(list.Length, _damagedShipList.Length);
-            if (num == 0)
-            {
-                parent.Size = new Size(parent.Width, (int)Math.Round(_scaleFactor.Height * 19));
-                var labels = _damagedShipList[0];
-                labels[fleet].Text = "";
-                labels[name].SetName("なし");
-                labels[time].Text = "";
-                labels[damage].BackColor = labels[damage].PresetColor;
-                return;
-            }
-            parent.Size = new Size(parent.Width, (int)Math.Round(_scaleFactor.Height * (num * 16 + 3)));
-            var colors = new[] {Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red};
-            for (var i = 0; i < num; i++)
-            {
-                var s = list[i];
-                var labels = _damagedShipList[i];
-                labels[fleet].SetFleet(s);
-                labels[name].SetName(s);
-                labels[time].SetRepairTime(s);
-                labels[damage].BackColor = (int)s.DamageLevel == 0
-                    ? labels[damage].PresetColor
-                    : colors[(int)s.DamageLevel - 1];
-            }
+            _shipInfoLabels.SetDamagedShipList(_sniffer.DamagedShipList);
         }
 
         private void UpdateQuestList()

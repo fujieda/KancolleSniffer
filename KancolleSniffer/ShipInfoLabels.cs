@@ -26,15 +26,11 @@ namespace KancolleSniffer
     {
         private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
+        private readonly ShipLabel[][] _damagedShipList = new ShipLabel[14][];
+        private Control _panelDamagedShipList;
         public static Color[] ColumnColors = {SystemColors.Control, Color.FromArgb(255, 250, 250, 250)};
 
-        public ShipInfoLabels(Control parent, EventHandler onClick)
-        {
-            CreateLabels(parent, onClick);
-            CreateAkashiTimers(parent);
-        }
-
-        private void CreateLabels(Control parent, EventHandler onClick)
+        public void CreateLabels(Control parent, EventHandler onClick)
         {
             parent.SuspendLayout();
             const int top = 3, height = 12, lh = 16;
@@ -105,7 +101,7 @@ namespace KancolleSniffer
             }
         }
 
-        private void CreateAkashiTimers(Control parent)
+        public void CreateAkashiTimers(Control parent)
         {
             parent.SuspendLayout();
             for (var i = 0; i < _akashiTimers.Length; i++)
@@ -146,6 +142,61 @@ namespace KancolleSniffer
                 }
                 labelHp.ForeColor = Color.DimGray;
                 labelHp.SetHp(stat.NowHp + timer.Diff, stat.MaxHp);
+            }
+        }
+
+        public void CreateDamagedShipList(Control parent)
+        {
+            parent.SuspendLayout();
+            for (var i = 0; i < _damagedShipList.Length; i++)
+            {
+                var y = 3 + i * 16;
+                const int height = 12;
+                parent.Controls.AddRange(_damagedShipList[i] = new[]
+                {
+                    new ShipLabel {Location = new Point(1, y), Size = new Size(11, height)},
+                    new ShipLabel {Location = new Point(79, y), AutoSize = true},
+                    new ShipLabel {Location = new Point(123, y), Size = new Size(5, height - 1)},
+                    new ShipLabel {Location = new Point(10, y), AutoSize = true},
+                    new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, height + 3)}
+                });
+                foreach (var label in _damagedShipList[i])
+                {
+                    label.Scale(ShipLabel.ScaleFactor);
+                    label.PresetColor = label.BackColor = ColumnColors[(i + 1) % 2];
+                }
+            }
+            _panelDamagedShipList = parent;
+            parent.ResumeLayout();
+        }
+
+        public void SetDamagedShipList(ShipStatus[] list)
+        {
+            const int fleet = 0, name = 3, time = 1, damage = 2;
+            var parent = _panelDamagedShipList;
+            var num = Math.Min(list.Length, _damagedShipList.Length);
+            if (num == 0)
+            {
+                parent.Size = new Size(parent.Width, (int)Math.Round(ShipLabel.ScaleFactor.Height * 19));
+                var labels = _damagedShipList[0];
+                labels[fleet].Text = "";
+                labels[name].SetName("なし");
+                labels[time].Text = "";
+                labels[damage].BackColor = labels[damage].PresetColor;
+                return;
+            }
+            parent.Size = new Size(parent.Width, (int)Math.Round(ShipLabel.ScaleFactor.Height * (num * 16 + 3)));
+            var colors = new[] { Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red };
+            for (var i = 0; i < num; i++)
+            {
+                var s = list[i];
+                var labels = _damagedShipList[i];
+                labels[fleet].SetFleet(s);
+                labels[name].SetName(s);
+                labels[time].SetRepairTime(s);
+                labels[damage].BackColor = (int)s.DamageLevel == 0
+                    ? labels[damage].PresetColor
+                    : colors[(int)s.DamageLevel - 1];
             }
         }
     }
