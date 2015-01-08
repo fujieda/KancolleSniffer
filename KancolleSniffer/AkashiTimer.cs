@@ -60,7 +60,7 @@ namespace KancolleSniffer
         private class RepairStatus
         {
             private ShipStatus[] _target;
-            private RepairTime[][] _times;
+            private RepairTime[][] _times = new RepairTime[0][];
             private DateTime _prev;
             public DateTime Start { get; set; }
             public int[] Deck { private get; set; }
@@ -75,7 +75,7 @@ namespace KancolleSniffer
                 Start = DateTime.MinValue;
                 Deck = null;
                 _target = null;
-                _times = null;
+                _times = new RepairTime[0][];
             }
 
             public bool DeckChanged(int[] deck)
@@ -104,8 +104,6 @@ namespace KancolleSniffer
 
             public RepairSpan[] GetTimers()
             {
-                if (_times == null)
-                    return null;
                 return (from times in _times
                     select times == null
                         ? new RepairSpan(0, TimeSpan.MinValue)

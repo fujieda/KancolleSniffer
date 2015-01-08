@@ -124,7 +124,7 @@ namespace KancolleSniffer
             {
                 var label = _akashiTimers[i];
                 var labelHp = _labels[i][0];
-                if (timers == null || i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
+                if (i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
                 {
                     label.Visible = false;
                     labelHp.ForeColor = Control.DefaultForeColor;
