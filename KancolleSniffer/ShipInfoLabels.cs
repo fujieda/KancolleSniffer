@@ -120,6 +120,14 @@ namespace KancolleSniffer
 
         public void SetAkashiTimer(ShipStatus[] statuses, AkashiTimer.RepairSpan[] timers)
         {
+            var shortest = -1;
+            for (var i = 0; i < timers.Length; i++)
+            {
+                if (timers[i].Span <= TimeSpan.Zero)
+                    continue;
+                if (shortest == -1 || timers[i].Span < timers[shortest].Span)
+                    shortest = i;
+            }
             for (var i = 0; i < _akashiTimers.Length; i++)
             {
                 var label = _akashiTimers[i];
@@ -134,11 +142,14 @@ namespace KancolleSniffer
                 var stat = statuses[i];
                 label.Visible = true;
                 label.Text = timer.Span.ToString(@"mm\:ss");
+                label.ForeColor = Control.DefaultForeColor;
                 if (timer.Diff == 0)
                 {
                     labelHp.ForeColor = Control.DefaultForeColor;
                     continue;
                 }
+                if (i == shortest)
+                    label.ForeColor = Color.Red;
                 labelHp.ForeColor = Color.DimGray;
                 labelHp.SetHp(stat.NowHp + timer.Diff, stat.MaxHp);
             }
