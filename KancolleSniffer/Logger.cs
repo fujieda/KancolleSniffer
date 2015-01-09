@@ -289,7 +289,7 @@ namespace KancolleSniffer
                 material[(int)e.api_id - 1] = (int)e.api_value;
             _writer("資材ログ",
                 now.ToString(DateTimeFormat) + "," +
-                string.Join(",", material) + ",",
+                string.Join(",", material),
                 "日付,燃料,弾薬,鋼材,ボーキ,高速建造材,高速修復材,開発資材,改修資材");
         }
     }
