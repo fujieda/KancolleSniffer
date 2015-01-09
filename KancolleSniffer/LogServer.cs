@@ -163,9 +163,11 @@ namespace KancolleSniffer
             if (File.Exists(csv))
             {
                 var delimiter = "";
+                var material = path.EndsWith("資材ログ.json"); // 末尾の空データを削除する必要がある
                 foreach (var line in File.ReadLines(csv, encoding).Skip(1))
                 {
-                    client.Send(encoding.GetBytes(delimiter + "[\"" + string.Join("\",\"", line.Split(',')) + "\"]"));
+                    var data = line.Split(',');
+                    client.Send(encoding.GetBytes(delimiter + "[\"" + string.Join("\",\"", (material ? data.Take(9) : data)) + "\"]"));
                     delimiter = ",\n";
                 }
             }
