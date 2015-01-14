@@ -381,13 +381,19 @@ namespace KancolleSniffer
         private void NotifyAkashiTimer()
         {
             var msgs = _sniffer.GetAkashiTimerNotice();
+            if (msgs.Length == 0)
+                return;
+            if (msgs[0] == "20分経過しました。")
+            {
+                _noticeQueue.Enqueue("泊地修理", msgs[0], _config.Akashi20MinSoundFile);
+                return;
+            }
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             for (var i = 0; i < fn.Length; i++)
             {
                 if (msgs[i] == "")
                     continue;
-                var sound = msgs[i] == "20分経過しました。" ? _config.Akashi20MinSoundFile : _config.AkashiProgressSoundFile;
-                _noticeQueue.Enqueue("泊地修理 " + fn[i], msgs[i], sound);
+                _noticeQueue.Enqueue("泊地修理 " + fn[i], msgs[i], _config.AkashiProgressSoundFile);
             }
         }
 

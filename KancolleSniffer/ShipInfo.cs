@@ -73,12 +73,12 @@ namespace KancolleSniffer
 
         public TimeSpan RepairTime
         {
-            get { return CalcRepairTime(MaxHp - NowHp); }
+            get { return TimeSpan.FromSeconds(CalcRepairSec(MaxHp - NowHp) + 30); }
         }
 
-        public TimeSpan CalcRepairTime(int damage)
+        public int CalcRepairSec(int damage)
         {
-            return TimeSpan.FromSeconds(RepairSecPerHp * damage + 30);
+            return (int)(RepairSecPerHp * damage);
         }
 
         public double RepairSecPerHp
