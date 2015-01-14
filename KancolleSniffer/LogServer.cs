@@ -74,7 +74,7 @@ namespace KancolleSniffer
             var data = new byte[4096];
             try
             {
-                if (client.Available == 0 || client.Receive(data) == 0)
+                if (client.Receive(data) == 0)
                     return;
                 var request = Encoding.UTF8.GetString(data).Split('\r')[0].Split(' ');
                 if (request.Length != 3)
