@@ -183,7 +183,7 @@ namespace KancolleSniffer
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Close();
         }
 
         private void ConfigToolStripMenuItem_Click(object sender, EventArgs e)
