@@ -403,7 +403,7 @@ namespace KancolleSniffer
             this.panelMaterialHistory.Controls.Add(this.labelBulletHistory);
             this.panelMaterialHistory.Controls.Add(this.label35);
             this.panelMaterialHistory.Controls.Add(this.labelFuelHistory);
-            this.panelMaterialHistory.Location = new System.Drawing.Point(38, 289);
+            this.panelMaterialHistory.Location = new System.Drawing.Point(38, 354);
             this.panelMaterialHistory.Name = "panelMaterialHistory";
             this.panelMaterialHistory.Size = new System.Drawing.Size(188, 40);
             this.panelMaterialHistory.TabIndex = 41;
@@ -970,7 +970,7 @@ namespace KancolleSniffer
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(183, 277);
+            this.label36.Location = new System.Drawing.Point(183, 342);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(29, 12);
             this.label36.TabIndex = 43;
@@ -980,7 +980,7 @@ namespace KancolleSniffer
             // 
             this.labelMaterialHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelMaterialHistoryButton.Image = ((System.Drawing.Image)(resources.GetObject("labelMaterialHistoryButton.Image")));
-            this.labelMaterialHistoryButton.Location = new System.Drawing.Point(211, 275);
+            this.labelMaterialHistoryButton.Location = new System.Drawing.Point(211, 340);
             this.labelMaterialHistoryButton.Name = "labelMaterialHistoryButton";
             this.labelMaterialHistoryButton.Size = new System.Drawing.Size(14, 14);
             this.labelMaterialHistoryButton.TabIndex = 10;
