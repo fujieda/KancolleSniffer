@@ -1057,7 +1057,7 @@ namespace KancolleSniffer
             // 
             this.labelBullSq1.ImageIndex = 0;
             this.labelBullSq1.ImageList = this.imageListBullSq;
-            this.labelBullSq1.Location = new System.Drawing.Point(48, 42);
+            this.labelBullSq1.Location = new System.Drawing.Point(50, 42);
             this.labelBullSq1.Name = "labelBullSq1";
             this.labelBullSq1.Size = new System.Drawing.Size(7, 13);
             this.labelBullSq1.TabIndex = 47;
@@ -1066,7 +1066,7 @@ namespace KancolleSniffer
             // 
             this.labelBullSq2.ImageIndex = 0;
             this.labelBullSq2.ImageList = this.imageListBullSq;
-            this.labelBullSq2.Location = new System.Drawing.Point(103, 42);
+            this.labelBullSq2.Location = new System.Drawing.Point(105, 42);
             this.labelBullSq2.Name = "labelBullSq2";
             this.labelBullSq2.Size = new System.Drawing.Size(7, 13);
             this.labelBullSq2.TabIndex = 49;
@@ -1084,7 +1084,7 @@ namespace KancolleSniffer
             // 
             this.labelBullSq3.ImageIndex = 0;
             this.labelBullSq3.ImageList = this.imageListBullSq;
-            this.labelBullSq3.Location = new System.Drawing.Point(158, 42);
+            this.labelBullSq3.Location = new System.Drawing.Point(160, 42);
             this.labelBullSq3.Name = "labelBullSq3";
             this.labelBullSq3.Size = new System.Drawing.Size(7, 13);
             this.labelBullSq3.TabIndex = 51;
@@ -1102,7 +1102,7 @@ namespace KancolleSniffer
             // 
             this.labelBullSq4.ImageIndex = 0;
             this.labelBullSq4.ImageList = this.imageListBullSq;
-            this.labelBullSq4.Location = new System.Drawing.Point(213, 42);
+            this.labelBullSq4.Location = new System.Drawing.Point(215, 42);
             this.labelBullSq4.Name = "labelBullSq4";
             this.labelBullSq4.Size = new System.Drawing.Size(7, 13);
             this.labelBullSq4.TabIndex = 53;
