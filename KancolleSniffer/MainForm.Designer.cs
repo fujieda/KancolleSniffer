@@ -1033,9 +1033,9 @@ namespace KancolleSniffer
             // 
             this.labelFuelSq1.ImageIndex = 0;
             this.labelFuelSq1.ImageList = this.imageListFuelSq;
-            this.labelFuelSq1.Location = new System.Drawing.Point(41, 42);
+            this.labelFuelSq1.Location = new System.Drawing.Point(40, 42);
             this.labelFuelSq1.Name = "labelFuelSq1";
-            this.labelFuelSq1.Size = new System.Drawing.Size(7, 13);
+            this.labelFuelSq1.Size = new System.Drawing.Size(8, 13);
             this.labelFuelSq1.TabIndex = 43;
             // 
             // imageListBullSq
@@ -1057,63 +1057,63 @@ namespace KancolleSniffer
             // 
             this.labelBullSq1.ImageIndex = 0;
             this.labelBullSq1.ImageList = this.imageListBullSq;
-            this.labelBullSq1.Location = new System.Drawing.Point(50, 42);
+            this.labelBullSq1.Location = new System.Drawing.Point(49, 42);
             this.labelBullSq1.Name = "labelBullSq1";
-            this.labelBullSq1.Size = new System.Drawing.Size(7, 13);
+            this.labelBullSq1.Size = new System.Drawing.Size(8, 13);
             this.labelBullSq1.TabIndex = 47;
             // 
             // labelBullSq2
             // 
             this.labelBullSq2.ImageIndex = 0;
             this.labelBullSq2.ImageList = this.imageListBullSq;
-            this.labelBullSq2.Location = new System.Drawing.Point(105, 42);
+            this.labelBullSq2.Location = new System.Drawing.Point(104, 42);
             this.labelBullSq2.Name = "labelBullSq2";
-            this.labelBullSq2.Size = new System.Drawing.Size(7, 13);
+            this.labelBullSq2.Size = new System.Drawing.Size(8, 13);
             this.labelBullSq2.TabIndex = 49;
             // 
             // labelFuelSq2
             // 
             this.labelFuelSq2.ImageIndex = 0;
             this.labelFuelSq2.ImageList = this.imageListFuelSq;
-            this.labelFuelSq2.Location = new System.Drawing.Point(96, 42);
+            this.labelFuelSq2.Location = new System.Drawing.Point(95, 42);
             this.labelFuelSq2.Name = "labelFuelSq2";
-            this.labelFuelSq2.Size = new System.Drawing.Size(7, 13);
+            this.labelFuelSq2.Size = new System.Drawing.Size(8, 13);
             this.labelFuelSq2.TabIndex = 48;
             // 
             // labelBullSq3
             // 
             this.labelBullSq3.ImageIndex = 0;
             this.labelBullSq3.ImageList = this.imageListBullSq;
-            this.labelBullSq3.Location = new System.Drawing.Point(160, 42);
+            this.labelBullSq3.Location = new System.Drawing.Point(159, 42);
             this.labelBullSq3.Name = "labelBullSq3";
-            this.labelBullSq3.Size = new System.Drawing.Size(7, 13);
+            this.labelBullSq3.Size = new System.Drawing.Size(8, 13);
             this.labelBullSq3.TabIndex = 51;
             // 
             // labelFuelSq3
             // 
             this.labelFuelSq3.ImageIndex = 0;
             this.labelFuelSq3.ImageList = this.imageListFuelSq;
-            this.labelFuelSq3.Location = new System.Drawing.Point(151, 42);
+            this.labelFuelSq3.Location = new System.Drawing.Point(150, 42);
             this.labelFuelSq3.Name = "labelFuelSq3";
-            this.labelFuelSq3.Size = new System.Drawing.Size(7, 13);
+            this.labelFuelSq3.Size = new System.Drawing.Size(8, 13);
             this.labelFuelSq3.TabIndex = 50;
             // 
             // labelBullSq4
             // 
             this.labelBullSq4.ImageIndex = 0;
             this.labelBullSq4.ImageList = this.imageListBullSq;
-            this.labelBullSq4.Location = new System.Drawing.Point(215, 42);
+            this.labelBullSq4.Location = new System.Drawing.Point(214, 42);
             this.labelBullSq4.Name = "labelBullSq4";
-            this.labelBullSq4.Size = new System.Drawing.Size(7, 13);
+            this.labelBullSq4.Size = new System.Drawing.Size(8, 13);
             this.labelBullSq4.TabIndex = 53;
             // 
             // labelFuelSq4
             // 
             this.labelFuelSq4.ImageIndex = 0;
             this.labelFuelSq4.ImageList = this.imageListFuelSq;
-            this.labelFuelSq4.Location = new System.Drawing.Point(206, 42);
+            this.labelFuelSq4.Location = new System.Drawing.Point(205, 42);
             this.labelFuelSq4.Name = "labelFuelSq4";
-            this.labelFuelSq4.Size = new System.Drawing.Size(7, 13);
+            this.labelFuelSq4.Size = new System.Drawing.Size(8, 13);
             this.labelFuelSq4.TabIndex = 52;
             // 
             // MainForm
