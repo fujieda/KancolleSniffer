@@ -7,6 +7,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.10.4/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/datatables/1.10.4/css/jquery.dataTables.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.8/c3.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.8/c3.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 
 <style>
 body {
@@ -24,6 +28,182 @@ body {
 </head>
 <body>
 <script>
+function selectlog(i)
+{
+    if ($.fn.dataTable.isDataTable('#log' + i)) {
+        $('#log' + i).DataTable().ajax.reload();
+        return;
+    }
+    switch (i) {
+    case 0:
+        $('#log0').dataTable({
+            ajax: "./海戦・ドロップ報告書.json",
+            columns: [{data: 0}, {data: 1}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}]
+        });
+        break;
+    case 1:
+        var entries = [];
+        for (i = 0; i < 35; i++) {
+            if (i == 9 || i == 10)
+                continue;
+            entries.push({data: i})
+        }
+        $('#log1').dataTable({
+            ajax: "./海戦・ドロップ報告書.json",
+            iDisplayLength: 50,
+            columns: entries
+        });
+        break;
+    case 2:
+        $('#log2').dataTable({
+            ajax: "./遠征報告書.json"
+        });
+        break;
+    case 3:
+        $('#log3').dataTable({
+            "ajax": "./開発報告書.json"
+        });
+        break;
+    case 4:
+        $('#log4').dataTable({
+            ajax: "./建造報告書.json"
+        });
+        break;
+    case 5:
+        $('#log5').dataTable({
+            ajax: "./資材ログ.json"
+        });
+        break;
+    }
+}
+
+const timeFormat = "YYYY-MM-DD HH:mm:ss";
+function parseDate(d)
+{
+    return moment(d, timeFormat);
+}
+
+function toString(d)
+{
+    return d.format(timeFormat);
+}
+
+function pickChartData(data, range)
+{
+    var newdata = [];
+    var ticks = [];
+    var grid = [];
+    var last = moment(data[data.length - 1][0]).valueOf();
+    var first, interval, tickInterval;
+    const oneDay = 3600 * 24 * 1000;
+    switch (range) {
+    case 0:
+        first = moment(last).subtract(24, 'hours').valueOf();
+        interval = 1000;
+        tickInterval = 3600 * 1000;
+        last -= last % tickInterval;
+        break;
+    case 1:
+        first = moment(last).subtract(7, 'days').valueOf();
+        interval = 1000;
+        tickInterval = oneDay;
+        last -= last % tickInterval + 3600 * 4000;
+        break;
+    case 2:
+    case 3:
+        if (range == 2)
+            first = moment(last).subtract(1, 'months').valueOf();
+        else
+            first = moment(data[0][0]).valueOf();
+        last = moment(last).day(1).valueOf();
+        interval = oneDay;
+        tickInterval = oneDay * 7;
+        last -= last % oneDay + 3600 * 4000;
+        break;
+    }
+    for (var tick = last; tick > first; tick -= tickInterval)
+    {
+        var str = toString(moment(tick));
+        ticks.unshift(str);
+        grid.unshift({value: str});
+    }
+    var last_data;
+    for (var i = data.length - 1; i >= 0; i--) {
+        var row = data[i];
+        var date = parseDate(row[0]).valueOf();
+        if (date > first) {
+            var v = date - date % interval;
+            if (last_data != v) {
+                newdata.unshift(row);
+                last_data = v;
+            }
+        } else {
+            break;
+        }
+    }
+    return { data: newdata, tick: ticks, grid: grid };
+}
+
+var selectedRange = -1;
+
+function drawChart(data)
+{
+    if (data == null) {
+        $.get("./資材ログ.json", function (data) { drawChart(data);}, "json");
+        return;
+    }
+    picked = pickChartData(data.data, selectedRange);
+    var header = ["日付","燃料","弾薬","鋼材","ボーキ","高速建造材","高速修復材","開発資材","改修資材"];
+    picked.data.unshift(header);
+    var chart = c3.generate({
+        bindto: '#chart',
+        size: {
+            height: 400,
+            width: 800
+        },
+        data: {
+            x: '日付',
+            xFormat: '%Y-%m-%d %X',
+            rows: picked.data,
+            axes: {
+                燃料: 'y',
+                弾薬: 'y',
+                鋼材: 'y',
+                ボーキ: 'y',
+                高速建造材: 'y2',
+                高速修復材: 'y2',
+                開発資材: 'y2',
+                改修資材: 'y2'
+            }
+        },
+        point: {
+            show: false
+        },
+        tooltip: {
+            show: false
+        },
+        grid: {
+            x: {
+                lines: picked.grid
+            }
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    rotate: 30,
+                    format: function (x) { return moment(x).format("MM-DD HH:mm"); },
+                    values: picked.tick
+                },
+                height: 60
+            },
+            y2: {
+                show: true
+            }
+        }
+    });
+}
+
 $(function() {
     $.fn.dataTable.ext.errMode = 'throw';
     $.extend($.fn.dataTable.defaults, {
@@ -32,81 +212,53 @@ $(function() {
         iDisplayLength: 50,
         aLengthMenu: [[50, 100, 200, -1],[50, 100, 200, "All"]]
     });
-    function selectlog(i)
-    {
-        
-        if ($.fn.dataTable.isDataTable('#log' + i)) {
-            $('#log' + i).DataTable().ajax.reload();
-            return;
-        }
-        switch (i) {
-        case 0:
-            $('#log0').dataTable({
-                ajax: "./海戦・ドロップ報告書.json",
-                columns: [{data: 0}, {data: 1}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}]
-            });
-            break;
-        case 1:
-            var entries = [];
-            for (i = 0; i < 35; i++) {
-                if (i == 9 || i == 10)
-                    continue;
-                entries.push({data: i})
-            }
-            $('#log1').dataTable({
-                ajax: "./海戦・ドロップ報告書.json",
-                iDisplayLength: 50,
-                columns: entries
-            });
-            break;
-        case 2:
-            $('#log2').dataTable({
-                ajax: "./遠征報告書.json"
-            });
-            break;
-        case 3:
-            $('#log3').dataTable({
-                "ajax": "./開発報告書.json"
-            });
-            break;
-        case 4:
-            $('#log4').dataTable({
-                ajax: "./建造報告書.json"
-            });
-            break;
-        case 5:
-            $('#log5').dataTable({
-                ajax: "./資材ログ.json"
-            });
-            break;
-        } 
-    }
-    $('.tab li').click(function() {
-        var tab = $('.tab li');
-        var i = tab.index(this) % 6;
-        selectlog(i);
+    $('.tab0 li').click(function() {
+        var tab = $('.tab0 li');
+        var i = tab.index(this)
+        if (i < 6)
+            selectlog(i);
         tab.removeClass('select');
         tab.eq(i).addClass('select');
-        $('.contents li').css('display', 'none');
-        $('.contents li').eq(i).css('display', 'block');
+        $('.contents .hide').css('display', 'none');
+        $('.contents .hide').eq(i).css('display', 'block');
         sessionStorage.setItem('prevTab', i);
+    });
+    $('.tab1 li').click(function() {
+        var tab = $('.tab1 li');
+        var i = tab.index(this);
+        selectedRange = i;
+        drawChart();
+        tab.removeClass('select');
+        tab.eq(i).addClass('select');
+        sessionStorage.setItem('prevRange', i);
     });
     $('table').addClass('display compact cell-border');
     var prev = sessionStorage.getItem('prevTab');
     if (prev == null)
         prev = 0;
-    selectlog(+prev);
-    $('.tab li').eq(prev).addClass('select');
-    $('.contents li').eq(prev).css('display', 'block');
+    if (prev < 6)
+        selectlog(+prev);
+    $('.tab0 li').eq(prev).addClass('select');
+    $('.contents .hide').eq(prev).css('display', 'block');
+
+    var range = sessionStorage.getItem('prevRange');
+    if (range != null) {
+        selectedRange = +range;
+        $('.tab1 li').eq(range).addClass('select');
+        if (prev == 6)
+            drawChart()
+    }
 });
 </script>
-<ul class="tab">
+
+<ul class="tab tab0">
 <li>ドロップ</li>
 <li>海戦</li>
 <li>遠征</li>
 <li>開発</li>
 <li>建造</li>
 <li>資材</li>
+<li>資材グラフ</li>
 </ul>
 
 <ul class="contents">
@@ -151,6 +303,16 @@ $(function() {
 <tr><th>日付</th><th>燃料</th><th>弾薬</th><th>鋼材</th><th>ボーキ</th><th>高速建造材</th><th>高速修復材</th><th>開発資材</th><th>改修資材</th></tr>
 </thead>
 </table>
+
+<li class="hide">
+<ul class="tab tab1" style="float: left">
+<li>一日</li>
+<li>一週間</li>
+<li>一か月</li>
+<li>すべて</li>
+</ul>
+<div id="chart" style="clear: both; width: 800px; margin: 1em;"></div>
+
 </ul>
 </body>
 </html>
