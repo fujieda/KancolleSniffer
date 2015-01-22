@@ -623,6 +623,8 @@ namespace KancolleSniffer
         {
             if (!File.Exists(file))
                 return;
+            _wmp.settings.volume = volume + 1;
+            _wmp.settings.volume = volume - 1;
             _wmp.settings.volume = volume;
             _wmp.URL = file;
             _wmp.controls.play();
