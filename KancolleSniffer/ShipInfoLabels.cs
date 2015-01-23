@@ -283,8 +283,12 @@ namespace KancolleSniffer
 
         public void SetRepairTime(ShipStatus status)
         {
-            var t = status.RepairTime;
-            Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)t.TotalHours, t);
+            SetRepairTime(status.RepairTime);
+        }
+
+        public void SetRepairTime(TimeSpan span)
+        {
+            Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)span.TotalHours, span);
         }
 
         public void SetFleet(ShipStatus status)

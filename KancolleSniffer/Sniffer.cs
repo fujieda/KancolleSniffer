@@ -435,8 +435,9 @@ namespace KancolleSniffer
     public class RingTimer
     {
         private DateTime _endTime;
-        private TimeSpan _rest;
         private readonly TimeSpan _spare;
+
+        public TimeSpan Rest { get; private set; }
 
         public RingTimer(int spare = 60)
         {
@@ -461,13 +462,13 @@ namespace KancolleSniffer
         {
             if (_endTime == DateTime.MinValue)
             {
-                _rest = TimeSpan.Zero;
+                Rest = TimeSpan.Zero;
                 return;
             }
-            _rest = _endTime - DateTime.Now;
-            if (_rest < TimeSpan.Zero)
-                _rest = TimeSpan.Zero;
-            if (_rest > _spare || IsFinished)
+            Rest = _endTime - DateTime.Now;
+            if (Rest < TimeSpan.Zero)
+                Rest = TimeSpan.Zero;
+            if (Rest > _spare || IsFinished)
                 return;
             IsFinished = true;
             NeedRing = true;
@@ -475,10 +476,5 @@ namespace KancolleSniffer
 
         public bool IsFinished { get; private set; }
         public bool NeedRing { get; set; }
-
-        public override string ToString()
-        {
-            return _rest.Days == 0 ? _rest.ToString(@"hh\:mm\:ss") : _rest.ToString(@"d\.hh\:mm");
-        }
     }
 }
