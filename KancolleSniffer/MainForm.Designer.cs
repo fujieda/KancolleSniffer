@@ -667,30 +667,30 @@ namespace KancolleSniffer
             // 
             // labelMission3
             // 
-            this.labelMission3.AutoSize = true;
             this.labelMission3.Location = new System.Drawing.Point(173, 33);
             this.labelMission3.Name = "labelMission3";
             this.labelMission3.Size = new System.Drawing.Size(45, 12);
             this.labelMission3.TabIndex = 8;
             this.labelMission3.Text = "00:00:00";
+            this.labelMission3.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // labelMission2
             // 
-            this.labelMission2.AutoSize = true;
             this.labelMission2.Location = new System.Drawing.Point(173, 18);
             this.labelMission2.Name = "labelMission2";
             this.labelMission2.Size = new System.Drawing.Size(45, 12);
             this.labelMission2.TabIndex = 7;
             this.labelMission2.Text = "00:00:00";
+            this.labelMission2.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // labelMission1
             // 
-            this.labelMission1.AutoSize = true;
             this.labelMission1.Location = new System.Drawing.Point(173, 3);
             this.labelMission1.Name = "labelMission1";
             this.labelMission1.Size = new System.Drawing.Size(45, 12);
             this.labelMission1.TabIndex = 6;
             this.labelMission1.Text = "00:00:00";
+            this.labelMission1.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label15
             // 
