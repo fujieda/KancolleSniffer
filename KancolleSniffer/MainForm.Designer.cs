@@ -249,9 +249,9 @@ namespace KancolleSniffer
             // 
             // labelNumOfEquips
             // 
-            this.labelNumOfEquips.Location = new System.Drawing.Point(56, 18);
+            this.labelNumOfEquips.Location = new System.Drawing.Point(47, 18);
             this.labelNumOfEquips.Name = "labelNumOfEquips";
-            this.labelNumOfEquips.Size = new System.Drawing.Size(47, 12);
+            this.labelNumOfEquips.Size = new System.Drawing.Size(59, 12);
             this.labelNumOfEquips.TabIndex = 3;
             this.labelNumOfEquips.Text = "0/0";
             this.labelNumOfEquips.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -259,7 +259,7 @@ namespace KancolleSniffer
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(62, 3);
+            this.label2.Location = new System.Drawing.Point(65, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(41, 12);
             this.label2.TabIndex = 2;
