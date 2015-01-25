@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -729,6 +730,11 @@ namespace KancolleSniffer
             if (_shipListForm.WindowState == FormWindowState.Minimized)
                 _shipListForm.WindowState = FormWindowState.Normal;
             _shipListForm.Activate();
+        }
+
+        private void LogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://localhost:" + _config.Log.Listen + "/");
         }
     }
 }
