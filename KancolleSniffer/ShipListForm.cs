@@ -246,7 +246,7 @@ namespace KancolleSniffer
             panelShipList.Controls.Add(cfgp);
             foreach (var label in cfgl)
             {
-                label.Scale(ShipLabel.ScaleFactor);
+                label.Scale();
                 label.PresetColor =
                     label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
             }
@@ -286,7 +286,7 @@ namespace KancolleSniffer
             panelShipList.Controls.Add(rpp);
             foreach (var label in rpl)
             {
-                label.Scale(ShipLabel.ScaleFactor);
+                label.Scale();
                 label.PresetColor =
                     label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
             }
@@ -336,7 +336,7 @@ namespace KancolleSniffer
             panelShipList.Controls.Add(lbp);
             foreach (var label in labels)
             {
-                label.Scale(ShipLabel.ScaleFactor);
+                label.Scale();
                 label.PresetColor =
                     label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
             }

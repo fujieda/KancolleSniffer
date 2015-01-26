@@ -25,7 +25,7 @@ namespace KancolleSniffer
     public class ShipLabels
     {
         private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
-        private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
+        private readonly ShipLabel[] _akashiTimers = new ShipLabel[ShipInfo.MemberCount];
         private readonly ShipLabel[][] _damagedShipList = new ShipLabel[14][];
         private Control _panelDamagedShipList;
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
@@ -35,20 +35,20 @@ namespace KancolleSniffer
         {
             parent.SuspendLayout();
             const int top = 3, height = 12, lh = 16;
-            Control[] headings =
+            ShipLabel[] headings;
+            parent.Controls.AddRange(headings = new[]
             {
-                new Label {Location = new Point(109, top), Text = "HP", AutoSize = true},
-                new Label {Location = new Point(128, top), Text = "cond", AutoSize = true},
-                new Label {Location = new Point(163, top), Text = "Lv", AutoSize = true},
-                new Label {Location = new Point(194, top), Text = "Exp", AutoSize = true},
-                new Label {Location = new Point(0, 1), Size = new Size(parent.Width, lh - 1)}
-            };
+                new ShipLabel {Location = new Point(109, top), Text = "HP", AutoSize = true},
+                new ShipLabel {Location = new Point(128, top), Text = "cond", AutoSize = true},
+                new ShipLabel {Location = new Point(163, top), Text = "Lv", AutoSize = true},
+                new ShipLabel {Location = new Point(194, top), Text = "Exp", AutoSize = true},
+                new ShipLabel {Location = new Point(0, 1), Size = new Size(parent.Width, lh - 1)}
+            });
             foreach (var label in headings)
             {
-                label.Scale(ShipLabel.ScaleFactor);
+                label.Scale();
                 label.BackColor = ColumnColors[1];
             }
-            parent.Controls.AddRange(headings);
             for (var i = 0; i < _labels.Length; i++)
             {
                 var y = top + lh * (i + 1);
@@ -78,7 +78,7 @@ namespace KancolleSniffer
                 });
                 foreach (var label in _labels[i])
                 {
-                    label.Scale(ShipLabel.ScaleFactor);
+                    label.Scale();
                     label.PresetColor = label.BackColor = ColumnColors[i % 2];
                     label.Tag = i;
                     label.Click += onClick;
@@ -109,13 +109,13 @@ namespace KancolleSniffer
             {
                 const int x = 54;
                 var y = 20 + 16 * i;
-                Label label;
+                ShipLabel label;
                 parent.Controls.Add(
-                    label = _akashiTimers[i] = new Label {Location = new Point(x, y), AutoSize = true});
+                    label = _akashiTimers[i] = new ShipLabel {Location = new Point(x, y), AutoSize = true});
                 label.BackColor = ColumnColors[i % 2];
             }
             foreach (var label in _akashiTimers)
-                label.Scale(ShipLabel.ScaleFactor);
+                label.Scale();
             parent.ResumeLayout();
         }
 
@@ -173,7 +173,7 @@ namespace KancolleSniffer
                 });
                 foreach (var label in _damagedShipList[i])
                 {
-                    label.Scale(ShipLabel.ScaleFactor);
+                    label.Scale();
                     label.PresetColor = label.BackColor = ColumnColors[(i + 1) % 2];
                 }
             }
@@ -223,7 +223,7 @@ namespace KancolleSniffer
                         new ShipLabel {Location = new Point(29, y), AutoSize = true} // 名前のZ-orderを下に
                     });
                 foreach (var label in _ndockLabels[i])
-                    label.Scale(ShipLabel.ScaleFactor);
+                    label.Scale();
             }
         }
 
@@ -341,6 +341,11 @@ namespace KancolleSniffer
                 return;
             _left -= Right - _right;
             Location = new Point(_left, Top);
+        }
+
+        public void Scale()
+        {
+            Scale(ScaleFactor);
         }
     }
 }
