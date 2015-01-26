@@ -35,12 +35,10 @@ namespace KancolleSniffer
         private readonly ConfigDialog _configDialog;
         private int _currentFleet;
         private readonly Label[] _labelCheckFleets;
-        private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         private readonly ShipInfoLabels _shipInfoLabels;
         private readonly ShipListForm _shipListForm;
         private readonly NoticeQueue _noticeQueue;
         private bool _started;
-        private readonly SizeF _scaleFactor;
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
         private LogServer _logServer;
@@ -56,15 +54,14 @@ namespace KancolleSniffer
 
             // この時点でAutoScaleDimensions == CurrentAutoScaleDimensionsなので、
             // MainForm.Designer.csのAutoScaleDimensionsの6f,12fを使う。
-            _scaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / 6f, CurrentAutoScaleDimensions.Height / 12f);
-            ShipLabel.ScaleFactor = _scaleFactor;
+            ShipLabel.ScaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / 6f, CurrentAutoScaleDimensions.Height / 12f);
 
             SetupFleetClick();
             _shipInfoLabels = new ShipInfoLabels();
             _shipInfoLabels.CreateAkashiTimers(panelShipInfo);
             _shipInfoLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
             _shipInfoLabels.CreateDamagedShipList(panelDamagedShipList);
-            CreateNDockLabels();
+            _shipInfoLabels.CreateNDockLabels(panelDock);
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
         }
@@ -354,7 +351,7 @@ namespace KancolleSniffer
 
         private void UpdateShipInfo()
         {
-            UpdatePanelShipInfol();
+            UpdatePanelShipInfo();
             NotifyDamagedShip();
             UpdateChargeInfo();
             UpdateDamagedShipList();
@@ -362,7 +359,7 @@ namespace KancolleSniffer
                 _shipListForm.UpdateList();
         }
 
-        private void UpdatePanelShipInfol()
+        private void UpdatePanelShipInfo()
         {
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             _shipInfoLabels.SetShipInfo(statuses);
@@ -434,27 +431,9 @@ namespace KancolleSniffer
             }
         }
 
-        private void CreateNDockLabels()
-        {
-            var parent = panelDock;
-            for (var i = 0; i < _ndockLabels.Length; i++)
-            {
-                var y = 3 + i * 15;
-                parent.Controls.AddRange(
-                    _ndockLabels[i] = new[]
-                    {
-                        new ShipLabel {Location = new Point(93, y), AutoSize = true, Text = "00:00:00"},
-                        new ShipLabel {Location = new Point(29, y), AutoSize = true} // 名前のZ-orderを下に
-                    });
-                foreach (var label in _ndockLabels[i])
-                    label.Scale(_scaleFactor);
-            }
-        }
-
         private void UpdateNDocLabels()
         {
-            for (var i = 0; i < _ndockLabels.Length; i++)
-                _ndockLabels[i][1].SetName(_sniffer.NDock[i].Name);
+            _shipInfoLabels.SetNDockLabels(_sniffer.NDock);
         }
 
         private void UpdateMissionLabels()
@@ -480,12 +459,11 @@ namespace KancolleSniffer
                 _noticeQueue.Enqueue("遠征が終わりました", entry.Name, _config.MissionSoundFile);
                 entry.Timer.NeedRing = false;
             }
-            for (var i = 0; i < _ndockLabels.Length; i++)
+            for (var i = 0; i < _sniffer.NDock.Length; i++)
             {
                 var entry = _sniffer.NDock[i];
                 entry.Timer.Update();
-                SetTimerColor(_ndockLabels[i][0], entry.Timer);
-                _ndockLabels[i][0].SetRepairTime(entry.Timer.Rest);
+                _shipInfoLabels.SetNDockTimer(i, entry.Timer);
                 if (!entry.Timer.NeedRing)
                     continue;
                 _noticeQueue.Enqueue("入渠が終わりました", entry.Name, _config.NDockSoundFile);
@@ -669,7 +647,7 @@ namespace KancolleSniffer
             _labelCheckFleets[fleet].Visible = true;
             if (!_started)
                 return;
-            UpdatePanelShipInfol();
+            UpdatePanelShipInfo();
         }
 
         private void labelBucketHistoryButton_Click(object sender, EventArgs e)

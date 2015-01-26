@@ -28,6 +28,7 @@ namespace KancolleSniffer
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
         private readonly ShipLabel[][] _damagedShipList = new ShipLabel[14][];
         private Control _panelDamagedShipList;
+        private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         public static Color[] ColumnColors = {SystemColors.Control, Color.FromArgb(255, 250, 250, 250)};
 
         public void CreateLabels(Control parent, EventHandler onClick)
@@ -208,6 +209,35 @@ namespace KancolleSniffer
                     ? labels[damage].PresetColor
                     : colors[(int)s.DamageLevel - 1];
             }
+        }
+
+        public void CreateNDockLabels(Control parent)
+        {
+            for (var i = 0; i < _ndockLabels.Length; i++)
+            {
+                var y = 3 + i * 15;
+                parent.Controls.AddRange(
+                    _ndockLabels[i] = new[]
+                    {
+                        new ShipLabel {Location = new Point(93, y), AutoSize = true, Text = "00:00:00"},
+                        new ShipLabel {Location = new Point(29, y), AutoSize = true} // 名前のZ-orderを下に
+                    });
+                foreach (var label in _ndockLabels[i])
+                    label.Scale(ShipLabel.ScaleFactor);
+            }
+        }
+
+        public void SetNDockLabels(NameAndTimer[] ndock)
+        {
+            for (var i = 0; i < _ndockLabels.Length; i++)
+                _ndockLabels[i][1].SetName(ndock[i].Name);
+        }
+
+        public void SetNDockTimer(int dock, RingTimer timer)
+        {
+            var label = _ndockLabels[dock][0];
+            label.ForeColor = timer.IsFinished ? Color.Red : Color.Black;
+            label.SetRepairTime(timer.Rest);
         }
     }
 
