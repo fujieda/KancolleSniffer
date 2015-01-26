@@ -206,7 +206,7 @@ namespace KancolleSniffer
             {
                 Location = new Point(0, y - 2),
                 Size = new Size(PanelWidth, LineHeight - 1),
-                BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2],
+                BackColor = ShipLabels.ColumnColors[(i + 1) % 2],
                 Visible = false
             };
             cfgp.Scale(ShipLabel.ScaleFactor);
@@ -248,7 +248,7 @@ namespace KancolleSniffer
             {
                 label.Scale(ShipLabel.ScaleFactor);
                 label.PresetColor =
-                    label.BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2];
+                    label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
             }
         }
 
@@ -260,7 +260,7 @@ namespace KancolleSniffer
             {
                 Location = new Point(0, y - 2),
                 Size = new Size(PanelWidth, LineHeight - 1),
-                BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2],
+                BackColor = ShipLabels.ColumnColors[(i + 1) % 2],
                 Visible = false
             };
             rpp.Scale(ShipLabel.ScaleFactor);
@@ -288,7 +288,7 @@ namespace KancolleSniffer
             {
                 label.Scale(ShipLabel.ScaleFactor);
                 label.PresetColor =
-                    label.BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2];
+                    label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
             }
         }
 
@@ -300,7 +300,7 @@ namespace KancolleSniffer
             {
                 Location = new Point(0, y - 2),
                 Size = new Size(PanelWidth, LineHeight - 1),
-                BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2],
+                BackColor = ShipLabels.ColumnColors[(i + 1) % 2],
                 Visible = false
             };
             lbp.Scale(ShipLabel.ScaleFactor);
@@ -338,7 +338,7 @@ namespace KancolleSniffer
             {
                 label.Scale(ShipLabel.ScaleFactor);
                 label.PresetColor =
-                    label.BackColor = ShipInfoLabels.ColumnColors[(i + 1) % 2];
+                    label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
             }
         }
 

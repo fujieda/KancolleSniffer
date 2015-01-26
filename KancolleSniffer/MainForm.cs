@@ -35,7 +35,7 @@ namespace KancolleSniffer
         private readonly ConfigDialog _configDialog;
         private int _currentFleet;
         private readonly Label[] _labelCheckFleets;
-        private readonly ShipInfoLabels _shipInfoLabels;
+        private readonly ShipLabels _shipLabels;
         private readonly ShipListForm _shipListForm;
         private readonly NoticeQueue _noticeQueue;
         private bool _started;
@@ -57,11 +57,11 @@ namespace KancolleSniffer
             ShipLabel.ScaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / 6f, CurrentAutoScaleDimensions.Height / 12f);
 
             SetupFleetClick();
-            _shipInfoLabels = new ShipInfoLabels();
-            _shipInfoLabels.CreateAkashiTimers(panelShipInfo);
-            _shipInfoLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
-            _shipInfoLabels.CreateDamagedShipList(panelDamagedShipList);
-            _shipInfoLabels.CreateNDockLabels(panelDock);
+            _shipLabels = new ShipLabels();
+            _shipLabels.CreateAkashiTimers(panelShipInfo);
+            _shipLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
+            _shipLabels.CreateDamagedShipList(panelDamagedShipList);
+            _shipLabels.CreateNDockLabels(panelDock);
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
         }
@@ -362,7 +362,7 @@ namespace KancolleSniffer
         private void UpdatePanelShipInfo()
         {
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
-            _shipInfoLabels.SetShipInfo(statuses);
+            _shipLabels.SetShipInfo(statuses);
             labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
             UpdateAkashiTimer();
             UpdateLoS();
@@ -433,7 +433,7 @@ namespace KancolleSniffer
 
         private void UpdateNDocLabels()
         {
-            _shipInfoLabels.SetNDockLabels(_sniffer.NDock);
+            _shipLabels.SetNDockLabels(_sniffer.NDock);
         }
 
         private void UpdateMissionLabels()
@@ -463,7 +463,7 @@ namespace KancolleSniffer
             {
                 var entry = _sniffer.NDock[i];
                 entry.Timer.Update();
-                _shipInfoLabels.SetNDockTimer(i, entry.Timer);
+                _shipLabels.SetNDockTimer(i, entry.Timer);
                 if (!entry.Timer.NeedRing)
                     continue;
                 _noticeQueue.Enqueue("入渠が終わりました", entry.Name, _config.NDockSoundFile);
@@ -525,14 +525,14 @@ namespace KancolleSniffer
 
         private void UpdateAkashiTimer()
         {
-            _shipInfoLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet),
+            _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet),
                 _sniffer.GetAkashiTimers(_currentFleet));
             NotifyAkashiTimer();
         }
 
         private void UpdateDamagedShipList()
         {
-            _shipInfoLabels.SetDamagedShipList(_sniffer.DamagedShipList);
+            _shipLabels.SetDamagedShipList(_sniffer.DamagedShipList);
         }
 
         private void UpdateQuestList()

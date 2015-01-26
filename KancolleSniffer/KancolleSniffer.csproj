@@ -86,7 +86,7 @@
       <DependentUpon>LogDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="LogServer.cs" />
-    <Compile Include="ShipInfoLabels.cs" />
+    <Compile Include="ShipLabels.cs" />
     <Compile Include="ShipListForm.cs">
       <SubType>Form</SubType>
     </Compile>

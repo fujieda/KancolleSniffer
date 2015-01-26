@@ -22,7 +22,7 @@ using System.Windows.Forms;
 
 namespace KancolleSniffer
 {
-    public class ShipInfoLabels
+    public class ShipLabels
     {
         private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
