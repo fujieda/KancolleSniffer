@@ -110,13 +110,16 @@ function pickChartData(data, range)
         last -= last % tickInterval + 3600 * 4000;
         break;
     case 2:
-    case 3:
-        if (range == 2)
-            first = moment(last).subtract(1, 'months').valueOf();
-        else
-            first = moment(data[0][0]).valueOf();
+        first = moment(last).subtract(1, 'months').valueOf();
         last = moment(last).day(1).valueOf();
-        interval = oneDay;
+        interval = 3600 * 2000;
+        tickInterval = oneDay * 7;
+        last -= last % oneDay + 3600 * 4000;
+        break;
+    case 3:
+        first = moment(data[0][0]).valueOf();
+        last = moment(last).day(1).valueOf();
+        interval = 3600 * 6000;
         tickInterval = oneDay * 7;
         last -= last % oneDay + 3600 * 4000;
         break;
