@@ -17,7 +17,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
@@ -30,6 +33,7 @@ namespace KancolleSniffer
         private ProxyDialog _proxyDialog;
         private LogDialog _logDialog;
         private readonly Dictionary<string, string> _soundSetting = new Dictionary<string, string>();
+        private const string Home = "http://kancollesniffer.sourceforge.jp/";
 
         public ConfigDialog(Config config, MainForm main)
         {
@@ -45,6 +49,10 @@ namespace KancolleSniffer
 
         private void ConfigDialog_Load(object sender, EventArgs e)
         {
+            var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
+            labelVersion.Text = "バージョン" + version;
+            SetLatestVersion(version);
+
             checkBoxTopMost.Checked = _config.TopMost;
             checkBoxHideOnMinimized.Checked = _config.HideOnMinimized;
             checkBoxFlash.Checked = _config.FlashWindow;
@@ -70,6 +78,26 @@ namespace KancolleSniffer
             _soundSetting["疲労回復"] = _config.ConditionSoundFile;
 
             listBoxSoundFile.SelectedIndex = 0;
+        }
+
+        private async void SetLatestVersion(string version)
+        {
+            try
+            {
+                var req = WebRequest.Create(Home + "version");
+                var response = await req.GetResponseAsync();
+                var stream = response.GetResponseStream();
+                if (stream == null)
+                    return;
+                using (var reader = new StreamReader(stream))
+                {
+                    var str = await reader.ReadLineAsync();
+                    Invoke(new Action(() => { labelLatest.Text = version == str ? "最新です" : "最新は" + str + "です"; }));
+                }
+            }
+            catch (WebException)
+            {
+            }
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -164,6 +192,12 @@ namespace KancolleSniffer
             if (_logDialog == null)
                 _logDialog = new LogDialog(_config.Log, _main);
             _logDialog.ShowDialog(this);
+        }
+
+        private void linkLabelProductName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            linkLabelProductName.LinkVisited = true;
+            Process.Start(Home);
         }
     }
 }

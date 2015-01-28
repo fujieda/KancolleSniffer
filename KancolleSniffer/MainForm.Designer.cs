@@ -123,6 +123,7 @@ namespace KancolleSniffer
             this.NotifyIconExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripMain = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelFleet1 = new System.Windows.Forms.Label();
@@ -151,7 +152,6 @@ namespace KancolleSniffer
             this.labelFuelSq3 = new System.Windows.Forms.Label();
             this.labelBullSq4 = new System.Windows.Forms.Label();
             this.labelFuelSq4 = new System.Windows.Forms.Label();
-            this.LogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -867,6 +867,13 @@ namespace KancolleSniffer
             this.listToolStripMenuItem.Text = "一覧(&L)";
             this.listToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
             // 
+            // LogToolStripMenuItem
+            // 
+            this.LogToolStripMenuItem.Name = "LogToolStripMenuItem";
+            this.LogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.LogToolStripMenuItem.Text = "報告書(&R)";
+            this.LogToolStripMenuItem.Click += new System.EventHandler(this.LogToolStripMenuItem_Click);
+            // 
             // ConfigToolStripMenuItem
             // 
             this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
@@ -1117,13 +1124,6 @@ namespace KancolleSniffer
             this.labelFuelSq4.Name = "labelFuelSq4";
             this.labelFuelSq4.Size = new System.Drawing.Size(8, 13);
             this.labelFuelSq4.TabIndex = 52;
-            // 
-            // LogToolStripMenuItem
-            // 
-            this.LogToolStripMenuItem.Name = "LogToolStripMenuItem";
-            this.LogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.LogToolStripMenuItem.Text = "報告書(&R)";
-            this.LogToolStripMenuItem.Click += new System.EventHandler(this.LogToolStripMenuItem_Click);
             // 
             // MainForm
             // 
