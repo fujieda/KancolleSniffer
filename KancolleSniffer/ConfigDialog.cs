@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2014, 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -57,7 +57,7 @@ namespace KancolleSniffer
             checkBoxHideOnMinimized.Checked = _config.HideOnMinimized;
             checkBoxFlash.Checked = _config.FlashWindow;
             checkBoxBalloon.Checked = _config.ShowBaloonTip;
-            groupBoxSound.Enabled = checkBoxSound.Checked = _config.PlaySound;
+            checkBoxSound.Checked = _config.PlaySound;
             numericUpDownMarginShips.Value = _config.MarginShips;
             numericUpDownMarginEquips.Value = _config.MarginEquips;
             checkBoxCond40.Checked = _config.NotifyConditions.Contains(40);
@@ -133,11 +133,6 @@ namespace KancolleSniffer
             _config.Akashi20MinSoundFile = _soundSetting["泊地修理20分経過"];
             _config.AkashiProgressSoundFile = _soundSetting["泊地修理進行"];
             _config.ConditionSoundFile = _soundSetting["疲労回復"];
-        }
-
-        private void checkBoxSound_CheckedChanged(object sender, EventArgs e)
-        {
-            groupBoxSound.Enabled = checkBoxSound.Checked;
         }
 
         private void textBoxSoundFile_TextChanged(object sender, EventArgs e)
