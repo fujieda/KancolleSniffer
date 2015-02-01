@@ -42,6 +42,7 @@ namespace KancolleSniffer
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
         private LogServer _logServer;
+        private readonly ProxyConfig _prevProxy = new ProxyConfig();
 
         public MainForm()
         {
@@ -144,6 +145,8 @@ namespace KancolleSniffer
                 FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
             else
                 FiddlerApplication.Startup(_config.Proxy.Listen, FiddlerCoreStartupFlags.None);
+            _prevProxy.Auto = _config.Proxy.Auto;
+            _prevProxy.Listen = _config.Proxy.Listen;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -215,6 +218,8 @@ namespace KancolleSniffer
 
         public void ApplyProxySetting()
         {
+            if (_config.Proxy.Auto == _prevProxy.Auto && _config.Proxy.Listen == _prevProxy.Listen)
+                return;
             ShutdownProxy();
             StartProxy();
         }
