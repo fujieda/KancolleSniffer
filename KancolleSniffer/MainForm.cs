@@ -156,7 +156,8 @@ namespace KancolleSniffer
             _config.Save();
             _sniffer.SaveState();
             ShutdownProxy();
-            _logServer.Stop();
+            if (_logServer != null)
+                _logServer.Stop();
         }
 
         private void ShutdownProxy()
@@ -226,11 +227,19 @@ namespace KancolleSniffer
 
         public void ApplyLogSetting()
         {
-            if (_logServer != null)
+            if (_logServer != null && (!_config.Log.ServerOn || _config.Log.Listen != _logServer.Port))
+            {
                 _logServer.Stop();
-            _logServer = new LogServer(_config.Log.Listen);
-            _logServer.Start();
-            _logServer.OutputDir = _config.Log.OutputDir;
+                _logServer = null;
+            }
+            if (_logServer == null && _config.Log.ServerOn)
+            {
+                _logServer = new LogServer(_config.Log.Listen);
+                _logServer.Start();
+
+            }
+            if (_logServer != null)
+                _logServer.OutputDir = _config.Log.OutputDir;
             _sniffer.EnableLog(_config.Log.On ? LogType.All : LogType.None);
             _sniffer.MaterialLogInterval = _config.Log.MaterialLogInterval;
             _sniffer.LogOutputDir = _config.Log.OutputDir;

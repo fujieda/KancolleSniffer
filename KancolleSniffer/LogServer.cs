@@ -33,6 +33,8 @@ namespace KancolleSniffer
         private readonly string _indexDir = Path.GetDirectoryName(Application.ExecutablePath);
         private string _outputDir = Path.GetDirectoryName(Application.ExecutablePath);
 
+        public int Port { get; private set; }
+
         public string OutputDir
         {
             set { _outputDir = value; }
@@ -40,6 +42,7 @@ namespace KancolleSniffer
 
         public LogServer(int port)
         {
+            Port = port;
             _listener = new TcpListener(IPAddress.Loopback, port);
         }
 
