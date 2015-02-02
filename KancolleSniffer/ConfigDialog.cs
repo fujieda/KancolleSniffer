@@ -29,9 +29,6 @@ namespace KancolleSniffer
     {
         private readonly Config _config;
         private readonly MainForm _main;
-        private DebugDialog _debugDialog;
-        private ProxyDialog _proxyDialog;
-        private LogDialog _logDialog;
         private readonly Dictionary<string, string> _soundSetting = new Dictionary<string, string>();
         private const string Home = "http://kancollesniffer.sourceforge.jp/";
 
@@ -45,6 +42,7 @@ namespace KancolleSniffer
                 "遠征終了", "入渠終了", "建造完了", "艦娘数超過", "装備数超過",
                 "大破警告", "泊地修理20分経過", "泊地修理進行", "疲労回復"
             });
+            numericUpDownMaterialLogInterval.Maximum = 1440;
         }
 
         private void ConfigDialog_Load(object sender, EventArgs e)
@@ -79,6 +77,39 @@ namespace KancolleSniffer
 
             listBoxSoundFile.SelectedIndex = -1;
             listBoxSoundFile.SelectedIndex = 0;
+
+            LoadProxySettings();
+            LoadLogSettings();
+            LoadDebugSettings();
+        }
+
+        private void LoadProxySettings()
+        {
+            // 見えていないTabPage上でPerformClickは使えない。
+            radioButtonAutoConfigOn.Checked = _config.Proxy.Auto;
+            radioButtonAutoConfigOff.Checked = !_config.Proxy.Auto;
+            textBoxListen.Text = _config.Proxy.Listen.ToString("D");
+            radioButtonUpstreamOn.Checked = _config.Proxy.UseUpstream;
+            radioButtonUpstreamOff.Checked = !_config.Proxy.UseUpstream;
+            textBoxPort.Text = _config.Proxy.UpstreamPort.ToString("D");
+        }
+
+        private void LoadLogSettings()
+        {
+            checkBoxOutput.Checked = _config.Log.On;
+            textBoxOutput.Text = _config.Log.OutputDir;
+            textBoxOutput.Select(textBoxOutput.Text.Length, 0);
+            folderBrowserDialogOutputDir.SelectedPath = _config.Log.OutputDir;
+            numericUpDownMaterialLogInterval.Value = _config.Log.MaterialLogInterval;
+            radioButtonServerOn.Checked = _config.Log.ServerOn;
+            radioButtonServerOff.Checked = !_config.Log.ServerOn;
+            textBoxServer.Text = _config.Log.Listen.ToString("D");
+        }
+
+        private void LoadDebugSettings()
+        {
+            checkBoxDebugLog.Checked = _config.DebugLogging;
+            textBoxDebugLog.Text = _config.DebugLogFile;
         }
 
         private async void SetLatestVersion(string version)
@@ -103,6 +134,15 @@ namespace KancolleSniffer
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
+            int listen, outbound, server;
+            if (!ValidateProxyPorts(out listen, out outbound) || !ValidateServerPort(out server))
+                return;
+            DialogResult = DialogResult.OK;
+
+            ApplyProxySettings(listen, outbound);
+            ApplyLogSettings(server);
+            ApplyDebugSettings();
+
             _config.TopMost = checkBoxTopMost.Checked;
             _config.HideOnMinimized = checkBoxHideOnMinimized.Checked;
             _config.FlashWindow = checkBoxFlash.Checked;
@@ -136,6 +176,57 @@ namespace KancolleSniffer
             _config.ConditionSoundFile = _soundSetting["疲労回復"];
         }
 
+        private bool ValidateProxyPorts(out int listen, out int outbound)
+        {
+            listen = -1;
+            outbound = -1;
+            if (radioButtonAutoConfigOff.Checked && !ValidatePortNumber(textBoxListen, out listen))
+                return false;
+            if (radioButtonUpstreamOn.Checked && !ValidatePortNumber(textBoxPort, out outbound))
+                return false;
+            if (radioButtonAutoConfigOff.Checked && radioButtonUpstreamOn.Checked && listen == outbound)
+            {
+                ShowToolTip("受信と送信に同じポートは使えません。", textBoxPort);
+                return false;
+            }
+            return true;
+        }
+
+        private void ApplyProxySettings(int listen, int port)
+        {
+            _config.Proxy.Auto = radioButtonAutoConfigOn.Checked;
+            if (!_config.Proxy.Auto)
+                _config.Proxy.Listen = listen;
+            _config.Proxy.UseUpstream = radioButtonUpstreamOn.Checked;
+            if (_config.Proxy.UseUpstream)
+                _config.Proxy.UpstreamPort = port;
+            _main.ApplyProxySetting();
+        }
+
+        private bool ValidateServerPort(out int server)
+        {
+            server = -1;
+            return !radioButtonServerOn.Checked || ValidatePortNumber(textBoxServer, out server);
+        }
+
+        private void ApplyLogSettings(int server)
+        {
+            _config.Log.On = checkBoxOutput.Checked;
+            _config.Log.MaterialLogInterval = (int)numericUpDownMaterialLogInterval.Value;
+            _config.Log.OutputDir = textBoxOutput.Text;
+            _config.Log.ServerOn = radioButtonServerOn.Checked;
+            if (_config.Log.ServerOn)
+                _config.Log.Listen = server;
+            _main.ApplyLogSetting();
+        }
+
+        private void ApplyDebugSettings()
+        {
+            _config.DebugLogging = checkBoxDebugLog.Checked;
+            _config.DebugLogFile = textBoxDebugLog.Text;
+            _main.ApplyDebugLogSetting();
+        }
+
         private void textBoxSoundFile_TextChanged(object sender, EventArgs e)
         {
             _soundSetting[(string)listBoxSoundFile.SelectedItem] = textBoxSoundFile.Text;
@@ -151,26 +242,17 @@ namespace KancolleSniffer
 
         private void buttonOpenFile_Click(object sender, EventArgs e)
         {
-            openFileDialog.FileName = textBoxSoundFile.Text;
-            openFileDialog.InitialDirectory = Path.GetDirectoryName(textBoxSoundFile.Text) ?? "";
-            if (openFileDialog.ShowDialog() != DialogResult.OK)
+            openSoundFileDialog.FileName = textBoxSoundFile.Text;
+            openSoundFileDialog.InitialDirectory = Path.GetDirectoryName(textBoxSoundFile.Text) ?? "";
+            if (openSoundFileDialog.ShowDialog() != DialogResult.OK)
                 return;
-            textBoxSoundFile.Text = openFileDialog.FileName;
+            textBoxSoundFile.Text = openSoundFileDialog.FileName;
             textBoxSoundFile.Select(textBoxSoundFile.Text.Length, 0);
         }
-
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
             _main.PlaySound(_soundSetting[(string)listBoxSoundFile.SelectedItem], (int)numericUpDownSoundVolume.Value);
-        }
-
-        private void DebugToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_debugDialog == null)
-                _debugDialog = new DebugDialog(_config, _main);
-            if (_debugDialog.ShowDialog(this) == DialogResult.Abort)
-                DialogResult = DialogResult.Cancel;
         }
 
         private void buttonResetAchievement_Click(object sender, EventArgs e)
@@ -178,24 +260,79 @@ namespace KancolleSniffer
             _main.ResetAchievemnt();
         }
 
-        private void ProxyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_proxyDialog == null)
-                _proxyDialog = new ProxyDialog(_config.Proxy, _main);
-            _proxyDialog.ShowDialog(this);
-        }
-
-        private void ReportToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_logDialog == null)
-                _logDialog = new LogDialog(_config.Log, _main);
-            _logDialog.ShowDialog(this);
-        }
-
         private void linkLabelProductName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             linkLabelProductName.LinkVisited = true;
             Process.Start(Home);
+        }
+
+        private void radioButtonAutoConfigOn_CheckedChanged(object sender, EventArgs e)
+        {
+            var on = ((RadioButton)sender).Checked;
+            textBoxListen.Enabled = !on;
+            labelListen.Enabled = !on;
+        }
+
+        private void radioButtonUpstreamOff_CheckedChanged(object sender, EventArgs e)
+        {
+            var off = ((RadioButton)sender).Checked;
+            textBoxPort.Enabled = !off;
+        }
+
+        private void radioButtonServerOn_CheckedChanged(object sender, EventArgs e)
+        {
+            var on = ((RadioButton)sender).Checked;
+            textBoxListen.Enabled = on;
+            labelListen.Enabled = on;
+        }
+
+        private void buttonOutputDir_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialogOutputDir.ShowDialog(this) == DialogResult.OK)
+                textBoxOutput.Text = folderBrowserDialogOutputDir.SelectedPath;
+            textBoxOutput.Select(textBoxOutput.Text.Length, 0);
+        }
+
+        private bool ValidatePortNumber(TextBox textBox, out int result)
+        {
+            var s = textBox.Text;
+            if (!int.TryParse(s, out result))
+            {
+                ShowToolTip("数字を入力してください。", textBox);
+                return false;
+            }
+            if (result <= 0)
+            {
+                ShowToolTip("0より大きい数字を入力してください。", textBox);
+                return false;
+            }
+            return true;
+        }
+
+        private void ShowToolTip(string message, Control control)
+        {
+            tabControl.SelectedTab = (TabPage)control.Parent.Parent;
+            toolTipError.Show(message, control, 0, control.Height, 3000);
+        }
+
+        private void textBox_Enter(object sender, EventArgs e)
+        {
+            toolTipError.Hide((Control)sender);
+        }
+
+        private void buttonDebugLogOpenFile_Click(object sender, EventArgs e)
+        {
+            openDebugLogDialog.FileName = textBoxDebugLog.Text;
+            openDebugLogDialog.InitialDirectory = Path.GetDirectoryName(textBoxDebugLog.Text);
+            if (openDebugLogDialog.ShowDialog(this) == DialogResult.OK)
+                textBoxDebugLog.Text = openDebugLogDialog.FileName;
+            textBoxDebugLog.Select(textBoxDebugLog.Text.Length, 0);
+        }
+
+        private void buttonPlayDebugLog_Click(object sender, EventArgs e)
+        {
+            _main.SetPlayLog(textBoxDebugLog.Text);
+            DialogResult = DialogResult.Cancel;
         }
     }
 }

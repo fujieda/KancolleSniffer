@@ -81,13 +81,42 @@ namespace KancolleSniffer
             this.linkLabelProductName = new System.Windows.Forms.LinkLabel();
             this.labelVersion = new System.Windows.Forms.Label();
             this.labelLatest = new System.Windows.Forms.Label();
+            this.tabPageProxy = new System.Windows.Forms.TabPage();
+            this.groupBoxUpstream = new System.Windows.Forms.GroupBox();
+            this.radioButtonUpstreamOff = new System.Windows.Forms.RadioButton();
+            this.radioButtonUpstreamOn = new System.Windows.Forms.RadioButton();
+            this.textBoxPort = new System.Windows.Forms.TextBox();
+            this.labelPort = new System.Windows.Forms.Label();
+            this.groupBoxAutoConfig = new System.Windows.Forms.GroupBox();
+            this.radioButtonAutoConfigOff = new System.Windows.Forms.RadioButton();
+            this.radioButtonAutoConfigOn = new System.Windows.Forms.RadioButton();
+            this.textBoxListen = new System.Windows.Forms.TextBox();
+            this.labelListen = new System.Windows.Forms.Label();
+            this.tabPageLog = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioButtonServerOff = new System.Windows.Forms.RadioButton();
+            this.radioButtonServerOn = new System.Windows.Forms.RadioButton();
+            this.textBoxServer = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.checkBoxOutput = new System.Windows.Forms.CheckBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.numericUpDownMaterialLogInterval = new System.Windows.Forms.NumericUpDown();
+            this.textBoxOutput = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.buttonOutputDir = new System.Windows.Forms.Button();
+            this.tabPageDebug = new System.Windows.Forms.TabPage();
+            this.buttonPlayDebugLog = new System.Windows.Forms.Button();
+            this.buttonDebugLogOpenFile = new System.Windows.Forms.Button();
+            this.textBoxDebugLog = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.checkBoxDebugLog = new System.Windows.Forms.CheckBox();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
-            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ProxyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.DebugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.openSoundFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
+            this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
+            this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
             this.tabControl.SuspendLayout();
             this.tabPageShow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -97,30 +126,42 @@ namespace KancolleSniffer
             this.tabPageSound.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSoundVolume)).BeginInit();
             this.tabPageVersion.SuspendLayout();
-            this.contextMenuStrip.SuspendLayout();
+            this.tabPageProxy.SuspendLayout();
+            this.groupBoxUpstream.SuspendLayout();
+            this.groupBoxAutoConfig.SuspendLayout();
+            this.tabPageLog.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).BeginInit();
+            this.tabPageDebug.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
             // 
+            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.tabControl.Controls.Add(this.tabPageShow);
             this.tabControl.Controls.Add(this.tabPageNotification);
             this.tabControl.Controls.Add(this.tabPageAchievement);
             this.tabControl.Controls.Add(this.tabPageSound);
             this.tabControl.Controls.Add(this.tabPageVersion);
-            this.tabControl.Location = new System.Drawing.Point(6, 6);
+            this.tabControl.Controls.Add(this.tabPageProxy);
+            this.tabControl.Controls.Add(this.tabPageLog);
+            this.tabControl.Controls.Add(this.tabPageDebug);
+            this.tabControl.Location = new System.Drawing.Point(7, 6);
+            this.tabControl.Multiline = true;
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(262, 173);
+            this.tabControl.Size = new System.Drawing.Size(264, 202);
             this.tabControl.TabIndex = 0;
             // 
             // tabPageShow
             // 
             this.tabPageShow.Controls.Add(this.checkBoxHideOnMinimized);
             this.tabPageShow.Controls.Add(this.checkBoxTopMost);
-            this.tabPageShow.Location = new System.Drawing.Point(4, 22);
+            this.tabPageShow.Location = new System.Drawing.Point(4, 40);
             this.tabPageShow.Name = "tabPageShow";
             this.tabPageShow.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageShow.Size = new System.Drawing.Size(254, 147);
+            this.tabPageShow.Size = new System.Drawing.Size(256, 166);
             this.tabPageShow.TabIndex = 0;
             this.tabPageShow.Text = "表示";
             this.tabPageShow.UseVisualStyleBackColor = true;
@@ -159,10 +200,10 @@ namespace KancolleSniffer
             this.tabPageNotification.Controls.Add(this.checkBoxSound);
             this.tabPageNotification.Controls.Add(this.checkBoxBalloon);
             this.tabPageNotification.Controls.Add(this.checkBoxFlash);
-            this.tabPageNotification.Location = new System.Drawing.Point(4, 22);
+            this.tabPageNotification.Location = new System.Drawing.Point(4, 40);
             this.tabPageNotification.Name = "tabPageNotification";
             this.tabPageNotification.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageNotification.Size = new System.Drawing.Size(254, 147);
+            this.tabPageNotification.Size = new System.Drawing.Size(256, 166);
             this.tabPageNotification.TabIndex = 1;
             this.tabPageNotification.Text = "通知";
             this.tabPageNotification.UseVisualStyleBackColor = true;
@@ -297,10 +338,10 @@ namespace KancolleSniffer
             this.tabPageAchievement.Controls.Add(this.label8);
             this.tabPageAchievement.Controls.Add(this.checkBoxReset14);
             this.tabPageAchievement.Controls.Add(this.checkBoxReset02);
-            this.tabPageAchievement.Location = new System.Drawing.Point(4, 22);
+            this.tabPageAchievement.Location = new System.Drawing.Point(4, 40);
             this.tabPageAchievement.Name = "tabPageAchievement";
             this.tabPageAchievement.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageAchievement.Size = new System.Drawing.Size(254, 147);
+            this.tabPageAchievement.Size = new System.Drawing.Size(256, 166);
             this.tabPageAchievement.TabIndex = 2;
             this.tabPageAchievement.Text = "戦果";
             this.tabPageAchievement.UseVisualStyleBackColor = true;
@@ -353,10 +394,10 @@ namespace KancolleSniffer
             this.tabPageSound.Controls.Add(this.textBoxSoundFile);
             this.tabPageSound.Controls.Add(this.numericUpDownSoundVolume);
             this.tabPageSound.Controls.Add(this.label3);
-            this.tabPageSound.Location = new System.Drawing.Point(4, 22);
+            this.tabPageSound.Location = new System.Drawing.Point(4, 40);
             this.tabPageSound.Name = "tabPageSound";
             this.tabPageSound.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageSound.Size = new System.Drawing.Size(254, 147);
+            this.tabPageSound.Size = new System.Drawing.Size(256, 158);
             this.tabPageSound.TabIndex = 3;
             this.tabPageSound.Text = "サウンド";
             this.tabPageSound.UseVisualStyleBackColor = true;
@@ -377,13 +418,13 @@ namespace KancolleSniffer
             this.listBoxSoundFile.ItemHeight = 12;
             this.listBoxSoundFile.Location = new System.Drawing.Point(11, 34);
             this.listBoxSoundFile.Name = "listBoxSoundFile";
-            this.listBoxSoundFile.Size = new System.Drawing.Size(228, 76);
+            this.listBoxSoundFile.Size = new System.Drawing.Size(234, 88);
             this.listBoxSoundFile.TabIndex = 23;
             this.listBoxSoundFile.SelectedIndexChanged += new System.EventHandler(this.listBoxSoundFile_SelectedIndexChanged);
             // 
             // buttonOpenFile
             // 
-            this.buttonOpenFile.Location = new System.Drawing.Point(196, 114);
+            this.buttonOpenFile.Location = new System.Drawing.Point(200, 126);
             this.buttonOpenFile.Name = "buttonOpenFile";
             this.buttonOpenFile.Size = new System.Drawing.Size(45, 23);
             this.buttonOpenFile.TabIndex = 22;
@@ -393,9 +434,9 @@ namespace KancolleSniffer
             // 
             // textBoxSoundFile
             // 
-            this.textBoxSoundFile.Location = new System.Drawing.Point(11, 116);
+            this.textBoxSoundFile.Location = new System.Drawing.Point(11, 128);
             this.textBoxSoundFile.Name = "textBoxSoundFile";
-            this.textBoxSoundFile.Size = new System.Drawing.Size(179, 19);
+            this.textBoxSoundFile.Size = new System.Drawing.Size(183, 19);
             this.textBoxSoundFile.TabIndex = 21;
             this.textBoxSoundFile.TextChanged += new System.EventHandler(this.textBoxSoundFile_TextChanged);
             // 
@@ -424,10 +465,10 @@ namespace KancolleSniffer
             this.tabPageVersion.Controls.Add(this.linkLabelProductName);
             this.tabPageVersion.Controls.Add(this.labelVersion);
             this.tabPageVersion.Controls.Add(this.labelLatest);
-            this.tabPageVersion.Location = new System.Drawing.Point(4, 22);
+            this.tabPageVersion.Location = new System.Drawing.Point(4, 40);
             this.tabPageVersion.Name = "tabPageVersion";
             this.tabPageVersion.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageVersion.Size = new System.Drawing.Size(254, 147);
+            this.tabPageVersion.Size = new System.Drawing.Size(256, 166);
             this.tabPageVersion.TabIndex = 4;
             this.tabPageVersion.Text = "バージョン情報";
             this.tabPageVersion.UseVisualStyleBackColor = true;
@@ -481,10 +522,321 @@ namespace KancolleSniffer
             this.labelLatest.TabIndex = 11;
             this.labelLatest.Text = "最新です";
             // 
+            // tabPageProxy
+            // 
+            this.tabPageProxy.Controls.Add(this.groupBoxUpstream);
+            this.tabPageProxy.Controls.Add(this.groupBoxAutoConfig);
+            this.tabPageProxy.Location = new System.Drawing.Point(4, 40);
+            this.tabPageProxy.Name = "tabPageProxy";
+            this.tabPageProxy.Padding = new System.Windows.Forms.Padding(8);
+            this.tabPageProxy.Size = new System.Drawing.Size(256, 166);
+            this.tabPageProxy.TabIndex = 5;
+            this.tabPageProxy.Text = "プロキシ";
+            this.tabPageProxy.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxUpstream
+            // 
+            this.groupBoxUpstream.Controls.Add(this.radioButtonUpstreamOff);
+            this.groupBoxUpstream.Controls.Add(this.radioButtonUpstreamOn);
+            this.groupBoxUpstream.Controls.Add(this.textBoxPort);
+            this.groupBoxUpstream.Controls.Add(this.labelPort);
+            this.groupBoxUpstream.Location = new System.Drawing.Point(11, 65);
+            this.groupBoxUpstream.Name = "groupBoxUpstream";
+            this.groupBoxUpstream.Size = new System.Drawing.Size(234, 48);
+            this.groupBoxUpstream.TabIndex = 3;
+            this.groupBoxUpstream.TabStop = false;
+            this.groupBoxUpstream.Text = "ツール連携";
+            // 
+            // radioButtonUpstreamOff
+            // 
+            this.radioButtonUpstreamOff.AutoSize = true;
+            this.radioButtonUpstreamOff.Location = new System.Drawing.Point(59, 18);
+            this.radioButtonUpstreamOff.Name = "radioButtonUpstreamOff";
+            this.radioButtonUpstreamOff.Size = new System.Drawing.Size(47, 16);
+            this.radioButtonUpstreamOff.TabIndex = 1;
+            this.radioButtonUpstreamOff.Text = "無効";
+            this.radioButtonUpstreamOff.UseVisualStyleBackColor = true;
+            this.radioButtonUpstreamOff.CheckedChanged += new System.EventHandler(this.radioButtonUpstreamOff_CheckedChanged);
+            // 
+            // radioButtonUpstreamOn
+            // 
+            this.radioButtonUpstreamOn.AutoSize = true;
+            this.radioButtonUpstreamOn.Location = new System.Drawing.Point(6, 18);
+            this.radioButtonUpstreamOn.Name = "radioButtonUpstreamOn";
+            this.radioButtonUpstreamOn.Size = new System.Drawing.Size(47, 16);
+            this.radioButtonUpstreamOn.TabIndex = 0;
+            this.radioButtonUpstreamOn.Text = "有効";
+            this.radioButtonUpstreamOn.UseVisualStyleBackColor = true;
+            // 
+            // textBoxPort
+            // 
+            this.textBoxPort.Location = new System.Drawing.Point(175, 17);
+            this.textBoxPort.Name = "textBoxPort";
+            this.textBoxPort.Size = new System.Drawing.Size(36, 19);
+            this.textBoxPort.TabIndex = 3;
+            this.textBoxPort.Enter += new System.EventHandler(this.textBox_Enter);
+            // 
+            // labelPort
+            // 
+            this.labelPort.AutoSize = true;
+            this.labelPort.Location = new System.Drawing.Point(114, 20);
+            this.labelPort.Name = "labelPort";
+            this.labelPort.Size = new System.Drawing.Size(59, 12);
+            this.labelPort.TabIndex = 2;
+            this.labelPort.Text = "送信ポート:";
+            // 
+            // groupBoxAutoConfig
+            // 
+            this.groupBoxAutoConfig.Controls.Add(this.radioButtonAutoConfigOff);
+            this.groupBoxAutoConfig.Controls.Add(this.radioButtonAutoConfigOn);
+            this.groupBoxAutoConfig.Controls.Add(this.textBoxListen);
+            this.groupBoxAutoConfig.Controls.Add(this.labelListen);
+            this.groupBoxAutoConfig.Location = new System.Drawing.Point(11, 11);
+            this.groupBoxAutoConfig.Name = "groupBoxAutoConfig";
+            this.groupBoxAutoConfig.Size = new System.Drawing.Size(234, 48);
+            this.groupBoxAutoConfig.TabIndex = 2;
+            this.groupBoxAutoConfig.TabStop = false;
+            this.groupBoxAutoConfig.Text = "自動設定";
+            // 
+            // radioButtonAutoConfigOff
+            // 
+            this.radioButtonAutoConfigOff.AutoSize = true;
+            this.radioButtonAutoConfigOff.Location = new System.Drawing.Point(59, 19);
+            this.radioButtonAutoConfigOff.Name = "radioButtonAutoConfigOff";
+            this.radioButtonAutoConfigOff.Size = new System.Drawing.Size(47, 16);
+            this.radioButtonAutoConfigOff.TabIndex = 1;
+            this.radioButtonAutoConfigOff.Text = "無効";
+            this.radioButtonAutoConfigOff.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonAutoConfigOn
+            // 
+            this.radioButtonAutoConfigOn.AutoSize = true;
+            this.radioButtonAutoConfigOn.Location = new System.Drawing.Point(6, 19);
+            this.radioButtonAutoConfigOn.Name = "radioButtonAutoConfigOn";
+            this.radioButtonAutoConfigOn.Size = new System.Drawing.Size(47, 16);
+            this.radioButtonAutoConfigOn.TabIndex = 0;
+            this.radioButtonAutoConfigOn.Text = "有効";
+            this.radioButtonAutoConfigOn.UseVisualStyleBackColor = true;
+            this.radioButtonAutoConfigOn.CheckedChanged += new System.EventHandler(this.radioButtonAutoConfigOn_CheckedChanged);
+            // 
+            // textBoxListen
+            // 
+            this.textBoxListen.Location = new System.Drawing.Point(175, 18);
+            this.textBoxListen.Name = "textBoxListen";
+            this.textBoxListen.Size = new System.Drawing.Size(36, 19);
+            this.textBoxListen.TabIndex = 3;
+            this.textBoxListen.Enter += new System.EventHandler(this.textBox_Enter);
+            // 
+            // labelListen
+            // 
+            this.labelListen.AutoSize = true;
+            this.labelListen.Location = new System.Drawing.Point(114, 21);
+            this.labelListen.Name = "labelListen";
+            this.labelListen.Size = new System.Drawing.Size(59, 12);
+            this.labelListen.TabIndex = 2;
+            this.labelListen.Text = "受信ポート:";
+            // 
+            // tabPageLog
+            // 
+            this.tabPageLog.Controls.Add(this.groupBox1);
+            this.tabPageLog.Controls.Add(this.label10);
+            this.tabPageLog.Controls.Add(this.checkBoxOutput);
+            this.tabPageLog.Controls.Add(this.label9);
+            this.tabPageLog.Controls.Add(this.numericUpDownMaterialLogInterval);
+            this.tabPageLog.Controls.Add(this.textBoxOutput);
+            this.tabPageLog.Controls.Add(this.label11);
+            this.tabPageLog.Controls.Add(this.buttonOutputDir);
+            this.tabPageLog.Location = new System.Drawing.Point(4, 40);
+            this.tabPageLog.Name = "tabPageLog";
+            this.tabPageLog.Padding = new System.Windows.Forms.Padding(8);
+            this.tabPageLog.Size = new System.Drawing.Size(256, 158);
+            this.tabPageLog.TabIndex = 6;
+            this.tabPageLog.Text = "報告書";
+            this.tabPageLog.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.radioButtonServerOff);
+            this.groupBox1.Controls.Add(this.radioButtonServerOn);
+            this.groupBox1.Controls.Add(this.textBoxServer);
+            this.groupBox1.Controls.Add(this.label12);
+            this.groupBox1.Location = new System.Drawing.Point(11, 83);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(234, 48);
+            this.groupBox1.TabIndex = 15;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "閲覧サーバー";
+            // 
+            // radioButtonServerOff
+            // 
+            this.radioButtonServerOff.AutoSize = true;
+            this.radioButtonServerOff.Location = new System.Drawing.Point(59, 18);
+            this.radioButtonServerOff.Name = "radioButtonServerOff";
+            this.radioButtonServerOff.Size = new System.Drawing.Size(47, 16);
+            this.radioButtonServerOff.TabIndex = 10;
+            this.radioButtonServerOff.TabStop = true;
+            this.radioButtonServerOff.Text = "無効";
+            this.radioButtonServerOff.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonServerOn
+            // 
+            this.radioButtonServerOn.AutoSize = true;
+            this.radioButtonServerOn.Location = new System.Drawing.Point(6, 18);
+            this.radioButtonServerOn.Name = "radioButtonServerOn";
+            this.radioButtonServerOn.Size = new System.Drawing.Size(47, 16);
+            this.radioButtonServerOn.TabIndex = 9;
+            this.radioButtonServerOn.TabStop = true;
+            this.radioButtonServerOn.Text = "有効";
+            this.radioButtonServerOn.UseVisualStyleBackColor = true;
+            this.radioButtonServerOn.CheckedChanged += new System.EventHandler(this.radioButtonServerOn_CheckedChanged);
+            // 
+            // textBoxServer
+            // 
+            this.textBoxServer.Location = new System.Drawing.Point(175, 17);
+            this.textBoxServer.Name = "textBoxServer";
+            this.textBoxServer.Size = new System.Drawing.Size(36, 19);
+            this.textBoxServer.TabIndex = 11;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(114, 20);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(59, 12);
+            this.label12.TabIndex = 8;
+            this.label12.Text = "受信ポート:";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(137, 60);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(17, 12);
+            this.label10.TabIndex = 6;
+            this.label10.Text = "分";
+            // 
+            // checkBoxOutput
+            // 
+            this.checkBoxOutput.AutoSize = true;
+            this.checkBoxOutput.Location = new System.Drawing.Point(11, 11);
+            this.checkBoxOutput.Name = "checkBoxOutput";
+            this.checkBoxOutput.Size = new System.Drawing.Size(67, 16);
+            this.checkBoxOutput.TabIndex = 0;
+            this.checkBoxOutput.Text = "出力する";
+            this.checkBoxOutput.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(9, 36);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(41, 12);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "出力先";
+            // 
+            // numericUpDownMaterialLogInterval
+            // 
+            this.numericUpDownMaterialLogInterval.Location = new System.Drawing.Point(91, 58);
+            this.numericUpDownMaterialLogInterval.Name = "numericUpDownMaterialLogInterval";
+            this.numericUpDownMaterialLogInterval.Size = new System.Drawing.Size(44, 19);
+            this.numericUpDownMaterialLogInterval.TabIndex = 5;
+            this.numericUpDownMaterialLogInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // textBoxOutput
+            // 
+            this.textBoxOutput.Location = new System.Drawing.Point(50, 33);
+            this.textBoxOutput.Name = "textBoxOutput";
+            this.textBoxOutput.Size = new System.Drawing.Size(142, 19);
+            this.textBoxOutput.TabIndex = 1;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(9, 60);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(81, 12);
+            this.label11.TabIndex = 4;
+            this.label11.Text = "資材ログの間隔";
+            // 
+            // buttonOutputDir
+            // 
+            this.buttonOutputDir.Location = new System.Drawing.Point(196, 31);
+            this.buttonOutputDir.Name = "buttonOutputDir";
+            this.buttonOutputDir.Size = new System.Drawing.Size(49, 21);
+            this.buttonOutputDir.TabIndex = 3;
+            this.buttonOutputDir.Text = "参照...";
+            this.buttonOutputDir.UseVisualStyleBackColor = true;
+            this.buttonOutputDir.Click += new System.EventHandler(this.buttonOutputDir_Click);
+            // 
+            // tabPageDebug
+            // 
+            this.tabPageDebug.Controls.Add(this.buttonPlayDebugLog);
+            this.tabPageDebug.Controls.Add(this.buttonDebugLogOpenFile);
+            this.tabPageDebug.Controls.Add(this.textBoxDebugLog);
+            this.tabPageDebug.Controls.Add(this.label13);
+            this.tabPageDebug.Controls.Add(this.checkBoxDebugLog);
+            this.tabPageDebug.Location = new System.Drawing.Point(4, 40);
+            this.tabPageDebug.Name = "tabPageDebug";
+            this.tabPageDebug.Padding = new System.Windows.Forms.Padding(8);
+            this.tabPageDebug.Size = new System.Drawing.Size(256, 166);
+            this.tabPageDebug.TabIndex = 7;
+            this.tabPageDebug.Text = "デバッグ";
+            this.tabPageDebug.UseVisualStyleBackColor = true;
+            // 
+            // buttonPlayDebugLog
+            // 
+            this.buttonPlayDebugLog.AutoSize = true;
+            this.buttonPlayDebugLog.Location = new System.Drawing.Point(206, 46);
+            this.buttonPlayDebugLog.Name = "buttonPlayDebugLog";
+            this.buttonPlayDebugLog.Size = new System.Drawing.Size(39, 23);
+            this.buttonPlayDebugLog.TabIndex = 12;
+            this.buttonPlayDebugLog.Text = "再生";
+            this.buttonPlayDebugLog.UseVisualStyleBackColor = true;
+            this.buttonPlayDebugLog.Click += new System.EventHandler(this.buttonPlayDebugLog_Click);
+            // 
+            // buttonDebugLogOpenFile
+            // 
+            this.buttonDebugLogOpenFile.AutoSize = true;
+            this.buttonDebugLogOpenFile.Location = new System.Drawing.Point(157, 46);
+            this.buttonDebugLogOpenFile.Name = "buttonDebugLogOpenFile";
+            this.buttonDebugLogOpenFile.Size = new System.Drawing.Size(45, 23);
+            this.buttonDebugLogOpenFile.TabIndex = 11;
+            this.buttonDebugLogOpenFile.Text = "参照...";
+            this.buttonDebugLogOpenFile.UseVisualStyleBackColor = true;
+            this.buttonDebugLogOpenFile.Click += new System.EventHandler(this.buttonDebugLogOpenFile_Click);
+            // 
+            // textBoxDebugLog
+            // 
+            this.textBoxDebugLog.Location = new System.Drawing.Point(11, 48);
+            this.textBoxDebugLog.Name = "textBoxDebugLog";
+            this.textBoxDebugLog.Size = new System.Drawing.Size(142, 19);
+            this.textBoxDebugLog.TabIndex = 10;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(11, 33);
+            this.label13.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(57, 12);
+            this.label13.TabIndex = 9;
+            this.label13.Text = "ログファイル";
+            // 
+            // checkBoxDebugLog
+            // 
+            this.checkBoxDebugLog.AutoSize = true;
+            this.checkBoxDebugLog.Location = new System.Drawing.Point(11, 11);
+            this.checkBoxDebugLog.Name = "checkBoxDebugLog";
+            this.checkBoxDebugLog.Size = new System.Drawing.Size(100, 16);
+            this.checkBoxDebugLog.TabIndex = 8;
+            this.checkBoxDebugLog.Text = "通信を記録する";
+            this.checkBoxDebugLog.UseVisualStyleBackColor = true;
+            // 
             // buttonCancel
             // 
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(186, 185);
+            this.buttonCancel.Location = new System.Drawing.Point(186, 214);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 5;
@@ -493,8 +845,8 @@ namespace KancolleSniffer
             // 
             // buttonOk
             // 
-            this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(105, 185);
+            this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonOk.Location = new System.Drawing.Point(105, 214);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 4;
@@ -502,48 +854,32 @@ namespace KancolleSniffer
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
-            // contextMenuStrip
+            // openSoundFileDialog
             // 
-            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ReportToolStripMenuItem,
-            this.ProxyToolStripMenuItem,
-            this.DebugToolStripMenuItem});
-            this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(168, 70);
-            // 
-            // ReportToolStripMenuItem
-            // 
-            this.ReportToolStripMenuItem.Name = "ReportToolStripMenuItem";
-            this.ReportToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-            this.ReportToolStripMenuItem.Text = "報告書設定(&R)";
-            this.ReportToolStripMenuItem.Click += new System.EventHandler(this.ReportToolStripMenuItem_Click);
-            // 
-            // ProxyToolStripMenuItem
-            // 
-            this.ProxyToolStripMenuItem.Name = "ProxyToolStripMenuItem";
-            this.ProxyToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-            this.ProxyToolStripMenuItem.Text = "プロキシ設定(&P)";
-            this.ProxyToolStripMenuItem.Click += new System.EventHandler(this.ProxyToolStripMenuItem_Click);
-            // 
-            // DebugToolStripMenuItem
-            // 
-            this.DebugToolStripMenuItem.Name = "DebugToolStripMenuItem";
-            this.DebugToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-            this.DebugToolStripMenuItem.Text = "デバッグ設定(&D)";
-            this.DebugToolStripMenuItem.Click += new System.EventHandler(this.DebugToolStripMenuItem_Click);
-            // 
-            // openFileDialog
-            // 
-            this.openFileDialog.Filter = "オーディオファイル (*.wav;*.aif;*.aifc;*.aiff;*.wma;*.mp2;*.mp3)|*.wav;*.aif;*.aifc;*.aiff" +
+            this.openSoundFileDialog.Filter = "オーディオファイル (*.wav;*.aif;*.aifc;*.aiff;*.wma;*.mp2;*.mp3)|*.wav;*.aif;*.aifc;*.aiff" +
     ";*.wma;*.mp2;*.mp3";
-            this.openFileDialog.Title = "オーディオファイルを選択する";
+            this.openSoundFileDialog.Title = "オーディオファイルを選択する";
+            // 
+            // toolTipError
+            // 
+            this.toolTipError.AutomaticDelay = 0;
+            this.toolTipError.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Error;
+            this.toolTipError.ToolTipTitle = "入力エラー";
+            // 
+            // folderBrowserDialogOutputDir
+            // 
+            this.folderBrowserDialogOutputDir.Description = "報告書の出力先を指定します。";
+            // 
+            // openDebugLogDialog
+            // 
+            this.openDebugLogDialog.CheckFileExists = false;
+            this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(273, 217);
-            this.ContextMenuStrip = this.contextMenuStrip;
+            this.ClientSize = new System.Drawing.Size(276, 246);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.tabControl);
@@ -568,7 +904,18 @@ namespace KancolleSniffer
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSoundVolume)).EndInit();
             this.tabPageVersion.ResumeLayout(false);
             this.tabPageVersion.PerformLayout();
-            this.contextMenuStrip.ResumeLayout(false);
+            this.tabPageProxy.ResumeLayout(false);
+            this.groupBoxUpstream.ResumeLayout(false);
+            this.groupBoxUpstream.PerformLayout();
+            this.groupBoxAutoConfig.ResumeLayout(false);
+            this.groupBoxAutoConfig.PerformLayout();
+            this.tabPageLog.ResumeLayout(false);
+            this.tabPageLog.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).EndInit();
+            this.tabPageDebug.ResumeLayout(false);
+            this.tabPageDebug.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -612,10 +959,39 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label labelLatest;
         private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem ReportToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ProxyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem DebugToolStripMenuItem;
-        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.OpenFileDialog openSoundFileDialog;
+        private System.Windows.Forms.TabPage tabPageProxy;
+        private System.Windows.Forms.GroupBox groupBoxUpstream;
+        private System.Windows.Forms.RadioButton radioButtonUpstreamOff;
+        private System.Windows.Forms.RadioButton radioButtonUpstreamOn;
+        private System.Windows.Forms.TextBox textBoxPort;
+        private System.Windows.Forms.Label labelPort;
+        private System.Windows.Forms.GroupBox groupBoxAutoConfig;
+        private System.Windows.Forms.RadioButton radioButtonAutoConfigOff;
+        private System.Windows.Forms.RadioButton radioButtonAutoConfigOn;
+        private System.Windows.Forms.TextBox textBoxListen;
+        private System.Windows.Forms.Label labelListen;
+        private System.Windows.Forms.ToolTip toolTipError;
+        private System.Windows.Forms.TabPage tabPageLog;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.CheckBox checkBoxOutput;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBoxOutput;
+        private System.Windows.Forms.Button buttonOutputDir;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.NumericUpDown numericUpDownMaterialLogInterval;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogOutputDir;
+        private System.Windows.Forms.TabPage tabPageDebug;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton radioButtonServerOff;
+        private System.Windows.Forms.RadioButton radioButtonServerOn;
+        private System.Windows.Forms.TextBox textBoxServer;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button buttonPlayDebugLog;
+        private System.Windows.Forms.Button buttonDebugLogOpenFile;
+        private System.Windows.Forms.TextBox textBoxDebugLog;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.CheckBox checkBoxDebugLog;
+        private System.Windows.Forms.OpenFileDialog openDebugLogDialog;
     }
 }
