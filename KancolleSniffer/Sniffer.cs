@@ -279,19 +279,14 @@ namespace KancolleSniffer
             return Update.None;
         }
 
-        public bool IsBattleAPI(string url)
-        {
-            return IsNormalBattleAPI(url) || IsCombinedBattleAPI(url);
-        }
-
-        public bool IsNormalBattleAPI(string url)
+        private bool IsNormalBattleAPI(string url)
         {
             return url.EndsWith("api_req_sortie/battle") ||
                    url.EndsWith("api_req_battle_midnight/battle") ||
                    url.EndsWith("api_req_battle_midnight/sp_midnight");
         }
 
-        public bool IsCombinedBattleAPI(string url)
+        private bool IsCombinedBattleAPI(string url)
         {
             return url.EndsWith("api_req_combined_battle/battle") ||
                    url.EndsWith("api_req_combined_battle/airbattle") ||

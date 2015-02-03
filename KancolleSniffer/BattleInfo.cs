@@ -50,7 +50,7 @@ namespace KancolleSniffer
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
             if (IsNightBattle(json))
             {
-                CauseDamage();
+                CauseDamage(false);
                 _night = json;
             }
             else
@@ -72,7 +72,7 @@ namespace KancolleSniffer
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
             if (IsNightBattle(json))
             {
-                CauseDamageCombined();
+                CauseDamageCombined(false);
                 _night = json;
             }
             else
@@ -133,7 +133,7 @@ namespace KancolleSniffer
                 select (int)Math.Floor(spec.AntiAir * Math.Sqrt(slot.max))).DefaultIfEmpty().Sum();
         }
 
-        public void CauseDamage()
+        public void CauseDamage(bool warnDamagedShip = true)
         {
             if (_day == null && _night == null)
                 return;
@@ -158,13 +158,13 @@ namespace KancolleSniffer
                 CauseHougekiDamage(ships, _night.api_hougeki);
                 _night = null;
             }
-            UpdateDamgedShipNames(ships);
+            if (warnDamagedShip)
+                UpdateDamgedShipNames(ships);
         }
 
         public void CausePracticeDamage()
         {
-            CauseDamage();
-            HasDamagedShip = false;
+            CauseDamage(false);
         }
 
         private void UpdateDamgedShipNames(IEnumerable<ShipStatus> ships)
@@ -201,15 +201,15 @@ namespace KancolleSniffer
             }
         }
 
-        public void CauseDamageCombined()
+        public void CauseDamageCombined(bool warnDamagedShip = true)
         {
             if (_isSurface)
-                CauseDamageCombinedFleetSurface();
+                CauseDamageCombinedFleetSurface(warnDamagedShip);
             else
-                CauseDamageCombinedFleetAir();
+                CauseDamageCombinedFleetAir(warnDamagedShip);
         }
 
-        private void CauseDamageCombinedFleetAir()
+        private void CauseDamageCombinedFleetAir(bool warnDamagedShip)
         {
             var hontai = _shipInfo.GetShipStatuses(0);
             var goei = _shipInfo.GetShipStatuses(1);
@@ -248,10 +248,11 @@ namespace KancolleSniffer
                 CauseHougekiDamage(goei, _night.api_hougeki);
                 _night = null;
             }
-            UpdateDamgedShipNames(hontai.Concat(goei));
+            if (warnDamagedShip)
+                UpdateDamgedShipNames(hontai.Concat(goei));
         }
 
-        private void CauseDamageCombinedFleetSurface()
+        private void CauseDamageCombinedFleetSurface(bool warnDamagedShip)
         {
             var hontai = _shipInfo.GetShipStatuses(0);
             var goei = _shipInfo.GetShipStatuses(1);
@@ -280,7 +281,8 @@ namespace KancolleSniffer
                 CauseHougekiDamage(goei, _night.api_hougeki);
                 _night = null;
             }
-            UpdateDamgedShipNames(hontai.Concat(goei));
+            if (warnDamagedShip)
+                UpdateDamgedShipNames(hontai.Concat(goei));
         }
     }
 }

@@ -94,6 +94,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "battle_002");
             AssertEqualBattleResult(sniffer, new[] {28, 1, 13});
+            PAssert.That(()=> sniffer.Battle.HasDamagedShip);
         }
 
         private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected)
@@ -111,8 +112,11 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_surface_001");
             AssertEauqlCombinedResult(sniffer, new[] {40, 77, 77, 33, 51, 47}, new[] {39, 35, 11, 39, 37, 40});
+            PAssert.That(() => !sniffer.Battle.HasDamagedShip);
+
             SniffLogFile(sniffer, "combined_surface_002");
             AssertEauqlCombinedResult(sniffer, new[] {40, 77, 77, 33, 15, 6}, new[] {39, 35, 4, 3, 14, 40});
+            PAssert.That(() => sniffer.Battle.HasDamagedShip);
         }
 
         private void AssertEauqlCombinedResult(Sniffer sniffer, IEnumerable<int> expected0, IEnumerable<int> expected1)
@@ -131,6 +135,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "sp_midnight_001");
             AssertEqualBattleResult(sniffer, new[] {1});
+            PAssert.That(() => sniffer.Battle.HasDamagedShip);
         }
 
         /// <summary>
@@ -142,8 +147,11 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_air_001");
             AssertEauqlCombinedResult(sniffer, new[] {40, 98, 90, 66, 78, 86}, new[] {47, 41, 5, 42, 43, 29});
+            PAssert.That(() => sniffer.Battle.HasDamagedShip);
+
             SniffLogFile(sniffer, "combined_air_002");
             AssertEauqlCombinedResult(sniffer, new[] {13, 87, 90, 59, 69, 86}, new[] {47, 41, 5, 20, 43, 29});
+            PAssert.That(() => !sniffer.Battle.HasDamagedShip, "退避しているので大破警告を出さない");
         }
 
         /// <summary>
@@ -155,6 +163,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "battle_003");
             AssertEqualBattleResult(sniffer, new[] {28, 2, 13});
+            PAssert.That(() => !sniffer.Battle.HasDamagedShip, "夜戦の開始時は大破警告を出さない");
         }
 
         /// <summary>
