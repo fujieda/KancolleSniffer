@@ -21,6 +21,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 using Codeplex.Data;
 using Fiddler;
@@ -30,7 +32,6 @@ namespace KancolleSniffer
     public partial class MainForm : Form
     {
         private readonly Sniffer _sniffer = new Sniffer();
-        private readonly dynamic _wmp = Activator.CreateInstance(Type.GetTypeFromProgID("WMPlayer.OCX.7"));
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
         private int _currentFleet;
@@ -49,7 +50,6 @@ namespace KancolleSniffer
             InitializeComponent();
             FiddlerApplication.BeforeRequest += FiddlerApplication_BeforeRequest;
             FiddlerApplication.AfterSessionComplete += FiddlerApplication_AfterSessionComplete;
-            _wmp.PlayStateChange += new EventHandler(_wmp_PlayStateChange);
             _configDialog = new ConfigDialog(_config, this);
             _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
 
@@ -236,7 +236,6 @@ namespace KancolleSniffer
             {
                 _logServer = new LogServer(_config.Log.Listen);
                 _logServer.Start();
-
             }
             if (_logServer != null)
                 _logServer.OutputDir = _config.Log.OutputDir;
@@ -615,21 +614,30 @@ namespace KancolleSniffer
                 PlaySound(soundFile, _config.SoundVolume);
         }
 
+        [DllImport("winmm.dll")]
+        private static extern int mciSendString(String command,
+            StringBuilder buffer, int bufferSize, IntPtr hwndCallback);
+
+// ReSharper disable InconsistentNaming
+        private const int MM_MCINOTIFY = 0x3B9;
+        private const int MCI_NOTIFY_SUCCESSFUL = 1;
+// ReSharper restore InconsistentNaming
+
         public void PlaySound(string file, int volume)
         {
             if (!File.Exists(file))
                 return;
-            _wmp.settings.volume = volume + 1;
-            _wmp.settings.volume = volume - 1;
-            _wmp.settings.volume = volume;
-            _wmp.URL = file;
-            _wmp.controls.play();
+            if (mciSendString("open \"" + file + "\" type mpegvideo alias sound", null, 0, IntPtr.Zero) != 0)
+                return;
+            mciSendString("setaudio sound volume to " + volume * 10, null, 0, IntPtr.Zero);
+            mciSendString("play sound from 0 notify", null, 0, Handle);
         }
 
-        private void _wmp_PlayStateChange(object sender, EventArgs e)
+        protected override void WndProc(ref Message m)
         {
-            if (_wmp.playState == 8) // MediaEnded
-                _wmp.URL = ""; // 再生したファイルが差し替えできなくなるのを防ぐ。
+            if (m.Msg == MM_MCINOTIFY && (int)m.WParam == MCI_NOTIFY_SUCCESSFUL)
+                mciSendString("close sound", null, 0, IntPtr.Zero);
+            base.WndProc(ref m);
         }
 
         private void SetupFleetClick()
