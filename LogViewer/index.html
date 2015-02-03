@@ -152,7 +152,7 @@ var selectedRange = -1;
 function drawChart(data)
 {
     if (data == null) {
-        $.get("./資材ログ.json", function (data) { drawChart(data);}, "json");
+        $.get("./資材ログ.json?time=" + Date.now(), function (data) { drawChart(data);}, "json");
         return;
     }
     picked = pickChartData(data.data, selectedRange);
