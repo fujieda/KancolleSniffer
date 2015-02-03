@@ -77,6 +77,7 @@ namespace KancolleSniffer
             _soundSetting["泊地修理進行"] = _config.AkashiProgressSoundFile;
             _soundSetting["疲労回復"] = _config.ConditionSoundFile;
 
+            listBoxSoundFile.SelectedIndex = -1;
             listBoxSoundFile.SelectedIndex = 0;
         }
 
@@ -142,6 +143,8 @@ namespace KancolleSniffer
 
         private void listBoxSoundFile_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (listBoxSoundFile.SelectedItem == null)
+                return;
             textBoxSoundFile.Text = _soundSetting[(string)listBoxSoundFile.SelectedItem];
             textBoxSoundFile.Select(textBoxSoundFile.Text.Length, 0);
         }
