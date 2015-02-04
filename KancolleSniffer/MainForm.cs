@@ -305,6 +305,8 @@ namespace KancolleSniffer
                 ac = 9999;
             labelAchievement.Text = ac >= 1000 ? ac.ToString("D") : ac.ToString("F1");
             UpdateMaterialHistry();
+            if (_shipListForm.Visible)
+                _shipListForm.UpdateList();
         }
 
         private void UpdateNumOfShips()
