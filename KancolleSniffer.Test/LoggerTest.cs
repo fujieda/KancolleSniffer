@@ -139,6 +139,20 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void InspectBattleResultOfSpMidnight()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "sp_midnight_001");
+            PAssert.That(() => "2015-01-01 00:00:00,サブ島沖海域,3,,D,反航戦,単縦陣,単縦陣,敵前衛警戒艦隊,,," +
+                               "Prinz Eugen改(Lv52),1/63,,,,,,,,,,," +
+                               "軽巡ヘ級(flagship),57/57,重巡リ級(flagship),76/76,重巡リ級(flagship),76/76,雷巡チ級(elite),50/50,雷巡チ級(elite),50/50,駆逐ロ級(flagship),43/43|"
+                               == result);
+        }
+
+        [TestMethod]
         public void InspectCombinedBattleResult()
         {
             var sniffer = new Sniffer();

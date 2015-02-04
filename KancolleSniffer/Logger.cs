@@ -120,13 +120,9 @@ namespace KancolleSniffer
 
         public void InspectBattle(dynamic json)
         {
-            if (!IsNightBattle(json))
-                _battle = json;
-        }
-
-        private bool IsNightBattle(dynamic json)
-        {
-            return json.api_hougeki();
+            if (_battle != null) // 通常の夜戦は無視する
+                return;
+            _battle = json;
         }
 
         public void InspectBattleResult(dynamic result)
