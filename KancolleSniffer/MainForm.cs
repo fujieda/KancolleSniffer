@@ -132,6 +132,8 @@ namespace KancolleSniffer
         {
             _config.Load();
             RestoreLocation();
+            if (_config.HideOnMinimized && WindowState == FormWindowState.Minimized)
+                ShowInTaskbar = false;
             ApplyConfig();
             ApplyDebugLogSetting();
             ApplyLogSetting();
