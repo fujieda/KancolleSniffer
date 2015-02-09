@@ -169,8 +169,7 @@ namespace KancolleSniffer
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            if (_config.HideOnMinimized && WindowState == FormWindowState.Minimized)
-                ShowInTaskbar = false;
+            ShowInTaskbar = !(_config.HideOnMinimized && WindowState == FormWindowState.Minimized);
         }
 
         private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
