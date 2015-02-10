@@ -630,10 +630,11 @@ namespace KancolleSniffer
         {
             if (!File.Exists(file))
                 return;
+            mciSendString("close sound", null, 0, IntPtr.Zero);
             if (mciSendString("open \"" + file + "\" type mpegvideo alias sound", null, 0, IntPtr.Zero) != 0)
                 return;
             mciSendString("setaudio sound volume to " + volume * 10, null, 0, IntPtr.Zero);
-            mciSendString("play sound from 0 notify", null, 0, Handle);
+            mciSendString("play sound notify", null, 0, Handle);
         }
 
         protected override void WndProc(ref Message m)
