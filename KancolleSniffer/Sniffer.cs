@@ -257,7 +257,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_combined_battle/goback_port"))
             {
                 _battleInfo.CauseCombinedBattleEscape();
-                return Update.None;
+                return Update.Ship;
             }
             if (url.EndsWith("api_req_map/start"))
             {
