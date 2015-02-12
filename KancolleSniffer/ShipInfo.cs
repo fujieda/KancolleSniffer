@@ -470,7 +470,6 @@ namespace KancolleSniffer
 
         public void SetEscapedShips(List<int> ships)
         {
-            _escapedShips.Clear();
             _escapedShips.AddRange(ships);
         }
 

@@ -119,11 +119,11 @@ namespace KancolleSniffer.Test
             PAssert.That(() => sniffer.Battle.HasDamagedShip);
         }
 
-        private void AssertEauqlCombinedResult(Sniffer sniffer, IEnumerable<int> expected0, IEnumerable<int> expected1)
+        private void AssertEauqlCombinedResult(Sniffer sniffer, IEnumerable<int> expected0, IEnumerable<int> expected1, string msg = null)
         {
             var result0 = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
             var result1 = sniffer.GetShipStatuses(1).Select(s => s.NowHp);
-            PAssert.That(() => (expected0.SequenceEqual(result0) && expected1.SequenceEqual(result1)));
+            PAssert.That(() => (expected0.SequenceEqual(result0) && expected1.SequenceEqual(result1)), msg);
         }
 
         /// <summary>
@@ -151,7 +151,27 @@ namespace KancolleSniffer.Test
 
             SniffLogFile(sniffer, "combined_air_002");
             AssertEauqlCombinedResult(sniffer, new[] {13, 87, 90, 59, 69, 86}, new[] {47, 41, 5, 20, 43, 29});
-            PAssert.That(() => !sniffer.Battle.HasDamagedShip, "退避しているので大破警告を出さない");
+        }
+
+        /// <summary>
+        /// 護衛退避を正しく処理する
+        /// </summary>
+        [TestMethod]
+        public void EscapeShip()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_escape_001");
+            AssertEauqlCombinedResult(sniffer, new[]{37, 105, 106, 90, 66, 10}, new[]{41, 41, 37, 44, 43, 43}, "連合艦隊で2戦して大破が出るまで");
+            PAssert.That(() => sniffer.Battle.HasDamagedShip);
+            SniffLogFile(sniffer, "combined_escape_002");
+            AssertEauqlCombinedResult(sniffer, new[] {37, 105, 106, 90, 66, 0}, new[] {41, 0, 37, 44, 43, 43}, "続けて護衛退避を実行");
+            PAssert.That(() => !sniffer.Battle.HasDamagedShip);
+            SniffLogFile(sniffer, "combined_escape_003");
+            AssertEauqlCombinedResult(sniffer, new[] {37, 105, 106, 90, 1, 0}, new[] {41, 0, 32, 44, 43, 43}, "もう一戦して大破が出るまで");
+            PAssert.That(() => sniffer.Battle.HasDamagedShip);
+            SniffLogFile(sniffer, "combined_escape_004");
+            AssertEauqlCombinedResult(sniffer, new[] {37, 105, 106, 90, 0, 0}, new[] {41, 0, 0, 44, 43, 43}, "さらに護衛退避を実行");
+            PAssert.That(() => !sniffer.Battle.HasDamagedShip);
         }
 
         /// <summary>
