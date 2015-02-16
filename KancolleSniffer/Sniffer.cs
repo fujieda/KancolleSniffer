@@ -58,8 +58,10 @@ namespace KancolleSniffer
             _logger = new Logger(_shipMaster, _shipInfo, _itemInfo);
         }
 
-        public void SaveState()
+        private void SaveState()
         {
+            if (!_achievement.NeedSave && !_itemInfo.NeedSave)
+                return;
             _achievement.SaveState(_status);
             _itemInfo.SaveState(_status);
             _status.Save();
@@ -100,6 +102,7 @@ namespace KancolleSniffer
                 _battleInfo.InBattle = false;
                 _battleInfo.HasDamagedShip = false;
                 _shipInfo.ClearEscapedShips();
+                SaveState();
                 return Update.All;
             }
             if (url.EndsWith("api_get_member/basic"))

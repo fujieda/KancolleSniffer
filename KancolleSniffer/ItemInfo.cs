@@ -103,6 +103,16 @@ namespace KancolleSniffer
         public bool RingEquips { get; set; }
         public MaterialCount[] MaterialHistory { get; private set; }
 
+        public bool NeedSave
+        {
+            get { return MaterialHistory.Any(m => m.NeedSave); }
+            private set
+            {
+                foreach (var m in MaterialHistory)
+                    m.NeedSave = value;
+            }
+        }
+
         public int NowShips
         {
             get { return _nowShips; }
@@ -294,6 +304,7 @@ namespace KancolleSniffer
 
         public void SaveState(Status status)
         {
+            NeedSave = false;
             status.MatreialHistory = MaterialHistory;
         }
 
@@ -323,35 +334,44 @@ namespace KancolleSniffer
         public int BegOfDay { get; set; }
         public int BegOfWeek { get; set; }
         public DateTime LastSet { get; set; }
+        public bool NeedSave { get; set; }
 
         public int Now
         {
             get { return _now; }
             set
             {
-                if (!Status.Restoring) // JSONから値を復旧するときは履歴に触らない
-                {
-                    UpdateHistory(value, _now);
-                    LastSet = DateTime.Now;
-                }
+                var prev = _now;
                 _now = value;
+                if (Status.Restoring) // JSONから値を復旧するときは履歴に触らない
+                    return;
+                if (LastSet == DateTime.MinValue)
+                {
+                    BegOfDay = BegOfWeek = value;
+                    LastSet = DateTime.Now;
+                    NeedSave = true;
+                    return;
+                }
+                UpdateHistory(prev);
+                LastSet = DateTime.Now;
             }
         }
 
-        private void UpdateHistory(int now, int prev)
+        private void UpdateHistory(int prev)
         {
-            if (LastSet == DateTime.MinValue)
-            {
-                BegOfDay = BegOfWeek = now;
-                return;
-            }
             var morning = DateTime.Today.AddHours(5);
             var dow = (int)morning.DayOfWeek;
             var monday = morning.AddDays(dow == 0 ? -6 : -dow + 1);
             if (DateTime.Now >= morning && LastSet < morning)
+            {
                 BegOfDay = prev;
+                NeedSave = true;
+            }
             if (DateTime.Now >= monday && LastSet < monday)
+            {
                 BegOfWeek = prev;
+                NeedSave = true;
+            }
         }
     }
 }

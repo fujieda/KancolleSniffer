@@ -156,7 +156,6 @@ namespace KancolleSniffer
             e.Cancel = false;
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.Save();
-            _sniffer.SaveState();
             ShutdownProxy();
             if (_logServer != null)
                 _logServer.Stop();

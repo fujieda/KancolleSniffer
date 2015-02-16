@@ -28,6 +28,7 @@ namespace KancolleSniffer
 
         public double Value { get { return (_current - _start) / 1428.0; } }
         public List<int> ResetHours { get; set; }
+        public bool NeedSave { get; private set; }
 
         public Achievement()
         {
@@ -56,10 +57,12 @@ namespace KancolleSniffer
         {
             _start = current;
             _lastReset = DateTime.Now;
+            NeedSave = true;
         }
 
         public void SaveState(Status status)
         {
+            NeedSave = false;
             status.ExperiencePoint = _start;
             status.LastResetTime = _lastReset;
         }
