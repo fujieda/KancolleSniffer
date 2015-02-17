@@ -437,6 +437,13 @@ namespace KancolleSniffer
 
         public TimeSpan Rest { get; private set; }
 
+        public bool IsFinished
+        {
+            get { return _endTime != DateTime.MinValue && Rest <= _spare; }
+        }
+
+        public bool NeedRing { get; set; }
+
         public RingTimer(int spare = 60)
         {
             _spare = TimeSpan.FromSeconds(spare);
@@ -452,8 +459,6 @@ namespace KancolleSniffer
         public void SetEndTime(DateTime time)
         {
             _endTime = time;
-            if (_endTime == DateTime.MinValue)
-                IsFinished = false;
         }
 
         public void Update()
@@ -463,16 +468,12 @@ namespace KancolleSniffer
                 Rest = TimeSpan.Zero;
                 return;
             }
+            var prev = Rest;
             Rest = _endTime - DateTime.Now;
             if (Rest < TimeSpan.Zero)
                 Rest = TimeSpan.Zero;
-            if (Rest > _spare || IsFinished)
-                return;
-            IsFinished = true;
-            NeedRing = true;
+            if (prev > _spare && _spare >= Rest)
+                NeedRing = true;
         }
-
-        public bool IsFinished { get; private set; }
-        public bool NeedRing { get; set; }
     }
 }
