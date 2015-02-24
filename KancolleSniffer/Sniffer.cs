@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013, 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2013, 2014, 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -27,6 +27,7 @@ namespace KancolleSniffer
         private readonly QuestInfo _questInfo = new QuestInfo();
         private readonly MissionInfo _missionInfo = new MissionInfo();
         private readonly ShipInfo _shipInfo;
+        private readonly ConditionTimer _conditionTimer;
         private readonly DockInfo _dockInfo;
         private readonly AkashiTimer _akashiTimer;
         private readonly Achievement _achievement = new Achievement();
@@ -52,6 +53,7 @@ namespace KancolleSniffer
         public Sniffer()
         {
             _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
+            _conditionTimer = new ConditionTimer(_shipInfo);
             _dockInfo = new DockInfo(_shipInfo, _itemInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo);
             _battleInfo = new BattleInfo(_shipMaster, _shipInfo, _itemInfo);
@@ -60,10 +62,11 @@ namespace KancolleSniffer
 
         private void SaveState()
         {
-            if (!_achievement.NeedSave && !_itemInfo.NeedSave)
+            if (!_achievement.NeedSave && !_itemInfo.NeedSave && !_conditionTimer.NeedSave)
                 return;
             _achievement.SaveState(_status);
             _itemInfo.SaveState(_status);
+            _conditionTimer.SaveState(_status);
             _status.Save();
         }
 
@@ -72,6 +75,7 @@ namespace KancolleSniffer
             _status.Load();
             _achievement.LoadState(_status);
             _itemInfo.LoadSate(_status);
+            _conditionTimer.LoadState(_status);
         }
 
         public Update Sniff(string url, string request, dynamic json)
@@ -95,6 +99,7 @@ namespace KancolleSniffer
                 _logger.InspectBasic(data.api_basic);
                 _logger.InspectMaterial(data.api_material);
                 _shipInfo.InspectShip(data);
+                _conditionTimer.CalcRegenTime();
                 _missionInfo.InspectDeck(data.api_deck_port);
                 _dockInfo.InspectNDock(data.api_ndock);
                 _akashiTimer.SetTimer(true);
@@ -125,6 +130,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/ndock"))
             {
                 _dockInfo.InspectNDock(data);
+                _conditionTimer.CheckCond();
                 _akashiTimer.SetTimer();
                 return Update.NDock | Update.Timer | Update.Ship;
             }
@@ -158,6 +164,7 @@ namespace KancolleSniffer
             {
                 _shipInfo.InspectShip(data);
                 _akashiTimer.SetTimer();
+                _conditionTimer.CheckCond();
                 return Update.Ship;
             }
             if (url.EndsWith("api_get_member/material"))
@@ -181,11 +188,13 @@ namespace KancolleSniffer
                 _itemInfo.InspectGetShip(data);
                 _shipInfo.InspectShip(data);
                 _dockInfo.InspectKDock(data.api_kdock);
+                _conditionTimer.CheckCond();
                 return Update.Item | Update.Timer;
             }
             if (url.EndsWith("api_req_kousyou/destroyship"))
             {
                 _shipInfo.InspectDestroyShip(request, data);
+                _conditionTimer.CheckCond();
                 _akashiTimer.SetTimer();
                 return Update.Item | Update.Ship;
             }
@@ -207,18 +216,21 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_kaisou/powerup"))
             {
                 _shipInfo.InspectPowerup(request, data);
+                _conditionTimer.CheckCond();
                 _akashiTimer.SetTimer();
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_nyukyo/start"))
             {
                 _dockInfo.InspectNyukyo(request);
+                _conditionTimer.CheckCond();
                 _akashiTimer.SetTimer();
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_nyukyo/speedchange"))
             {
                 _dockInfo.InspectSpeedChange(request);
+                _conditionTimer.CheckCond();
                 return Update.NDock | Update.Timer | Update.Ship;
             }
             if (IsNormalBattleAPI(url))
@@ -230,7 +242,10 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_practice/battle") || url.EndsWith("api_req_practice/midnight_battle"))
             {
                 if (url.EndsWith("/battle"))
+                {
                     _shipInfo.StartSortie(request); // 演習を出撃中とみなす
+                    _conditionTimer.InvalidateCond();
+                }
                 _battleInfo.InspectPracticeBattle(data);
                 return Update.Ship | Update.Battle | Update.Timer;
             }
@@ -265,6 +280,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_map/start"))
             {
                 _shipInfo.StartSortie(request);
+                _conditionTimer.InvalidateCond();
                 _logger.InspectMap(data);
                 return Update.Timer;
             }
@@ -325,12 +341,12 @@ namespace KancolleSniffer
 
         public DateTime GetConditionTimer(int fleet)
         {
-            return _shipInfo.GetConditionTiemr(fleet);
+            return _conditionTimer.GetTimer(fleet);
         }
 
         public int[] GetConditionNotice()
         {
-            return _shipInfo.GetConditionNotice();
+            return _conditionTimer.GetNotice();
         }
 
         public ShipStatus[] GetShipStatuses(int fleet)

@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013, 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2013, 2014, 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -23,76 +23,108 @@ namespace KancolleSniffer
     public class ConditionTimer
     {
         private readonly ShipInfo _shipInfo;
-        private readonly DateTime[] _times = new DateTime[ShipInfo.FleetCount];
-        private readonly bool[] _enable = new bool[ShipInfo.FleetCount];
-        private readonly int[] _cond = new int[ShipInfo.FleetCount];
-        private readonly TimeSpan[] _prevLeftTimes = new TimeSpan[ShipInfo.FleetCount];
+        private const int Interval = 180;
+        private int _lastCond = int.MinValue;
+        private DateTime _lastUpdate;
+        private double _regenTime;
+        private DateTime _prevNotice;
+
+        public bool NeedSave { get; private set; }
 
         public ConditionTimer(ShipInfo shipInfo)
         {
             _shipInfo = shipInfo;
         }
 
-        public void SetTimer()
+        public void CalcRegenTime()
         {
-            for (var fleet = 0; fleet < ShipInfo.FleetCount; fleet++)
+            var now = DateTime.Now;
+            var prevTime = _lastUpdate;
+            var prevCond = _lastCond;
+            _lastUpdate = now;
+            _lastCond = _shipInfo.ShipList.Min(s => s.Cond);
+// ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (_regenTime == double.MinValue)
             {
-                if (!_enable[fleet]) // タイマーが無効なら前回の残り時間を無効にする
-                    _prevLeftTimes[fleet] = TimeSpan.MinValue;
-                if (_shipInfo.InMission(fleet) || _shipInfo.InSortie(fleet))
-                    continue;
-                _enable[fleet] = true;
-                var cond = _cond[fleet] = CondMin(fleet);
-                if (cond < 49 && _times[fleet] != DateTime.MinValue) // 計時中
-                {
-                    // コンディション値から推定される残り時刻と経過時間の差
-                    var diff = TimeSpan.FromMinutes((49 - cond + 2) / 3 * 3) - (_times[fleet] - DateTime.Now);
-                    if (diff >= TimeSpan.Zero && diff <= TimeSpan.FromMinutes(3)) // 差が0以上3分以内ならタイマーを更新しない。
-                        return;
-                }
-                _times[fleet] = cond < 49
-                    ? DateTime.Now.AddMinutes((49 - cond + 2) / 3 * 3)
-                    : DateTime.MinValue;
+                ResetRegenTime(now);
+                return;
             }
+            if (prevCond == int.MinValue || prevCond == _lastCond)
+                return;
+            var next = NextRegenTime(prevTime);
+            var ticks = next > now ? 0 : (int)(now - next).TotalSeconds / Interval + 1;
+            var diff = (_lastCond - prevCond + 2) / 3 - ticks;
+            if (_lastCond == 49 ? diff > 0 : diff != 0)
+                ResetRegenTime(now);
         }
 
-        public void Invalidate(int fleet)
+        private DateTime NextRegenTime(DateTime now)
         {
-            _enable[fleet] = _cond[fleet] == CondMin(fleet);
+            var batch = new DateTime((long)((now.Ticks / TimeSpan.TicksPerSecond / Interval * Interval + _regenTime) *
+                                            TimeSpan.TicksPerSecond));
+            return batch < now ? batch.AddSeconds(Interval) : batch;
         }
 
-        public void Disable(int fleet)
+        private void ResetRegenTime(DateTime now)
         {
-            _enable[fleet] = false;
+            _regenTime = (double)now.Ticks / TimeSpan.TicksPerSecond % Interval;
+            NeedSave = true;
         }
 
-        private int CondMin(int fleet)
+        public void InvalidateCond()
         {
-            return (from id in _shipInfo.GetDeck(fleet) where id != -1 select _shipInfo[id].Cond)
-                .DefaultIfEmpty(49).Min();
+            _lastCond = int.MinValue;
+        }
+
+        public void CheckCond()
+        {
+            if (_lastCond != _shipInfo.ShipList.Min(s => s.Cond))
+                _lastCond = int.MinValue;
         }
 
         public DateTime GetTimer(int fleet)
         {
-            return _enable[fleet] ? _times[fleet] : DateTime.MinValue;
+            if (_shipInfo.InMission(fleet) || _shipInfo.InSortie(fleet))
+                return DateTime.MinValue;
+            var cond = _shipInfo.GetShipStatuses(fleet).Select(s => s.Cond).DefaultIfEmpty(49).Min();
+            if (cond >= 49)
+                return DateTime.MinValue;
+            var nextRegen = NextRegenTime(_lastUpdate);
+            return cond >= 46 ? nextRegen : nextRegen.AddSeconds((46 - cond + 2) / 3 * Interval);
         }
 
         public int[] GetNotice()
         {
-            var result = new int[_times.Length];
-            for (var f = 0; f < _times.Length; f++)
+            var result = new int[ShipInfo.FleetCount];
+            var now = DateTime.Now;
+            var prev = _prevNotice;
+            _prevNotice = now;
+            if (prev == DateTime.MinValue)
+                return result;
+            for (var f = 0; f < result.Length; f++)
             {
-                var now = _times[f] == DateTime.MinValue ? TimeSpan.Zero : _times[f] - DateTime.Now;
-                var prev = _prevLeftTimes[f];
-                _prevLeftTimes[f] = now;
-                if (prev == TimeSpan.MinValue)
+                if (_shipInfo.InMission(f) || _shipInfo.InSortie(f))
                     continue;
-                if (prev > TimeSpan.FromMinutes(9) && now <= TimeSpan.FromMinutes(9))
+                var timer = GetTimer(f);
+                if (timer == DateTime.MinValue || prev < _lastUpdate)
+                    continue;
+                if (prev < timer.AddMinutes(-9) && now >= timer.AddMinutes(-9))
                     result[f] = 40;
-                else if (prev > TimeSpan.Zero && now <= TimeSpan.Zero)
+                else if (prev < timer && now >= timer)
                     result[f] = 49;
             }
             return result;
+        }
+
+        public void SaveState(Status status)
+        {
+            NeedSave = false;
+            status.CondRegenTime = _regenTime;
+        }
+
+        public void LoadState(Status status)
+        {
+            _regenTime = status.CondRegenTime;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2014, 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -31,6 +31,12 @@ namespace KancolleSniffer
         public int ExperiencePoint { get; set; }
         public DateTime LastResetTime { get; set; }
         public MaterialCount[] MatreialHistory { get; set; }
+        public double CondRegenTime { get; set; }
+
+        public Status()
+        {
+            CondRegenTime = double.MinValue;
+        }
 
         public void Load()
         {

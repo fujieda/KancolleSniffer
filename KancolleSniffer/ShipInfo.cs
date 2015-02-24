@@ -138,7 +138,6 @@ namespace KancolleSniffer
 
         private readonly int[][] _decks = new int[FleetCount][];
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
-        private readonly ConditionTimer _conditionTimer;
         private readonly ShipMaster _shipMaster;
         private readonly ItemInfo _itemInfo;
         private readonly bool[] _inMission = new bool[FleetCount];
@@ -151,7 +150,6 @@ namespace KancolleSniffer
         {
             _shipMaster = shipMaster;
             _itemInfo = itemInfo;
-            _conditionTimer = new ConditionTimer(this);
 
             for (var fleet = 0; fleet < FleetCount; fleet++)
             {
@@ -175,7 +173,6 @@ namespace KancolleSniffer
                 InspectBasic(json.api_basic);
                 _combinedFleetType = json.api_combined_flag() ? (int)json.api_combined_flag : 0;
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
-                _conditionTimer.SetTimer();
             }
             else if (json.api_data()) // ship2
             {
@@ -183,7 +180,6 @@ namespace KancolleSniffer
                 InspectDeck(json.api_data_deck);
                 InspectShipData(json.api_data);
                 _itemInfo.NowShips = ((object[])json.api_data).Length;
-                _conditionTimer.SetTimer();
             }
             else if (json.api_ship_data()) // ship3
             {
@@ -212,8 +208,6 @@ namespace KancolleSniffer
                 for (var i = 0; i < deck.Length; i++)
                     deck[i] = (int)entry.api_ship[i];
                 _inMission[fleet] = (int)entry.api_mission[0] != 0;
-                if (_inMission[fleet])
-                    _conditionTimer.Disable(fleet);
             }
         }
 
@@ -270,7 +264,6 @@ namespace KancolleSniffer
                 var deck = _decks[fleet];
                 for (var i = 1; i < deck.Length; i++)
                     deck[i] = -1;
-                _conditionTimer.Invalidate(fleet);
                 return;
             }
             if (ship == -1)
@@ -282,14 +275,11 @@ namespace KancolleSniffer
             var of = FindFleet(ship, out oi);
             var orig = _decks[fleet][idx];
             _decks[fleet][idx] = ship;
-            _conditionTimer.Invalidate(fleet);
             if (of == -1)
                 return;
             // 入れ替えの場合
             if ((_decks[of][oi] = orig) == -1)
                 WithdrowShip(of, oi);
-            if (of != fleet)
-                _conditionTimer.Invalidate(of);
         }
 
         private int FindFleet(int ship, out int idx)
@@ -311,7 +301,6 @@ namespace KancolleSniffer
             for (var i = idx; i < deck.Length - 1; i++)
                 deck[i] = deck[i + 1];
             deck[deck.Length - 1] = -1;
-            _conditionTimer.Invalidate(fleet);
         }
 
         public void InspectPowerup(string request, dynamic json)
@@ -349,13 +338,10 @@ namespace KancolleSniffer
             var fleet = int.Parse(values["api_deck_id"]) - 1;
             if (_combinedFleetType == 0)
             {
-                _conditionTimer.Disable(fleet);
                 _inSortie[fleet] = true;
             }
             else
             {
-                _conditionTimer.Disable(0);
-                _conditionTimer.Disable(1);
                 _inSortie[0] = _inSortie[1] = true;
             }
         }
@@ -365,7 +351,6 @@ namespace KancolleSniffer
             var s = _shipInfo[id];
             s.NowHp = s.MaxHp;
             s.Cond = Math.Max(40, s.Cond);
-            _conditionTimer.SetTimer();
         }
 
         public ShipStatus[] GetShipStatuses(int fleet)
@@ -407,16 +392,6 @@ namespace KancolleSniffer
                     return s;
                 }).ToArray();
             }
-        }
-
-        public DateTime GetConditionTiemr(int fleet)
-        {
-            return _conditionTimer.GetTimer(fleet);
-        }
-
-        public int[] GetConditionNotice()
-        {
-            return _conditionTimer.GetNotice();
         }
 
         public ChargeStatus[] ChargeStatuses
