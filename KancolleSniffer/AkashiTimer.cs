@@ -45,7 +45,6 @@ namespace KancolleSniffer
         private class RepairStatus
         {
             private ShipStatus[] _target = new ShipStatus[0];
-            private RepairSpan[][] _spans = new RepairSpan[0][];
             private int[] _deck = new int[0];
 
             public int[] Deck
@@ -56,7 +55,6 @@ namespace KancolleSniffer
             public void Invalidate()
             {
                 _target = new ShipStatus[0];
-                _spans = new RepairSpan[0][];
             }
 
             public int TotalHp
@@ -72,40 +70,50 @@ namespace KancolleSniffer
             public void UpdateTarget(ShipStatus[] target)
             {
                 _target = target;
-                CalcRepairSpan();
-            }
-
-            private void CalcRepairSpan()
-            {
-                _spans = (from s in _target
-                    let damage = s.MaxHp - s.NowHp
-                    let first = new RepairSpan(0, TimeSpan.FromMinutes(20))
-                    select damage == 0
-                        ? null
-                        : new[] {first}.Concat(from d in Enumerable.Range(2, damage < 2 ? 0 : damage - 1)
-                            let sec = s.CalcRepairSec(d) + 60
-                            where sec > 20 * 60
-                            select new RepairSpan(d - 1, TimeSpan.FromSeconds(sec))).ToArray()).ToArray();
             }
 
             public RepairSpan[] GetTimers(DateTime start, DateTime now)
             {
-                var span = TimeSpan.FromSeconds((int)(now - start).TotalSeconds);
-                return (from spans in _spans
-                    select spans == null
-                        ? new RepairSpan(0, TimeSpan.MinValue)
-                        : (from s in spans select new RepairSpan(s.Diff, s.Span - span))
-                            .FirstOrDefault(s => s.Span > TimeSpan.Zero)
-                          ?? new RepairSpan(spans.Last().Diff + 1, TimeSpan.Zero)
-                    ).ToArray();
+                var spent = TimeSpan.FromSeconds((int)(now - start).TotalSeconds);
+                return _target.Select(s =>
+                {
+                    var damage = s.MaxHp - s.NowHp;
+                    if (damage == 0)
+                        return new RepairSpan(0, TimeSpan.MinValue);
+                    if (spent < TimeSpan.FromMinutes(20))
+                        return new RepairSpan(0, TimeSpan.FromMinutes(20) - spent);
+                    if (damage == 1)
+                        return new RepairSpan(1, TimeSpan.Zero);
+                    for (var d = 2; d <= damage; d++)
+                    {
+                        var sec = s.CalcRepairSec(d) + 60;
+                        if (sec <= 20 * 60)
+                            continue;
+                        if (TimeSpan.FromSeconds(sec) > spent)
+                            return new RepairSpan(d - 1, TimeSpan.FromSeconds(sec) - spent);
+                    }
+                    return new RepairSpan(damage, TimeSpan.Zero);
+                }).ToArray();
             }
 
             public string GetNotice(DateTime start, DateTime prev, DateTime now)
             {
-                var msg = string.Join(" ", from e in _spans.Zip(_target, (spans, ship) => new {spans, ship})
-                    where e.spans != null && e.spans.Any(
-                        s => s.Span - (prev - start) > TimeSpan.Zero && s.Span - (now - start) <= TimeSpan.Zero)
-                    select e.ship.Name);
+                var msg = string.Join(" ", _target.Where(s =>
+                {
+                    var damage = s.MaxHp - s.NowHp;
+                    if (damage < 2)
+                        return false;
+                    for (var d = 2; d <= damage; d++)
+                    {
+                        var sec = s.CalcRepairSec(d) + 60;
+                        if (sec <= 20 * 60)
+                            continue;
+                        var span = TimeSpan.FromSeconds(sec);
+                        if (span > prev - start && span <= now - start)
+                            return true;
+                    }
+                    return false;
+                }).Select(s => s.Name));
                 return msg == "" ? "" : "修理進行: " + msg;
             }
         }
