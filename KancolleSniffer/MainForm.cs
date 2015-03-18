@@ -419,15 +419,18 @@ namespace KancolleSniffer
         {
             labelFormation.Text = "";
             labelEnemyAirSuperiority.Text = "";
+            labelAirSuperiority.ForeColor = DefaultForeColor;
             panelBattleInfo.Visible = _sniffer.Battle.InBattle;
             if (!_sniffer.Battle.InBattle)
                 return;
             panelBattleInfo.BringToFront();
+            var color = new[] {DefaultForeColor, Color.Yellow, Color.Blue, Color.Green, Color.Orange, Color.Red};
             var t = new Timer {Interval = 2000}; // 艦隊が表示されるまで遅延させる
             t.Tick += (sender, args) =>
             {
                 labelFormation.Text = _sniffer.Battle.Formation;
                 labelEnemyAirSuperiority.Text = _sniffer.Battle.EnemyAirSuperiority.ToString("D");
+                labelAirSuperiority.ForeColor = color[_sniffer.Battle.AirBattleResult + 1];
                 t.Stop();
             };
             t.Start();
