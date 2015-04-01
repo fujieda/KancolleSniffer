@@ -345,11 +345,12 @@ namespace KancolleSniffer
                 _now = value;
                 if (Status.Restoring) // JSONから値を復旧するときは履歴に触らない
                     return;
+                if (_now != prev)
+                    NeedSave = true;
                 if (LastSet == DateTime.MinValue)
                 {
                     BegOfDay = BegOfWeek = value;
                     LastSet = DateTime.Now;
-                    NeedSave = true;
                     return;
                 }
                 UpdateHistory(prev);
@@ -363,15 +364,9 @@ namespace KancolleSniffer
             var dow = (int)morning.DayOfWeek;
             var monday = morning.AddDays(dow == 0 ? -6 : -dow + 1);
             if (DateTime.Now >= morning && LastSet < morning)
-            {
                 BegOfDay = prev;
-                NeedSave = true;
-            }
             if (DateTime.Now >= monday && LastSet < monday)
-            {
                 BegOfWeek = prev;
-                NeedSave = true;
-            }
         }
     }
 }
