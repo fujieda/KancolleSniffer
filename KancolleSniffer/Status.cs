@@ -24,12 +24,14 @@ namespace KancolleSniffer
 {
     public class Status
     {
+        // ReSharper disable once AssignNullToNotNullAttribute
         private readonly string _statusFileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),
             "status.json");
 
         public static bool Restoring { get; set; }
         public int ExperiencePoint { get; set; }
         public DateTime LastResetTime { get; set; }
+        public Achievement Achievement { get; set; }
         public MaterialCount[] MatreialHistory { get; set; }
         public double CondRegenTime { get; set; }
 

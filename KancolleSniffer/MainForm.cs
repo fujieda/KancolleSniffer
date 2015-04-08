@@ -304,6 +304,7 @@ namespace KancolleSniffer
             if (ac >= 10000)
                 ac = 9999;
             labelAchievement.Text = ac >= 1000 ? ((int)ac).ToString("D") : ac.ToString("F1");
+            toolTipAchievement.SetToolTip(labelAchievement, "今月 " + _sniffer.Achievement.ValueOfMonth.ToString("F1"));
             UpdateMaterialHistry();
             if (_shipListForm.Visible)
                 _shipListForm.UpdateList();

@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2014, 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -22,11 +22,16 @@ namespace KancolleSniffer
 {
     public class Achievement
     {
-        private int _start;
         private int _current;
-        private DateTime _lastReset;
 
-        public double Value { get { return (_current - _start) / 1428.0; } }
+        public int Start { get; set; }
+        public int StartOfMonth { get; set; }
+        public DateTime LastReset { get; set; }
+        public DateTime LastResetOfMonth { get; set; }
+
+        private const double ExpPerAch = 1428.0;
+        public double Value { get { return (_current - Start) / ExpPerAch; } }
+        public double ValueOfMonth { get { return (_current - StartOfMonth) / ExpPerAch; } }
         public List<int> ResetHours { get; set; }
         public bool NeedSave { get; private set; }
 
@@ -37,15 +42,24 @@ namespace KancolleSniffer
 
         public void InspectBasic(dynamic json)
         {
+            var now = DateTime.Now;
+            var today = DateTime.Today;
             _current = (int)json.api_experience;
-            if (_start == 0)
+            if (Start == 0)
                 Reset(_current);
+            if (StartOfMonth == 0)
+                ResetMonth(_current);
             foreach (var hour in ResetHours)
             {
-                var time = DateTime.Today.AddHours(hour);
-                if (DateTime.Now >= time && _lastReset < time)
+                var time = today.AddHours(hour);
+                if (now >= time && LastReset < time)
                     Reset(_current);
             }
+            var limitTime = now.AddDays(1).Month != now.Month // 今日が今月末
+                ? today.AddHours(22) // 今日22時
+                : today.AddDays(-today.Day).AddHours(22); // 先月末22時
+            if (now >= limitTime && LastResetOfMonth < limitTime)
+                ResetMonth(_current);
         }
 
         public void Reset()
@@ -55,24 +69,39 @@ namespace KancolleSniffer
 
         private void Reset(int current)
         {
-            _start = current;
-            _lastReset = DateTime.Now;
+            Start = current;
+            LastReset = DateTime.Now;
+            NeedSave = true;
+        }
+
+        private void ResetMonth(int current)
+        {
+            StartOfMonth = current;
+            LastResetOfMonth = DateTime.Now;
             NeedSave = true;
         }
 
         public void SaveState(Status status)
         {
             NeedSave = false;
-            status.ExperiencePoint = _start;
-            status.LastResetTime = _lastReset;
+            status.Achievement = this;
         }
 
         public void LoadState(Status status)
         {
-            _start = status.ExperiencePoint;
-            _lastReset = status.LastResetTime;
-            if (_lastReset == DateTime.MinValue)
-                _lastReset = DateTime.Now;
+            var ac = status.Achievement;
+            if (ac == null)
+            {
+                Start = status.ExperiencePoint;
+                LastReset = status.LastResetTime;
+            }
+            else
+            {
+                Start = ac.Start;
+                StartOfMonth = ac.StartOfMonth;
+                LastReset = ac.LastReset;
+                LastResetOfMonth = ac.LastResetOfMonth;
+            }
         }
     }
 }

@@ -141,7 +141,6 @@ namespace KancolleSniffer
             this.panelDamagedShipList = new System.Windows.Forms.Panel();
             this.labelDamgedShipListButton = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
-            this.toolTipLoS = new System.Windows.Forms.ToolTip(this.components);
             this.imageListFuelSq = new System.Windows.Forms.ImageList(this.components);
             this.labelFuelSq1 = new System.Windows.Forms.Label();
             this.imageListBullSq = new System.Windows.Forms.ImageList(this.components);
@@ -152,6 +151,7 @@ namespace KancolleSniffer
             this.labelFuelSq3 = new System.Windows.Forms.Label();
             this.labelBullSq4 = new System.Windows.Forms.Label();
             this.labelFuelSq4 = new System.Windows.Forms.Label();
+            this.toolTipAchievement = new System.Windows.Forms.ToolTip(this.components);
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -196,7 +196,7 @@ namespace KancolleSniffer
             // labelLogin
             // 
             this.labelLogin.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelLogin.Location = new System.Drawing.Point(6, 2);
+            this.labelLogin.Location = new System.Drawing.Point(6, 102);
             this.labelLogin.Name = "labelLogin";
             this.labelLogin.Size = new System.Drawing.Size(210, 28);
             this.labelLogin.TabIndex = 23;
@@ -858,33 +858,33 @@ namespace KancolleSniffer
             this.ConfigToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.contextMenuStripMain.Name = "contextMenuStripToolTip";
-            this.contextMenuStripMain.Size = new System.Drawing.Size(153, 114);
+            this.contextMenuStripMain.Size = new System.Drawing.Size(131, 92);
             // 
             // listToolStripMenuItem
             // 
             this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-            this.listToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.listToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.listToolStripMenuItem.Text = "一覧(&L)";
             this.listToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
             // 
             // LogToolStripMenuItem
             // 
             this.LogToolStripMenuItem.Name = "LogToolStripMenuItem";
-            this.LogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.LogToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.LogToolStripMenuItem.Text = "報告書(&R)";
             this.LogToolStripMenuItem.Click += new System.EventHandler(this.LogToolStripMenuItem_Click);
             // 
             // ConfigToolStripMenuItem
             // 
             this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
-            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.ConfigToolStripMenuItem.Text = "設定(&O)";
             this.ConfigToolStripMenuItem.Click += new System.EventHandler(this.ConfigToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.ExitToolStripMenuItem.Text = "終了(&X)";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -1125,6 +1125,10 @@ namespace KancolleSniffer
             this.labelFuelSq4.Size = new System.Drawing.Size(8, 13);
             this.labelFuelSq4.TabIndex = 52;
             // 
+            // toolTipAchievement
+            // 
+            this.toolTipAchievement.ShowAlways = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1283,7 +1287,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
         private System.Windows.Forms.Label labelLoS;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.ToolTip toolTipLoS;
         private System.Windows.Forms.Label labelPlayLog;
         private System.Windows.Forms.Panel panelBattleInfo;
         private System.Windows.Forms.Label labelEnemyAirSuperiority;
@@ -1301,6 +1304,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelBullSq4;
         private System.Windows.Forms.Label labelFuelSq4;
         private System.Windows.Forms.ToolStripMenuItem LogToolStripMenuItem;
+        private System.Windows.Forms.ToolTip toolTipAchievement;
     }
 }
 
