@@ -431,7 +431,7 @@ namespace KancolleSniffer
             {
                 labelFormation.Text = _sniffer.Battle.Formation;
                 labelEnemyAirSuperiority.Text = _sniffer.Battle.EnemyAirSuperiority.ToString("D");
-                labelAirSuperiority.ForeColor = color[_sniffer.Battle.AirBattleResult + 1];
+                labelAirSuperiority.ForeColor = color[_sniffer.Battle.AirControlLevel + 1];
                 t.Stop();
             };
             t.Start();

@@ -35,7 +35,7 @@ namespace KancolleSniffer
         public int EnemyAirSuperiority { get; private set; }
         public bool HasDamagedShip { get; set; }
         public string[] DamagedShipNames { get; private set; }
-        public int AirBattleResult { get; private set; }
+        public int AirControlLevel { get; private set; }
 
         public BattleInfo(ShipMaster shipMaster, ShipInfo shipInfo, ItemInfo itemInfo)
         {
@@ -56,12 +56,12 @@ namespace KancolleSniffer
             }
             else
             {
-                AirBattleResult = CheckAirBattleResult(json);
+                AirControlLevel = CheckAirControlLevel(json);
                 _day = json;
             }
         }
 
-        private int CheckAirBattleResult(dynamic json)
+        private int CheckAirControlLevel(dynamic json)
         {
             var stage1 = json.api_kouku.api_stage1;
             if (stage1.api_f_count == 0 && stage1.api_e_count == 0)
@@ -87,7 +87,7 @@ namespace KancolleSniffer
             }
             else
             {
-                AirBattleResult = CheckAirBattleResult(json);
+                AirControlLevel = CheckAirControlLevel(json);
                 _isSurface = surfaceFleet;
                 _day = json;
             }
