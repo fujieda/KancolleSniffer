@@ -34,6 +34,7 @@ namespace KancolleSniffer
         private readonly BattleInfo _battleInfo;
         private readonly Logger _logger;
         private readonly Status _status = new Status();
+        private bool _saveState;
 
         [Flags]
         public enum Update
@@ -62,6 +63,8 @@ namespace KancolleSniffer
 
         private void SaveState()
         {
+            if (!_saveState)
+                return;
             if (!_achievement.NeedSave && !_itemInfo.NeedSave && !_conditionTimer.NeedSave)
                 return;
             _achievement.SaveState(_status);
@@ -76,6 +79,7 @@ namespace KancolleSniffer
             _achievement.LoadState(_status);
             _itemInfo.LoadSate(_status);
             _conditionTimer.LoadState(_status);
+            _saveState = true;
         }
 
         public Update Sniff(string url, string request, dynamic json)
