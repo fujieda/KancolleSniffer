@@ -187,6 +187,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 通常艦隊の航空戦のダメージを結果に反映する
+        /// </summary>
+        [TestMethod]
+        public void AirBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "airbattle_001");
+            AssertEqualBattleResult(sniffer, new[]{37, 36, 31, 37, 17, 63});
+        }
+
+        /// <summary>
         /// 編成で空き番号を使ったローテートを正しく反映する
         /// </summary>
         [TestMethod]

@@ -154,14 +154,19 @@ namespace KancolleSniffer
                 var json = _day;
                 if (json.api_kouku.api_stage3 != null)
                     CauseSimpleDamage(ships, json.api_kouku.api_stage3.api_fdam);
-                if (json.api_opening_atack != null)
-                    CauseSimpleDamage(ships, json.api_opening_atack.api_fdam);
-                if (json.api_hougeki1 != null)
-                    CauseHougekiDamage(ships, json.api_hougeki1);
-                if (json.api_hougeki2 != null)
-                    CauseHougekiDamage(ships, json.api_hougeki2);
-                if (json.api_raigeki != null)
-                    CauseSimpleDamage(ships, json.api_raigeki.api_fdam);
+                if (json.api_kouku2() && json.api_kouku2.api_stage3 != null) // 航空戦2回目
+                    CauseSimpleDamage(ships, json.api_kouku2.api_stage3.api_fdam);
+                if (json.api_opening_atack()) // 通常戦
+                {
+                    if (json.api_opening_atack != null)
+                        CauseSimpleDamage(ships, json.api_opening_atack.api_fdam);
+                    if (json.api_hougeki1 != null)
+                        CauseHougekiDamage(ships, json.api_hougeki1);
+                    if (json.api_hougeki2 != null)
+                        CauseHougekiDamage(ships, json.api_hougeki2);
+                    if (json.api_raigeki != null)
+                        CauseSimpleDamage(ships, json.api_raigeki.api_fdam);
+                }
                 _day = null;
             }
             if (_night != null)
