@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2013, 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -25,6 +25,7 @@ namespace KancolleSniffer
     {
         private DateTime _lastCreared;
         private readonly SortedDictionary<int, NameAndProgress> _quests = new SortedDictionary<int, NameAndProgress>();
+        private const int QuestCount = 5;
 
         public void Inspect(dynamic json)
         {
@@ -36,37 +37,47 @@ namespace KancolleSniffer
             }
             if (json.api_list == null)
                 return;
-            foreach (var entry in json.api_list)
+            for (var i = 0; i < 2; i++)
             {
-                if (entry is double) // -1の場合がある。
-                    continue;
-
-                var id = (int)entry.api_no;
-                var state = (int)entry.api_state;
-                var progress = (int)entry.api_progress_flag;
-                var name = (string)entry.api_title;
-
-                switch (progress)
+                foreach (var entry in json.api_list)
                 {
-                    case 0:
-                        break;
-                    case 1:
-                        progress = 50;
-                        break;
-                    case 2:
-                        progress = 80;
-                        break;
-                }
-                switch (state)
-                {
-                    case 2:
-                        _quests[id] = new NameAndProgress {Name = name, Progress = progress};
-                        break;
-                    case 1:
-                    case 3:
-                        _quests.Remove(id);
+                    if (entry is double) // -1の場合がある。
                         continue;
+
+                    var id = (int)entry.api_no;
+                    var state = (int)entry.api_state;
+                    var progress = (int)entry.api_progress_flag;
+                    var name = (string)entry.api_title;
+
+                    switch (progress)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            progress = 50;
+                            break;
+                        case 2:
+                            progress = 80;
+                            break;
+                    }
+                    switch (state)
+                    {
+                        case 2:
+                            _quests[id] = new NameAndProgress {Name = name, Progress = progress};
+                            break;
+                        case 1:
+                        case 3:
+                            _quests.Remove(id);
+                            continue;
+                    }
                 }
+                if (_quests.Count <= QuestCount)
+                    break;
+                /*
+                 * ほかのPCで任務を達成した場合、任務が消えずに受領した任務の数が_questCountを超えることがある。
+                 * その場合はいったん任務をクリアして、現在のページの任務だけを登録し直す。
+                 */
+                _quests.Clear();
             }
         }
 
