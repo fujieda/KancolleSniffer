@@ -107,6 +107,8 @@ namespace KancolleSniffer
             this.label13 = new System.Windows.Forms.Label();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
             this.panel3 = new System.Windows.Forms.Panel();
+            this.labelProgress6 = new System.Windows.Forms.Label();
+            this.labelQuest6 = new System.Windows.Forms.Label();
             this.labelProgress5 = new System.Windows.Forms.Label();
             this.labelProgress4 = new System.Windows.Forms.Label();
             this.labelProgress3 = new System.Windows.Forms.Label();
@@ -729,6 +731,8 @@ namespace KancolleSniffer
             // panel3
             // 
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.labelProgress6);
+            this.panel3.Controls.Add(this.labelQuest6);
             this.panel3.Controls.Add(this.labelProgress5);
             this.panel3.Controls.Add(this.labelProgress4);
             this.panel3.Controls.Add(this.labelProgress3);
@@ -741,8 +745,23 @@ namespace KancolleSniffer
             this.panel3.Controls.Add(this.labelQuest1);
             this.panel3.Location = new System.Drawing.Point(6, 356);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(220, 79);
+            this.panel3.Size = new System.Drawing.Size(220, 94);
             this.panel3.TabIndex = 13;
+            // 
+            // labelProgress6
+            // 
+            this.labelProgress6.Location = new System.Drawing.Point(194, 78);
+            this.labelProgress6.Name = "labelProgress6";
+            this.labelProgress6.Size = new System.Drawing.Size(23, 12);
+            this.labelProgress6.TabIndex = 11;
+            this.labelProgress6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // labelQuest6
+            // 
+            this.labelQuest6.Location = new System.Drawing.Point(2, 78);
+            this.labelQuest6.Name = "labelQuest6";
+            this.labelQuest6.Size = new System.Drawing.Size(198, 12);
+            this.labelQuest6.TabIndex = 10;
             // 
             // labelProgress5
             // 
@@ -1133,7 +1152,7 @@ namespace KancolleSniffer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(232, 441);
+            this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
             this.Controls.Add(this.panelMaterialHistory);
             this.Controls.Add(this.labelBucketHistory);
@@ -1305,6 +1324,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFuelSq4;
         private System.Windows.Forms.ToolStripMenuItem LogToolStripMenuItem;
         private System.Windows.Forms.ToolTip toolTipAchievement;
+        private System.Windows.Forms.Label labelProgress6;
+        private System.Windows.Forms.Label labelQuest6;
     }
 }
 

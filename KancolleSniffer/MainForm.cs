@@ -556,8 +556,8 @@ namespace KancolleSniffer
 
         private void UpdateQuestList()
         {
-            var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5};
-            var progress = new[] {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5};
+            var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5, labelQuest6};
+            var progress = new[] {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5, labelProgress6};
 
             for (var i = 0; i < name.Length; i++)
             {

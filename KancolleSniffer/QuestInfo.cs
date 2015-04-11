@@ -25,7 +25,8 @@ namespace KancolleSniffer
     {
         private DateTime _lastCreared;
         private readonly SortedDictionary<int, NameAndProgress> _quests = new SortedDictionary<int, NameAndProgress>();
-        private const int QuestCount = 5;
+
+        public int QuestCount { get; set; }
 
         public void Inspect(dynamic json)
         {

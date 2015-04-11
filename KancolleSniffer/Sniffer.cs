@@ -104,6 +104,8 @@ namespace KancolleSniffer
                 _dockInfo.InspectNDock(data.api_ndock);
                 _akashiTimer.SetTimer(true);
                 _achievement.InspectBasic(data.api_basic);
+                if (data.api_parallel_quest_count()) // 昔のログにはないので
+                    _questInfo.QuestCount = (int)data.api_parallel_quest_count;
                 _battleInfo.InBattle = false;
                 _battleInfo.HasDamagedShip = false;
                 _shipInfo.ClearEscapedShips();
