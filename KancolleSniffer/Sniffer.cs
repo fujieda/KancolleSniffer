@@ -336,7 +336,7 @@ namespace KancolleSniffer
             get { return _itemInfo; }
         }
 
-        public QuestInfo.NameAndProgress[] Quests
+        public QuestStatus[] Quests
         {
             get { return _questInfo.Quests; }
         }

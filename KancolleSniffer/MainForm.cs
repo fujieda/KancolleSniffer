@@ -556,18 +556,32 @@ namespace KancolleSniffer
 
         private void UpdateQuestList()
         {
+            var category = new[]
+            {
+                labelQuestColor1, labelQuestColor2, labelQuestColor3, labelQuestColor4, labelQuestColor5, labelQuestColor6
+            };
             var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5, labelQuest6};
             var progress = new[] {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5, labelProgress6};
+            var color = new[]
+            {
+                Color.FromArgb(60, 141, 76), Color.FromArgb(232, 57, 41), Color.FromArgb(136, 204, 120),
+                Color.FromArgb(52, 147, 185), Color.FromArgb(220, 198, 126), Color.FromArgb(168, 111, 76),
+                Color.FromArgb(200, 148, 231)
+            };
 
+            var quests = _sniffer.Quests;
             for (var i = 0; i < name.Length; i++)
             {
-                if (i < _sniffer.Quests.Length)
+
+                if (i < quests.Length)
                 {
-                    name[i].Text = _sniffer.Quests[i].Name;
-                    progress[i].Text = string.Format("{0:D}%", _sniffer.Quests[i].Progress);
+                    category[i].BackColor = color[quests[i].Category - 1];
+                    name[i].Text = quests[i].Name;
+                    progress[i].Text = string.Format("{0:D}%", quests[i].Progress);
                 }
                 else
                 {
+                    category[i].BackColor = DefaultBackColor;
                     name[i].Text = progress[i].Text = "";
                 }
             }

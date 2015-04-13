@@ -154,6 +154,12 @@ namespace KancolleSniffer
             this.labelBullSq4 = new System.Windows.Forms.Label();
             this.labelFuelSq4 = new System.Windows.Forms.Label();
             this.toolTipAchievement = new System.Windows.Forms.ToolTip(this.components);
+            this.labelQuestColor1 = new System.Windows.Forms.Label();
+            this.labelQuestColor2 = new System.Windows.Forms.Label();
+            this.labelQuestColor3 = new System.Windows.Forms.Label();
+            this.labelQuestColor4 = new System.Windows.Forms.Label();
+            this.labelQuestColor5 = new System.Windows.Forms.Label();
+            this.labelQuestColor6 = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -731,6 +737,12 @@ namespace KancolleSniffer
             // panel3
             // 
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.labelQuestColor6);
+            this.panel3.Controls.Add(this.labelQuestColor5);
+            this.panel3.Controls.Add(this.labelQuestColor4);
+            this.panel3.Controls.Add(this.labelQuestColor3);
+            this.panel3.Controls.Add(this.labelQuestColor2);
+            this.panel3.Controls.Add(this.labelQuestColor1);
             this.panel3.Controls.Add(this.labelProgress6);
             this.panel3.Controls.Add(this.labelQuest6);
             this.panel3.Controls.Add(this.labelProgress5);
@@ -758,9 +770,9 @@ namespace KancolleSniffer
             // 
             // labelQuest6
             // 
-            this.labelQuest6.Location = new System.Drawing.Point(2, 78);
+            this.labelQuest6.Location = new System.Drawing.Point(6, 78);
             this.labelQuest6.Name = "labelQuest6";
-            this.labelQuest6.Size = new System.Drawing.Size(198, 12);
+            this.labelQuest6.Size = new System.Drawing.Size(193, 12);
             this.labelQuest6.TabIndex = 10;
             // 
             // labelProgress5
@@ -805,37 +817,37 @@ namespace KancolleSniffer
             // 
             // labelQuest5
             // 
-            this.labelQuest5.Location = new System.Drawing.Point(2, 63);
+            this.labelQuest5.Location = new System.Drawing.Point(6, 63);
             this.labelQuest5.Name = "labelQuest5";
-            this.labelQuest5.Size = new System.Drawing.Size(198, 12);
+            this.labelQuest5.Size = new System.Drawing.Size(193, 12);
             this.labelQuest5.TabIndex = 4;
             // 
             // labelQuest4
             // 
-            this.labelQuest4.Location = new System.Drawing.Point(2, 48);
+            this.labelQuest4.Location = new System.Drawing.Point(6, 48);
             this.labelQuest4.Name = "labelQuest4";
-            this.labelQuest4.Size = new System.Drawing.Size(198, 12);
+            this.labelQuest4.Size = new System.Drawing.Size(193, 12);
             this.labelQuest4.TabIndex = 3;
             // 
             // labelQuest3
             // 
-            this.labelQuest3.Location = new System.Drawing.Point(2, 33);
+            this.labelQuest3.Location = new System.Drawing.Point(6, 33);
             this.labelQuest3.Name = "labelQuest3";
-            this.labelQuest3.Size = new System.Drawing.Size(198, 12);
+            this.labelQuest3.Size = new System.Drawing.Size(193, 12);
             this.labelQuest3.TabIndex = 2;
             // 
             // labelQuest2
             // 
-            this.labelQuest2.Location = new System.Drawing.Point(2, 18);
+            this.labelQuest2.Location = new System.Drawing.Point(6, 18);
             this.labelQuest2.Name = "labelQuest2";
-            this.labelQuest2.Size = new System.Drawing.Size(198, 12);
+            this.labelQuest2.Size = new System.Drawing.Size(193, 12);
             this.labelQuest2.TabIndex = 1;
             // 
             // labelQuest1
             // 
-            this.labelQuest1.Location = new System.Drawing.Point(1, 3);
+            this.labelQuest1.Location = new System.Drawing.Point(6, 3);
             this.labelQuest1.Name = "labelQuest1";
-            this.labelQuest1.Size = new System.Drawing.Size(198, 12);
+            this.labelQuest1.Size = new System.Drawing.Size(193, 12);
             this.labelQuest1.TabIndex = 0;
             // 
             // notifyIconMain
@@ -1148,6 +1160,48 @@ namespace KancolleSniffer
             // 
             this.toolTipAchievement.ShowAlways = true;
             // 
+            // labelQuestColor1
+            // 
+            this.labelQuestColor1.Location = new System.Drawing.Point(2, 4);
+            this.labelQuestColor1.Name = "labelQuestColor1";
+            this.labelQuestColor1.Size = new System.Drawing.Size(4, 10);
+            this.labelQuestColor1.TabIndex = 43;
+            // 
+            // labelQuestColor2
+            // 
+            this.labelQuestColor2.Location = new System.Drawing.Point(2, 19);
+            this.labelQuestColor2.Name = "labelQuestColor2";
+            this.labelQuestColor2.Size = new System.Drawing.Size(4, 10);
+            this.labelQuestColor2.TabIndex = 44;
+            // 
+            // labelQuestColor3
+            // 
+            this.labelQuestColor3.Location = new System.Drawing.Point(2, 34);
+            this.labelQuestColor3.Name = "labelQuestColor3";
+            this.labelQuestColor3.Size = new System.Drawing.Size(4, 10);
+            this.labelQuestColor3.TabIndex = 45;
+            // 
+            // labelQuestColor4
+            // 
+            this.labelQuestColor4.Location = new System.Drawing.Point(2, 49);
+            this.labelQuestColor4.Name = "labelQuestColor4";
+            this.labelQuestColor4.Size = new System.Drawing.Size(4, 10);
+            this.labelQuestColor4.TabIndex = 46;
+            // 
+            // labelQuestColor5
+            // 
+            this.labelQuestColor5.Location = new System.Drawing.Point(2, 64);
+            this.labelQuestColor5.Name = "labelQuestColor5";
+            this.labelQuestColor5.Size = new System.Drawing.Size(4, 10);
+            this.labelQuestColor5.TabIndex = 47;
+            // 
+            // labelQuestColor6
+            // 
+            this.labelQuestColor6.Location = new System.Drawing.Point(2, 79);
+            this.labelQuestColor6.Name = "labelQuestColor6";
+            this.labelQuestColor6.Size = new System.Drawing.Size(4, 10);
+            this.labelQuestColor6.TabIndex = 48;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1326,6 +1380,12 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolTip toolTipAchievement;
         private System.Windows.Forms.Label labelProgress6;
         private System.Windows.Forms.Label labelQuest6;
+        private System.Windows.Forms.Label labelQuestColor1;
+        private System.Windows.Forms.Label labelQuestColor6;
+        private System.Windows.Forms.Label labelQuestColor5;
+        private System.Windows.Forms.Label labelQuestColor4;
+        private System.Windows.Forms.Label labelQuestColor3;
+        private System.Windows.Forms.Label labelQuestColor2;
     }
 }
 

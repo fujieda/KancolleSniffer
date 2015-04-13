@@ -21,10 +21,17 @@ using System.Linq;
 
 namespace KancolleSniffer
 {
+    public struct QuestStatus
+    {
+        public int Category { get; set; }
+        public string Name { get; set; }
+        public int Progress { get; set; }
+    }
+
     public class QuestInfo
     {
         private DateTime _lastCreared;
-        private readonly SortedDictionary<int, NameAndProgress> _quests = new SortedDictionary<int, NameAndProgress>();
+        private readonly SortedDictionary<int, QuestStatus> _quests = new SortedDictionary<int, QuestStatus>();
 
         public int QuestCount { get; set; }
 
@@ -48,6 +55,7 @@ namespace KancolleSniffer
                     var id = (int)entry.api_no;
                     var state = (int)entry.api_state;
                     var progress = (int)entry.api_progress_flag;
+                    var cat = (int)entry.api_category;
                     var name = (string)entry.api_title;
 
                     switch (progress)
@@ -64,7 +72,7 @@ namespace KancolleSniffer
                     switch (state)
                     {
                         case 2:
-                            _quests[id] = new NameAndProgress {Name = name, Progress = progress};
+                            _quests[id] = new QuestStatus {Category = cat, Name = name, Progress = progress};
                             break;
                         case 1:
                         case 3:
@@ -82,15 +90,9 @@ namespace KancolleSniffer
             }
         }
 
-        public NameAndProgress[] Quests
+        public QuestStatus[] Quests
         {
             get { return _quests.Values.ToArray(); }
-        }
-
-        public struct NameAndProgress
-        {
-            public string Name { get; set; }
-            public int Progress { get; set; }
         }
     }
 }
