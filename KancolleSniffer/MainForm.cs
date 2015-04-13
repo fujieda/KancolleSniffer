@@ -425,7 +425,7 @@ namespace KancolleSniffer
             if (!_sniffer.Battle.InBattle)
                 return;
             panelBattleInfo.BringToFront();
-            var color = new[] {DefaultForeColor, DefaultBackColor, Color.Blue, Color.Green, Color.Orange, Color.Red};
+            var color = new[] {DefaultForeColor, DefaultForeColor, Color.Blue, Color.Green, Color.Orange, Color.Red};
             var t = new Timer {Interval = 2000}; // 艦隊が表示されるまで遅延させる
             t.Tick += (sender, args) =>
             {
