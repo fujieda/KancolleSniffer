@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2014, 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -26,10 +26,11 @@ namespace KancolleSniffer
         private readonly ShipMaster _shipMaster;
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
-        private dynamic _day;
-        private dynamic _night;
-        private bool _isSurface;
+        private int _fleet;
+        private int[] _friendHp;
+        private int[] _guardHp;
         private readonly List<int> _escapingShips = new List<int>();
+
         public bool InBattle { get; set; }
         public string Formation { get; private set; }
         public int EnemyAirSuperiority { get; private set; }
@@ -49,71 +50,38 @@ namespace KancolleSniffer
             InBattle = true;
             Formation = FormationName(json);
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
+            if (_friendHp != null)
+            {
+                ShowResult(false); // 昼戦の結果を夜戦のときに表示する
+            }
+            else
+            {
+                _fleet = (int)DeckId(json);
+                _friendHp = _shipInfo.GetShipStatuses(_fleet).Select(s => s.NowHp).ToArray();
+            }
             if (IsNightBattle(json))
             {
-                CauseDamage(false);
-                _night = json;
+                CalcHougekiDamage(json.api_hougeki, _friendHp);
             }
             else
             {
                 AirControlLevel = CheckAirControlLevel(json);
-                _day = json;
+                CalcDamage(json);
             }
         }
 
-        private int CheckAirControlLevel(dynamic json)
+        private int DeckId(dynamic json)
         {
-            var stage1 = json.api_kouku.api_stage1;
-            if (stage1.api_f_count == 0 && stage1.api_e_count == 0)
-                return -1;
-            return (int)stage1.api_disp_seiku;
-        }
-
-        public void InspectPracticeBattle(dynamic json)
-        {
-            InspectBattle(json);
-            HasDamagedShip = false;
-        }
-
-        public void InspectCombinedBattle(dynamic json, bool surfaceFleet)
-        {
-            InBattle = true;
-            Formation = FormationName(json);
-            EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
-            if (IsNightBattle(json))
-            {
-                CauseDamageCombined(false);
-                _night = json;
-            }
-            else
-            {
-                AirControlLevel = CheckAirControlLevel(json);
-                _isSurface = surfaceFleet;
-                _day = json;
-            }
+            if (json.api_dock_id()) // 昼戦はtypoしている
+                return (int)json.api_dock_id - 1;
+            if (json.api_deck_id is string) // 通常の夜戦では文字列
+                return int.Parse(json.api_deck_id) - 1;
+            return (int)json.api_deck_id - 1;
         }
 
         private bool IsNightBattle(dynamic json)
         {
             return json.api_hougeki();
-        }
-
-        public void InspectCombinedBattleResult(dynamic json)
-        {
-            _escapingShips.Clear();
-            CauseDamageCombined();
-            if ((int)json.api_escape_flag == 0)
-                return;
-            var damaged = (int)json.api_escape.api_escape_idx[0] - 1;
-            _escapingShips.Add(_shipInfo.GetDeck(damaged / 6)[damaged % 6]);
-            var escort = (int)json.api_escape.api_tow_idx[0] - 1;
-            _escapingShips.Add(_shipInfo.GetDeck(escort / 6)[escort % 6]);
-        }
-
-        public void CauseCombinedBattleEscape()
-        {
-            _shipInfo.SetEscapedShips(_escapingShips);
-            UpdateDamgedShipNames(_shipInfo.GetShipStatuses(0).Concat(_shipInfo.GetShipStatuses(1)));
         }
 
         private string FormationName(dynamic json)
@@ -134,6 +102,14 @@ namespace KancolleSniffer
             return "";
         }
 
+        private int CheckAirControlLevel(dynamic json)
+        {
+            var stage1 = json.api_kouku.api_stage1;
+            if (stage1.api_f_count == 0 && stage1.api_e_count == 0)
+                return -1;
+            return (int)stage1.api_disp_seiku;
+        }
+
         private int CalcEnemyAirSuperiority(dynamic json)
         {
             var maxEq = ((int[])json.api_ship_ke).Skip(1).SelectMany(id => _shipMaster[id].MaxEq);
@@ -144,43 +120,61 @@ namespace KancolleSniffer
                 select (int)Math.Floor(spec.AntiAir * Math.Sqrt(slot.max))).DefaultIfEmpty().Sum();
         }
 
-        public void CauseDamage(bool warnDamagedShip = true)
+        private void CalcDamage(dynamic json)
         {
-            if (_day == null && _night == null)
+            if (json.api_kouku.api_stage3 != null)
+                CalcSimpleDamage(json.api_kouku.api_stage3.api_fdam, _friendHp);
+            if (json.api_kouku2() && json.api_kouku2.api_stage3 != null) // 航空戦2回目
+                CalcSimpleDamage(json.api_kouku2.api_stage3.api_fdam, _friendHp);
+            if (!json.api_opening_atack()) // 航空戦のみ
                 return;
-            var ships = _shipInfo.GetShipStatuses((int)DeckId(_day ?? _night));
-            if (_day != null)
-            {
-                var json = _day;
-                if (json.api_kouku.api_stage3 != null)
-                    CauseSimpleDamage(ships, json.api_kouku.api_stage3.api_fdam);
-                if (json.api_kouku2() && json.api_kouku2.api_stage3 != null) // 航空戦2回目
-                    CauseSimpleDamage(ships, json.api_kouku2.api_stage3.api_fdam);
-                if (json.api_opening_atack()) // 通常戦
-                {
-                    if (json.api_opening_atack != null)
-                        CauseSimpleDamage(ships, json.api_opening_atack.api_fdam);
-                    if (json.api_hougeki1 != null)
-                        CauseHougekiDamage(ships, json.api_hougeki1);
-                    if (json.api_hougeki2 != null)
-                        CauseHougekiDamage(ships, json.api_hougeki2);
-                    if (json.api_raigeki != null)
-                        CauseSimpleDamage(ships, json.api_raigeki.api_fdam);
-                }
-                _day = null;
-            }
-            if (_night != null)
-            {
-                CauseHougekiDamage(ships, _night.api_hougeki);
-                _night = null;
-            }
-            if (warnDamagedShip)
-                UpdateDamgedShipNames(ships);
+            if (json.api_opening_atack != null)
+                CalcSimpleDamage(json.api_opening_atack.api_fdam, _friendHp);
+            if (json.api_hougeki1 != null)
+                CalcHougekiDamage(json.api_hougeki1, _friendHp);
+            if (json.api_hougeki2 != null)
+                CalcHougekiDamage(json.api_hougeki2, _friendHp);
+            if (json.api_raigeki != null)
+                CalcSimpleDamage(json.api_raigeki.api_fdam, _friendHp);
         }
 
-        public void CausePracticeDamage()
+        private void CalcSimpleDamage(dynamic rawDamage, int[] result)
         {
-            CauseDamage(false);
+            var damage = (int[])rawDamage;
+            for (var i = 0; i < _friendHp.Length; i++)
+                result[i] -= damage[i + 1];
+        }
+
+        private void CalcHougekiDamage(dynamic hougeki, int[] friend)
+        {
+            var targets = ((dynamic[])hougeki.api_df_list).Skip(1).SelectMany(x => (int[])x);
+            var damages = ((dynamic[])hougeki.api_damage).Skip(1).SelectMany(x => (double[])x);
+            foreach (var hit in targets.Zip(damages, (t, d) => new {t, d}))
+            {
+                if (1 <= hit.t && hit.t <= friend.Length)
+                    friend[hit.t - 1] -= (int)hit.d;
+            }
+        }
+
+        public void InspectBattleResult(dynamic json)
+        {
+            ShowResult();
+            _friendHp = null;
+        }
+
+        public void InspectPracticeResult(dynamic json)
+        {
+            ShowResult(false);
+            _friendHp = null;
+        }
+
+        private void ShowResult(bool warnDamagedShip = true)
+        {
+            var ships = _shipInfo.GetShipStatuses(_fleet);
+            foreach (var e in ships.Zip(_friendHp, (ship, now) => new {ship, now}))
+                e.ship.NowHp = e.now;
+            if (warnDamagedShip)
+                UpdateDamgedShipNames(ships);
         }
 
         private void UpdateDamgedShipNames(IEnumerable<ShipStatus> ships)
@@ -190,116 +184,109 @@ namespace KancolleSniffer
             HasDamagedShip = DamagedShipNames.Any();
         }
 
-        private int DeckId(dynamic json)
+        public void InspectCombinedBattle(dynamic json, bool surfaceFleet)
         {
-            if (json.api_dock_id()) // 昼戦はtypoしている
-                return (int)json.api_dock_id - 1;
-            if (json.api_deck_id is string) // 通常の夜戦では文字列
-                return int.Parse(json.api_deck_id) - 1;
-            return (int)json.api_deck_id - 1;
-        }
-
-        private void CauseSimpleDamage(ShipStatus[] ships, dynamic rawDamage)
-        {
-            var damage = (int[])rawDamage;
-            for (var i = 0; i < ships.Length; i++)
-                ships[i].NowHp -= damage[i + 1];
-        }
-
-        private void CauseHougekiDamage(ShipStatus[] ships, dynamic hougeki)
-        {
-            var targets = ((dynamic[])hougeki.api_df_list).Skip(1).SelectMany(x => (int[])x);
-            var damages = ((dynamic[])hougeki.api_damage).Skip(1).SelectMany(x => (double[])x);
-            foreach (var hit in targets.Zip(damages, (t, d) => new {t, d}))
+            InBattle = true;
+            Formation = FormationName(json);
+            EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
+            if (_friendHp != null)
             {
-                if (1 <= hit.t && hit.t <= ships.Length)
-                    ships[hit.t - 1].NowHp -= (int)hit.d;
+                ShowResultCombined(false);
             }
-        }
-
-        public void CauseDamageCombined(bool warnDamagedShip = true)
-        {
-            if (_isSurface)
-                CauseDamageCombinedFleetSurface(warnDamagedShip);
             else
-                CauseDamageCombinedFleetAir(warnDamagedShip);
+            {
+                _fleet = 10;
+                _friendHp = _shipInfo.GetShipStatuses(0).Select(s => s.NowHp).ToArray();
+                _guardHp = _shipInfo.GetShipStatuses(1).Select(s => s.NowHp).ToArray();
+            }
+            if (IsNightBattle(json))
+            {
+                CalcHougekiDamage(json.api_hougeki, _guardHp);
+            }
+            else
+            {
+                AirControlLevel = CheckAirControlLevel(json);
+                if (surfaceFleet)
+                    CalcDamageCombinedFleetSurface(json);
+                else
+                    CalcDamageCombinedFleetAir(json);
+            }
         }
 
-        private void CauseDamageCombinedFleetAir(bool warnDamagedShip)
+        public void InspectCombinedBattleResult(dynamic json)
         {
-            var hontai = _shipInfo.GetShipStatuses(0);
-            var goei = _shipInfo.GetShipStatuses(1);
-            if (_day != null)
-            {
-                var json = _day;
-                var kouku = json.api_kouku;
-                if (kouku.api_stage3 != null)
-                    CauseSimpleDamage(hontai, kouku.api_stage3.api_fdam);
-                if (kouku.api_stage3_combined != null)
-                    CauseSimpleDamage(goei, kouku.api_stage3_combined.api_fdam);
-                if (json.api_kouku2()) // 航空戦2回目
-                {
-                    kouku = json.api_kouku2;
-                    if (kouku.api_stage3 != null)
-                        CauseSimpleDamage(hontai, kouku.api_stage3.api_fdam);
-                    if (kouku.api_stage3_combined != null)
-                        CauseSimpleDamage(goei, kouku.api_stage3_combined.api_fdam);
-                }
-                if (json.api_opening_atack()) // 通常戦
-                {
-                    if (json.api_opening_atack != null)
-                        CauseSimpleDamage(goei, json.api_opening_atack.api_fdam);
-                    if (json.api_hougeki1 != null)
-                        CauseHougekiDamage(goei, json.api_hougeki1);
-                    if (json.api_hougeki2() && json.api_hougeki2 != null)
-                        CauseHougekiDamage(hontai, json.api_hougeki2);
-                    if (json.api_hougeki3() && json.api_hougeki3 != null)
-                        CauseHougekiDamage(hontai, json.api_hougeki3);
-                    if (json.api_raigeki() && json.api_raigeki != null)
-                        CauseSimpleDamage(goei, json.api_raigeki.api_fdam);
-                }
-                _day = null;
-            }
-            if (_night != null)
-            {
-                CauseHougekiDamage(goei, _night.api_hougeki);
-                _night = null;
-            }
-            if (warnDamagedShip)
-                UpdateDamgedShipNames(hontai.Concat(goei));
+            _escapingShips.Clear();
+            ShowResultCombined();
+            _friendHp = null;
+            if ((int)json.api_escape_flag == 0)
+                return;
+            var damaged = (int)json.api_escape.api_escape_idx[0] - 1;
+            _escapingShips.Add(_shipInfo.GetDeck(damaged / 6)[damaged % 6]);
+            var escort = (int)json.api_escape.api_tow_idx[0] - 1;
+            _escapingShips.Add(_shipInfo.GetDeck(escort / 6)[escort % 6]);
         }
 
-        private void CauseDamageCombinedFleetSurface(bool warnDamagedShip)
+        private void ShowResultCombined(bool warnDamagedShip = true)
         {
-            var hontai = _shipInfo.GetShipStatuses(0);
-            var goei = _shipInfo.GetShipStatuses(1);
-            if (_day != null)
-            {
-                var json = _day;
-                var kouku = json.api_kouku;
-                if (kouku.api_stage3 != null)
-                    CauseSimpleDamage(hontai, kouku.api_stage3.api_fdam);
-                if (kouku.api_stage3_combined != null)
-                    CauseSimpleDamage(goei, kouku.api_stage3_combined.api_fdam);
-                if (json.api_opening_atack != null)
-                    CauseSimpleDamage(goei, json.api_opening_atack.api_fdam);
-                if (json.api_hougeki1 != null)
-                    CauseHougekiDamage(hontai, json.api_hougeki1);
-                if (json.api_hougeki2() && json.api_hougeki2 != null)
-                    CauseHougekiDamage(hontai, json.api_hougeki2);
-                if (json.api_hougeki3() && json.api_hougeki3 != null)
-                    CauseHougekiDamage(goei, json.api_hougeki3);
-                if (json.api_raigeki() && json.api_raigeki != null)
-                    CauseSimpleDamage(goei, json.api_raigeki.api_fdam);
-                _day = null;
-            }
-            if (_night != null)
-            {
-                CauseHougekiDamage(goei, _night.api_hougeki);
-                _night = null;
-            }
+            var ships = _shipInfo.GetShipStatuses(0).Concat(_shipInfo.GetShipStatuses(1)).ToArray();
+            foreach (var e in ships.Zip(_friendHp.Concat(_guardHp), (ship, now) => new {ship, now}))
+                e.ship.NowHp = e.now;
             if (warnDamagedShip)
-                UpdateDamgedShipNames(hontai.Concat(goei));
+                UpdateDamgedShipNames(ships);
+        }
+
+        public void CauseCombinedBattleEscape()
+        {
+            _shipInfo.SetEscapedShips(_escapingShips);
+            UpdateDamgedShipNames(_shipInfo.GetShipStatuses(0).Concat(_shipInfo.GetShipStatuses(1)));
+        }
+
+        private void CalcDamageCombinedFleetAir(dynamic json)
+        {
+            var kouku = json.api_kouku;
+            if (kouku.api_stage3 != null)
+                CalcSimpleDamage(kouku.api_stage3.api_fdam, _friendHp);
+            if (kouku.api_stage3_combined != null)
+                CalcSimpleDamage(kouku.api_stage3_combined.api_fdam, _guardHp);
+            if (json.api_kouku2()) // 航空戦2回目
+            {
+                kouku = json.api_kouku2;
+                if (kouku.api_stage3 != null)
+                    CalcSimpleDamage(kouku.api_stage3.api_fdam, _friendHp);
+                if (kouku.api_stage3_combined != null)
+                    CalcSimpleDamage(kouku.api_stage3_combined.api_fdam, _guardHp);
+            }
+            if (!json.api_opening_atack()) // 航空戦のみ
+                return;
+            if (json.api_opening_atack != null)
+                CalcSimpleDamage(json.api_opening_atack.api_fdam, _guardHp);
+            if (json.api_hougeki1 != null)
+                CalcHougekiDamage(json.api_hougeki1, _guardHp);
+            if (json.api_hougeki2() && json.api_hougeki2 != null)
+                CalcHougekiDamage(json.api_hougeki2, _friendHp);
+            if (json.api_hougeki3() && json.api_hougeki3 != null)
+                CalcHougekiDamage(json.api_hougeki3, _friendHp);
+            if (json.api_raigeki() && json.api_raigeki != null)
+                CalcSimpleDamage(json.api_raigeki.api_fdam, _guardHp);
+        }
+
+        private void CalcDamageCombinedFleetSurface(dynamic json)
+        {
+            var kouku = json.api_kouku;
+            if (kouku.api_stage3 != null)
+                CalcSimpleDamage(kouku.api_stage3.api_fdam, _friendHp);
+            if (kouku.api_stage3_combined != null)
+                CalcSimpleDamage(kouku.api_stage3_combined.api_fdam, _guardHp);
+            if (json.api_opening_atack != null)
+                CalcSimpleDamage(json.api_opening_atack.api_fdam, _guardHp);
+            if (json.api_hougeki1 != null)
+                CalcHougekiDamage(json.api_hougeki1, _friendHp);
+            if (json.api_hougeki2() && json.api_hougeki2 != null)
+                CalcHougekiDamage(json.api_hougeki2, _friendHp);
+            if (json.api_hougeki3() && json.api_hougeki3 != null)
+                CalcHougekiDamage(json.api_hougeki3, _guardHp);
+            if (json.api_raigeki() && json.api_raigeki != null)
+                CalcSimpleDamage(json.api_raigeki.api_fdam, _guardHp);
         }
     }
 }

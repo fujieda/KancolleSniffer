@@ -252,18 +252,18 @@ namespace KancolleSniffer
                     _shipInfo.StartSortie(request); // 演習を出撃中とみなす
                     _conditionTimer.InvalidateCond();
                 }
-                _battleInfo.InspectPracticeBattle(data);
+                _battleInfo.InspectBattle(data);
                 return Update.Ship | Update.Battle | Update.Timer;
             }
             if (url.EndsWith("api_req_sortie/battleresult"))
             {
-                _battleInfo.CauseDamage();
+                _battleInfo.InspectBattleResult(json);
                 _logger.InspectBattleResult(data);
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_practice/battle_result"))
             {
-                _battleInfo.CausePracticeDamage();
+                _battleInfo.InspectPracticeResult(json);
                 return Update.Ship;
             }
             if (IsCombinedBattleAPI(url))
