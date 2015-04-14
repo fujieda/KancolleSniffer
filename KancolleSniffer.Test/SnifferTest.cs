@@ -97,10 +97,10 @@ namespace KancolleSniffer.Test
             PAssert.That(()=> sniffer.Battle.HasDamagedShip);
         }
 
-        private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected)
+        private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected, string msg = null)
         {
             var result = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
-            PAssert.That(() => (expected.SequenceEqual(result)));
+            PAssert.That(() => (expected.SequenceEqual(result)), msg);
         }
 
         /// <summary>
@@ -194,7 +194,11 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "airbattle_001");
-            AssertEqualBattleResult(sniffer, new[]{37, 36, 31, 37, 17, 63});
+            AssertEqualBattleResult(sniffer, new[]{37, 36, 31, 37, 17, 63}, "夜戦あり");
+
+            sniffer = new Sniffer();
+            SniffLogFile(sniffer, "airbattle_002");
+            AssertEqualBattleResult(sniffer, new[] { 66, 36, 16, 27, 35, 38 }, "昼戦のみ");
         }
 
         /// <summary>
