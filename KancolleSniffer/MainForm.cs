@@ -421,20 +421,29 @@ namespace KancolleSniffer
             labelFormation.Text = "";
             labelEnemyAirSuperiority.Text = "";
             labelAirSuperiority.ForeColor = DefaultForeColor;
+            labelResultRank.Text = "判定";
             panelBattleInfo.Visible = _sniffer.Battle.InBattle;
             if (!_sniffer.Battle.InBattle)
                 return;
             panelBattleInfo.BringToFront();
-            var color = new[] {DefaultForeColor, DefaultForeColor, Color.Blue, Color.Green, Color.Orange, Color.Red};
             var t = new Timer {Interval = 2000}; // 艦隊が表示されるまで遅延させる
             t.Tick += (sender, args) =>
             {
-                labelFormation.Text = _sniffer.Battle.Formation;
-                labelEnemyAirSuperiority.Text = _sniffer.Battle.EnemyAirSuperiority.ToString("D");
-                labelAirSuperiority.ForeColor = color[_sniffer.Battle.AirControlLevel + 1];
+                ShowBattleInfo();
                 t.Stop();
             };
             t.Start();
+        }
+
+        private void ShowBattleInfo()
+        {
+            var battle = _sniffer.Battle;
+            var color = new[] { DefaultForeColor, DefaultForeColor, Color.Blue, Color.Green, Color.Orange, Color.Red };
+            labelFormation.Text = battle.Formation;
+            labelEnemyAirSuperiority.Text = battle.EnemyAirSuperiority.ToString("D");
+            labelAirSuperiority.ForeColor = color[battle.AirControlLevel + 1];
+            var result = new[] { "完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E" };
+            labelResultRank.Text = result[(int)battle.ResultRank];
         }
 
         private void UpdateChargeInfo()
@@ -572,7 +581,6 @@ namespace KancolleSniffer
             var quests = _sniffer.Quests;
             for (var i = 0; i < name.Length; i++)
             {
-
                 if (i < quests.Length)
                 {
                     category[i].BackColor = color[quests[i].Category - 1];
