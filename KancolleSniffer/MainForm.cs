@@ -426,13 +426,7 @@ namespace KancolleSniffer
             if (!_sniffer.Battle.InBattle)
                 return;
             panelBattleInfo.BringToFront();
-            var t = new Timer {Interval = 2000}; // 艦隊が表示されるまで遅延させる
-            t.Tick += (sender, args) =>
-            {
-                ShowBattleInfo();
-                t.Stop();
-            };
-            t.Start();
+            ShowBattleInfo();
         }
 
         private void ShowBattleInfo()
