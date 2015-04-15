@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2014, 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -75,7 +75,8 @@ namespace KancolleSniffer
 
     public class Config
     {
-        private readonly string _configFileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "config.json");
+        private readonly string _configFileName =
+            Path.Combine(Path.GetDirectoryName(Application.ExecutablePath) ?? "", "config.json");
 
         public Point Location { get; set; }
         public bool TopMost { get; set; }
@@ -87,6 +88,7 @@ namespace KancolleSniffer
         public int MarginEquips { get; set; }
         public List<int> NotifyConditions { get; set; }
         public List<int> ResetHours { get; set; }
+        public bool AlwaysShowResultRank { get; set; }
         public int SoundVolume { get; set; }
         public string MissionSoundFile { get; set; }
         public string NDockSoundFile { get; set; }
@@ -111,9 +113,9 @@ namespace KancolleSniffer
             MarginEquips = 10;
             NotifyConditions = new List<int>(new[] {40, 49});
             ResetHours = new List<int>();
+            AlwaysShowResultRank = true;
             SoundVolume = 100;
-            var dir = Path.GetDirectoryName(Application.ExecutablePath);
-// ReSharper disable AssignNullToNotNullAttribute
+            var dir = Path.GetDirectoryName(Application.ExecutablePath) ?? "";
             MissionSoundFile = Path.Combine(dir, "ensei.mp3");
             NDockSoundFile = Path.Combine(dir, "nyuukyo.mp3");
             KDockSoundFile = Path.Combine(dir, "kenzou.mp3");
@@ -124,7 +126,6 @@ namespace KancolleSniffer
             AkashiProgressSoundFile = Path.Combine(dir, "syuuri.mp3");
             ConditionSoundFile = Path.Combine(dir, "hirou.mp3");
             DebugLogFile = Path.Combine(dir, "log.txt");
-// ReSharper restore AssignNullToNotNullAttribute
             Proxy = new ProxyConfig();
             ShipList = new ShipListConfig();
             Log = new LogConfig();

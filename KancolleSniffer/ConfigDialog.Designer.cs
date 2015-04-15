@@ -65,7 +65,6 @@ namespace KancolleSniffer
             this.checkBoxFlash = new System.Windows.Forms.CheckBox();
             this.tabPageAchievement = new System.Windows.Forms.TabPage();
             this.buttonResetAchievement = new System.Windows.Forms.Button();
-            this.label8 = new System.Windows.Forms.Label();
             this.checkBoxReset14 = new System.Windows.Forms.CheckBox();
             this.checkBoxReset02 = new System.Windows.Forms.CheckBox();
             this.tabPageSound = new System.Windows.Forms.TabPage();
@@ -117,6 +116,10 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.radioButtonResultRankAlways = new System.Windows.Forms.RadioButton();
+            this.radioButtonResultRankWhenClick = new System.Windows.Forms.RadioButton();
             this.tabControl.SuspendLayout();
             this.tabPageShow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -133,6 +136,8 @@ namespace KancolleSniffer
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).BeginInit();
             this.tabPageDebug.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -161,7 +166,7 @@ namespace KancolleSniffer
             this.tabPageShow.Location = new System.Drawing.Point(4, 40);
             this.tabPageShow.Name = "tabPageShow";
             this.tabPageShow.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageShow.Size = new System.Drawing.Size(256, 166);
+            this.tabPageShow.Size = new System.Drawing.Size(256, 158);
             this.tabPageShow.TabIndex = 0;
             this.tabPageShow.Text = "表示";
             this.tabPageShow.UseVisualStyleBackColor = true;
@@ -203,7 +208,7 @@ namespace KancolleSniffer
             this.tabPageNotification.Location = new System.Drawing.Point(4, 40);
             this.tabPageNotification.Name = "tabPageNotification";
             this.tabPageNotification.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageNotification.Size = new System.Drawing.Size(256, 166);
+            this.tabPageNotification.Size = new System.Drawing.Size(256, 158);
             this.tabPageNotification.TabIndex = 1;
             this.tabPageNotification.Text = "通知";
             this.tabPageNotification.UseVisualStyleBackColor = true;
@@ -334,21 +339,19 @@ namespace KancolleSniffer
             // 
             // tabPageAchievement
             // 
-            this.tabPageAchievement.Controls.Add(this.buttonResetAchievement);
-            this.tabPageAchievement.Controls.Add(this.label8);
-            this.tabPageAchievement.Controls.Add(this.checkBoxReset14);
-            this.tabPageAchievement.Controls.Add(this.checkBoxReset02);
+            this.tabPageAchievement.Controls.Add(this.groupBox3);
+            this.tabPageAchievement.Controls.Add(this.groupBox2);
             this.tabPageAchievement.Location = new System.Drawing.Point(4, 40);
             this.tabPageAchievement.Name = "tabPageAchievement";
             this.tabPageAchievement.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageAchievement.Size = new System.Drawing.Size(256, 166);
+            this.tabPageAchievement.Size = new System.Drawing.Size(256, 158);
             this.tabPageAchievement.TabIndex = 2;
-            this.tabPageAchievement.Text = "戦果";
+            this.tabPageAchievement.Text = "機能";
             this.tabPageAchievement.UseVisualStyleBackColor = true;
             // 
             // buttonResetAchievement
             // 
-            this.buttonResetAchievement.Location = new System.Drawing.Point(101, 8);
+            this.buttonResetAchievement.Location = new System.Drawing.Point(111, 18);
             this.buttonResetAchievement.Name = "buttonResetAchievement";
             this.buttonResetAchievement.Size = new System.Drawing.Size(44, 20);
             this.buttonResetAchievement.TabIndex = 16;
@@ -356,20 +359,10 @@ namespace KancolleSniffer
             this.buttonResetAchievement.UseVisualStyleBackColor = true;
             this.buttonResetAchievement.Click += new System.EventHandler(this.buttonResetAchievement_Click);
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(147, 12);
-            this.label8.Margin = new System.Windows.Forms.Padding(3);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(65, 12);
-            this.label8.TabIndex = 15;
-            this.label8.Text = "にリセットする";
-            // 
             // checkBoxReset14
             // 
             this.checkBoxReset14.AutoSize = true;
-            this.checkBoxReset14.Location = new System.Drawing.Point(54, 11);
+            this.checkBoxReset14.Location = new System.Drawing.Point(57, 21);
             this.checkBoxReset14.Name = "checkBoxReset14";
             this.checkBoxReset14.Size = new System.Drawing.Size(48, 16);
             this.checkBoxReset14.TabIndex = 14;
@@ -379,7 +372,7 @@ namespace KancolleSniffer
             // checkBoxReset02
             // 
             this.checkBoxReset02.AutoSize = true;
-            this.checkBoxReset02.Location = new System.Drawing.Point(11, 11);
+            this.checkBoxReset02.Location = new System.Drawing.Point(9, 21);
             this.checkBoxReset02.Name = "checkBoxReset02";
             this.checkBoxReset02.Size = new System.Drawing.Size(42, 16);
             this.checkBoxReset02.TabIndex = 13;
@@ -468,7 +461,7 @@ namespace KancolleSniffer
             this.tabPageVersion.Location = new System.Drawing.Point(4, 40);
             this.tabPageVersion.Name = "tabPageVersion";
             this.tabPageVersion.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageVersion.Size = new System.Drawing.Size(256, 166);
+            this.tabPageVersion.Size = new System.Drawing.Size(256, 158);
             this.tabPageVersion.TabIndex = 4;
             this.tabPageVersion.Text = "バージョン情報";
             this.tabPageVersion.UseVisualStyleBackColor = true;
@@ -529,7 +522,7 @@ namespace KancolleSniffer
             this.tabPageProxy.Location = new System.Drawing.Point(4, 40);
             this.tabPageProxy.Name = "tabPageProxy";
             this.tabPageProxy.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageProxy.Size = new System.Drawing.Size(256, 166);
+            this.tabPageProxy.Size = new System.Drawing.Size(256, 158);
             this.tabPageProxy.TabIndex = 5;
             this.tabPageProxy.Text = "プロキシ";
             this.tabPageProxy.UseVisualStyleBackColor = true;
@@ -778,7 +771,7 @@ namespace KancolleSniffer
             this.tabPageDebug.Location = new System.Drawing.Point(4, 40);
             this.tabPageDebug.Name = "tabPageDebug";
             this.tabPageDebug.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageDebug.Size = new System.Drawing.Size(256, 166);
+            this.tabPageDebug.Size = new System.Drawing.Size(256, 158);
             this.tabPageDebug.TabIndex = 7;
             this.tabPageDebug.Text = "デバッグ";
             this.tabPageDebug.UseVisualStyleBackColor = true;
@@ -875,6 +868,53 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.checkBoxReset02);
+            this.groupBox2.Controls.Add(this.buttonResetAchievement);
+            this.groupBox2.Controls.Add(this.checkBoxReset14);
+            this.groupBox2.Location = new System.Drawing.Point(11, 11);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
+            this.groupBox2.Size = new System.Drawing.Size(234, 48);
+            this.groupBox2.TabIndex = 17;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "戦果のリセット";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.radioButtonResultRankWhenClick);
+            this.groupBox3.Controls.Add(this.radioButtonResultRankAlways);
+            this.groupBox3.Location = new System.Drawing.Point(11, 65);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(6);
+            this.groupBox3.Size = new System.Drawing.Size(234, 48);
+            this.groupBox3.TabIndex = 18;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "勝利判定の表示";
+            // 
+            // radioButtonResultRankAlways
+            // 
+            this.radioButtonResultRankAlways.AutoSize = true;
+            this.radioButtonResultRankAlways.Location = new System.Drawing.Point(9, 21);
+            this.radioButtonResultRankAlways.Name = "radioButtonResultRankAlways";
+            this.radioButtonResultRankAlways.Size = new System.Drawing.Size(44, 16);
+            this.radioButtonResultRankAlways.TabIndex = 0;
+            this.radioButtonResultRankAlways.TabStop = true;
+            this.radioButtonResultRankAlways.Text = "常に";
+            this.radioButtonResultRankAlways.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonResultRankWhenClick
+            // 
+            this.radioButtonResultRankWhenClick.AutoSize = true;
+            this.radioButtonResultRankWhenClick.Location = new System.Drawing.Point(59, 21);
+            this.radioButtonResultRankWhenClick.Name = "radioButtonResultRankWhenClick";
+            this.radioButtonResultRankWhenClick.Size = new System.Drawing.Size(88, 16);
+            this.radioButtonResultRankWhenClick.TabIndex = 1;
+            this.radioButtonResultRankWhenClick.TabStop = true;
+            this.radioButtonResultRankWhenClick.Text = "クリックしたとき";
+            this.radioButtonResultRankWhenClick.UseVisualStyleBackColor = true;
+            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -898,7 +938,6 @@ namespace KancolleSniffer
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginEquips)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).EndInit();
             this.tabPageAchievement.ResumeLayout(false);
-            this.tabPageAchievement.PerformLayout();
             this.tabPageSound.ResumeLayout(false);
             this.tabPageSound.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSoundVolume)).EndInit();
@@ -916,6 +955,10 @@ namespace KancolleSniffer
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).EndInit();
             this.tabPageDebug.ResumeLayout(false);
             this.tabPageDebug.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -945,7 +988,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.CheckBox checkBoxBalloon;
         private System.Windows.Forms.CheckBox checkBoxFlash;
         private System.Windows.Forms.Button buttonResetAchievement;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox checkBoxReset14;
         private System.Windows.Forms.CheckBox checkBoxReset02;
         private System.Windows.Forms.Button buttonPlay;
@@ -993,5 +1035,9 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.CheckBox checkBoxDebugLog;
         private System.Windows.Forms.OpenFileDialog openDebugLogDialog;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton radioButtonResultRankWhenClick;
+        private System.Windows.Forms.RadioButton radioButtonResultRankAlways;
     }
 }

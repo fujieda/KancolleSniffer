@@ -426,18 +426,24 @@ namespace KancolleSniffer
             if (!_sniffer.Battle.InBattle)
                 return;
             panelBattleInfo.BringToFront();
-            ShowBattleInfo();
-        }
-
-        private void ShowBattleInfo()
-        {
             var battle = _sniffer.Battle;
             var color = new[] { DefaultForeColor, DefaultForeColor, Color.Blue, Color.Green, Color.Orange, Color.Red };
             labelFormation.Text = battle.Formation;
             labelEnemyAirSuperiority.Text = battle.EnemyAirSuperiority.ToString("D");
             labelAirSuperiority.ForeColor = color[battle.AirControlLevel + 1];
+            if (_config.AlwaysShowResultRank)
+                ShowResultRank();
+        }
+
+        private void ShowResultRank()
+        {
             var result = new[] { "完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E" };
-            labelResultRank.Text = result[(int)battle.ResultRank];
+            labelResultRank.Text = result[(int)_sniffer.Battle.ResultRank];
+        }
+
+        private void labelResultRank_Click(object sender, EventArgs e)
+        {
+            ShowResultRank();
         }
 
         private void UpdateChargeInfo()

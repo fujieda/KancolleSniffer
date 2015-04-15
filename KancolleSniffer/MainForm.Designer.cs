@@ -350,6 +350,7 @@ namespace KancolleSniffer
             this.labelResultRank.Size = new System.Drawing.Size(41, 12);
             this.labelResultRank.TabIndex = 0;
             this.labelResultRank.Text = "判定";
+            this.labelResultRank.Click += new System.EventHandler(this.labelResultRank_Click);
             // 
             // labelLoS
             // 

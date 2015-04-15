@@ -62,6 +62,8 @@ namespace KancolleSniffer
             checkBoxCond49.Checked = _config.NotifyConditions.Contains(49);
             checkBoxReset02.Checked = _config.ResetHours.Contains(2);
             checkBoxReset14.Checked = _config.ResetHours.Contains(14);
+            radioButtonResultRankAlways.Checked = _config.AlwaysShowResultRank;
+            radioButtonResultRankWhenClick.Checked = !_config.AlwaysShowResultRank;
 
             numericUpDownSoundVolume.Value = _config.SoundVolume;
 
@@ -162,6 +164,8 @@ namespace KancolleSniffer
                 _config.ResetHours.Add(2);
             if (checkBoxReset14.Checked)
                 _config.ResetHours.Add(14);
+
+            _config.AlwaysShowResultRank = radioButtonResultRankAlways.Checked;
 
             _config.SoundVolume = (int)numericUpDownSoundVolume.Value;
 
