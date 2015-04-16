@@ -141,7 +141,6 @@ namespace KancolleSniffer
             this.panelGroupHeader.Name = "panelGroupHeader";
             this.panelGroupHeader.Size = new System.Drawing.Size(119, 19);
             this.panelGroupHeader.TabIndex = 16;
-            this.panelGroupHeader.Visible = false;
             // 
             // label5
             // 
@@ -237,7 +236,6 @@ namespace KancolleSniffer
             this.panelRepairHeader.Name = "panelRepairHeader";
             this.panelRepairHeader.Size = new System.Drawing.Size(120, 19);
             this.panelRepairHeader.TabIndex = 2;
-            this.panelRepairHeader.Visible = false;
             // 
             // label10
             // 

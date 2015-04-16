@@ -1,5 +1,5 @@
-﻿// Copyright (C) 2014 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
-// 
+﻿// Copyright (C) 2014, 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+//
 // This program is part of KancolleSniffer.
 //
 // KancolleSniffer is free software: you can redistribute it and/or modify
@@ -239,7 +239,7 @@ namespace KancolleSniffer
             _configLabelList.Add(cfgl);
             _checkBoxesList.Add(cb);
             _checkBoxPanelList.Add(cfgp);
-// ReSharper disable CoVariantArrayConversion
+            // ReSharper disable CoVariantArrayConversion
             cfgp.Controls.AddRange(cfgl);
             cfgp.Controls.AddRange(cb);
             // ReSharper restore CoVariantArrayConversion
@@ -346,73 +346,25 @@ namespace KancolleSniffer
         {
             panelGroupHeader.Visible = InGroupConfig();
             panelRepairHeader.Visible = InRepairList();
-            panelItemHeader.Visible = InItemList();
             treeViewItem.Visible = InItemList();
             panelShipList.SuspendLayout();
             for (var i = 0; i < _shipList.Length; i++)
             {
-                var lbp = _labelPanelList[i];
-                if (lbp.Visible == false && !InItemList())
-                {
-                    lbp.Location = new Point(lbp.Left, (int)lbp.Tag + panelShipList.AutoScrollPosition.Y);
-                    lbp.Visible = true;
-                }
-                var cbp = _checkBoxPanelList[i];
-                if (cbp.Visible == false && InGroupConfig())
-                {
-                    cbp.Location = new Point(cbp.Left, (int)cbp.Tag + panelShipList.AutoScrollPosition.Y);
-                }
-                var rpp = _repairPanelList[i];
-                if (rpp.Visible == false && InRepairList())
-                {
-                    rpp.Location = new Point(rpp.Left, (int)rpp.Tag + panelShipList.AutoScrollPosition.Y);
-                }
-                var s = _shipList[i];
-                var labels = _labelList[i];
-                if (s.Level == 1000)
-                {
-                    cbp.Visible = false;
-                    rpp.Visible = false;
-                    for (var c = 0; c < 6; c++)
-                    {
-                        labels[c].Text = "";
-                        labels[c].BackColor = labels[c].PresetColor;
-                    }
-                    labels[4].SetName("");
-                    labels[5].Text = s.Name;
-                    continue;
-                }
-                cbp.Visible = InGroupConfig();
-                rpp.Visible = InRepairList();
+                if (!InShipStatus())
+                    _labelPanelList[i].Visible = false;
+                if (!InGroupConfig())
+                    _checkBoxPanelList[i].Visible = false;
+                if (!InRepairList())
+                    _repairPanelList[i].Visible = false;
+            }
+            for (var i = 0; i < _shipList.Length; i++)
+            {
+                if (InShipStatus())
+                    SetShipStatus(i);
                 if (InGroupConfig())
-                {
-                    var cfgl = _configLabelList[i];
-                    cfgl[0].SetLevel(s);
-                    cfgl[1].SetName(s);
-                    cfgl[2].SetFleet(s);
-                    var cb = _checkBoxesList[i];
-                    for (var j = 0; j < cb.Length; j++)
-                        cb[j].Checked = _groupSettings[j].Contains(s.Id);
-                }
-                else if (InRepairList())
-                {
-                    var rpl = _repairLabelList[i];
-                    rpl[0].SetHp(s);
-                    rpl[1].SetLevel(s);
-                    rpl[2].SetRepairTime(s);
-                    rpl[3].Text = TimeSpan.FromSeconds(s.RepairSecPerHp).ToString(@"mm\:ss");
-                    rpl[4].SetName(s);
-                    rpl[5].SetFleet(s);
-                }
-                else
-                {
-                    labels[0].SetHp(s);
-                    labels[1].SetCond(s);
-                    labels[2].SetLevel(s);
-                    labels[3].SetExpToNext(s);
-                }
-                labels[4].SetName(s);
-                labels[5].SetFleet(s);
+                    SetGroupConfig(i);
+                if (InRepairList())
+                    SetRepairList(i);
             }
             for (var i = _shipList.Length; i < _labelPanelList.Count; i++)
             {
@@ -421,6 +373,86 @@ namespace KancolleSniffer
                 _repairPanelList[i].Visible = false;
             }
             panelShipList.ResumeLayout();
+        }
+
+        private void SetShipStatus(int i)
+        {
+            var lbp = _labelPanelList[i];
+            if (!lbp.Visible)
+                lbp.Location = new Point(lbp.Left, (int)lbp.Tag + panelShipList.AutoScrollPosition.Y);
+            lbp.Visible = true;
+            var s = _shipList[i];
+            var labels = _labelList[i];
+            if (s.Level == 1000) // 艦種の表示
+            {
+                SetShipType(i);
+                return;
+            }
+            labels[0].SetHp(s);
+            labels[1].SetCond(s);
+            labels[2].SetLevel(s);
+            labels[3].SetExpToNext(s);
+            labels[4].SetName(s);
+            labels[5].SetFleet(s);
+        }
+
+        private void SetShipType(int i)
+        {
+            var lbp = _labelPanelList[i];
+            if (!lbp.Visible)
+                lbp.Location = new Point(lbp.Left, (int)lbp.Tag + panelShipList.AutoScrollPosition.Y);
+            var s = _shipList[i];
+            var labels = _labelList[i];
+            for (var c = 0; c < 6; c++)
+            {
+                labels[c].Text = "";
+                labels[c].BackColor = labels[c].PresetColor;
+            }
+            labels[4].SetName("");
+            labels[5].Text = s.Name;
+            lbp.Visible = true;
+        }
+
+        private void SetGroupConfig(int i)
+        {
+            var cbp = _checkBoxPanelList[i];
+            var s = _shipList[i];
+            if (s.Level == 1000)
+            {
+                SetShipType(i);
+                return;
+            }
+            if (!cbp.Visible)
+                cbp.Location = new Point(cbp.Left, (int)cbp.Tag + panelShipList.AutoScrollPosition.Y);
+            cbp.Visible = true;
+            var cfgl = _configLabelList[i];
+            cfgl[0].SetLevel(s);
+            cfgl[1].SetName(s);
+            cfgl[2].SetFleet(s);
+            var cb = _checkBoxesList[i];
+            for (var j = 0; j < cb.Length; j++)
+                cb[j].Checked = _groupSettings[j].Contains(s.Id);
+        }
+
+        private void SetRepairList(int i)
+        {
+            var rpp = _repairPanelList[i];
+            var s = _shipList[i];
+            if (s.Level == 1000)
+            {
+                SetShipType(i);
+                return;
+            }
+            if (!rpp.Visible)
+                rpp.Location = new Point(rpp.Left, (int)rpp.Tag + panelShipList.AutoScrollPosition.Y);
+            rpp.Visible = true;
+            var rpl = _repairLabelList[i];
+            rpl[0].SetHp(s);
+            rpl[1].SetLevel(s);
+            rpl[2].SetRepairTime(s);
+            rpl[3].Text = TimeSpan.FromSeconds(s.RepairSecPerHp).ToString(@"mm\:ss");
+            rpl[4].SetName(s);
+            rpl[5].SetFleet(s);
         }
 
         private void HideShipLabels()
@@ -467,6 +499,11 @@ namespace KancolleSniffer
                     d.Expand();
                 RestoreTreeViewState(d.Nodes, s.Nodes);
             }
+        }
+
+        private bool InShipStatus()
+        {
+            return Array.Exists(new[] {"全員", "A", "B", "C", "D"}, x => comboBoxGroup.Text == x);
         }
 
         private bool InGroupConfig()
