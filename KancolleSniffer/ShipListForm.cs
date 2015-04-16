@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ContentAlignment = System.Drawing.ContentAlignment;
 
@@ -463,8 +464,15 @@ namespace KancolleSniffer
             panelShipList.ResumeLayout();
         }
 
+        [DllImport("user32.dll")]
+        private static extern int GetScrollPos(IntPtr hWnd, int nBar);
+
+        [DllImport("user32.dll")]
+        private static extern int SetScrollPos(IntPtr hWnd, int nBar, int nPos, bool bRedraw);
+
         private void SetTreeViewItem()
         {
+            var y = GetScrollPos(treeViewItem.Handle, 1);
             treeViewItem.BeginUpdate();
             var save = SaveTreeViewState(treeViewItem.Nodes);
             treeViewItem.Nodes.Clear();
@@ -472,6 +480,7 @@ namespace KancolleSniffer
                 treeViewItem.Nodes.Add(child);
             RestoreTreeViewState(treeViewItem.Nodes, save.Nodes);
             treeViewItem.EndUpdate();
+            SetScrollPos(treeViewItem.Handle, 1, y, true);
         }
 
         private TreeNode SaveTreeViewState(TreeNodeCollection nodes)
