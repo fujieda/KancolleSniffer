@@ -71,6 +71,9 @@
     <Compile Include="ConfigDialog.Designer.cs">
       <DependentUpon>ConfigDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="DbTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DockInfo.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="LogServer.cs" />

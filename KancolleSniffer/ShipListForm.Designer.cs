@@ -47,7 +47,6 @@ namespace KancolleSniffer
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShipListForm));
             this.panelShipList = new System.Windows.Forms.Panel();
-            this.treeViewItem = new System.Windows.Forms.TreeView();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -66,6 +65,7 @@ namespace KancolleSniffer
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.panelItemHeader = new System.Windows.Forms.Panel();
+            this.treeViewItem = new KancolleSniffer.DbTreeView();
             this.panelShipList.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
@@ -82,14 +82,6 @@ namespace KancolleSniffer
             this.panelShipList.Name = "panelShipList";
             this.panelShipList.Size = new System.Drawing.Size(238, 263);
             this.panelShipList.TabIndex = 0;
-            // 
-            // treeViewItem
-            // 
-            this.treeViewItem.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewItem.Location = new System.Drawing.Point(0, 0);
-            this.treeViewItem.Name = "treeViewItem";
-            this.treeViewItem.Size = new System.Drawing.Size(236, 261);
-            this.treeViewItem.TabIndex = 0;
             // 
             // label1
             // 
@@ -272,6 +264,14 @@ namespace KancolleSniffer
             this.panelItemHeader.Size = new System.Drawing.Size(166, 19);
             this.panelItemHeader.TabIndex = 0;
             // 
+            // treeViewItem
+            // 
+            this.treeViewItem.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewItem.Location = new System.Drawing.Point(0, 0);
+            this.treeViewItem.Name = "treeViewItem";
+            this.treeViewItem.Size = new System.Drawing.Size(236, 261);
+            this.treeViewItem.TabIndex = 0;
+            // 
             // ShipListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -326,6 +326,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel panelItemHeader;
-        private System.Windows.Forms.TreeView treeViewItem;
+        private DbTreeView treeViewItem;
     }
 }
