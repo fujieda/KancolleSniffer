@@ -380,7 +380,6 @@ namespace KancolleSniffer
             var lbp = _labelPanelList[i];
             if (!lbp.Visible)
                 lbp.Location = new Point(lbp.Left, (int)lbp.Tag + panelShipList.AutoScrollPosition.Y);
-            lbp.Visible = true;
             var s = _shipList[i];
             var labels = _labelList[i];
             if (s.Level == 1000) // 艦種の表示
@@ -394,6 +393,7 @@ namespace KancolleSniffer
             labels[3].SetExpToNext(s);
             labels[4].SetName(s);
             labels[5].SetFleet(s);
+            lbp.Visible = true;
         }
 
         private void SetShipType(int i)
@@ -424,7 +424,6 @@ namespace KancolleSniffer
             }
             if (!cbp.Visible)
                 cbp.Location = new Point(cbp.Left, (int)cbp.Tag + panelShipList.AutoScrollPosition.Y);
-            cbp.Visible = true;
             var cfgl = _configLabelList[i];
             cfgl[0].SetLevel(s);
             cfgl[1].SetName(s);
@@ -432,6 +431,7 @@ namespace KancolleSniffer
             var cb = _checkBoxesList[i];
             for (var j = 0; j < cb.Length; j++)
                 cb[j].Checked = _groupSettings[j].Contains(s.Id);
+            cbp.Visible = true;
         }
 
         private void SetRepairList(int i)
@@ -445,7 +445,6 @@ namespace KancolleSniffer
             }
             if (!rpp.Visible)
                 rpp.Location = new Point(rpp.Left, (int)rpp.Tag + panelShipList.AutoScrollPosition.Y);
-            rpp.Visible = true;
             var rpl = _repairLabelList[i];
             rpl[0].SetHp(s);
             rpl[1].SetLevel(s);
@@ -453,6 +452,7 @@ namespace KancolleSniffer
             rpl[3].Text = TimeSpan.FromSeconds(s.RepairSecPerHp).ToString(@"mm\:ss");
             rpl[4].SetName(s);
             rpl[5].SetFleet(s);
+            rpp.Visible = true;
         }
 
         private void HideShipLabels()
