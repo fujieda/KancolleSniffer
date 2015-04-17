@@ -204,7 +204,7 @@ namespace KancolleSniffer
             // labelLogin
             // 
             this.labelLogin.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelLogin.Location = new System.Drawing.Point(6, 102);
+            this.labelLogin.Location = new System.Drawing.Point(6, 2);
             this.labelLogin.Name = "labelLogin";
             this.labelLogin.Size = new System.Drawing.Size(210, 28);
             this.labelLogin.TabIndex = 23;
