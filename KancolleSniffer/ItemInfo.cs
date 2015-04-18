@@ -37,17 +37,20 @@ namespace KancolleSniffer
             Name = "";
         }
 
-        public bool CanAirCombat()
+        public bool CanAirCombat
         {
-            switch (Type)
+            get
             {
-                case 6: // 艦戦
-                case 7: // 艦爆
-                case 8: // 艦攻
-                case 11: // 水爆
-                    return true;
+                switch (Type)
+                {
+                    case 6: // 艦戦
+                    case 7: // 艦爆
+                    case 8: // 艦攻
+                    case 11: // 水爆
+                        return true;
+                }
+                return false;
             }
-            return false;
         }
 
         // http://ch.nicovideo.jp/biikame/blomaga/ar663428
@@ -73,6 +76,26 @@ namespace KancolleSniffer
             if (Name == "探照灯")
                 return 0.9067950;
             return 0;
+        }
+
+        public bool IsAircraft
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 11:
+                    case 25: // オートジャイロ
+                    case 26: // 対潜哨戒機
+                        return true;
+                }
+                return false;
+            }
         }
     }
 

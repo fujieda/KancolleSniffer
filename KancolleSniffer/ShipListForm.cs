@@ -106,8 +106,15 @@ namespace KancolleSniffer
                     s.Fleet = -1;
                     list.Add(s);
                     list.AddRange(
-                        s.Slot.Where(id => id != -1).Select(
-                            id => CreateDummyEntry(_sniffer.Item.ItemDict[id].Spec.Name, 500))
+                        (from e in Enumerable.Range(0, s.Slot.Length)
+                            let slot = s.Slot[e]
+                            let onslot = s.OnSlot[e]
+                            let max = s.Spec.MaxEq[e]
+                            where slot != -1
+                            let item = _sniffer.Item.ItemDict[slot]
+                            select
+                                CreateDummyEntry(item.Spec.Name + (item.Level == 0 ? "" : "★" + item.Level) +
+                                                 (!item.Spec.IsAircraft ? "" : " " + onslot + "/" + max), 500))
                             .DefaultIfEmpty(CreateDummyEntry("なし", 500)));
                 }
             }

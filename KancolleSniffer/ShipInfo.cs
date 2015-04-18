@@ -416,7 +416,7 @@ namespace KancolleSniffer
                 let ship = _shipInfo[id]
                 from slot in ship.Slot.Zip(ship.OnSlot, (s, o) => new {slot = s, onslot = o})
                 let item = _itemInfo[slot.slot]
-                where item.CanAirCombat()
+                where item.CanAirCombat
                 select (int)Math.Floor(item.AntiAir * Math.Sqrt(slot.onslot))).DefaultIfEmpty().Sum();
         }
 

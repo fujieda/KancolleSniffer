@@ -147,7 +147,7 @@ namespace KancolleSniffer
             var equips = ((int[][])json.api_eSlot).SelectMany(x => x);
             return (from slot in equips.Zip(maxEq, (id, max) => new {id, max})
                 let spec = _itemInfo.GetSpecByItemId(slot.id)
-                where spec.CanAirCombat()
+                where spec.CanAirCombat
                 select (int)Math.Floor(spec.AntiAir * Math.Sqrt(slot.max))).DefaultIfEmpty().Sum();
         }
 
