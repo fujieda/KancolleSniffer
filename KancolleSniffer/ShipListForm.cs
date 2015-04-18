@@ -46,6 +46,7 @@ namespace KancolleSniffer
         private readonly HashSet<int>[] _groupSettings = new HashSet<int>[GroupCount];
         private TreeNode _itemTreeNode;
         private ItemStatus[] _prevItemList;
+        private EquipColumn[] _equipList;
 
         public ShipListForm(Sniffer sniffer, Config config)
         {
@@ -61,15 +62,21 @@ namespace KancolleSniffer
             if (InItemList())
             {
                 HideShipLabels();
+                HideEquipLabels();
                 if (CreateItemNodes())
                     SetTreeViewItem();
             }
+            else if (InEquip())
+            {
+                HideShipLabels();
+                CreateEquip();
+                CreateEquipLabels();
+                SetEquipLabels();
+            }
             else
             {
-                if (InEquip())
-                    CreateEquip();
-                else
-                    CreateShipList();
+                HideEquipLabels();
+                CreateShipList();
                 CreateListLabels();
                 SetShipLabels();
             }
@@ -94,17 +101,31 @@ namespace KancolleSniffer
             _shipList = ships.Concat(types).OrderBy(s => s, new CompareShip(true, InRepairList())).ToArray();
         }
 
+        private class EquipColumn
+        {
+            public string Fleet { get; set; }
+            public string Ship { get; set; }
+            public string Equip { get; set; }
+            public Color Color { get; set; }
+
+            public EquipColumn()
+            {
+                Fleet = Ship = Equip = "";
+                Color = DefaultBackColor;
+            }
+        }
+
         private void CreateEquip()
         {
-            var list = new List<ShipStatus>();
+            var list = new List<EquipColumn>();
             var fleet = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             for (var i = 0; i < fleet.Length; i++)
             {
-                list.Add(new ShipStatus {Spec = new ShipSpec {Name = fleet[i]}, Level = 1000});
+                list.Add(new EquipColumn {Fleet = fleet[i]});
                 foreach (var s in _sniffer.GetShipStatuses(i))
                 {
                     s.Fleet = -1;
-                    list.Add(s);
+                    list.Add(new EquipColumn {Ship = s.Name});
                     list.AddRange(
                         (from e in Enumerable.Range(0, s.Slot.Length)
                             let slot = s.Slot[e]
@@ -113,17 +134,16 @@ namespace KancolleSniffer
                             where slot != -1
                             let item = _sniffer.Item.ItemDict[slot]
                             select
-                                CreateDummyEntry(item.Spec.Name + (item.Level == 0 ? "" : "★" + item.Level) +
-                                                 (!item.Spec.IsAircraft ? "" : " " + onslot + "/" + max), 500))
-                            .DefaultIfEmpty(CreateDummyEntry("なし", 500)));
+                                new EquipColumn
+                                {
+                                    Equip = item.Spec.Name + (item.Level == 0 ? "" : "★" + item.Level) +
+                                            (!item.Spec.IsAircraft ? "" : " " + onslot + "/" + max),
+                                    Color = item.Spec.Color
+                                })
+                            .DefaultIfEmpty(new EquipColumn {Equip = "なし"}));
                 }
             }
-            _shipList = list.ToArray();
-        }
-
-        private ShipStatus CreateDummyEntry(string name, int level)
-        {
-            return new ShipStatus {Spec = new ShipSpec {Name = name}, Level = level};
+            _equipList = list.ToArray();
         }
 
         private IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships)
@@ -233,8 +253,15 @@ namespace KancolleSniffer
                 CreateConfigComponents(i);
                 CreateRepairLabels(i);
                 CreateShipLabels(i);
-                CreateEquipLabels(i);
             }
+            panelShipList.ResumeLayout();
+        }
+
+        private void CreateEquipLabels()
+        {
+            panelShipList.SuspendLayout();
+            for (var i = _equipLabelList.Count; i < _equipList.Length; i++)
+                CreateEquipLabels(i);
             panelShipList.ResumeLayout();
         }
 
@@ -397,7 +424,8 @@ namespace KancolleSniffer
             {
                 new ShipLabel {Location = new Point(1, 2), AutoSize = true},
                 new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(40, 2), AutoSize = true}
+                new ShipLabel {Location = new Point(40, 2), AutoSize = true},
+                new ShipLabel {Location = new Point(37, 2), Size = new Size(4, LabelHeight - 2)}
             };
             _equipLabelList.Add(labels);
             _equipPanelList.Add(lbp);
@@ -416,7 +444,6 @@ namespace KancolleSniffer
         {
             panelGroupHeader.Visible = InGroupConfig();
             panelRepairHeader.Visible = InRepairList();
-            panelItemHeader.Visible = InEquip();
             panelShipList.SuspendLayout();
             for (var i = 0; i < _shipList.Length; i++)
             {
@@ -426,8 +453,6 @@ namespace KancolleSniffer
                     _checkBoxPanelList[i].Visible = false;
                 if (!InRepairList())
                     _repairPanelList[i].Visible = false;
-                if (!InEquip())
-                    _equipPanelList[i].Visible = false;
             }
             for (var i = 0; i < _shipList.Length; i++)
             {
@@ -437,13 +462,10 @@ namespace KancolleSniffer
                     SetGroupConfig(i);
                 if (InRepairList())
                     SetRepairList(i);
-                if (InEquip())
-                    SetEquip(i);
             }
             for (var i = _shipList.Length; i < _labelPanelList.Count; i++)
             {
-                _labelPanelList[i].Visible = _checkBoxPanelList[i].Visible =
-                    _repairPanelList[i].Visible = _equipPanelList[i].Visible = false;
+                _labelPanelList[i].Visible = _checkBoxPanelList[i].Visible = _repairPanelList[i].Visible;
             }
             panelShipList.ResumeLayout();
         }
@@ -486,30 +508,29 @@ namespace KancolleSniffer
             lbp.Visible = true;
         }
 
+        private void SetEquipLabels()
+        {
+            panelItemHeader.Visible = true;
+            panelShipList.SuspendLayout();
+            for (var i = 0; i < _equipList.Length; i++)
+                SetEquip(i);
+            for (var i = _equipList.Length; i < _equipLabelList.Count; i++)
+                _equipPanelList[i].Visible = false;
+            panelShipList.ResumeLayout();
+        }
+
         private void SetEquip(int i)
         {
             var lbp = _equipPanelList[i];
             if (!lbp.Visible)
                 lbp.Location = new Point(lbp.Left, (int)lbp.Tag + panelShipList.AutoScrollPosition.Y);
-            var s = _shipList[i];
+            var e = _equipList[i];
             var labels = _equipLabelList[i];
-            switch (s.Level)
-            {
-                case 1000:
-                    labels[0].Text = s.Name;
-                    labels[1].SetName("");
-                    labels[2].Text = "";
-                    break;
-                case 500:
-                    labels[2].Text = s.Name;
-                    labels[0].Text = "";
-                    labels[1].SetName("");
-                    break;
-                default:
-                    labels[1].SetName(s);
-                    labels[0].Text = labels[2].Text = "";
-                    break;
-            }
+            labels[0].Text = e.Fleet;
+            labels[1].SetName(e.Ship);
+            labels[2].Text = e.Equip;
+            labels[3].Visible = e.Equip != "";
+            labels[3].BackColor = e.Color;
             lbp.Visible = true;
         }
 
@@ -558,9 +579,16 @@ namespace KancolleSniffer
         private void HideShipLabels()
         {
             panelShipList.SuspendLayout();
-            for (var i = 0; i < _shipList.Length; i++)
-                _labelPanelList[i].Visible = _checkBoxPanelList[i].Visible =
-                    _repairPanelList[i].Visible = _equipPanelList[i].Visible = false;
+            for (var i = 0; i < _labelPanelList.Count; i++)
+                _labelPanelList[i].Visible = _checkBoxPanelList[i].Visible = _repairPanelList[i].Visible = false;
+            panelShipList.ResumeLayout();
+        }
+
+        private void HideEquipLabels()
+        {
+            panelShipList.SuspendLayout();
+            foreach (var e in _equipPanelList)
+                e.Visible = false;
             panelShipList.ResumeLayout();
         }
 

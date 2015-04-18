@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 
@@ -28,6 +29,7 @@ namespace KancolleSniffer
         public string Name;
         public int Type;
         public string TypeName;
+        public int IconType;
         public int AntiAir;
         public int LoS;
 
@@ -95,6 +97,76 @@ namespace KancolleSniffer
                         return true;
                 }
                 return false;
+            }
+        }
+
+        public Color Color
+        {
+            get
+            {
+                switch (IconType)
+                {
+                    case 1:
+                    case 2:
+                    case 3: // 主砲
+                    case 13: // 徹甲弾
+                        return Color.FromArgb(209, 89, 89);
+                    case 4: // 副砲
+                        return Color.FromArgb(253, 233, 0);
+                    case 5: // 魚雷
+                        return Color.FromArgb(88, 134, 170);
+                    case 6: // 艦戦
+                        return Color.FromArgb(93, 179, 108);
+                    case 7: // 艦爆
+                        return Color.FromArgb(223, 102, 102);
+                    case 8: // 艦攻
+                        return Color.FromArgb(95, 173, 234);
+                    case 9: // 艦偵
+                        return Color.FromArgb(254, 191, 0);
+                    case 10: // 水上機
+                        return Color.FromArgb(142, 203, 152);
+                    case 11: // 電探
+                        return Color.FromArgb(231, 153, 53);
+                    case 12: // 三式弾
+                        return Color.FromArgb(69, 175, 88);
+                    case 14: // 応急修理要員
+                        return Color.FromArgb(254, 254, 254);
+                    case 15: // 機銃
+                    case 16: // 高角砲
+                        return Color.FromArgb(102, 204, 118);
+                    case 17: // 爆雷
+                    case 18: // ソナー
+                        return Color.FromArgb(126, 203, 215);
+                    case 19: // 缶
+                        return Color.FromArgb(254, 195, 77);
+                    case 20: // 大発
+                        return Color.FromArgb(154, 163, 90);
+                    case 21: // オートジャイロ
+                        return Color.FromArgb(99, 203, 115);
+                    case 22: // 対潜哨戒機
+                        return Color.FromArgb(125, 205, 217);
+                    case 23: // 追加装甲
+                        return Color.FromArgb(152, 124, 172);
+                    case 24: // 探照灯
+                    case 27: // 照明弾
+                        return Color.FromArgb(254, 155, 0);
+                    case 25: // ドラム缶
+                        return Color.FromArgb(161, 161, 160);
+                    case 26: // 艦艇修理施設
+                        return Color.FromArgb(175, 156, 126);
+                    case 28: // 司令部施設
+                        return Color.FromArgb(204, 172, 252);
+                    case 29: // 航空要員
+                        return Color.FromArgb(206, 166, 108);
+                    case 30: // 高射装置
+                        return Color.FromArgb(137, 153, 77);
+                    case 31: // 対地装備
+                        return Color.FromArgb(253, 49, 49);
+                    case 32: // 水上艦要員
+                        return Color.FromArgb(188, 238, 155);
+                    default:
+                        return SystemColors.Control;
+                }
             }
         }
     }
@@ -208,6 +280,7 @@ namespace KancolleSniffer
                     Name = (string)entry.api_name,
                     Type = (int)entry.api_type[2],
                     TypeName = dict[(int)entry.api_type[2]],
+                    IconType = (int)entry.api_type[3],
                     AntiAir = (int)entry.api_tyku,
                     LoS = (int)entry.api_saku
                 };
