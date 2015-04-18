@@ -229,7 +229,28 @@ namespace KancolleSniffer
             foreach (var e in ships.Zip(_friendHp, (ship, now) => new {ship, now}))
                 e.ship.NowHp = e.now;
             if (warnDamagedShip)
+            {
+                ConsumeDamageControlItem(ships);
                 UpdateDamgedShipNames(ships);
+            }
+        }
+
+
+        // HPが0の艦娘にダメコンか女神があったら消費する。
+        // 両方ある場合には前のスロットから消費する。
+        // 本当はどちらか選べるらしい。
+        private void ConsumeDamageControlItem(IEnumerable<ShipStatus> ships)
+        {
+            foreach (var s in ships.Where(s => s.NowHp == 0))
+            {
+                for (var i = 0; i < s.Slot.Length; i++)
+                {
+                    if (_itemInfo[s.Slot[i]].Type != 23)
+                        continue;
+                    s.Slot[i] = -1;
+                    break;
+                }
+            }
         }
 
         private void UpdateDamgedShipNames(IEnumerable<ShipStatus> ships)
@@ -286,7 +307,10 @@ namespace KancolleSniffer
             foreach (var e in ships.Zip(_friendHp.Concat(_guardHp), (ship, now) => new {ship, now}))
                 e.ship.NowHp = e.now;
             if (warnDamagedShip)
+            {
+                ConsumeDamageControlItem(ships);
                 UpdateDamgedShipNames(ships);
+            }
         }
 
         public void CauseCombinedBattleEscape()
