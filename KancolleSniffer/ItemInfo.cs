@@ -290,16 +290,20 @@ namespace KancolleSniffer
             return _itemSpecs[id];
         }
 
-        public ItemStatus[] GetItemList(ShipInfo ship)
+        public Dictionary<int, ItemStatus> ItemDict
+        {
+            get { return _itemInfo; }
+        }
+
+        public void SetItemOwner(ShipStatus[] shipList)
         {
             foreach (var e in _itemInfo)
                 e.Value.Ship = new ShipStatus();
-            foreach (var s in ship.ShipList)
+            foreach (var s in shipList)
             {
                 foreach (var id in s.Slot)
                     _itemInfo[id].Ship = s;
             }
-            return _itemInfo.Where(e => e.Key != -1).Select(e => e.Value).ToArray();
         }
 
         public void SaveState(Status status)

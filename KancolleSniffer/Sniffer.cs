@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Linq;
 
 namespace KancolleSniffer
 {
@@ -393,7 +394,11 @@ namespace KancolleSniffer
 
         public ItemStatus[] ItemList
         {
-            get { return _itemInfo.GetItemList(_shipInfo); }
+            get
+            {
+                _itemInfo.SetItemOwner(ShipList);
+                return (from e in _itemInfo.ItemDict where e.Key != -1 select e.Value).ToArray();
+            }
         }
 
         public AkashiTimer.RepairSpan[] GetAkashiTimers(int fleet)
