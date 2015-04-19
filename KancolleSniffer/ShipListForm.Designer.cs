@@ -209,7 +209,7 @@ namespace KancolleSniffer
             "分類",
             "修復",
             "装備",
-            "装着"});
+            "艦隊"});
             this.comboBoxGroup.Location = new System.Drawing.Point(6, 4);
             this.comboBoxGroup.Name = "comboBoxGroup";
             this.comboBoxGroup.Size = new System.Drawing.Size(48, 20);

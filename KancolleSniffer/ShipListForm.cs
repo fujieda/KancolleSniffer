@@ -660,7 +660,7 @@ namespace KancolleSniffer
 
         private bool InEquip()
         {
-            return comboBoxGroup.Text == "装着";
+            return comboBoxGroup.Text == "艦隊";
         }
 
         private void ShipListForm_Load(object sender, EventArgs e)
@@ -744,7 +744,7 @@ namespace KancolleSniffer
 
         private void ShipListForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'Q'},
+            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'X'},
                 x => x == char.ToUpper(e.KeyChar));
             if (g == -1)
                 return;
