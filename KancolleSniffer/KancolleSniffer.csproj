@@ -75,6 +75,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DockInfo.cs" />
+    <Compile Include="ItemTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="LogServer.cs" />
     <Compile Include="ShipLabels.cs" />

@@ -19,9 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using ContentAlignment = System.Drawing.ContentAlignment;
 
 namespace KancolleSniffer
 {
@@ -44,8 +42,6 @@ namespace KancolleSniffer
         private readonly List<Panel> _equipPanelList = new List<Panel>();
         public const int GroupCount = 4;
         private readonly HashSet<int>[] _groupSettings = new HashSet<int>[GroupCount];
-        private TreeNode _itemTreeNode;
-        private ItemStatus[] _prevItemList;
         private EquipColumn[] _equipList;
 
         public ShipListForm(Sniffer sniffer, Config config)
@@ -58,13 +54,12 @@ namespace KancolleSniffer
         public void UpdateList()
         {
             panelItemHeader.Visible = InItemList();
-            treeViewItem.Visible = InItemList();
+            itemTreeView.Visible = InItemList();
             if (InItemList())
             {
                 HideShipLabels();
                 HideEquipLabels();
-                if (CreateItemNodes())
-                    SetTreeViewItem();
+                itemTreeView.SetNodes(_sniffer.ItemList);
             }
             else if (InEquip())
             {
@@ -177,72 +172,6 @@ namespace KancolleSniffer
                 if (a.ExpToNext != b.ExpToNext)
                     return a.ExpToNext - b.ExpToNext;
                 return a.Spec.Id - b.Spec.Id;
-            }
-        }
-
-        private bool CreateItemNodes()
-        {
-            var itemList = _sniffer.ItemList;
-            if (_prevItemList != null && _prevItemList.SequenceEqual(itemList, new ItemStatusComparer()))
-                return false;
-            _prevItemList = itemList.Select(CloneItemStatus).ToArray();
-            var grouped = from byId in
-                (from item in itemList where item.Spec.Id != -1
-                    orderby item.Spec.Type, item.Spec.Id, item.Level descending, item.Ship.Spec.Id
-                    group item by new {item.Spec.Id, item.Level})
-                group byId by byId.First().Spec.Type;
-            _itemTreeNode = new TreeNode();
-            foreach (var byType in grouped)
-            {
-                var typeName = byType.First().First().Spec.TypeName;
-                var typeNode = new TreeNode();
-                typeNode.Name = typeNode.Text = typeName;
-                _itemTreeNode.Nodes.Add(typeNode);
-                foreach (var byItem in byType)
-                {
-                    var item = byItem.First();
-                    var itemNode = new TreeNode();
-                    itemNode.Name = itemNode.Text = item.Spec.Name + (item.Level == 0 ? "" : "★" + item.Level);
-                    typeNode.Nodes.Add(itemNode);
-
-                    var shipGroup = (from i in byItem group i.Ship by i.Ship.Id).ToArray();
-                    foreach (var name in
-                        from grp in shipGroup where grp.Key != -1
-                        let ship = grp.First()
-                        select (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") +
-                               ship.Name + "Lv" + ship.Level + "×" + grp.Count())
-                    {
-                        itemNode.Nodes.Add(name, name);
-                    }
-                    foreach (var name in (from grp in shipGroup where grp.Key == -1 select "未装備×" + grp.Count()))
-                    {
-                        itemNode.Nodes.Add(name, name);
-                    }
-                }
-            }
-            return true;
-        }
-
-        private ItemStatus CloneItemStatus(ItemStatus org)
-        {
-            return new ItemStatus
-            {
-                Level = org.Level,
-                Spec = org.Spec,
-                Ship = new ShipStatus {Id = org.Ship.Id, Fleet = org.Ship.Fleet}
-            };
-        }
-
-        private class ItemStatusComparer : IEqualityComparer<ItemStatus>
-        {
-            public bool Equals(ItemStatus x, ItemStatus y)
-            {
-                return x.Level == y.Level && x.Spec == y.Spec && x.Ship.Id == y.Ship.Id && x.Ship.Fleet == y.Ship.Fleet;
-            }
-
-            public int GetHashCode(ItemStatus obj)
-            {
-                return obj.Level + obj.Spec.GetHashCode() + obj.Ship.GetHashCode();
             }
         }
 
@@ -593,52 +522,6 @@ namespace KancolleSniffer
             panelShipList.ResumeLayout();
         }
 
-        [DllImport("user32.dll")]
-        private static extern int GetScrollPos(IntPtr hWnd, int nBar);
-
-        [DllImport("user32.dll")]
-        private static extern int SetScrollPos(IntPtr hWnd, int nBar, int nPos, bool bRedraw);
-
-        private void SetTreeViewItem()
-        {
-            var y = GetScrollPos(treeViewItem.Handle, 1);
-            treeViewItem.BeginUpdate();
-            var save = SaveTreeViewState(treeViewItem.Nodes);
-            treeViewItem.Nodes.Clear();
-            foreach (TreeNode child in _itemTreeNode.Nodes)
-                treeViewItem.Nodes.Add(child);
-            RestoreTreeViewState(treeViewItem.Nodes, save.Nodes);
-            treeViewItem.EndUpdate();
-            SetScrollPos(treeViewItem.Handle, 1, y, true);
-        }
-
-        private TreeNode SaveTreeViewState(TreeNodeCollection nodes)
-        {
-            var result = new TreeNode();
-            foreach (TreeNode child in nodes)
-            {
-                var copy = SaveTreeViewState(child.Nodes);
-                if (child.IsExpanded)
-                    copy.Expand();
-                copy.Name = child.Name;
-                result.Nodes.Add(copy);
-            }
-            return result;
-        }
-
-        private void RestoreTreeViewState(TreeNodeCollection dst, TreeNodeCollection src)
-        {
-            foreach (TreeNode d in dst)
-            {
-                var s = src[d.Name];
-                if (s == null)
-                    continue;
-                if (s.IsExpanded)
-                    d.Expand();
-                RestoreTreeViewState(d.Nodes, s.Nodes);
-            }
-        }
-
         private bool InShipStatus()
         {
             return Array.Exists(new[] {"全員", "A", "B", "C", "D"}, x => comboBoxGroup.Text == x);
@@ -768,7 +651,7 @@ namespace KancolleSniffer
         // マウスホイールでスクロールするためにコントロールにフォーカスを合わせる。
         private void SetActiveControl()
         {
-            ActiveControl = InItemList() ? (Control)treeViewItem : panelShipList;
+            ActiveControl = InItemList() ? (Control)itemTreeView : panelShipList;
         }
     }
 }
