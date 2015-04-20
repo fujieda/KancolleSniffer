@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
@@ -58,29 +57,44 @@ namespace KancolleSniffer
         private void CreateEquipList(Sniffer sniffer)
         {
             var list = new List<EquipColumn>();
-            var fleet = new[] { "第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊" };
-            for (var i = 0; i < fleet.Length; i++)
+            var fn = new[] { "第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊" };
+            for (var f = 0; f < fn.Length; f++)
             {
-                list.Add(new EquipColumn { Fleet = fleet[i] });
-                foreach (var s in sniffer.GetShipStatuses(i))
+                var drumTotal = 0;
+                var drumShips = 0;
+                var ships = new List<EquipColumn>();
+                foreach (var s in sniffer.GetShipStatuses(f))
                 {
-                    list.Add(new EquipColumn { Ship = s.Name, Id = s.Id });
-                    list.AddRange(
-                        (from e in Enumerable.Range(0, s.Slot.Length)
-                         let slot = s.Slot[e]
-                         let onslot = s.OnSlot[e]
-                         let max = s.Spec.MaxEq[e]
-                         where slot != -1
-                         let item = sniffer.Item.ItemDict[slot]
-                         select
-                             new EquipColumn
-                             {
-                                 Equip = item.Spec.Name + (item.Level == 0 ? "" : "★" + item.Level) +
-                                         (!item.Spec.IsAircraft ? "" : " " + onslot + "/" + max),
-                                 Color = item.Spec.Color
-                             })
-                            .DefaultIfEmpty(new EquipColumn { Equip = "なし" }));
+                    var drum = 0;
+                    var equips = new List<EquipColumn>();
+                    for (var i = 0; i < s.Slot.Length; i++)
+                    {
+                        var slot = s.Slot[i];
+                        var onslot = s.OnSlot[i];
+                        var max = s.Spec.MaxEq[i];
+                        if (slot == -1)
+                            continue;
+                        var item = sniffer.Item.ItemDict[slot];
+                        if (item.Spec.Name == "ドラム缶(輸送用)")
+                            drum++;
+                        equips.Add(new EquipColumn
+                        {
+                            Equip = item.Spec.Name + (item.Level == 0 ? "" : "★" + item.Level) +
+                                    (!item.Spec.IsAircraft ? "" : " " + onslot + "/" + max),
+                            Color = item.Spec.Color
+                        });
+                    }
+                    if (drum != 0)
+                        drumShips++;
+                    drumTotal += drum;
+                    ships.Add(new EquipColumn { Ship = s.Name, Id = s.Id });
+                    ships.AddRange(equips);
                 }
+                list.Add(new EquipColumn
+                {
+                    Fleet = fn[f] + (drumTotal == 0 ? "" : " ドラム缶" + drumTotal + "(" + drumShips + "隻)")
+                });
+                list.AddRange(ships);
             }
             _equipList = list.ToArray();
         }
