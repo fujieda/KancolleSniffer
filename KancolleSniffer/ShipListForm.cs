@@ -105,6 +105,7 @@ namespace KancolleSniffer
         {
             public string Fleet { get; set; }
             public string Ship { get; set; }
+            public int Id { get; set; }
             public string Equip { get; set; }
             public Color Color { get; set; }
 
@@ -125,7 +126,7 @@ namespace KancolleSniffer
                 foreach (var s in _sniffer.GetShipStatuses(i))
                 {
                     s.Fleet = -1;
-                    list.Add(new EquipColumn {Ship = s.Name});
+                    list.Add(new EquipColumn {Ship = s.Name, Id = s.Id});
                     list.AddRange(
                         (from e in Enumerable.Range(0, s.Slot.Length)
                             let slot = s.Slot[e]
@@ -707,10 +708,21 @@ namespace KancolleSniffer
 
         public void ShowShip(int id)
         {
-            var i = Array.FindIndex(_shipList, s => s.Id == id);
-            if (i == -1)
-                return;
-            var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * 16 * i);
+            var y = 0;
+            if (InShipStatus())
+            {
+                var i = Array.FindIndex(_shipList, s => s.Id == id);
+                if (i == -1)
+                    return;
+                y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
+            }
+            else if (InEquip())
+            {
+                var i = Array.FindIndex(_equipList, e => e.Id == id);
+                if (i == -1)
+                    return;
+                y = (int)Math.Round(ShipLabel.ScaleFactor.Height * (LineHeight - 2) * i);
+            }
             panelShipList.AutoScrollPosition = new Point(0, y);
         }
 
