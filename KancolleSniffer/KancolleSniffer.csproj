@@ -75,6 +75,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DockInfo.cs" />
+    <Compile Include="EquipPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ItemTreeView.cs">
       <SubType>Component</SubType>
     </Compile>

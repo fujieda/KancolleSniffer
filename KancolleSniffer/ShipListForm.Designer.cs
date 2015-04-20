@@ -65,6 +65,7 @@ namespace KancolleSniffer
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.panelItemHeader = new System.Windows.Forms.Panel();
+            this.equipPanel = new KancolleSniffer.EquipPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
             this.panelShipList.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
@@ -77,6 +78,7 @@ namespace KancolleSniffer
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panelShipList.AutoScroll = true;
             this.panelShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelShipList.Controls.Add(this.equipPanel);
             this.panelShipList.Controls.Add(this.itemTreeView);
             this.panelShipList.Location = new System.Drawing.Point(6, 23);
             this.panelShipList.Name = "panelShipList";
@@ -207,7 +209,6 @@ namespace KancolleSniffer
             this.comboBoxGroup.Size = new System.Drawing.Size(48, 20);
             this.comboBoxGroup.TabIndex = 1;
             this.comboBoxGroup.SelectedIndexChanged += new System.EventHandler(this.comboBoxGroup_SelectedIndexChanged);
-            this.comboBoxGroup.DropDownClosed += new System.EventHandler(this.comboBoxGroup_DropDownClosed);
             // 
             // label12
             // 
@@ -262,6 +263,15 @@ namespace KancolleSniffer
             this.panelItemHeader.Name = "panelItemHeader";
             this.panelItemHeader.Size = new System.Drawing.Size(166, 19);
             this.panelItemHeader.TabIndex = 0;
+            // 
+            // equipPanel
+            // 
+            this.equipPanel.AutoScroll = true;
+            this.equipPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.equipPanel.Location = new System.Drawing.Point(0, 0);
+            this.equipPanel.Name = "equipPanel";
+            this.equipPanel.Size = new System.Drawing.Size(236, 261);
+            this.equipPanel.TabIndex = 1;
             // 
             // itemTreeView
             // 
@@ -325,6 +335,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel panelItemHeader;
+        private EquipPanel equipPanel;
         private ItemTreeView itemTreeView;
     }
 }
