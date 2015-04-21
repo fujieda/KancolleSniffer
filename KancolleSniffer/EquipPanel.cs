@@ -37,6 +37,7 @@ namespace KancolleSniffer
             public int Id { get; set; }
             public string Equip { get; set; }
             public Color Color { get; set; }
+            public string Spec { get; set; }
 
             public EquipColumn()
             {
@@ -57,7 +58,7 @@ namespace KancolleSniffer
         private void CreateEquipList(Sniffer sniffer)
         {
             var list = new List<EquipColumn>();
-            var fn = new[] { "第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊" };
+            var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             for (var f = 0; f < fn.Length; f++)
             {
                 var drumTotal = 0;
@@ -87,7 +88,14 @@ namespace KancolleSniffer
                     if (drum != 0)
                         drumShips++;
                     drumTotal += drum;
-                    ships.Add(new EquipColumn { Ship = s.Name, Id = s.Id });
+                    var rfp = s.RealFirepower;
+                    var ras = s.RealAntiSubmarine;
+                    ships.Add(new EquipColumn
+                    {
+                        Ship = s.Name,
+                        Id = s.Id,
+                        Spec = (rfp == 0 ? "" : "砲" + rfp) + (ras == 0 ? "" : " 潜" + ras)
+                    });
                     ships.AddRange(equips);
                 }
                 list.Add(new EquipColumn
@@ -122,7 +130,8 @@ namespace KancolleSniffer
                 new ShipLabel {Location = new Point(1, 2), AutoSize = true},
                 new ShipLabel {Location = new Point(10, 2), AutoSize = true},
                 new ShipLabel {Location = new Point(40, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(37, 2), Size = new Size(4, LabelHeight - 2)}
+                new ShipLabel {Location = new Point(37, 2), Size = new Size(4, LabelHeight - 2)},
+                new ShipLabel {Location = new Point(217, 2), AutoSize = true, AnchorRight = true}
             };
             _labelList.Add(labels);
             _panelList.Add(lbp);
@@ -157,6 +166,7 @@ namespace KancolleSniffer
             labels[2].Text = e.Equip;
             labels[3].Visible = e.Equip != "";
             labels[3].BackColor = e.Color;
+            labels[4].Text = e.Spec;
             lbp.Visible = true;
         }
 

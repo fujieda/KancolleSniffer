@@ -76,9 +76,11 @@ namespace KancolleSniffer
         public int ShipType { get; set; }
         public string ShipTypeName { get; set; }
 
-        public bool IsSubmarine
+        public ShipSpec()
         {
-            get { return ShipType == 13 || ShipType == 14; }
+            Id = -1;
+            Name = "";
+            MaxEq = new int[0];
         }
 
         public double RepairWeight
@@ -101,6 +103,7 @@ namespace KancolleSniffer
                     case 7: // 軽空母
                     case 8: // 高速戦艦
                     case 20: // 潜水母艦
+                    case 21: // 練習巡洋艦
                         return 1.5;
                     case 9: // 低速戦艦
                     case 10: // 航空戦艦
@@ -113,11 +116,35 @@ namespace KancolleSniffer
             }
         }
 
-        public ShipSpec()
+        public bool IsSubmarine
         {
-            Id = -1;
-            Name = "";
-            MaxEq = new int[0];
+            get { return ShipType == 13 || ShipType == 14; }
+        }
+
+        public bool IsAircraftCarrier
+        {
+            get { return ShipType == 7 || ShipType == 11 || ShipType == 18; }
+        }
+
+        public bool IsAntiSubmarine
+        {
+            get
+            {
+                switch (ShipType)
+                {
+                    case 2: // 駆逐
+                    case 3: // 軽巡
+                    case 4: // 雷巡
+                    case 6: // 航巡
+                    case 7: // 軽空
+                    case 10: // 航戦
+                    case 16: // 水母
+                    case 17: // 揚陸艦
+                    case 21: // 練巡
+                        return true;
+                }
+                return false;
+            }
         }
     }
 }

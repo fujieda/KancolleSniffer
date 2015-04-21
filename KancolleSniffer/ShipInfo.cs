@@ -24,6 +24,7 @@ namespace KancolleSniffer
 {
     public class ShipStatus
     {
+        private readonly ItemInfo _itemInfo;
         public int Id { get; set; }
         public int Fleet { get; set; } // ShipListだけで使う
         public ShipSpec Spec { get; set; }
@@ -43,14 +44,17 @@ namespace KancolleSniffer
         public int[] OnSlot { get; set; }
         public int[] Slot { get; set; }
         public int LoS { get; set; }
+        public int Firepower { get; set; }
+        public int AntiSubmarine { get; set; }
 
         public Damage DamageLevel
         {
             get { return CalcDamage(NowHp, MaxHp); }
         }
 
-        public ShipStatus()
+        public ShipStatus(ItemInfo itemInfo = null)
         {
+            _itemInfo = itemInfo;
             Id = -1;
             Spec = new ShipSpec();
             OnSlot = new int[0];
@@ -96,6 +100,59 @@ namespace KancolleSniffer
             var damage = MaxHp - NowHp;
             fuel = (int)(Spec.FuelMax * 0.2 * 0.16 * damage);
             steal = (int)(Spec.FuelMax * 0.2 * 0.3 * damage);
+        }
+
+        public int RealFirepower
+        {
+            get
+            {
+                if (Spec.IsSubmarine)
+                    return 0;
+                if (!Spec.IsAircraftCarrier)
+                    return Firepower + 5;
+                var specs = (from id in Slot
+                    let spec = _itemInfo.ItemDict[id].Spec
+                    where spec.IsAircraft
+                    select new {torpedo = spec.Torpedo, bomber = spec.Bomber}).ToArray();
+                var torpedo = specs.Sum(s => s.torpedo);
+                var bomber = specs.Sum(s => s.bomber);
+                if (torpedo == 0 && bomber == 0)
+                    return 0;
+                return (int)((Firepower + torpedo) * 1.5 + bomber * 2 + 55);
+            }
+        }
+
+        public int RealAntiSubmarine
+        {
+            get
+            {
+                if (!Spec.IsAntiSubmarine)
+                    return 0;
+                if (Spec.IsAircraftCarrier && RealFirepower == 0) // 砲撃戦に参加しない
+                    return 0;
+                var sonar = 0;
+                var dc = 0;
+                var aircraft = 0;
+                var all = 0;
+                var vanilla = AntiSubmarine;
+                foreach (var spec in Slot.Select(id => _itemInfo.ItemDict[id].Spec))
+                {
+                    vanilla -= spec.AntiSubmarine;
+                    if (spec.IsReconSeaplane) // 水偵は除外
+                        continue;
+                    if (spec.IsSonar)
+                        sonar += spec.AntiSubmarine;
+                    else if (spec.IsDepthCharge)
+                        dc += spec.AntiSubmarine;
+                    else if (spec.IsAircraft)
+                        aircraft += spec.AntiSubmarine;
+                    all += spec.AntiSubmarine;
+                }
+                if (vanilla == 0 && aircraft == 0) // 素対潜0で航空機なしは対潜攻撃なし
+                    return 0;
+                var bonus = sonar > 0 && dc > 0 ? 1.15 : 1.0;
+                return (int)(bonus * (vanilla / 5 + all * 2 + (aircraft > 0 ? 10 : 25)));
+            }
         }
     }
 
@@ -215,7 +272,7 @@ namespace KancolleSniffer
         {
             foreach (var entry in json)
             {
-                _shipInfo[(int)entry.api_id] = new ShipStatus
+                _shipInfo[(int)entry.api_id] = new ShipStatus(_itemInfo)
                 {
                     Id = (int)entry.api_id,
                     Spec = _shipMaster[(int)entry.api_ship_id],
@@ -228,7 +285,9 @@ namespace KancolleSniffer
                     Bull = (int)entry.api_bull,
                     OnSlot = (int[])entry.api_onslot,
                     Slot = (int[])entry.api_slot,
-                    LoS = (int)entry.api_sakuteki[0]
+                    LoS = (int)entry.api_sakuteki[0],
+                    Firepower = (int)entry.api_karyoku[0],
+                    AntiSubmarine = (int)entry.api_taisen[0]
                 };
                 _itemInfo.CountNewItems((int[])entry.api_slot);
             }
@@ -356,7 +415,8 @@ namespace KancolleSniffer
         public ShipStatus[] GetShipStatuses(int fleet)
         {
             return
-                (from id in _decks[fleet] where id != -1
+                (from id in _decks[fleet]
+                    where id != -1
                     select _escapedShips.Contains(id) ? new ShipStatus() : _shipInfo[id]).ToArray();
         }
 

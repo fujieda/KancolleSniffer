@@ -32,6 +32,9 @@ namespace KancolleSniffer
         public int IconType;
         public int AntiAir;
         public int LoS;
+        public int AntiSubmarine;
+        public int Torpedo;
+        public int Bomber;
 
         public ItemSpec()
         {
@@ -98,6 +101,25 @@ namespace KancolleSniffer
                 }
                 return false;
             }
+        }
+
+        public bool IsSonar
+        {
+            get
+            {
+                return Type == 14 || // ソナー
+                       Type == 40; // 大型ソナー
+            }
+        }
+
+        public bool IsDepthCharge
+        {
+            get { return Type == 15; }
+        }
+
+        public bool IsReconSeaplane
+        {
+            get { return Type == 10; }
         }
 
         public Color Color
@@ -282,7 +304,10 @@ namespace KancolleSniffer
                     TypeName = dict[(int)entry.api_type[2]],
                     IconType = (int)entry.api_type[3],
                     AntiAir = (int)entry.api_tyku,
-                    LoS = (int)entry.api_saku
+                    LoS = (int)entry.api_saku,
+                    AntiSubmarine = (int)entry.api_tais,
+                    Torpedo = (int)entry.api_raig,
+                    Bomber = (int)entry.api_baku
                 };
             }
             _itemSpecs[-1] = new ItemSpec();
