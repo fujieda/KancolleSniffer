@@ -247,6 +247,7 @@ namespace KancolleSniffer
                 {
                     if (_itemInfo[s.Slot[i]].Type != 23)
                         continue;
+                    _itemInfo.DeleteItems(new []{s.Slot[i]});
                     s.Slot[i] = -1;
                     break;
                 }
