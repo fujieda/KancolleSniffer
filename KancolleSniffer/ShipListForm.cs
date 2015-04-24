@@ -306,7 +306,7 @@ namespace KancolleSniffer
             }
             for (var i = _shipList.Length; i < _labelPanelList.Count; i++)
             {
-                _labelPanelList[i].Visible = _checkBoxPanelList[i].Visible = _repairPanelList[i].Visible;
+                _labelPanelList[i].Visible = _checkBoxPanelList[i].Visible = _repairPanelList[i].Visible = false;
             }
             panelShipList.ResumeLayout();
         }
