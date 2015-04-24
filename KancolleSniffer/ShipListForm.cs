@@ -356,6 +356,7 @@ namespace KancolleSniffer
             if (s.Level == 1000)
             {
                 SetShipType(i);
+                cbp.Visible = false;
                 return;
             }
             if (!cbp.Visible)
@@ -377,6 +378,7 @@ namespace KancolleSniffer
             if (s.Level == 1000)
             {
                 SetShipType(i);
+                rpp.Visible = false;
                 return;
             }
             if (!rpp.Visible)
