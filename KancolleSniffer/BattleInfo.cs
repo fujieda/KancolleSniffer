@@ -159,6 +159,8 @@ namespace KancolleSniffer
                 CalcSimpleDamage(json.api_kouku2.api_stage3, _friendHp, _enemyHp);
             if (!json.api_opening_atack()) // 航空戦のみ
                 return;
+            if (json.api_support_info() && json.api_support_info != null)
+                CalcSupportDamage(json.api_support_info);
             if (json.api_opening_atack != null)
                 CalcSimpleDamage(json.api_opening_atack, _friendHp, _enemyHp);
             if (json.api_hougeki1 != null)
@@ -167,6 +169,18 @@ namespace KancolleSniffer
                 CalcHougekiDamage(json.api_hougeki2, _friendHp, _enemyHp);
             if (json.api_raigeki != null)
                 CalcSimpleDamage(json.api_raigeki, _friendHp, _enemyHp);
+        }
+
+        private void CalcSupportDamage(dynamic json)
+        {
+            if (json.api_support_hourai != null)
+                CalcSimpleDamage(json.api_support_hourai.api_damage, _enemyHp);
+            else if (json.api_support_airatack != null)
+            {
+                var stage3 = json.api_support_airatack.api_stage3;
+                if (stage3 != null)
+                    CalcSimpleDamage(stage3.api_edam, _enemyHp);
+            }
         }
 
         private bool IsNightBattle(dynamic json)
@@ -247,7 +261,7 @@ namespace KancolleSniffer
                 {
                     if (_itemInfo[s.Slot[i]].Type != 23)
                         continue;
-                    _itemInfo.DeleteItems(new []{s.Slot[i]});
+                    _itemInfo.DeleteItems(new[] {s.Slot[i]});
                     s.Slot[i] = -1;
                     break;
                 }
@@ -337,6 +351,8 @@ namespace KancolleSniffer
             }
             if (!json.api_opening_atack()) // 航空戦のみ
                 return;
+            if (json.api_support_info() && json.api_support_info != null)
+                CalcSupportDamage(json.api_support_info);
             if (json.api_opening_atack != null)
                 CalcSimpleDamage(json.api_opening_atack.api_fdam, _guardHp);
             if (json.api_hougeki1 != null)
@@ -356,6 +372,8 @@ namespace KancolleSniffer
                 CalcSimpleDamage(kouku.api_stage3, _friendHp, _enemyHp);
             if (kouku.api_stage3_combined != null)
                 CalcSimpleDamage(kouku.api_stage3_combined.api_fdam, _guardHp);
+            if (json.api_support_info() && json.api_support_info != null)
+                CalcSupportDamage(json.api_support_info);
             if (json.api_opening_atack != null)
                 CalcSimpleDamage(json.api_opening_atack, _guardHp, _enemyHp);
             if (json.api_hougeki1 != null)

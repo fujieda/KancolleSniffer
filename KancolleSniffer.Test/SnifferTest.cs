@@ -202,6 +202,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 支援射撃による敵の損傷を勝利判定に反映させる
+        /// </summary>
+        [TestMethod]
+        public void SupportShellingChangeResultRank()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "support_001");
+            PAssert.That(()=> sniffer.Battle.ResultRank == BattleResultRank.A);
+        }
+
+        /// <summary>
         /// 編成で空き番号を使ったローテートを正しく反映する
         /// </summary>
         [TestMethod]
