@@ -151,24 +151,48 @@ namespace KancolleSniffer
                 select (int)Math.Floor(spec.AntiAir * Math.Sqrt(slot.max))).DefaultIfEmpty().Sum();
         }
 
-        private void CalcDamage(dynamic json)
+        private void CalcDamage(dynamic json, bool surfaceFleet = false)
         {
+            var combined = json.api_nowhps_combined();
             if (json.api_kouku.api_stage3 != null)
                 CalcSimpleDamage(json.api_kouku.api_stage3, _friendHp, _enemyHp);
-            if (json.api_kouku2() && json.api_kouku2.api_stage3 != null) // 航空戦2回目
-                CalcSimpleDamage(json.api_kouku2.api_stage3, _friendHp, _enemyHp);
+            if (json.api_kouku.api_stage3_combined() && json.api_kouku.api_stage3_combined != null)
+                CalcSimpleDamage(json.api_kouku.api_stage3_combined.api_fdam, _guardHp);
+            if (json.api_kouku2()) // 航空戦2回目
+            {
+                if (json.api_kouku2.api_stage3 != null)
+                    CalcSimpleDamage(json.api_kouku2.api_stage3, _friendHp, _enemyHp);
+                if (json.api_kouku2.api_stage3_combined() && json.api_kouku2.api_stage3_combined != null)
+                    CalcSimpleDamage(json.api_kouku2.api_stage3_combined.api_fdam, _guardHp);
+            }
             if (!json.api_opening_atack()) // 航空戦のみ
                 return;
             if (json.api_support_info() && json.api_support_info != null)
                 CalcSupportDamage(json.api_support_info);
             if (json.api_opening_atack != null)
-                CalcSimpleDamage(json.api_opening_atack, _friendHp, _enemyHp);
+            {
+                var friend = combined ? _guardHp : _friendHp; // 雷撃の対象は護衛
+                CalcSimpleDamage(json.api_opening_atack, friend, _enemyHp);
+            }
             if (json.api_hougeki1 != null)
-                CalcHougekiDamage(json.api_hougeki1, _friendHp, _enemyHp);
+            {
+                var friend = combined && !surfaceFleet ? _guardHp : _friendHp; // 空母機動部隊は一巡目が護衛
+                CalcHougekiDamage(json.api_hougeki1, friend, _enemyHp);
+            }
             if (json.api_hougeki2 != null)
+            {
                 CalcHougekiDamage(json.api_hougeki2, _friendHp, _enemyHp);
-            if (json.api_raigeki != null)
-                CalcSimpleDamage(json.api_raigeki, _friendHp, _enemyHp);
+            }
+            if (json.api_hougeki3() && json.api_hougeki3 != null)
+            {
+                var friend = combined && surfaceFleet ? _guardHp : _friendHp; // 水上打撃部隊は三順目が護衛
+                CalcHougekiDamage(json.api_hougeki3, friend, _enemyHp);
+            }
+            if (json.api_raigeki() && json.api_raigeki != null)
+            {
+                var friend = combined ? _guardHp : _friendHp;
+                CalcSimpleDamage(json.api_raigeki, friend, _enemyHp);
+            }
         }
 
         private void CalcSupportDamage(dynamic json)
@@ -285,16 +309,9 @@ namespace KancolleSniffer
             ShowResultCombined(false);
             SetupHp(json);
             if (IsNightBattle(json))
-            {
                 CalcHougekiDamage(json.api_hougeki, _guardHp, _enemyHp);
-            }
             else
-            {
-                if (surfaceFleet)
-                    CalcDamageCombinedFleetSurface(json);
-                else
-                    CalcDamageCombinedFleetAir(json);
-            }
+                CalcDamage(json, surfaceFleet);
             ClearOverKill(_friendHp);
             ClearOverKill(_guardHp);
             ClearOverKill(_enemyHp);
@@ -332,58 +349,6 @@ namespace KancolleSniffer
         {
             _shipInfo.SetEscapedShips(_escapingShips);
             UpdateDamgedShipNames(_shipInfo.GetShipStatuses(0).Concat(_shipInfo.GetShipStatuses(1)));
-        }
-
-        private void CalcDamageCombinedFleetAir(dynamic json)
-        {
-            var kouku = json.api_kouku;
-            if (kouku.api_stage3 != null)
-                CalcSimpleDamage(kouku.api_stage3, _friendHp, _enemyHp);
-            if (kouku.api_stage3_combined != null)
-                CalcSimpleDamage(kouku.api_stage3_combined.api_fdam, _guardHp);
-            if (json.api_kouku2()) // 航空戦2回目
-            {
-                kouku = json.api_kouku2;
-                if (kouku.api_stage3 != null)
-                    CalcSimpleDamage(kouku.api_stage3, _friendHp, _enemyHp);
-                if (kouku.api_stage3_combined != null)
-                    CalcSimpleDamage(kouku.api_stage3_combined.api_fdam, _guardHp);
-            }
-            if (!json.api_opening_atack()) // 航空戦のみ
-                return;
-            if (json.api_support_info() && json.api_support_info != null)
-                CalcSupportDamage(json.api_support_info);
-            if (json.api_opening_atack != null)
-                CalcSimpleDamage(json.api_opening_atack.api_fdam, _guardHp);
-            if (json.api_hougeki1 != null)
-                CalcHougekiDamage(json.api_hougeki1, _guardHp, _enemyHp);
-            if (json.api_hougeki2() && json.api_hougeki2 != null)
-                CalcHougekiDamage(json.api_hougeki2, _friendHp, _enemyHp);
-            if (json.api_hougeki3() && json.api_hougeki3 != null)
-                CalcHougekiDamage(json.api_hougeki3, _friendHp, _enemyHp);
-            if (json.api_raigeki() && json.api_raigeki != null)
-                CalcSimpleDamage(json.api_raigeki, _guardHp, _enemyHp);
-        }
-
-        private void CalcDamageCombinedFleetSurface(dynamic json)
-        {
-            var kouku = json.api_kouku;
-            if (kouku.api_stage3 != null)
-                CalcSimpleDamage(kouku.api_stage3, _friendHp, _enemyHp);
-            if (kouku.api_stage3_combined != null)
-                CalcSimpleDamage(kouku.api_stage3_combined.api_fdam, _guardHp);
-            if (json.api_support_info() && json.api_support_info != null)
-                CalcSupportDamage(json.api_support_info);
-            if (json.api_opening_atack != null)
-                CalcSimpleDamage(json.api_opening_atack, _guardHp, _enemyHp);
-            if (json.api_hougeki1 != null)
-                CalcHougekiDamage(json.api_hougeki1, _friendHp, _enemyHp);
-            if (json.api_hougeki2() && json.api_hougeki2 != null)
-                CalcHougekiDamage(json.api_hougeki2, _friendHp, _enemyHp);
-            if (json.api_hougeki3() && json.api_hougeki3 != null)
-                CalcHougekiDamage(json.api_hougeki3, _guardHp, _enemyHp);
-            if (json.api_raigeki() && json.api_raigeki != null)
-                CalcSimpleDamage(json.api_raigeki, _guardHp, _enemyHp);
         }
 
         // 以下のコードは航海日誌拡張版の以下のファイルのcalcResultRankを移植したもの
