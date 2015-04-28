@@ -38,10 +38,8 @@ namespace KancolleSniffer
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
         private int _fleet;
-        private int[] _friendHp;
-        private int[] _friendStartHp;
-        private int[] _guardHp;
-        private int[] _guardStartHp;
+        private Record[] _friend;
+        private Record[] _guard;
         private int[] _enemyHp;
         private int[] _enemyStartHp;
         private readonly List<int> _escapingShips = new List<int>();
@@ -67,14 +65,12 @@ namespace KancolleSniffer
             Formation = FormationName(json);
             EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
             AirControlLevel = CheckAirControlLevel(json);
-            _fleet = (int)DeckId(json);
             ShowResult(false); // 昼戦の結果を夜戦のときに表示する
             SetupHp(json);
             if (IsNightBattle(json))
-                CalcHougekiDamage(json.api_hougeki, _friendHp, _enemyHp);
+                CalcHougekiDamage(json.api_hougeki, _friend, _enemyHp);
             else
                 CalcDamage(json);
-            ClearOverKill(_friendHp);
             ClearOverKill(_enemyHp);
             ResultRank = CalcResultRank();
         }
@@ -108,27 +104,34 @@ namespace KancolleSniffer
 
         private void SetupHp(dynamic json)
         {
-            if (_friendHp != null)
+            if (_friend != null)
                 return;
+            var combined = json.api_nowhps_combined();
             var nowhps = (int[])json.api_nowhps;
-            _friendHp = nowhps.Skip(1).Take(6).TakeWhile(hp => hp != -1).ToArray();
-            _friendStartHp = (int[])_friendHp.Clone();
+            _fleet = combined ? 0 : DeckId(json);
+            _friend = Record.Setup(
+                nowhps, (int[])json.api_maxhps,
+                _shipInfo.GetShipStatuses(_fleet).Select(s => s.Slot).ToArray(),
+                _itemInfo);
             _enemyHp = nowhps.Skip(7).TakeWhile(hp => hp != -1).ToArray();
             _enemyStartHp = (int[])_enemyHp.Clone();
-            if (json.api_nowhps_combined())
+            if (combined)
             {
-                _guardHp = ((int[])json.api_nowhps_combined).Skip(1).ToArray();
-                _guardStartHp = (int[])_guardHp.Clone();
+                _guard = Record.Setup(
+                    (int[])json.api_nowhps_combined,
+                    (int[])json.api_maxhps_combined,
+                    _shipInfo.GetShipStatuses(1).Select(s => s.Slot).ToArray(),
+                    _itemInfo);
             }
             else
             {
-                _guardHp = _guardStartHp = new int[0];
+                _guard = new Record[0];
             }
         }
 
         private void CleanupHp()
         {
-            _friendHp = null;
+            _friend = null;
         }
 
         private int CheckAirControlLevel(dynamic json)
@@ -155,15 +158,15 @@ namespace KancolleSniffer
         {
             var combined = json.api_nowhps_combined();
             if (json.api_kouku.api_stage3 != null)
-                CalcSimpleDamage(json.api_kouku.api_stage3, _friendHp, _enemyHp);
+                CalcSimpleDamage(json.api_kouku.api_stage3, _friend, _enemyHp);
             if (json.api_kouku.api_stage3_combined() && json.api_kouku.api_stage3_combined != null)
-                CalcSimpleDamage(json.api_kouku.api_stage3_combined.api_fdam, _guardHp);
+                CalcSimpleDamage(json.api_kouku.api_stage3_combined.api_fdam, _guard);
             if (json.api_kouku2()) // 航空戦2回目
             {
                 if (json.api_kouku2.api_stage3 != null)
-                    CalcSimpleDamage(json.api_kouku2.api_stage3, _friendHp, _enemyHp);
+                    CalcSimpleDamage(json.api_kouku2.api_stage3, _friend, _enemyHp);
                 if (json.api_kouku2.api_stage3_combined() && json.api_kouku2.api_stage3_combined != null)
-                    CalcSimpleDamage(json.api_kouku2.api_stage3_combined.api_fdam, _guardHp);
+                    CalcSimpleDamage(json.api_kouku2.api_stage3_combined.api_fdam, _guard);
             }
             if (!json.api_opening_atack()) // 航空戦のみ
                 return;
@@ -171,26 +174,26 @@ namespace KancolleSniffer
                 CalcSupportDamage(json.api_support_info);
             if (json.api_opening_atack != null)
             {
-                var friend = combined ? _guardHp : _friendHp; // 雷撃の対象は護衛
+                var friend = combined ? _guard : _friend; // 雷撃の対象は護衛
                 CalcSimpleDamage(json.api_opening_atack, friend, _enemyHp);
             }
             if (json.api_hougeki1 != null)
             {
-                var friend = combined && !surfaceFleet ? _guardHp : _friendHp; // 空母機動部隊は一巡目が護衛
+                var friend = combined && !surfaceFleet ? _guard : _friend; // 空母機動部隊は一巡目が護衛
                 CalcHougekiDamage(json.api_hougeki1, friend, _enemyHp);
             }
             if (json.api_hougeki2 != null)
             {
-                CalcHougekiDamage(json.api_hougeki2, _friendHp, _enemyHp);
+                CalcHougekiDamage(json.api_hougeki2, _friend, _enemyHp);
             }
             if (json.api_hougeki3() && json.api_hougeki3 != null)
             {
-                var friend = combined && surfaceFleet ? _guardHp : _friendHp; // 水上打撃部隊は三順目が護衛
+                var friend = combined && surfaceFleet ? _guard : _friend; // 水上打撃部隊は三順目が護衛
                 CalcHougekiDamage(json.api_hougeki3, friend, _enemyHp);
             }
             if (json.api_raigeki() && json.api_raigeki != null)
             {
-                var friend = combined ? _guardHp : _friendHp;
+                var friend = combined ? _guard : _friend;
                 CalcSimpleDamage(json.api_raigeki, friend, _enemyHp);
             }
         }
@@ -212,10 +215,17 @@ namespace KancolleSniffer
             return json.api_hougeki();
         }
 
-        private void CalcSimpleDamage(dynamic json, int[] friend, int[] enemy)
+        private void CalcSimpleDamage(dynamic json, Record[] friend, int[] enemy)
         {
             CalcSimpleDamage(json.api_fdam, friend);
             CalcSimpleDamage(json.api_edam, enemy);
+        }
+
+        private void CalcSimpleDamage(dynamic rawDamage, Record[] result)
+        {
+            var damage = (int[])rawDamage;
+            for (var i = 0; i < result.Length; i++)
+                result[i].ApplyDamage(damage[i + 1]);
         }
 
         private void CalcSimpleDamage(dynamic rawDamage, int[] result)
@@ -225,7 +235,7 @@ namespace KancolleSniffer
                 result[i] -= damage[i + 1];
         }
 
-        private void CalcHougekiDamage(dynamic hougeki, int[] friend, int[] enemy)
+        private void CalcHougekiDamage(dynamic hougeki, Record[] friend, int[] enemy)
         {
             var targets = ((dynamic[])hougeki.api_df_list).Skip(1).SelectMany(x => (int[])x);
             var damages = ((dynamic[])hougeki.api_damage).Skip(1).SelectMany(x => (double[])x);
@@ -234,7 +244,7 @@ namespace KancolleSniffer
                 if (hit.t == -1)
                     continue;
                 if (hit.t <= 6)
-                    friend[hit.t - 1] -= (int)hit.d;
+                    friend[hit.t - 1].ApplyDamage((int)hit.d);
                 else
                     enemy[(hit.t - 1) % 6] -= (int)hit.d;
             }
@@ -261,35 +271,13 @@ namespace KancolleSniffer
 
         private void ShowResult(bool warnDamagedShip = true)
         {
-            if (_friendHp == null)
+            if (_friend == null)
                 return;
             var ships = _shipInfo.GetShipStatuses(_fleet);
-            foreach (var e in ships.Zip(_friendHp, (ship, now) => new {ship, now}))
-                e.ship.NowHp = e.now;
+            foreach (var e in ships.Zip(_friend, (ship, now) => new {ship, now}))
+                e.now.UpdateShipStatus(e.ship);
             if (warnDamagedShip)
-            {
-                ConsumeDamageControlItem(ships);
                 UpdateDamgedShipNames(ships);
-            }
-        }
-
-
-        // HPが0の艦娘にダメコンか女神があったら消費する。
-        // 両方ある場合には前のスロットから消費する。
-        // 本当はどちらか選べるらしい。
-        private void ConsumeDamageControlItem(IEnumerable<ShipStatus> ships)
-        {
-            foreach (var s in ships.Where(s => s.NowHp == 0))
-            {
-                for (var i = 0; i < s.Slot.Length; i++)
-                {
-                    if (_itemInfo[s.Slot[i]].Type != 23)
-                        continue;
-                    _itemInfo.DeleteItems(new[] {s.Slot[i]});
-                    s.Slot[i] = -1;
-                    break;
-                }
-            }
         }
 
         private void UpdateDamgedShipNames(IEnumerable<ShipStatus> ships)
@@ -309,11 +297,9 @@ namespace KancolleSniffer
             ShowResultCombined(false);
             SetupHp(json);
             if (IsNightBattle(json))
-                CalcHougekiDamage(json.api_hougeki, _guardHp, _enemyHp);
+                CalcHougekiDamage(json.api_hougeki, _guard, _enemyHp);
             else
                 CalcDamage(json, surfaceFleet);
-            ClearOverKill(_friendHp);
-            ClearOverKill(_guardHp);
             ClearOverKill(_enemyHp);
             ResultRank = CalcResultRank();
         }
@@ -333,22 +319,82 @@ namespace KancolleSniffer
 
         private void ShowResultCombined(bool warnDamagedShip = true)
         {
-            if (_friendHp == null)
+            if (_friend == null)
                 return;
             var ships = _shipInfo.GetShipStatuses(0).Concat(_shipInfo.GetShipStatuses(1)).ToArray();
-            foreach (var e in ships.Zip(_friendHp.Concat(_guardHp), (ship, now) => new {ship, now}))
-                e.ship.NowHp = e.now;
+            foreach (var e in ships.Zip(_friend.Concat(_guard), (ship, now) => new {ship, now}))
+                e.now.UpdateShipStatus(e.ship);
             if (warnDamagedShip)
-            {
-                ConsumeDamageControlItem(ships);
                 UpdateDamgedShipNames(ships);
-            }
         }
 
         public void CauseCombinedBattleEscape()
         {
             _shipInfo.SetEscapedShips(_escapingShips);
             UpdateDamgedShipNames(_shipInfo.GetShipStatuses(0).Concat(_shipInfo.GetShipStatuses(1)));
+        }
+
+        private class Record
+        {
+            private ItemInfo _itemInfo;
+            private int _maxHp;
+            private int[] _slot;
+            public int NowHp;
+            public int StartHp;
+            public int Damage;
+
+            public static Record[] Setup(int[] rawHp, int[] rawMax, int[][] slots, ItemInfo itemInfo)
+            {
+                var hp = rawHp.Skip(1).Take(6).TakeWhile(h => h != -1).ToArray();
+                var max = rawMax.Skip(1).Take(6).TakeWhile(h => h != -1).ToArray();
+                var r = new Record[hp.Length];
+                for (var i = 0; i < hp.Length; i++)
+                {
+                    r[i] = new Record
+                    {
+                        NowHp = hp[i],
+                        StartHp = hp[i],
+                        _maxHp = max[i],
+                        _slot = slots[i].ToArray(),
+                        _itemInfo = itemInfo
+                    };
+                }
+                return r;
+            }
+
+            public void ApplyDamage(int damage)
+            {
+                if (NowHp > damage)
+                {
+                    NowHp -= damage;
+                    Damage += damage;
+                    return;
+                }
+                Damage += NowHp;
+                NowHp = 0;
+                for (var j = 0; j < _slot.Length; j++)
+                {
+                    var id = _itemInfo[_slot[j]].Id;
+                    if (id == 42) // ダメコン
+                    {
+                        _slot[j] = -1;
+                        NowHp = (int)(_maxHp * 0.2);
+                        break;
+                    }
+                    if (id == 43) // 女神
+                    {
+                        _slot[j] = -1;
+                        NowHp = _maxHp;
+                        break;
+                    }
+                }
+            }
+
+            public void UpdateShipStatus(ShipStatus ship)
+            {
+                ship.NowHp = NowHp;
+                ship.Slot = _slot;
+            }
         }
 
         // 以下のコードは航海日誌拡張版の以下のファイルのcalcResultRankを移植したもの
@@ -378,19 +424,18 @@ namespace KancolleSniffer
         //
         private BattleResultRank CalcResultRank()
         {
-            var combinedHp = _friendHp.Concat(_guardHp).ToArray();
-            var combinedStartHp = _friendStartHp.Concat(_guardStartHp).ToArray();
+            var combined = _friend.Concat(_guard).ToArray();
             // 戦闘後に残っている艦数
-            var friendNowShips = combinedHp.Count(hp => hp > 0);
+            var friendNowShips = combined.Count(r => r.NowHp > 0);
             var enemyNowShips = _enemyHp.Count(hp => hp > 0);
             // 総ダメージ
-            var friendGauge = combinedStartHp.Sum() - combinedHp.Sum();
+            var friendGauge = combined.Sum(r => r.Damage);
             var enemyGauge = _enemyStartHp.Sum() - _enemyHp.Sum();
             // 轟沈・撃沈数
-            var friendSunk = combinedHp.Count(hp => hp == 0);
+            var friendSunk = combined.Count(r => r.NowHp == 0);
             var enemySunk = _enemyHp.Count(hp => hp == 0);
 
-            var friendGaugeRate = Math.Floor((double)friendGauge / combinedStartHp.Sum() * 100);
+            var friendGaugeRate = Math.Floor((double)friendGauge / combined.Sum(r => r.StartHp) * 100);
             var enemyGaugeRate = Math.Floor((double)enemyGauge / _enemyStartHp.Sum() * 100);
             var equalOrMore = enemyGaugeRate > (0.9 * friendGaugeRate);
             var superior = enemyGaugeRate > 0 && enemyGaugeRate > (2.5 * friendGaugeRate);

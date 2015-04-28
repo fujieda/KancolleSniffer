@@ -213,6 +213,22 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// ダメコンの使用を戦闘結果に反映させる
+        /// </summary>
+        [TestMethod]
+        public void DamageControl()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "damecon_001");
+            AssertEqualBattleResult(sniffer, new[] {30, 1, 3}, "戦闘前");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[1].Slot.SequenceEqual(new[] {2, 4593, -1, -1, -1}), "ダメコンを二つ装備");
+            PAssert.That(()=> sniffer.Battle.ResultRank == BattleResultRank.S, "判定はS勝利");
+            SniffLogFile(sniffer, "damecon_002");
+            AssertEqualBattleResult(sniffer, new[] {30, 1, 3}, "戦闘後");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[1].Slot.SequenceEqual(new[] {-1, 4593, -1, -1, -1}), "ダメコンを一つ消費");
+        }
+
+        /// <summary>
         /// 編成で空き番号を使ったローテートを正しく反映する
         /// </summary>
         [TestMethod]
