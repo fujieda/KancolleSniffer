@@ -182,7 +182,7 @@ namespace KancolleSniffer
                 var friend = combined && !surfaceFleet ? _guard : _friend; // 空母機動部隊は一巡目が護衛
                 CalcHougekiDamage(json.api_hougeki1, friend, _enemyHp);
             }
-            if (json.api_hougeki2 != null)
+            if (json.api_hougeki2() && json.api_hougeki2 != null)
             {
                 CalcHougekiDamage(json.api_hougeki2, _friend, _enemyHp);
             }
