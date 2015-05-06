@@ -252,7 +252,7 @@ namespace KancolleSniffer
 
         public void SetName(ShipStatus status)
         {
-            SetName(status.Name);
+            SetName((status.Escaped ? "[避]" : "") + status.Name);
         }
 
         public void SetName(string name)

@@ -46,6 +46,7 @@ namespace KancolleSniffer
         public int LoS { get; set; }
         public int Firepower { get; set; }
         public int AntiSubmarine { get; set; }
+        public bool Escaped { get; set; }
 
         public Damage DamageLevel
         {
@@ -414,10 +415,12 @@ namespace KancolleSniffer
 
         public ShipStatus[] GetShipStatuses(int fleet)
         {
-            return
-                (from id in _decks[fleet]
-                    where id != -1
-                    select _escapedShips.Contains(id) ? new ShipStatus() : _shipInfo[id]).ToArray();
+            return _decks[fleet].Where(id => id != -1).Select(id =>
+            {
+                var s = _shipInfo[id];
+                s.Escaped = _escapedShips.Contains(id);
+                return s;
+            }).ToArray();
         }
 
         public int[] GetDeck(int fleet)
@@ -449,6 +452,7 @@ namespace KancolleSniffer
                     int oi;
                     var f = FindFleet(s.Id, out oi);
                     s.Fleet = f;
+                    s.Escaped = _escapedShips.Contains(s.Id);
                     return s;
                 }).ToArray();
             }

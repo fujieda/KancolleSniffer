@@ -283,7 +283,7 @@ namespace KancolleSniffer
         private void UpdateDamgedShipNames(IEnumerable<ShipStatus> ships)
         {
             DamagedShipNames =
-                (from ship in ships where ship.DamageLevel == ShipStatus.Damage.Badly select ship.Name).ToArray();
+                (from s in ships where s.DamageLevel == ShipStatus.Damage.Badly && !s.Escaped select s.Name).ToArray();
             HasDamagedShip = DamagedShipNames.Any();
         }
 
