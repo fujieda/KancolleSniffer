@@ -92,7 +92,7 @@ namespace KancolleSniffer
                     var ras = s.RealAntiSubmarine;
                     ships.Add(new EquipColumn
                     {
-                        Ship = s.Name,
+                        Ship = s.Name + "Lv" + s.Level,
                         Id = s.Id,
                         Spec = (rfp == 0 ? "" : "砲" + rfp) + (ras == 0 ? "" : " 潜" + ras)
                     });
