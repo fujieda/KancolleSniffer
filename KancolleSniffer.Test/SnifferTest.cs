@@ -176,6 +176,19 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 護衛退避した空母を除いた制空値を計算する
+        /// </summary>
+        [TestMethod]
+        public void FighterPowerWithoutEscapedShip()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_escape_001");
+            PAssert.That(() => sniffer.GetFighterPower(0) == 187);
+            SniffLogFile(sniffer, "combined_escape_002");
+            PAssert.That(() => sniffer.GetFighterPower(0) == 65);
+        }
+
+        /// <summary>
         /// 夜戦の開始時に昼戦の結果を反映する
         /// </summary>
         [TestMethod]

@@ -476,8 +476,8 @@ namespace KancolleSniffer
 
         public int GetFighterPower(int fleet)
         {
-            return (from id in _decks[fleet]
-                let ship = _shipInfo[id]
+            return (from ship in GetShipStatuses(fleet)
+                where !ship.Escaped
                 from slot in ship.Slot.Zip(ship.OnSlot, (s, o) => new {slot = s, onslot = o})
                 let item = _itemInfo[slot.slot]
                 where item.CanAirCombat
