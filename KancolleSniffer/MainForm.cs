@@ -379,7 +379,7 @@ namespace KancolleSniffer
         {
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             _shipLabels.SetShipInfo(statuses);
-            labelAirSuperiority.Text = _sniffer.GetAirSuperiority(_currentFleet).ToString("D");
+            labelFighterPower.Text = _sniffer.GetFighterPower(_currentFleet).ToString("D");
             UpdateAkashiTimer();
             UpdateLoS();
             UpdateCondTimers();
@@ -419,8 +419,8 @@ namespace KancolleSniffer
         private void UpdateBattleInfo()
         {
             labelFormation.Text = "";
-            labelEnemyAirSuperiority.Text = "";
-            labelAirSuperiority.ForeColor = DefaultForeColor;
+            labelEnemyFighterPower.Text = "";
+            labelFighterPower.ForeColor = DefaultForeColor;
             labelResultRank.Text = "判定";
             panelBattleInfo.Visible = _sniffer.Battle.InBattle;
             if (!_sniffer.Battle.InBattle)
@@ -429,8 +429,8 @@ namespace KancolleSniffer
             var battle = _sniffer.Battle;
             var color = new[] { DefaultForeColor, DefaultForeColor, Color.Blue, Color.Green, Color.Orange, Color.Red };
             labelFormation.Text = battle.Formation;
-            labelEnemyAirSuperiority.Text = battle.EnemyAirSuperiority.ToString("D");
-            labelAirSuperiority.ForeColor = color[battle.AirControlLevel + 1];
+            labelEnemyFighterPower.Text = battle.EnemyFighterPower.ToString("D");
+            labelFighterPower.ForeColor = color[battle.AirControlLevel + 1];
             if (_config.AlwaysShowResultRank)
                 ShowResultRank();
         }

@@ -61,13 +61,13 @@ namespace KancolleSniffer
             this.label1 = new System.Windows.Forms.Label();
             this.panelShipInfo = new System.Windows.Forms.Panel();
             this.panelBattleInfo = new System.Windows.Forms.Panel();
-            this.labelEnemyAirSuperiority = new System.Windows.Forms.Label();
+            this.labelEnemyFighterPower = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
             this.labelFormation = new System.Windows.Forms.Label();
             this.labelResultRank = new System.Windows.Forms.Label();
             this.labelLoS = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
-            this.labelAirSuperiority = new System.Windows.Forms.Label();
+            this.labelFighterPower = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.labelCondTimerTitle = new System.Windows.Forms.Label();
             this.labelCondTimer = new System.Windows.Forms.Label();
@@ -298,7 +298,7 @@ namespace KancolleSniffer
             this.panelShipInfo.Controls.Add(this.panelBattleInfo);
             this.panelShipInfo.Controls.Add(this.labelLoS);
             this.panelShipInfo.Controls.Add(this.label19);
-            this.panelShipInfo.Controls.Add(this.labelAirSuperiority);
+            this.panelShipInfo.Controls.Add(this.labelFighterPower);
             this.panelShipInfo.Controls.Add(this.label27);
             this.panelShipInfo.Controls.Add(this.labelCondTimerTitle);
             this.panelShipInfo.Controls.Add(this.labelCondTimer);
@@ -309,7 +309,7 @@ namespace KancolleSniffer
             // 
             // panelBattleInfo
             // 
-            this.panelBattleInfo.Controls.Add(this.labelEnemyAirSuperiority);
+            this.panelBattleInfo.Controls.Add(this.labelEnemyFighterPower);
             this.panelBattleInfo.Controls.Add(this.label30);
             this.panelBattleInfo.Controls.Add(this.labelFormation);
             this.panelBattleInfo.Controls.Add(this.labelResultRank);
@@ -319,13 +319,13 @@ namespace KancolleSniffer
             this.panelBattleInfo.TabIndex = 40;
             this.panelBattleInfo.Visible = false;
             // 
-            // labelEnemyAirSuperiority
+            // labelEnemyFighterPower
             // 
-            this.labelEnemyAirSuperiority.Location = new System.Drawing.Point(132, 1);
-            this.labelEnemyAirSuperiority.Name = "labelEnemyAirSuperiority";
-            this.labelEnemyAirSuperiority.Size = new System.Drawing.Size(23, 12);
-            this.labelEnemyAirSuperiority.TabIndex = 3;
-            this.labelEnemyAirSuperiority.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelEnemyFighterPower.Location = new System.Drawing.Point(132, 1);
+            this.labelEnemyFighterPower.Name = "labelEnemyFighterPower";
+            this.labelEnemyFighterPower.Size = new System.Drawing.Size(23, 12);
+            this.labelEnemyFighterPower.TabIndex = 3;
+            this.labelEnemyFighterPower.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label30
             // 
@@ -370,14 +370,14 @@ namespace KancolleSniffer
             this.label19.TabIndex = 41;
             this.label19.Text = "索敵";
             // 
-            // labelAirSuperiority
+            // labelFighterPower
             // 
-            this.labelAirSuperiority.Location = new System.Drawing.Point(28, 117);
-            this.labelAirSuperiority.Name = "labelAirSuperiority";
-            this.labelAirSuperiority.Size = new System.Drawing.Size(29, 12);
-            this.labelAirSuperiority.TabIndex = 23;
-            this.labelAirSuperiority.Text = "0";
-            this.labelAirSuperiority.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelFighterPower.Location = new System.Drawing.Point(28, 117);
+            this.labelFighterPower.Name = "labelFighterPower";
+            this.labelFighterPower.Size = new System.Drawing.Size(29, 12);
+            this.labelFighterPower.TabIndex = 23;
+            this.labelFighterPower.Text = "0";
+            this.labelFighterPower.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label27
             // 
@@ -1336,7 +1336,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFleet3;
         private System.Windows.Forms.Label labelCheckFleet2;
         private System.Windows.Forms.Label labelFleet2;
-        private System.Windows.Forms.Label labelAirSuperiority;
+        private System.Windows.Forms.Label labelFighterPower;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label labelLogin;
         private System.Windows.Forms.Label labelAchievement;
@@ -1362,7 +1362,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label labelPlayLog;
         private System.Windows.Forms.Panel panelBattleInfo;
-        private System.Windows.Forms.Label labelEnemyAirSuperiority;
+        private System.Windows.Forms.Label labelEnemyFighterPower;
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.Label labelFormation;
         private System.Windows.Forms.Label labelResultRank;

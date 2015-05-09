@@ -474,7 +474,7 @@ namespace KancolleSniffer
             }
         }
 
-        public int GetAirSuperiority(int fleet)
+        public int GetFighterPower(int fleet)
         {
             return (from id in _decks[fleet]
                 let ship = _shipInfo[id]

@@ -46,7 +46,7 @@ namespace KancolleSniffer
 
         public bool InBattle { get; set; }
         public string Formation { get; private set; }
-        public int EnemyAirSuperiority { get; private set; }
+        public int EnemyFighterPower { get; private set; }
         public bool HasDamagedShip { get; set; }
         public string[] DamagedShipNames { get; private set; }
         public int AirControlLevel { get; private set; }
@@ -63,7 +63,7 @@ namespace KancolleSniffer
         {
             InBattle = true;
             Formation = FormationName(json);
-            EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
+            EnemyFighterPower = CalcEnemyFighterPower(json);
             AirControlLevel = CheckAirControlLevel(json);
             ShowResult(false); // 昼戦の結果を夜戦のときに表示する
             SetupHp(json);
@@ -144,7 +144,7 @@ namespace KancolleSniffer
             return (int)stage1.api_disp_seiku;
         }
 
-        private int CalcEnemyAirSuperiority(dynamic json)
+        private int CalcEnemyFighterPower(dynamic json)
         {
             var maxEq = ((int[])json.api_ship_ke).Skip(1).SelectMany(id => _shipMaster[id].MaxEq);
             var equips = ((int[][])json.api_eSlot).SelectMany(x => x);
@@ -291,7 +291,7 @@ namespace KancolleSniffer
         {
             InBattle = true;
             Formation = FormationName(json);
-            EnemyAirSuperiority = CalcEnemyAirSuperiority(json);
+            EnemyFighterPower = CalcEnemyFighterPower(json);
             AirControlLevel = CheckAirControlLevel(json);
             _fleet = 10;
             ShowResultCombined(false);

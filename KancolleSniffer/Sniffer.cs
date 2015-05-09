@@ -372,9 +372,9 @@ namespace KancolleSniffer
             get { return _shipInfo.ChargeStatuses; }
         }
 
-        public int GetAirSuperiority(int fleet)
+        public int GetFighterPower(int fleet)
         {
-            return _shipInfo.GetAirSuperiority(fleet);
+            return _shipInfo.GetFighterPower(fleet);
         }
 
         public double GetFleetLineOfSights(int fleet)
