@@ -26,7 +26,7 @@ namespace KancolleSniffer
     {
         private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
         private readonly ShipLabel[] _akashiTimers = new ShipLabel[ShipInfo.MemberCount];
-        private readonly ShipLabel[][] _damagedShipList = new ShipLabel[14][];
+        private readonly ShipLabel[][] _damagedShipList = new ShipLabel[16][];
         private Control _panelDamagedShipList;
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         public static Color[] ColumnColors = {SystemColors.Control, Color.FromArgb(255, 250, 250, 250)};
