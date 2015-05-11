@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014, 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2014, 2015 Kazuhiro Fujieda <fujieda@users.osdn.me>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -30,7 +30,7 @@ namespace KancolleSniffer
         private readonly Config _config;
         private readonly MainForm _main;
         private readonly Dictionary<string, string> _soundSetting = new Dictionary<string, string>();
-        private const string Home = "http://kancollesniffer.sourceforge.jp/";
+        private const string Home = "http://kancollesniffer.osdn.jp/";
 
         public ConfigDialog(Config config, MainForm main)
         {

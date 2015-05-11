@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+﻿// Copyright (C) 2015 Kazuhiro Fujieda <fujieda@users.osdn.me>
 //
 // This program is part of KancolleSniffer.
 //
