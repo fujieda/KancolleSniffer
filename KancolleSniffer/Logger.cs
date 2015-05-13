@@ -52,6 +52,7 @@ namespace KancolleSniffer
         private int _kdockId;
         private DateTime _prevTime;
         private int _materialLogInterval = 10;
+        private bool _start;
 
         public int MaterialLogInterval
         {
@@ -113,7 +114,13 @@ namespace KancolleSniffer
             }
         }
 
-        public void InspectMap(dynamic json)
+        public void InspectMapStart(dynamic json)
+        {
+            _start = true;
+            _map = json;
+        }
+
+        public void InspectMapNext(dynamic json)
         {
             _map = json;
         }
@@ -152,7 +159,11 @@ namespace KancolleSniffer
                     : string.Format("{0},{1}/{2}", _shipMaster[edeck[i]].Name, enowhp[i], emaxhp[i]));
             }
             var cell = (int)_map.api_no;
-            var boss = cell == (int)_map.api_bosscell_no || (int)_map.api_event_id == 5 ? "ボス" : "";
+            var boss = "";
+            if (_start)
+                boss = "出撃";
+            else if (cell == (int)_map.api_bosscell_no || (int)_map.api_event_id == 5)
+                boss = "ボス";
             _writer("海戦・ドロップ報告書", string.Join(",", _nowFunc().ToString(DateTimeFormat),
                 result.api_quest_name,
                 cell, boss,
@@ -170,6 +181,7 @@ namespace KancolleSniffer
                 "敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP"
                 );
             _map = _battle = null;
+            _start = false;
         }
 
         private string FormationName(dynamic f)

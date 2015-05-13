@@ -123,7 +123,7 @@ namespace KancolleSniffer.Test
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Battle);
             SnifferTest.SniffLogFile(sniffer, "battle_004");
-            PAssert.That(() => "2015-01-01 00:00:00,珊瑚諸島沖,1,,S,同航戦,単縦陣,単縦陣,敵前衛艦隊,重巡洋艦,青葉," +
+            PAssert.That(() => "2015-01-01 00:00:00,珊瑚諸島沖,1,出撃,S,同航戦,単縦陣,単縦陣,敵前衛艦隊,重巡洋艦,青葉," +
                                "武蔵改(Lv133),86/106,扶桑改二(Lv87),77/77,北上改二(Lv113),49/49,飛龍改二(Lv133),63/74,蒼龍改二(Lv133),74/74,龍鳳改(Lv97),48/48," +
                                "軽巡ヘ級(flagship),57/57,重巡リ級(flagship),76/76,重巡リ級(flagship),76/76,雷巡チ級(elite),50/50,駆逐ニ級(elite),45/45,駆逐ニ級(elite),45/45|" +
                                "2015-01-01 00:00:00,珊瑚諸島沖,2,,B,反航戦,単横陣,単横陣,敵潜水艦隊,,," +
@@ -146,7 +146,7 @@ namespace KancolleSniffer.Test
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Battle);
             SnifferTest.SniffLogFile(sniffer, "sp_midnight_001");
-            PAssert.That(() => "2015-01-01 00:00:00,サブ島沖海域,3,,D,反航戦,単縦陣,単縦陣,敵前衛警戒艦隊,,," +
+            PAssert.That(() => "2015-01-01 00:00:00,サブ島沖海域,3,出撃,D,反航戦,単縦陣,単縦陣,敵前衛警戒艦隊,,," +
                                "Prinz Eugen改(Lv52),1/63,,,,,,,,,,," +
                                "軽巡ヘ級(flagship),57/57,重巡リ級(flagship),76/76,重巡リ級(flagship),76/76,雷巡チ級(elite),50/50,雷巡チ級(elite),50/50,駆逐ロ級(flagship),43/43|"
                                == result);
@@ -160,7 +160,7 @@ namespace KancolleSniffer.Test
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Battle);
             SnifferTest.SniffLogFile(sniffer, "combined_surface_001");
-            PAssert.That(() => "2015-01-01 00:00:00,南西方面海域,3,,S,同航戦,第四警戒航行序列,単縦陣,ピケット水雷戦隊 A群,,," +
+            PAssert.That(() => "2015-01-01 00:00:00,南西方面海域,3,出撃,S,同航戦,第四警戒航行序列,単縦陣,ピケット水雷戦隊 A群,,," +
                                "あきつ丸改(Lv68),40/40,山城改二(Lv85),77/77,扶桑改二(Lv85),77/77,利根改二(Lv117),59/66,筑摩改二(Lv117),51/65,神通改二(Lv97),47/50," +
                                "軽巡ツ級(elite),66/66,軽巡ト級(elite),55/55,駆逐イ級後期型,35/35,駆逐イ級後期型,35/35,駆逐イ級後期型,35/35,駆逐イ級後期型,35/35|" +
                                "2015-01-01 00:00:00,南西方面海域,7,,S,同航戦,第四警戒航行序列,複縦陣,任務部隊 D群,駆逐艦,満潮," +

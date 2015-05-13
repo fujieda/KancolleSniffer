@@ -288,12 +288,12 @@ namespace KancolleSniffer
             {
                 _shipInfo.StartSortie(request);
                 _conditionTimer.InvalidateCond();
-                _logger.InspectMap(data);
+                _logger.InspectMapStart(data);
                 return Update.Timer;
             }
             if (url.EndsWith("api_req_map/next"))
             {
-                _logger.InspectMap(data);
+                _logger.InspectMapNext(data);
                 return Update.None;
             }
             if (url.EndsWith("api_req_mission/result"))
