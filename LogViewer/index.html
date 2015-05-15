@@ -11,7 +11,9 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-
+<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/i18n/datepicker-ja.min.js"></script>
 <style>
 body {
     font-family:'Lucida Grande','Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
@@ -28,52 +30,52 @@ body {
 </head>
 <body>
 <script>
-function selectlog(i)
+function showLog()
 {
-    if ($.fn.dataTable.isDataTable('#log' + i)) {
-        $('#log' + i).DataTable().ajax.reload();
-        return;
+    var query = "?from=" + moment().subtract(1, 'months').valueOf();
+    if ($('input[name=term]:eq(1)').prop('checked')) {
+        from = $('#term_from').datepicker("getDate");
+        to = $('#term_to').datepicker("getDate");
+        if (from != null)
+            query = "?from=" + from.valueOf();
+        if (to != null)
+            query += "&to=" + (to.valueOf() + 3600 * 24 * 1000);
     }
-    switch (i) {
-    case 0:
-        $('#log0').dataTable({
-            ajax: "./海戦・ドロップ報告書.json",
-            columns: [{data: 0}, {data: 1}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}]
-        });
-        break;
-    case 1:
-        var entries = [];
-        for (i = 0; i < 35; i++) {
-            if (i == 9 || i == 10)
-                continue;
-            entries.push({data: i})
+    var jsons = [
+        "海戦・ドロップ報告書.json",
+        "海戦・ドロップ報告書.json",
+        "遠征報告書.json",
+        "開発報告書.json",
+        "建造報告書.json",
+        "資材ログ.json"
+    ];
+    var url = jsons[selectedTable] + query;
+    $('#log' + selectedTable).DataTable().ajax.url(url).load();
+}
+
+function initTables()
+{
+    for (var t = 0; t < 6; t++) {
+        var opts = {
+            destroy: true,
+            deferRender: true,
+            stateSave: true,
+            order: [[0, "desc"]],
+            pageLength: 50,
+            lengthMenu: [[50, 100, 200, -1],[50, 100, 200, "All"]]
+        };
+        if (t == 0) {
+            opts.columns = [{data: 0}, {data: 1}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}];
+        } else if (t == 1) {
+            var entries = [];
+            for (i = 0; i < 35; i++) {
+                if (i == 9 || i == 10)
+                    continue;
+                entries.push({data: i})
+            }
+            opts.columns = entries;
         }
-        $('#log1').dataTable({
-            ajax: "./海戦・ドロップ報告書.json",
-            iDisplayLength: 50,
-            columns: entries
-        });
-        break;
-    case 2:
-        $('#log2').dataTable({
-            ajax: "./遠征報告書.json"
-        });
-        break;
-    case 3:
-        $('#log3').dataTable({
-            "ajax": "./開発報告書.json"
-        });
-        break;
-    case 4:
-        $('#log4').dataTable({
-            ajax: "./建造報告書.json"
-        });
-        break;
-    case 5:
-        $('#log5').dataTable({
-            ajax: "./資材ログ.json"
-        });
-        break;
+        $('#log' + t).dataTable(opts);
     }
 }
 
@@ -147,7 +149,8 @@ function pickChartData(data, range)
     return { data: newdata, tick: ticks, grid: grid };
 }
 
-var selectedRange = -1;
+var selectedTable = 0;
+var selectedRange = 0;
 
 function drawChart(data)
 {
@@ -207,23 +210,31 @@ function drawChart(data)
     });
 }
 
+function selectTopTab(i)
+{
+    if (i < 6) {
+        selectedTable = i;
+        showLog();
+    } else if (i == 6) {
+        drawChart();
+    }
+    if (i < 6)
+        $('#term').show();
+    else
+        $('#term').hide();
+    var tab = $('.tab0 li');
+    tab.removeClass('select');
+    tab.eq(i).addClass('select');
+    $('.contents .hide').hide();
+    $('.contents .hide').eq(i).show();
+}
+
 $(function() {
     $.fn.dataTable.ext.errMode = 'throw';
-    $.extend($.fn.dataTable.defaults, {
-        stateSave: true,
-        order: [[0, "desc"]],
-        iDisplayLength: 50,
-        aLengthMenu: [[50, 100, 200, -1],[50, 100, 200, "All"]]
-    });
     $('.tab0 li').click(function() {
         var tab = $('.tab0 li');
         var i = tab.index(this)
-        if (i < 6)
-            selectlog(i);
-        tab.removeClass('select');
-        tab.eq(i).addClass('select');
-        $('.contents .hide').css('display', 'none');
-        $('.contents .hide').eq(i).css('display', 'block');
+        selectTopTab(i);
         sessionStorage.setItem('prevTab', i);
     });
     $('.tab1 li').click(function() {
@@ -236,21 +247,17 @@ $(function() {
         sessionStorage.setItem('prevRange', i);
     });
     $('table').addClass('display compact cell-border');
-    var prev = sessionStorage.getItem('prevTab');
-    if (prev == null)
-        prev = 0;
-    if (prev < 6)
-        selectlog(+prev);
-    $('.tab0 li').eq(prev).addClass('select');
-    $('.contents .hide').eq(prev).css('display', 'block');
-
+    initTables();
     var range = sessionStorage.getItem('prevRange');
-    if (range != null) {
-        selectedRange = +range;
-        $('.tab1 li').eq(range).addClass('select');
-        if (prev == 6)
-            drawChart()
-    }
+    selectedRange = range == null ? 0 : +range;
+    $('.tab1 li').eq(range).addClass('select');
+    $('#term_from').datepicker({
+        defaultDate: moment().subtract(1, 'months').toDate()
+    });
+    $('#term_to').datepicker();
+    $('#term_apply').click(showLog);
+    var prev = sessionStorage.getItem('prevTab');
+    selectTopTab(prev == null ? 0 : +prev);
 });
 </script>
 
@@ -263,6 +270,15 @@ $(function() {
 <li>資材</li>
 <li>資材グラフ</li>
 </ul>
+
+<form id="term">
+<p>
+<label><input type="radio" name="term" value="0" checked="checked">直近一か月</label>
+<label><input type="radio" name="term" value="1">指定の期間: </label>
+<input type="text" id="term_from" style="width: 8em">～<input type="text" id="term_to" style="width: 8em">
+<input type="button" id="term_apply" value="適用">
+</p>
+</form>
 
 <ul class="contents">
 <li class="hide">
@@ -315,7 +331,6 @@ $(function() {
 <li>すべて</li>
 </ul>
 <div id="chart" style="clear: both; width: 800px; margin: 1em;"></div>
-
 </ul>
 </body>
 </html>
