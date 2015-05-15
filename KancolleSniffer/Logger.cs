@@ -45,7 +45,7 @@ namespace KancolleSniffer
         private readonly ItemInfo _itemInfo;
         private Action<string, string, string> _writer;
         private Func<DateTime> _nowFunc;
-        private const string DateTimeFormat = @"yyyy\-MM\-dd HH\:mm\:ss";
+        public const string DateTimeFormat = @"yyyy\-MM\-dd HH\:mm\:ss";
         private dynamic _battle;
         private dynamic _map;
         private dynamic _basic;

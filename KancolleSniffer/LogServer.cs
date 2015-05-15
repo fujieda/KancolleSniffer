@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -75,6 +76,8 @@ namespace KancolleSniffer
         {
             var client = (Socket)obj;
             var data = new byte[4096];
+            var from = DateTime.MinValue;
+            var to = DateTime.MaxValue;
             try
             {
                 if (client.Receive(data) == 0)
@@ -90,11 +93,28 @@ namespace KancolleSniffer
                     SendError(client, "501 Not Implemented");
                     return;
                 }
-                var path = HttpUtility.UrlDecode(request[1].Split('?')[0]);
+                var tmp = request[1].Split('?');
+                var path = HttpUtility.UrlDecode(tmp[0]);
                 if (path == null || !path.StartsWith("/"))
                 {
                     SendError(client, "400 Bad Request");
                     return;
+                }
+                if (tmp.Length == 2)
+                {
+                    var query = HttpUtility.ParseQueryString(tmp[1]);
+                    if (query["from"] != null)
+                    {
+                        double tick;
+                        double.TryParse(query["from"], out tick);
+                        from = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(tick / 1000);
+                    }
+                    if (query["to"] != null)
+                    {
+                        double tick;
+                        double.TryParse(query["to"], out tick);
+                        to = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(tick / 1000);
+                    }
                 }
 
                 path = path == "/" ? "index.html" : path.Substring(1);
@@ -112,7 +132,7 @@ namespace KancolleSniffer
                 }
                 if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                 {
-                    SendJsonData(client, csv);
+                    SendJsonData(client, csv, from, to);
                     return;
                 }
                 if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
@@ -149,7 +169,7 @@ namespace KancolleSniffer
             }
         }
 
-        private void SendJsonData(Socket client, string path)
+        private void SendJsonData(Socket client, string path, DateTime from, DateTime to)
         {
             var header = new StreamWriter(new MemoryStream(), Encoding.ASCII);
             header.Write("HTTP/1.1 200 OK\r\n");
@@ -170,7 +190,13 @@ namespace KancolleSniffer
                 foreach (var line in File.ReadLines(csv, encoding).Skip(1))
                 {
                     var data = line.Split(',');
-                    client.Send(encoding.GetBytes(delimiter + "[\"" + string.Join("\",\"", (material ? data.Take(9) : data)) + "\"]"));
+                    DateTime date;
+                    DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeLocal, out date);
+                    if (date < from || to < date)
+                        continue;
+                    client.Send(encoding.GetBytes(delimiter + "[\"" +
+                                                  string.Join("\",\"", (material ? data.Take(9) : data)) + "\"]"));
                     delimiter = ",\n";
                 }
             }
