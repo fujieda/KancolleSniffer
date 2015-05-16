@@ -227,6 +227,100 @@ function drawChart(data)
     });
 }
 
+function setSortieStat(data) {
+    if (!data) {
+        $('#loading').show();
+        var from = moment().subtract(1, 'months').valueOf();
+        $.get("./海戦・ドロップ報告書.json?time=" + Date.now() + "&from=" + from, function (data) { setSortieStat(data.data);}, "json");
+        return;
+    }
+    var r = {
+        day: {stat: {}},
+        week: {stat: {}},
+        month: {stat: {}}
+    };
+    now = moment();
+    r.day.begin = moment(now).hour(5).minute(0);
+    if (now.hour() < 5) {
+        r.day.begin.subtract(1, 'days');
+    }
+    r.week.begin = moment(now).day(1).hour(5).minute(0);
+    if (now.day() == 1 && now.hour() < 5) {
+        r.week.begin.subtract(1, 'weeks');
+    }
+    r.month.begin = moment(now).date(1).hour(5).minute(0);
+    if (now.date() == 1 && now.hours() < 5) {
+        r.month.begin.subtract(1, 'months');
+    }
+    for (var i = 0; i < data.length; i++) {
+        var row = data[i];
+        var date = moment(row[0]);
+        var map = row[1];
+        var isBoss = row[3] == "ボス";
+        var isStart = row[3] == "出撃";
+        var res = row[4];
+        if (res == "E")
+            res = "D";
+        for (var term in r) {
+            to = r[term];
+            if (to.begin.isAfter(date))
+                continue;
+            for (var b = 0; b < 2; b++) {
+                var name = map;
+                if (b == 1) {
+                    if (!isBoss)
+                        break;
+                    name = map + " - ボス";
+                }
+                var mo = to.stat[name];
+                if (!mo)
+                    mo = to.stat[name] = {start:"-", S:0, A:0, B:0, C:0, D:0};
+                mo[res]++;
+                if (b == 0 && isStart)
+                {
+                    if (mo.start == "-")
+                        mo.start = 0;
+                    mo.start++
+                }
+            }
+        }
+    }
+    for (term in r) {
+        var table = [];
+        for (map in r[term].stat)
+        {
+            var e = r[term].stat[map];
+            e.map = map;
+            table.push(e);
+        }
+        var dt = $("#sortie_stat_" + term).DataTable();
+        dt.clear();
+        dt.rows.add(table).draw();
+    }
+    $('#loading').hide();
+}
+
+function initSortieStat()
+{
+    var terms = ['day', 'week', 'month'];
+    for (var i = 0; i < terms.length; i++) {
+        $("#sortie_stat_" + terms[i]).dataTable({
+            paging: false,
+            searching: false,
+            ordering: false,
+            columns: [
+                { data: "map" },
+                { data: "start" },
+                { data: "S" },
+                { data: "A" },
+                { data: "B" },
+                { data: "C" },
+                { data: "D" }
+            ]
+        });
+    }
+}
+
 function selectTopTab(i)
 {
     if (i < 6) {
@@ -234,6 +328,8 @@ function selectTopTab(i)
         showLog();
     } else if (i == 6) {
         drawChart();
+    } else if (i == 7) {
+        setSortieStat();
     }
     if (i < 6)
         $('#term').show();
@@ -265,6 +361,7 @@ $(function() {
     });
     $('table').addClass('display compact cell-border');
     initTables();
+    initSortieStat();
     var range = sessionStorage.getItem('prevRange');
     selectedRange = range == null ? 0 : +range;
     $('.tab1 li').eq(range).addClass('select');
@@ -288,6 +385,7 @@ $(function() {
 <li>建造</li>
 <li>資材</li>
 <li>資材グラフ</li>
+<li>出撃統計</li>
 </ul>
 
 <form id="term">
@@ -350,6 +448,26 @@ $(function() {
 <li>すべて</li>
 </ul>
 <div id="chart" style="clear: both; width: 800px; margin: 1em;"></div>
+
+<li class="hide">
+<h3>今日</h3>
+<table id="sortie_stat_day" cellspacing="0" width="100%">
+<thead>
+<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th></tr>
+</thead>
+</table>
+
+<h3>今週</h3>
+<table id="sortie_stat_week" cellspacing="0" width="100%">
+<thead>
+<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th></tr>
+</table>
+
+<h3>今月</h3>
+<table id="sortie_stat_month" cellspacing="0" width="100%">
+<thead>
+<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th></tr>
+</table>
 </ul>
 </body>
 </html>
