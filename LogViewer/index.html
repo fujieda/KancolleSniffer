@@ -202,7 +202,7 @@ function drawChart(data)
             show: false
         },
         tooltip: {
-            show: true
+            show: $('#tooltip').prop('checked')
         },
         grid: {
             x: {
@@ -359,6 +359,9 @@ $(function() {
         tab.eq(i).addClass('select');
         sessionStorage.setItem('prevRange', i);
     });
+    $('#tooltip').change(function() {
+        drawChart();
+    });
     $('table').addClass('display compact cell-border');
     initTables();
     initSortieStat();
@@ -447,6 +450,7 @@ $(function() {
 <li>一か月</li>
 <li>すべて</li>
 </ul>
+<label><input type="checkbox" id="tooltip" value="">ツールチップ</label>
 <div id="chart" style="clear: both; width: 800px; margin: 1em;"></div>
 
 <li class="hide">
