@@ -25,6 +25,17 @@ body {
 .tab li.select {background: #ccc;}
 .contents {list-style-type: none; margin: 0em; padding: 0em;}
 .hide {display: none;}
+#loading {
+    width: 48px;
+    height: 48px;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -24px;
+    margin-left: -24px;
+    z-index: 100;
+}
 </style>
 
 </head>
@@ -49,6 +60,7 @@ function showLog()
         "建造報告書.json",
         "資材ログ.json"
     ];
+    $('#loading').show();
     var url = jsons[selectedTable] + query;
     $('#log' + selectedTable).DataTable().ajax.url(url).load();
 }
@@ -62,7 +74,10 @@ function initTables()
             stateSave: true,
             order: [[0, "desc"]],
             pageLength: 50,
-            lengthMenu: [[50, 100, 200, -1],[50, 100, 200, "All"]]
+            lengthMenu: [[50, 100, 200, -1],[50, 100, 200, "All"]],
+            drawCallback: function () {
+                $('#loading').hide();
+            }
         };
         if (t == 0) {
             opts.columns = [{data: 0}, {data: 1}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}];
@@ -155,6 +170,7 @@ var selectedRange = 0;
 function drawChart(data)
 {
     if (data == null) {
+        $('#loading').show();
         $.get("./資材ログ.json?time=" + Date.now(), function (data) { drawChart(data);}, "json");
         return;
     }
@@ -206,7 +222,8 @@ function drawChart(data)
             y2: {
                 show: true
             }
-        }
+        },
+        onrendered: function () { $('#loading').hide(); }
     });
 }
 
@@ -260,6 +277,8 @@ $(function() {
     selectTopTab(prev == null ? 0 : +prev);
 });
 </script>
+
+<div id="loading"><img src="http://kancollesniffer.osdn.jp/ajax-loader.gif" alt="読み込み中..."></div>
 
 <ul class="tab tab0">
 <li>ドロップ</li>
