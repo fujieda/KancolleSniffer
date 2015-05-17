@@ -245,7 +245,7 @@ function setSortieStat(data) {
         r.day.begin.subtract(1, 'days');
     }
     r.week.begin = moment(now).day(1).hour(5).minute(0);
-    if (now.day() == 1 && now.hour() < 5) {
+    if (now.day() == 0 || now.day() == 1 && now.hour() < 5) {
         r.week.begin.subtract(1, 'weeks');
     }
     r.month.begin = moment(now).date(1).hour(5).minute(0);
