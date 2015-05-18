@@ -255,6 +255,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// ship2に代わるship_deckを処理する
+        /// </summary>
+        [TestMethod]
+        public void ShipDeck()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "ship_deck_001");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[0].Fuel == 36);
+        }
+
+        /// <summary>
         /// 編成で空き番号を使ったローテートを正しく反映する
         /// </summary>
         [TestMethod]

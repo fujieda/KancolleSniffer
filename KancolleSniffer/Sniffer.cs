@@ -167,6 +167,13 @@ namespace KancolleSniffer
                 _battleInfo.InBattle = false;
                 return Update.Item | Update.Ship | Update.Battle;
             }
+            if (url.EndsWith("api_get_member/ship_deck"))
+            {
+                _shipInfo.InspectShip(data);
+                _akashiTimer.SetTimer();
+                _battleInfo.InBattle = false;
+                return Update.Ship | Update.Battle;
+            }
             if (url.EndsWith("api_get_member/ship3"))
             {
                 _shipInfo.InspectShip(data);
