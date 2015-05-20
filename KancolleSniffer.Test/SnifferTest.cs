@@ -265,6 +265,18 @@ namespace KancolleSniffer.Test
             PAssert.That(() => sniffer.GetShipStatuses(0)[0].Fuel == 36);
         }
 
+
+        /// <summary>
+        /// 夜戦かどうかを選択する画面でリロードしても結果を次の戦闘に持ち越さない
+        /// </summary>
+        [TestMethod]
+        public void ReloadBeforeBattleResult()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "reload_001");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[0].NowHp == 41);
+        }
+
         /// <summary>
         /// 編成で空き番号を使ったローテートを正しく反映する
         /// </summary>

@@ -66,7 +66,7 @@ namespace KancolleSniffer
             EnemyFighterPower = CalcEnemyFighterPower(json);
             AirControlLevel = CheckAirControlLevel(json);
             ShowResult(false); // 昼戦の結果を夜戦のときに表示する
-            SetupHp(json);
+            SetupResult(json);
             if (IsNightBattle(json))
                 CalcHougekiDamage(json.api_hougeki, _friend, _enemyHp);
             else
@@ -102,7 +102,7 @@ namespace KancolleSniffer
             return "";
         }
 
-        private void SetupHp(dynamic json)
+        private void SetupResult(dynamic json)
         {
             if (_friend != null)
                 return;
@@ -129,7 +129,7 @@ namespace KancolleSniffer
             }
         }
 
-        private void CleanupHp()
+        public void CleanupResult()
         {
             _friend = null;
         }
@@ -260,13 +260,13 @@ namespace KancolleSniffer
         public void InspectBattleResult(dynamic json)
         {
             ShowResult();
-            CleanupHp();
+            CleanupResult();
         }
 
         public void InspectPracticeResult(dynamic json)
         {
             ShowResult(false);
-            CleanupHp();
+            CleanupResult();
         }
 
         private void ShowResult(bool warnDamagedShip = true)
@@ -295,7 +295,7 @@ namespace KancolleSniffer
             AirControlLevel = CheckAirControlLevel(json);
             _fleet = 10;
             ShowResultCombined(false);
-            SetupHp(json);
+            SetupResult(json);
             if (IsNightBattle(json))
                 CalcHougekiDamage(json.api_hougeki, _guard, _enemyHp);
             else
@@ -308,7 +308,7 @@ namespace KancolleSniffer
         {
             _escapingShips.Clear();
             ShowResultCombined();
-            CleanupHp();
+            CleanupResult();
             if ((int)json.api_escape_flag == 0)
                 return;
             var damaged = (int)json.api_escape.api_escape_idx[0] - 1;

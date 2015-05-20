@@ -111,6 +111,7 @@ namespace KancolleSniffer
                 _achievement.InspectBasic(data.api_basic);
                 if (data.api_parallel_quest_count()) // 昔のログにはないので
                     _questInfo.QuestCount = (int)data.api_parallel_quest_count;
+                _battleInfo.CleanupResult();
                 _battleInfo.InBattle = false;
                 _battleInfo.HasDamagedShip = false;
                 _shipInfo.ClearEscapedShips();
