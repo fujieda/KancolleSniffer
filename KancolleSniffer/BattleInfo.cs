@@ -139,6 +139,8 @@ namespace KancolleSniffer
             if (!json.api_kouku())
                 return -1;
             var stage1 = json.api_kouku.api_stage1;
+            if (stage1 == null)
+                return -1;
             if (stage1.api_f_count == 0 && stage1.api_e_count == 0)
                 return -1;
             return (int)stage1.api_disp_seiku;

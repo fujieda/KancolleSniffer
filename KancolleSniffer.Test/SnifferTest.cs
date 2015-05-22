@@ -265,7 +265,6 @@ namespace KancolleSniffer.Test
             PAssert.That(() => sniffer.GetShipStatuses(0)[0].Fuel == 36);
         }
 
-
         /// <summary>
         /// 夜戦かどうかを選択する画面でリロードしても結果を次の戦闘に持ち越さない
         /// </summary>
@@ -275,6 +274,17 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "reload_001");
             PAssert.That(() => sniffer.GetShipStatuses(0)[0].NowHp == 41);
+        }
+
+        /// <summary>
+        /// 航空戦のない演習を正しく処理する
+        /// </summary>
+        [TestMethod]
+        public void PracticeWithoutAirBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "practice_002");
+            PAssert.That(() => sniffer.Battle.AirControlLevel == -1);
         }
 
         /// <summary>
