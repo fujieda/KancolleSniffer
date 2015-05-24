@@ -63,6 +63,7 @@ namespace KancolleSniffer
             {
                 var drumTotal = 0;
                 var drumShips = 0;
+                var levelTotal = 0;
                 var ships = new List<EquipColumn>();
                 foreach (var s in sniffer.GetShipStatuses(f))
                 {
@@ -88,6 +89,7 @@ namespace KancolleSniffer
                     if (drum != 0)
                         drumShips++;
                     drumTotal += drum;
+                    levelTotal += s.Level;
                     var rfp = s.RealFirepower;
                     var ras = s.RealAntiSubmarine;
                     ships.Add(new EquipColumn
@@ -100,7 +102,8 @@ namespace KancolleSniffer
                 }
                 list.Add(new EquipColumn
                 {
-                    Fleet = fn[f] + (drumTotal == 0 ? "" : " ドラム缶" + drumTotal + "(" + drumShips + "隻)")
+                    Fleet = fn[f] + (levelTotal == 0 ? "" : " 合計Lv" + levelTotal) +
+                        (drumTotal == 0 ? "" : " ドラム缶" + drumTotal + "(" + drumShips + "隻)")
                 });
                 list.AddRange(ships);
             }
