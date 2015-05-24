@@ -101,9 +101,9 @@ namespace KancolleSniffer
                 if (flag == 1)
                     material[(int)Material.Bucket] = count;
                 else if (flag == 2)
-                    material[(int)Material.Burner + 2] = count;  // 高速建造材と開発資材が反対なのでいつか直す
+                    material[(int)Material.Burner + 2] = count; // 高速建造材と開発資材が反対なのでいつか直す
                 else if (flag == 3)
-                    material[(int)Material.Development -2] = count;
+                    material[(int)Material.Development - 2] = count;
             }
             if ((_logType & LogType.Mission) != 0)
             {
@@ -162,8 +162,8 @@ namespace KancolleSniffer
             var boss = "";
             if (_start)
                 boss = "出撃";
-            else if (cell == (int)_map.api_bosscell_no || (int)_map.api_event_id == 5)
-                boss = "ボス";
+            if (cell == (int)_map.api_bosscell_no || (int)_map.api_event_id == 5)
+                boss = _start ? "出撃&ボス" : "ボス";
             _writer("海戦・ドロップ報告書", string.Join(",", _nowFunc().ToString(DateTimeFormat),
                 result.api_quest_name,
                 cell, boss,

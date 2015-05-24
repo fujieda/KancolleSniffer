@@ -170,6 +170,20 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void InspectBattleResultStartAndBoss()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "battle_005");
+            PAssert.That(() => "2015-01-01 00:00:00,バシー島沖,7,出撃&ボス,S,同航戦,単縦陣,単縦陣,敵通商破壊艦隊,軽空母,龍驤," +
+                               "那珂改二(Lv97),48/48,隼鷹改二(Lv129),62/62,北上改二(Lv129),49/49,大井改二(Lv115),40/49,呂500(Lv62),13/13,伊168改(Lv97),15/15," +
+                               "重巡リ級(elite),60/60,重巡リ級,58/58,雷巡チ級(elite),50/50,軽巡ヘ級,36/36,駆逐ニ級,28/28,駆逐ニ級,28/28|"
+                               == result);
+        }
+
+        [TestMethod]
         public void InspectMaterial()
         {
             var sniffer = new Sniffer();

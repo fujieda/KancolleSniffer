@@ -256,8 +256,8 @@ function setSortieStat(data) {
         var row = data[i];
         var date = moment(row[0]);
         var map = row[1];
-        var isBoss = row[3] == "ボス";
-        var isStart = row[3] == "出撃";
+        var isBoss = row[3].indexOf("ボス") != -1;
+        var isStart = row[3].indexOf("出撃") != -1;
         var res = row[4];
         if (res == "E")
             res = "D";
