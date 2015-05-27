@@ -113,7 +113,7 @@ namespace KancolleSniffer
             MarginEquips = 10;
             NotifyConditions = new List<int>(new[] {40, 49});
             ResetHours = new List<int>();
-            AlwaysShowResultRank = true;
+            AlwaysShowResultRank = false;
             SoundVolume = 100;
             var dir = Path.GetDirectoryName(Application.ExecutablePath) ?? "";
             MissionSoundFile = Path.Combine(dir, "ensei.mp3");
