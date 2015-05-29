@@ -239,6 +239,7 @@ function setSortieStat(data) {
         week: {stat: {}},
         month: {stat: {}}
     };
+    var initStat = function () { return {start:"-", S:0, A:0, B:0, C:0, D:0} };
     now = moment();
     r.day.begin = moment(now).hour(5).minute(0);
     if (now.hour() < 5) {
@@ -265,18 +266,21 @@ function setSortieStat(data) {
             to = r[term];
             if (to.begin.isAfter(date))
                 continue;
-            for (var b = 0; b < 2; b++) {
-                var name = map;
-                if (b == 1) {
+            for (var b = 0; b < 4; b++) {
+                var name = b < 2 ? "合計" : map;
+                if (b == 1 || b == 3) {
                     if (!isBoss)
-                        break;
-                    name = map + " - ボス";
+                        continue;
+                    name = name + " - ボス";
                 }
                 var mo = to.stat[name];
-                if (!mo)
-                    mo = to.stat[name] = {start:"-", S:0, A:0, B:0, C:0, D:0};
+                if (!mo) {
+                    mo = to.stat[name] = initStat();
+                    if (name == "合計")
+                        to.stat["合計 - ボス"] = initStat();
+                }
                 mo[res]++;
-                if (b == 0 && isStart)
+                if ((b == 0 || b == 2) && isStart)
                 {
                     if (mo.start == "-")
                         mo.start = 0;
