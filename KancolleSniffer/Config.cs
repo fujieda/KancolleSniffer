@@ -112,7 +112,7 @@ namespace KancolleSniffer
             MarginShips = 4;
             MarginEquips = 10;
             NotifyConditions = new List<int>(new[] {40, 49});
-            ResetHours = new List<int>();
+            ResetHours = new List<int>(new[] {2});
             AlwaysShowResultRank = false;
             SoundVolume = 100;
             var dir = Path.GetDirectoryName(Application.ExecutablePath) ?? "";
