@@ -22,6 +22,13 @@ using Codeplex.Data;
 
 namespace KancolleSniffer
 {
+    public interface IHaveState
+    {
+        bool NeedSave { get; }
+        void SaveState(Status status);
+        void LoadState(Status status);
+    }
+
     public class Status
     {
         // ReSharper disable once AssignNullToNotNullAttribute
@@ -34,6 +41,7 @@ namespace KancolleSniffer
         public Achievement Achievement { get; set; }
         public MaterialCount[] MatreialHistory { get; set; }
         public double CondRegenTime { get; set; }
+        public ExMapInfo.ExMapState ExMapState { get; set; }
 
         public Status()
         {

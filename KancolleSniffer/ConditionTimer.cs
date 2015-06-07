@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace KancolleSniffer
 {
-    public class ConditionTimer
+    public class ConditionTimer : IHaveState
     {
         private readonly ShipInfo _shipInfo;
         private const int Interval = 180;

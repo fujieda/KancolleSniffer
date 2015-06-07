@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KancolleSniffer
@@ -34,8 +35,10 @@ namespace KancolleSniffer
         private readonly Achievement _achievement = new Achievement();
         private readonly BattleInfo _battleInfo;
         private readonly Logger _logger;
+        private readonly ExMapInfo _exMapInfo = new ExMapInfo();
         private readonly Status _status = new Status();
         private bool _saveState;
+        private readonly List<IHaveState> _haveState;
 
         [Flags]
         public enum Update
@@ -60,26 +63,25 @@ namespace KancolleSniffer
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo);
             _battleInfo = new BattleInfo(_shipMaster, _shipInfo, _itemInfo);
             _logger = new Logger(_shipMaster, _shipInfo, _itemInfo);
+            _haveState = new List<IHaveState> {_achievement, _itemInfo, _conditionTimer, _exMapInfo};
         }
 
         private void SaveState()
         {
             if (!_saveState)
                 return;
-            if (!_achievement.NeedSave && !_itemInfo.NeedSave && !_conditionTimer.NeedSave)
+            if (!_haveState.Any(x=>x.NeedSave))
                 return;
-            _achievement.SaveState(_status);
-            _itemInfo.SaveState(_status);
-            _conditionTimer.SaveState(_status);
+            foreach (var x in _haveState)
+                x.SaveState(_status);
             _status.Save();
         }
 
         public void LoadState()
         {
             _status.Load();
-            _achievement.LoadState(_status);
-            _itemInfo.LoadSate(_status);
-            _conditionTimer.LoadState(_status);
+            foreach (var x in _haveState)
+                x.LoadState(_status);
             _saveState = true;
         }
 
@@ -93,6 +95,7 @@ namespace KancolleSniffer
                 _shipMaster.Inspect(data);
                 _missionInfo.InspectMaster(data.api_mst_mission);
                 _itemInfo.InspectMaster(data);
+                _exMapInfo.ResetIfNeeded();
                 return Update.Start;
             }
             if (!_start)
@@ -267,6 +270,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_sortie/battleresult"))
             {
                 _battleInfo.InspectBattleResult(json);
+                _exMapInfo.InspectBattleResult(data);
                 _logger.InspectBattleResult(data);
                 return Update.Ship;
             }
@@ -296,11 +300,13 @@ namespace KancolleSniffer
             {
                 _shipInfo.StartSortie(request);
                 _conditionTimer.InvalidateCond();
+                _exMapInfo.InspectMapStart(data);
                 _logger.InspectMapStart(data);
                 return Update.Timer;
             }
             if (url.EndsWith("api_req_map/next"))
             {
+                _exMapInfo.InspectMapNext(data);
                 _logger.InspectMapNext(data);
                 return Update.None;
             }
@@ -309,6 +315,11 @@ namespace KancolleSniffer
                 _itemInfo.InspectMissionResult(data);
                 _logger.InspectMissionResult(data);
                 return Update.Item;
+            }
+            if (url.EndsWith("api_get_member/mapinfo"))
+            {
+                _exMapInfo.InspectMapInfo(data);
+                return Update.None;
             }
             return Update.None;
         }
@@ -427,6 +438,11 @@ namespace KancolleSniffer
         public BattleInfo Battle
         {
             get { return _battleInfo; }
+        }
+
+        public ExMapInfo ExMap
+        {
+            get { return _exMapInfo; }
         }
 
         public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)

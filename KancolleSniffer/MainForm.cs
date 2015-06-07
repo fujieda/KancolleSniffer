@@ -55,7 +55,8 @@ namespace KancolleSniffer
 
             // この時点でAutoScaleDimensions == CurrentAutoScaleDimensionsなので、
             // MainForm.Designer.csのAutoScaleDimensionsの6f,12fを使う。
-            ShipLabel.ScaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / 6f, CurrentAutoScaleDimensions.Height / 12f);
+            ShipLabel.ScaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / 6f,
+                CurrentAutoScaleDimensions.Height / 12f);
 
             SetupFleetClick();
             _shipLabels = new ShipLabels();
@@ -305,7 +306,9 @@ namespace KancolleSniffer
             if (ac >= 10000)
                 ac = 9999;
             labelAchievement.Text = ac >= 1000 ? ((int)ac).ToString("D") : ac.ToString("F1");
-            toolTipAchievement.SetToolTip(labelAchievement, "今月 " + _sniffer.Achievement.ValueOfMonth.ToString("F1"));
+            toolTipAchievement.SetToolTip(labelAchievement,
+                "今月 " + _sniffer.Achievement.ValueOfMonth.ToString("F1") + "\n" +
+                "EO " + _sniffer.ExMap.Achievement);
             UpdateMaterialHistry();
             if (_shipListForm.Visible)
                 _shipListForm.UpdateList();
@@ -428,7 +431,7 @@ namespace KancolleSniffer
                 return;
             panelBattleInfo.BringToFront();
             var battle = _sniffer.Battle;
-            var color = new[] { DefaultForeColor, DefaultForeColor, Color.Blue, Color.Green, Color.Orange, Color.Red };
+            var color = new[] {DefaultForeColor, DefaultForeColor, Color.Blue, Color.Green, Color.Orange, Color.Red};
             labelFormation.Text = battle.Formation;
             labelEnemyFighterPower.Text = battle.EnemyFighterPower.ToString("D");
             labelFighterPower.ForeColor = color[battle.AirControlLevel + 1];
@@ -438,7 +441,7 @@ namespace KancolleSniffer
 
         private void ShowResultRank()
         {
-            var result = new[] { "完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E" };
+            var result = new[] {"完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E"};
             labelResultRank.Text = result[(int)_sniffer.Battle.ResultRank];
         }
 
@@ -568,10 +571,12 @@ namespace KancolleSniffer
         {
             var category = new[]
             {
-                labelQuestColor1, labelQuestColor2, labelQuestColor3, labelQuestColor4, labelQuestColor5, labelQuestColor6
+                labelQuestColor1, labelQuestColor2, labelQuestColor3, labelQuestColor4, labelQuestColor5,
+                labelQuestColor6
             };
             var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5, labelQuest6};
-            var progress = new[] {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5, labelProgress6};
+            var progress = new[]
+            {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5, labelProgress6};
             var color = new[]
             {
                 Color.FromArgb(60, 141, 76), Color.FromArgb(232, 57, 41), Color.FromArgb(136, 204, 120),

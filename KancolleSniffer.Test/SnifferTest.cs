@@ -288,6 +288,38 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 2-5をクリアしたときの特別戦果を反映する
+        /// </summary>
+        [TestMethod]
+        public void ExMapBattleResult()
+        {
+            var sniffer0 = new Sniffer();
+            sniffer0.ExMap.ClearClearStatus();
+            SniffLogFile(sniffer0, "eo_001");
+            PAssert.That(() => sniffer0.ExMap.Achievement == 100, "ほかのマップの情報なし");
+            var sniffer1 = new Sniffer();
+            SniffLogFile(sniffer1, "eo_001");
+            // すでに3-5をクリアしているので合計で250
+            PAssert.That(() => sniffer1.ExMap.Achievement == 250, "ほかのマップの情報あり");
+        }
+
+        /// <summary>
+        /// 1-6をクリアしたときの特別戦果を反映する
+        /// </summary>
+        [TestMethod]
+        public void ExMapMapNext()
+        {
+            var sniffer0 = new Sniffer();
+            sniffer0.ExMap.ClearClearStatus();
+            SniffLogFile(sniffer0, "eo_002");
+            PAssert.That(() => sniffer0.ExMap.Achievement == 75, "ほかのマップの情報なし");
+            var sniffer1 = new Sniffer();
+            SniffLogFile(sniffer1, "eo_002");
+            // 5-5以外クリアしているので合計で400
+            PAssert.That(()=> sniffer1.ExMap.Achievement == 400, "ほかのマップの情報あり");
+        }
+
+        /// <summary>
         /// 編成で空き番号を使ったローテートを正しく反映する
         /// </summary>
         [TestMethod]

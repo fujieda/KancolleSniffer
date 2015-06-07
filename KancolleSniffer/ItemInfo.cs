@@ -206,7 +206,7 @@ namespace KancolleSniffer
         }
     }
 
-    public class ItemInfo
+    public class ItemInfo : IHaveState
     {
         private int _nowShips, _nowEquips;
         private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
@@ -433,7 +433,7 @@ namespace KancolleSniffer
             status.MatreialHistory = MaterialHistory;
         }
 
-        public void LoadSate(Status status)
+        public void LoadState(Status status)
         {
             if (status.MatreialHistory != null)
                 status.MatreialHistory.CopyTo(MaterialHistory, 0);

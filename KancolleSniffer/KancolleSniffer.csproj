@@ -78,6 +78,7 @@
     <Compile Include="EquipPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ExMapInfo.cs" />
     <Compile Include="ItemTreeView.cs">
       <SubType>Component</SubType>
     </Compile>

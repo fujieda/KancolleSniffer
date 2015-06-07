@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 namespace KancolleSniffer
 {
-    public class Achievement
+    public class Achievement : IHaveState
     {
         private int _current;
 
