@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using Codeplex.Data;
-using Fiddler;
+using Nekoxy;
 
 namespace KancolleSniffer
 {
@@ -48,8 +48,7 @@ namespace KancolleSniffer
         public MainForm()
         {
             InitializeComponent();
-            FiddlerApplication.BeforeRequest += FiddlerApplication_BeforeRequest;
-            FiddlerApplication.AfterSessionComplete += FiddlerApplication_AfterSessionComplete;
+            HttpProxy.AfterSessionComplete += HttpProxy_AfterSessionComplete;
             _configDialog = new ConfigDialog(_config, this);
             _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
 
@@ -68,39 +67,25 @@ namespace KancolleSniffer
             _noticeQueue = new NoticeQueue(Ring);
         }
 
-        private void FiddlerApplication_BeforeRequest(Session oSession)
+        private void HttpProxy_AfterSessionComplete(Session session)
         {
-            var path = oSession.PathAndQuery;
-            var proxy = _config.Proxy;
-            if (proxy.UseUpstream && (path.StartsWith("/kcsapi/api_") ||
-                                      // この二つはMyFleetGirlsに必要
-                                      path.StartsWith("/kcs/resources/") || path.StartsWith("/kcs/sound/")))
-                oSession["x-overrideGateway"] = string.Format("localhost:{0:D}", proxy.UpstreamPort); // 上流プロキシを設定する
-            if (!path.StartsWith("/kcsapi/api_")) // 艦これのAPI以外は無視する
-                oSession.Ignore();
-        }
-
-        private void FiddlerApplication_AfterSessionComplete(Session oSession)
-        {
-            if (!oSession.bHasResponse || !oSession.uriContains("/kcsapi/api_"))
-                return;
-            Invoke(new Action<Session>(ProcessRequest), oSession);
+            Invoke(new Action<Session>(ProcessRequest), session);
         }
 
         private void ProcessRequest(Session session)
         {
-            var response = session.GetResponseBodyAsString();
-            if (!response.StartsWith("svdata="))
+            var response = session.Response.BodyAsString;
+            if (response == null || !response.StartsWith("svdata="))
                 return;
             response = response.Remove(0, "svdata=".Length);
             var json = DynamicJson.Parse(response);
-            var request = session.GetRequestBodyAsString();
+            var request = session.Request.BodyAsString;
             if (_debugLogFile != null)
             {
                 File.AppendAllText(_debugLogFile,
-                    string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", session.url, request, json.ToString()));
+                    string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", session.Request.PathAndQuery, request, json.ToString()));
             }
-            UpdateInfo(_sniffer.Sniff(session.url, request, json));
+            UpdateInfo(_sniffer.Sniff(session.Request.PathAndQuery, request, json));
         }
 
         private void UpdateInfo(Sniffer.Update update)
@@ -144,12 +129,15 @@ namespace KancolleSniffer
 
         private void StartProxy()
         {
-            if (_config.Proxy.Auto)
-                FiddlerApplication.Startup(0, FiddlerCoreStartupFlags.RegisterAsSystemProxy);
-            else
-                FiddlerApplication.Startup(_config.Proxy.Listen, FiddlerCoreStartupFlags.None);
-            _prevProxy.Auto = _config.Proxy.Auto;
+            if (_config.Proxy.UseUpstream)
+            {
+                HttpProxy.UpstreamProxyHost = "127.0.0.1";
+                HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
+            }
+            HttpProxy.Startup(_config.Proxy.Listen, false, false);
             _prevProxy.Listen = _config.Proxy.Listen;
+            _prevProxy.UseUpstream = _config.Proxy.UseUpstream;
+            _prevProxy.UpstreamPort = _config.Proxy.UpstreamPort;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -164,7 +152,7 @@ namespace KancolleSniffer
 
         private void ShutdownProxy()
         {
-            FiddlerApplication.Shutdown();
+            HttpProxy.Shutdown();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -221,8 +209,19 @@ namespace KancolleSniffer
 
         public void ApplyProxySetting()
         {
-            if (_config.Proxy.Auto == _prevProxy.Auto && _config.Proxy.Listen == _prevProxy.Listen)
+            if (_config.Proxy.Listen == _prevProxy.Listen &&
+                _config.Proxy.UseUpstream == _prevProxy.UseUpstream &&
+                _config.Proxy.UpstreamPort == _prevProxy.UpstreamPort)
                 return;
+            if (_config.Proxy.UseUpstream)
+            {
+                HttpProxy.UpstreamProxyHost = "127.0.0.1";
+                HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
+            }
+            else
+            {
+                HttpProxy.UpstreamProxyHost = null;
+            }
             ShutdownProxy();
             StartProxy();
         }

@@ -25,14 +25,12 @@ namespace KancolleSniffer
 {
     public class ProxyConfig
     {
-        public bool Auto { get; set; }
         public int Listen { get; set; }
         public bool UseUpstream { get; set; }
         public int UpstreamPort { get; set; }
 
         public ProxyConfig()
         {
-            Auto = true;
             Listen = 8080;
             UseUpstream = false;
             UpstreamPort = 8888;

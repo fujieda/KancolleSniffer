@@ -87,10 +87,8 @@ namespace KancolleSniffer
 
         private void LoadProxySettings()
         {
-            // 見えていないTabPage上でPerformClickは使えない。
-            radioButtonAutoConfigOn.Checked = _config.Proxy.Auto;
-            radioButtonAutoConfigOff.Checked = !_config.Proxy.Auto;
             textBoxListen.Text = _config.Proxy.Listen.ToString("D");
+            // 見えていないTabPage上でPerformClickは使えない。
             radioButtonUpstreamOn.Checked = _config.Proxy.UseUpstream;
             radioButtonUpstreamOff.Checked = !_config.Proxy.UseUpstream;
             textBoxPort.Text = _config.Proxy.UpstreamPort.ToString("D");
@@ -182,13 +180,12 @@ namespace KancolleSniffer
 
         private bool ValidateProxyPorts(out int listen, out int outbound)
         {
-            listen = -1;
             outbound = -1;
-            if (radioButtonAutoConfigOff.Checked && !ValidatePortNumber(textBoxListen, out listen))
+            if (!ValidatePortNumber(textBoxListen, out listen))
                 return false;
             if (radioButtonUpstreamOn.Checked && !ValidatePortNumber(textBoxPort, out outbound))
                 return false;
-            if (radioButtonAutoConfigOff.Checked && radioButtonUpstreamOn.Checked && listen == outbound)
+            if (radioButtonUpstreamOn.Checked && listen == outbound)
             {
                 ShowToolTip("受信と送信に同じポートは使えません。", textBoxPort);
                 return false;
@@ -198,9 +195,7 @@ namespace KancolleSniffer
 
         private void ApplyProxySettings(int listen, int port)
         {
-            _config.Proxy.Auto = radioButtonAutoConfigOn.Checked;
-            if (!_config.Proxy.Auto)
-                _config.Proxy.Listen = listen;
+            _config.Proxy.Listen = listen;
             _config.Proxy.UseUpstream = radioButtonUpstreamOn.Checked;
             if (_config.Proxy.UseUpstream)
                 _config.Proxy.UpstreamPort = port;
@@ -268,13 +263,6 @@ namespace KancolleSniffer
         {
             linkLabelProductName.LinkVisited = true;
             Process.Start(Home);
-        }
-
-        private void radioButtonAutoConfigOn_CheckedChanged(object sender, EventArgs e)
-        {
-            var on = ((RadioButton)sender).Checked;
-            textBoxListen.Enabled = !on;
-            labelListen.Enabled = !on;
         }
 
         private void radioButtonUpstreamOff_CheckedChanged(object sender, EventArgs e)
