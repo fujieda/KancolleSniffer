@@ -356,5 +356,17 @@ namespace KancolleSniffer.Test
                                new[] {101, 4487, 14613, 28806, -1, -1}.SequenceEqual(result21),
                 "003に続いて空き番号にほかの艦隊の艦娘を配置する");
         }
+
+        /// <summary>
+        /// 改修による資材の減少をすぐに反映する
+        /// </summary>
+        [TestMethod]
+        public void ConsumptionByRemodelSlot()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "remodel_slot_001");
+            PAssert.That(() => sniffer.Item.MaterialHistory.Select(m => m.Now)
+                .SequenceEqual(new[] {25292, 25570, 25244, 41113, 1405, 1525, 2137, 8}));
+        }
     }
 }

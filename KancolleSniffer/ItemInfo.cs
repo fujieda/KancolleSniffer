@@ -362,6 +362,9 @@ namespace KancolleSniffer
 
         public void InspectRemodelSlot(dynamic json)
         {
+            var after = (int[])json.api_after_material;
+            for (var i = 0; i < after.Length; i++)
+                MaterialHistory[i].Now = after[i];
             if (json.api_after_slot())
                 InspectSlotItem(json.api_after_slot);
             if (!json.api_use_slot_id())
