@@ -34,7 +34,8 @@ namespace KancolleSniffer
         Material = 4,
         CreateItem = 8,
         CreateShip = 16,
-        All = 31,
+        RemodelSlot = 32,
+        All = 63,
     }
 
     public class Logger
@@ -299,6 +300,43 @@ namespace KancolleSniffer
                 now.ToString(DateTimeFormat) + "," +
                 string.Join(",", material),
                 "日付,燃料,弾薬,鋼材,ボーキ,高速建造材,高速修復材,開発資材,改修資材");
+        }
+
+        public void InspectRemodelSlot(string request, dynamic json)
+        {
+            if ((_logType & LogType.RemodelSlot) == 0)
+                return;
+            var now = _nowFunc();
+            var values = HttpUtility.ParseQueryString(request);
+            var id = int.Parse(values["api_slot_id"]);
+            var name = _itemInfo[id].Name;
+            var level = _itemInfo.ItemDict[id].Level;
+            var success = (int)json.api_remodel_flag == 1 ? "○" : "×";
+            var certain = int.Parse(values["api_certain_flag"]) == 1 ? "○" : "";
+            var useName = "";
+            var useNum = "";
+            if (json.api_use_slot_id())
+            {
+                var use = (int[])json.api_use_slot_id;
+                useName = _itemInfo[use[0]].Name;
+                useNum = use.Length.ToString();
+            }
+            var after = (int[])json.api_after_material;
+            var diff = new int[after.Length];
+            for (var i = 0; i < after.Length; i++)
+                diff[i] = _itemInfo.MaterialHistory[i].Now - after[i];
+            var ship1 = Secretary();
+            var ship2 = "";
+            var ships = _shipInfo.GetShipStatuses(0);
+            if (ships.Length >= 2)
+                ship2 = ships[1].Name + "(" + ships[1].Level + ")";
+            _writer("改修報告書",
+                now.ToString(DateTimeFormat) + "," +
+                string.Join(",", name, level, success, certain, useName, useNum,
+                diff[(int)Material.Fuel], diff[(int)Material.Bullet], diff[(int)Material.Steal], diff[(int)Material.Bouxite],
+                diff[(int)Material.Development], diff[(int)Material.Screw],
+                ship1, ship2),
+                "日付,改修装備,レベル,成功,確実化,消費装備,消費数,燃料,弾薬,鋼材,ボーキ,開発資材,改修資材,秘書艦,二番艦");
         }
     }
 

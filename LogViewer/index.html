@@ -58,6 +58,7 @@ function showLog()
         "遠征報告書.json",
         "開発報告書.json",
         "建造報告書.json",
+        "改修報告書.json",
         "資材ログ.json"
     ];
     $('#loading').show();
@@ -65,9 +66,11 @@ function showLog()
     $('#log' + selectedTable).DataTable().ajax.url(url).load();
 }
 
+var tables = 7;
+
 function initTables()
 {
-    for (var t = 0; t < 6; t++) {
+    for (var t = 0; t < tables; t++) {
         var opts = {
             destroy: true,
             deferRender: true,
@@ -327,15 +330,16 @@ function initSortieStat()
 
 function selectTopTab(i)
 {
-    if (i < 6) {
+    var chart = tables;
+    if (i < tables) {
         selectedTable = i;
         showLog();
-    } else if (i == 6) {
+    } else if (i == chart) {
         drawChart();
-    } else if (i == 7) {
+    } else if (i == chart + 1) {
         setSortieStat();
     }
-    if (i < 6)
+    if (i < tables)
         $('#term').show();
     else
         $('#term').hide();
@@ -390,6 +394,7 @@ $(function() {
 <li>遠征</li>
 <li>開発</li>
 <li>建造</li>
+<li>改修</li>
 <li>資材</li>
 <li>資材グラフ</li>
 <li>出撃統計</li>
@@ -442,6 +447,13 @@ $(function() {
 
 <li class="hide">
 <table id="log5">
+<thead>
+<tr><th>日付</th><th>改修装備</th><th>レベル</th><th>成功</th><th>確実化</th><th>消費装備</th><th>消費数</th><th>燃料</th><th>弾薬</th><th>鋼材</th><th>ボーキ</th><th>開発資材</th><th>改修資材</th><th>秘書艦</th><th>二番艦</th></tr>
+</thead>
+</table>
+
+<li class="hide">
+<table id="log6">
 <thead>
 <tr><th>日付</th><th>燃料</th><th>弾薬</th><th>鋼材</th><th>ボーキ</th><th>高速建造材</th><th>高速修復材</th><th>開発資材</th><th>改修資材</th></tr>
 </thead>

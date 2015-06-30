@@ -223,6 +223,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_kousyou/remodel_slot"))
             {
+                _logger.InspectRemodelSlot(request, data); // 資材の差が必要なので_itemInfoより前
                 _itemInfo.InspectRemodelSlot(data);
                 return Update.Item;
             }

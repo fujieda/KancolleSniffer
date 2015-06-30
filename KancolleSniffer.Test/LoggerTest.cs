@@ -225,5 +225,20 @@ namespace KancolleSniffer.Test
                                "2015-01-01 00:00:00,大型艦建造,筑摩,重巡洋艦,1500,1500,2000,1000,1,0,明石改(50),116|"
                                == result);
         }
+
+        [TestMethod]
+        public void InspectRemodelSlot()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            sniffer.EnableLog(LogType.RemodelSlot);
+            SnifferTest.SniffLogFile(sniffer, "remodel_slot_001");
+            PAssert.That(() => "2015-01-01 00:00:00,12.7cm連装砲,4,○,,,,10,30,60,0,1,1,明石改(50),島風改(131)|" +
+                               "2015-01-01 00:00:00,12.7cm連装砲,5,×,,,,10,30,60,0,1,1,明石改(50),|" +
+                               "2015-01-01 00:00:00,12.7cm連装砲,7,○,,12.7cm連装砲,1,10,30,60,0,1,1,明石改(50),島風改(131)|" +
+                               "2015-01-01 00:00:00,91式高射装置,10,○,○,10cm連装高角砲,2,0,0,60,40,9,7,明石改(50),摩耶改(98)|"
+                               == result);
+        }
     }
 }
