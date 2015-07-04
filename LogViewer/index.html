@@ -20,8 +20,9 @@ body {
     line-height: 1.5;
     font-size: 14px;
 }
-.tab {overflow: hidden; list-style-type: none; margin: 0em 2em 2em 1em; padding: 0em;}
-.tab li {background: #eee; padding: 0.3em 2.0em; float: left; margin-right: 2px;}
+.tab {overflow: hidden; list-style-type: none; margin: 0em 0em 2em 1em; padding: 0em;}
+.tab li {background: #eee; padding: 0.3em 1.5em; float: left; margin-right: 2px;}
+.tab1 li {padding: 0.3em 1em;}
 .tab li.select {background: #ccc;}
 .contents {list-style-type: none; margin: 0em; padding: 0em;}
 .hide {display: none;}
@@ -108,61 +109,82 @@ function toString(d)
     return d.format(timeFormat);
 }
 
+function to5am(tick)
+{
+    return tick - tick % (3600 * 24000) - 3600 * 4000;
+}
+
 function pickChartData(data, range)
 {
     var newdata = [];
     var ticks = [];
     var grid = [];
+    var first = moment(data[0][0]).valueOf();
     var last = moment(data[data.length - 1][0]).valueOf();
-    var first, interval, tickInterval;
+    var interval, tickInterval, lastTick;
     const oneDay = 3600 * 24 * 1000;
     switch (range) {
     case 0:
         first = moment(last).subtract(24, 'hours').valueOf();
-        interval = 1000;
-        tickInterval = 3600 * 1000;
-        last -= last % tickInterval;
         break;
     case 1:
         first = moment(last).subtract(7, 'days').valueOf();
-        interval = 1000;
-        tickInterval = oneDay;
-        last -= last % tickInterval + 3600 * 4000;
         break;
     case 2:
         first = moment(last).subtract(1, 'months').valueOf();
-        last = moment(last).day(1).valueOf();
-        interval = 3600 * 2000;
-        tickInterval = oneDay * 7;
-        last -= last % oneDay + 3600 * 4000;
         break;
     case 3:
         first = moment(data[0][0]).valueOf();
-        last = moment(last).day(1).valueOf();
-        interval = 3600 * 6000;
-        tickInterval = oneDay * 7;
-        last -= last % oneDay + 3600 * 4000;
+        break;
+    case 4:
+        fromDate = $('#chart_from').datepicker("getDate");
+        toDate = $('#chart_to').datepicker("getDate");
+        if (fromDate == null || toDate == null)
+            return { data: [], tick: [], grid: [] };
+        from = fromDate.valueOf() + 3600 * 5000;
+        to = toDate.valueOf() + oneDay + 3600 * 5000;
+        first = Math.max(first, from);
+        last = Math.min(last, to);
         break;
     }
-    for (var tick = last; tick > first; tick -= tickInterval)
-    {
-        var str = toString(moment(tick));
-        ticks.unshift(str);
-        grid.unshift({value: str});
+    if (last <= first + oneDay) {
+        interval = 1000;
+        tickInterval = 3600 * 1000;
+        lastTick = last - last % tickInterval;
+    } else if (last <= first + oneDay * 21) {
+        interval = 1000;
+        tickInterval = oneDay;
+        lastTick = to5am(last);
+    } else if (last <= first + oneDay * 63) {
+        interval = 3600 * 2000;
+        tickInterval = oneDay * 7;
+        lastTick = to5am(moment(last).day(1).valueOf());
+    } else {
+        interval = 3600 * 12000;
+        tickInterval = oneDay * 14;
+        lastTick = to5am(moment(last).day(1).valueOf());
     }
     var last_data;
     for (var i = data.length - 1; i >= 0; i--) {
         var row = data[i];
         var date = parseDate(row[0]).valueOf();
         if (date > first) {
-            var v = date - date % interval;
-            if (last_data != v) {
-                newdata.unshift(row);
-                last_data = v;
+            if (date <= last) {
+                var v = date - date % interval;
+                if (last_data != v) {
+                    newdata.unshift(row);
+                    last_data = v;
+                }
             }
         } else {
             break;
         }
+    }
+    for (var tick = lastTick; tick > last_data; tick -= tickInterval)
+    {
+        var str = toString(moment(tick));
+        ticks.unshift(str);
+        grid.unshift({value: str});
     }
     return { data: newdata, tick: ticks, grid: grid };
 }
@@ -350,8 +372,8 @@ function selectTopTab(i)
     $('.contents .hide').eq(i).show();
 }
 
-$(function() {
-    $.fn.dataTable.ext.errMode = 'throw';
+function initAction()
+{
     $('.tab0 li').click(function() {
         var tab = $('.tab0 li');
         var i = tab.index(this)
@@ -370,12 +392,10 @@ $(function() {
     $('#tooltip').change(function() {
         drawChart();
     });
-    $('table').addClass('display compact cell-border');
-    initTables();
-    initSortieStat();
-    var range = sessionStorage.getItem('prevRange');
-    selectedRange = range == null ? 0 : +range;
-    $('.tab1 li').eq(range).addClass('select');
+}
+
+function initTableDatePicker()
+{
     $('#term_from').datepicker({
         defaultDate: moment().subtract(1, 'months').toDate(),
         onClose: function() {$('input[name=term]').val(['1'])}
@@ -384,6 +404,29 @@ $(function() {
         onClose: function() {$('input[name=term]').val(['1'])}
     });
     $('#term_apply').click(showLog);
+}
+
+function initChartDatePicker()
+{
+    $('#chart_from').datepicker({
+        onClose: function() {if (selectedRange == 4) drawChart();}
+    })
+    $('#chart_to').datepicker({
+        onClose: function() {if (selectedRange == 4) drawChart();}
+    });
+}
+
+$(function() {
+    $.fn.dataTable.ext.errMode = 'throw';
+    initAction();
+    initTableDatePicker();
+    initChartDatePicker();
+    $('table').addClass('display compact cell-border');
+    initTables();
+    initSortieStat();
+    var range = sessionStorage.getItem('prevRange');
+    selectedRange = range == null ? 0 : +range;
+    $('.tab1 li').eq(range).addClass('select');
     var prev = sessionStorage.getItem('prevTab');
     selectTopTab(prev == null ? 0 : +prev);
 });
@@ -406,8 +449,8 @@ $(function() {
 <form id="term">
 <p>
 <label><input type="radio" name="term" value="0" checked="checked">直近一か月</label>
-<label><input type="radio" name="term" value="1">指定の期間: </label>
-<input type="text" id="term_from" style="width: 8em">～<input type="text" id="term_to" style="width: 8em">
+<label><input type="radio" name="term" value="1">期間指定: </label>
+<input type="text" id="term_from" style="width: 7em">～<input type="text" id="term_to" style="width: 7em">
 <input type="button" id="term_apply" value="適用">
 </p>
 </form>
@@ -463,13 +506,17 @@ $(function() {
 </table>
 
 <li class="hide">
-<ul class="tab tab1" style="float: left">
+<ul class="tab tab1" style="float: left; margin-right: 2px;">
 <li>一日</li>
 <li>一週間</li>
 <li>一か月</li>
 <li>すべて</li>
+<li>期間指定</li>
 </ul>
-<label><input type="checkbox" id="tooltip" value="">ツールチップ</label>
+<div style="padding: 0.2em 0em;">
+<input type="text" id="chart_from" style="width: 7em">～<input type="text" id="chart_to" style="width: 7em">
+<label><input type="checkbox" id="tooltip" value="" style="margin-left: 2em;">ツールチップ</label>
+</div>
 <div id="chart" style="clear: both; width: 800px; margin: 1em;"></div>
 
 <li class="hide">
