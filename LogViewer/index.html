@@ -377,9 +377,12 @@ $(function() {
     selectedRange = range == null ? 0 : +range;
     $('.tab1 li').eq(range).addClass('select');
     $('#term_from').datepicker({
-        defaultDate: moment().subtract(1, 'months').toDate()
+        defaultDate: moment().subtract(1, 'months').toDate(),
+        onClose: function() {$('input[name=term]').val(['1'])}
     });
-    $('#term_to').datepicker();
+    $('#term_to').datepicker({
+        onClose: function() {$('input[name=term]').val(['1'])}
+    });
     $('#term_apply').click(showLog);
     var prev = sessionStorage.getItem('prevTab');
     selectTopTab(prev == null ? 0 : +prev);
