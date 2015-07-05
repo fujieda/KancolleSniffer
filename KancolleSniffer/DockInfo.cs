@@ -104,6 +104,13 @@ namespace KancolleSniffer
             }
         }
 
+        public void InspectCreateShipSpeedChange(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var dock = int.Parse(values["api_kdock_id"]) - 1;
+            _kdocTimers[dock].SetEndTime(DateTime.Now.AddHours(-1));
+        }
+
         public RingTimer[] KDock
         {
             get { return _kdocTimers; }

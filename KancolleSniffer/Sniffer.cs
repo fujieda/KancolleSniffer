@@ -232,6 +232,11 @@ namespace KancolleSniffer
                 _logger.InspectCreateShip(request);
                 return Update.None;
             }
+            if (url.EndsWith("api_req_kousyou/createship_speedchange"))
+            {
+                _dockInfo.InspectCreateShipSpeedChange(request);
+                return Update.Timer;
+            }
             if (url.EndsWith("api_req_kaisou/powerup"))
             {
                 _shipInfo.InspectPowerup(request, data);
