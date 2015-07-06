@@ -518,7 +518,7 @@ namespace KancolleSniffer
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.Size = new System.Drawing.Size(208, 50);
             this.richTextBox1.TabIndex = 15;
-            this.richTextBox1.Text = "このソフトウェアは一部のファイルを除き\nGNU GPLバージョン3でライセンスされます。\n詳細はREADME.mdを参照してください。";
+            this.richTextBox1.Text = "このソフトウェアは一部のファイルを除き\nGNU GPLバージョン3でライセンスします。\n詳細はLICENSE.mdを参照してください。";
             // 
             // label7
             // 
