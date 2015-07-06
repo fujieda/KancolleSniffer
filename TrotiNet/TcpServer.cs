@@ -19,7 +19,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using log4net;
 
 [assembly: InternalsVisibleTo("TrotiNet.Test")]
 namespace TrotiNet

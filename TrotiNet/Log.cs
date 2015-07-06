@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+#if LOG4NET
 using log4net;
+#endif
 
 namespace TrotiNet
 {
@@ -11,8 +13,19 @@ namespace TrotiNet
         /// </summary>
         public static ILog Get()
         {
+#if LOG4NET
             return log4net.LogManager.GetLogger(
                 System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+#else
+            return new ILog();
+#endif
         }
+    }
+
+    internal class ILog
+    {
+        public void Info(string s) {}
+        public void Debug(string s) {}
+        public void Error(Exception e) {}
     }
 }
