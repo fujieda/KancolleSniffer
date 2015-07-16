@@ -135,7 +135,7 @@ namespace KancolleSniffer
         private void buttonOk_Click(object sender, EventArgs e)
         {
             int listen, outbound, server;
-            if (!ValidateProxyPorts(out listen, out outbound) || !ValidateServerPort(out server))
+            if (!ValidatePorts(out listen, out outbound, out server))
                 return;
             DialogResult = DialogResult.OK;
 
@@ -178,16 +178,24 @@ namespace KancolleSniffer
             _config.ConditionSoundFile = _soundSetting["疲労回復"];
         }
 
-        private bool ValidateProxyPorts(out int listen, out int outbound)
+        private bool ValidatePorts(out int listen, out int outbound, out int server)
         {
             outbound = -1;
+            server = -1;
             if (!ValidatePortNumber(textBoxListen, out listen))
                 return false;
             if (radioButtonUpstreamOn.Checked && !ValidatePortNumber(textBoxPort, out outbound))
                 return false;
+            if (radioButtonServerOn.Checked && !ValidatePortNumber(textBoxServer, out server))
+                return false;
             if (radioButtonUpstreamOn.Checked && listen == outbound)
             {
                 ShowToolTip("受信と送信に同じポートは使えません。", textBoxPort);
+                return false;
+            }
+            if (radioButtonServerOn.Checked && server == listen)
+            {
+                ShowToolTip("プロキシの受信ポートと同じポートは使えません。", textBoxServer);
                 return false;
             }
             return true;
@@ -200,12 +208,6 @@ namespace KancolleSniffer
             if (_config.Proxy.UseUpstream)
                 _config.Proxy.UpstreamPort = port;
             _main.ApplyProxySetting();
-        }
-
-        private bool ValidateServerPort(out int server)
-        {
-            server = -1;
-            return !radioButtonServerOn.Checked || ValidatePortNumber(textBoxServer, out server);
         }
 
         private void ApplyLogSettings(int server)
@@ -271,11 +273,10 @@ namespace KancolleSniffer
             textBoxPort.Enabled = !off;
         }
 
-        private void radioButtonServerOn_CheckedChanged(object sender, EventArgs e)
+        private void radioButtonServerOff_CheckedChanged(object sender, EventArgs e)
         {
-            var on = ((RadioButton)sender).Checked;
-            textBoxListen.Enabled = on;
-            labelListen.Enabled = on;
+            var off = ((RadioButton)sender).Checked;
+            textBoxServer.Enabled = !off;
         }
 
         private void buttonOutputDir_Click(object sender, EventArgs e)

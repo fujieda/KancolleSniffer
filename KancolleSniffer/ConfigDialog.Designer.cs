@@ -680,6 +680,7 @@ namespace KancolleSniffer
             this.radioButtonServerOff.TabStop = true;
             this.radioButtonServerOff.Text = "無効";
             this.radioButtonServerOff.UseVisualStyleBackColor = true;
+            this.radioButtonServerOff.CheckedChanged += new System.EventHandler(this.radioButtonServerOff_CheckedChanged);
             // 
             // radioButtonServerOn
             // 
@@ -691,7 +692,6 @@ namespace KancolleSniffer
             this.radioButtonServerOn.TabStop = true;
             this.radioButtonServerOn.Text = "有効";
             this.radioButtonServerOn.UseVisualStyleBackColor = true;
-            this.radioButtonServerOn.CheckedChanged += new System.EventHandler(this.radioButtonServerOn_CheckedChanged);
             // 
             // textBoxServer
             // 
