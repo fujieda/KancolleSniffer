@@ -44,7 +44,8 @@ namespace KancolleSniffer
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
         private LogServer _logServer;
-        private readonly ProxyConfig _prevProxy = new ProxyConfig();
+        private ProxyConfig _prevProxy;
+        private readonly SystemProxy _systemProxy = new SystemProxy();
 
         public MainForm()
         {
@@ -125,7 +126,10 @@ namespace KancolleSniffer
             ApplyDebugLogSetting();
             ApplyLogSetting();
             _sniffer.LoadState();
+            if (_config.Proxy.Auto)
+                _systemProxy.SetAutoProxyUrl(ProxyConfig.AutoConfigUrl);
             StartProxy();
+            _prevProxy = _config.Proxy.Clone();
         }
 
         private void StartProxy()
@@ -135,10 +139,11 @@ namespace KancolleSniffer
                 HttpProxy.UpstreamProxyHost = "127.0.0.1";
                 HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
             }
+            else
+            {
+                HttpProxy.UpstreamProxyHost = null;
+            }
             HttpProxy.Startup(_config.Proxy.Listen, false, false);
-            _prevProxy.Listen = _config.Proxy.Listen;
-            _prevProxy.UseUpstream = _config.Proxy.UseUpstream;
-            _prevProxy.UpstreamPort = _config.Proxy.UpstreamPort;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -149,6 +154,8 @@ namespace KancolleSniffer
             Task.Run(() => ShutdownProxy());
             if (_logServer != null)
                 _logServer.Stop();
+            if (_config.Proxy.Auto)
+                _systemProxy.RestoreSettings();
         }
 
         private void ShutdownProxy()
@@ -213,24 +220,24 @@ namespace KancolleSniffer
 
         public void ApplyProxySetting()
         {
-            if (_config.Proxy.Listen == _prevProxy.Listen &&
-                _config.Proxy.UseUpstream == _prevProxy.UseUpstream &&
-                _config.Proxy.UpstreamPort == _prevProxy.UpstreamPort)
-                return;
-            if (_config.Proxy.UseUpstream)
+            if (_config.Proxy.Auto != _prevProxy.Auto)
             {
-                HttpProxy.UpstreamProxyHost = "127.0.0.1";
-                HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
+                if (_config.Proxy.Auto)
+                    _systemProxy.SetAutoProxyUrl(ProxyConfig.AutoConfigUrl);
+                else
+                    _systemProxy.RestoreSettings();
             }
-            else
+            if (_config.Proxy.Listen != _prevProxy.Listen ||
+                _config.Proxy.UseUpstream != _prevProxy.UseUpstream ||
+                _config.Proxy.UpstreamPort != _prevProxy.UpstreamPort)
             {
-                HttpProxy.UpstreamProxyHost = null;
+                Task.Run(() =>
+                {
+                    ShutdownProxy();
+                    StartProxy();
+                });
             }
-            Task.Run(() =>
-            {
-                ShutdownProxy();
-                StartProxy();
-            });
+            _prevProxy = _config.Proxy.Clone();
         }
 
         public void ApplyLogSetting()

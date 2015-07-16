@@ -104,6 +104,7 @@
     <Compile Include="ItemInfo.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="SwipeScrollify.cs" />
+    <Compile Include="SystemProxy.cs" />
     <Compile Include="Win32API.cs" />
     <EmbeddedResource Include="ConfigDialog.resx">
       <DependentUpon>ConfigDialog.cs</DependentUpon>

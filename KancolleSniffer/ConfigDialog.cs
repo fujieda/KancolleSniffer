@@ -87,8 +87,10 @@ namespace KancolleSniffer
 
         private void LoadProxySettings()
         {
-            textBoxListen.Text = _config.Proxy.Listen.ToString("D");
             // 見えていないTabPage上でPerformClickは使えない。
+            radioButtonAutoConfigOn.Checked = _config.Proxy.Auto;
+            radioButtonAutoConfigOff.Checked = !_config.Proxy.Auto;
+            textBoxListen.Text = _config.Proxy.Listen.ToString("D");
             radioButtonUpstreamOn.Checked = _config.Proxy.UseUpstream;
             radioButtonUpstreamOff.Checked = !_config.Proxy.UseUpstream;
             textBoxPort.Text = _config.Proxy.UpstreamPort.ToString("D");
@@ -203,6 +205,7 @@ namespace KancolleSniffer
 
         private void ApplyProxySettings(int listen, int port)
         {
+            _config.Proxy.Auto = radioButtonAutoConfigOn.Checked;
             _config.Proxy.Listen = listen;
             _config.Proxy.UseUpstream = radioButtonUpstreamOn.Checked;
             if (_config.Proxy.UseUpstream)
@@ -265,6 +268,14 @@ namespace KancolleSniffer
         {
             linkLabelProductName.LinkVisited = true;
             Process.Start(Home);
+        }
+
+        private void radioButtonAutoConfigOn_CheckedChanged(object sender, EventArgs e)
+        {
+            var on = ((RadioButton)sender).Checked;
+            textBoxListen.Enabled = !on;
+            if (on)
+                textBoxListen.Text = ProxyConfig.DefaultListenPort.ToString();
         }
 
         private void radioButtonUpstreamOff_CheckedChanged(object sender, EventArgs e)

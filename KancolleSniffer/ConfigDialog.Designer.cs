@@ -90,6 +90,9 @@ namespace KancolleSniffer
             this.radioButtonUpstreamOn = new System.Windows.Forms.RadioButton();
             this.textBoxPort = new System.Windows.Forms.TextBox();
             this.labelPort = new System.Windows.Forms.Label();
+            this.groupBoxAutoConfig = new System.Windows.Forms.GroupBox();
+            this.radioButtonAutoConfigOff = new System.Windows.Forms.RadioButton();
+            this.radioButtonAutoConfigOn = new System.Windows.Forms.RadioButton();
             this.textBoxListen = new System.Windows.Forms.TextBox();
             this.labelListen = new System.Windows.Forms.Label();
             this.tabPageLog = new System.Windows.Forms.TabPage();
@@ -130,6 +133,7 @@ namespace KancolleSniffer
             this.tabPageVersion.SuspendLayout();
             this.tabPageProxy.SuspendLayout();
             this.groupBoxUpstream.SuspendLayout();
+            this.groupBoxAutoConfig.SuspendLayout();
             this.tabPageLog.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).BeginInit();
@@ -561,8 +565,7 @@ namespace KancolleSniffer
             // tabPageProxy
             // 
             this.tabPageProxy.Controls.Add(this.groupBoxUpstream);
-            this.tabPageProxy.Controls.Add(this.textBoxListen);
-            this.tabPageProxy.Controls.Add(this.labelListen);
+            this.tabPageProxy.Controls.Add(this.groupBoxAutoConfig);
             this.tabPageProxy.Location = new System.Drawing.Point(4, 40);
             this.tabPageProxy.Name = "tabPageProxy";
             this.tabPageProxy.Padding = new System.Windows.Forms.Padding(8);
@@ -577,7 +580,7 @@ namespace KancolleSniffer
             this.groupBoxUpstream.Controls.Add(this.radioButtonUpstreamOn);
             this.groupBoxUpstream.Controls.Add(this.textBoxPort);
             this.groupBoxUpstream.Controls.Add(this.labelPort);
-            this.groupBoxUpstream.Location = new System.Drawing.Point(11, 41);
+            this.groupBoxUpstream.Location = new System.Drawing.Point(11, 65);
             this.groupBoxUpstream.Name = "groupBoxUpstream";
             this.groupBoxUpstream.Size = new System.Drawing.Size(234, 48);
             this.groupBoxUpstream.TabIndex = 3;
@@ -622,9 +625,43 @@ namespace KancolleSniffer
             this.labelPort.TabIndex = 2;
             this.labelPort.Text = "送信ポート:";
             // 
+            // groupBoxAutoConfig
+            // 
+            this.groupBoxAutoConfig.Controls.Add(this.radioButtonAutoConfigOff);
+            this.groupBoxAutoConfig.Controls.Add(this.radioButtonAutoConfigOn);
+            this.groupBoxAutoConfig.Controls.Add(this.textBoxListen);
+            this.groupBoxAutoConfig.Controls.Add(this.labelListen);
+            this.groupBoxAutoConfig.Location = new System.Drawing.Point(11, 11);
+            this.groupBoxAutoConfig.Name = "groupBoxAutoConfig";
+            this.groupBoxAutoConfig.Size = new System.Drawing.Size(234, 48);
+            this.groupBoxAutoConfig.TabIndex = 2;
+            this.groupBoxAutoConfig.TabStop = false;
+            this.groupBoxAutoConfig.Text = "自動設定";
+            // 
+            // radioButtonAutoConfigOff
+            // 
+            this.radioButtonAutoConfigOff.AutoSize = true;
+            this.radioButtonAutoConfigOff.Location = new System.Drawing.Point(59, 19);
+            this.radioButtonAutoConfigOff.Name = "radioButtonAutoConfigOff";
+            this.radioButtonAutoConfigOff.Size = new System.Drawing.Size(47, 16);
+            this.radioButtonAutoConfigOff.TabIndex = 1;
+            this.radioButtonAutoConfigOff.Text = "無効";
+            this.radioButtonAutoConfigOff.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonAutoConfigOn
+            // 
+            this.radioButtonAutoConfigOn.AutoSize = true;
+            this.radioButtonAutoConfigOn.Location = new System.Drawing.Point(6, 19);
+            this.radioButtonAutoConfigOn.Name = "radioButtonAutoConfigOn";
+            this.radioButtonAutoConfigOn.Size = new System.Drawing.Size(47, 16);
+            this.radioButtonAutoConfigOn.TabIndex = 0;
+            this.radioButtonAutoConfigOn.Text = "有効";
+            this.radioButtonAutoConfigOn.UseVisualStyleBackColor = true;
+            this.radioButtonAutoConfigOn.CheckedChanged += new System.EventHandler(this.radioButtonAutoConfigOn_CheckedChanged);
+            // 
             // textBoxListen
             // 
-            this.textBoxListen.Location = new System.Drawing.Point(72, 16);
+            this.textBoxListen.Location = new System.Drawing.Point(175, 18);
             this.textBoxListen.Name = "textBoxListen";
             this.textBoxListen.Size = new System.Drawing.Size(36, 19);
             this.textBoxListen.TabIndex = 3;
@@ -633,7 +670,7 @@ namespace KancolleSniffer
             // labelListen
             // 
             this.labelListen.AutoSize = true;
-            this.labelListen.Location = new System.Drawing.Point(11, 19);
+            this.labelListen.Location = new System.Drawing.Point(114, 21);
             this.labelListen.Name = "labelListen";
             this.labelListen.Size = new System.Drawing.Size(59, 12);
             this.labelListen.TabIndex = 2;
@@ -911,9 +948,10 @@ namespace KancolleSniffer
             this.tabPageVersion.ResumeLayout(false);
             this.tabPageVersion.PerformLayout();
             this.tabPageProxy.ResumeLayout(false);
-            this.tabPageProxy.PerformLayout();
             this.groupBoxUpstream.ResumeLayout(false);
             this.groupBoxUpstream.PerformLayout();
+            this.groupBoxAutoConfig.ResumeLayout(false);
+            this.groupBoxAutoConfig.PerformLayout();
             this.tabPageLog.ResumeLayout(false);
             this.tabPageLog.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -970,6 +1008,9 @@ namespace KancolleSniffer
         private System.Windows.Forms.RadioButton radioButtonUpstreamOn;
         private System.Windows.Forms.TextBox textBoxPort;
         private System.Windows.Forms.Label labelPort;
+        private System.Windows.Forms.GroupBox groupBoxAutoConfig;
+        private System.Windows.Forms.RadioButton radioButtonAutoConfigOff;
+        private System.Windows.Forms.RadioButton radioButtonAutoConfigOn;
         private System.Windows.Forms.TextBox textBoxListen;
         private System.Windows.Forms.Label labelListen;
         private System.Windows.Forms.ToolTip toolTipError;
