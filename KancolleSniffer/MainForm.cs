@@ -24,6 +24,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 using Codeplex.Data;
 using Nekoxy;
 
@@ -145,14 +146,17 @@ namespace KancolleSniffer
             e.Cancel = false;
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.Save();
-            ShutdownProxy();
+            Task.Run(() => ShutdownProxy());
             if (_logServer != null)
                 _logServer.Stop();
         }
 
         private void ShutdownProxy()
         {
-            HttpProxy.Shutdown();
+            lock (typeof (HttpProxy))
+            {
+                HttpProxy.Shutdown();
+            }
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -222,8 +226,11 @@ namespace KancolleSniffer
             {
                 HttpProxy.UpstreamProxyHost = null;
             }
-            ShutdownProxy();
-            StartProxy();
+            Task.Run(() =>
+            {
+                ShutdownProxy();
+                StartProxy();
+            });
         }
 
         public void ApplyLogSetting()
