@@ -36,9 +36,9 @@ namespace KancolleSniffer
                 {
                     Id = (int)entry.api_id,
                     Name = ShipName(entry),
-                    FuelMax = (int)entry.api_fuel_max,
-                    BullMax = (int)entry.api_bull_max,
-                    MaxEq = (int[])entry.api_maxeq,
+                    FuelMax = entry.api_fuel_max() ? (int)entry.api_fuel_max : 0,
+                    BullMax = entry.api_bull_max() ? (int)entry.api_bull_max : 0,
+                    MaxEq = entry.api_maxeq() ? (int[])entry.api_maxeq : new int[0],
                     ShipType = (int)entry.api_stype,
                     ShipTypeName = dict[entry.api_stype]
                 };
