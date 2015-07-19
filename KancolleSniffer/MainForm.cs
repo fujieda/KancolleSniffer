@@ -26,6 +26,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using Codeplex.Data;
+using Microsoft.CSharp.RuntimeBinder;
 using Nekoxy;
 
 namespace KancolleSniffer
@@ -87,7 +88,15 @@ namespace KancolleSniffer
                 File.AppendAllText(_debugLogFile,
                     string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", session.Request.PathAndQuery, request, json.ToString()));
             }
-            UpdateInfo(_sniffer.Sniff(session.Request.PathAndQuery, request, json));
+            try
+            {
+                UpdateInfo(_sniffer.Sniff(session.Request.PathAndQuery, request, json));
+            }
+            catch (RuntimeBinderException)
+            {
+                labelLogin.Visible = true;
+                labelLogin.Text = "現在の艦これに対応していません。\n新しいバージョンを利用してください。";
+            }
         }
 
         private void UpdateInfo(Sniffer.Update update)

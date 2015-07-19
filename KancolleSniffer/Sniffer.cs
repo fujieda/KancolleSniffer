@@ -91,11 +91,11 @@ namespace KancolleSniffer
 
             if (url.EndsWith("api_start2"))
             {
-                _start = true;
                 _shipMaster.Inspect(data);
                 _missionInfo.InspectMaster(data.api_mst_mission);
                 _itemInfo.InspectMaster(data);
                 _exMapInfo.ResetIfNeeded();
+                _start = true;
                 return Update.Start;
             }
             if (!_start)
