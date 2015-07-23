@@ -19,6 +19,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
+#if LOG4NET
+using log4net;
+#endif
 
 [assembly: InternalsVisibleTo("TrotiNet.Test")]
 namespace TrotiNet

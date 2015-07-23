@@ -21,11 +21,12 @@ namespace TrotiNet
 #endif
         }
     }
-
+#if !LOG4NET
     internal class ILog
     {
         public void Info(string s) {}
         public void Debug(string s) {}
         public void Error(Exception e) {}
     }
+#endif
 }

@@ -8,6 +8,9 @@
     using System.Net.Sockets;
     using System.Text;
     using System.Threading;
+#if LOG4NET
+    using log4net;
+#endif
 
     /// <summary>
     /// Abstract class for all HTTP proxy logic implementations
@@ -270,7 +273,7 @@
                 {
                     hrl.URI = hrl.URI.Substring(prefix);
                     log.Debug("Rewriting request line as: " +
-                        hrl.RequestLine);
+                        RemoveApiToken(hrl.RequestLine));
                 }
 
                 return host;
@@ -338,6 +341,15 @@
                 return;
             if (SocketPS.WriteBinary(msg, position, to_send) < to_send)
                 throw new IoBroken();
+        }
+
+        /// <summary>
+        /// Remove api_token from URI
+        /// </summary>
+        protected string RemoveApiToken(string str)
+        {
+            var idx = str.IndexOf("api_token", StringComparison.Ordinal);
+            return idx == -1 ? str : str.Substring(0, idx);
         }
     }
 
@@ -549,7 +561,7 @@
 
             RequestHeaders = new HttpHeaders(SocketBP);
 
-            log.Info("Got request " + RequestLine.RequestLine);
+            log.Info("Got request " + RemoveApiToken(RequestLine.RequestLine));
 
             // We call OnReceiveRequest now because Connect() will
             // modify the request URI.
