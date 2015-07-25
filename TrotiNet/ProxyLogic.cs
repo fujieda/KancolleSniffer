@@ -506,7 +506,6 @@
                 State = new RequestProcessingState(ReadRequest);
                 while (State.NextStep != null)
                     State.NextStep();
-
                 return State.bPersistConnectionBP;
             }
             catch
@@ -641,9 +640,27 @@
                     RequestHeaders.ProxyConnection = null;
             }
 
-            // Note: we do not remove fields mentioned in the
-            //  'Connection' header (the specs say we should).
-
+            if (RequestHeaders.Connection != null)
+            {
+                foreach (var item in RequestHeaders.Connection)
+                {
+                    if (item.Equals("close"))
+                    {
+                        State.bPersistConnectionBP = false;
+                        State.bUseDefaultPersistBP = false;
+                        break;
+                    }
+                    if (item.Equals("keep-alive"))
+                    {
+                        State.bPersistConnectionBP = true;
+                        State.bUseDefaultPersistBP = false;
+                        break;
+                    }
+                }
+            }
+            if (State.bUseDefaultPersistBP)
+                State.bPersistConnectionBP =
+                    (!RequestLine.ProtocolVersion.Equals("1.0"));
         }
 
         /// <summary>
