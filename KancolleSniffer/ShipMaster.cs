@@ -97,13 +97,13 @@ namespace KancolleSniffer
                     case 14: // 潜水空母
                     case 16: // 水上機母艦
                     case 17: // 揚陸艦
+                    case 21: // 練習巡洋艦
                         return 1.0;
                     case 5: // 重巡洋艦
                     case 6: // 航空巡洋艦
                     case 7: // 軽空母
                     case 8: // 高速戦艦
                     case 20: // 潜水母艦
-                    case 21: // 練習巡洋艦
                         return 1.5;
                     case 9: // 低速戦艦
                     case 10: // 航空戦艦
