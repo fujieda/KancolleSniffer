@@ -455,7 +455,10 @@ namespace KancolleSniffer
             var battle = _sniffer.Battle;
             var color = new[] {DefaultForeColor, DefaultForeColor, Color.Blue, Color.Green, Color.Orange, Color.Red};
             labelFormation.Text = battle.Formation;
-            labelEnemyFighterPower.Text = battle.EnemyFighterPower.ToString("D");
+            var enemyFp = battle.EnemyFighterPower;
+            labelEnemyFighterPower.Text = (enemyFp & BattleInfo.IncollectFighterPowerFlag) == 0
+                ? enemyFp.ToString()
+                : (enemyFp & ~BattleInfo.IncollectFighterPowerFlag) + "+";
             labelFighterPower.ForeColor = color[battle.AirControlLevel + 1];
             if (_config.AlwaysShowResultRank)
                 ShowResultRank();

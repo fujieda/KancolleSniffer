@@ -32,16 +32,19 @@ namespace KancolleSniffer
             dict[8] = "高速戦艦" ;
             foreach (var entry in json.api_mst_ship)
             {
-                _shipSpecs[(int)entry.api_id] = new ShipSpec
+                var shipSpec = _shipSpecs[(int)entry.api_id] = new ShipSpec
                 {
                     Id = (int)entry.api_id,
                     Name = ShipName(entry),
                     FuelMax = entry.api_fuel_max() ? (int)entry.api_fuel_max : 0,
                     BullMax = entry.api_bull_max() ? (int)entry.api_bull_max : 0,
-                    MaxEq = entry.api_maxeq() ? (int[])entry.api_maxeq : new int[0],
                     ShipType = (int)entry.api_stype,
                     ShipTypeName = dict[entry.api_stype]
                 };
+                int[] maxEq;
+                shipSpec.MaxEq = entry.api_maxeq()
+                    ? entry.api_maxeq
+                    : MissingData.MaxEq.TryGetValue(shipSpec.Id, out maxEq) ? maxEq : null;
             }
             _shipSpecs[-1] = new ShipSpec();
         }

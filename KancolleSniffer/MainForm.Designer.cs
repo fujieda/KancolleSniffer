@@ -321,16 +321,16 @@ namespace KancolleSniffer
             // 
             // labelEnemyFighterPower
             // 
-            this.labelEnemyFighterPower.Location = new System.Drawing.Point(132, 1);
+            this.labelEnemyFighterPower.Location = new System.Drawing.Point(129, 1);
             this.labelEnemyFighterPower.Name = "labelEnemyFighterPower";
-            this.labelEnemyFighterPower.Size = new System.Drawing.Size(23, 12);
+            this.labelEnemyFighterPower.Size = new System.Drawing.Size(29, 12);
             this.labelEnemyFighterPower.TabIndex = 3;
             this.labelEnemyFighterPower.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label30
             // 
             this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(91, 1);
+            this.label30.Location = new System.Drawing.Point(90, 1);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(41, 12);
             this.label30.TabIndex = 2;
