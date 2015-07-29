@@ -423,17 +423,19 @@ namespace KancolleSniffer
             var msgs = _sniffer.GetAkashiTimerNotice();
             if (msgs.Length == 0)
                 return;
-            if (msgs[0] == "20分経過しました。")
+            if (msgs[0].Proceeded == "20分経過しました。")
             {
-                _noticeQueue.Enqueue("泊地修理", msgs[0], _config.Akashi20MinSoundFile);
-                return;
+                _noticeQueue.Enqueue("泊地修理", msgs[0].Proceeded, _config.Akashi20MinSoundFile);
+                msgs[0].Proceeded = "";
+                // 修理完了がいるかもしれないので続ける
             }
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             for (var i = 0; i < fn.Length; i++)
             {
-                if (msgs[i] == "")
-                    continue;
-                _noticeQueue.Enqueue("泊地修理 " + fn[i], msgs[i], _config.AkashiProgressSoundFile);
+                if (msgs[i].Proceeded != "")
+                    _noticeQueue.Enqueue("泊地修理 " + fn[i], "修理進行：" + msgs[i].Proceeded, _config.AkashiProgressSoundFile);
+                if (msgs[i].Completed != "")
+                    _noticeQueue.Enqueue("泊地修理 " + fn[i], "修理完了：" + msgs[i].Completed, _config.AkashiCompleteSoundFile);
             }
         }
 

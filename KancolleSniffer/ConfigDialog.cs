@@ -40,7 +40,7 @@ namespace KancolleSniffer
             listBoxSoundFile.Items.AddRange(new object[]
             {
                 "遠征終了", "入渠終了", "建造完了", "艦娘数超過", "装備数超過",
-                "大破警告", "泊地修理20分経過", "泊地修理進行", "疲労回復"
+                "大破警告", "泊地修理20分経過", "泊地修理進行", "泊地修理完了","疲労回復"
             });
             numericUpDownMaterialLogInterval.Maximum = 1440;
         }
@@ -75,6 +75,7 @@ namespace KancolleSniffer
             _soundSetting["大破警告"] = _config.DamagedShipSoundFile;
             _soundSetting["泊地修理20分経過"] = _config.Akashi20MinSoundFile;
             _soundSetting["泊地修理進行"] = _config.AkashiProgressSoundFile;
+            _soundSetting["泊地修理完了"] = _config.AkashiCompleteSoundFile;
             _soundSetting["疲労回復"] = _config.ConditionSoundFile;
 
             listBoxSoundFile.SelectedIndex = -1;
@@ -177,6 +178,7 @@ namespace KancolleSniffer
             _config.DamagedShipSoundFile = _soundSetting["大破警告"];
             _config.Akashi20MinSoundFile = _soundSetting["泊地修理20分経過"];
             _config.AkashiProgressSoundFile = _soundSetting["泊地修理進行"];
+            _config.AkashiCompleteSoundFile = _soundSetting["泊地修理完了"];
             _config.ConditionSoundFile = _soundSetting["疲労回復"];
         }
 

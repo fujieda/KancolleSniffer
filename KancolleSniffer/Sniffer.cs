@@ -431,7 +431,7 @@ namespace KancolleSniffer
             return _akashiTimer.GetTimers(fleet);
         }
 
-        public string[] GetAkashiTimerNotice()
+        public AkashiTimer.Notice[] GetAkashiTimerNotice()
         {
             return _akashiTimer.GetNotice();
         }

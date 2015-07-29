@@ -105,6 +105,7 @@ namespace KancolleSniffer
         public string DamagedShipSoundFile { get; set; }
         public string Akashi20MinSoundFile { get; set; }
         public string AkashiProgressSoundFile { get; set; }
+        public string AkashiCompleteSoundFile { get; set; }
         public string ConditionSoundFile { get; set; }
         public bool DebugLogging { get; set; }
         public string DebugLogFile { get; set; }
@@ -131,6 +132,7 @@ namespace KancolleSniffer
             DamagedShipSoundFile = Path.Combine(dir, "taiha.mp3");
             Akashi20MinSoundFile = Path.Combine(dir, "20min.mp3");
             AkashiProgressSoundFile = Path.Combine(dir, "syuuri.mp3");
+            AkashiCompleteSoundFile = Path.Combine(dir, "syuuri2.mp3");
             ConditionSoundFile = Path.Combine(dir, "hirou.mp3");
             DebugLogFile = Path.Combine(dir, "log.txt");
             Proxy = new ProxyConfig();

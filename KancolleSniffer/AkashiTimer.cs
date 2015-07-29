@@ -96,26 +96,55 @@ namespace KancolleSniffer
                 }).ToArray();
             }
 
-            public string GetNotice(DateTime start, DateTime prev, DateTime now)
+            public Notice GetNotice(DateTime start, DateTime prev, DateTime now)
             {
-                var msg = string.Join(" ", _target.Where(s =>
+                var m20 = TimeSpan.FromMinutes(20);
+                var proc = new List<string>();
+                var comp = new List<string>();
+                foreach (var s in _target)
                 {
                     var damage = s.MaxHp - s.NowHp;
-                    if (damage < 2)
-                        return false;
-                    for (var d = 2; d <= damage; d++)
+                    if (damage == 0)
+                        continue;
+                    if (damage == 1)
+                    {
+                        if (prev - start < m20 && now - start >= m20)
+                            comp.Add(s.Name);
+                        continue;
+                    }
+                    // スリープで時間が飛んだときに修理完了だけを表示するために、
+                    // 完全回復から減らしながら所要時間と経過時間と比較する。
+                    for (var d = damage; d >= 2; d--)
                     {
                         var sec = s.CalcRepairSec(d) + 60;
                         if (sec <= 20 * 60)
+                        {
+                            if (d == damage && (prev - start < m20 && now - start >= m20))
+                                comp.Add(s.Name);
                             continue;
+                        }
                         var span = TimeSpan.FromSeconds(sec);
-                        if (span > prev - start && span <= now - start)
-                            return true;
+                        if (span <= prev - start || now - start < span)
+                            continue;
+                        if (d == damage)
+                            comp.Add(s.Name);
+                        else
+                            proc.Add(s.Name);
+                        break;
                     }
-                    return false;
-                }).Select(s => s.Name));
-                return msg == "" ? "" : "修理進行: " + msg;
+                }
+                return new Notice
+                {
+                    Proceeded = proc.Count == 0 ? "" : string.Join(" ", proc),
+                    Completed = comp.Count == 0 ? "" : string.Join(" ", comp)
+                };
             }
+        }
+
+        public class Notice
+        {
+            public string Proceeded { get; set; }
+            public string Completed { get; set; }
         }
 
         public AkashiTimer(ShipInfo ship, ItemInfo item, DockInfo dock)
@@ -205,16 +234,18 @@ namespace KancolleSniffer
             return _repairStatuses[fleet].GetTimers(_start, DateTime.Now);
         }
 
-        public string[] GetNotice()
+        public Notice[] GetNotice()
         {
             var now = DateTime.Now;
             var prev = _prev;
             _prev = now;
             if (prev == DateTime.MinValue || _start == DateTime.MinValue)
-                return new string[0];
-            if (prev - _start < TimeSpan.FromMinutes(20) && now - _start >= TimeSpan.FromMinutes(20))
-                return new[] {"20分経過しました。"};
-            return _repairStatuses.Select(repair => repair.GetNotice(_start, prev, now)).ToArray();
+                return new Notice[0];
+            var r = _repairStatuses.Select(repair => repair.GetNotice(_start, prev, now)).ToArray();
+            var m20 = TimeSpan.FromMinutes(20);
+            if (prev - _start < m20 && now - _start >= m20)
+                r[0].Proceeded = "20分経過しました。";
+            return r;
         }
     }
 }
