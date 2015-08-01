@@ -128,6 +128,7 @@ namespace KancolleSniffer
         private void MainForm_Load(object sender, EventArgs e)
         {
             _config.Load();
+            _prevProxy = _config.Proxy.Clone();
             RestoreLocation();
             if (_config.HideOnMinimized && WindowState == FormWindowState.Minimized)
                 ShowInTaskbar = false;
@@ -138,7 +139,6 @@ namespace KancolleSniffer
             if (_config.Proxy.Auto)
                 _systemProxy.SetAutoProxyUrl(ProxyConfig.AutoConfigUrl);
             StartProxy();
-            _prevProxy = _config.Proxy.Clone();
         }
 
         private void StartProxy()
