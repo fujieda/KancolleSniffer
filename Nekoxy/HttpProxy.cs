@@ -20,9 +20,21 @@ namespace Nekoxy
         public static event Action<Session> AfterSessionComplete;
 
         /// <summary>
+        /// アップストリームプロキシの指定を有効にする。
+        /// 既定値false。
+        /// trueの場合、Startup メソッド時に設定されたシステムプロキシを無視し、
+        /// UpstreamProxyHost プロパティと UpstreamProxyPort プロパティをアップストリームプロキシに設定する。
+        /// </summary>
+        public static bool IsEnableUpstreamProxy
+        {
+            get { return TransparentProxyLogic.IsEnableUpstreamProxy; }
+            set { TransparentProxyLogic.IsEnableUpstreamProxy = value; }
+        }
+
+        /// <summary>
         /// アップストリームプロキシのホスト名。
         /// Startupメソッド時に設定されたシステムプロキシより優先して利用される。
-        /// アップストリームプロキシは UpstreamProxyHost が null の場合無効となる。
+        /// アップストリームプロキシは UpstreamProxyHost が null の場合はダイレクトアクセスとなる。
         /// TrotiNet は Dns.GetHostAddresses で取得されたアドレスを順番に接続試行するため、
         /// 接続先によっては動作が遅くなる可能性がある。
         /// 例えば 127.0.0.1 で待ち受けているローカルプロキシに対して接続したい場合、
@@ -47,10 +59,7 @@ namespace Nekoxy
         /// <summary>
         /// プロキシサーバーが Listening 中かどうかを取得。
         /// </summary>
-        public static bool IsInListening
-        {
-            get { return server != null && server.IsListening; }
-        }
+        public static bool IsInListening => server != null && server.IsListening;
 
         /// <summary>
         /// 指定ポートで Listening を開始する。
@@ -58,8 +67,7 @@ namespace Nekoxy
         /// </summary>
         /// <param name="listeningPort">Listeningするポート。</param>
         /// <param name="useIpV6">falseの場合、127.0.0.1で待ち受ける。trueの場合、::1で待ち受ける。既定false。</param>
-        /// <param name="isSetIEProxySettings">trueの場合、プロセス内IEプロキシの設定を実施し、アップストリームプロキシにシステム設定プロキシを設定する
-        /// (ただしUpstreamProxyHostプロパティの方が優先される)。既定true。</param>
+        /// <param name="isSetIEProxySettings">trueの場合、プロセス内IEプロキシの設定を実施し、アップストリームプロキシにシステム設定プロキシを設定する。既定true。</param>
         public static void Startup(int listeningPort, bool useIpV6 = false, bool isSetIEProxySettings = true)
         {
             if (server != null) throw new InvalidOperationException("Calling Startup() twice without calling Shutdown() is not permitted.");
@@ -98,15 +106,11 @@ namespace Nekoxy
         public static void Shutdown()
         {
             TransparentProxyLogic.AfterSessionComplete -= InvokeAfterSessionComplete;
-            if (server == null) return;
-            server.Stop();
+            server?.Stop();
             server = null;
         }
 
         private static void InvokeAfterSessionComplete(Session session)
-        {
-            if (AfterSessionComplete != null)
-                AfterSessionComplete.Invoke(session);
-        }
+            => AfterSessionComplete?.Invoke(session);
     }
 }
