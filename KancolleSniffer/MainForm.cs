@@ -148,10 +148,7 @@ namespace KancolleSniffer
                 HttpProxy.UpstreamProxyHost = "127.0.0.1";
                 HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
             }
-            else
-            {
-                HttpProxy.UpstreamProxyHost = null;
-            }
+            HttpProxy.IsEnableUpstreamProxy = _config.Proxy.UseUpstream;
             HttpProxy.Startup(_config.Proxy.Listen, false, false);
         }
 
