@@ -720,6 +720,8 @@
             ResponseStatusLine = new HttpStatusLine(SocketPS);
             ResponseHeaders = new HttpHeaders(SocketPS);
 
+            log.Info("Got response " + ResponseStatusLine);
+
             // Get bPersistConnectionPS (RFC 2616, section 14.10)
             bool bUseDefaultPersistPS = true;
             if (ResponseHeaders.Connection != null)
