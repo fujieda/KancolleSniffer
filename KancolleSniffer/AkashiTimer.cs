@@ -57,20 +57,14 @@ namespace KancolleSniffer
                 _target = new ShipStatus[0];
             }
 
-            public bool DeckChanged(IEnumerable<int> deck)
-            {
-                return !_deck.SequenceEqual(deck);
-            }
+            public bool DeckChanged(IEnumerable<int> deck) => !_deck.SequenceEqual(deck);
 
             public void UpdateTarget(ShipStatus[] target)
             {
                 _target = target;
             }
 
-            public bool IsRepaired(ShipStatus[] target)
-            {
-                return _target.Zip(target, (a, b) => a.NowHp < b.NowHp).Any(x => x);
-            }
+            public bool IsRepaired(ShipStatus[] target) => _target.Zip(target, (a, b) => a.NowHp < b.NowHp).Any(x => x);
 
             public RepairSpan[] GetTimers(DateTime start, DateTime now)
             {
@@ -228,11 +222,8 @@ namespace KancolleSniffer
         }
 
         public RepairSpan[] GetTimers(int fleet)
-        {
-            if (_start == DateTime.MinValue)
-                return new RepairSpan[0];
-            return _repairStatuses[fleet].GetTimers(_start, DateTime.Now);
-        }
+            => _start == DateTime.MinValue ? new RepairSpan[0] : _repairStatuses[fleet].GetTimers(_start, DateTime.Now);
+
 
         public Notice[] GetNotice()
         {

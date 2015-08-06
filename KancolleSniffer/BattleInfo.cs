@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -162,7 +162,7 @@ namespace KancolleSniffer
             return (from slot in equips.Zip(maxEq, (id, max) => new {id, max})
                 let spec = _itemInfo.GetSpecByItemId(slot.id)
                 where spec.CanAirCombat
-                select (int)Math.Floor(spec.AntiAir * Math.Sqrt(slot.max))).DefaultIfEmpty().Sum() | missing;
+                select (int)Floor(spec.AntiAir * Sqrt(slot.max))).DefaultIfEmpty().Sum() | missing;
         }
 
         private void CalcDamage(dynamic json, bool surfaceFleet = false)
@@ -221,10 +221,7 @@ namespace KancolleSniffer
             }
         }
 
-        private bool IsNightBattle(dynamic json)
-        {
-            return json.api_hougeki();
-        }
+        private bool IsNightBattle(dynamic json) => json.api_hougeki();
 
         private void CalcSimpleDamage(dynamic json, Record[] friend, int[] enemy)
         {
@@ -446,8 +443,8 @@ namespace KancolleSniffer
             var friendSunk = combined.Count(r => r.NowHp == 0);
             var enemySunk = _enemyHp.Count(hp => hp == 0);
 
-            var friendGaugeRate = Math.Floor((double)friendGauge / combined.Sum(r => r.StartHp) * 100);
-            var enemyGaugeRate = Math.Floor((double)enemyGauge / _enemyStartHp.Sum() * 100);
+            var friendGaugeRate = Floor((double)friendGauge / combined.Sum(r => r.StartHp) * 100);
+            var enemyGaugeRate = Floor((double)enemyGauge / _enemyStartHp.Sum() * 100);
             var equalOrMore = enemyGaugeRate > (0.9 * friendGaugeRate);
             var superior = enemyGaugeRate > 0 && enemyGaugeRate > (2.5 * friendGaugeRate);
 

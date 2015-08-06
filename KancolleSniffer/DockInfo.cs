@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014 Kazuhiro Fujieda <fujieda@users.osdn.me>
+﻿// Copyright (C) 2014, 2015 Kazuhiro Fujieda <fujieda@users.osdn.me>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -78,18 +78,10 @@ namespace KancolleSniffer
         }
 
         public NameAndTimer[] NDock
-        {
-            get
-            {
-                return _ndoc.Zip(_ndocTimers,
+            => _ndoc.Zip(_ndocTimers,
                     (id, timer) => new NameAndTimer {Name = id == 0 ? "" : _shipInfo[id].Name, Timer = timer}).ToArray();
-            }
-        }
 
-        public bool InNDock(int id)
-        {
-            return _ndoc.Any(n => n == id); // 空のドックのidは0
-        }
+        public bool InNDock(int id) => _ndoc.Any(n => n == id); // 空のドックのidは0
 
         public void InspectKDock(dynamic json)
         {
@@ -111,9 +103,6 @@ namespace KancolleSniffer
             _kdocTimers[dock].SetEndTime(DateTime.Now.AddHours(-1));
         }
 
-        public RingTimer[] KDock
-        {
-            get { return _kdocTimers; }
-        }
+        public RingTimer[] KDock => _kdocTimers;
     }
 }

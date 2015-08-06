@@ -19,6 +19,7 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -66,16 +67,13 @@ namespace KancolleSniffer
                 switch (m.Msg)
                 {
                     case WM_LBUTTONDOWN:
-                        if (MouseDown != null)
-                            MouseDown(ref handled);
+                        MouseDown?.Invoke(ref handled);
                         break;
                     case WM_MOUSEMOVE:
-                        if (MouseMove != null)
-                            MouseMove(ref handled);
+                        MouseMove?.Invoke(ref handled);
                         break;
                     case WM_LBUTTONUP:
-                        if (MouseUp != null)
-                            MouseUp(ref handled);
+                        MouseUp?.Invoke(ref handled);
                         break;
                 }
                 return handled;
@@ -113,7 +111,7 @@ namespace KancolleSniffer
                 var dy = cur.Y - _mouseStart.Y;
                 if (_touch)
                     _panel.AutoScrollPosition = new Point(-_panelStart.X - dx, -_panelStart.Y - dy);
-                else if (Math.Abs(dx) > 5 || Math.Abs(dy) > 5)
+                else if (Abs(dx) > 5 || Abs(dy) > 5)
                     _touch = true;
             }
 
@@ -192,7 +190,7 @@ namespace KancolleSniffer
                     _treeView.EndUpdate();
                     handled = true;
                 }
-                else if (Math.Abs(dx) > 5 || Math.Abs(dy) > 5)
+                else if (Abs(dx) > 5 || Abs(dy) > 5)
                     _touch = true;
             }
 

@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013 Kazuhiro Fujieda <fujieda@users.osdn.me>
+﻿// Copyright (C) 2013, 2015 Kazuhiro Fujieda <fujieda@users.osdn.me>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -57,16 +57,8 @@ namespace KancolleSniffer
             }
         }
 
-        public NameAndTimer[] Missions
-        {
-            get { return _missions; }
-        }
+        public NameAndTimer[] Missions => _missions;
 
-        public bool InMission(int fleet)
-        {
-            if (fleet == 0)
-                return false;
-            return _missions[fleet - 1].Name != "";
-        }
+        public bool InMission(int fleet) => fleet != 0 && _missions[fleet - 1].Name != "";
     }
 }

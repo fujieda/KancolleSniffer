@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2013, 2014 Kazuhiro Fujieda <fujieda@users.osdn.me>
+﻿// Copyright (C) 2013, 2014, 2015 Kazuhiro Fujieda <fujieda@users.osdn.me>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -103,24 +103,12 @@ namespace KancolleSniffer
             }
         }
 
-        public bool IsSonar
-        {
-            get
-            {
-                return Type == 14 || // ソナー
-                       Type == 40; // 大型ソナー
-            }
-        }
+        public bool IsSonar => Type == 14 || // ソナー
+                               Type == 40; // 大型ソナー
 
-        public bool IsDepthCharge
-        {
-            get { return Type == 15; }
-        }
+        public bool IsDepthCharge => Type == 15;
 
-        public bool IsReconSeaplane
-        {
-            get { return Type == 10; }
-        }
+        public bool IsReconSeaplane => Type == 10;
 
         public Color Color
         {
@@ -218,7 +206,7 @@ namespace KancolleSniffer
         public int MaxEquips { get; private set; }
         public int MarginEquips { get; set; }
         public bool RingEquips { get; set; }
-        public MaterialCount[] MaterialHistory { get; private set; }
+        public MaterialCount[] MaterialHistory { get; }
 
         public bool NeedSave
         {
@@ -244,10 +232,7 @@ namespace KancolleSniffer
             }
         }
 
-        public bool TooManyShips
-        {
-            get { return MaxShips != 0 && NowShips >= MaxShips - MarginShips; }
-        }
+        public bool TooManyShips => MaxShips != 0 && NowShips >= MaxShips - MarginShips;
 
         public int NowEquips
         {
@@ -263,15 +248,12 @@ namespace KancolleSniffer
             }
         }
 
-        public bool TooManyEquips
-        {
-            get { return MaxEquips != 0 && NowEquips >= MaxEquips - MarginEquips; }
-        }
+        public bool TooManyEquips => MaxEquips != 0 && NowEquips >= MaxEquips - MarginEquips;
 
         public ItemInfo()
         {
-            MaterialHistory = new MaterialCount[Enum.GetValues(typeof (Material)).Length];
-            foreach (Material m in Enum.GetValues(typeof (Material)))
+            MaterialHistory = new MaterialCount[Enum.GetValues(typeof(Material)).Length];
+            foreach (Material m in Enum.GetValues(typeof(Material)))
                 MaterialHistory[(int)m] = new MaterialCount();
             MarginShips = 4;
             MarginEquips = 10;
@@ -399,25 +381,13 @@ namespace KancolleSniffer
                 MaterialHistory[i].Now += get[i];
         }
 
-        public ItemSpec this[int id]
-        {
-            get { return GetSpecById(id); }
-        }
+        public ItemSpec this[int id] => GetSpecById(id);
 
-        public ItemSpec GetSpecById(int id)
-        {
-            return _itemInfo[id].Spec;
-        }
+        public ItemSpec GetSpecById(int id) => _itemInfo[id].Spec;
 
-        public ItemSpec GetSpecByItemId(int id)
-        {
-            return _itemSpecs[id];
-        }
+        public ItemSpec GetSpecByItemId(int id) => _itemSpecs[id];
 
-        public Dictionary<int, ItemStatus> ItemDict
-        {
-            get { return _itemInfo; }
-        }
+        public Dictionary<int, ItemStatus> ItemDict => _itemInfo;
 
         public void SetItemOwner(ShipStatus[] shipList)
         {
@@ -438,8 +408,7 @@ namespace KancolleSniffer
 
         public void LoadState(Status status)
         {
-            if (status.MatreialHistory != null)
-                status.MatreialHistory.CopyTo(MaterialHistory, 0);
+            status.MatreialHistory?.CopyTo(MaterialHistory, 0);
         }
     }
 

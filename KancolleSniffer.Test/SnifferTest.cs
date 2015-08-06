@@ -50,9 +50,9 @@ namespace KancolleSniffer.Test
                         var line = stream.ReadLine();
                         ln++;
                         if (line == null)
-                            throw new Exception(string.Format("ログのurl, request, responseがそろっていません: {0:d}行目", ln));
+                            throw new Exception($"ログのurl, request, responseがそろっていません: {ln:d}行目");
                         if (!line.StartsWith(s))
-                            throw new Exception(string.Format("ログに不正な行が含まれています: {0:d}行目", ln));
+                            throw new Exception($"ログに不正な行が含まれています: {ln:d}行目");
                         triple.Add(line.Substring(s.Count()));
                     }
                     var json = DynamicJson.Parse(triple[2]);

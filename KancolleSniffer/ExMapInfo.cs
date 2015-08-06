@@ -99,10 +99,7 @@ namespace KancolleSniffer
             NeedSave = true;
         }
 
-        public int Achievement
-        {
-            get { return _clearStatus.Values.Where(s => s.Cleared).Sum(s => s.Rate); }
-        }
+        public int Achievement => _clearStatus.Values.Where(s => s.Cleared).Sum(s => s.Rate);
 
         public void ResetIfNeeded()
         {

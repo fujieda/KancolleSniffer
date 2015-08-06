@@ -90,9 +90,6 @@ namespace KancolleSniffer
             }
         }
 
-        public QuestStatus[] Quests
-        {
-            get { return _quests.Values.ToArray(); }
-        }
+        public QuestStatus[] Quests => _quests.Values.ToArray();
     }
 }

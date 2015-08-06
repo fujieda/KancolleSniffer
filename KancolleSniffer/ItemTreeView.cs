@@ -39,11 +39,11 @@ namespace KancolleSniffer
         private TreeNode CreateItemNodes(IEnumerable<ItemStatus> itemList)
         {
             var grouped = from byId in
-                              (from item in itemList
-                               where item.Spec.Id != -1
-                               orderby item.Spec.Type, item.Spec.Id, item.Level descending, item.Ship.Spec.Id
-                               group item by new { item.Spec.Id, item.Level })
-                          group byId by byId.First().Spec.Type;
+                (from item in itemList
+                    where item.Spec.Id != -1
+                    orderby item.Spec.Type, item.Spec.Id, item.Level descending, item.Ship.Spec.Id
+                    group item by new {item.Spec.Id, item.Level})
+                group byId by byId.First().Spec.Type;
             var root = new TreeNode();
             foreach (var byType in grouped)
             {
@@ -83,21 +83,16 @@ namespace KancolleSniffer
             {
                 Level = org.Level,
                 Spec = org.Spec,
-                Ship = new ShipStatus { Id = org.Ship.Id, Fleet = org.Ship.Fleet }
+                Ship = new ShipStatus {Id = org.Ship.Id, Fleet = org.Ship.Fleet}
             };
         }
 
         private class ItemStatusComparer : IEqualityComparer<ItemStatus>
         {
             public bool Equals(ItemStatus x, ItemStatus y)
-            {
-                return x.Level == y.Level && x.Spec == y.Spec && x.Ship.Id == y.Ship.Id && x.Ship.Fleet == y.Ship.Fleet;
-            }
+                => x.Level == y.Level && x.Spec == y.Spec && x.Ship.Id == y.Ship.Id && x.Ship.Fleet == y.Ship.Fleet;
 
-            public int GetHashCode(ItemStatus obj)
-            {
-                return obj.Level + obj.Spec.GetHashCode() + obj.Ship.GetHashCode();
-            }
+            public int GetHashCode(ItemStatus obj) => obj.Level + obj.Spec.GetHashCode() + obj.Ship.GetHashCode();
         }
 
         [DllImport("user32.dll")]

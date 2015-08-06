@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -53,15 +54,15 @@ namespace KancolleSniffer
 
         public void UpdateList()
         {
-            panelItemHeader.Visible = InItemList() || InEquip();
-            itemTreeView.Visible = InItemList();
-            equipPanel.Visible = InEquip();
-            if (InItemList())
+            panelItemHeader.Visible = InItemList || InEquip;
+            itemTreeView.Visible = InItemList;
+            equipPanel.Visible = InEquip;
+            if (InItemList)
             {
                 HideShipLabels();
                 itemTreeView.SetNodes(_sniffer.ItemList);
             }
-            else if (InEquip())
+            else if (InEquip)
             {
                 HideShipLabels();
                 equipPanel.UpdateEquip(_sniffer);
@@ -76,10 +77,10 @@ namespace KancolleSniffer
 
         private void CreateShipList()
         {
-            var ships = InRepairList() ? _sniffer.DamagedShipList : FilterByGroup(_sniffer.ShipList).ToArray();
+            var ships = InRepairList ? _sniffer.DamagedShipList : FilterByGroup(_sniffer.ShipList).ToArray();
             if (!_config.ShipList.ShipType)
             {
-                _shipList = ships.OrderBy(s => s, new CompareShip(false, InRepairList())).ToArray();
+                _shipList = ships.OrderBy(s => s, new CompareShip(false, InRepairList)).ToArray();
                 return;
             }
             var types = ships.Select(s => new {Id = s.Spec.ShipType, Name = s.Spec.ShipTypeName}).Distinct().
@@ -90,7 +91,7 @@ namespace KancolleSniffer
                         Level = 1000,
                         NowHp = -1000
                     });
-            _shipList = ships.Concat(types).OrderBy(s => s, new CompareShip(true, InRepairList())).ToArray();
+            _shipList = ships.Concat(types).OrderBy(s => s, new CompareShip(true, InRepairList)).ToArray();
         }
 
         private IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships)
@@ -283,25 +284,25 @@ namespace KancolleSniffer
 
         private void SetShipLabels()
         {
-            panelGroupHeader.Visible = InGroupConfig();
-            panelRepairHeader.Visible = InRepairList();
+            panelGroupHeader.Visible = InGroupConfig;
+            panelRepairHeader.Visible = InRepairList;
             panelShipList.SuspendLayout();
             for (var i = 0; i < _shipList.Length; i++)
             {
-                if (!InShipStatus())
+                if (!InShipStatus)
                     _labelPanelList[i].Visible = false;
-                if (!InGroupConfig())
+                if (!InGroupConfig)
                     _checkBoxPanelList[i].Visible = false;
-                if (!InRepairList())
+                if (!InRepairList)
                     _repairPanelList[i].Visible = false;
             }
             for (var i = 0; i < _shipList.Length; i++)
             {
-                if (InShipStatus())
+                if (InShipStatus)
                     SetShipStatus(i);
-                if (InGroupConfig())
+                if (InGroupConfig)
                     SetGroupConfig(i);
-                if (InRepairList())
+                if (InRepairList)
                     SetRepairList(i);
             }
             for (var i = _shipList.Length; i < _labelPanelList.Count; i++)
@@ -401,34 +402,19 @@ namespace KancolleSniffer
             panelShipList.ResumeLayout();
         }
 
-        private bool InShipStatus()
-        {
-            return Array.Exists(new[] {"全員", "A", "B", "C", "D"}, x => comboBoxGroup.Text == x);
-        }
+        private bool InShipStatus => Array.Exists(new[] {"全員", "A", "B", "C", "D"}, x => comboBoxGroup.Text == x);
 
-        private bool InGroupConfig()
-        {
-            return comboBoxGroup.Text == "分類";
-        }
+        private bool InGroupConfig => comboBoxGroup.Text == "分類";
 
-        private bool InRepairList()
-        {
-            return comboBoxGroup.Text == "修復";
-        }
+        private bool InRepairList => comboBoxGroup.Text == "修復";
 
-        private bool InItemList()
-        {
-            return comboBoxGroup.Text == "装備";
-        }
+        private bool InItemList => comboBoxGroup.Text == "装備";
 
-        private bool InEquip()
-        {
-            return comboBoxGroup.Text == "艦隊";
-        }
+        private bool InEquip => comboBoxGroup.Text == "艦隊";
 
         private void ShipListForm_Load(object sender, EventArgs e)
         {
-            panelShipList.Width = (int)Math.Round(PanelWidth * ShipLabel.ScaleFactor.Width) + 3 +
+            panelShipList.Width = (int)Round(PanelWidth * ShipLabel.ScaleFactor.Width) + 3 +
                                   SystemInformation.VerticalScrollBarWidth;
             Width = panelShipList.Width + 12 + (Width - ClientSize.Width);
             MinimumSize = new Size(Width, 0);
@@ -470,15 +456,15 @@ namespace KancolleSniffer
 
         public void ShowShip(int id)
         {
-            if (InShipStatus())
+            if (InShipStatus)
             {
                 var i = Array.FindIndex(_shipList, s => s.Id == id);
                 if (i == -1)
                     return;
-                var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
+                var y = (int)Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
                 panelShipList.AutoScrollPosition = new Point(0, y);
             }
-            else if (InEquip())
+            else if (InEquip)
             {
                 equipPanel.ShowShip(id);
             }
@@ -521,9 +507,9 @@ namespace KancolleSniffer
         // マウスホイールでスクロールするためにコントロールにフォーカスを合わせる。
         private void SetActiveControl()
         {
-            if (InItemList())
+            if (InItemList)
                 ActiveControl = itemTreeView;
-            else if (InEquip())
+            else if (InEquip)
                 ActiveControl = equipPanel;
             else
                 ActiveControl = panelShipList;

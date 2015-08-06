@@ -70,7 +70,7 @@ namespace KancolleSniffer
         {
             if (!_saveState)
                 return;
-            if (!_haveState.Any(x=>x.NeedSave))
+            if (!_haveState.Any(x => x.NeedSave))
                 return;
             foreach (var x in _haveState)
                 x.SaveState(_status);
@@ -347,75 +347,33 @@ namespace KancolleSniffer
                    url.EndsWith("api_req_combined_battle/sp_midnight");
         }
 
-        public NameAndTimer[] NDock
-        {
-            get { return _dockInfo.NDock; }
-        }
+        public NameAndTimer[] NDock => _dockInfo.NDock;
 
-        public RingTimer[] KDock
-        {
-            get { return _dockInfo.KDock; }
-        }
+        public RingTimer[] KDock => _dockInfo.KDock;
 
-        public ItemInfo Item
-        {
-            get { return _itemInfo; }
-        }
+        public ItemInfo Item => _itemInfo;
 
-        public QuestStatus[] Quests
-        {
-            get { return _questInfo.Quests; }
-        }
+        public QuestStatus[] Quests => _questInfo.Quests;
 
-        public NameAndTimer[] Missions
-        {
-            get { return _missionInfo.Missions; }
-        }
+        public NameAndTimer[] Missions => _missionInfo.Missions;
 
-        public DateTime GetConditionTimer(int fleet)
-        {
-            return _conditionTimer.GetTimer(fleet);
-        }
+        public DateTime GetConditionTimer(int fleet) => _conditionTimer.GetTimer(fleet);
 
-        public int[] GetConditionNotice()
-        {
-            return _conditionTimer.GetNotice();
-        }
+        public int[] GetConditionNotice() => _conditionTimer.GetNotice();
 
-        public ShipStatus[] GetShipStatuses(int fleet)
-        {
-            return _shipInfo.GetShipStatuses(fleet);
-        }
+        public ShipStatus[] GetShipStatuses(int fleet) => _shipInfo.GetShipStatuses(fleet);
 
-        public int[] GetDeck(int fleet)
-        {
-            return _shipInfo.GetDeck(fleet);
-        }
+        public int[] GetDeck(int fleet) => _shipInfo.GetDeck(fleet);
 
-        public ChargeStatus[] ChargeStatuses
-        {
-            get { return _shipInfo.ChargeStatuses; }
-        }
+        public ChargeStatus[] ChargeStatuses => _shipInfo.ChargeStatuses;
 
-        public int GetFighterPower(int fleet)
-        {
-            return _shipInfo.GetFighterPower(fleet);
-        }
+        public int GetFighterPower(int fleet) => _shipInfo.GetFighterPower(fleet);
 
-        public double GetFleetLineOfSights(int fleet)
-        {
-            return _shipInfo.GetLineOfSights(fleet);
-        }
+        public double GetFleetLineOfSights(int fleet) => _shipInfo.GetLineOfSights(fleet);
 
-        public ShipStatus[] DamagedShipList
-        {
-            get { return _shipInfo.GetDamagedShipList(_dockInfo); }
-        }
+        public ShipStatus[] DamagedShipList => _shipInfo.GetDamagedShipList(_dockInfo);
 
-        public ShipStatus[] ShipList
-        {
-            get { return _shipInfo.ShipList; }
-        }
+        public ShipStatus[] ShipList => _shipInfo.ShipList;
 
         public ItemStatus[] ItemList
         {
@@ -426,30 +384,15 @@ namespace KancolleSniffer
             }
         }
 
-        public AkashiTimer.RepairSpan[] GetAkashiTimers(int fleet)
-        {
-            return _akashiTimer.GetTimers(fleet);
-        }
+        public AkashiTimer.RepairSpan[] GetAkashiTimers(int fleet) => _akashiTimer.GetTimers(fleet);
 
-        public AkashiTimer.Notice[] GetAkashiTimerNotice()
-        {
-            return _akashiTimer.GetNotice();
-        }
+        public AkashiTimer.Notice[] GetAkashiTimerNotice() => _akashiTimer.GetNotice();
 
-        public Achievement Achievement
-        {
-            get { return _achievement; }
-        }
+        public Achievement Achievement => _achievement;
 
-        public BattleInfo Battle
-        {
-            get { return _battleInfo; }
-        }
+        public BattleInfo Battle => _battleInfo;
 
-        public ExMapInfo ExMap
-        {
-            get { return _exMapInfo; }
-        }
+        public ExMapInfo ExMap => _exMapInfo;
 
         public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)
         {
@@ -495,10 +438,7 @@ namespace KancolleSniffer
 
         public TimeSpan Rest { get; private set; }
 
-        public bool IsFinished
-        {
-            get { return _endTime != DateTime.MinValue && Rest <= _spare; }
-        }
+        public bool IsFinished => _endTime != DateTime.MinValue && Rest <= _spare;
 
         public bool NeedRing { get; set; }
 

@@ -147,7 +147,7 @@ namespace KancolleSniffer
                 if (id == -1)
                     return ",";
                 var s = _shipInfo[id];
-                return string.Format("{0}(Lv{1}),{2}/{3}", s.Name, s.Level, s.NowHp, s.MaxHp);
+                return $"{s.Name}(Lv{s.Level}),{s.NowHp}/{s.MaxHp}";
             }));
             var edeck = ((int[])_battle.api_ship_ke).Skip(1).ToArray();
             var enowhp = ((int[])_battle.api_nowhps).Skip(7).ToArray();
@@ -157,7 +157,7 @@ namespace KancolleSniffer
             {
                 eships.Add(edeck[i] == -1
                     ? ","
-                    : string.Format("{0},{1}/{2}", _shipMaster[edeck[i]].Name, enowhp[i], emaxhp[i]));
+                    : $"{_shipMaster[edeck[i]].Name},{enowhp[i]}/{emaxhp[i]}");
             }
             var cell = (int)_map.api_no;
             var boss = "";
@@ -358,10 +358,7 @@ namespace KancolleSniffer
             // Shift_JISでないとExcelで文字化けする
             private readonly Encoding _encoding = Encoding.GetEncoding("Shift_JIS");
 
-            public string ReadAllText(string path)
-            {
-                return File.ReadAllText(path, _encoding);
-            }
+            public string ReadAllText(string path) => File.ReadAllText(path, _encoding);
 
             public void AppendAllText(string path, string text)
             {
@@ -373,10 +370,7 @@ namespace KancolleSniffer
                 File.Delete(path);
             }
 
-            public bool Exists(string path)
-            {
-                return File.Exists(path);
-            }
+            public bool Exists(string path) => File.Exists(path);
         }
 
         public LogWriter(string outputDir = null, IFile file = null)

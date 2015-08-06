@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -29,10 +30,7 @@ namespace KancolleSniffer
         public int Fleet { get; set; } // ShipListだけで使う
         public ShipSpec Spec { get; set; }
 
-        public string Name
-        {
-            get { return Spec.Name; }
-        }
+        public string Name => Spec.Name;
 
         public int Level { get; set; }
         public int ExpToNext { get; set; }
@@ -48,10 +46,7 @@ namespace KancolleSniffer
         public int AntiSubmarine { get; set; }
         public bool Escaped { get; set; }
 
-        public Damage DamageLevel
-        {
-            get { return CalcDamage(NowHp, MaxHp); }
-        }
+        public Damage DamageLevel => CalcDamage(NowHp, MaxHp);
 
         public ShipStatus(ItemInfo itemInfo = null)
         {
@@ -76,22 +71,16 @@ namespace KancolleSniffer
             return ratio > 0.75 ? Damage.Minor : ratio > 0.5 ? Damage.Small : ratio > 0.25 ? Damage.Half : Damage.Badly;
         }
 
-        public TimeSpan RepairTime
-        {
-            get { return TimeSpan.FromSeconds(CalcRepairSec(MaxHp - NowHp) + 30); }
-        }
+        public TimeSpan RepairTime => TimeSpan.FromSeconds(CalcRepairSec(MaxHp - NowHp) + 30);
 
-        public int CalcRepairSec(int damage)
-        {
-            return (int)(RepairSecPerHp * damage);
-        }
+        public int CalcRepairSec(int damage) => (int)(RepairSecPerHp * damage);
 
         public double RepairSecPerHp
         {
             get
             {
                 var weight = Spec.RepairWeight;
-                var level = Level < 12 ? Level * 10 : Level * 5 + Math.Floor(Math.Sqrt(Level - 11)) * 10 + 50;
+                var level = Level < 12 ? Level * 10 : Level * 5 + Floor(Sqrt(Level - 11)) * 10 + 50;
                 return level * weight;
             }
         }
@@ -410,7 +399,7 @@ namespace KancolleSniffer
         {
             var s = _shipInfo[id];
             s.NowHp = s.MaxHp;
-            s.Cond = Math.Max(40, s.Cond);
+            s.Cond = Max(40, s.Cond);
         }
 
         public ShipStatus[] GetShipStatuses(int fleet)
@@ -423,73 +412,48 @@ namespace KancolleSniffer
             }).ToArray();
         }
 
-        public int[] GetDeck(int fleet)
-        {
-            return _decks[fleet];
-        }
+        public int[] GetDeck(int fleet) => _decks[fleet];
 
-        public ShipStatus this[int idx]
-        {
-            get { return _shipInfo[idx]; }
-        }
+        public ShipStatus this[int idx] => _shipInfo[idx];
 
-        public bool InMission(int fleet)
-        {
-            return _inMission[fleet];
-        }
+        public bool InMission(int fleet) => _inMission[fleet];
 
-        public bool InSortie(int fleet)
-        {
-            return _inSortie[fleet];
-        }
+        public bool InSortie(int fleet) => _inSortie[fleet];
 
         public ShipStatus[] ShipList
-        {
-            get
+            => _shipInfo.Values.Where(s => s.Level != 0).Select(s =>
             {
-                return _shipInfo.Values.Where(s => s.Level != 0).Select(s =>
-                {
-                    int oi;
-                    var f = FindFleet(s.Id, out oi);
-                    s.Fleet = f;
-                    s.Escaped = _escapedShips.Contains(s.Id);
-                    return s;
-                }).ToArray();
-            }
-        }
+                int oi;
+                var f = FindFleet(s.Id, out oi);
+                s.Fleet = f;
+                s.Escaped = _escapedShips.Contains(s.Id);
+                return s;
+            }).ToArray();
 
         public ChargeStatus[] ChargeStatuses
-        {
-            get
-            {
-                return (from deck in _decks
-                    let flag = new ChargeStatus(_shipInfo[deck[0]])
-                    let others = (from id in deck.Skip(1)
-                        select new ChargeStatus(_shipInfo[id]))
-                        .Aggregate(
-                            (result, next) =>
-                                new ChargeStatus(Math.Max(result.Fuel, next.Fuel), Math.Max(result.Bull, next.Bull)))
-                    select new ChargeStatus(flag.Fuel != 0 ? flag.Fuel : others.Fuel + 5,
-                        flag.Bull != 0 ? flag.Bull : others.Bull + 5)).ToArray();
-            }
-        }
+            => (from deck in _decks
+                let flag = new ChargeStatus(_shipInfo[deck[0]])
+                let others = (from id in deck.Skip(1)
+                    select new ChargeStatus(_shipInfo[id]))
+                    .Aggregate(
+                        (result, next) =>
+                            new ChargeStatus(Max(result.Fuel, next.Fuel), Max(result.Bull, next.Bull)))
+                select new ChargeStatus(flag.Fuel != 0 ? flag.Fuel : others.Fuel + 5,
+                    flag.Bull != 0 ? flag.Bull : others.Bull + 5)).ToArray();
 
         public int GetFighterPower(int fleet)
-        {
-            return (from ship in GetShipStatuses(fleet)
+            => (from ship in GetShipStatuses(fleet)
                 where !ship.Escaped
                 from slot in ship.Slot.Zip(ship.OnSlot, (s, o) => new {slot = s, onslot = o})
                 let item = _itemInfo[slot.slot]
                 where item.CanAirCombat
-                select (int)Math.Floor(item.AntiAir * Math.Sqrt(slot.onslot))).DefaultIfEmpty().Sum();
-        }
+                select (int)Floor(item.AntiAir * Sqrt(slot.onslot))).DefaultIfEmpty().Sum();
 
         public ShipStatus[] GetDamagedShipList(DockInfo dockInfo)
-        {
-            return (from s in ShipList
+            => (from s in ShipList
                 where s.NowHp < s.MaxHp && !dockInfo.InNDock(s.Id)
                 select s).OrderByDescending(s => s.RepairTime).ToArray();
-        }
+
 
         public double GetLineOfSights(int fleet)
         {
@@ -502,7 +466,7 @@ namespace KancolleSniffer
                     items += spec.LoS;
                     result += spec.LoS * spec.LoSScaleFactor();
                 }
-                result += Math.Sqrt(s.LoS - items) * 1.6841056;
+                result += Sqrt(s.LoS - items) * 1.6841056;
             }
             return result > 0 ? result + (_hqLevel + 4) / 5 * 5 * -0.6142467 : 0.0;
         }

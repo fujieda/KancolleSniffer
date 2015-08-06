@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using Codeplex.Data;
 using Microsoft.CSharp.RuntimeBinder;
 using Nekoxy;
+using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -158,8 +159,7 @@ namespace KancolleSniffer
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.Save();
             Task.Run(() => ShutdownProxy());
-            if (_logServer != null)
-                _logServer.Stop();
+            _logServer?.Stop();
             if (_config.Proxy.Auto)
                 _systemProxy.RestoreSettings();
         }
@@ -336,11 +336,11 @@ namespace KancolleSniffer
         private void UpdateNumOfShips()
         {
             var item = _sniffer.Item;
-            labelNumOfShips.Text = string.Format("{0:D}/{1:D}", item.NowShips, item.MaxShips);
+            labelNumOfShips.Text = $"{item.NowShips:D}/{item.MaxShips:D}";
             labelNumOfShips.ForeColor = item.TooManyShips ? Color.Red : Color.Black;
             if (item.RingShips)
             {
-                var message = string.Format("残り{0:D}隻", _sniffer.Item.MaxShips - _sniffer.Item.NowShips);
+                var message = $"残り{_sniffer.Item.MaxShips - _sniffer.Item.NowShips:D}隻";
                 _noticeQueue.Enqueue("艦娘が多すぎます", message, _config.MaxShipsSoundFile);
                 item.RingShips = false;
             }
@@ -349,11 +349,11 @@ namespace KancolleSniffer
         private void UpdateNumOfEquips()
         {
             var item = _sniffer.Item;
-            labelNumOfEquips.Text = string.Format("{0:D}/{1:D}", item.NowEquips, item.MaxEquips);
+            labelNumOfEquips.Text = $"{item.NowEquips:D}/{item.MaxEquips:D}";
             labelNumOfEquips.ForeColor = item.TooManyEquips ? Color.Red : Color.Black;
             if (item.RingEquips)
             {
-                var message = string.Format("残り{0:D}個", _sniffer.Item.MaxEquips - _sniffer.Item.NowEquips);
+                var message = $"残り{_sniffer.Item.MaxEquips - _sniffer.Item.NowEquips:D}個";
                 _noticeQueue.Enqueue("装備が多すぎます", message, _config.MaxEquipsSoundFile);
                 item.RingEquips = false;
             }
@@ -368,7 +368,7 @@ namespace KancolleSniffer
                 day = 999;
             if (week >= 1000)
                 week = 999;
-            labelBucketHistory.Text = string.Format("{0:+#;-#;±0} 今日\n{1:+#;-#;±0} 今週", day, week);
+            labelBucketHistory.Text = $"{day:+#;-#;±0} 今日\n{week:+#;-#;±0} 今週";
         }
 
         private void UpdateMaterialHistry()
@@ -384,7 +384,7 @@ namespace KancolleSniffer
                 var week = count.Now - count.BegOfWeek;
                 if (week >= 100000)
                     week = 99999;
-                labels[i].Text = string.Format("{0}\n{1:+#;-#;±0}\n{2:+#;-#;±0}", text[i], day, week);
+                labels[i].Text = $"{text[i]}\n{day:+#;-#;±0}\n{week:+#;-#;±0}";
             }
         }
 
@@ -534,7 +534,7 @@ namespace KancolleSniffer
                 kdock[i].Text = timer.Rest.ToString(@"hh\:mm\:ss");
                 if (!timer.NeedRing)
                     continue;
-                _noticeQueue.Enqueue("建造が終わりました", string.Format("第{0:D}ドック", i + 1), _config.KDockSoundFile);
+                _noticeQueue.Enqueue("建造が終わりました", $"第{i + 1:D}ドック", _config.KDockSoundFile);
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
@@ -556,7 +556,7 @@ namespace KancolleSniffer
                 labelCondTimer.Text = "";
                 return;
             }
-            var span = TimeSpan.FromSeconds(Math.Ceiling((timer - now).TotalSeconds));
+            var span = TimeSpan.FromSeconds(Ceiling((timer - now).TotalSeconds));
             if (span >= TimeSpan.FromMinutes(9))
             {
                 labelCondTimerTitle.Text = "cond40まで";
@@ -615,7 +615,7 @@ namespace KancolleSniffer
                 {
                     category[i].BackColor = color[quests[i].Category - 1];
                     name[i].Text = quests[i].Name;
-                    progress[i].Text = string.Format("{0:D}%", quests[i].Progress);
+                    progress[i].Text = $"{quests[i].Progress:D}%";
                 }
                 else
                 {

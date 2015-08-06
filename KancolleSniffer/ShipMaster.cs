@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2014 Kazuhiro Fujieda <fujieda@users.osdn.me>
+﻿// Copyright (C) 2014, 2015 Kazuhiro Fujieda <fujieda@users.osdn.me>
 // 
 // This program is part of KancolleSniffer.
 //
@@ -63,10 +63,7 @@ namespace KancolleSniffer
         {
         }
 
-        public ShipSpec this[int id]
-        {
-            get { return _shipSpecs[id]; }
-        }
+        public ShipSpec this[int id] => _shipSpecs[id];
     }
 
     public class ShipSpec
@@ -119,15 +116,9 @@ namespace KancolleSniffer
             }
         }
 
-        public bool IsSubmarine
-        {
-            get { return ShipType == 13 || ShipType == 14; }
-        }
+        public bool IsSubmarine => ShipType == 13 || ShipType == 14;
 
-        public bool IsAircraftCarrier
-        {
-            get { return ShipType == 7 || ShipType == 11 || ShipType == 18; }
-        }
+        public bool IsAircraftCarrier => ShipType == 7 || ShipType == 11 || ShipType == 18;
 
         public bool IsAntiSubmarine
         {

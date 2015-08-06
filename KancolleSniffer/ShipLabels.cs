@@ -19,6 +19,7 @@ using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -185,10 +186,10 @@ namespace KancolleSniffer
         {
             const int fleet = 0, name = 3, time = 1, damage = 2;
             var parent = _panelDamagedShipList;
-            var num = Math.Min(list.Length, _damagedShipList.Length);
+            var num = Min(list.Length, _damagedShipList.Length);
             if (num == 0)
             {
-                parent.Size = new Size(parent.Width, (int)Math.Round(ShipLabel.ScaleFactor.Height * 19));
+                parent.Size = new Size(parent.Width, (int)Round(ShipLabel.ScaleFactor.Height * 19));
                 var labels = _damagedShipList[0];
                 labels[fleet].Text = "";
                 labels[name].SetName("なし");
@@ -196,7 +197,7 @@ namespace KancolleSniffer
                 labels[damage].BackColor = labels[damage].PresetColor;
                 return;
             }
-            parent.Size = new Size(parent.Width, (int)Math.Round(ShipLabel.ScaleFactor.Height * (num * 16 + 3)));
+            parent.Size = new Size(parent.Width, (int)Round(ShipLabel.ScaleFactor.Height * (num * 16 + 3)));
             var colors = new[] { Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red };
             for (var i = 0; i < num; i++)
             {
@@ -258,7 +259,7 @@ namespace KancolleSniffer
         public void SetName(string name)
         {
             var lu = name != null && new Regex(@"^\p{Lu}").IsMatch(name);
-            var shift = (int)Math.Round(ScaleFactor.Height);
+            var shift = (int)Round(ScaleFactor.Height);
             if (lu && Font.Equals(Parent.Font))
             {
                 Location += new Size(0, -shift);
@@ -280,7 +281,7 @@ namespace KancolleSniffer
         public void SetHp(int now, int max)
         {
             var colors = new[] {PresetColor, Color.FromArgb(255, 240, 240, 100), Color.Orange, Color.Red};
-            Text = string.Format("{0:D}/{1:D}", now, max);
+            Text = $"{now:D}/{max:D}";
             BackColor = colors[(int)ShipStatus.CalcDamage(now, max)];
         }
 
@@ -318,7 +319,7 @@ namespace KancolleSniffer
 
         public void SetRepairTime(TimeSpan span)
         {
-            Text = string.Format(@"{0:d2}:{1:mm\:ss}", (int)span.TotalHours, span);
+            Text = $@"{(int)span.TotalHours:d2}:{span:mm\:ss}";
         }
 
         public void SetFleet(ShipStatus status)

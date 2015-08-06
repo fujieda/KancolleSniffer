@@ -30,8 +30,8 @@ namespace KancolleSniffer
         public DateTime LastResetOfMonth { get; set; }
 
         private const double ExpPerAch = 1428.0;
-        public double Value { get { return (_current - Start) / ExpPerAch; } }
-        public double ValueOfMonth { get { return (_current - StartOfMonth) / ExpPerAch; } }
+        public double Value => (_current - Start) / ExpPerAch;
+        public double ValueOfMonth => (_current - StartOfMonth) / ExpPerAch;
         public List<int> ResetHours { get; set; }
         public bool NeedSave { get; private set; }
 
