@@ -27,8 +27,6 @@ namespace KancolleSniffer
     public class SystemProxy
     {
         private InternetPerConnOptionList orgList;
-        private string currentUrl;
-        private int currentFlags;
 
         private void SaveSettings()
         {
@@ -57,11 +55,7 @@ namespace KancolleSniffer
         public void SetAutoProxyUrl(string url)
         {
             SaveSettings();
-            var flagsOpt =
-                (InternetPerConnOption)Marshal.PtrToStructure(orgList.pOptions, typeof(InternetPerConnOption));
-            currentFlags = flagsOpt.Value.dwValue | (int)PerConnFlags.PROXY_TYPE_AUTO_PROXY_URL;
-            var flagValue = new InternetPerConnOptionValue {dwValue = currentFlags};
-            currentUrl = url;
+            var flagValue = new InternetPerConnOptionValue {dwValue = (int)PerConnFlags.PROXY_TYPE_AUTO_PROXY_URL};
             var urlValue = new InternetPerConnOptionValue {pszValue = Marshal.StringToHGlobalAuto(url)};
             var opts = new[]
             {
@@ -90,23 +84,10 @@ namespace KancolleSniffer
         {
             if (orgList.dwSize == 0)
                 return;
-            var size = Marshal.SizeOf(typeof(InternetPerConnOption));
-            var urlOpt = (InternetPerConnOption)
-                Marshal.PtrToStructure((IntPtr)((long)orgList.pOptions + size), typeof(InternetPerConnOption));
-            var orgUrl = Marshal.PtrToStringAuto(urlOpt.Value.pszValue);
-            if (orgUrl == currentUrl) // The restoration was skipped or failed at last time.
-            {
-                // Simply unselect the Use automatic configuration script check box.
-                var flagsOpt = new InternetPerConnOption
-                {
-                    dwOption = PerConnOption.INTERNET_PER_CONN_FLAGS,
-                    Value = new InternetPerConnOptionValue
-                    {
-                        dwValue = currentFlags & ~(int)PerConnFlags.PROXY_TYPE_AUTO_PROXY_URL
-                    }
-                };
-                Marshal.StructureToPtr(flagsOpt, orgList.pOptions, false);
-            }
+            // Always unselect the Use automatic configuration script check box.
+            var flagsOpt = (InternetPerConnOption)Marshal.PtrToStructure(orgList.pOptions, typeof(InternetPerConnOption));
+            flagsOpt.Value.dwValue &= ~(int)PerConnFlags.PROXY_TYPE_AUTO_PROXY_URL;
+            Marshal.StructureToPtr(flagsOpt, orgList.pOptions, false);
             var listSize = orgList.dwSize;
             var listBuff = Marshal.AllocCoTaskMem(listSize);
             Marshal.StructureToPtr(orgList, listBuff, false);
@@ -114,6 +95,9 @@ namespace KancolleSniffer
             Refresh();
 
             Marshal.FreeCoTaskMem(listBuff);
+            var size = Marshal.SizeOf(typeof(InternetPerConnOption));
+            var urlOpt = (InternetPerConnOption)
+                Marshal.PtrToStructure((IntPtr)((long)orgList.pOptions + size), typeof(InternetPerConnOption));
             Marshal.FreeHGlobal(urlOpt.Value.pszValue);
             Marshal.FreeCoTaskMem(orgList.pOptions);
             orgList.dwSize = 0;
