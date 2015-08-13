@@ -62,7 +62,7 @@ MITライセンスに基づき利用しています。ライセンス全文は[L
 
 > The MIT License (MIT)
 > 
-> Copyright (c) 2013-2014 sanae_hirotaka
+> Copyright (c) 2014-2015 航海日誌拡張版開発者
 
 ## 音声ファイルのライセンス
 
