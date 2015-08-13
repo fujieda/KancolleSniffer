@@ -185,6 +185,7 @@ namespace KancolleSniffer
     {
         public ItemSpec Spec { get; set; }
         public int Level { get; set; }
+        public int Alv { get; set; }
         public ShipStatus Ship { get; set; }
 
         public ItemStatus()
@@ -309,7 +310,8 @@ namespace KancolleSniffer
                 _itemInfo[(int)entry.api_id] = new ItemStatus
                 {
                     Spec = _itemSpecs[(int)entry.api_slotitem_id],
-                    Level = entry.api_level() ? (int)entry.api_level : 0
+                    Level = entry.api_level() ? (int)entry.api_level : 0,
+                    Alv = entry.api_alv() ? (int)entry.api_alv : 0
                 };
             }
             NowEquips = _itemInfo.Count - 1;

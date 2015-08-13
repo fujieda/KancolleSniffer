@@ -81,7 +81,9 @@ namespace KancolleSniffer
                             drum++;
                         equips.Add(new EquipColumn
                         {
-                            Equip = item.Spec.Name + (item.Level == 0 ? "" : "★" + item.Level) +
+                            Equip = item.Spec.Name +
+                                    (item.Alv == 0 ? "" : "+" + item.Alv) +
+                                    (item.Level == 0 ? "" : "★" + item.Level) +
                                     (!item.Spec.IsAircraft ? "" : " " + onslot + "/" + max),
                             Color = item.Spec.Color
                         });
@@ -103,7 +105,7 @@ namespace KancolleSniffer
                 list.Add(new EquipColumn
                 {
                     Fleet = fn[f] + (levelTotal == 0 ? "" : " 合計Lv" + levelTotal) +
-                        (drumTotal == 0 ? "" : " ドラム缶" + drumTotal + "(" + drumShips + "隻)")
+                            (drumTotal == 0 ? "" : " ドラム缶" + drumTotal + "(" + drumShips + "隻)")
                 });
                 list.AddRange(ships);
             }

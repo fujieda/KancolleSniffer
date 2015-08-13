@@ -41,8 +41,8 @@ namespace KancolleSniffer
             var grouped = from byId in
                 (from item in itemList
                     where item.Spec.Id != -1
-                    orderby item.Spec.Type, item.Spec.Id, item.Level descending, item.Ship.Spec.Id
-                    group item by new {item.Spec.Id, item.Level})
+                    orderby item.Spec.Type, item.Spec.Id, item.Alv, item.Level descending, item.Ship.Spec.Id
+                    group item by new {item.Spec.Id, item.Alv, item.Level})
                 group byId by byId.First().Spec.Type;
             var root = new TreeNode();
             foreach (var byType in grouped)
@@ -55,7 +55,9 @@ namespace KancolleSniffer
                 {
                     var item = byItem.First();
                     var itemNode = new TreeNode();
-                    itemNode.Name = itemNode.Text = item.Spec.Name + (item.Level == 0 ? "" : "★" + item.Level);
+                    itemNode.Name = itemNode.Text = item.Spec.Name +
+                                                    (item.Alv == 0 ? "" : "+" + item.Alv) +
+                                                    (item.Level == 0 ? "" : "★" + item.Level);
                     typeNode.Nodes.Add(itemNode);
 
                     var shipGroup = (from i in byItem group i.Ship by i.Ship.Id).ToArray();
