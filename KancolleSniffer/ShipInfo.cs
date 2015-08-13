@@ -41,6 +41,7 @@ namespace KancolleSniffer
         public int Bull { get; set; }
         public int[] OnSlot { get; set; }
         public int[] Slot { get; set; }
+        public int SlotEx { get; set; }
         public int LoS { get; set; }
         public int Firepower { get; set; }
         public int AntiSubmarine { get; set; }
@@ -275,6 +276,7 @@ namespace KancolleSniffer
                     Bull = (int)entry.api_bull,
                     OnSlot = (int[])entry.api_onslot,
                     Slot = (int[])entry.api_slot,
+                    SlotEx = entry.api_slot_ex() ? (int)entry.api_slot_ex : 0,
                     LoS = (int)entry.api_sakuteki[0],
                     Firepower = (int)entry.api_karyoku[0],
                     AntiSubmarine = (int)entry.api_taisen[0]

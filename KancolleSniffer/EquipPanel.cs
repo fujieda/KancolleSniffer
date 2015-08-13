@@ -88,6 +88,11 @@ namespace KancolleSniffer
                             Color = item.Spec.Color
                         });
                     }
+                    if (s.SlotEx > 0)
+                    {
+                        var item = sniffer.Item.ItemDict[s.SlotEx];
+                        equips.Add(new EquipColumn {Equip = item.Spec.Name, Color = item.Spec.Color});
+                    }
                     if (drum != 0)
                         drumShips++;
                     drumTotal += drum;
