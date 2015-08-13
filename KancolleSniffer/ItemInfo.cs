@@ -174,6 +174,10 @@ namespace KancolleSniffer
                         return Color.FromArgb(253, 49, 49);
                     case 32: // 水上艦要員
                         return Color.FromArgb(188, 238, 155);
+                    case 33: // 大型飛行艇
+                        return Color.FromArgb(142, 203, 152);
+                    case 34: // 戦闘糧食
+                        return Color.FromArgb(254, 254, 254);
                     default:
                         return SystemColors.Control;
                 }
