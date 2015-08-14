@@ -110,18 +110,22 @@ namespace KancolleSniffer
             var combined = json.api_nowhps_combined();
             var nowhps = (int[])json.api_nowhps;
             _fleet = combined ? 0 : DeckId(json);
+            var fstats = _shipInfo.GetShipStatuses(_fleet);
             _friend = Record.Setup(
                 nowhps, (int[])json.api_maxhps,
-                _shipInfo.GetShipStatuses(_fleet).Select(s => s.Slot).ToArray(),
+                fstats.Select(s => s.Slot).ToArray(),
+                fstats.Select(s => s.SlotEx).ToArray(),
                 _itemInfo);
             _enemyHp = nowhps.Skip(7).TakeWhile(hp => hp != -1).ToArray();
             _enemyStartHp = (int[])_enemyHp.Clone();
             if (combined)
             {
+                var gstats = _shipInfo.GetShipStatuses(1);
                 _guard = Record.Setup(
                     (int[])json.api_nowhps_combined,
                     (int[])json.api_maxhps_combined,
-                    _shipInfo.GetShipStatuses(1).Select(s => s.Slot).ToArray(),
+                    gstats.Select(s => s.Slot).ToArray(),
+                    gstats.Select(s => s.SlotEx).ToArray(),
                     _itemInfo);
             }
             else
@@ -347,11 +351,12 @@ namespace KancolleSniffer
             private ItemInfo _itemInfo;
             private int _maxHp;
             private int[] _slot;
+            private int _slotEx;
             public int NowHp;
             public int StartHp;
             public int Damage;
 
-            public static Record[] Setup(int[] rawHp, int[] rawMax, int[][] slots, ItemInfo itemInfo)
+            public static Record[] Setup(int[] rawHp, int[] rawMax, int[][] slots, int[] slotEx, ItemInfo itemInfo)
             {
                 var hp = rawHp.Skip(1).Take(6).TakeWhile(h => h != -1).ToArray();
                 var max = rawMax.Skip(1).Take(6).TakeWhile(h => h != -1).ToArray();
@@ -364,6 +369,7 @@ namespace KancolleSniffer
                         StartHp = hp[i],
                         _maxHp = max[i],
                         _slot = slots[i].ToArray(),
+                        _slotEx = slotEx[i],
                         _itemInfo = itemInfo
                     };
                 }
@@ -380,6 +386,19 @@ namespace KancolleSniffer
                 }
                 Damage += NowHp;
                 NowHp = 0;
+                var idex = _itemInfo[_slotEx].Id;
+                if (idex == 42) // ダメコン
+                {
+                    _slotEx = -1;
+                    NowHp = (int)(_maxHp * 0.2);
+                    return;
+                }
+                if (idex == 43) // 女神
+                {
+                    _slotEx = -1;
+                    NowHp = _maxHp;
+                    return;
+                }
                 for (var j = 0; j < _slot.Length; j++)
                 {
                     var id = _itemInfo[_slot[j]].Id;
@@ -402,6 +421,7 @@ namespace KancolleSniffer
             {
                 ship.NowHp = NowHp;
                 ship.Slot = _slot;
+                ship.SlotEx = _slotEx;
             }
         }
 

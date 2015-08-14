@@ -307,7 +307,7 @@ namespace KancolleSniffer
             if (full)
             {
                 _itemInfo.Clear();
-                _itemInfo[-1] = new ItemStatus();
+                _itemInfo[-1] = _itemInfo[0] = new ItemStatus();
             }
             foreach (var entry in json)
             {
