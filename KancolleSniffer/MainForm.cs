@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using Codeplex.Data;
 using Microsoft.CSharp.RuntimeBinder;
+using Microsoft.Win32;
 using Nekoxy;
 using static System.Math;
 
@@ -140,6 +141,7 @@ namespace KancolleSniffer
             if (_config.Proxy.Auto)
                 _systemProxy.SetAutoProxyUrl(ProxyConfig.AutoConfigUrl);
             StartProxy();
+            SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
         }
 
         private void StartProxy()
@@ -153,6 +155,12 @@ namespace KancolleSniffer
             HttpProxy.Startup(_config.Proxy.Listen, false, false);
         }
 
+        private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            if (e.Mode == PowerModes.Resume)
+                SystemProxy.Refresh();
+        }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = false;
@@ -162,6 +170,7 @@ namespace KancolleSniffer
             _logServer?.Stop();
             if (_config.Proxy.Auto)
                 _systemProxy.RestoreSettings();
+            SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
         }
 
         private void ShutdownProxy()

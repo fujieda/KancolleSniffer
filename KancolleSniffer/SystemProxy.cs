@@ -85,7 +85,8 @@ namespace KancolleSniffer
             if (orgList.dwSize == 0)
                 return;
             // Always unselect the Use automatic configuration script check box.
-            var flagsOpt = (InternetPerConnOption)Marshal.PtrToStructure(orgList.pOptions, typeof(InternetPerConnOption));
+            var flagsOpt =
+                (InternetPerConnOption)Marshal.PtrToStructure(orgList.pOptions, typeof(InternetPerConnOption));
             flagsOpt.Value.dwValue &= ~(int)PerConnFlags.PROXY_TYPE_AUTO_PROXY_URL;
             Marshal.StructureToPtr(flagsOpt, orgList.pOptions, false);
             var listSize = orgList.dwSize;
@@ -115,7 +116,7 @@ namespace KancolleSniffer
             return buff;
         }
 
-        private void Refresh()
+        public static void Refresh()
         {
             InternetSetOption(IntPtr.Zero, InternetOption.INTERNET_OPTION_PROXY_SETTINGS_CHANGED, IntPtr.Zero, 0);
             InternetSetOption(IntPtr.Zero, InternetOption.INTERNET_OPTION_REFRESH, IntPtr.Zero, 0);
