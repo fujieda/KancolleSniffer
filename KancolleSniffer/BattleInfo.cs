@@ -386,7 +386,7 @@ namespace KancolleSniffer
                 }
                 Damage += NowHp;
                 NowHp = 0;
-                var idex = _itemInfo[_slotEx].Id;
+                var idex = _slotEx == 0 ? -1 : _itemInfo[_slotEx].Id;
                 if (idex == 42) // ダメコン
                 {
                     _slotEx = -1;

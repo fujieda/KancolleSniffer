@@ -368,5 +368,16 @@ namespace KancolleSniffer.Test
             PAssert.That(() => sniffer.Item.MaterialHistory.Select(m => m.Now)
                 .SequenceEqual(new[] {25292, 25570, 25244, 41113, 1405, 1525, 2137, 8}));
         }
+
+        /// <summary>
+        /// 装備の数を正しく数える
+        /// </summary>
+        [TestMethod]
+        public void CountItem()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "createitem_001");
+            PAssert.That(() => sniffer.Item.NowEquips == 606);
+        }
     }
 }
