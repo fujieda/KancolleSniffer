@@ -183,28 +183,34 @@ namespace KancolleSniffer
             var csv = path.Replace(".json", ".csv");
             var encoding = Encoding.GetEncoding("Shift_JIS");
             client.Send(encoding.GetBytes("{ \"data\": [\n"));
-            if (File.Exists(csv))
+            try
             {
-                var delimiter = "";
-                var material = path.EndsWith("資材ログ.json"); // 末尾の空データを削除する必要がある
-                foreach (var line in File.ReadLines(csv, encoding).Skip(1))
+                if (File.Exists(csv))
                 {
-                    var data = line.Split(',');
-                    DateTime date;
-                    if (!DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
-                            DateTimeStyles.AssumeLocal, out date) &&
-                        DateTime.TryParse(data[0], CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out date))
+                    var delimiter = "";
+                    var material = path.EndsWith("資材ログ.json"); // 末尾の空データを削除する必要がある
+                    foreach (var line in File.ReadLines(csv, encoding).Skip(1))
                     {
-                        data[0] = date.ToString(Logger.DateTimeFormat);
+                        var data = line.Split(',');
+                        DateTime date;
+                        if (!DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
+                            DateTimeStyles.AssumeLocal, out date) &&
+                            DateTime.TryParse(data[0], CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out date))
+                        {
+                            data[0] = date.ToString(Logger.DateTimeFormat);
+                        }
+                        if (date < from || to < date)
+                            continue;
+                        client.Send(encoding.GetBytes(delimiter + "[\"" +
+                                                      string.Join("\",\"", (material ? data.Take(9) : data)) + "\"]"));
+                        delimiter = ",\n";
                     }
-                    if (date < from || to < date)
-                        continue;
-                    client.Send(encoding.GetBytes(delimiter + "[\"" +
-                                                  string.Join("\",\"", (material ? data.Take(9) : data)) + "\"]"));
-                    delimiter = ",\n";
                 }
             }
-            client.Send(encoding.GetBytes("]}\n"));
+            finally
+            {
+                client.Send(encoding.GetBytes("]}\n"));
+            }
         }
 
         private void SendFile(Socket client, string path, string mime)
