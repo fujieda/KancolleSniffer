@@ -191,8 +191,12 @@ namespace KancolleSniffer
                 {
                     var data = line.Split(',');
                     DateTime date;
-                    DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeLocal, out date);
+                    if (!DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
+                            DateTimeStyles.AssumeLocal, out date) &&
+                        DateTime.TryParse(data[0], CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out date))
+                    {
+                        data[0] = date.ToString(Logger.DateTimeFormat);
+                    }
                     if (date < from || to < date)
                         continue;
                     client.Send(encoding.GetBytes(delimiter + "[\"" +
