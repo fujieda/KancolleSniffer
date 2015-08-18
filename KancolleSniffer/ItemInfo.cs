@@ -403,6 +403,8 @@ namespace KancolleSniffer
             {
                 foreach (var id in s.Slot)
                     _itemInfo[id].Ship = s;
+                if (s.SlotEx != 0)
+                    _itemInfo[s.SlotEx].Ship = s;
             }
         }
 
