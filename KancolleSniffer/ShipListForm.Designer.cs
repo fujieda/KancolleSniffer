@@ -65,6 +65,7 @@ namespace KancolleSniffer
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.panelItemHeader = new System.Windows.Forms.Panel();
+            this.textBoxMiscText = new System.Windows.Forms.TextBox();
             this.equipPanel = new KancolleSniffer.EquipPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
             this.panelShipList.SuspendLayout();
@@ -78,6 +79,7 @@ namespace KancolleSniffer
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panelShipList.AutoScroll = true;
             this.panelShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelShipList.Controls.Add(this.textBoxMiscText);
             this.panelShipList.Controls.Add(this.equipPanel);
             this.panelShipList.Controls.Add(this.itemTreeView);
             this.panelShipList.Location = new System.Drawing.Point(6, 23);
@@ -203,7 +205,8 @@ namespace KancolleSniffer
             "分類",
             "修復",
             "装備",
-            "艦隊"});
+            "艦隊",
+            "情報"});
             this.comboBoxGroup.Location = new System.Drawing.Point(6, 4);
             this.comboBoxGroup.Name = "comboBoxGroup";
             this.comboBoxGroup.Size = new System.Drawing.Size(48, 20);
@@ -264,6 +267,17 @@ namespace KancolleSniffer
             this.panelItemHeader.Size = new System.Drawing.Size(166, 19);
             this.panelItemHeader.TabIndex = 0;
             // 
+            // textBoxMiscText
+            // 
+            this.textBoxMiscText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxMiscText.Location = new System.Drawing.Point(0, 0);
+            this.textBoxMiscText.Multiline = true;
+            this.textBoxMiscText.Name = "textBoxMiscText";
+            this.textBoxMiscText.ReadOnly = true;
+            this.textBoxMiscText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxMiscText.Size = new System.Drawing.Size(236, 261);
+            this.textBoxMiscText.TabIndex = 0;
+            // 
             // equipPanel
             // 
             this.equipPanel.AutoScroll = true;
@@ -305,6 +319,7 @@ namespace KancolleSniffer
             this.Load += new System.EventHandler(this.ShipListForm_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ShipListForm_KeyPress);
             this.panelShipList.ResumeLayout(false);
+            this.panelShipList.PerformLayout();
             this.panelGroupHeader.ResumeLayout(false);
             this.panelGroupHeader.PerformLayout();
             this.panelRepairHeader.ResumeLayout(false);
@@ -337,5 +352,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Panel panelItemHeader;
         private EquipPanel equipPanel;
         private ItemTreeView itemTreeView;
+        private System.Windows.Forms.TextBox textBoxMiscText;
     }
 }

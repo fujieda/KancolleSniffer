@@ -36,6 +36,7 @@ namespace KancolleSniffer
         private readonly BattleInfo _battleInfo;
         private readonly Logger _logger;
         private readonly ExMapInfo _exMapInfo = new ExMapInfo();
+        private readonly MiscTextInfo _miscTextInfo = new MiscTextInfo();
         private readonly Status _status = new Status();
         private bool _saveState;
         private readonly List<IHaveState> _haveState;
@@ -52,7 +53,7 @@ namespace KancolleSniffer
             Mission = 32,
             QuestList = 64,
             Battle = 128,
-            All = 255
+            All = 255,
         }
 
         public Sniffer()
@@ -118,6 +119,7 @@ namespace KancolleSniffer
                 _battleInfo.InBattle = false;
                 _battleInfo.HasDamagedShip = false;
                 _shipInfo.ClearEscapedShips();
+                _miscTextInfo.ClearIfNeeded();
                 SaveState();
                 return Update.All;
             }
@@ -283,6 +285,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_practice/battle_result"))
             {
                 _battleInfo.InspectPracticeResult(json);
+
                 return Update.Ship;
             }
             if (IsCombinedBattleAPI(url))
@@ -308,6 +311,7 @@ namespace KancolleSniffer
                 _conditionTimer.InvalidateCond();
                 _exMapInfo.InspectMapStart(data);
                 _logger.InspectMapStart(data);
+                _miscTextInfo.ClearFlag = true;
                 return Update.Timer;
             }
             if (url.EndsWith("api_req_map/next"))
@@ -325,7 +329,8 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/mapinfo"))
             {
                 _exMapInfo.InspectMapInfo(data);
-                return Update.None;
+                _miscTextInfo.InspectMapInfo(data);
+                return Update.Item;
             }
             return Update.None;
         }
@@ -393,6 +398,8 @@ namespace KancolleSniffer
         public BattleInfo Battle => _battleInfo;
 
         public ExMapInfo ExMap => _exMapInfo;
+
+        public string MiscText => _miscTextInfo.Text;
 
         public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)
         {

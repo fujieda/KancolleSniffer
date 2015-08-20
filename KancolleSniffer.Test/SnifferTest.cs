@@ -379,5 +379,28 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "createitem_001");
             PAssert.That(() => sniffer.Item.NowEquips == 606);
         }
+
+        /// <summary>
+        /// 海域ゲージ情報を作成する
+        /// </summary>
+        [TestMethod]
+        public void MapInfo()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "mapinfo_001");
+            PAssert.That(() => sniffer.MiscText ==
+                               "[海域ゲージ]\r\n" +
+                               "1-6 : 撃破 3/7\r\n5-5 : 撃破 0/5\r\n6-3 : 撃破 0/4\r\n" +
+                               "31-1 : HP 0/750\r\n31-2 : HP 0/1050\r\n31-3 : HP 0/2100\r\n31-4 : HP 0/3500\r\n31-5 : HP 1/2450\r\n",
+                "最初の海域ゲージ情報");
+            SniffLogFile(sniffer, "mapinfo_002");
+            PAssert.That(() => sniffer.MiscText == "", "戦闘から戻ったらクリア");
+            SniffLogFile(sniffer, "mapinfo_003");
+            PAssert.That(() => sniffer.MiscText ==
+                               "[海域ゲージ]\r\n" +
+                               "1-6 : 撃破 4/7\r\n5-5 : 撃破 0/5\r\n6-3 : 撃破 0/4\r\n" +
+                               "31-1 : HP 0/750\r\n31-2 : HP 0/1050\r\n31-3 : HP 0/2100\r\n31-4 : HP 0/3500\r\n31-5 : HP 1/2450\r\n",
+                "更新された海域ゲージ情報");
+        }
     }
 }

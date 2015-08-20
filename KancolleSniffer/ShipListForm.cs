@@ -54,9 +54,10 @@ namespace KancolleSniffer
 
         public void UpdateList()
         {
-            panelItemHeader.Visible = InItemList || InEquip;
+            panelItemHeader.Visible = InItemList || InEquip || InMiscText;
             itemTreeView.Visible = InItemList;
             equipPanel.Visible = InEquip;
+            textBoxMiscText.Visible = InMiscText;
             if (InItemList)
             {
                 HideShipLabels();
@@ -66,6 +67,11 @@ namespace KancolleSniffer
             {
                 HideShipLabels();
                 equipPanel.UpdateEquip(_sniffer);
+            }
+            else if (InMiscText)
+            {
+                HideShipLabels();
+                textBoxMiscText.Text = _sniffer.MiscText;
             }
             else
             {
@@ -412,6 +418,8 @@ namespace KancolleSniffer
 
         private bool InEquip => comboBoxGroup.Text == "艦隊";
 
+        private bool InMiscText => comboBoxGroup.Text == "情報";
+
         private void ShipListForm_Load(object sender, EventArgs e)
         {
             panelShipList.Width = (int)Round(PanelWidth * ShipLabel.ScaleFactor.Width) + 3 +
@@ -496,7 +504,7 @@ namespace KancolleSniffer
 
         private void ShipListForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'X'},
+            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'X', 'I'},
                 x => x == char.ToUpper(e.KeyChar));
             if (g == -1)
                 return;
