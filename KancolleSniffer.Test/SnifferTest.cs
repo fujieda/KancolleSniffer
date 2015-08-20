@@ -402,5 +402,20 @@ namespace KancolleSniffer.Test
                                "31-1 : HP 0/750\r\n31-2 : HP 0/1050\r\n31-3 : HP 0/2100\r\n31-4 : HP 0/3500\r\n31-5 : HP 1/2450\r\n",
                 "更新された海域ゲージ情報");
         }
+
+        /// <summary>
+        /// 演習相手の情報を作成する
+        /// </summary>
+        [TestMethod]
+        public void PractiveEnemyInfo()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "practice_enemyinfo_001");
+            PAssert.That(() => sniffer.MiscText ==
+                               "[演習情報]\r\n敵艦隊名 : 大銀河地球連邦　第7艦隊\r\n獲得経験値 : 570\r\nS勝利 : 684",
+                "演習相手の情報");
+            SniffLogFile(sniffer, "practice_enemyinfo_002");
+            PAssert.That(() => sniffer.MiscText == "", "演習から戻ったらクリア");
+        }
     }
 }

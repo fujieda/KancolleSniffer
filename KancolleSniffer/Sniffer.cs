@@ -271,6 +271,7 @@ namespace KancolleSniffer
                 {
                     _shipInfo.StartSortie(request); // 演習を出撃中とみなす
                     _conditionTimer.InvalidateCond();
+                    _miscTextInfo.ClearFlag = true;
                 }
                 _battleInfo.InspectBattle(data);
                 return Update.Ship | Update.Battle | Update.Timer;
@@ -285,7 +286,6 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_practice/battle_result"))
             {
                 _battleInfo.InspectPracticeResult(json);
-
                 return Update.Ship;
             }
             if (IsCombinedBattleAPI(url))
@@ -330,6 +330,11 @@ namespace KancolleSniffer
             {
                 _exMapInfo.InspectMapInfo(data);
                 _miscTextInfo.InspectMapInfo(data);
+                return Update.Item;
+            }
+            if (url.EndsWith("api_req_member/get_practice_enemyinfo"))
+            {
+                _miscTextInfo.InspectPracticeEnemyInfo(data);
                 return Update.Item;
             }
             return Update.None;
