@@ -44,6 +44,7 @@ namespace KancolleSniffer
         private readonly ShipMaster _shipMaster;
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
+        private readonly BattleInfo _battleInfo;
         private Action<string, string, string> _writer;
         private Func<DateTime> _nowFunc;
         public const string DateTimeFormat = @"yyyy\-MM\-dd HH\:mm\:ss";
@@ -65,11 +66,12 @@ namespace KancolleSniffer
             set { _writer = new LogWriter(value).Write; }
         }
 
-        public Logger(ShipMaster master, ShipInfo ship, ItemInfo item)
+        public Logger(ShipMaster master, ShipInfo ship, ItemInfo item, BattleInfo battle)
         {
             _shipMaster = master;
             _shipInfo = ship;
             _itemInfo = item;
+            _battleInfo = battle;
             _writer = new LogWriter().Write;
             _nowFunc = () => DateTime.Now;
         }
@@ -149,15 +151,14 @@ namespace KancolleSniffer
                 var s = _shipInfo[id];
                 return $"{s.Name}(Lv{s.Level}),{s.NowHp}/{s.MaxHp}";
             }));
+            var estatus = _battleInfo.EnemyResultStatus;
             var edeck = ((int[])_battle.api_ship_ke).Skip(1).ToArray();
-            var enowhp = ((int[])_battle.api_nowhps).Skip(7).ToArray();
-            var emaxhp = ((int[])_battle.api_maxhps).Skip(7).ToArray();
             var eships = new List<string>();
             for (var i = 0; i < edeck.Count(); i++)
             {
                 eships.Add(edeck[i] == -1
                     ? ","
-                    : $"{_shipMaster[edeck[i]].Name},{enowhp[i]}/{emaxhp[i]}");
+                    : $"{estatus[i].Name},{estatus[i].NowHp}/{estatus[i].MaxHp}");
             }
             var cell = (int)_map.api_no;
             var boss = "";

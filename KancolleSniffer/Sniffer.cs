@@ -63,7 +63,7 @@ namespace KancolleSniffer
             _dockInfo = new DockInfo(_shipInfo, _itemInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo);
             _battleInfo = new BattleInfo(_shipMaster, _shipInfo, _itemInfo);
-            _logger = new Logger(_shipMaster, _shipInfo, _itemInfo);
+            _logger = new Logger(_shipMaster, _shipInfo, _itemInfo, _battleInfo);
             _haveState = new List<IHaveState> {_achievement, _itemInfo, _conditionTimer, _exMapInfo};
         }
 

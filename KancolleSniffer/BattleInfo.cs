@@ -52,6 +52,7 @@ namespace KancolleSniffer
         public string[] DamagedShipNames { get; private set; }
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
+        public ShipStatus[] EnemyResultStatus { get; private set; }
 
         public BattleInfo(ShipMaster shipMaster, ShipInfo shipInfo, ItemInfo itemInfo)
         {
@@ -118,6 +119,10 @@ namespace KancolleSniffer
                 _itemInfo);
             _enemyHp = nowhps.Skip(7).TakeWhile(hp => hp != -1).ToArray();
             _enemyStartHp = (int[])_enemyHp.Clone();
+            EnemyResultStatus =
+                (from id in ((int[])json.api_ship_ke).Skip(1)
+                    where id != -1
+                    select new ShipStatus {Id = id, Spec = _shipMaster[id]}).ToArray();
             if (combined)
             {
                 var gstats = _shipInfo.GetShipStatuses(1);
@@ -290,6 +295,16 @@ namespace KancolleSniffer
                 e.now.UpdateShipStatus(e.ship);
             if (warnDamagedShip)
                 UpdateDamgedShipNames(ships);
+            SetEnemyResultStatus();
+        }
+
+        private void SetEnemyResultStatus()
+        {
+            for (var i = 0; i < EnemyResultStatus.Length; i++)
+            {
+                EnemyResultStatus[i].MaxHp = _enemyStartHp[i];
+                EnemyResultStatus[i].NowHp = _enemyHp[i];
+            }
         }
 
         private void UpdateDamgedShipNames(IEnumerable<ShipStatus> ships)
@@ -338,6 +353,7 @@ namespace KancolleSniffer
                 e.now.UpdateShipStatus(e.ship);
             if (warnDamagedShip)
                 UpdateDamgedShipNames(ships);
+            SetEnemyResultStatus();
         }
 
         public void CauseCombinedBattleEscape()
