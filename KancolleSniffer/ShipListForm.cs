@@ -55,22 +55,20 @@ namespace KancolleSniffer
         public void UpdateList()
         {
             panelItemHeader.Visible = InItemList || InEquip || InMiscText;
+            panelShipList.Visible = InShipStatus || InGroupConfig || InRepairList;
             itemTreeView.Visible = InItemList;
             equipPanel.Visible = InEquip;
             textBoxMiscText.Visible = InMiscText;
             if (InItemList)
             {
-                HideShipLabels();
                 itemTreeView.SetNodes(_sniffer.ItemList);
             }
             else if (InEquip)
             {
-                HideShipLabels();
                 equipPanel.UpdateEquip(_sniffer);
             }
             else if (InMiscText)
             {
-                HideShipLabels();
                 textBoxMiscText.Text = _sniffer.MiscText;
             }
             else
@@ -398,14 +396,6 @@ namespace KancolleSniffer
             rpl[4].SetName(s);
             rpl[5].SetFleet(s);
             rpp.Visible = true;
-        }
-
-        private void HideShipLabels()
-        {
-            panelShipList.SuspendLayout();
-            for (var i = 0; i < _labelPanelList.Count; i++)
-                _labelPanelList[i].Visible = _checkBoxPanelList[i].Visible = _repairPanelList[i].Visible = false;
-            panelShipList.ResumeLayout();
         }
 
         private bool InShipStatus => Array.Exists(new[] {"全員", "A", "B", "C", "D"}, x => comboBoxGroup.Text == x);

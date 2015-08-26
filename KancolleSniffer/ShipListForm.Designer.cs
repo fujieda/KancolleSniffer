@@ -47,6 +47,7 @@ namespace KancolleSniffer
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShipListForm));
             this.panelShipList = new System.Windows.Forms.Panel();
+            this.textBoxMiscText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -65,10 +66,8 @@ namespace KancolleSniffer
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.panelItemHeader = new System.Windows.Forms.Panel();
-            this.textBoxMiscText = new System.Windows.Forms.TextBox();
-            this.equipPanel = new KancolleSniffer.EquipPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
-            this.panelShipList.SuspendLayout();
+            this.equipPanel = new KancolleSniffer.EquipPanel();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
             this.SuspendLayout();
@@ -79,13 +78,23 @@ namespace KancolleSniffer
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panelShipList.AutoScroll = true;
             this.panelShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelShipList.Controls.Add(this.textBoxMiscText);
-            this.panelShipList.Controls.Add(this.equipPanel);
-            this.panelShipList.Controls.Add(this.itemTreeView);
             this.panelShipList.Location = new System.Drawing.Point(6, 23);
             this.panelShipList.Name = "panelShipList";
             this.panelShipList.Size = new System.Drawing.Size(238, 263);
             this.panelShipList.TabIndex = 0;
+            // 
+            // textBoxMiscText
+            // 
+            this.textBoxMiscText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxMiscText.Location = new System.Drawing.Point(6, 23);
+            this.textBoxMiscText.Multiline = true;
+            this.textBoxMiscText.Name = "textBoxMiscText";
+            this.textBoxMiscText.ReadOnly = true;
+            this.textBoxMiscText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxMiscText.Size = new System.Drawing.Size(236, 263);
+            this.textBoxMiscText.TabIndex = 0;
             // 
             // label1
             // 
@@ -267,33 +276,26 @@ namespace KancolleSniffer
             this.panelItemHeader.Size = new System.Drawing.Size(166, 19);
             this.panelItemHeader.TabIndex = 0;
             // 
-            // textBoxMiscText
+            // itemTreeView
             // 
-            this.textBoxMiscText.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxMiscText.Location = new System.Drawing.Point(0, 0);
-            this.textBoxMiscText.Multiline = true;
-            this.textBoxMiscText.Name = "textBoxMiscText";
-            this.textBoxMiscText.ReadOnly = true;
-            this.textBoxMiscText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxMiscText.Size = new System.Drawing.Size(236, 261);
-            this.textBoxMiscText.TabIndex = 0;
+            this.itemTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.itemTreeView.Location = new System.Drawing.Point(6, 23);
+            this.itemTreeView.Name = "itemTreeView";
+            this.itemTreeView.Size = new System.Drawing.Size(238, 263);
+            this.itemTreeView.TabIndex = 0;
             // 
             // equipPanel
             // 
+            this.equipPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.equipPanel.AutoScroll = true;
-            this.equipPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.equipPanel.Location = new System.Drawing.Point(0, 0);
+            this.equipPanel.Location = new System.Drawing.Point(6, 23);
             this.equipPanel.Name = "equipPanel";
-            this.equipPanel.Size = new System.Drawing.Size(236, 261);
+            this.equipPanel.Size = new System.Drawing.Size(238, 263);
             this.equipPanel.TabIndex = 1;
-            // 
-            // itemTreeView
-            // 
-            this.itemTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.itemTreeView.Location = new System.Drawing.Point(0, 0);
-            this.itemTreeView.Name = "itemTreeView";
-            this.itemTreeView.Size = new System.Drawing.Size(236, 261);
-            this.itemTreeView.TabIndex = 0;
             // 
             // ShipListForm
             // 
@@ -308,6 +310,9 @@ namespace KancolleSniffer
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.textBoxMiscText);
+            this.Controls.Add(this.equipPanel);
+            this.Controls.Add(this.itemTreeView);
             this.Controls.Add(this.panelShipList);
             this.Controls.Add(this.comboBoxGroup);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -318,8 +323,6 @@ namespace KancolleSniffer
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ShipListForm_FormClosing);
             this.Load += new System.EventHandler(this.ShipListForm_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ShipListForm_KeyPress);
-            this.panelShipList.ResumeLayout(false);
-            this.panelShipList.PerformLayout();
             this.panelGroupHeader.ResumeLayout(false);
             this.panelGroupHeader.PerformLayout();
             this.panelRepairHeader.ResumeLayout(false);

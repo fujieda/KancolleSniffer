@@ -51,7 +51,7 @@ namespace KancolleSniffer
 
         private class MouseFilter : IMessageFilter
         {
-            public delegate void MouseHandler(ref bool handled);
+            public delegate void MouseHandler(IntPtr handle, ref bool handled);
 
             public event MouseHandler MouseMove , MouseDown , MouseUp;
 
@@ -67,13 +67,13 @@ namespace KancolleSniffer
                 switch (m.Msg)
                 {
                     case WM_LBUTTONDOWN:
-                        MouseDown?.Invoke(ref handled);
+                        MouseDown?.Invoke(m.HWnd, ref handled);
                         break;
                     case WM_MOUSEMOVE:
-                        MouseMove?.Invoke(ref handled);
+                        MouseMove?.Invoke(m.HWnd, ref handled);
                         break;
                     case WM_LBUTTONUP:
-                        MouseUp?.Invoke(ref handled);
+                        MouseUp?.Invoke(m.HWnd, ref handled);
                         break;
                 }
                 return handled;
@@ -92,17 +92,27 @@ namespace KancolleSniffer
                 _panel = panel;
             }
 
-            public void MouseDown(ref bool handled)
+            public void MouseDown(IntPtr handle, ref bool handled)
             {
                 if (!_mouseStart.IsEmpty)
                     return;
                 if (!_panel.RectangleToScreen(_panel.ClientRectangle).Contains(Control.MousePosition))
                     return;
+                var found = false;
+                for (var control = Control.FromHandle(handle); control != null; control = control.Parent)
+                {
+                    if (control != _panel)
+                        continue;
+                    found = true;
+                    break;
+                }
+                if (!found)
+                    return;
                 _mouseStart = Control.MousePosition;
                 _panelStart = _panel.AutoScrollPosition;
             }
 
-            public void MouseMove(ref bool handled)
+            public void MouseMove(IntPtr handle, ref bool handled)
             {
                 if (_mouseStart.IsEmpty)
                     return;
@@ -115,7 +125,7 @@ namespace KancolleSniffer
                     _touch = true;
             }
 
-            public void MouseUp(ref bool handled)
+            public void MouseUp(IntPtr handle, ref bool handled)
             {
                 if (_touch && !_panelStart.IsEmpty && _panelStart != _panel.AutoScrollPosition)
                     handled = true;
@@ -151,9 +161,12 @@ namespace KancolleSniffer
                 _treeView = treeView;
             }
 
-            public void MouseDown(ref bool handled)
+            public void MouseDown(IntPtr handle, ref bool handled)
             {
                 if (!_mouseStart.IsEmpty)
+                    return;
+                var control = Control.FromHandle(handle);
+                if (control == null || control != _treeView)
                     return;
                 if (!_treeView.RectangleToScreen(_treeView.ClientRectangle).Contains(Control.MousePosition))
                     return;
@@ -165,7 +178,7 @@ namespace KancolleSniffer
                 _panelStart = ScrollPosition();
             }
 
-            public void MouseMove(ref bool handled)
+            public void MouseMove(IntPtr handle, ref bool handled)
             {
                 if (_mouseStart.IsEmpty)
                     return;
@@ -194,7 +207,7 @@ namespace KancolleSniffer
                     _touch = true;
             }
 
-            public void MouseUp(ref bool handled)
+            public void MouseUp(IntPtr handle, ref bool handled)
             {
                 if (_touch && !_panelStart.IsEmpty && _panelStart != ScrollPosition())
                     handled = true;
