@@ -93,6 +93,7 @@ namespace KancolleSniffer
         public List<int> NotifyConditions { get; set; }
         public List<int> ResetHours { get; set; }
         public bool AlwaysShowResultRank { get; set; }
+        public bool WithAlvBonus { get; set; }
         public int SoundVolume { get; set; }
         public string MissionSoundFile { get; set; }
         public string NDockSoundFile { get; set; }
@@ -119,6 +120,7 @@ namespace KancolleSniffer
             NotifyConditions = new List<int>(new[] {40, 49});
             ResetHours = new List<int>(new[] {2});
             AlwaysShowResultRank = false;
+            WithAlvBonus = true;
             SoundVolume = 100;
             var dir = Path.GetDirectoryName(Application.ExecutablePath) ?? "";
             MissionSoundFile = Path.Combine(dir, "ensei.mp3");

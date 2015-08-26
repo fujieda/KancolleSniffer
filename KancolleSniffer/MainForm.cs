@@ -411,8 +411,8 @@ namespace KancolleSniffer
         {
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             _shipLabels.SetShipInfo(statuses);
-            labelFighterPower.Text = _sniffer.GetFighterPower(_currentFleet).ToString("D");
             UpdateAkashiTimer();
+            UpdateFighterPower();
             UpdateLoS();
             UpdateCondTimers();
         }
@@ -443,6 +443,13 @@ namespace KancolleSniffer
                 if (msgs[i].Completed != "")
                     _noticeQueue.Enqueue("泊地修理 " + fn[i], "修理完了：" + msgs[i].Completed, _config.AkashiCompleteSoundFile);
             }
+        }
+
+        public void UpdateFighterPower()
+        {
+            labelFighterPower.Text = _sniffer.GetFighterPower(_currentFleet, _config.WithAlvBonus).ToString("D");
+            toolTipFigherPower.SetToolTip(labelFighterPower,
+                (!_config.WithAlvBonus ? "熟練度込み " : "熟練度抜き ") + _sniffer.GetFighterPower(_currentFleet, !_config.WithAlvBonus));
         }
 
         private void UpdateLoS()

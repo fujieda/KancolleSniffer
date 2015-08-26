@@ -160,6 +160,7 @@ namespace KancolleSniffer
             this.labelBullSq4 = new System.Windows.Forms.Label();
             this.labelFuelSq4 = new System.Windows.Forms.Label();
             this.toolTipAchievement = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTipFigherPower = new System.Windows.Forms.ToolTip(this.components);
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -1386,6 +1387,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelQuestColor4;
         private System.Windows.Forms.Label labelQuestColor3;
         private System.Windows.Forms.Label labelQuestColor2;
+        private System.Windows.Forms.ToolTip toolTipFigherPower;
     }
 }
 
