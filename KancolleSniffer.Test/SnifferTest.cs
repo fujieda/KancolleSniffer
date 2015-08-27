@@ -243,6 +243,19 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 補強装備スロットのダメコンの使用を反映する
+        /// </summary>
+        [TestMethod]
+        public void DamgeControlInSlotEx()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "damecon_003");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[5].SlotEx == 10306, "戦闘前");
+            SniffLogFile(sniffer, "damecon_004");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[5].SlotEx == -1, "戦闘後");
+        }
+
+        /// <summary>
         /// 連合艦隊(水上打撃部隊)で二回目の砲撃戦がない場合を正しく処理する
         /// </summary>
         [TestMethod]
