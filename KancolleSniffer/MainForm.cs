@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using Codeplex.Data;
@@ -30,6 +31,7 @@ using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Win32;
 using Nekoxy;
 using static System.Math;
+using Timer = System.Windows.Forms.Timer;
 
 namespace KancolleSniffer
 {
@@ -157,8 +159,10 @@ namespace KancolleSniffer
 
         private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
-            if (e.Mode == PowerModes.Resume)
-                SystemProxy.Refresh();
+            if (e.Mode != PowerModes.Resume)
+                return;
+            Thread.Sleep(10000);
+            SystemProxy.Refresh();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
