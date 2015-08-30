@@ -407,7 +407,9 @@ namespace KancolleSniffer.Test
                                "31-1 : HP 0/750\r\n31-2 : HP 0/1050\r\n31-3 : HP 0/2100\r\n31-4 : HP 0/3500\r\n31-5 : HP 1/2450\r\n",
                 "最初の海域ゲージ情報");
             SniffLogFile(sniffer, "mapinfo_002");
-            PAssert.That(() => sniffer.MiscText == "", "戦闘から戻ったらクリア");
+            PAssert.That(() => sniffer.MiscText ==
+                               "[海域ゲージ情報]\r\n 海域選択画面に進むと表示します。\r\n[演習情報]\r\n 演習相手を選ぶと表示します。",
+                "戦闘から戻ったら案内を表示");
             SniffLogFile(sniffer, "mapinfo_003");
             PAssert.That(() => sniffer.MiscText ==
                                "[海域ゲージ]\r\n" +
@@ -428,7 +430,9 @@ namespace KancolleSniffer.Test
                                "[演習情報]\r\n敵艦隊名 : 大銀河地球連邦　第7艦隊\r\n獲得経験値 : 570\r\nS勝利 : 684",
                 "演習相手の情報");
             SniffLogFile(sniffer, "practice_enemyinfo_002");
-            PAssert.That(() => sniffer.MiscText == "", "演習から戻ったらクリア");
+            PAssert.That(() => sniffer.MiscText ==
+                               "[海域ゲージ情報]\r\n 海域選択画面に進むと表示します。\r\n[演習情報]\r\n 演習相手を選ぶと表示します。",
+                "演習から戻ったら案内を表示");
         }
     }
 }

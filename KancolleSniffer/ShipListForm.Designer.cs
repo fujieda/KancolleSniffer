@@ -47,7 +47,6 @@ namespace KancolleSniffer
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShipListForm));
             this.panelShipList = new System.Windows.Forms.Panel();
-            this.textBoxMiscText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -66,8 +65,9 @@ namespace KancolleSniffer
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.panelItemHeader = new System.Windows.Forms.Panel();
-            this.itemTreeView = new KancolleSniffer.ItemTreeView();
+            this.richTextBoxMiscText = new System.Windows.Forms.RichTextBox();
             this.equipPanel = new KancolleSniffer.EquipPanel();
+            this.itemTreeView = new KancolleSniffer.ItemTreeView();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
             this.SuspendLayout();
@@ -82,19 +82,6 @@ namespace KancolleSniffer
             this.panelShipList.Name = "panelShipList";
             this.panelShipList.Size = new System.Drawing.Size(238, 263);
             this.panelShipList.TabIndex = 0;
-            // 
-            // textBoxMiscText
-            // 
-            this.textBoxMiscText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMiscText.Location = new System.Drawing.Point(6, 23);
-            this.textBoxMiscText.Multiline = true;
-            this.textBoxMiscText.Name = "textBoxMiscText";
-            this.textBoxMiscText.ReadOnly = true;
-            this.textBoxMiscText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxMiscText.Size = new System.Drawing.Size(236, 263);
-            this.textBoxMiscText.TabIndex = 0;
             // 
             // label1
             // 
@@ -276,15 +263,17 @@ namespace KancolleSniffer
             this.panelItemHeader.Size = new System.Drawing.Size(166, 19);
             this.panelItemHeader.TabIndex = 0;
             // 
-            // itemTreeView
+            // richTextBoxMiscText
             // 
-            this.itemTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.richTextBoxMiscText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.itemTreeView.Location = new System.Drawing.Point(6, 23);
-            this.itemTreeView.Name = "itemTreeView";
-            this.itemTreeView.Size = new System.Drawing.Size(238, 263);
-            this.itemTreeView.TabIndex = 0;
+            this.richTextBoxMiscText.Location = new System.Drawing.Point(6, 23);
+            this.richTextBoxMiscText.Name = "richTextBoxMiscText";
+            this.richTextBoxMiscText.ReadOnly = true;
+            this.richTextBoxMiscText.Size = new System.Drawing.Size(236, 263);
+            this.richTextBoxMiscText.TabIndex = 0;
+            this.richTextBoxMiscText.Text = "";
             // 
             // equipPanel
             // 
@@ -296,6 +285,16 @@ namespace KancolleSniffer
             this.equipPanel.Name = "equipPanel";
             this.equipPanel.Size = new System.Drawing.Size(238, 263);
             this.equipPanel.TabIndex = 1;
+            // 
+            // itemTreeView
+            // 
+            this.itemTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.itemTreeView.Location = new System.Drawing.Point(6, 23);
+            this.itemTreeView.Name = "itemTreeView";
+            this.itemTreeView.Size = new System.Drawing.Size(238, 263);
+            this.itemTreeView.TabIndex = 0;
             // 
             // ShipListForm
             // 
@@ -310,7 +309,7 @@ namespace KancolleSniffer
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBoxMiscText);
+            this.Controls.Add(this.richTextBoxMiscText);
             this.Controls.Add(this.equipPanel);
             this.Controls.Add(this.itemTreeView);
             this.Controls.Add(this.panelShipList);
@@ -355,6 +354,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Panel panelItemHeader;
         private EquipPanel equipPanel;
         private ItemTreeView itemTreeView;
-        private System.Windows.Forms.TextBox textBoxMiscText;
+        private System.Windows.Forms.RichTextBox richTextBoxMiscText;
     }
 }

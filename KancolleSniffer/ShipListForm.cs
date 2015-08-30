@@ -58,7 +58,7 @@ namespace KancolleSniffer
             panelShipList.Visible = InShipStatus || InGroupConfig || InRepairList;
             itemTreeView.Visible = InItemList;
             equipPanel.Visible = InEquip;
-            textBoxMiscText.Visible = InMiscText;
+            richTextBoxMiscText.Visible = InMiscText;
             if (InItemList)
             {
                 itemTreeView.SetNodes(_sniffer.ItemList);
@@ -69,7 +69,7 @@ namespace KancolleSniffer
             }
             else if (InMiscText)
             {
-                textBoxMiscText.Text = _sniffer.MiscText;
+                richTextBoxMiscText.Text = _sniffer.MiscText;
             }
             else
             {

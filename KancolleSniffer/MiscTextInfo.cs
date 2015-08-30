@@ -22,14 +22,15 @@ namespace KancolleSniffer
 {
     public class MiscTextInfo
     {
-         public string Text { get; private set; }
+        private const string GuideText = "[海域ゲージ情報]\r\n 海域選択画面に進むと表示します。\r\n[演習情報]\r\n 演習相手を選ぶと表示します。";
+        public string Text { get; private set; } = GuideText;
         public bool ClearFlag { private get; set; }
 
         public void ClearIfNeeded()
         {
             if (!ClearFlag)
                 return;
-            Text = "";
+            Text = GuideText;
             ClearFlag = false;
         }
 
