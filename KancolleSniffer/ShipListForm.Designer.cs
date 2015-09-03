@@ -281,6 +281,7 @@ namespace KancolleSniffer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.equipPanel.AutoScroll = true;
+            this.equipPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.equipPanel.Location = new System.Drawing.Point(6, 23);
             this.equipPanel.Name = "equipPanel";
             this.equipPanel.Size = new System.Drawing.Size(238, 263);
