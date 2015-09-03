@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -70,7 +71,7 @@ namespace KancolleSniffer
         public LogConfig()
         {
             On = true;
-            OutputDir = Path.GetDirectoryName(Application.ExecutablePath);
+            OutputDir = "";
             MaterialLogInterval = 10;
             ServerOn = true;
             Listen = 8008;
@@ -79,8 +80,8 @@ namespace KancolleSniffer
 
     public class Config
     {
-        private readonly string _configFileName =
-            Path.Combine(Path.GetDirectoryName(Application.ExecutablePath) ?? "", "config.json");
+        private readonly string _baseDir = Path.GetDirectoryName(Application.ExecutablePath);
+        private readonly string _configFileName;
 
         public Point Location { get; set; }
         public bool TopMost { get; set; }
@@ -113,6 +114,7 @@ namespace KancolleSniffer
 
         public Config()
         {
+            _configFileName = Path.Combine(_baseDir, "config.json");
             Location = new Point(int.MinValue, int.MinValue);
             FlashWindow = ShowBaloonTip = PlaySound = true;
             MarginShips = 4;
@@ -122,21 +124,21 @@ namespace KancolleSniffer
             AlwaysShowResultRank = false;
             WithAlvBonus = true;
             SoundVolume = 100;
-            var dir = Path.GetDirectoryName(Application.ExecutablePath) ?? "";
-            MissionSoundFile = Path.Combine(dir, "ensei.mp3");
-            NDockSoundFile = Path.Combine(dir, "nyuukyo.mp3");
-            KDockSoundFile = Path.Combine(dir, "kenzou.mp3");
-            MaxShipsSoundFile = Path.Combine(dir, "kanmusu.mp3");
-            MaxEquipsSoundFile = Path.Combine(dir, "soubi.mp3");
-            DamagedShipSoundFile = Path.Combine(dir, "taiha.mp3");
-            Akashi20MinSoundFile = Path.Combine(dir, "20min.mp3");
-            AkashiProgressSoundFile = Path.Combine(dir, "syuuri.mp3");
-            AkashiCompleteSoundFile = Path.Combine(dir, "syuuri2.mp3");
-            ConditionSoundFile = Path.Combine(dir, "hirou.mp3");
-            DebugLogFile = Path.Combine(dir, "log.txt");
+            MissionSoundFile = "ensei.mp3";
+            NDockSoundFile = "nyuukyo.mp3";
+            KDockSoundFile = "kenzou.mp3";
+            MaxShipsSoundFile = "kanmusu.mp3";
+            MaxEquipsSoundFile = "soubi.mp3";
+            DamagedShipSoundFile = "taiha.mp3";
+            Akashi20MinSoundFile = "20min.mp3";
+            AkashiProgressSoundFile = "syuuri.mp3";
+            AkashiCompleteSoundFile = "syuuri2.mp3";
+            ConditionSoundFile = "hirou.mp3";
+            DebugLogFile = "log.txt";
             Proxy = new ProxyConfig();
             ShipList = new ShipListConfig();
             Log = new LogConfig();
+            ConvertPath(PrependBaseDir);
         }
 
         public void Load()
@@ -146,6 +148,7 @@ namespace KancolleSniffer
                 var config = (Config)DynamicJson.Parse(File.ReadAllText(_configFileName));
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(config, null), null);
+                ConvertPath(PrependBaseDir);
             }
             catch (FileNotFoundException)
             {
@@ -154,7 +157,38 @@ namespace KancolleSniffer
 
         public void Save()
         {
+            ConvertPath(StripBaseDir);
             File.WriteAllText(_configFileName, DynamicJson.Serialize(this));
+        }
+
+        private void ConvertPath(Func<string, string> func)
+        {
+            foreach (var property in GetType().GetProperties())
+            {
+                if (!property.Name.EndsWith("File"))
+                    continue;
+                property.SetValue(this, func((string)property.GetValue(this)));
+            }
+            Log.OutputDir = func(Log.OutputDir);
+        }
+
+        private string StripBaseDir(string path)
+        {
+            if (_baseDir == null)
+                return path;
+            if (!path.StartsWith(_baseDir))
+                return path;
+            path = path.Substring(_baseDir.Length);
+            return path.StartsWith(Path.DirectorySeparatorChar.ToString()) ? path.Substring(1) : path;
+        }
+
+        private string PrependBaseDir(string path)
+        {
+            if (_baseDir == null)
+                return path;
+            if (Path.IsPathRooted(path))
+                return path;
+            return Path.Combine(_baseDir, path);
         }
     }
 }
