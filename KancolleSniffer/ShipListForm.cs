@@ -50,14 +50,16 @@ namespace KancolleSniffer
             var swipe = new SwipeScrollify();
             swipe.AddPanel(panelShipList);
             swipe.AddTreeView(itemTreeView);
+            swipe.AddPanel(equipPanel);
         }
 
         public void UpdateList()
         {
             panelItemHeader.Visible = InItemList || InEquip || InMiscText;
-            panelShipList.Visible = InShipStatus || InGroupConfig || InRepairList;
-            itemTreeView.Visible = InItemList;
-            equipPanel.Visible = InEquip;
+            // SwipeScrollifyが誤作動するのでEnabledも切り替える
+            panelShipList.Visible = panelShipList.Enabled = InShipStatus || InGroupConfig || InRepairList;
+            itemTreeView.Visible = itemTreeView.Enabled = InItemList;
+            equipPanel.Visible = equipPanel.Enabled = InEquip;
             richTextBoxMiscText.Visible = InMiscText;
             if (InItemList)
             {
