@@ -122,21 +122,7 @@ namespace TrotiNet
             if (!LowLevelSocket.Connected)
                 return true;
 
-            // XXX NOT TESTED
-/*
-            // Trick: one way to see if a socket is still valid is
-            // to try and write zero byte to it.
-            if (bTestSend)
-            try
-            {
-                int save = LowLevelSocket.SendTimeout;
-                LowLevelSocket.SendTimeout = 1;
-                LowLevelSocket.Send(Buffer, 0, SocketFlags.None);
-                LowLevelSocket.SendTimeout = save;
-            }
-            catch { return true; }
- */
-            return false;
+            return LowLevelSocket.Poll(1, SelectMode.SelectRead) && LowLevelSocket.Available == 0;
         }
 #endregion
 
