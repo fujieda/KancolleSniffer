@@ -454,6 +454,8 @@ namespace KancolleSniffer
 
         public bool InSortie(int fleet) => _inSortie[fleet];
 
+        public int CombinedFleetType => _combinedFleetType;
+
         public ShipStatus[] ShipList
             => _shipInfo.Values.Where(s => s.Level != 0).Select(s =>
             {

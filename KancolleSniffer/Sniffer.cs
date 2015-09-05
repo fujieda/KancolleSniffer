@@ -443,6 +443,8 @@ namespace KancolleSniffer
 
         public int[] GetDeck(int fleet) => _shipInfo.GetDeck(fleet);
 
+        public int CombinedFleetType => _shipInfo.CombinedFleetType;
+
         public ChargeStatus[] ChargeStatuses => _shipInfo.ChargeStatuses;
 
         public int GetFighterPower(int fleet, bool withBonus) => _shipInfo.GetFighterPower(fleet, withBonus);

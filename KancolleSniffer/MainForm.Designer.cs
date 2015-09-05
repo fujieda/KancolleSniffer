@@ -62,6 +62,7 @@ namespace KancolleSniffer
             this.panelShipInfo = new System.Windows.Forms.Panel();
             this.labelGuide = new System.Windows.Forms.Label();
             this.labelPresetDeckTimer = new System.Windows.Forms.Label();
+            this.panelCombinedFleet = new System.Windows.Forms.Panel();
             this.panelBattleInfo = new System.Windows.Forms.Panel();
             this.labelEnemyFighterPower = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
@@ -302,6 +303,7 @@ namespace KancolleSniffer
             this.panelShipInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelShipInfo.Controls.Add(this.labelGuide);
             this.panelShipInfo.Controls.Add(this.labelPresetDeckTimer);
+            this.panelShipInfo.Controls.Add(this.panelCombinedFleet);
             this.panelShipInfo.Controls.Add(this.panelBattleInfo);
             this.panelShipInfo.Controls.Add(this.labelLoS);
             this.panelShipInfo.Controls.Add(this.label19);
@@ -330,6 +332,14 @@ namespace KancolleSniffer
             this.labelPresetDeckTimer.Name = "labelPresetDeckTimer";
             this.labelPresetDeckTimer.Size = new System.Drawing.Size(31, 12);
             this.labelPresetDeckTimer.TabIndex = 43;
+            // 
+            // panelCombinedFleet
+            // 
+            this.panelCombinedFleet.Location = new System.Drawing.Point(0, 0);
+            this.panelCombinedFleet.Name = "panelCombinedFleet";
+            this.panelCombinedFleet.Size = new System.Drawing.Size(220, 112);
+            this.panelCombinedFleet.TabIndex = 43;
+            this.panelCombinedFleet.Visible = false;
             // 
             // panelBattleInfo
             // 
@@ -1010,6 +1020,8 @@ namespace KancolleSniffer
             this.labelFleet1.Size = new System.Drawing.Size(45, 12);
             this.labelFleet1.TabIndex = 1;
             this.labelFleet1.Text = "第一";
+            this.labelFleet1.MouseLeave += new System.EventHandler(this.labelFleet1_MouseLeave);
+            this.labelFleet1.MouseHover += new System.EventHandler(this.labelFleet1_MouseHover);
             // 
             // labelCheckFleet1
             // 
@@ -1436,6 +1448,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolStripMenuItem CaptureToolStripMenuItem;
         private System.Windows.Forms.Label labelPresetDeckTimer;
         private System.Windows.Forms.Label labelGuide;
+        private System.Windows.Forms.Panel panelCombinedFleet;
     }
 }
 

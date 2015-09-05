@@ -26,6 +26,7 @@ namespace KancolleSniffer
     public class ShipLabels
     {
         private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
+        private readonly ShipLabel[][] _combinedLabels = new ShipLabel[ShipInfo.MemberCount * 2][];
         private readonly ShipLabel[] _akashiTimers = new ShipLabel[ShipInfo.MemberCount];
         private readonly ShipLabel[][] _damagedShipList = new ShipLabel[16][];
         private Control _panelDamagedShipList;
@@ -100,6 +101,66 @@ namespace KancolleSniffer
                 labels[2].SetLevel(s);
                 labels[3].SetExpToNext(s);
                 labels[4].SetName(s);
+            }
+        }
+
+        public void CreateCombinedShipLabels(Control parent, EventHandler onClick)
+        {
+            parent.SuspendLayout();
+            const int top = 3, height = 12, lh = 16;
+            ShipLabel[] headings;
+            parent.Controls.AddRange(headings = new[]
+            {
+                new ShipLabel {Location = new Point(68, top), Text = "HP", AutoSize = true},
+                new ShipLabel {Location = new Point(86, top), Text = "cnd", AutoSize = true},
+                new ShipLabel {Location = new Point(177, top), Text = "HP", AutoSize = true},
+                new ShipLabel {Location = new Point(195, top), Text = "cnd", AutoSize = true},
+                new ShipLabel {Location = new Point(0, 1), Size = new Size(parent.Width, lh - 1)}
+            });
+            foreach (var label in headings)
+            {
+                label.Scale();
+                label.BackColor = ColumnColors[1];
+            }
+            for (var i = 0; i < _combinedLabels.Length; i++)
+            {
+                var x = (parent.Width / 2) * (i / ShipInfo.MemberCount);
+                var y = top + lh * ((i % ShipInfo.MemberCount) + 1);
+                parent.Controls.AddRange(_combinedLabels[i] = new[]
+                {
+                    new ShipLabel {Location = new Point(x + 88, y), AutoSize = true, AnchorRight = true},
+                    new ShipLabel
+                    {
+                        Location = new Point(x + 86, y),
+                        Size = new Size(23, height),
+                        TextAlign = ContentAlignment.MiddleRight
+                    },
+                    new ShipLabel {Location = new Point(x + 2, y), AutoSize = true}, // 名前のZ-orderを下に
+                    new ShipLabel {Location = new Point(x, y - 2), Size = new Size(parent.Width / 2, lh - 1)}
+                });
+                foreach (var label in _combinedLabels[i])
+                {
+                    label.Scale();
+                    label.PresetColor = label.BackColor = ColumnColors[i % 2];
+                    label.Tag = i;
+                    label.Click += onClick;
+                }
+            }
+            parent.ResumeLayout();
+        }
+
+        public void SetCombinedShipInfo(ShipStatus[] first, ShipStatus[] second)
+        {
+            var empty = new ShipStatus();
+            for (var i = 0; i < _combinedLabels.Length; i++)
+            {
+                var idx = i % ShipInfo.MemberCount;
+                var statuses = i < ShipInfo.MemberCount ? first : second;
+                var labels = _combinedLabels[i];
+                var s = idx < statuses.Length ? statuses[idx] : empty;
+                labels[0].SetHp(s);
+                labels[1].SetCond(s);
+                labels[2].SetName(s);
             }
         }
 

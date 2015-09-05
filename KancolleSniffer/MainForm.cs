@@ -44,6 +44,7 @@ namespace KancolleSniffer
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
         private int _currentFleet;
+        private bool _combinedFleet;
         private readonly Label[] _labelCheckFleets;
         private readonly ShipLabels _shipLabels;
         private readonly ShipListForm _shipListForm;
@@ -74,6 +75,7 @@ namespace KancolleSniffer
             _shipLabels = new ShipLabels();
             _shipLabels.CreateAkashiTimers(panelShipInfo);
             _shipLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
+            _shipLabels.CreateCombinedShipLabels(panelCombinedFleet, ShowShipOnShipList);
             _shipLabels.CreateDamagedShipList(panelDamagedShipList, panelDamagedShipList_Click);
             _shipLabels.CreateNDockLabels(panelDock, (obj, args) =>
             {
@@ -525,6 +527,9 @@ namespace KancolleSniffer
         {
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             _shipLabels.SetShipInfo(statuses);
+            panelCombinedFleet.Visible = _combinedFleet;
+            if (_combinedFleet)
+                _shipLabels.SetCombinedShipInfo(_sniffer.GetShipStatuses(0), _sniffer.GetShipStatuses(1));
             UpdateAkashiTimer();
             UpdateFighterPower();
             UpdateLoS();
@@ -872,16 +877,44 @@ namespace KancolleSniffer
 
         private void labelFleet_Click(object sender, EventArgs e)
         {
+            if (!_started)
+                return;
             var fleet = (int)((Label)sender).Tag;
             if (_currentFleet == fleet)
+            {
+                if (fleet > 0)
+                    return;
+                if (_sniffer.CombinedFleetType > 0 && !_combinedFleet)
+                {
+                    labelFleet1.Text = "連合";
+                    _combinedFleet = true;
+                }
+                else
+                {
+                    labelFleet1.Text = "第一";
+                    _combinedFleet = false;
+                }
+                UpdatePanelShipInfo();
                 return;
+            }
+            if (_combinedFleet)
+                labelFleet1.Text = "第一";
+            _combinedFleet = false;
             _currentFleet = fleet;
             foreach (var label in _labelCheckFleets)
                 label.Visible = false;
             _labelCheckFleets[fleet].Visible = true;
-            if (!_started)
-                return;
             UpdatePanelShipInfo();
+        }
+
+        private void labelFleet1_MouseHover(object sender, EventArgs e)
+        {
+            labelFleet1.Text = _currentFleet == 0 && _sniffer.CombinedFleetType > 0 && !_combinedFleet ? "連合" : "第一";
+        }
+
+        private void labelFleet1_MouseLeave(object sender, EventArgs e)
+        {
+            labelFleet1.Text = _combinedFleet ? "連合" : "第一";
         }
 
         private void labelBucketHistoryButton_Click(object sender, EventArgs e)
