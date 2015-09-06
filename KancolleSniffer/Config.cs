@@ -94,7 +94,6 @@ namespace KancolleSniffer
         public List<int> NotifyConditions { get; set; }
         public List<int> ResetHours { get; set; }
         public bool AlwaysShowResultRank { get; set; }
-        public bool WithAlvBonus { get; set; }
         public int SoundVolume { get; set; }
         public string MissionSoundFile { get; set; }
         public string NDockSoundFile { get; set; }
@@ -122,7 +121,6 @@ namespace KancolleSniffer
             NotifyConditions = new List<int>(new[] {40, 49});
             ResetHours = new List<int>(new[] {2});
             AlwaysShowResultRank = false;
-            WithAlvBonus = true;
             SoundVolume = 100;
             MissionSoundFile = "ensei.mp3";
             NDockSoundFile = "nyuukyo.mp3";

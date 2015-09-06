@@ -454,9 +454,8 @@ namespace KancolleSniffer
 
         public void UpdateFighterPower()
         {
-            labelFighterPower.Text = _sniffer.GetFighterPower(_currentFleet, _config.WithAlvBonus).ToString("D");
-            toolTipFigherPower.SetToolTip(labelFighterPower,
-                (!_config.WithAlvBonus ? "熟練度込み " : "熟練度抜き ") + _sniffer.GetFighterPower(_currentFleet, !_config.WithAlvBonus));
+            labelFighterPower.Text = _sniffer.GetFighterPower(_currentFleet, true).ToString("D");
+            toolTipFigherPower.SetToolTip(labelFighterPower, "熟練度抜き " + _sniffer.GetFighterPower(_currentFleet, false));
         }
 
         private void UpdateLoS()
