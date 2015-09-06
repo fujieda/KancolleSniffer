@@ -59,12 +59,12 @@ namespace KancolleSniffer
             var id = int.Parse(values["api_ship_id"]);
             int fuel, steal;
             _shipInfo[id].CalcMaterialsToRepair(out fuel, out steal);
-            _itemInfo.MaterialHistory[(int)Material.Fuel].Now -= fuel;
-            _itemInfo.MaterialHistory[(int)Material.Steal].Now -= steal;
+            _itemInfo.SubMaterial(Material.Fuel, fuel);
+            _itemInfo.SubMaterial(Material.Steal, steal);
             if (int.Parse(values["api_highspeed"]) == 0)
                 return;
             _shipInfo.RepairShip(id);
-            _itemInfo.MaterialHistory[(int)Material.Bucket].Now--;
+            _itemInfo.SubMaterial(Material.Bucket, 1);
         }
 
         public void InspectSpeedChange(string request)
@@ -74,7 +74,7 @@ namespace KancolleSniffer
             _shipInfo.RepairShip(_ndoc[dock]);
             _ndoc[dock] = 0;
             _ndocTimers[dock].SetEndTime(0);
-            _itemInfo.MaterialHistory[(int)Material.Bucket].Now--;
+            _itemInfo.SubMaterial(Material.Bucket, 1);
         }
 
         public NameAndTimer[] NDock

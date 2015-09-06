@@ -300,8 +300,7 @@ namespace KancolleSniffer
                 status.OnSlot = (from num in (dynamic[])entry.api_onslot select (int)num).ToArray();
             }
             var material = (int[])json.api_material;
-            for (var i = 0; i < material.Length; i++)
-                _itemInfo.MaterialHistory[i].Now = material[i];
+            _itemInfo.SetMaterials(material);
         }
 
         public void InspectChange(string request)
@@ -379,8 +378,7 @@ namespace KancolleSniffer
             _shipInfo.Remove(ship);
 
             var material = (int[])json.api_material;
-            for (var i = 0; i < material.Length; i++)
-                _itemInfo.MaterialHistory[i].Now = material[i];
+            _itemInfo.SetMaterials(material);
         }
 
         public void StartSortie(string request)

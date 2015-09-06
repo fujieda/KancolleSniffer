@@ -415,7 +415,7 @@ namespace KancolleSniffer
             this.panelMaterialHistory.Controls.Add(this.labelFuelHistory);
             this.panelMaterialHistory.Location = new System.Drawing.Point(38, 354);
             this.panelMaterialHistory.Name = "panelMaterialHistory";
-            this.panelMaterialHistory.Size = new System.Drawing.Size(188, 40);
+            this.panelMaterialHistory.Size = new System.Drawing.Size(188, 52);
             this.panelMaterialHistory.TabIndex = 41;
             this.panelMaterialHistory.Visible = false;
             // 
@@ -423,7 +423,7 @@ namespace KancolleSniffer
             // 
             this.labelBouxiteHistory.Location = new System.Drawing.Point(118, 2);
             this.labelBouxiteHistory.Name = "labelBouxiteHistory";
-            this.labelBouxiteHistory.Size = new System.Drawing.Size(41, 36);
+            this.labelBouxiteHistory.Size = new System.Drawing.Size(41, 48);
             this.labelBouxiteHistory.TabIndex = 7;
             this.labelBouxiteHistory.Text = "ボーキ";
             this.labelBouxiteHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -432,7 +432,7 @@ namespace KancolleSniffer
             // 
             this.labelSteelHistory.Location = new System.Drawing.Point(79, 2);
             this.labelSteelHistory.Name = "labelSteelHistory";
-            this.labelSteelHistory.Size = new System.Drawing.Size(41, 36);
+            this.labelSteelHistory.Size = new System.Drawing.Size(41, 48);
             this.labelSteelHistory.TabIndex = 6;
             this.labelSteelHistory.Text = "鋼材";
             this.labelSteelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -441,7 +441,7 @@ namespace KancolleSniffer
             // 
             this.labelBulletHistory.Location = new System.Drawing.Point(40, 2);
             this.labelBulletHistory.Name = "labelBulletHistory";
-            this.labelBulletHistory.Size = new System.Drawing.Size(41, 36);
+            this.labelBulletHistory.Size = new System.Drawing.Size(41, 48);
             this.labelBulletHistory.TabIndex = 5;
             this.labelBulletHistory.Text = "弾薬";
             this.labelBulletHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -451,15 +451,15 @@ namespace KancolleSniffer
             this.label35.AutoSize = true;
             this.label35.Location = new System.Drawing.Point(158, 14);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(29, 24);
+            this.label35.Size = new System.Drawing.Size(29, 36);
             this.label35.TabIndex = 4;
-            this.label35.Text = "今日\r\n今週";
+            this.label35.Text = "母港\r\n今日\r\n今週";
             // 
             // labelFuelHistory
             // 
             this.labelFuelHistory.Location = new System.Drawing.Point(1, 2);
             this.labelFuelHistory.Name = "labelFuelHistory";
-            this.labelFuelHistory.Size = new System.Drawing.Size(41, 36);
+            this.labelFuelHistory.Size = new System.Drawing.Size(41, 48);
             this.labelFuelHistory.TabIndex = 0;
             this.labelFuelHistory.Text = "燃料";
             this.labelFuelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;

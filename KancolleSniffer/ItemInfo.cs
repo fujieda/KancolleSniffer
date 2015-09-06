@@ -204,6 +204,7 @@ namespace KancolleSniffer
         private int _nowShips, _nowEquips;
         private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
         private readonly Dictionary<int, ItemStatus> _itemInfo = new Dictionary<int, ItemStatus>();
+        private bool _inPort;
 
         public int MaxShips { get; private set; }
         public int MarginShips { get; set; }
@@ -212,6 +213,7 @@ namespace KancolleSniffer
         public int MarginEquips { get; set; }
         public bool RingEquips { get; set; }
         public MaterialCount[] MaterialHistory { get; }
+        public int[] PrevPort { get; }
 
         public bool NeedSave
         {
@@ -257,9 +259,11 @@ namespace KancolleSniffer
 
         public ItemInfo()
         {
-            MaterialHistory = new MaterialCount[Enum.GetValues(typeof(Material)).Length];
-            foreach (Material m in Enum.GetValues(typeof(Material)))
-                MaterialHistory[(int)m] = new MaterialCount();
+            var n = Enum.GetValues(typeof(Material)).Length;
+            MaterialHistory = new MaterialCount[n];
+            for (var i = 0; i < n; i++)
+                MaterialHistory[i] = new MaterialCount();
+            PrevPort = new int[n];
             MarginShips = 4;
             MarginEquips = 10;
         }
@@ -270,10 +274,52 @@ namespace KancolleSniffer
             MaxEquips = (int)json.api_max_slotitem;
         }
 
-        public void InspectMaterial(dynamic json)
+        public void InspectMaterial(dynamic json, bool port = false)
         {
+            if (!port)
+                UpdatePrevPort();
             foreach (var entry in json)
-                MaterialHistory[(int)entry.api_id - 1].Now = (int)entry.api_value;
+            {
+                var i = (int)entry.api_id - 1;
+                var v = (int)entry.api_value;
+                MaterialHistory[i].Now = v;
+            }
+            if (!port)
+                return;
+            _inPort = true;
+            if (PrevPort[0] != 0)
+                return;
+            for (var i = 0; i < MaterialHistory.Length; i++)
+                PrevPort[i] = MaterialHistory[i].Now;
+        }
+
+        private void UpdatePrevPort()
+        {
+            if (!_inPort)
+                return;
+            for (var i = 0; i < MaterialHistory.Length; i++)
+                PrevPort[i] = MaterialHistory[i].Now;
+            _inPort = false;
+        }
+
+        public void SetMaterials(int[] material)
+        {
+            UpdatePrevPort();
+            for (var i = 0; i < material.Length; i++)
+                MaterialHistory[i].Now = material[i];
+        }
+
+        public void AddMaterials(int[] v)
+        {
+            UpdatePrevPort();
+            for (var i = 0; i < v.Length; i++)
+                MaterialHistory[i].Now += v[i];
+        }
+
+        public void SubMaterial(Material m, int v)
+        {
+            UpdatePrevPort();
+            MaterialHistory[(int)m].Now -= v;
         }
 
         public void InspectMaster(dynamic json)
@@ -323,9 +369,7 @@ namespace KancolleSniffer
 
         public void InspectCreateItem(dynamic json)
         {
-            var m = (dynamic[])json.api_material;
-            for (var i = 0; i < m.Length; i++)
-                MaterialHistory[i].Now = (int)m[i];
+            SetMaterials((int[])json.api_material);
             if (!json.IsDefined("api_slot_item"))
                 return;
             InspectSlotItem(json.api_slot_item);
@@ -343,16 +387,13 @@ namespace KancolleSniffer
         {
             var values = HttpUtility.ParseQueryString(request);
             DeleteItems(values["api_slotitem_ids"].Split(',').Select(int.Parse).ToArray());
-            var get = (int[])json.api_get_material;
-            for (var i = 0; i < get.Length; i++)
-                MaterialHistory[i].Now += get[i];
+            AddMaterials((int[])json.api_get_material);
         }
 
         public void InspectRemodelSlot(dynamic json)
         {
             var after = (int[])json.api_after_material;
-            for (var i = 0; i < after.Length; i++)
-                MaterialHistory[i].Now = after[i];
+            SetMaterials(after);
             if (json.api_after_slot())
                 InspectSlotItem(json.api_after_slot);
             if (!json.api_use_slot_id())
@@ -382,9 +423,7 @@ namespace KancolleSniffer
         {
             if ((int)json.api_clear_result == 0) // 失敗
                 return;
-            var get = (int[])json.api_get_material;
-            for (var i = 0; i < get.Length; i++)
-                MaterialHistory[i].Now += get[i];
+            AddMaterials((int[])json.api_get_material);
         }
 
         public ItemSpec this[int id] => GetSpecById(id);

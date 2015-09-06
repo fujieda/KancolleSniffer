@@ -391,13 +391,16 @@ namespace KancolleSniffer
             for (var i = 0; i < labels.Length; i++)
             {
                 var count = _sniffer.Item.MaterialHistory[i];
+                var port = count.Now - _sniffer.Item.PrevPort[i];
+                if (port >= 100000)
+                    port = 99999;
                 var day = count.Now - count.BegOfDay;
                 if (day >= 100000)
                     day = 99999;
                 var week = count.Now - count.BegOfWeek;
                 if (week >= 100000)
                     week = 99999;
-                labels[i].Text = $"{text[i]}\n{day:+#;-#;±0}\n{week:+#;-#;±0}";
+                labels[i].Text = $"{text[i]}\n{port:+#;-#;±0}\n{day:+#;-#;±0}\n{week:+#;-#;±0}";
             }
         }
 

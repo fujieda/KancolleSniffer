@@ -104,7 +104,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_port/port"))
             {
                 _itemInfo.InspectBasic(data.api_basic);
-                _itemInfo.InspectMaterial(data.api_material);
+                _itemInfo.InspectMaterial(data.api_material, true);
                 _logger.InspectBasic(data.api_basic);
                 _logger.InspectMaterial(data.api_material);
                 _shipInfo.InspectShip(data);
