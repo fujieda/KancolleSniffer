@@ -205,6 +205,7 @@ namespace KancolleSniffer
         private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
         private readonly Dictionary<int, ItemStatus> _itemInfo = new Dictionary<int, ItemStatus>();
         private bool _inPort;
+        private DateTime _lastMission;
 
         public int MaxShips { get; private set; }
         public int MarginShips { get; set; }
@@ -423,6 +424,9 @@ namespace KancolleSniffer
         {
             if ((int)json.api_clear_result == 0) // 失敗
                 return;
+            if (DateTime.Now - _lastMission < TimeSpan.FromMinutes(1))
+                _inPort = false;
+            _lastMission = DateTime.Now;
             AddMaterials((int[])json.api_get_material);
         }
 
