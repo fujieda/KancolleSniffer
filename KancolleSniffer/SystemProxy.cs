@@ -27,6 +27,7 @@ namespace KancolleSniffer
     public class SystemProxy
     {
         private InternetPerConnOptionList orgList;
+        private string _currentUrl;
 
         private void SaveSettings()
         {
@@ -57,6 +58,7 @@ namespace KancolleSniffer
             SaveSettings();
             var flagValue = new InternetPerConnOptionValue {dwValue = (int)PerConnFlags.PROXY_TYPE_AUTO_PROXY_URL};
             var urlValue = new InternetPerConnOptionValue {pszValue = Marshal.StringToHGlobalAuto(url)};
+            _currentUrl = url;
             var opts = new[]
             {
                 new InternetPerConnOption {dwOption = PerConnOption.INTERNET_PER_CONN_FLAGS, Value = flagValue},
@@ -84,11 +86,18 @@ namespace KancolleSniffer
         {
             if (orgList.dwSize == 0)
                 return;
-            // Always unselect the Use automatic configuration script check box.
-            var flagsOpt =
-                (InternetPerConnOption)Marshal.PtrToStructure(orgList.pOptions, typeof(InternetPerConnOption));
-            flagsOpt.Value.dwValue &= ~(int)PerConnFlags.PROXY_TYPE_AUTO_PROXY_URL;
-            Marshal.StructureToPtr(flagsOpt, orgList.pOptions, false);
+            var size = Marshal.SizeOf(typeof(InternetPerConnOption));
+            var urlOpt = (InternetPerConnOption)
+                Marshal.PtrToStructure((IntPtr)((long)orgList.pOptions + size), typeof(InternetPerConnOption));
+            var orgUrl = Marshal.PtrToStringAuto(urlOpt.Value.pszValue);
+            if (orgUrl == _currentUrl) // The restoration was sikipped or failed at last time.
+            {
+                // Unselect the Use automatic configration script check box.
+                var flagsOpt =
+                    (InternetPerConnOption)Marshal.PtrToStructure(orgList.pOptions, typeof(InternetPerConnOption));
+                flagsOpt.Value.dwValue &= ~(int)PerConnFlags.PROXY_TYPE_AUTO_PROXY_URL;
+                Marshal.StructureToPtr(flagsOpt, orgList.pOptions, false);
+            }
             var listSize = orgList.dwSize;
             var listBuff = Marshal.AllocCoTaskMem(listSize);
             Marshal.StructureToPtr(orgList, listBuff, false);
@@ -96,9 +105,6 @@ namespace KancolleSniffer
             Refresh();
 
             Marshal.FreeCoTaskMem(listBuff);
-            var size = Marshal.SizeOf(typeof(InternetPerConnOption));
-            var urlOpt = (InternetPerConnOption)
-                Marshal.PtrToStructure((IntPtr)((long)orgList.pOptions + size), typeof(InternetPerConnOption));
             Marshal.FreeHGlobal(urlOpt.Value.pszValue);
             Marshal.FreeCoTaskMem(orgList.pOptions);
             orgList.dwSize = 0;
