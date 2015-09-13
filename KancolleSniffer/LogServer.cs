@@ -36,6 +36,8 @@ namespace KancolleSniffer
 
         public int Port { get; private set; }
 
+        public bool IsListening { get; private set; }
+
         public string OutputDir
         {
             set { _outputDir = value; }
@@ -43,13 +45,14 @@ namespace KancolleSniffer
 
         public LogServer(int port)
         {
-            Port = port;
             _listener = new TcpListener(IPAddress.Loopback, port);
         }
 
         public void Start()
         {
             _listener.Start();
+            Port = ((IPEndPoint)_listener.LocalEndpoint).Port;
+            IsListening = true;
             new Thread(Listen).Start();
         }
 
@@ -231,6 +234,7 @@ namespace KancolleSniffer
 
         public void Stop()
         {
+            IsListening = false;
             _listener.Server.Close();
         }
     }

@@ -21,11 +21,12 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Windows.Forms;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Codeplex.Data;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Win32;
@@ -140,21 +141,8 @@ namespace KancolleSniffer
             ApplyDebugLogSetting();
             ApplyLogSetting();
             _sniffer.LoadState();
-            if (_config.Proxy.Auto)
-                _systemProxy.SetAutoProxyUrl(ProxyConfig.AutoConfigUrl);
-            StartProxy();
+            ApplyProxySetting();
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
-        }
-
-        private void StartProxy()
-        {
-            if (_config.Proxy.UseUpstream)
-            {
-                HttpProxy.UpstreamProxyHost = "127.0.0.1";
-                HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
-            }
-            HttpProxy.IsEnableUpstreamProxy = _config.Proxy.UseUpstream;
-            HttpProxy.Startup(_config.Proxy.Listen, false, false);
         }
 
         private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
@@ -179,10 +167,7 @@ namespace KancolleSniffer
 
         private void ShutdownProxy()
         {
-            lock (typeof (HttpProxy))
-            {
-                HttpProxy.Shutdown();
-            }
+            HttpProxy.Shutdown();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -237,45 +222,107 @@ namespace KancolleSniffer
             _debugLogFile = _config.DebugLogging ? _config.DebugLogFile : null;
         }
 
-        public void ApplyProxySetting()
+        public bool ApplyProxySetting()
         {
-            if (_config.Proxy.Auto != _prevProxy.Auto)
-            {
-                if (_config.Proxy.Auto)
-                    _systemProxy.SetAutoProxyUrl(ProxyConfig.AutoConfigUrl);
-                else
-                    _systemProxy.RestoreSettings();
-            }
-            if (_config.Proxy.Listen != _prevProxy.Listen ||
+            if (!_config.Proxy.Auto)
+                _systemProxy.RestoreSettings();
+            var result = true;
+            if (!HttpProxy.IsInListening || _config.Proxy.Listen != _prevProxy.Listen ||
                 _config.Proxy.UseUpstream != _prevProxy.UseUpstream ||
                 _config.Proxy.UpstreamPort != _prevProxy.UpstreamPort)
             {
-                Task.Run(() =>
-                {
-                    ShutdownProxy();
-                    StartProxy();
-                });
+                ShutdownProxy();
+                result = StartProxy();
+            }
+            if (_config.Proxy.Auto && result)
+            {
+                _systemProxy.SetAutoProxyUrl(HttpProxy.LocalPort == 8080
+                    ? ProxyConfig.AutoConfigUrl
+                    : ProxyConfig.AutoConfigUrlWithPort + HttpProxy.LocalPort);
             }
             _prevProxy = _config.Proxy.Clone();
+            return result;
         }
 
-        public void ApplyLogSetting()
+        private bool StartProxy()
         {
-            if (_logServer != null && (!_config.Log.ServerOn || _config.Log.Listen != _logServer.Port))
+            if (_config.Proxy.UseUpstream)
             {
-                _logServer.Stop();
+                HttpProxy.UpstreamProxyHost = "127.0.0.1";
+                HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
+            }
+            HttpProxy.IsEnableUpstreamProxy = _config.Proxy.UseUpstream;
+            try
+            {
+                HttpProxy.Startup(_config.Proxy.Listen, false, false);
+            }
+            catch (SocketException e)
+            {
+                if (e.SocketErrorCode != SocketError.AddressAlreadyInUse)
+                    throw;
+                if (WarnConflictPortNumber("プロキシサーバー", _config.Proxy.Listen, _config.Proxy.Auto) == DialogResult.No ||
+                    !_config.Proxy.Auto)
+                {
+                    _systemProxy.RestoreSettings();
+                    return false;
+                }
+                HttpProxy.Startup(0, false, false);
+                _config.Proxy.Listen = HttpProxy.LocalPort;
+            }
+            return true;
+        }
+
+        private DialogResult WarnConflictPortNumber(string name, int port, bool auto)
+        {
+            var msg = $"{name}のポート番号{port}は他のアプリケーションが使用中です。";
+            var cap = "ポート番号の衝突";
+            return auto
+                ? MessageBox.Show(this, msg + "自動的に別の番号を割り当てますか？", cap,
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                : MessageBox.Show(this, msg + "設定ダイアログでポート番号を変更してください。", cap,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        public bool ApplyLogSetting()
+        {
+            var result = true;
+            if (_config.Log.ServerOn)
+            {
+                result = StartLogServer();
+            }
+            else
+            {
+                _logServer?.Stop();
                 _logServer = null;
             }
-            if (_logServer == null && _config.Log.ServerOn)
-            {
-                _logServer = new LogServer(_config.Log.Listen);
-                _logServer.Start();
-            }
-            if (_logServer != null)
-                _logServer.OutputDir = _config.Log.OutputDir;
             _sniffer.EnableLog(_config.Log.On ? LogType.All : LogType.None);
             _sniffer.MaterialLogInterval = _config.Log.MaterialLogInterval;
             _sniffer.LogOutputDir = _config.Log.OutputDir;
+            return result;
+        }
+
+        private bool StartLogServer()
+        {
+            var port = _config.Log.Listen;
+            if (_logServer?.Port == port)
+                return true;
+            _logServer?.Stop();
+            _logServer = null;
+            try
+            {
+                _logServer = new LogServer(port);
+                _logServer.Start();
+            }
+            catch (SocketException e) when (e.SocketErrorCode == SocketError.AddressAlreadyInUse)
+            {
+                if (WarnConflictPortNumber("閲覧サーバー", port, true) == DialogResult.No)
+                    return false;
+                _logServer = new LogServer(0);
+                _logServer.Start();
+                _config.Log.Listen = _logServer.Port;
+            }
+            _logServer.OutputDir = _config.Log.OutputDir;
+            return true;
         }
 
         public static bool IsVisibleOnAnyScreen(Rectangle rect)

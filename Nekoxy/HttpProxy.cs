@@ -62,6 +62,11 @@ namespace Nekoxy
         public static bool IsInListening => server != null && server.IsListening;
 
         /// <summary>
+        /// ローカルポート番号を取得する。
+        /// </summary>
+        public static int LocalPort { get; private set; }
+
+        /// <summary>
         /// 指定ポートで Listening を開始する。
         /// Shutdown() を呼び出さずに2回目の Startup() を呼び出した場合、InvalidOperationException が発生する。
         /// </summary>
@@ -91,6 +96,7 @@ namespace Nekoxy
                 server = new TcpServer(listeningPort, useIpV6);
                 server.Start(TransparentProxyLogic.CreateProxy);
                 server.InitListenFinished.WaitOne();
+                LocalPort = server.LocalPort;
                 if (server.InitListenException != null) throw server.InitListenException;
             }
             catch (Exception)

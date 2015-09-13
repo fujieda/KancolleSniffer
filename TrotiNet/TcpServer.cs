@@ -94,7 +94,7 @@ namespace TrotiNet
         /// <summary>
         /// Port used for local browser-proxy communication
         /// </summary>
-        protected int LocalPort;
+        public int LocalPort;
 
         /// <summary>
         /// Called every time a connection is accepted from the browser
@@ -117,7 +117,7 @@ namespace TrotiNet
         /// </param>
         public TcpServer(int localPort, bool bUseIPv6)
         {
-            if (localPort < 1)
+            if (localPort < 0)
                 throw new ArgumentException("localPort");
 
             LocalPort = localPort;
@@ -295,6 +295,7 @@ namespace TrotiNet
             // Bind the socket to the local endpoint and listen for incoming
             // connections.
             ListeningSocket.Bind(localEndPoint);
+            LocalPort = ((IPEndPoint)ListeningSocket.LocalEndPoint).Port;
             ListeningSocket.Listen(1000);
 
             // Notify that the listening thread is up and running

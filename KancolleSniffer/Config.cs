@@ -28,6 +28,7 @@ namespace KancolleSniffer
     {
         public const int DefaultListenPort = 8080;
         public const string AutoConfigUrl = "https://kancollesniffer.osdn.jp/proxy.pac";
+        public const string AutoConfigUrlWithPort = "https://kancollesniffer.osdn.jp/proxy.php?port=";
         public bool Auto { get; set; }
         public int Listen { get; set; }
         public bool UseUpstream { get; set; }

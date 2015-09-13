@@ -657,7 +657,6 @@ namespace KancolleSniffer
             this.radioButtonAutoConfigOn.TabIndex = 0;
             this.radioButtonAutoConfigOn.Text = "有効";
             this.radioButtonAutoConfigOn.UseVisualStyleBackColor = true;
-            this.radioButtonAutoConfigOn.CheckedChanged += new System.EventHandler(this.radioButtonAutoConfigOn_CheckedChanged);
             // 
             // textBoxListen
             // 

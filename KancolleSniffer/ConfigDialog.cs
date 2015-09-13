@@ -40,7 +40,7 @@ namespace KancolleSniffer
             listBoxSoundFile.Items.AddRange(new object[]
             {
                 "遠征終了", "入渠終了", "建造完了", "艦娘数超過", "装備数超過",
-                "大破警告", "泊地修理20分経過", "泊地修理進行", "泊地修理完了","疲労回復"
+                "大破警告", "泊地修理20分経過", "泊地修理進行", "泊地修理完了", "疲労回復"
             });
             numericUpDownMaterialLogInterval.Maximum = 1440;
         }
@@ -141,9 +141,10 @@ namespace KancolleSniffer
             if (!ValidatePorts(out listen, out outbound, out server))
                 return;
             DialogResult = DialogResult.OK;
-
-            ApplyProxySettings(listen, outbound);
-            ApplyLogSettings(server);
+            if (!ApplyProxySettings(listen, outbound))
+                DialogResult = DialogResult.None;
+            if (!ApplyLogSettings(server))
+                DialogResult = DialogResult.None;
             ApplyDebugSettings();
 
             _config.TopMost = checkBoxTopMost.Checked;
@@ -206,25 +207,30 @@ namespace KancolleSniffer
             return true;
         }
 
-        private void ApplyProxySettings(int listen, int port)
+        private bool ApplyProxySettings(int listen, int port)
         {
             _config.Proxy.Auto = radioButtonAutoConfigOn.Checked;
             _config.Proxy.Listen = listen;
             _config.Proxy.UseUpstream = radioButtonUpstreamOn.Checked;
             if (_config.Proxy.UseUpstream)
                 _config.Proxy.UpstreamPort = port;
-            _main.ApplyProxySetting();
+            if (!_main.ApplyProxySetting())
+                return false;
+            textBoxListen.Text = _config.Proxy.Listen.ToString();
+            return true;
         }
 
-        private void ApplyLogSettings(int server)
+        private bool ApplyLogSettings(int server)
         {
             _config.Log.On = checkBoxOutput.Checked;
             _config.Log.MaterialLogInterval = (int)numericUpDownMaterialLogInterval.Value;
             _config.Log.OutputDir = textBoxOutput.Text;
             _config.Log.ServerOn = radioButtonServerOn.Checked;
-            if (_config.Log.ServerOn)
-                _config.Log.Listen = server;
-            _main.ApplyLogSetting();
+            _config.Log.Listen = server;
+            if (!_main.ApplyLogSetting())
+                return false;
+            textBoxServer.Text = _config.Log.Listen.ToString();
+            return true;
         }
 
         private void ApplyDebugSettings()
@@ -271,14 +277,6 @@ namespace KancolleSniffer
         {
             linkLabelProductName.LinkVisited = true;
             Process.Start(Home);
-        }
-
-        private void radioButtonAutoConfigOn_CheckedChanged(object sender, EventArgs e)
-        {
-            var on = ((RadioButton)sender).Checked;
-            textBoxListen.Enabled = !on;
-            if (on)
-                textBoxListen.Text = ProxyConfig.DefaultListenPort.ToString();
         }
 
         private void radioButtonUpstreamOff_CheckedChanged(object sender, EventArgs e)
