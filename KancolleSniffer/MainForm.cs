@@ -50,7 +50,7 @@ namespace KancolleSniffer
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
         private LogServer _logServer;
-        private ProxyConfig _prevProxy;
+        private int _prevProxyPort;
         private readonly SystemProxy _systemProxy = new SystemProxy();
 
         public MainForm()
@@ -133,7 +133,6 @@ namespace KancolleSniffer
         private void MainForm_Load(object sender, EventArgs e)
         {
             _config.Load();
-            _prevProxy = _config.Proxy.Clone();
             RestoreLocation();
             if (_config.HideOnMinimized && WindowState == FormWindowState.Minimized)
                 ShowInTaskbar = false;
@@ -226,10 +225,14 @@ namespace KancolleSniffer
         {
             if (!_config.Proxy.Auto)
                 _systemProxy.RestoreSettings();
+            if (_config.Proxy.UseUpstream)
+            {
+                HttpProxy.UpstreamProxyHost = "127.0.0.1";
+                HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
+            }
+            HttpProxy.IsEnableUpstreamProxy = _config.Proxy.UseUpstream;
             var result = true;
-            if (!HttpProxy.IsInListening || _config.Proxy.Listen != _prevProxy.Listen ||
-                _config.Proxy.UseUpstream != _prevProxy.UseUpstream ||
-                _config.Proxy.UpstreamPort != _prevProxy.UpstreamPort)
+            if (!HttpProxy.IsInListening || _config.Proxy.Listen != _prevProxyPort)
             {
                 ShutdownProxy();
                 result = StartProxy();
@@ -240,18 +243,12 @@ namespace KancolleSniffer
                     ? ProxyConfig.AutoConfigUrl
                     : ProxyConfig.AutoConfigUrlWithPort + HttpProxy.LocalPort);
             }
-            _prevProxy = _config.Proxy.Clone();
+            _prevProxyPort = _config.Proxy.Listen;
             return result;
         }
 
         private bool StartProxy()
         {
-            if (_config.Proxy.UseUpstream)
-            {
-                HttpProxy.UpstreamProxyHost = "127.0.0.1";
-                HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
-            }
-            HttpProxy.IsEnableUpstreamProxy = _config.Proxy.UseUpstream;
             try
             {
                 HttpProxy.Startup(_config.Proxy.Listen, false, false);

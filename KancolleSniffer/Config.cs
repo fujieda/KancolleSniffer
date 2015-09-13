@@ -41,8 +41,6 @@ namespace KancolleSniffer
             UseUpstream = false;
             UpstreamPort = 8888;
         }
-
-        public ProxyConfig Clone() => (ProxyConfig)MemberwiseClone();
     }
 
     public class ShipListConfig
