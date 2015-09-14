@@ -1072,9 +1072,9 @@ namespace KancolleSniffer
             // panelDamagedShipList
             // 
             this.panelDamagedShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelDamagedShipList.Location = new System.Drawing.Point(12, 207);
+            this.panelDamagedShipList.Location = new System.Drawing.Point(6, 207);
             this.panelDamagedShipList.Name = "panelDamagedShipList";
-            this.panelDamagedShipList.Size = new System.Drawing.Size(134, 19);
+            this.panelDamagedShipList.Size = new System.Drawing.Size(129, 19);
             this.panelDamagedShipList.TabIndex = 44;
             this.panelDamagedShipList.Visible = false;
             // 
@@ -1082,7 +1082,7 @@ namespace KancolleSniffer
             // 
             this.labelDamgedShipListButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelDamgedShipListButton.Image = ((System.Drawing.Image)(resources.GetObject("labelDamgedShipListButton.Image")));
-            this.labelDamgedShipListButton.Location = new System.Drawing.Point(131, 193);
+            this.labelDamgedShipListButton.Location = new System.Drawing.Point(121, 193);
             this.labelDamgedShipListButton.Name = "labelDamgedShipListButton";
             this.labelDamgedShipListButton.Size = new System.Drawing.Size(14, 14);
             this.labelDamgedShipListButton.TabIndex = 45;
@@ -1091,7 +1091,7 @@ namespace KancolleSniffer
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(91, 195);
+            this.label31.Location = new System.Drawing.Point(81, 195);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(41, 12);
             this.label31.TabIndex = 46;

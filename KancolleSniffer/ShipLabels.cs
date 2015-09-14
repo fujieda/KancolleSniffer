@@ -166,10 +166,10 @@ namespace KancolleSniffer
                 const int height = 12;
                 parent.Controls.AddRange(_damagedShipList[i] = new[]
                 {
-                    new ShipLabel {Location = new Point(1, y), Size = new Size(11, height)},
-                    new ShipLabel {Location = new Point(79, y), AutoSize = true},
-                    new ShipLabel {Location = new Point(123, y), Size = new Size(5, height - 1)},
-                    new ShipLabel {Location = new Point(10, y), AutoSize = true},
+                    new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
+                    new ShipLabel {Location = new Point(119, y), Size = new Size(4, height - 1)},
+                    new ShipLabel {Location = new Point(75, y), AutoSize = true},
+                    new ShipLabel {Location = new Point(9, y), AutoSize = true},
                     new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, height + 3)}
                 });
                 foreach (var label in _damagedShipList[i])
@@ -184,7 +184,7 @@ namespace KancolleSniffer
 
         public void SetDamagedShipList(ShipStatus[] list)
         {
-            const int fleet = 0, name = 3, time = 1, damage = 2;
+            const int fleet = 0, name = 3, time = 2, damage = 1;
             var parent = _panelDamagedShipList;
             var num = Min(list.Length, _damagedShipList.Length);
             if (num == 0)
