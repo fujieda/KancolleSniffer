@@ -161,6 +161,7 @@ namespace KancolleSniffer
             this.labelFuelSq4 = new System.Windows.Forms.Label();
             this.toolTipAchievement = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipFigherPower = new System.Windows.Forms.ToolTip(this.components);
+            this.CaptureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -929,36 +930,37 @@ namespace KancolleSniffer
             this.contextMenuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.listToolStripMenuItem,
             this.LogToolStripMenuItem,
+            this.CaptureToolStripMenuItem,
             this.ConfigToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.contextMenuStripMain.Name = "contextMenuStripToolTip";
-            this.contextMenuStripMain.Size = new System.Drawing.Size(131, 92);
+            this.contextMenuStripMain.Size = new System.Drawing.Size(153, 136);
             // 
             // listToolStripMenuItem
             // 
             this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-            this.listToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.listToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.listToolStripMenuItem.Text = "一覧(&L)";
             this.listToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
             // 
             // LogToolStripMenuItem
             // 
             this.LogToolStripMenuItem.Name = "LogToolStripMenuItem";
-            this.LogToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.LogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.LogToolStripMenuItem.Text = "報告書(&R)";
             this.LogToolStripMenuItem.Click += new System.EventHandler(this.LogToolStripMenuItem_Click);
             // 
             // ConfigToolStripMenuItem
             // 
             this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
-            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.ConfigToolStripMenuItem.Text = "設定(&O)";
             this.ConfigToolStripMenuItem.Click += new System.EventHandler(this.ConfigToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.ExitToolStripMenuItem.Text = "終了(&X)";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -1203,6 +1205,13 @@ namespace KancolleSniffer
             // 
             this.toolTipAchievement.ShowAlways = true;
             // 
+            // CaptureToolStripMenuItem
+            // 
+            this.CaptureToolStripMenuItem.Name = "CaptureToolStripMenuItem";
+            this.CaptureToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.CaptureToolStripMenuItem.Text = "撮影(&C)";
+            this.CaptureToolStripMenuItem.Click += new System.EventHandler(this.CaptureToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1388,6 +1397,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelQuestColor3;
         private System.Windows.Forms.Label labelQuestColor2;
         private System.Windows.Forms.ToolTip toolTipFigherPower;
+        private System.Windows.Forms.ToolStripMenuItem CaptureToolStripMenuItem;
     }
 }
 

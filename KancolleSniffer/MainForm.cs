@@ -861,5 +861,17 @@ namespace KancolleSniffer
         {
             Process.Start("http://localhost:" + _config.Log.Listen + "/");
         }
+
+        private void CaptureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var proc = new ProcessStartInfo("BurageSnap.exe") {WorkingDirectory = "Capture"};
+                Process.Start(proc);
+            }
+            catch (FileNotFoundException)
+            {
+            }
+        }
     }
 }
