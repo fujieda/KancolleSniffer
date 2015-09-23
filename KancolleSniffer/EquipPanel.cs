@@ -29,6 +29,7 @@ namespace KancolleSniffer
         private EquipColumn[] _equipList;
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private readonly List<Panel> _panelList = new List<Panel>();
+        private readonly ToolTip _toolTip = new ToolTip();
 
         private class EquipColumn
         {
@@ -38,10 +39,11 @@ namespace KancolleSniffer
             public string Equip { get; set; }
             public Color Color { get; set; }
             public string Spec { get; set; }
+            public string AircraftSpec { get; set; }
 
             public EquipColumn()
             {
-                Fleet = Ship = Equip = "";
+                Fleet = Ship = Equip = AircraftSpec = "";
                 Color = DefaultBackColor;
             }
         }
@@ -79,12 +81,26 @@ namespace KancolleSniffer
                         var item = sniffer.Item.ItemDict[slot];
                         if (item.Spec.Name == "ドラム缶(輸送用)")
                             drum++;
+                        var airspec = "";
+                        if (item.Spec.CanAirCombat)
+                        {
+                            if (item.Spec.Type == 7 || item.Spec.Type == 11) // 爆撃
+                            {
+                                airspec = "航空戦 " + (25 + (int)(item.Spec.Bomber * Math.Sqrt(onslot)));
+                            }
+                            else if (item.Spec.Type == 8)
+                            {
+                                var normal = 25 + item.Spec.Torpedo * Math.Sqrt(onslot);
+                                airspec = "航空戦 " + (int)(normal * 0.8) + "/" + (int)(normal * 1.5);
+                            }
+                        }
                         equips.Add(new EquipColumn
                         {
                             Equip = item.Spec.Name +
                                     (item.Alv == 0 ? "" : "+" + item.Alv) +
                                     (item.Level == 0 ? "" : "★" + item.Level) +
                                     (!item.Spec.IsAircraft ? "" : " " + onslot + "/" + max),
+                            AircraftSpec = airspec,
                             Color = item.Spec.Color
                         });
                     }
@@ -177,6 +193,7 @@ namespace KancolleSniffer
             labels[3].Visible = e.Equip != "";
             labels[3].BackColor = e.Color;
             labels[4].Text = e.Spec;
+            _toolTip.SetToolTip(labels[2], e.AircraftSpec != "" ? e.AircraftSpec : "");
             lbp.Visible = true;
         }
 
