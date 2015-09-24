@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
 using Codeplex.Data;
 
 namespace KancolleSniffer
@@ -79,7 +78,7 @@ namespace KancolleSniffer
 
     public class Config
     {
-        private readonly string _baseDir = Path.GetDirectoryName(Application.ExecutablePath);
+        private readonly string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
         private readonly string _configFileName;
 
         public Point Location { get; set; }
@@ -171,21 +170,12 @@ namespace KancolleSniffer
 
         private string StripBaseDir(string path)
         {
-            if (_baseDir == null)
-                return path;
             if (!path.StartsWith(_baseDir))
                 return path;
             path = path.Substring(_baseDir.Length);
             return path.StartsWith(Path.DirectorySeparatorChar.ToString()) ? path.Substring(1) : path;
         }
 
-        private string PrependBaseDir(string path)
-        {
-            if (_baseDir == null)
-                return path;
-            if (Path.IsPathRooted(path))
-                return path;
-            return Path.Combine(_baseDir, path);
-        }
+        private string PrependBaseDir(string path) => Path.IsPathRooted(path) ? path : Path.Combine(_baseDir, path);
     }
 }

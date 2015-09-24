@@ -18,10 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
 using System.Web;
-using System.Windows.Forms;
 
 namespace KancolleSniffer
 {
@@ -376,7 +375,7 @@ namespace KancolleSniffer
 
         public LogWriter(string outputDir = null, IFile file = null)
         {
-            _outputDir = outputDir ?? Path.GetDirectoryName(Application.ExecutablePath);
+            _outputDir = outputDir ?? AppDomain.CurrentDomain.BaseDirectory;
             _file = file ?? new FileWrapper();
         }
 

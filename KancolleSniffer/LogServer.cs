@@ -24,15 +24,14 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Web;
-using System.Windows.Forms;
 
 namespace KancolleSniffer
 {
     public class LogServer
     {
         private readonly TcpListener _listener;
-        private readonly string _indexDir = Path.GetDirectoryName(Application.ExecutablePath);
-        private string _outputDir = Path.GetDirectoryName(Application.ExecutablePath);
+        private readonly string _indexDir = AppDomain.CurrentDomain.BaseDirectory;
+        private string _outputDir = AppDomain.CurrentDomain.BaseDirectory;
 
         public int Port { get; private set; }
 

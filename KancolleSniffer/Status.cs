@@ -17,7 +17,6 @@
 
 using System;
 using System.IO;
-using System.Windows.Forms;
 using Codeplex.Data;
 
 namespace KancolleSniffer
@@ -31,10 +30,7 @@ namespace KancolleSniffer
 
     public class Status
     {
-        // ReSharper disable once AssignNullToNotNullAttribute
-        private readonly string _statusFileName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),
-            "status.json");
-
+        private readonly string _statusFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "status.json");
         public static bool Restoring { get; set; }
         public int ExperiencePoint { get; set; }
         public DateTime LastResetTime { get; set; }
