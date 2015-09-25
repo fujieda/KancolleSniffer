@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -90,8 +91,8 @@ namespace KancolleSniffer
             var request = session.Request.BodyAsString;
             if (_debugLogFile != null)
             {
-                File.AppendAllText(_debugLogFile,
-                    string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n", session.Request.PathAndQuery, request, json.ToString()));
+                File.AppendAllText(_debugLogFile, string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n",
+                    session.Request.PathAndQuery, request, json.ToString()));
             }
             try
             {
@@ -148,8 +149,36 @@ namespace KancolleSniffer
         {
             if (e.Mode != PowerModes.Resume)
                 return;
-            Thread.Sleep(10000);
-            SystemProxy.Refresh();
+            Task.Run(() =>
+            {
+                for (var i = 0; i < 5; Thread.Sleep(10000), i++)
+                {
+                    WebResponse res = null;
+                    SystemProxy.Refresh();
+                    var system = WebRequest.GetSystemWebProxy();
+                    if (!system.GetProxy(new Uri("http://125.6.184.16/")).IsLoopback)
+                    {
+                        File.AppendAllText("wakeup.log",
+                            $"[{DateTime.Now.ToString("g")}] proxy settings doesn't work.\r\n");
+                        continue;
+                    }
+                    try
+                    {
+                        var req = WebRequest.Create("http://kancollesniffer.osdn.jp/version");
+                        res = req.GetResponse();
+                        break;
+                    }
+                    catch
+                    {
+                        File.AppendAllText("wakeup.log",
+                            $"[{DateTime.Now.ToString("g")}] failed to connect internet.\r\n");
+                    }
+                    finally
+                    {
+                        res?.Close();
+                    }
+                }
+            });
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
