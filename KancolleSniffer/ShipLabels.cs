@@ -157,7 +157,7 @@ namespace KancolleSniffer
             }
         }
 
-        public void CreateDamagedShipList(Control parent)
+        public void CreateDamagedShipList(Control parent, EventHandler onClick)
         {
             parent.SuspendLayout();
             for (var i = 0; i < _damagedShipList.Length; i++)
@@ -176,6 +176,7 @@ namespace KancolleSniffer
                 {
                     label.Scale();
                     label.PresetColor = label.BackColor = ColumnColors[(i + 1) % 2];
+                    label.Click += onClick;
                 }
             }
             _panelDamagedShipList = parent;

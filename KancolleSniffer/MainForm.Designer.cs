@@ -132,6 +132,7 @@ namespace KancolleSniffer
             this.contextMenuStripMain = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CaptureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelFleet1 = new System.Windows.Forms.Label();
@@ -161,7 +162,6 @@ namespace KancolleSniffer
             this.labelFuelSq4 = new System.Windows.Forms.Label();
             this.toolTipAchievement = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipFigherPower = new System.Windows.Forms.ToolTip(this.components);
-            this.CaptureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -419,6 +419,7 @@ namespace KancolleSniffer
             this.panelMaterialHistory.Size = new System.Drawing.Size(188, 52);
             this.panelMaterialHistory.TabIndex = 41;
             this.panelMaterialHistory.Visible = false;
+            this.panelMaterialHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
             // 
             // labelBouxiteHistory
             // 
@@ -428,6 +429,7 @@ namespace KancolleSniffer
             this.labelBouxiteHistory.TabIndex = 7;
             this.labelBouxiteHistory.Text = "ボーキ";
             this.labelBouxiteHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelBouxiteHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
             // 
             // labelSteelHistory
             // 
@@ -437,6 +439,7 @@ namespace KancolleSniffer
             this.labelSteelHistory.TabIndex = 6;
             this.labelSteelHistory.Text = "鋼材";
             this.labelSteelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelSteelHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
             // 
             // labelBulletHistory
             // 
@@ -446,6 +449,7 @@ namespace KancolleSniffer
             this.labelBulletHistory.TabIndex = 5;
             this.labelBulletHistory.Text = "弾薬";
             this.labelBulletHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelBulletHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
             // 
             // label35
             // 
@@ -455,6 +459,7 @@ namespace KancolleSniffer
             this.label35.Size = new System.Drawing.Size(29, 36);
             this.label35.TabIndex = 4;
             this.label35.Text = "母港\r\n今日\r\n今週";
+            this.label35.Click += new System.EventHandler(this.panelMaterialHistory_Click);
             // 
             // labelFuelHistory
             // 
@@ -464,6 +469,7 @@ namespace KancolleSniffer
             this.labelFuelHistory.TabIndex = 0;
             this.labelFuelHistory.Text = "燃料";
             this.labelFuelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelFuelHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
             // 
             // labelRepair
             // 
@@ -934,33 +940,40 @@ namespace KancolleSniffer
             this.ConfigToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.contextMenuStripMain.Name = "contextMenuStripToolTip";
-            this.contextMenuStripMain.Size = new System.Drawing.Size(153, 136);
+            this.contextMenuStripMain.Size = new System.Drawing.Size(131, 114);
             // 
             // listToolStripMenuItem
             // 
             this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-            this.listToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.listToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.listToolStripMenuItem.Text = "一覧(&L)";
             this.listToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
             // 
             // LogToolStripMenuItem
             // 
             this.LogToolStripMenuItem.Name = "LogToolStripMenuItem";
-            this.LogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.LogToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.LogToolStripMenuItem.Text = "報告書(&R)";
             this.LogToolStripMenuItem.Click += new System.EventHandler(this.LogToolStripMenuItem_Click);
+            // 
+            // CaptureToolStripMenuItem
+            // 
+            this.CaptureToolStripMenuItem.Name = "CaptureToolStripMenuItem";
+            this.CaptureToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.CaptureToolStripMenuItem.Text = "撮影(&C)";
+            this.CaptureToolStripMenuItem.Click += new System.EventHandler(this.CaptureToolStripMenuItem_Click);
             // 
             // ConfigToolStripMenuItem
             // 
             this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
-            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.ConfigToolStripMenuItem.Text = "設定(&O)";
             this.ConfigToolStripMenuItem.Click += new System.EventHandler(this.ConfigToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.ExitToolStripMenuItem.Text = "終了(&X)";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -1051,6 +1064,7 @@ namespace KancolleSniffer
             this.labelBucketHistory.Text = "+100 今日\r\n+100 今週";
             this.labelBucketHistory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.labelBucketHistory.Visible = false;
+            this.labelBucketHistory.Click += new System.EventHandler(this.labelBucketHistory_Click);
             // 
             // label36
             // 
@@ -1079,6 +1093,7 @@ namespace KancolleSniffer
             this.panelDamagedShipList.Size = new System.Drawing.Size(129, 19);
             this.panelDamagedShipList.TabIndex = 44;
             this.panelDamagedShipList.Visible = false;
+            this.panelDamagedShipList.Click += new System.EventHandler(this.panelDamagedShipList_Click);
             // 
             // labelDamgedShipListButton
             // 
@@ -1204,13 +1219,6 @@ namespace KancolleSniffer
             // toolTipAchievement
             // 
             this.toolTipAchievement.ShowAlways = true;
-            // 
-            // CaptureToolStripMenuItem
-            // 
-            this.CaptureToolStripMenuItem.Name = "CaptureToolStripMenuItem";
-            this.CaptureToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.CaptureToolStripMenuItem.Text = "撮影(&C)";
-            this.CaptureToolStripMenuItem.Click += new System.EventHandler(this.CaptureToolStripMenuItem_Click);
             // 
             // MainForm
             // 

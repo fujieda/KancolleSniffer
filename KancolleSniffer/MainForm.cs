@@ -70,7 +70,7 @@ namespace KancolleSniffer
             _shipLabels = new ShipLabels();
             _shipLabels.CreateAkashiTimers(panelShipInfo);
             _shipLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
-            _shipLabels.CreateDamagedShipList(panelDamagedShipList);
+            _shipLabels.CreateDamagedShipList(panelDamagedShipList, panelDamagedShipList_Click);
             _shipLabels.CreateNDockLabels(panelDock);
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
@@ -841,6 +841,12 @@ namespace KancolleSniffer
             }
         }
 
+        private void labelBucketHistory_Click(object sender, EventArgs e)
+        {
+            labelBucketHistory.Visible = false;
+            labelBucketHistoryButton.BackColor = DefaultBackColor;
+        }
+
         private void labelMaterialHistoryButton_Click(object sender, EventArgs e)
         {
             if (panelMaterialHistory.Visible)
@@ -854,6 +860,12 @@ namespace KancolleSniffer
                 panelMaterialHistory.BringToFront();
                 labelMaterialHistoryButton.BackColor = SystemColors.ActiveCaption;
             }
+        }
+
+        private void panelMaterialHistory_Click(object sender, EventArgs e)
+        {
+            panelMaterialHistory.Visible = false;
+            labelMaterialHistoryButton.BackColor = DefaultBackColor;
         }
 
         public void ResetAchievemnt()
@@ -875,6 +887,12 @@ namespace KancolleSniffer
                 panelDamagedShipList.BringToFront();
                 labelDamgedShipListButton.BackColor = SystemColors.ActiveCaption;
             }
+        }
+
+        private void panelDamagedShipList_Click(object sender, EventArgs e)
+        {
+            panelDamagedShipList.Visible = false;
+            labelDamgedShipListButton.BackColor = DefaultBackColor;
         }
 
         private void ShipListToolStripMenuItem_Click(object sender, EventArgs e)
