@@ -28,6 +28,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Codeplex.Data;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Win32;
@@ -83,30 +84,51 @@ namespace KancolleSniffer
 
         private void ProcessRequest(Session session)
         {
-            var response = session.Response.BodyAsString;
-            if (response == null || !response.StartsWith("svdata="))
-                return;
-            response = response.Remove(0, "svdata=".Length);
-            var json = DynamicJson.Parse(response);
+            var url = session.Request.PathAndQuery;
             var request = session.Request.BodyAsString;
-            if (_debugLogFile != null)
+            var response = session.Response.BodyAsString;
+            if (!url.Contains("kcsapi/"))
+                return;
+            if (response == null || !response.StartsWith("svdata="))
             {
-                File.AppendAllText(_debugLogFile, string.Format("url: {0}\nrequest: {1}\nresponse: {2}\n",
-                    session.Request.PathAndQuery, request, json.ToString()));
+                WriteDebugLog(url, request, response ?? "(null)");
+                ShowServerError();
+                return;
             }
+            response = response.Remove(0, "svdata=".Length);
             try
             {
-                UpdateInfo(_sniffer.Sniff(session.Request.PathAndQuery, request, json));
+                var json = DynamicJson.Parse(response);
+                WriteDebugLog(url, request, json.ToString());
+                UpdateInfo(_sniffer.Sniff(url, request, json));
+            }
+            catch (XmlException)
+            {
+                WriteDebugLog(url, request, response);
+                ShowServerError();
             }
             catch (RuntimeBinderException)
             {
-                labelLogin.Visible = true;
                 labelLogin.Text = "現在の艦これに対応していません。\n新しいバージョンを利用してください。";
+                labelLogin.Visible = true;
+            }
+        }
+
+        private void WriteDebugLog(string url, string request, string response)
+        {
+            if (_debugLogFile != null)
+            {
+                File.AppendAllText(_debugLogFile, $"url: {url}\nrequest: {request}\nresponse: {response}\n");
             }
         }
 
         private void UpdateInfo(Sniffer.Update update)
         {
+            if (update == Sniffer.Update.Error)
+            {
+                ShowServerError();
+                return;
+            }
             if (update == Sniffer.Update.Start)
             {
                 labelLogin.Visible = false;
@@ -129,6 +151,12 @@ namespace KancolleSniffer
                 UpdateShipInfo();
             if ((update & Sniffer.Update.Battle) != 0)
                 UpdateBattleInfo();
+        }
+
+        private void ShowServerError()
+        {
+            labelLogin.Text = "サーバーからの応答が異常です。";
+            labelLogin.Visible = true;
         }
 
         private void MainForm_Load(object sender, EventArgs e)

@@ -45,15 +45,16 @@ namespace KancolleSniffer
         public enum Update
         {
             None = 0,
-            Start = 1,
-            Item = 2,
-            Ship = 4,
-            Timer = 8,
-            NDock = 16,
-            Mission = 32,
-            QuestList = 64,
-            Battle = 128,
-            All = 255,
+            Error = 1 << 0,
+            Start = 1 << 1,
+            Item = 1 << 2,
+            Ship = 1 << 3,
+            Timer = 1 << 4,
+            NDock = 1 << 5,
+            Mission = 1 << 6,
+            QuestList = 1 << 7,
+            Battle = 1 << 8,
+            All = (1 << 9) - 1
         }
 
         public Sniffer()
@@ -88,7 +89,9 @@ namespace KancolleSniffer
 
         public Update Sniff(string url, string request, dynamic json)
         {
-            var data = json.IsDefined("api_data") ? json.api_data : new object();
+            if (!json.api_result() || (int)json.api_result != 1)
+                return Update.Error;
+            var data = json.api_data() ? json.api_data : new object();
 
             if (url.EndsWith("api_start2"))
             {
