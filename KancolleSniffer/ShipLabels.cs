@@ -108,11 +108,17 @@ namespace KancolleSniffer
             parent.SuspendLayout();
             for (var i = 0; i < _akashiTimers.Length; i++)
             {
-                const int x = 54;
+                const int x = 51;
                 var y = 20 + 16 * i;
                 ShipLabel label;
                 parent.Controls.Add(
-                    label = _akashiTimers[i] = new ShipLabel {Location = new Point(x, y), AutoSize = true});
+                    label = _akashiTimers[i] =
+                        new ShipLabel
+                        {
+                            Location = new Point(x, y),
+                            Size = new Size(34, 12),
+                            TextAlign = ContentAlignment.TopRight
+                        });
                 label.BackColor = ColumnColors[i % 2];
             }
             foreach (var label in _akashiTimers)
@@ -199,7 +205,7 @@ namespace KancolleSniffer
                 return;
             }
             parent.Size = new Size(parent.Width, (int)Round(ShipLabel.ScaleFactor.Height * (num * 16 + 3)));
-            var colors = new[] { Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red };
+            var colors = new[] {Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red};
             for (var i = 0; i < num; i++)
             {
                 var s = list[i];
