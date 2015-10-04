@@ -204,6 +204,7 @@ namespace KancolleSniffer
         private int _nowShips, _nowEquips;
         private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
         private readonly Dictionary<int, ItemStatus> _itemInfo = new Dictionary<int, ItemStatus>();
+        private readonly Dictionary<int, string> _useItemName = new Dictionary<int, string>();
         private bool _inPort;
         private DateTime _lastMission;
 
@@ -345,6 +346,8 @@ namespace KancolleSniffer
                 };
             }
             _itemSpecs[-1] = new ItemSpec();
+            foreach (var entry in json.api_mst_useitem)
+                _useItemName[(int)entry.api_id] = entry.api_name;
         }
 
         public void InspectSlotItem(dynamic json, bool full = false)
@@ -450,6 +453,8 @@ namespace KancolleSniffer
                     _itemInfo[s.SlotEx].Ship = s;
             }
         }
+
+        public string GetUseItemName(int id) => _useItemName[id];
 
         public void SaveState(Status status)
         {

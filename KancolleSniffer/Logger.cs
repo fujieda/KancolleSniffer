@@ -165,6 +165,12 @@ namespace KancolleSniffer
                 boss = "出撃";
             if (cell == (int)_map.api_bosscell_no || (int)_map.api_event_id == 5)
                 boss = _start ? "出撃&ボス" : "ボス";
+            var dropType = result.api_get_ship()
+                ? result.api_get_ship.api_ship_type
+                : result.api_get_useitem() ? "アイテム" : "";
+            var dropName = result.api_get_ship()
+                ? result.api_get_ship.api_ship_name
+                : result.api_get_useitem() ? _itemInfo.GetUseItemName((int)result.api_get_useitem.api_useitem_id) : "";
             _writer("海戦・ドロップ報告書", string.Join(",", _nowFunc().ToString(DateTimeFormat),
                 result.api_quest_name,
                 cell, boss,
@@ -173,8 +179,7 @@ namespace KancolleSniffer
                 FormationName(_battle.api_formation[0]),
                 FormationName(_battle.api_formation[1]),
                 result.api_enemy_info.api_deck_name,
-                result.api_get_ship() ? result.api_get_ship.api_ship_type : "",
-                result.api_get_ship() ? result.api_get_ship.api_ship_name : "",
+                dropType, dropName,
                 string.Join(",", fships),
                 string.Join(",", eships)),
                 "日付,海域,マス,ボス,ランク,艦隊行動,味方陣形,敵陣形,敵艦隊,ドロップ艦種,ドロップ艦娘," +
@@ -333,9 +338,10 @@ namespace KancolleSniffer
             _writer("改修報告書",
                 now.ToString(DateTimeFormat) + "," +
                 string.Join(",", name, level, success, certain, useName, useNum,
-                diff[(int)Material.Fuel], diff[(int)Material.Bullet], diff[(int)Material.Steal], diff[(int)Material.Bouxite],
-                diff[(int)Material.Development], diff[(int)Material.Screw],
-                ship1, ship2),
+                    diff[(int)Material.Fuel], diff[(int)Material.Bullet], diff[(int)Material.Steal],
+                    diff[(int)Material.Bouxite],
+                    diff[(int)Material.Development], diff[(int)Material.Screw],
+                    ship1, ship2),
                 "日付,改修装備,レベル,成功,確実化,消費装備,消費数,燃料,弾薬,鋼材,ボーキ,開発資材,改修資材,秘書艦,二番艦");
         }
     }

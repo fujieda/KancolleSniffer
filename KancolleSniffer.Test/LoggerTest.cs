@@ -184,6 +184,24 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void InspectBattleResultDropItem()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "dropitem_001");
+            PAssert.That(() =>
+                "2015-01-01 00:00:00,南西諸島防衛線,2,出撃,S,Ｔ字戦(有利),単縦陣,単縦陣,敵偵察艦隊,駆逐艦,白雪," +
+                "呂500(Lv56),13/13,伊168改(Lv97),15/15,伊58改(Lv97),18/18,伊8改(Lv97),19/19,伊19改(Lv97),18/18,伊401改(Lv99),24/24," +
+                "重巡リ級,0/58,軽巡ヘ級,0/36,駆逐イ級,0/20,駆逐イ級,0/20,駆逐イ級,0/20,,|" +
+                "2015-01-01 00:00:00,南西諸島防衛線,10,ボス,S,反航戦,単縦陣,輪形陣,敵機動部隊,アイテム,菱餅," +
+                "呂500(Lv56),13/13,伊168改(Lv97),15/15,伊58改(Lv97),18/18,伊8改(Lv97),19/19,伊19改(Lv97),18/18,伊401改(Lv99),24/24," +
+                "空母ヲ級,0/85,空母ヲ級,0/85,重巡リ級,0/58,軽巡ヘ級,0/36,駆逐ハ級,0/24,駆逐ハ級,0/24|"
+                == result);
+        }
+
+        [TestMethod]
         public void InspectMaterial()
         {
             var sniffer = new Sniffer();
