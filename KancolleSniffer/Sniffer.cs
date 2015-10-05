@@ -24,7 +24,6 @@ namespace KancolleSniffer
     public class Sniffer
     {
         private bool _start;
-        private readonly ShipMaster _shipMaster = new ShipMaster();
         private readonly ItemInfo _itemInfo = new ItemInfo();
         private readonly QuestInfo _questInfo = new QuestInfo();
         private readonly MissionInfo _missionInfo = new MissionInfo();
@@ -59,12 +58,12 @@ namespace KancolleSniffer
 
         public Sniffer()
         {
-            _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
+            _shipInfo = new ShipInfo(_itemInfo);
             _conditionTimer = new ConditionTimer(_shipInfo);
             _dockInfo = new DockInfo(_shipInfo, _itemInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo);
-            _battleInfo = new BattleInfo(_shipMaster, _shipInfo, _itemInfo);
-            _logger = new Logger(_shipMaster, _shipInfo, _itemInfo, _battleInfo);
+            _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
+            _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
             _haveState = new List<IHaveState> {_achievement, _itemInfo, _conditionTimer, _exMapInfo};
         }
 
@@ -95,7 +94,7 @@ namespace KancolleSniffer
 
             if (url.EndsWith("api_start2"))
             {
-                _shipMaster.Inspect(data);
+                _shipInfo.InspectMaster(data);
                 _missionInfo.InspectMaster(data.api_mst_mission);
                 _itemInfo.InspectMaster(data);
                 _exMapInfo.ResetIfNeeded();

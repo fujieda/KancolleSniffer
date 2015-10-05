@@ -34,7 +34,6 @@ namespace KancolleSniffer
 
     public class BattleInfo
     {
-        private readonly ShipMaster _shipMaster;
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
         private int _fleet;
@@ -54,9 +53,8 @@ namespace KancolleSniffer
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
 
-        public BattleInfo(ShipMaster shipMaster, ShipInfo shipInfo, ItemInfo itemInfo)
+        public BattleInfo(ShipInfo shipInfo, ItemInfo itemInfo)
         {
-            _shipMaster = shipMaster;
             _shipInfo = shipInfo;
             _itemInfo = itemInfo;
         }
@@ -122,7 +120,7 @@ namespace KancolleSniffer
             EnemyResultStatus =
                 (from id in ((int[])json.api_ship_ke).Skip(1)
                     where id != -1
-                    select new ShipStatus {Id = id, Spec = _shipMaster[id]}).ToArray();
+                    select new ShipStatus {Id = id, Spec = _shipInfo.GetSpec(id)}).ToArray();
             if (combined)
             {
                 var gstats = _shipInfo.GetShipStatuses(1);
@@ -161,7 +159,7 @@ namespace KancolleSniffer
             var missing = 0;
             var maxEq = ((int[])json.api_ship_ke).Skip(1).SelectMany(id =>
             {
-                var r = _shipMaster[id].MaxEq;
+                var r = _shipInfo.GetSpec(id).MaxEq;
                 if (r != null)
                     return r;
                 missing = IncollectFighterPowerFlag;

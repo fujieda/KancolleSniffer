@@ -40,7 +40,6 @@ namespace KancolleSniffer
     public class Logger
     {
         private LogType _logType;
-        private readonly ShipMaster _shipMaster;
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
         private readonly BattleInfo _battleInfo;
@@ -65,9 +64,8 @@ namespace KancolleSniffer
             set { _writer = new LogWriter(value).Write; }
         }
 
-        public Logger(ShipMaster master, ShipInfo ship, ItemInfo item, BattleInfo battle)
+        public Logger(ShipInfo ship, ItemInfo item, BattleInfo battle)
         {
-            _shipMaster = master;
             _shipInfo = ship;
             _itemInfo = item;
             _battleInfo = battle;
@@ -274,7 +272,7 @@ namespace KancolleSniffer
                 return;
             var kdock = ((dynamic[])json).First(e => e.api_id == _kdockId);
             var material = Enumerable.Range(1, 5).Select(i => (int)kdock["api_item" + i]).ToArray();
-            var ship = _shipMaster[(int)kdock.api_created_ship_id];
+            var ship = _shipInfo.GetSpec((int)kdock.api_created_ship_id);
             var avail = ((dynamic[])json).Count(e => (int)e.api_state == 0);
             _writer("建造報告書",
                 _nowFunc().ToString(DateTimeFormat) + "," +

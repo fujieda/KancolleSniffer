@@ -59,10 +59,6 @@ namespace KancolleSniffer
             return name + "(" + flagship + ")";
         }
 
-        public void InspectStype(dynamic json)
-        {
-        }
-
         public ShipSpec this[int id] => _shipSpecs[id];
     }
 

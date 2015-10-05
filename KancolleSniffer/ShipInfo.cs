@@ -186,7 +186,7 @@ namespace KancolleSniffer
 
         private readonly int[][] _decks = new int[FleetCount][];
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
-        private readonly ShipMaster _shipMaster;
+        private readonly ShipMaster _shipMaster = new ShipMaster();
         private readonly ItemInfo _itemInfo;
         private readonly bool[] _inMission = new bool[FleetCount];
         private readonly bool[] _inSortie = new bool[FleetCount];
@@ -194,9 +194,8 @@ namespace KancolleSniffer
         private readonly List<int> _escapedShips = new List<int>();
         private int _combinedFleetType;
 
-        public ShipInfo(ShipMaster shipMaster, ItemInfo itemInfo)
+        public ShipInfo(ItemInfo itemInfo)
         {
-            _shipMaster = shipMaster;
             _itemInfo = itemInfo;
 
             for (var fleet = 0; fleet < FleetCount; fleet++)
@@ -207,6 +206,11 @@ namespace KancolleSniffer
                 _decks[fleet] = deck;
             }
             ClearShipInfo();
+        }
+
+        public void InspectMaster(dynamic json)
+        {
+            _shipMaster.Inspect(json);
         }
 
         public void InspectShip(dynamic json)
@@ -415,6 +419,8 @@ namespace KancolleSniffer
         public int[] GetDeck(int fleet) => _decks[fleet];
 
         public ShipStatus this[int idx] => _shipInfo[idx];
+
+        public ShipSpec GetSpec(int id) => _shipMaster[id];
 
         public bool InMission(int fleet) => _inMission[fleet];
 
