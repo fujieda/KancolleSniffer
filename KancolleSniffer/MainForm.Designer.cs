@@ -248,6 +248,7 @@ namespace KancolleSniffer
             this.labelNumOfBuckets.TabIndex = 5;
             this.labelNumOfBuckets.Text = "0";
             this.labelNumOfBuckets.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelNumOfBuckets.Click += new System.EventHandler(this.labelBucketHistoryButton_Click);
             // 
             // label3
             // 
@@ -1074,6 +1075,7 @@ namespace KancolleSniffer
             this.label36.Size = new System.Drawing.Size(29, 12);
             this.label36.TabIndex = 43;
             this.label36.Text = "資材";
+            this.label36.Click += new System.EventHandler(this.labelMaterialHistoryButton_Click);
             // 
             // labelMaterialHistoryButton
             // 
@@ -1113,6 +1115,7 @@ namespace KancolleSniffer
             this.label31.Size = new System.Drawing.Size(41, 12);
             this.label31.TabIndex = 46;
             this.label31.Text = "要修復";
+            this.label31.Click += new System.EventHandler(this.labelDamgedShipListButton_Click);
             // 
             // imageListFuelSq
             // 
