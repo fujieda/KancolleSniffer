@@ -37,7 +37,7 @@ namespace KancolleSniffer.Test
             return new StreamReader(new GZipStream(File.Open(path, FileMode.Open), CompressionMode.Decompress));
         }
 
-        public static void SniffLogFile(Sniffer sniffer, string name)
+        public static void SniffLogFile(Sniffer sniffer, string name, Action<Sniffer> action = null)
         {
             var ln = 0;
             using (var stream = OpenLogFile(name))
@@ -57,6 +57,7 @@ namespace KancolleSniffer.Test
                     }
                     var json = DynamicJson.Parse(triple[2]);
                     sniffer.Sniff(triple[0], triple[1], json);
+                    action?.Invoke(sniffer);
                 }
             }
         }
@@ -391,6 +392,78 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "createitem_001");
             PAssert.That(() => sniffer.Item.NowEquips == 606);
+        }
+
+        /// <summary>
+        /// 資材の変動を正しく反映する
+        /// </summary>
+        [TestMethod]
+        public void MaterialVariation()
+        {
+            var sniffer1 = new Sniffer();
+            var result1 = new List<int[]>();
+            SniffLogFile(sniffer1, "material_001", sn =>
+            {
+                var cur = sn.Item.MaterialHistory.Select(h => h.Now).ToArray();
+                if (result1.Count == 0)
+                {
+                    result1.Add(cur);
+                }
+                else
+                {
+                    if (!result1.Last().SequenceEqual(cur))
+                        result1.Add(cur);
+                }
+            });
+            var expected1 = new List<int[]>
+            {
+                new[] {0, 0, 0, 0, 0, 0, 0, 0},
+                new[] {26178, 26742, 21196, 33750, 1426, 1574, 2185, 10},
+                new[] {26178, 26842, 21226, 33750, 1426, 1574, 2185, 10},
+                new[] {28951, 29493, 24945, 35580, 1426, 1574, 2185, 10},
+                new[] {26074, 26616, 21068, 33700, 1426, 1572, 2183, 10},
+                new[] {26171, 26721, 21175, 33750, 1426, 1574, 2185, 10},
+                new[] {27023, 27829, 28136, 42404, 1404, 1521, 2142, 15},
+                new[] {31208, 29819, 29714, 42345, 1407, 1530, 2155, 13},
+                new[] {24595, 25353, 18900, 32025, 1427, 1576, 2187, 10},
+                new[] {24515, 25353, 18749, 32025, 1427, 1575, 2187, 10},
+                new[] {23463, 24964, 17284, 31765, 1427, 1572, 2187, 10},
+                new[] {23463, 25064, 17314, 31765, 1427, 1572, 2187, 10}
+            };
+            PAssert.That(() => SequenceOfSequenceEqual(expected1, result1));
+
+            var sniffer2 = new Sniffer();
+            var result2 = new List<int[]>();
+            SniffLogFile(sniffer2, "material_002", sn =>
+            {
+                var cur = sn.Item.MaterialHistory.Select(h => h.Now).ToArray();
+                if (result2.Count == 0)
+                {
+                    result2.Add(cur);
+                }
+                else
+                {
+                    if (!result2.Last().SequenceEqual(cur))
+                        result2.Add(cur);
+                }
+            });
+            var expected2 = new List<int[]>
+            {
+                new[] {0, 0, 0, 0, 0, 0, 0, 0},
+                new[] {201649, 189713, 261490, 123227, 2743, 2828, 3000, 44},
+                new[] {201649, 189714, 261491, 123227, 2743, 2828, 3000, 44},
+                new[] {201650, 189718, 261500, 123227, 2743, 2828, 3000, 44}
+            };
+            PAssert.That(() => SequenceOfSequenceEqual(expected2, result2));
+        }
+
+        private bool SequenceOfSequenceEqual<T>(IEnumerable<IEnumerable<T>> a, IEnumerable<IEnumerable<T>> b)
+        {
+            var aa = a.ToArray();
+            var bb = b.ToArray();
+            if (aa.Count() != bb.Count())
+                return false;
+            return aa.Zip(bb, (x, y) => x.SequenceEqual(y)).All(x => x);
         }
 
         /// <summary>
