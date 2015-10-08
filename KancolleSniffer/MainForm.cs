@@ -433,7 +433,7 @@ namespace KancolleSniffer
         {
             UpdateNumOfShips();
             UpdateNumOfEquips();
-            labelNumOfBuckets.Text = _sniffer.Item.MaterialHistory[(int)Material.Bucket].Now.ToString("D");
+            labelNumOfBuckets.Text = _sniffer.Material.MaterialHistory[(int)Material.Bucket].Now.ToString("D");
             UpdateBucketHistory();
             var ac = _sniffer.Achievement.Value;
             if (ac >= 10000)
@@ -475,7 +475,7 @@ namespace KancolleSniffer
 
         private void UpdateBucketHistory()
         {
-            var count = _sniffer.Item.MaterialHistory[(int)Material.Bucket];
+            var count = _sniffer.Material.MaterialHistory[(int)Material.Bucket];
             var day = count.Now - count.BegOfDay;
             var week = count.Now - count.BegOfWeek;
             if (day >= 1000)
@@ -491,8 +491,8 @@ namespace KancolleSniffer
             var text = new[] {"燃料", "弾薬", "鋼材", "ボーキ"};
             for (var i = 0; i < labels.Length; i++)
             {
-                var count = _sniffer.Item.MaterialHistory[i];
-                var port = count.Now - _sniffer.Item.PrevPort[i];
+                var count = _sniffer.Material.MaterialHistory[i];
+                var port = count.Now - _sniffer.Material.PrevPort[i];
                 if (port >= 100000)
                     port = 99999;
                 var day = count.Now - count.BegOfDay;

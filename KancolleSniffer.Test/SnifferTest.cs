@@ -379,7 +379,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "remodel_slot_001");
-            PAssert.That(() => sniffer.Item.MaterialHistory.Select(m => m.Now)
+            PAssert.That(() => sniffer.Material.Current
                 .SequenceEqual(new[] {25292, 25570, 25244, 41113, 1405, 1525, 2137, 8}));
         }
 
@@ -404,7 +404,7 @@ namespace KancolleSniffer.Test
             var result1 = new List<int[]>();
             SniffLogFile(sniffer1, "material_001", sn =>
             {
-                var cur = sn.Item.MaterialHistory.Select(h => h.Now).ToArray();
+                var cur = sn.Material.Current;
                 if (result1.Count == 0)
                 {
                     result1.Add(cur);
@@ -436,7 +436,7 @@ namespace KancolleSniffer.Test
             var result2 = new List<int[]>();
             SniffLogFile(sniffer2, "material_002", sn =>
             {
-                var cur = sn.Item.MaterialHistory.Select(h => h.Now).ToArray();
+                var cur = sn.Material.Current;
                 if (result2.Count == 0)
                 {
                     result2.Add(cur);

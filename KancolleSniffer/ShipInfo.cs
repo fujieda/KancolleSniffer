@@ -303,8 +303,6 @@ namespace KancolleSniffer
                 status.Fuel = (int)entry.api_fuel;
                 status.OnSlot = (from num in (dynamic[])entry.api_onslot select (int)num).ToArray();
             }
-            var material = (int[])json.api_material;
-            _itemInfo.SetMaterials(material);
         }
 
         public void InspectChange(string request)
@@ -380,9 +378,6 @@ namespace KancolleSniffer
             if (of != -1)
                 WithdrowShip(of, oi);
             _shipInfo.Remove(ship);
-
-            var material = (int[])json.api_material;
-            _itemInfo.SetMaterials(material);
         }
 
         public void StartSortie(string request)

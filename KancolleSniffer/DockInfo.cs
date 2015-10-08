@@ -25,15 +25,15 @@ namespace KancolleSniffer
     {
         public const int DockCount = 4;
         private readonly ShipInfo _shipInfo;
-        private readonly ItemInfo _itemInfo;
+        private readonly MaterialInfo _materialInfo;
         private readonly int[] _ndoc = new int[DockCount];
         private readonly RingTimer[] _ndocTimers = new RingTimer[DockCount];
         private readonly RingTimer[] _kdocTimers = new RingTimer[DockCount];
 
-        public DockInfo(ShipInfo shipInfo, ItemInfo itemInfo)
+        public DockInfo(ShipInfo ship, MaterialInfo material)
         {
-            _shipInfo = shipInfo;
-            _itemInfo = itemInfo;
+            _shipInfo = ship;
+            _materialInfo = material;
             for (var i = 0; i < _ndocTimers.Length; i++)
                 _ndocTimers[i] = new RingTimer();
             for (var i = 0; i < _kdocTimers.Length; i++)
@@ -59,12 +59,12 @@ namespace KancolleSniffer
             var id = int.Parse(values["api_ship_id"]);
             int fuel, steal;
             _shipInfo[id].CalcMaterialsToRepair(out fuel, out steal);
-            _itemInfo.SubMaterial(Material.Fuel, fuel);
-            _itemInfo.SubMaterial(Material.Steal, steal);
+            _materialInfo.SubMaterial(Material.Fuel, fuel);
+            _materialInfo.SubMaterial(Material.Steal, steal);
             if (int.Parse(values["api_highspeed"]) == 0)
                 return;
             _shipInfo.RepairShip(id);
-            _itemInfo.SubMaterial(Material.Bucket, 1);
+            _materialInfo.SubMaterial(Material.Bucket, 1);
         }
 
         public void InspectSpeedChange(string request)
@@ -74,7 +74,7 @@ namespace KancolleSniffer
             _shipInfo.RepairShip(_ndoc[dock]);
             _ndoc[dock] = 0;
             _ndocTimers[dock].SetEndTime(0);
-            _itemInfo.SubMaterial(Material.Bucket, 1);
+            _materialInfo.SubMaterial(Material.Bucket, 1);
         }
 
         public NameAndTimer[] NDock

@@ -80,6 +80,7 @@
     </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="LogServer.cs" />
+    <Compile Include="MaterialInfo.cs" />
     <Compile Include="MiscTextInfo.cs" />
     <Compile Include="MissingData.cs" />
     <Compile Include="ShipLabels.cs" />

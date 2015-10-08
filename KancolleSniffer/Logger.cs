@@ -51,6 +51,7 @@ namespace KancolleSniffer
         private dynamic _basic;
         private int _kdockId;
         private DateTime _prevTime;
+        private int[] _currentMaterial;
         private int _materialLogInterval = 10;
         private bool _start;
 
@@ -316,6 +317,11 @@ namespace KancolleSniffer
                 "日付,燃料,弾薬,鋼材,ボーキ,高速建造材,高速修復材,開発資材,改修資材");
         }
 
+        public void SetCurrentMaterial(int[] material)
+        {
+            _currentMaterial = material;
+        }
+
         public void InspectRemodelSlot(string request, dynamic json)
         {
             if ((_logType & LogType.RemodelSlot) == 0)
@@ -338,7 +344,7 @@ namespace KancolleSniffer
             var after = (int[])json.api_after_material;
             var diff = new int[after.Length];
             for (var i = 0; i < after.Length; i++)
-                diff[i] = _itemInfo.MaterialHistory[i].Now - after[i];
+                diff[i] = _currentMaterial[i] - after[i];
             var ship1 = Secretary();
             var ship2 = "";
             var ships = _shipInfo.GetShipStatuses(0);

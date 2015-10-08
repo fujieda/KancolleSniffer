@@ -25,6 +25,7 @@ namespace KancolleSniffer
     {
         private bool _start;
         private readonly ItemInfo _itemInfo = new ItemInfo();
+        private readonly MaterialInfo _materialInfo = new MaterialInfo();
         private readonly QuestInfo _questInfo = new QuestInfo();
         private readonly MissionInfo _missionInfo = new MissionInfo();
         private readonly ShipInfo _shipInfo;
@@ -60,11 +61,11 @@ namespace KancolleSniffer
         {
             _shipInfo = new ShipInfo(_itemInfo);
             _conditionTimer = new ConditionTimer(_shipInfo);
-            _dockInfo = new DockInfo(_shipInfo, _itemInfo);
+            _dockInfo = new DockInfo(_shipInfo, _materialInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _itemInfo, _dockInfo);
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
-            _haveState = new List<IHaveState> {_achievement, _itemInfo, _conditionTimer, _exMapInfo};
+            _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo};
         }
 
         private void SaveState()
@@ -106,7 +107,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_port/port"))
             {
                 _itemInfo.InspectBasic(data.api_basic);
-                _itemInfo.InspectMaterial(data.api_material, true);
+                _materialInfo.InspectMaterial(data.api_material, true);
                 _logger.InspectBasic(data.api_basic);
                 _logger.InspectMaterial(data.api_material);
                 _shipInfo.InspectShip(data);
@@ -191,17 +192,19 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_get_member/material"))
             {
-                _itemInfo.InspectMaterial(data);
+                _materialInfo.InspectMaterial(data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_hokyu/charge"))
             {
                 _shipInfo.InspectCharge(data);
+                _materialInfo.InspectCharge(data);
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_kousyou/createitem"))
             {
                 _itemInfo.InspectCreateItem(data);
+                _materialInfo.InspectCreateIem(data);
                 _logger.InspectCreateItem(request, data);
                 return Update.Item;
             }
@@ -216,6 +219,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_kousyou/destroyship"))
             {
                 _shipInfo.InspectDestroyShip(request, data);
+                _materialInfo.InspectDestroyShip(data);
                 _conditionTimer.CheckCond();
                 _akashiTimer.SetTimer();
                 return Update.Item | Update.Ship;
@@ -223,12 +227,15 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_kousyou/destroyitem2"))
             {
                 _itemInfo.InspectDestroyItem(request, data);
+                _materialInfo.InspectDestroyItem(data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_kousyou/remodel_slot"))
             {
-                _logger.InspectRemodelSlot(request, data); // 資材の差が必要なので_itemInfoより前
+                _logger.SetCurrentMaterial(_materialInfo.Current);
+                _logger.InspectRemodelSlot(request, data); // 資材の差が必要なので_materialInfoより前
                 _itemInfo.InspectRemodelSlot(data);
+                _materialInfo.InspectRemodelSlot(data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_kousyou/createship"))
@@ -324,7 +331,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_mission/result"))
             {
-                _itemInfo.InspectMissionResult(data);
+                _materialInfo.InspectMissionResult(data);
                 _logger.InspectMissionResult(data);
                 return Update.Item;
             }
@@ -364,6 +371,8 @@ namespace KancolleSniffer
         public RingTimer[] KDock => _dockInfo.KDock;
 
         public ItemInfo Item => _itemInfo;
+
+        public MaterialInfo Material => _materialInfo;
 
         public QuestStatus[] Quests => _questInfo.Quests;
 
