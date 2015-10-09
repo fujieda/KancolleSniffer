@@ -400,7 +400,7 @@ namespace KancolleSniffer
                 }
                 Damage += NowHp;
                 NowHp = 0;
-                var idex = _slotEx == 0 ? -1 : _itemInfo[_slotEx].Id;
+                var idex = _slotEx == 0 ? -1 : _itemInfo.GetItemId(_slotEx);
                 if (idex == 42) // ダメコン
                 {
                     _slotEx = -1;
@@ -415,7 +415,7 @@ namespace KancolleSniffer
                 }
                 for (var j = 0; j < _slot.Length; j++)
                 {
-                    var id = _itemInfo[_slot[j]].Id;
+                    var id = _itemInfo.GetItemId(_slot[j]);
                     if (id == 42) // ダメコン
                     {
                         _slot[j] = -1;

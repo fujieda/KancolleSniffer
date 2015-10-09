@@ -183,7 +183,7 @@ namespace KancolleSniffer
                 repair.Invalidate();
             }
             repair.Deck = deck.ToArray();
-            var cap = _shipInfo[fs].Slot.Count(item => _itemInfo[item].Name == "艦艇修理施設") + 2;
+            var cap = _shipInfo[fs].Slot.Count(id => _itemInfo.GetName(id) == "艦艇修理施設") + 2;
             var target = deck.Take(cap).Select(id =>
             {
                 /*

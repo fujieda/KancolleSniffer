@@ -396,14 +396,7 @@ namespace KancolleSniffer
 
         public ShipStatus[] ShipList => _shipInfo.ShipList;
 
-        public ItemStatus[] ItemList
-        {
-            get
-            {
-                _itemInfo.SetItemOwner(ShipList);
-                return (from e in _itemInfo.ItemDict where e.Key != -1 select e.Value).ToArray();
-            }
-        }
+        public ItemStatus[] ItemList => _itemInfo.GetItemListWithOwner(ShipList);
 
         public AkashiTimer.RepairSpan[] GetAkashiTimers(int fleet) => _akashiTimer.GetTimers(fleet);
 

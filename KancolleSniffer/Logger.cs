@@ -329,8 +329,8 @@ namespace KancolleSniffer
             var now = _nowFunc();
             var values = HttpUtility.ParseQueryString(request);
             var id = int.Parse(values["api_slot_id"]);
-            var name = _itemInfo[id].Name;
-            var level = _itemInfo.ItemDict[id].Level;
+            var name = _itemInfo.GetName(id);
+            var level = _itemInfo.GetStatus(id).Level;
             var success = (int)json.api_remodel_flag == 1 ? "○" : "×";
             var certain = int.Parse(values["api_certain_flag"]) == 1 ? "○" : "";
             var useName = "";
@@ -338,7 +338,7 @@ namespace KancolleSniffer
             if (json.api_use_slot_id())
             {
                 var use = (int[])json.api_use_slot_id;
-                useName = _itemInfo[use[0]].Name;
+                useName = _itemInfo.GetName(use[0]);
                 useNum = use.Length.ToString();
             }
             var after = (int[])json.api_after_material;

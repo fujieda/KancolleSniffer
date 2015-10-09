@@ -78,7 +78,7 @@ namespace KancolleSniffer
                         var max = s.Spec.MaxEq[i];
                         if (slot == -1)
                             continue;
-                        var item = sniffer.Item.ItemDict[slot];
+                        var item = sniffer.Item.GetStatus(slot);
                         if (item.Spec.Name == "ドラム缶(輸送用)")
                             drum++;
                         var airspec = "";
@@ -106,7 +106,7 @@ namespace KancolleSniffer
                     }
                     if (s.SlotEx > 0)
                     {
-                        var item = sniffer.Item.ItemDict[s.SlotEx];
+                        var item = sniffer.Item.GetStatus(s.SlotEx);
                         equips.Add(new EquipColumn {Equip = item.Spec.Name, Color = item.Spec.Color});
                     }
                     if (drum != 0)

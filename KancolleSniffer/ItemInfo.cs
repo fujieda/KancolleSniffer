@@ -351,15 +351,15 @@ namespace KancolleSniffer
             }
         }
 
-        public ItemSpec this[int id] => GetSpecById(id);
+        public string GetName(int id) => _itemInfo[id].Spec.Name;
 
-        public ItemSpec GetSpecById(int id) => _itemInfo[id].Spec;
+        public int GetItemId(int id) => _itemInfo[id].Spec.Id;
 
         public ItemSpec GetSpecByItemId(int id) => _itemSpecs[id];
 
-        public Dictionary<int, ItemStatus> ItemDict => _itemInfo;
+        public ItemStatus GetStatus(int id) => _itemInfo[id];
 
-        public void SetItemOwner(ShipStatus[] shipList)
+        public ItemStatus[] GetItemListWithOwner(ShipStatus[] shipList)
         {
             foreach (var e in _itemInfo)
                 e.Value.Ship = new ShipStatus();
@@ -370,6 +370,7 @@ namespace KancolleSniffer
                 if (s.SlotEx != 0)
                     _itemInfo[s.SlotEx].Ship = s;
             }
+            return (from e in _itemInfo where e.Key != -1 select e.Value).ToArray();
         }
 
         public string GetUseItemName(int id) => _useItemName[id];
