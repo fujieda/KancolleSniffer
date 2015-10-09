@@ -202,6 +202,27 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void InspectBattleResultDropItemAndShip()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, ()=> new DateTime(2015, 1,1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "dropitem_002");
+            PAssert.That(()=>
+                "2015-01-01 00:00:00,アルフォンシーノ方面,1,出撃,S,同航戦,単縦陣,単縦陣,敵前衛艦隊,,," +
+                "飛龍改(Lv79),65/65,翔鶴改二(Lv112),85/85,隼鷹改二(Lv139),62/62,足柄改二(Lv139),63/63,大井改二(Lv133),49/49,北上改二(Lv133),49/49," +
+                "軽巡ヘ級(flagship),0/57,重巡リ級(elite),0/60,軽巡ト級(elite),0/55,雷巡チ級(elite),0/50,駆逐ロ級(elite),0/35,駆逐ロ級(elite),0/35|" +
+                "2015-01-01 00:00:00,アルフォンシーノ方面,3,,S,同航戦,複縦陣,梯形陣,敵護衛空母群,重巡洋艦,筑摩," +
+                "飛龍改(Lv79),65/65,翔鶴改二(Lv112),85/85,隼鷹改二(Lv139),54/62,足柄改二(Lv139),63/63,大井改二(Lv133),46/49,北上改二(Lv133),49/49," +
+                "軽母ヌ級(elite),0/70,軽母ヌ級(elite),0/70,軽母ヌ級(elite),0/70,軽巡ホ級(flagship),0/53,駆逐ニ級(elite),0/45,駆逐ニ級(elite),0/45|" +
+                "2015-01-01 00:00:00,アルフォンシーノ方面,11,ボス,S,Ｔ字戦(有利),単縦陣,単縦陣,深海棲艦泊地艦隊,駆逐艦+アイテム,舞風+秋刀魚," +
+                "飛龍改(Lv79),65/65,翔鶴改二(Lv112),44/85,隼鷹改二(Lv139),54/62,足柄改二(Lv139),50/63,大井改二(Lv133),46/49,北上改二(Lv133),49/49," +
+                "空母ヲ級(flagship),0/96,空母ヲ級(elite),0/88,戦艦ル級(flagship),0/98,軽巡ヘ級(flagship),0/57,軽巡ト級(elite),0/55,駆逐ニ級(elite),0/45|"
+                == result);
+        }
+
+        [TestMethod]
         public void InspectMaterial()
         {
             var sniffer = new Sniffer();

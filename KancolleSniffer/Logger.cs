@@ -163,12 +163,23 @@ namespace KancolleSniffer
                 boss = "出撃";
             if (cell == (int)_map.api_bosscell_no || (int)_map.api_event_id == 5)
                 boss = _start ? "出撃&ボス" : "ボス";
-            var dropType = result.api_get_ship()
-                ? result.api_get_ship.api_ship_type
-                : result.api_get_useitem() ? "アイテム" : "";
-            var dropName = result.api_get_ship()
-                ? result.api_get_ship.api_ship_name
-                : result.api_get_useitem() ? _itemInfo.GetUseItemName((int)result.api_get_useitem.api_useitem_id) : "";
+            var dropType = result.api_get_ship() ? result.api_get_ship.api_ship_type : "";
+            if (result.api_get_useitem())
+            {
+                if (dropType == "")
+                    dropType = "アイテム";
+                else
+                    dropType += "+アイテム";
+            }
+            var dropName = result.api_get_ship() ? result.api_get_ship.api_ship_name : "";
+            if (result.api_get_useitem())
+            {
+                var itemName = _itemInfo.GetUseItemName((int)result.api_get_useitem.api_useitem_id);
+                if (dropName == "")
+                    dropName = itemName;
+                else
+                    dropName += "+" + itemName;
+            }
             _writer("海戦・ドロップ報告書", string.Join(",", _nowFunc().ToString(DateTimeFormat),
                 result.api_quest_name,
                 cell, boss,
