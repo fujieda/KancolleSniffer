@@ -302,6 +302,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 熟練度込みの制空値を正しく計算する
+        /// </summary>
+        [TestMethod]
+        public void FighterPowerWithBonus()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "fighterpower_001");
+            PAssert.That(()=> sniffer.GetFighterPower(0, true) == 155);
+            PAssert.That(() => sniffer.GetFighterPower(0, false) == 106);
+        }
+
+        /// <summary>
         /// 2-5をクリアしたときの特別戦果を反映する
         /// </summary>
         [TestMethod]
