@@ -442,14 +442,6 @@ namespace KancolleSniffer
                 select new ChargeStatus(flag.Fuel != 0 ? flag.Fuel : others.Fuel + 5,
                     flag.Bull != 0 ? flag.Bull : others.Bull + 5)).ToArray();
 
-        private readonly Dictionary<int, int> _alvBonus = new Dictionary<int, int>
-        {
-            {6, 25}, // 艦戦
-            {7, 3}, // 艦爆
-            {8, 3}, // 艦攻
-            {11, 9}  // 水爆
-        };
-
         public int GetFighterPower(int fleet, bool withBonus)
             => GetShipStatuses(fleet).Where(s => !s.Escaped).SelectMany(ship =>
                 ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
@@ -457,9 +449,7 @@ namespace KancolleSniffer
                     var item = _itemInfo.GetStatus(slot);
                     if (!item.Spec.CanAirCombat)
                         return 0;
-                    var bonus = 0;
-                    if (onslot != 0 && item.Alv == 7 && withBonus)
-                        _alvBonus.TryGetValue(item.Spec.Type, out bonus);
+                    var bonus = onslot != 0 && withBonus ? item.AlvBonus : 0;
                     return (int)Floor(item.Spec.AntiAir * Sqrt(onslot)) + bonus;
                 })).Sum();
 

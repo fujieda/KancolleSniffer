@@ -196,6 +196,27 @@ namespace KancolleSniffer
             Spec = new ItemSpec();
             Ship = new ShipStatus();
         }
+
+        public int AlvBonus
+        {
+            get
+            {
+                if (Alv != 7)
+                    return 0;
+                switch (Spec.Type)
+                {
+                    case 6: // 艦戦
+                        return 25;
+                    case 7: // 艦爆
+                        return 3;
+                    case 8: // 艦攻
+                        return 3;
+                    case 11: // 水爆
+                        return 9;
+                }
+                return 0;
+            }
+        }
     }
 
     public class ItemInfo
