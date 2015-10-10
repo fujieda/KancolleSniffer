@@ -95,37 +95,58 @@ namespace KancolleSniffer
 
             if (url.EndsWith("api_start2"))
             {
-                _shipInfo.InspectMaster(data);
-                _missionInfo.InspectMaster(data.api_mst_mission);
-                _itemInfo.InspectMaster(data);
-                _exMapInfo.ResetIfNeeded();
                 _start = true;
-                return Update.Start;
+                return ApiStart(data);
             }
             if (!_start)
                 return Update.None;
             if (url.EndsWith("api_port/port"))
-            {
-                _itemInfo.InspectBasic(data.api_basic);
-                _materialInfo.InspectMaterial(data.api_material, true);
-                _logger.InspectBasic(data.api_basic);
-                _logger.InspectMaterial(data.api_material);
-                _shipInfo.InspectShip(data);
-                _conditionTimer.CalcRegenTime();
-                _missionInfo.InspectDeck(data.api_deck_port);
-                _dockInfo.InspectNDock(data.api_ndock);
-                _akashiTimer.SetTimer(true);
-                _achievement.InspectBasic(data.api_basic);
-                if (data.api_parallel_quest_count()) // 昔のログにはないので
-                    _questInfo.QuestCount = (int)data.api_parallel_quest_count;
-                _battleInfo.CleanupResult();
-                _battleInfo.InBattle = false;
-                _battleInfo.HasDamagedShip = false;
-                _shipInfo.ClearEscapedShips();
-                _miscTextInfo.ClearIfNeeded();
-                SaveState();
-                return Update.All;
-            }
+                return ApiPort(data);
+            if (url.Contains("member"))
+                return ApiMember(url, json);
+            if (url.Contains("kousyou"))
+                return ApiKousyou(url, request, data);
+            if (url.Contains("battle"))
+                return ApiBattle(url, request, data);
+            return ApiOthers(url, request, data);
+        }
+
+        private Update ApiStart(dynamic data)
+        {
+            _shipInfo.InspectMaster(data);
+            _missionInfo.InspectMaster(data.api_mst_mission);
+            _itemInfo.InspectMaster(data);
+            _exMapInfo.ResetIfNeeded();
+            return Update.Start;
+        }
+
+        private Update ApiPort(dynamic data)
+        {
+            _itemInfo.InspectBasic(data.api_basic);
+            _materialInfo.InspectMaterial(data.api_material, true);
+            _logger.InspectBasic(data.api_basic);
+            _logger.InspectMaterial(data.api_material);
+            _shipInfo.InspectShip(data);
+            _conditionTimer.CalcRegenTime();
+            _missionInfo.InspectDeck(data.api_deck_port);
+            _dockInfo.InspectNDock(data.api_ndock);
+            _akashiTimer.SetTimer(true);
+            _achievement.InspectBasic(data.api_basic);
+            if (data.api_parallel_quest_count()) // 昔のログにはないので
+                _questInfo.QuestCount = (int)data.api_parallel_quest_count;
+            _battleInfo.CleanupResult();
+            _battleInfo.InBattle = false;
+            _battleInfo.HasDamagedShip = false;
+            _shipInfo.ClearEscapedShips();
+            _miscTextInfo.ClearIfNeeded();
+            SaveState();
+            return Update.All;
+        }
+
+        private Update ApiMember(string url, dynamic json)
+        {
+            var data = json.api_data() ? json.api_data : new object();
+
             if (url.EndsWith("api_get_member/basic"))
             {
                 _itemInfo.InspectBasic(data);
@@ -149,12 +170,6 @@ namespace KancolleSniffer
                 _conditionTimer.CheckCond();
                 _akashiTimer.SetTimer();
                 return Update.NDock | Update.Timer | Update.Ship;
-            }
-            if (url.EndsWith("api_req_hensei/change"))
-            {
-                _shipInfo.InspectChange(request);
-                _akashiTimer.SetTimer();
-                return Update.Ship;
             }
             if (url.EndsWith("api_get_member/questlist"))
             {
@@ -195,12 +210,22 @@ namespace KancolleSniffer
                 _materialInfo.InspectMaterial(data);
                 return Update.Item;
             }
-            if (url.EndsWith("api_req_hokyu/charge"))
+            if (url.EndsWith("api_get_member/mapinfo"))
             {
-                _shipInfo.InspectCharge(data);
-                _materialInfo.InspectCharge(data);
-                return Update.Item | Update.Ship;
+                _exMapInfo.InspectMapInfo(data);
+                _miscTextInfo.InspectMapInfo(data);
+                return Update.Item;
             }
+            if (url.EndsWith("api_req_member/get_practice_enemyinfo"))
+            {
+                _miscTextInfo.InspectPracticeEnemyInfo(data);
+                return Update.Item;
+            }
+            return Update.None;
+        }
+
+        private Update ApiKousyou(string url, string request, dynamic data)
+        {
             if (url.EndsWith("api_req_kousyou/createitem"))
             {
                 _itemInfo.InspectCreateItem(data);
@@ -248,26 +273,11 @@ namespace KancolleSniffer
                 _dockInfo.InspectCreateShipSpeedChange(request);
                 return Update.Timer;
             }
-            if (url.EndsWith("api_req_kaisou/powerup"))
-            {
-                _shipInfo.InspectPowerup(request, data);
-                _conditionTimer.CheckCond();
-                _akashiTimer.SetTimer();
-                return Update.Item | Update.Ship;
-            }
-            if (url.EndsWith("api_req_nyukyo/start"))
-            {
-                _dockInfo.InspectNyukyo(request);
-                _conditionTimer.CheckCond();
-                _akashiTimer.SetTimer();
-                return Update.Item | Update.Ship;
-            }
-            if (url.EndsWith("api_req_nyukyo/speedchange"))
-            {
-                _dockInfo.InspectSpeedChange(request);
-                _conditionTimer.CheckCond();
-                return Update.NDock | Update.Timer | Update.Ship;
-            }
+            return Update.None;
+        }
+
+        private Update ApiBattle(string url, string request, dynamic data)
+        {
             if (IsNormalBattleAPI(url))
             {
                 _battleInfo.InspectBattle(data);
@@ -287,14 +297,14 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_sortie/battleresult"))
             {
-                _battleInfo.InspectBattleResult(json);
+                _battleInfo.InspectBattleResult(data);
                 _exMapInfo.InspectBattleResult(data);
                 _logger.InspectBattleResult(data);
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_practice/battle_result"))
             {
-                _battleInfo.InspectPracticeResult(json);
+                _battleInfo.InspectPracticeResult(data);
                 return Update.Ship;
             }
             if (IsCombinedBattleAPI(url))
@@ -313,6 +323,60 @@ namespace KancolleSniffer
             {
                 _battleInfo.CauseCombinedBattleEscape();
                 return Update.Ship;
+            }
+            return Update.None;
+        }
+
+        private bool IsNormalBattleAPI(string url)
+        {
+            return url.EndsWith("api_req_sortie/battle") ||
+                   url.EndsWith("api_req_sortie/airbattle") ||
+                   url.EndsWith("api_req_battle_midnight/battle") ||
+                   url.EndsWith("api_req_battle_midnight/sp_midnight");
+        }
+
+        private bool IsCombinedBattleAPI(string url)
+        {
+            return url.EndsWith("api_req_combined_battle/battle") ||
+                   url.EndsWith("api_req_combined_battle/airbattle") ||
+                   url.EndsWith("api_req_combined_battle/battle_water") ||
+                   url.EndsWith("api_req_combined_battle/midnight_battle") ||
+                   url.EndsWith("api_req_combined_battle/sp_midnight");
+        }
+
+        private Update ApiOthers(string url, string request, dynamic data)
+        {
+            if (url.EndsWith("api_req_hensei/change"))
+            {
+                _shipInfo.InspectChange(request);
+                _akashiTimer.SetTimer();
+                return Update.Ship;
+            }
+            if (url.EndsWith("api_req_hokyu/charge"))
+            {
+                _shipInfo.InspectCharge(data);
+                _materialInfo.InspectCharge(data);
+                return Update.Item | Update.Ship;
+            }
+            if (url.EndsWith("api_req_kaisou/powerup"))
+            {
+                _shipInfo.InspectPowerup(request, data);
+                _conditionTimer.CheckCond();
+                _akashiTimer.SetTimer();
+                return Update.Item | Update.Ship;
+            }
+            if (url.EndsWith("api_req_nyukyo/start"))
+            {
+                _dockInfo.InspectNyukyo(request);
+                _conditionTimer.CheckCond();
+                _akashiTimer.SetTimer();
+                return Update.Item | Update.Ship;
+            }
+            if (url.EndsWith("api_req_nyukyo/speedchange"))
+            {
+                _dockInfo.InspectSpeedChange(request);
+                _conditionTimer.CheckCond();
+                return Update.NDock | Update.Timer | Update.Ship;
             }
             if (url.EndsWith("api_req_map/start"))
             {
@@ -335,35 +399,7 @@ namespace KancolleSniffer
                 _logger.InspectMissionResult(data);
                 return Update.Item;
             }
-            if (url.EndsWith("api_get_member/mapinfo"))
-            {
-                _exMapInfo.InspectMapInfo(data);
-                _miscTextInfo.InspectMapInfo(data);
-                return Update.Item;
-            }
-            if (url.EndsWith("api_req_member/get_practice_enemyinfo"))
-            {
-                _miscTextInfo.InspectPracticeEnemyInfo(data);
-                return Update.Item;
-            }
             return Update.None;
-        }
-
-        private bool IsNormalBattleAPI(string url)
-        {
-            return url.EndsWith("api_req_sortie/battle") ||
-                   url.EndsWith("api_req_sortie/airbattle") ||
-                   url.EndsWith("api_req_battle_midnight/battle") ||
-                   url.EndsWith("api_req_battle_midnight/sp_midnight");
-        }
-
-        private bool IsCombinedBattleAPI(string url)
-        {
-            return url.EndsWith("api_req_combined_battle/battle") ||
-                   url.EndsWith("api_req_combined_battle/airbattle") ||
-                   url.EndsWith("api_req_combined_battle/battle_water") ||
-                   url.EndsWith("api_req_combined_battle/midnight_battle") ||
-                   url.EndsWith("api_req_combined_battle/sp_midnight");
         }
 
         public NameAndTimer[] NDock => _dockInfo.NDock;
