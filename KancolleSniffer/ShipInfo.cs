@@ -40,8 +40,8 @@ namespace KancolleSniffer
         public int Fuel { get; set; }
         public int Bull { get; set; }
         public int[] OnSlot { get; set; }
-        public int[] Slot { get; set; }
-        public int SlotEx { get; set; }
+        public ItemStatus[] Slot { get; set; }
+        public ItemStatus SlotEx { get; set; }
         public int LoS { get; set; }
         public int Firepower { get; set; }
         public int AntiSubmarine { get; set; }
@@ -55,7 +55,8 @@ namespace KancolleSniffer
             Id = -1;
             Spec = new ShipSpec();
             OnSlot = new int[0];
-            Slot = new int[0];
+            Slot = new ItemStatus[0];
+            SlotEx = new ItemStatus();
         }
 
         public enum Damage
@@ -101,8 +102,8 @@ namespace KancolleSniffer
                     return 0;
                 if (!Spec.IsAircraftCarrier)
                     return Firepower + 5;
-                var specs = (from id in Slot
-                    let spec = _itemInfo.GetStatus(id).Spec
+                var specs = (from item in Slot
+                    let spec = _itemInfo.GetStatus(item.Id).Spec
                     where spec.IsAircraft
                     select new {torpedo = spec.Torpedo, bomber = spec.Bomber}).ToArray();
                 var torpedo = specs.Sum(s => s.torpedo);
@@ -126,7 +127,7 @@ namespace KancolleSniffer
                 var aircraft = 0;
                 var all = 0;
                 var vanilla = AntiSubmarine;
-                foreach (var spec in Slot.Select(id => _itemInfo.GetStatus(id).Spec))
+                foreach (var spec in Slot.Select(item => _itemInfo.GetStatus(item.Id).Spec))
                 {
                     vanilla -= spec.AntiSubmarine;
                     if (spec.IsReconSeaplane) // 水偵は除外
@@ -279,8 +280,8 @@ namespace KancolleSniffer
                     Fuel = (int)entry.api_fuel,
                     Bull = (int)entry.api_bull,
                     OnSlot = (int[])entry.api_onslot,
-                    Slot = (int[])entry.api_slot,
-                    SlotEx = entry.api_slot_ex() ? (int)entry.api_slot_ex : 0,
+                    Slot = ((int[])entry.api_slot).Select(id => new ItemStatus(id)).ToArray(),
+                    SlotEx = entry.api_slot_ex() ? new ItemStatus((int)entry.api_slot_ex) : new ItemStatus(),
                     LoS = (int)entry.api_sakuteki[0],
                     Firepower = (int)entry.api_karyoku[0],
                     AntiSubmarine = (int)entry.api_taisen[0]
@@ -403,17 +404,19 @@ namespace KancolleSniffer
 
         public ShipStatus[] GetShipStatuses(int fleet)
         {
-            return _decks[fleet].Where(id => id != -1).Select(id =>
-            {
-                var s = _shipInfo[id];
-                s.Escaped = _escapedShips.Contains(id);
-                return s;
-            }).ToArray();
+            return _decks[fleet].Where(id => id != -1).Select(GetStatus).ToArray();
         }
 
         public int[] GetDeck(int fleet) => _decks[fleet];
 
-        public ShipStatus this[int idx] => _shipInfo[idx];
+        public ShipStatus GetStatus(int  id)
+        {
+            var s = _shipInfo[id];
+            s.Slot = (from item in s.Slot select _itemInfo.GetStatus(item.Id)).ToArray();
+            s.SlotEx = _itemInfo.GetStatus(s.SlotEx.Id);
+            s.Escaped = _escapedShips.Contains(id);
+            return s;
+        }
 
         public ShipSpec GetSpec(int id) => _shipMaster[id];
 
@@ -446,7 +449,7 @@ namespace KancolleSniffer
             => GetShipStatuses(fleet).Where(s => !s.Escaped).SelectMany(ship =>
                 ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
                 {
-                    var item = _itemInfo.GetStatus(slot);
+                    var item = _itemInfo.GetStatus(slot.Id);
                     if (!item.Spec.CanAirCombat)
                         return 0;
                     var bonus = onslot != 0 && withBonus ? item.AlvBonus : 0;
@@ -465,7 +468,7 @@ namespace KancolleSniffer
             foreach (var s in _decks[fleet].Select(id => _shipInfo[id]))
             {
                 var items = 0;
-                foreach (var spec in s.Slot.Select(id => _itemInfo.GetStatus(id).Spec))
+                foreach (var spec in s.Slot.Select(item => _itemInfo.GetStatus(item.Id).Spec))
                 {
                     items += spec.LoS;
                     result += spec.LoS * spec.LoSScaleFactor();

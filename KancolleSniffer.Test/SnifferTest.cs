@@ -236,11 +236,13 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "damecon_001");
             AssertEqualBattleResult(sniffer, new[] {30, 1, 3}, "戦闘前");
-            PAssert.That(() => sniffer.GetShipStatuses(0)[1].Slot.SequenceEqual(new[] {2, 4593, -1, -1, -1}), "ダメコンを二つ装備");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[1].Slot.Select(item => item.Id).
+                SequenceEqual(new[] {2, 4593, -1, -1, -1}), "ダメコンを二つ装備");
             PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.S, "判定はS勝利");
             SniffLogFile(sniffer, "damecon_002");
             AssertEqualBattleResult(sniffer, new[] {30, 1, 3}, "戦闘後");
-            PAssert.That(() => sniffer.GetShipStatuses(0)[1].Slot.SequenceEqual(new[] {-1, 4593, -1, -1, -1}), "ダメコンを一つ消費");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[1].Slot.Select(item => item.Id).
+                SequenceEqual(new[] {-1, 4593, -1, -1, -1}), "ダメコンを一つ消費");
         }
 
         /// <summary>
@@ -251,9 +253,9 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "damecon_003");
-            PAssert.That(() => sniffer.GetShipStatuses(0)[5].SlotEx == 10306, "戦闘前");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[5].SlotEx.Id == 10306, "戦闘前");
             SniffLogFile(sniffer, "damecon_004");
-            PAssert.That(() => sniffer.GetShipStatuses(0)[5].SlotEx == -1, "戦闘後");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[5].SlotEx.Id == -1, "戦闘後");
         }
 
         /// <summary>

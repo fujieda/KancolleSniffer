@@ -58,7 +58,7 @@ namespace KancolleSniffer
             var values = HttpUtility.ParseQueryString(request);
             var id = int.Parse(values["api_ship_id"]);
             int fuel, steal;
-            _shipInfo[id].CalcMaterialsToRepair(out fuel, out steal);
+            _shipInfo.GetStatus(id).CalcMaterialsToRepair(out fuel, out steal);
             _materialInfo.SubMaterial(Material.Fuel, fuel);
             _materialInfo.SubMaterial(Material.Steal, steal);
             if (int.Parse(values["api_highspeed"]) == 0)
@@ -79,7 +79,7 @@ namespace KancolleSniffer
 
         public NameAndTimer[] NDock
             => _ndoc.Zip(_ndocTimers,
-                    (id, timer) => new NameAndTimer {Name = id == 0 ? "" : _shipInfo[id].Name, Timer = timer}).ToArray();
+                    (id, timer) => new NameAndTimer {Name = id == 0 ? "" : _shipInfo.GetStatus(id).Name, Timer = timer}).ToArray();
 
         public bool InNDock(int id) => _ndoc.Any(n => n == id); // 空のドックのidは0
 

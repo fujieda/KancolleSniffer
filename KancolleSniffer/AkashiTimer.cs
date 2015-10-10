@@ -24,7 +24,6 @@ namespace KancolleSniffer
     public class AkashiTimer
     {
         private readonly ShipInfo _shipInfo;
-        private readonly ItemInfo _itemInfo;
         private readonly DockInfo _dockInfo;
         private readonly RepairStatus[] _repairStatuses = new RepairStatus[ShipInfo.FleetCount];
         private DateTime _start;
@@ -141,10 +140,9 @@ namespace KancolleSniffer
             public string Completed { get; set; }
         }
 
-        public AkashiTimer(ShipInfo ship, ItemInfo item, DockInfo dock)
+        public AkashiTimer(ShipInfo ship, DockInfo dock)
         {
             _shipInfo = ship;
-            _itemInfo = item;
             _dockInfo = dock;
             for (var i = 0; i < _repairStatuses.Length; i++)
                 _repairStatuses[i] = new RepairStatus();
@@ -171,8 +169,8 @@ namespace KancolleSniffer
         {
             var deck = _shipInfo.GetDeck(fleet);
             var repair = _repairStatuses[fleet];
-            var fs = deck[0];
-            if (!_shipInfo[fs].Name.StartsWith("明石") || _dockInfo.InNDock(fs) || _shipInfo.InMission(fleet))
+            var fs = _shipInfo.GetStatus(deck[0]);
+            if (!fs.Name.StartsWith("明石") || _dockInfo.InNDock(fs.Id) || _shipInfo.InMission(fleet))
             {
                 repair.Invalidate();
                 return false;
@@ -183,7 +181,7 @@ namespace KancolleSniffer
                 repair.Invalidate();
             }
             repair.Deck = deck.ToArray();
-            var cap = _shipInfo[fs].Slot.Count(id => _itemInfo.GetName(id) == "艦艇修理施設") + 2;
+            var cap = fs.Slot.Count(item => item.Spec.Name == "艦艇修理施設") + 2;
             var target = deck.Take(cap).Select(id =>
             {
                 /*
@@ -193,7 +191,7 @@ namespace KancolleSniffer
                  * - 中破以上の艦娘
                  *   出撃中の損傷で小破以下から中破以上になったのを回復と誤認しないためにHPを0に
                 */
-                var s = _shipInfo[id];
+                var s = _shipInfo.GetStatus(id);
                 var full = new ShipStatus {NowHp = s.MaxHp, MaxHp = s.MaxHp};
                 var zero = new ShipStatus();
                 return _dockInfo.InNDock(id)

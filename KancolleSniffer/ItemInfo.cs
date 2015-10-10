@@ -186,15 +186,20 @@ namespace KancolleSniffer
 
     public class ItemStatus
     {
-        public ItemSpec Spec { get; set; }
+        public int Id { get; set; }
+        public ItemSpec Spec { get; set; } = new ItemSpec();
         public int Level { get; set; }
         public int Alv { get; set; }
         public ShipStatus Ship { get; set; }
 
         public ItemStatus()
         {
-            Spec = new ItemSpec();
-            Ship = new ShipStatus();
+            Id = -1;
+        }
+
+        public ItemStatus(int id)
+        {
+            Id = id == 0 ? -1 : id;
         }
 
         public int AlvBonus
@@ -314,7 +319,8 @@ namespace KancolleSniffer
             }
             foreach (var entry in json)
             {
-                _itemInfo[(int)entry.api_id] = new ItemStatus
+                var id = (int)entry.api_id;
+                _itemInfo[id] = new ItemStatus(id)
                 {
                     Spec = _itemSpecs[(int)entry.api_slotitem_id],
                     Level = entry.api_level() ? (int)entry.api_level : 0,
@@ -354,7 +360,12 @@ namespace KancolleSniffer
             DeleteItems(((int[])json.api_use_slot_id));
         }
 
-        public void DeleteItems(int[] ids)
+        public void DeleteItems(ItemStatus[] items)
+        {
+            DeleteItems(items.Select(item => item.Id));
+        }
+
+        private void DeleteItems(IEnumerable<int> ids)
         {
             foreach (var id in ids.Where(id => id != -1))
             {
@@ -387,9 +398,8 @@ namespace KancolleSniffer
             foreach (var s in shipList)
             {
                 foreach (var id in s.Slot)
-                    _itemInfo[id].Ship = s;
-                if (s.SlotEx != 0)
-                    _itemInfo[s.SlotEx].Ship = s;
+                    _itemInfo[id.Id].Ship = s;
+                _itemInfo[s.SlotEx.Id].Ship = s;
             }
             return (from e in _itemInfo where e.Key != -1 select e.Value).ToArray();
         }

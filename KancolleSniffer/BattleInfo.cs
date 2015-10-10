@@ -113,8 +113,7 @@ namespace KancolleSniffer
             _friend = Record.Setup(
                 nowhps, (int[])json.api_maxhps,
                 fstats.Select(s => s.Slot).ToArray(),
-                fstats.Select(s => s.SlotEx).ToArray(),
-                _itemInfo);
+                fstats.Select(s => s.SlotEx).ToArray());
             _enemyHp = nowhps.Skip(7).TakeWhile(hp => hp != -1).ToArray();
             _enemyStartHp = (int[])_enemyHp.Clone();
             EnemyResultStatus =
@@ -128,8 +127,7 @@ namespace KancolleSniffer
                     (int[])json.api_nowhps_combined,
                     (int[])json.api_maxhps_combined,
                     gstats.Select(s => s.Slot).ToArray(),
-                    gstats.Select(s => s.SlotEx).ToArray(),
-                    _itemInfo);
+                    gstats.Select(s => s.SlotEx).ToArray());
             }
             else
             {
@@ -362,15 +360,14 @@ namespace KancolleSniffer
 
         private class Record
         {
-            private ItemInfo _itemInfo;
             private int _maxHp;
-            private int[] _slot;
-            private int _slotEx;
+            private ItemStatus[] _slot;
+            private ItemStatus _slotEx;
             public int NowHp;
             public int StartHp;
             public int Damage;
 
-            public static Record[] Setup(int[] rawHp, int[] rawMax, int[][] slots, int[] slotEx, ItemInfo itemInfo)
+            public static Record[] Setup(int[] rawHp, int[] rawMax, ItemStatus[][] slots, ItemStatus[] slotEx)
             {
                 var hp = rawHp.Skip(1).Take(6).TakeWhile(h => h != -1).ToArray();
                 var max = rawMax.Skip(1).Take(6).TakeWhile(h => h != -1).ToArray();
@@ -384,7 +381,6 @@ namespace KancolleSniffer
                         _maxHp = max[i],
                         _slot = slots[i].ToArray(),
                         _slotEx = slotEx[i],
-                        _itemInfo = itemInfo
                     };
                 }
                 return r;
@@ -400,31 +396,30 @@ namespace KancolleSniffer
                 }
                 Damage += NowHp;
                 NowHp = 0;
-                var idex = _slotEx == 0 ? -1 : _itemInfo.GetItemId(_slotEx);
-                if (idex == 42) // ダメコン
+                if (_slotEx.Spec.Id == 42) // ダメコン
                 {
-                    _slotEx = -1;
+                    _slotEx = new ItemStatus();
                     NowHp = (int)(_maxHp * 0.2);
                     return;
                 }
-                if (idex == 43) // 女神
+                if (_slotEx.Spec.Id == 43) // 女神
                 {
-                    _slotEx = -1;
+                    _slotEx = new ItemStatus();
                     NowHp = _maxHp;
                     return;
                 }
                 for (var j = 0; j < _slot.Length; j++)
                 {
-                    var id = _itemInfo.GetItemId(_slot[j]);
+                    var id = _slot[j].Spec.Id;
                     if (id == 42) // ダメコン
                     {
-                        _slot[j] = -1;
+                        _slot[j] = new ItemStatus();
                         NowHp = (int)(_maxHp * 0.2);
                         break;
                     }
                     if (id == 43) // 女神
                     {
-                        _slot[j] = -1;
+                        _slot[j] = new ItemStatus();
                         NowHp = _maxHp;
                         break;
                     }

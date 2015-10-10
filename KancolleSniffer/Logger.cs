@@ -146,7 +146,7 @@ namespace KancolleSniffer
             {
                 if (id == -1)
                     return ",";
-                var s = _shipInfo[id];
+                var s = _shipInfo.GetStatus(id);
                 return $"{s.Name}(Lv{s.Level}),{s.NowHp}/{s.MaxHp}";
             }));
             var estatus = _battleInfo.EnemyResultStatus;
