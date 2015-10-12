@@ -175,7 +175,7 @@ namespace KancolleSniffer
 
         private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
-            if (e.Mode != PowerModes.Resume)
+            if (e.Mode != PowerModes.Resume || !_config.Proxy.Auto)
                 return;
             Task.Run(() =>
             {
