@@ -131,6 +131,7 @@ namespace KancolleSniffer
                     case 16: // 水母
                     case 17: // 揚陸艦
                     case 21: // 練巡
+                    case 22: // 補給艦
                         return true;
                 }
                 return false;
