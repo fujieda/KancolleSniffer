@@ -56,6 +56,8 @@ namespace KancolleSniffer
         public void UpdateList()
         {
             panelItemHeader.Visible = InItemList || InEquip || InMiscText;
+            panelGroupHeader.Visible = InGroupConfig;
+            panelRepairHeader.Visible = InRepairList;
             // SwipeScrollifyが誤作動するのでEnabledも切り替える
             panelShipList.Visible = panelShipList.Enabled = InShipStatus || InGroupConfig || InRepairList;
             itemTreeView.Visible = itemTreeView.Enabled = InItemList;
@@ -290,8 +292,6 @@ namespace KancolleSniffer
 
         private void SetShipLabels()
         {
-            panelGroupHeader.Visible = InGroupConfig;
-            panelRepairHeader.Visible = InRepairList;
             panelShipList.SuspendLayout();
             for (var i = 0; i < _shipList.Length; i++)
             {
