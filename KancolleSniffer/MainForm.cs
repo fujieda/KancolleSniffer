@@ -632,7 +632,7 @@ namespace KancolleSniffer
                 entry.Timer.Update();
                 SetTimerColor(entry.label, entry.Timer);
                 var rest = entry.Timer.Rest;
-                entry.label.Text = rest.Days == 0 ? rest.ToString(@"hh\:mm\:ss") : rest.ToString(@"d\.hh\:mm");
+                entry.label.Text = rest.Days == 0 ? rest.ToString(@"hh\:mm\:ss") : rest.ToString(@"d\dhh\:mm");
                 if (!entry.Timer.NeedRing)
                     continue;
                 _noticeQueue.Enqueue("遠征が終わりました", entry.Name, _config.MissionSoundFile);
