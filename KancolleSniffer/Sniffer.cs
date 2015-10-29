@@ -95,7 +95,6 @@ namespace KancolleSniffer
 
             if (url.EndsWith("api_start2"))
             {
-                _start = true;
                 return ApiStart(data);
             }
             if (!_start)
@@ -117,6 +116,7 @@ namespace KancolleSniffer
             _missionInfo.InspectMaster(data.api_mst_mission);
             _itemInfo.InspectMaster(data);
             _exMapInfo.ResetIfNeeded();
+            _start = true;
             return Update.Start;
         }
 
