@@ -95,7 +95,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "battle_002");
             AssertEqualBattleResult(sniffer, new[] {28, 1, 13});
-            PAssert.That(()=> sniffer.Battle.HasDamagedShip);
+            PAssert.That(() => sniffer.Battle.HasDamagedShip);
         }
 
         private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected, string msg = null)
@@ -120,7 +120,8 @@ namespace KancolleSniffer.Test
             PAssert.That(() => sniffer.Battle.HasDamagedShip);
         }
 
-        private void AssertEauqlCombinedResult(Sniffer sniffer, IEnumerable<int> expected0, IEnumerable<int> expected1, string msg = null)
+        private void AssertEauqlCombinedResult(Sniffer sniffer, IEnumerable<int> expected0, IEnumerable<int> expected1,
+            string msg = null)
         {
             var result0 = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
             var result1 = sniffer.GetShipStatuses(1).Select(s => s.NowHp);
@@ -162,17 +163,21 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_escape_001");
-            AssertEauqlCombinedResult(sniffer, new[]{37, 105, 106, 90, 66, 10}, new[]{41, 41, 37, 44, 43, 43}, "連合艦隊で2戦して大破が出るまで");
+            AssertEauqlCombinedResult(sniffer, new[] {37, 105, 106, 90, 66, 10}, new[] {41, 41, 37, 44, 43, 43},
+                "連合艦隊で2戦して大破が出るまで");
             PAssert.That(() => sniffer.Battle.HasDamagedShip);
             SniffLogFile(sniffer, "combined_escape_002");
-            PAssert.That(() => sniffer.GetShipStatuses(0)[5].Escaped && sniffer.GetShipStatuses(1)[1].Escaped, "続けて護衛退避を実行");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[5].Escaped && sniffer.GetShipStatuses(1)[1].Escaped,
+                "続けて護衛退避を実行");
             PAssert.That(() => !sniffer.Battle.HasDamagedShip);
             SniffLogFile(sniffer, "combined_escape_003");
-            AssertEauqlCombinedResult(sniffer, new[] {37, 105, 106, 90, 1, 10}, new[] {41, 41, 32, 44, 43, 43}, "もう一戦して大破が出るまで");
+            AssertEauqlCombinedResult(sniffer, new[] {37, 105, 106, 90, 1, 10}, new[] {41, 41, 32, 44, 43, 43},
+                "もう一戦して大破が出るまで");
             PAssert.That(() => sniffer.Battle.HasDamagedShip);
             SniffLogFile(sniffer, "combined_escape_004");
             PAssert.That(() => sniffer.GetShipStatuses(0)[5].Escaped && sniffer.GetShipStatuses(1)[1].Escaped &&
-                sniffer.GetShipStatuses(0)[4].Escaped && sniffer.GetShipStatuses(1)[2].Escaped, "続けて護衛退避を実行");
+                               sniffer.GetShipStatuses(0)[4].Escaped && sniffer.GetShipStatuses(1)[2].Escaped,
+                "続けて護衛退避を実行");
             PAssert.That(() => !sniffer.Battle.HasDamagedShip);
         }
 
@@ -209,11 +214,11 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "airbattle_001");
-            AssertEqualBattleResult(sniffer, new[]{37, 36, 31, 37, 17, 63}, "夜戦あり");
+            AssertEqualBattleResult(sniffer, new[] {37, 36, 31, 37, 17, 63}, "夜戦あり");
 
             sniffer = new Sniffer();
             SniffLogFile(sniffer, "airbattle_002");
-            AssertEqualBattleResult(sniffer, new[] { 66, 36, 16, 27, 35, 38 }, "昼戦のみ");
+            AssertEqualBattleResult(sniffer, new[] {66, 36, 16, 27, 35, 38}, "昼戦のみ");
         }
 
         /// <summary>
@@ -224,7 +229,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "support_001");
-            PAssert.That(()=> sniffer.Battle.ResultRank == BattleResultRank.A);
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.A);
         }
 
         /// <summary>
@@ -311,7 +316,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "fighterpower_001");
-            PAssert.That(()=> sniffer.GetFighterPower(0, true) == 155);
+            PAssert.That(() => sniffer.GetFighterPower(0, true) == 155);
             PAssert.That(() => sniffer.GetFighterPower(0, false) == 106);
         }
 
@@ -344,7 +349,7 @@ namespace KancolleSniffer.Test
             var sniffer1 = new Sniffer();
             SniffLogFile(sniffer1, "eo_002");
             // 5-5以外クリアしているので合計で400
-            PAssert.That(()=> sniffer1.ExMap.Achievement == 400, "ほかのマップの情報あり");
+            PAssert.That(() => sniffer1.ExMap.Achievement == 400, "ほかのマップの情報あり");
         }
 
         /// <summary>

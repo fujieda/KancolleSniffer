@@ -206,10 +206,10 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             var result = "";
-            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, ()=> new DateTime(2015, 1,1));
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Battle);
             SnifferTest.SniffLogFile(sniffer, "dropitem_002");
-            PAssert.That(()=>
+            PAssert.That(() =>
                 "2015-01-01 00:00:00,アルフォンシーノ方面,1,出撃,S,同航戦,単縦陣,単縦陣,敵前衛艦隊,,," +
                 "飛龍改(Lv79),65/65,翔鶴改二(Lv112),85/85,隼鷹改二(Lv139),62/62,足柄改二(Lv139),63/63,大井改二(Lv133),49/49,北上改二(Lv133),49/49," +
                 "軽巡ヘ級(flagship),0/57,重巡リ級(elite),0/60,軽巡ト級(elite),0/55,雷巡チ級(elite),0/50,駆逐ロ級(elite),0/35,駆逐ロ級(elite),0/35|" +
