@@ -92,8 +92,8 @@ namespace KancolleSniffer
                 return;
             if (response == null || !response.StartsWith("svdata="))
             {
-                WriteDebugLog(url, request, response ?? "(null)");
-                ShowServerError();
+                WriteDebugLog(url, request, response);
+                ShowServerError(url, request, response);
                 return;
             }
             response = response.Remove(0, "svdata=".Length);
@@ -101,17 +101,24 @@ namespace KancolleSniffer
             {
                 var json = DynamicJson.Parse(response);
                 WriteDebugLog(url, request, json.ToString());
-                UpdateInfo(_sniffer.Sniff(url, request, json));
+                var update = _sniffer.Sniff(url, request, json);
+                if (update == Sniffer.Update.Error)
+                {
+                    ShowServerError(url, request, json);
+                    return;
+                }
+                UpdateInfo(update);
             }
             catch (XmlException)
             {
                 WriteDebugLog(url, request, response);
-                ShowServerError();
+                ShowServerError(url, request, response);
             }
-            catch (RuntimeBinderException)
+            catch (RuntimeBinderException e)
             {
-                labelLogin.Text = "現在の艦これに対応していません。\n新しいバージョンを利用してください。";
-                labelLogin.Visible = true;
+                if (_errorDialog.ShowDialog(this,
+                    "このバージョンは現在の艦これに対応していません。\n新しいバージョンを利用してください。", e.ToString()) == DialogResult.Abort)
+                    Application.Exit();
             }
             catch (LogIOException e)
             {
@@ -124,17 +131,24 @@ namespace KancolleSniffer
         {
             if (_debugLogFile != null)
             {
-                File.AppendAllText(_debugLogFile, $"url: {url}\nrequest: {request}\nresponse: {response}\n");
+                File.AppendAllText(_debugLogFile, SessionString(url, request, response));
             }
         }
 
+        private void ShowServerError(string url, string request, string response)
+        {
+            if (_errorDialog.Visible)
+                return;
+            if (_errorDialog.ShowDialog(this, "サーバーからの応答が異常です。",
+                SessionString(url, request, response)) == DialogResult.Abort)
+                Application.Exit();
+        }
+
+        private string SessionString(string url, string request, string response)
+            => $"url: {url}\nrequest: {request}\nresponse: {(response ?? "(null)")}\n";
+
         private void UpdateInfo(Sniffer.Update update)
         {
-            if (update == Sniffer.Update.Error)
-            {
-                ShowServerError();
-                return;
-            }
             if (update == Sniffer.Update.Start)
             {
                 labelLogin.Visible = false;
@@ -157,12 +171,6 @@ namespace KancolleSniffer
                 UpdateShipInfo();
             if ((update & Sniffer.Update.Battle) != 0)
                 UpdateBattleInfo();
-        }
-
-        private void ShowServerError()
-        {
-            labelLogin.Text = "サーバーからの応答が異常です。";
-            labelLogin.Visible = true;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
