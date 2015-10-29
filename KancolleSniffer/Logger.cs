@@ -425,10 +425,27 @@ namespace KancolleSniffer
                     _file.AppendAllText(f, s + "\r\n");
                     break;
                 }
-                catch (IOException)
+                catch (IOException e)
                 {
+                    if (f == tmp)
+                        throw new LogIOException("報告書の出力中にエラーが発生しました。", e);
                 }
             }
+        }
+    }
+
+    public class LogIOException : Exception
+    {
+        public LogIOException()
+        {
+        }
+
+        public LogIOException(string message) : base(message)
+        {
+        }
+
+        public LogIOException(string message, Exception inner) : base(message, inner)
+        {
         }
     }
 }

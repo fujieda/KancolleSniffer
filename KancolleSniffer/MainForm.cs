@@ -54,6 +54,7 @@ namespace KancolleSniffer
         private LogServer _logServer;
         private int _prevProxyPort;
         private readonly SystemProxy _systemProxy = new SystemProxy();
+        private readonly ErrorDialog _errorDialog = new ErrorDialog();
 
         public MainForm()
         {
@@ -111,6 +112,11 @@ namespace KancolleSniffer
             {
                 labelLogin.Text = "現在の艦これに対応していません。\n新しいバージョンを利用してください。";
                 labelLogin.Visible = true;
+            }
+            catch (LogIOException e)
+            {
+                if (_errorDialog.ShowDialog(this, e.Message, e.InnerException.ToString()) == DialogResult.Abort)
+                    Application.Exit();
             }
         }
 
