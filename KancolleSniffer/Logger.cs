@@ -151,13 +151,12 @@ namespace KancolleSniffer
             }));
             var estatus = _battleInfo.EnemyResultStatus;
             var edeck = ((int[])_battle.api_ship_ke).Skip(1).ToArray();
-            var eships = new List<string>();
-            for (var i = 0; i < edeck.Length; i++)
+            var eships = edeck.Select((id, i) =>
             {
-                eships.Add(edeck[i] == -1
-                    ? ","
-                    : $"{estatus[i].Name},{estatus[i].NowHp}/{estatus[i].MaxHp}");
-            }
+                if (id == -1) return ",";
+                var s = estatus[i];
+                return $"{s.Name},{s.NowHp}/{s.MaxHp}";
+            });
             var cell = (int)_map.api_no;
             var boss = "";
             if (_start)
