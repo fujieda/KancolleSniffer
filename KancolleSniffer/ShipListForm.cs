@@ -441,7 +441,7 @@ namespace KancolleSniffer
             {
                 if (_groupSettings[i] == null)
                     break;
-                if (all.Count() > 0)
+                if (all.Length > 0)
                     _groupSettings[i].IntersectWith(all);
                 config.ShipGroup[i] = _groupSettings[i].ToList();
             }

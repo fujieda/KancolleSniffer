@@ -425,7 +425,7 @@ namespace KancolleSniffer
                     labelPlayLog.Visible = false;
                     return;
                 }
-                lines.Add(_playLog.Current.Substring(s.Count()));
+                lines.Add(_playLog.Current.Substring(s.Length));
             }
             labelPlayLog.Visible = !labelPlayLog.Visible;
             var json = DynamicJson.Parse(lines[2]);

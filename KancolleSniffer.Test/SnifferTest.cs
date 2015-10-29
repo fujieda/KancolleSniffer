@@ -53,7 +53,7 @@ namespace KancolleSniffer.Test
                             throw new Exception($"ログのurl, request, responseがそろっていません: {ln:d}行目");
                         if (!line.StartsWith(s))
                             throw new Exception($"ログに不正な行が含まれています: {ln:d}行目");
-                        triple.Add(line.Substring(s.Count()));
+                        triple.Add(line.Substring(s.Length));
                     }
                     var json = DynamicJson.Parse(triple[2]);
                     sniffer.Sniff(triple[0], triple[1], json);
@@ -475,7 +475,7 @@ namespace KancolleSniffer.Test
         {
             var aa = a.ToArray();
             var bb = b.ToArray();
-            if (aa.Count() != bb.Count())
+            if (aa.Length != bb.Length)
                 return false;
             return aa.Zip(bb, (x, y) => x.SequenceEqual(y)).All(x => x);
         }

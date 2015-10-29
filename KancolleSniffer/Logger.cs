@@ -152,7 +152,7 @@ namespace KancolleSniffer
             var estatus = _battleInfo.EnemyResultStatus;
             var edeck = ((int[])_battle.api_ship_ke).Skip(1).ToArray();
             var eships = new List<string>();
-            for (var i = 0; i < edeck.Count(); i++)
+            for (var i = 0; i < edeck.Length; i++)
             {
                 eships.Add(edeck[i] == -1
                     ? ","
