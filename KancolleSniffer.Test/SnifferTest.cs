@@ -403,6 +403,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 装備の交換を正しく反映する
+        /// </summary>
+        [TestMethod]
+        public void SlotExchange()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "slot_exchange_001");
+            var result = sniffer.GetShipStatuses(0)[0].Slot.Select(item => item.Id);
+            PAssert.That(() => new[] {26096, 30571, 77694, 61383, -1}.SequenceEqual(result));
+        }
+
+        /// <summary>
         /// 改修による資材の減少をすぐに反映する
         /// </summary>
         [TestMethod]

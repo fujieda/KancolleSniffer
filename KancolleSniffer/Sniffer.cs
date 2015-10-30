@@ -371,6 +371,11 @@ namespace KancolleSniffer
                 _akashiTimer.SetTimer();
                 return Update.Item | Update.Ship;
             }
+            if (url.EndsWith("api_req_kaisou/slot_exchange_index"))
+            {
+                _shipInfo.InspectSlotExchange(request, data);
+                return Update.Ship;
+            }
             if (url.EndsWith("api_req_nyukyo/start"))
             {
                 _dockInfo.InspectNyukyo(request);

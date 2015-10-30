@@ -368,6 +368,13 @@ namespace KancolleSniffer
             InspectShip(json.api_ship);
         }
 
+        public void InspectSlotExchange(string request, dynamic json)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var ship = int.Parse(values["api_id"]);
+            _shipInfo[ship].Slot = ((int[])json.api_slot).Select(id => new ItemStatus(id)).ToArray();
+        }
+
         public void InspectDestroyShip(string request, dynamic json)
         {
             var values = HttpUtility.ParseQueryString(request);
