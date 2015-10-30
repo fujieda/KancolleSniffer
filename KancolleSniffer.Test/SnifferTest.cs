@@ -391,6 +391,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 編成展開を正しく反映する
+        /// </summary>
+        [TestMethod]
+        public void PresetSelect()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "preset_001");
+            var result = sniffer.GetDeck(0);
+            PAssert.That(() => new[] {50510, 632, 39843, 113, 478, 47422}.SequenceEqual(result));
+        }
+
+        /// <summary>
         /// 改修による資材の減少をすぐに反映する
         /// </summary>
         [TestMethod]

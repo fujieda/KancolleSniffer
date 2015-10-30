@@ -352,6 +352,12 @@ namespace KancolleSniffer
                 _akashiTimer.SetTimer();
                 return Update.Ship;
             }
+            if (url.EndsWith("api_req_hensei/preset_select"))
+            {
+                _shipInfo.InspectDeck(new[] {data});
+                _akashiTimer.SetTimer();
+                return Update.Ship;
+            }
             if (url.EndsWith("api_req_hokyu/charge"))
             {
                 _shipInfo.InspectCharge(data);
