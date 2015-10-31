@@ -264,7 +264,7 @@ function setSortieStat(data) {
         week: {stat: {}},
         month: {stat: {}}
     };
-    var initStat = function () { return {start:"-", S:0, A:0, B:0, C:0, D:0} };
+    var initStat = function () { return {start:"-", S:0, A:0, B:0, C:0, D:0, R:0} };
     now = moment();
     r.day.begin = moment(now).hour(5).minute(0);
     if (now.hour() < 5) {
@@ -284,6 +284,11 @@ function setSortieStat(data) {
         var map = row[1];
         var isBoss = row[3].indexOf("ボス") != -1;
         var isStart = row[3].indexOf("出撃") != -1;
+        var resR = 0;
+        for (var j = 23; j < row.length; j++) {
+            if (/^輸送/.test(row[j]) && /^0\//.test(row[j + 1]))
+                resR++;
+        }
         var res = row[4];
         if (res == "E")
             res = "D";
@@ -304,6 +309,7 @@ function setSortieStat(data) {
                     if (name == "合計")
                         to.stat["合計 - ボス"] = initStat();
                 }
+                mo["R"] += resR;
                 mo[res]++;
                 if ((b == 0 || b == 2) && isStart)
                 {
@@ -337,14 +343,23 @@ function initSortieStat()
             paging: false,
             searching: false,
             ordering: false,
-            columns: [
+            columns: terms[i] != 'month' ? [
                 { data: "map" },
                 { data: "start" },
                 { data: "S" },
                 { data: "A" },
                 { data: "B" },
                 { data: "C" },
-                { data: "D" }
+                { data: "D" },
+                { data: "R" }
+            ] : [
+                { data: "map" },
+                { data: "start" },
+                { data: "S" },
+                { data: "A" },
+                { data: "B" },
+                { data: "C" },
+                { data: "D" },
             ]
         });
     }
@@ -523,14 +538,14 @@ $(function() {
 <h3>今日</h3>
 <table id="sortie_stat_day">
 <thead>
-<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th></tr>
+<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th><th>輸送船</th></tr>
 </thead>
 </table>
 
 <h3>今週</h3>
 <table id="sortie_stat_week">
 <thead>
-<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th></tr>
+<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th><th>輸送船</th></tr>
 </table>
 
 <h3>今月</h3>
