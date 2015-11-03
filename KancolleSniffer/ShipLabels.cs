@@ -109,7 +109,7 @@ namespace KancolleSniffer
             for (var i = 0; i < _akashiTimers.Length; i++)
             {
                 const int x = 51;
-                var y = 20 + 16 * i;
+                var y = 3 + 16 * (i + 1);
                 ShipLabel label;
                 parent.Controls.Add(
                     label = _akashiTimers[i] =
