@@ -55,6 +55,8 @@ namespace KancolleSniffer
         private int _prevProxyPort;
         private readonly SystemProxy _systemProxy = new SystemProxy();
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
+        private bool _missionFinishTimeMode;
+        private bool _ndockFinishTimeMode;
 
         public MainForm()
         {
@@ -73,7 +75,11 @@ namespace KancolleSniffer
             _shipLabels.CreateAkashiTimers(panelShipInfo);
             _shipLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
             _shipLabels.CreateDamagedShipList(panelDamagedShipList, panelDamagedShipList_Click);
-            _shipLabels.CreateNDockLabels(panelDock);
+            _shipLabels.CreateNDockLabels(panelDock, (obj, args) =>
+            {
+                _ndockFinishTimeMode = !_ndockFinishTimeMode;
+                UpdateTimers();
+            });
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
         }
@@ -637,6 +643,12 @@ namespace KancolleSniffer
                 entry.label.Text = entry.Name;
         }
 
+        private void labelMission_Click(object sender, EventArgs e)
+        {
+            _missionFinishTimeMode = !_missionFinishTimeMode;
+            UpdateTimers();
+        }
+
         private void UpdateTimers()
         {
             foreach (var entry in
@@ -646,7 +658,11 @@ namespace KancolleSniffer
                 entry.Timer.Update();
                 SetTimerColor(entry.label, entry.Timer);
                 var rest = entry.Timer.Rest;
-                entry.label.Text = rest.Days == 0 ? rest.ToString(@"hh\:mm\:ss") : rest.ToString(@"d\dhh\:mm");
+                entry.label.Text = _missionFinishTimeMode
+                    ? entry.Timer.EndTime == DateTime.MinValue
+                        ? "-------"
+                        : entry.Timer.EndTime.ToString(@"dd\ HH\:mm")
+                    : rest.Days == 0 ? rest.ToString(@"hh\:mm\:ss") : rest.ToString(@"d\dhh\:mm");
                 if (!entry.Timer.NeedRing)
                     continue;
                 _noticeQueue.Enqueue("遠征が終わりました", entry.Name, _config.MissionSoundFile);
@@ -656,7 +672,7 @@ namespace KancolleSniffer
             {
                 var entry = _sniffer.NDock[i];
                 entry.Timer.Update();
-                _shipLabels.SetNDockTimer(i, entry.Timer);
+                _shipLabels.SetNDockTimer(i, entry.Timer, _ndockFinishTimeMode);
                 if (!entry.Timer.NeedRing)
                     continue;
                 _noticeQueue.Enqueue("入渠が終わりました", entry.Name, _config.NDockSoundFile);

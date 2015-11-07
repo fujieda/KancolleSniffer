@@ -496,12 +496,13 @@ namespace KancolleSniffer
 
     public class RingTimer
     {
-        private DateTime _endTime;
         private readonly TimeSpan _spare;
 
         public TimeSpan Rest { get; private set; }
 
-        public bool IsFinished => _endTime != DateTime.MinValue && Rest <= _spare;
+        public bool IsFinished => EndTime != DateTime.MinValue && Rest <= _spare;
+
+        public DateTime EndTime { get; private set; }
 
         public bool NeedRing { get; set; }
 
@@ -519,18 +520,18 @@ namespace KancolleSniffer
 
         public void SetEndTime(DateTime time)
         {
-            _endTime = time;
+            EndTime = time;
         }
 
         public void Update()
         {
-            if (_endTime == DateTime.MinValue)
+            if (EndTime == DateTime.MinValue)
             {
                 Rest = TimeSpan.Zero;
                 return;
             }
             var prev = Rest;
-            Rest = _endTime - DateTime.Now;
+            Rest = EndTime - DateTime.Now;
             if (Rest < TimeSpan.Zero)
                 Rest = TimeSpan.Zero;
             if (prev > _spare && _spare >= Rest)

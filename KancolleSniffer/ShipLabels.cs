@@ -219,7 +219,7 @@ namespace KancolleSniffer
             }
         }
 
-        public void CreateNDockLabels(Control parent)
+        public void CreateNDockLabels(Control parent, EventHandler onClick)
         {
             for (var i = 0; i < _ndockLabels.Length; i++)
             {
@@ -227,12 +227,22 @@ namespace KancolleSniffer
                 parent.Controls.AddRange(
                     _ndockLabels[i] = new[]
                     {
-                        new ShipLabel {Location = new Point(93, y), AutoSize = true, Text = "00:00:00"},
+                        new ShipLabel
+                        {
+                            Location = new Point(93, y),
+                            AutoSize = true,
+                            AnchorRight = true,
+                            Text = "00:00:00"
+                        },
                         new ShipLabel {Location = new Point(29, y), AutoSize = true} // 名前のZ-orderを下に
                     });
                 foreach (var label in _ndockLabels[i])
+                {
                     label.Scale();
+                    label.Click += onClick;
+                }
             }
+            parent.Click += onClick;
         }
 
         public void SetNDockLabels(NameAndTimer[] ndock)
@@ -241,11 +251,14 @@ namespace KancolleSniffer
                 _ndockLabels[i][1].SetName(ndock[i].Name);
         }
 
-        public void SetNDockTimer(int dock, RingTimer timer)
+        public void SetNDockTimer(int dock, RingTimer timer, bool finishTime)
         {
             var label = _ndockLabels[dock][0];
             label.ForeColor = timer.IsFinished ? Color.Red : Color.Black;
-            label.SetRepairTime(timer.Rest);
+            if (finishTime)
+                label.SetRepairFinishTime(timer.EndTime);
+            else
+                label.SetRepairTime(timer.Rest);
         }
     }
 
@@ -327,6 +340,11 @@ namespace KancolleSniffer
         public void SetRepairTime(TimeSpan span)
         {
             Text = $@"{(int)span.TotalHours:d2}:{span:mm\:ss}";
+        }
+
+        public void SetRepairFinishTime(DateTime time)
+        {
+            Text = time == DateTime.MinValue ? "-------" : time.ToString(@"dd\ HH\:mm");
         }
 
         public void SetFleet(ShipStatus status)

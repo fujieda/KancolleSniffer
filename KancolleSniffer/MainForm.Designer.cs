@@ -661,54 +661,58 @@ namespace KancolleSniffer
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(220, 49);
             this.panel2.TabIndex = 11;
+            this.panel2.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // labelMissionName3
             // 
-            this.labelMissionName3.Location = new System.Drawing.Point(58, 33);
+            this.labelMissionName3.Location = new System.Drawing.Point(57, 33);
             this.labelMissionName3.Name = "labelMissionName3";
-            this.labelMissionName3.Size = new System.Drawing.Size(116, 12);
+            this.labelMissionName3.Size = new System.Drawing.Size(113, 12);
             this.labelMissionName3.TabIndex = 5;
             // 
             // labelMissionName2
             // 
-            this.labelMissionName2.Location = new System.Drawing.Point(58, 18);
+            this.labelMissionName2.Location = new System.Drawing.Point(57, 18);
             this.labelMissionName2.Name = "labelMissionName2";
-            this.labelMissionName2.Size = new System.Drawing.Size(116, 12);
+            this.labelMissionName2.Size = new System.Drawing.Size(113, 12);
             this.labelMissionName2.TabIndex = 4;
             // 
             // labelMissionName1
             // 
-            this.labelMissionName1.Location = new System.Drawing.Point(58, 3);
+            this.labelMissionName1.Location = new System.Drawing.Point(57, 3);
             this.labelMissionName1.Name = "labelMissionName1";
-            this.labelMissionName1.Size = new System.Drawing.Size(116, 12);
+            this.labelMissionName1.Size = new System.Drawing.Size(113, 12);
             this.labelMissionName1.TabIndex = 3;
             // 
             // labelMission3
             // 
-            this.labelMission3.Location = new System.Drawing.Point(173, 33);
+            this.labelMission3.Location = new System.Drawing.Point(171, 33);
             this.labelMission3.Name = "labelMission3";
-            this.labelMission3.Size = new System.Drawing.Size(45, 12);
+            this.labelMission3.Size = new System.Drawing.Size(47, 12);
             this.labelMission3.TabIndex = 8;
             this.labelMission3.Text = "00:00:00";
             this.labelMission3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelMission3.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // labelMission2
             // 
-            this.labelMission2.Location = new System.Drawing.Point(173, 18);
+            this.labelMission2.Location = new System.Drawing.Point(171, 18);
             this.labelMission2.Name = "labelMission2";
-            this.labelMission2.Size = new System.Drawing.Size(45, 12);
+            this.labelMission2.Size = new System.Drawing.Size(47, 12);
             this.labelMission2.TabIndex = 7;
             this.labelMission2.Text = "00:00:00";
             this.labelMission2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelMission2.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // labelMission1
             // 
-            this.labelMission1.Location = new System.Drawing.Point(173, 3);
+            this.labelMission1.Location = new System.Drawing.Point(171, 3);
             this.labelMission1.Name = "labelMission1";
-            this.labelMission1.Size = new System.Drawing.Size(45, 12);
+            this.labelMission1.Size = new System.Drawing.Size(47, 12);
             this.labelMission1.TabIndex = 6;
             this.labelMission1.Text = "00:00:00";
             this.labelMission1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelMission1.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // label15
             // 
