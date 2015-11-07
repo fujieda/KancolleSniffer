@@ -662,7 +662,7 @@ namespace KancolleSniffer
                     ? entry.Timer.EndTime == DateTime.MinValue
                         ? "-------"
                         : entry.Timer.EndTime.ToString(@"dd\ HH\:mm")
-                    : rest.Days == 0 ? rest.ToString(@"hh\:mm\:ss") : rest.ToString(@"d\dhh\:mm");
+                    : rest.ToString(@"hh\:mm\:ss");
                 if (!entry.Timer.NeedRing)
                     continue;
                 _noticeQueue.Enqueue("遠征が終わりました", entry.Name, _config.MissionSoundFile);
