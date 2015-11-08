@@ -150,38 +150,25 @@ namespace KancolleSniffer
                 _repairStatuses[i] = new RepairStatus();
         }
 
-        [Flags]
         private enum State
         {
-            Stop = 0,
-            Continue = 1,
-            Reset = 2,
-            Reparing = 4
+            Continue = 0,
+            Reset = 1,
         }
 
         public void Port()
         {
             CheckFleet();
             var now = DateTime.Now;
-            var reparing = _repairStatuses.Any(r => (r.State & State.Reparing) != 0);
-            var stop = _repairStatuses.All(r => (r.State & State.Continue) == 0);
-            if (now - _start > TimeSpan.FromMinutes(20))
-            {
-                if (reparing)
-                    _start = now;
-                else if (stop)
-                    _start = DateTime.MinValue;
-            }
-            else if (!stop && _start == DateTime.MinValue)
-            {
+            var reset = _repairStatuses.Any(r => r.State == State.Reset);
+            if (_start == DateTime.MinValue || now - _start > TimeSpan.FromMinutes(20) || reset)
                 _start = now;
-            }
         }
 
         public void DeckChanged()
         {
             CheckFleet();
-            if (_repairStatuses.Any(r => (r.State & State.Reset) != 0))
+            if (_repairStatuses.Any(r => r.State == State.Reset))
                 _start = DateTime.Now;
         }
 
@@ -196,21 +183,18 @@ namespace KancolleSniffer
             var deck = _shipInfo.GetDeck(fleet).ToArray();
             var repair = _repairStatuses[fleet];
             var fs = _shipInfo.GetStatus(deck[0]);
-            /*
-             * 旗艦が明石でないか明石がドックに入っている場合は泊地修理を止める。
-            */
-            if (!fs.Name.StartsWith("明石") || _shipInfo.InMission(fleet))
+            repair.State = State.Continue;
+            if (!fs.Name.StartsWith("明石"))
             {
                 repair.Invalidate();
-                repair.State = State.Stop;
                 repair.Deck = deck;
                 return;
             }
             var cap = fs.Slot.Count(item => item.Spec.Name == "艦艇修理施設") + 2;
             /*
              * 泊地修理の条件を満たさない艦はMaxHp==NowHpのダミーを設定する。
-             * 入渠中の艦娘は終わったときに回復扱いされないようNowHp=MaxHpにする。
-             * 中破以上でNowHp=MaxHpにすると回復扱いされるのでNowHp=MaxHp=0にする。
+             * - 入渠中の艦娘は終わったときに回復扱いされないようNowHp=MaxHpに
+             * - 中破以上でNowHp=MaxHpにすると回復扱いされるのでNowHp=MaxHp=0に
             */
             var target = (from id in deck.Take(cap)
                 let s = _shipInfo.GetStatus(id)
@@ -219,10 +203,7 @@ namespace KancolleSniffer
                 select _dockInfo.InNDock(id) ? full : s.DamageLevel >= ShipStatus.Damage.Half ? zero : s).ToArray();
             repair.State = State.Continue;
             if (repair.DeckChanged(deck) || repair.IsRepaired(target))
-                repair.State |= State.Reset;
-            if (target[0].DamageLevel < ShipStatus.Damage.Half &&
-                target.Any(s => s.NowHp < s.MaxHp))
-                repair.State |= State.Reparing;
+                repair.State = State.Reset;
             repair.UpdateTarget(target);
             repair.Deck = deck;
         }
