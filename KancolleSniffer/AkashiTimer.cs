@@ -226,6 +226,11 @@ namespace KancolleSniffer
             }
         }
 
+
+        public bool CheckReparing(int fleet) => GetTimers(fleet).Any(r => r.Span != TimeSpan.MinValue);
+
+        public bool CheckReparing() => Enumerable.Range(0, ShipInfo.FleetCount).Any(CheckReparing);
+
         public Notice[] GetNotice()
         {
             var now = DateTime.Now;

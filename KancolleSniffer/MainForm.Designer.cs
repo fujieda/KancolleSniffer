@@ -318,6 +318,7 @@ namespace KancolleSniffer
             this.labelPresetDeckTimer.Name = "labelPresetDeckTimer";
             this.labelPresetDeckTimer.Size = new System.Drawing.Size(31, 12);
             this.labelPresetDeckTimer.TabIndex = 43;
+            this.labelPresetDeckTimer.Click += new System.EventHandler(this.labelPresetDeckTimer_Click);
             // 
             // panelBattleInfo
             // 

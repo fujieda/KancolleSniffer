@@ -555,7 +555,7 @@ namespace KancolleSniffer
 
         private void NotifyAkashiTimer()
         {
-            var msgs = _sniffer.GetAkashiTimerNotice();
+            var msgs = _sniffer.AkashiTimer.GetNotice();
             if (msgs.Length == 0)
                 return;
             if (msgs[0].Proceeded == "20分経過しました。")
@@ -733,14 +733,31 @@ namespace KancolleSniffer
             }
         }
 
+        private bool _presetDeckTimerAvailable;
+
+
+        private void labelPresetDeckTimer_Click(object sender, EventArgs e)
+        {
+            _presetDeckTimerAvailable = !_presetDeckTimerAvailable;
+            UpdateAkashiTimer();
+        }
+
         private void UpdateAkashiTimer()
         {
-            var span = _sniffer.AkashiPresetDeckTimer;
-            var timer = _sniffer.GetAkashiTimers(_currentFleet);
-            var reparing = timer.Any(t => t.Span != TimeSpan.MinValue);
-            labelPresetDeckTimer.ForeColor = span == TimeSpan.Zero && !reparing ? Color.Red : DefaultForeColor;
-            labelPresetDeckTimer.Text = span == TimeSpan.MinValue || reparing ? "" : span.ToString(@"mm\:ss");
-            _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet), timer);
+            var span = _sniffer.AkashiTimer.PresetDeckTimer;
+            var repairing = _sniffer.AkashiTimer.CheckReparing(_currentFleet);
+            if (_presetDeckTimerAvailable)
+            {
+                labelPresetDeckTimer.ForeColor = span == TimeSpan.Zero && !repairing ? Color.Red : DefaultForeColor;
+                labelPresetDeckTimer.Text = span == TimeSpan.MinValue || repairing ? "" : span.ToString(@"mm\:ss");
+            }
+            else
+            {
+                labelPresetDeckTimer.ForeColor = DefaultForeColor;
+                labelPresetDeckTimer.Text = "";
+            }
+            _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet),
+                _sniffer.AkashiTimer.GetTimers(_currentFleet));
             NotifyAkashiTimer();
         }
 

@@ -445,11 +445,7 @@ namespace KancolleSniffer
 
         public ItemStatus[] ItemList => _itemInfo.GetItemListWithOwner(ShipList);
 
-        public AkashiTimer.RepairSpan[] GetAkashiTimers(int fleet) => _akashiTimer.GetTimers(fleet);
-
-        public AkashiTimer.Notice[] GetAkashiTimerNotice() => _akashiTimer.GetNotice();
-
-        public TimeSpan AkashiPresetDeckTimer => _akashiTimer.PresetDeckTimer;
+        public AkashiTimer AkashiTimer => _akashiTimer;
 
         public Achievement Achievement => _achievement;
 
