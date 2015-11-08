@@ -51,6 +51,8 @@ namespace KancolleSniffer
                 set { _deck = value; }
             }
 
+            public State State { get; set; }
+
             public void Invalidate()
             {
                 _target = new ShipStatus[0];
@@ -62,8 +64,6 @@ namespace KancolleSniffer
             {
                 _target = target;
             }
-
-            public bool IsRepaired(ShipStatus[] target) => _target.Zip(target, (a, b) => a.NowHp < b.NowHp).Any(x => x);
 
             public RepairSpan[] GetTimers(DateTime start, DateTime now)
             {
@@ -148,75 +148,73 @@ namespace KancolleSniffer
                 _repairStatuses[i] = new RepairStatus();
         }
 
-        public void SetTimer(bool port = false)
+        [Flags]
+        private enum State
         {
-            var cont = false;
-            for (var fleet = 0; fleet < ShipInfo.FleetCount; fleet++)
-            {
-                if (CheckFleet(fleet, port))
-                    cont = true;
-            }
-            if (!cont)
-            {
-                _start = DateTime.MinValue;
-                return;
-            }
-            if (_start == DateTime.MinValue)
-                _start = DateTime.Now;
+            Stop = 0,
+            Continue = 1,
+            Reset = 2,
+            Reparing = 4
         }
 
-        private bool CheckFleet(int fleet, bool port)
+        public void SetTimer(bool port = false)
         {
-            var deck = _shipInfo.GetDeck(fleet);
+            var now = DateTime.Now;
+            for (var fleet = 0; fleet < ShipInfo.FleetCount; fleet++)
+                CheckFleet(fleet);
+            if (_repairStatuses.Any(r => (r.State & State.Reset) == State.Reset))
+            {
+                _start = now;
+                return;
+            }
+            if (port && now - _start > TimeSpan.FromMinutes(20))
+            {
+                if (_repairStatuses.Any(r => (r.State & State.Reparing) == State.Reparing))
+                    _start = now;
+                else if (_repairStatuses.All(r => (r.State & State.Continue) == 0))
+                    _start = DateTime.MinValue;
+            }
+            else if (_repairStatuses.Any(r => (r.State & State.Continue) != 0))
+            {
+                if (_start == DateTime.MinValue)
+                    _start = now;
+            }
+        }
+
+        private void CheckFleet(int fleet)
+        {
+            var deck = _shipInfo.GetDeck(fleet).ToArray();
             var repair = _repairStatuses[fleet];
             var fs = _shipInfo.GetStatus(deck[0]);
-            if (!fs.Name.StartsWith("明石") || _dockInfo.InNDock(fs.Id) || _shipInfo.InMission(fleet))
-            {
-                repair.Invalidate();
-                return false;
-            }
-            if (repair.DeckChanged(deck))
-            {
-                _start = DateTime.MinValue;
-                repair.Invalidate();
-            }
-            repair.Deck = deck.ToArray();
-            var cap = fs.Slot.Count(item => item.Spec.Name == "艦艇修理施設") + 2;
-            var target = deck.Take(cap).Select(id =>
-            {
-                /*
-                 * 修理できない艦娘のステータスをNowHp == MaxHpにする。
-                 * - 入渠中の艦娘
-                 *   入渠が終了して戻ったのを明石による回復と誤認しないためにHPを回復時の値に
-                 * - 中破以上の艦娘
-                 *   出撃中の損傷で小破以下から中破以上になったのを回復と誤認しないためにHPを0に
-                */
-                var s = _shipInfo.GetStatus(id);
-                var full = new ShipStatus {NowHp = s.MaxHp, MaxHp = s.MaxHp};
-                var zero = new ShipStatus();
-                return _dockInfo.InNDock(id)
-                    ? full
-                    : s.DamageLevel >= ShipStatus.Damage.Half ? zero : s;
-            }).ToArray();
-            var damage = target.Sum(s => s.MaxHp - s.NowHp);
-            if (damage == 0)
-            {
-                repair.Invalidate();
-                return false;
-            }
             /*
-             * 母港に遷移したときに、耐久値が回復しているか修理開始から20分経過している
-             * ときにタイマーをリスタートする。
-             *
-             * 泊地修理中に出撃して母港に戻ったときに、修理開始から20分以上経っていると
-             * HPが回復する。最後の戦闘の損傷と回復量が差し引きゼロだと泊地修理の進行が
-             * わからないので、20分経っていたらとにかくリスタートする。
+             * 旗艦が明石でないか明石がドックに入っている場合は泊地修理を止める。
             */
-            if (port && _start != DateTime.MinValue &&
-                (repair.IsRepaired(target) || DateTime.Now - _start > TimeSpan.FromMinutes(20)))
-                _start = DateTime.MinValue;
+            if (!fs.Name.StartsWith("明石") || _shipInfo.InMission(fleet))
+            {
+                repair.Invalidate();
+                repair.State = State.Stop;
+                repair.Deck = deck;
+                return;
+            }
+            var cap = fs.Slot.Count(item => item.Spec.Name == "艦艇修理施設") + 2;
+            /*
+             * 泊地修理の条件を満たさない艦はMaxHp==NowHpのダミーを設定する。
+             * 入渠中の艦娘は終わったときに回復扱いされないようNowHp=MaxHpにする。
+             * 中破以上でNowHp=MaxHpにすると回復扱いされるのでNowHp=MaxHp=0にする。
+            */
+            var target = (from id in deck.Take(cap)
+                let s = _shipInfo.GetStatus(id)
+                let full = new ShipStatus {NowHp = s.MaxHp, MaxHp = s.MaxHp}
+                let zero = new ShipStatus()
+                select _dockInfo.InNDock(id) ? full : s.DamageLevel >= ShipStatus.Damage.Half ? zero : s).ToArray();
+            repair.State = State.Continue;
+            if (repair.DeckChanged(deck))
+                repair.State |= State.Reset;
+            if (target[0].DamageLevel < ShipStatus.Damage.Half &&
+                target.Any(s => s.NowHp < s.MaxHp))
+                repair.State |= State.Reparing;
             repair.UpdateTarget(target);
-            return true;
+            repair.Deck = deck;
         }
 
         public RepairSpan[] GetTimers(int fleet)
