@@ -234,7 +234,7 @@ namespace KancolleSniffer
         {
             get
             {
-                if (_start == DateTime.MinValue || _repairStatuses.Any(rs => rs.State != State.Stop))
+                if (_start == DateTime.MinValue)
                     return TimeSpan.MinValue;
                 var r = _start + TimeSpan.FromMinutes(20) - DateTime.Now;
                 return r >= TimeSpan.Zero ? r : TimeSpan.Zero;

@@ -736,7 +736,9 @@ namespace KancolleSniffer
         private void UpdateAkashiTimer()
         {
             var span = _sniffer.AkashiPresetDeckTimer;
-            labelPresetDeckTimer.Text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
+            var timer = _sniffer.GetAkashiTimers(_currentFleet);
+            var reparing = timer.Any(t => t.Span != TimeSpan.MinValue);
+            labelPresetDeckTimer.Text = span == TimeSpan.MinValue || reparing ? "" : span.ToString(@"mm\:ss");
             _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet),
                 _sniffer.GetAkashiTimers(_currentFleet));
             NotifyAkashiTimer();
