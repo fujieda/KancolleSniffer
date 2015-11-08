@@ -58,6 +58,8 @@ namespace KancolleSniffer
                 _target = new ShipStatus[0];
             }
 
+            public bool IsRepaired(ShipStatus[] target) => _target.Zip(target, (a, b) => a.NowHp < b.NowHp).Any(x => x);
+
             public bool DeckChanged(IEnumerable<int> deck) => !_deck.SequenceEqual(deck);
 
             public void UpdateTarget(ShipStatus[] target)
@@ -216,7 +218,7 @@ namespace KancolleSniffer
                 let zero = new ShipStatus()
                 select _dockInfo.InNDock(id) ? full : s.DamageLevel >= ShipStatus.Damage.Half ? zero : s).ToArray();
             repair.State = State.Continue;
-            if (repair.DeckChanged(deck))
+            if (repair.DeckChanged(deck) || repair.IsRepaired(target))
                 repair.State |= State.Reset;
             if (target[0].DamageLevel < ShipStatus.Damage.Half &&
                 target.Any(s => s.NowHp < s.MaxHp))
