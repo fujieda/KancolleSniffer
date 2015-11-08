@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace KancolleSniffer
 {
@@ -158,28 +157,36 @@ namespace KancolleSniffer
             Reparing = 4
         }
 
-        public void SetTimer(bool port = false)
+        public void Port()
         {
+            CheckFleet();
             var now = DateTime.Now;
-            for (var fleet = 0; fleet < ShipInfo.FleetCount; fleet++)
-                CheckFleet(fleet);
-            if (_repairStatuses.Any(r => (r.State & State.Reset) == State.Reset))
+            var reparing = _repairStatuses.Any(r => (r.State & State.Reparing) != 0);
+            var stop = _repairStatuses.All(r => (r.State & State.Continue) == 0);
+            if (now - _start > TimeSpan.FromMinutes(20))
             {
-                _start = now;
-                return;
-            }
-            if (port && now - _start > TimeSpan.FromMinutes(20))
-            {
-                if (_repairStatuses.Any(r => (r.State & State.Reparing) == State.Reparing))
+                if (reparing)
                     _start = now;
-                else if (_repairStatuses.All(r => (r.State & State.Continue) == 0))
+                else if (stop)
                     _start = DateTime.MinValue;
             }
-            else if (_repairStatuses.Any(r => (r.State & State.Continue) != 0))
+            else if (!stop && _start == DateTime.MinValue)
             {
-                if (_start == DateTime.MinValue)
-                    _start = now;
+                _start = now;
             }
+        }
+
+        public void DeckChanged()
+        {
+            CheckFleet();
+            if (_repairStatuses.Any(r => (r.State & State.Reset) != 0))
+                _start = DateTime.Now;
+        }
+
+        public void CheckFleet()
+        {
+            for (var fleet = 0; fleet < ShipInfo.FleetCount; fleet++)
+                CheckFleet(fleet);
         }
 
         private void CheckFleet(int fleet)
@@ -216,14 +223,6 @@ namespace KancolleSniffer
                 repair.State |= State.Reparing;
             repair.UpdateTarget(target);
             repair.Deck = deck;
-        }
-
-        public void InspectPresetSelect(string request)
-        {
-            var values = HttpUtility.ParseQueryString(request);
-            var deck = int.Parse(values["api_deck_id"]) - 1;
-            _repairStatuses[deck].Deck = _shipInfo.GetDeck(deck);
-            SetTimer();
         }
 
         public RepairSpan[] GetTimers(int fleet)
