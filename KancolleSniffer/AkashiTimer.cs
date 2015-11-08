@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 
 namespace KancolleSniffer
 {
@@ -165,9 +166,12 @@ namespace KancolleSniffer
                 _start = now;
         }
 
-        public void DeckChanged()
+        public void InspectChange(string request)
         {
             CheckFleet();
+            var values = HttpUtility.ParseQueryString(request);
+            if (int.Parse(values["api_ship_idx"]) == -1)
+                return;
             if (_repairStatuses.Any(r => r.State == State.Reset))
                 _start = DateTime.Now;
         }

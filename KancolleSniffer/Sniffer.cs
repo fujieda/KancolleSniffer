@@ -180,7 +180,7 @@ namespace KancolleSniffer
             {
                 _shipInfo.InspectDeck(data);
                 _missionInfo.InspectDeck(data);
-                _akashiTimer.DeckChanged();
+                _akashiTimer.CheckFleet();
                 return Update.Mission | Update.Timer;
             }
             if (url.EndsWith("api_get_member/ship2"))
@@ -349,7 +349,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_hensei/change"))
             {
                 _shipInfo.InspectChange(request);
-                _akashiTimer.DeckChanged();
+                _akashiTimer.InspectChange(request);
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_hensei/preset_select"))
