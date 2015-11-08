@@ -60,6 +60,7 @@ namespace KancolleSniffer
             this.labelNumOfShips = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panelShipInfo = new System.Windows.Forms.Panel();
+            this.labelPresetDeckTimer = new System.Windows.Forms.Label();
             this.panelBattleInfo = new System.Windows.Forms.Panel();
             this.labelEnemyFighterPower = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
@@ -298,6 +299,7 @@ namespace KancolleSniffer
             // panelShipInfo
             // 
             this.panelShipInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelShipInfo.Controls.Add(this.labelPresetDeckTimer);
             this.panelShipInfo.Controls.Add(this.panelBattleInfo);
             this.panelShipInfo.Controls.Add(this.labelLoS);
             this.panelShipInfo.Controls.Add(this.label19);
@@ -309,6 +311,13 @@ namespace KancolleSniffer
             this.panelShipInfo.Name = "panelShipInfo";
             this.panelShipInfo.Size = new System.Drawing.Size(220, 134);
             this.panelShipInfo.TabIndex = 2;
+            // 
+            // labelPresetDeckTimer
+            // 
+            this.labelPresetDeckTimer.Location = new System.Drawing.Point(2, 3);
+            this.labelPresetDeckTimer.Name = "labelPresetDeckTimer";
+            this.labelPresetDeckTimer.Size = new System.Drawing.Size(31, 12);
+            this.labelPresetDeckTimer.TabIndex = 43;
             // 
             // panelBattleInfo
             // 
@@ -1413,6 +1422,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelQuestColor2;
         private System.Windows.Forms.ToolTip toolTipFigherPower;
         private System.Windows.Forms.ToolStripMenuItem CaptureToolStripMenuItem;
+        private System.Windows.Forms.Label labelPresetDeckTimer;
     }
 }
 

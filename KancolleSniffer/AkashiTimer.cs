@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 
 namespace KancolleSniffer
 {
@@ -217,9 +218,27 @@ namespace KancolleSniffer
             repair.Deck = deck;
         }
 
+        public void InspectPresetSelect(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var deck = int.Parse(values["api_deck_id"]) - 1;
+            _repairStatuses[deck].Deck = _shipInfo.GetDeck(deck);
+            SetTimer();
+        }
+
         public RepairSpan[] GetTimers(int fleet)
             => _start == DateTime.MinValue ? new RepairSpan[0] : _repairStatuses[fleet].GetTimers(_start, DateTime.Now);
 
+        public TimeSpan PresetDeckTimer
+        {
+            get
+            {
+                if (_start == DateTime.MinValue || _repairStatuses.Any(rs => rs.State != State.Stop))
+                    return TimeSpan.MinValue;
+                var r = _start + TimeSpan.FromMinutes(20) - DateTime.Now;
+                return r >= TimeSpan.Zero ? r : TimeSpan.Zero;
+            }
+        }
 
         public Notice[] GetNotice()
         {

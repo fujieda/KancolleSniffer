@@ -80,6 +80,7 @@ namespace KancolleSniffer
                 _ndockFinishTimeMode = !_ndockFinishTimeMode;
                 UpdateTimers();
             });
+            labelPresetDeckTimer.BackColor = ShipLabels.ColumnColors[1];
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
         }
@@ -734,6 +735,8 @@ namespace KancolleSniffer
 
         private void UpdateAkashiTimer()
         {
+            var span = _sniffer.AkashiPresetDeckTimer;
+            labelPresetDeckTimer.Text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
             _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet),
                 _sniffer.GetAkashiTimers(_currentFleet));
             NotifyAkashiTimer();
