@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
@@ -208,19 +209,17 @@ namespace TrotiNet
             {
                 lock (ConnectedSockets)
                 {
-                    foreach (var kv in ConnectedSockets)
+                    try
                     {
-                        try
-                        {
-                            int id = kv.Key;
-                            HttpSocket state = kv.Value;
-                            if (state == null || state.IsSocketDead())
-                                ConnectedSockets.Remove(id);
-                        }
-                        catch (Exception e)
-                        {
-                            log.Error(e);
-                        }
+                        foreach (var id in
+                            (from c in ConnectedSockets
+                             where c.Value?.IsSocketDead() ?? true
+                             select c.Key).ToArray())
+                            ConnectedSockets.Remove(id);
+                    }
+                    catch (Exception e)
+                    {
+                        log.Error(e);
                     }
                 }
             }
