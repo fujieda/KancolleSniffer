@@ -556,7 +556,7 @@ namespace KancolleSniffer
         private void NotifyAkashiTimer()
         {
             var msgs = _sniffer.AkashiTimer.GetNotice();
-            if (msgs.Length == 0)
+            if (msgs.Length == 0 || !_sniffer.AkashiTimer.CheckReparing())
                 return;
             if (msgs[0].Proceeded == "20分経過しました。")
             {
