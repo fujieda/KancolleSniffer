@@ -111,7 +111,7 @@ namespace KancolleSniffer
                 var update = _sniffer.Sniff(url, request, json);
                 if (update == Sniffer.Update.Error)
                 {
-                    ShowServerError(url, request, json);
+                    ShowServerError(url, request, json.ToString());
                     return;
                 }
                 UpdateInfo(update);
