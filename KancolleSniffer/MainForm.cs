@@ -159,6 +159,7 @@ namespace KancolleSniffer
             if (update == Sniffer.Update.Start)
             {
                 labelLogin.Visible = false;
+                labelGuide.Visible = false;
                 _started = true;
                 return;
             }
