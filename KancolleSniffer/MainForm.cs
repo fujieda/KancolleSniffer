@@ -124,7 +124,7 @@ namespace KancolleSniffer
             catch (RuntimeBinderException e)
             {
                 if (_errorDialog.ShowDialog(this,
-                    "このバージョンは現在の艦これに対応していません。\n新しいバージョンを利用してください。", e.ToString()) == DialogResult.Abort)
+                    "このバージョンは現在の艦これに対応していません。\r\n新しいバージョンを利用してください。", e.ToString()) == DialogResult.Abort)
                     Application.Exit();
             }
             catch (LogIOException e)
@@ -138,7 +138,7 @@ namespace KancolleSniffer
         {
             if (_debugLogFile != null)
             {
-                File.AppendAllText(_debugLogFile, SessionString(url, request, response));
+                File.AppendAllText(_debugLogFile, $"url: {url}\nrequest: {request}\nresponse: {(response ?? "(null)")}\n");
             }
         }
 
@@ -147,12 +147,9 @@ namespace KancolleSniffer
             if (_errorDialog.Visible)
                 return;
             if (_errorDialog.ShowDialog(this, "サーバーからの応答が異常です。",
-                SessionString(url, request, response)) == DialogResult.Abort)
+                $"url: {url}\r\nrequest: {request}\r\nresponse: {(response ?? "(null)")}\r\n") == DialogResult.Abort)
                 Application.Exit();
         }
-
-        private string SessionString(string url, string request, string response)
-            => $"url: {url}\nrequest: {request}\nresponse: {(response ?? "(null)")}\n";
 
         private void UpdateInfo(Sniffer.Update update)
         {
