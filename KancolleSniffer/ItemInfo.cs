@@ -109,6 +109,8 @@ namespace KancolleSniffer
 
         public bool IsReconSeaplane => Type == 10;
 
+        public bool IsRepairFacility => Type == 31;
+
         public Color Color
         {
             get

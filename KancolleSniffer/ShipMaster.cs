@@ -137,5 +137,7 @@ namespace KancolleSniffer
                 return false;
             }
         }
+
+        public bool IsRepairShip => ShipType == 19;
     }
 }

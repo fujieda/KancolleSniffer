@@ -54,11 +54,6 @@ namespace KancolleSniffer
 
             public State State { get; set; }
 
-            public void Invalidate()
-            {
-                _target = new ShipStatus[0];
-            }
-
             public bool IsRepaired(ShipStatus[] target) => _target.Zip(target, (a, b) => a.NowHp < b.NowHp).Any(x => x);
 
             public bool DeckChanged(IEnumerable<int> deck) => !_deck.SequenceEqual(deck);
@@ -188,28 +183,39 @@ namespace KancolleSniffer
             var repair = _repairStatuses[fleet];
             var fs = _shipInfo.GetStatus(deck[0]);
             repair.State = State.Continue;
-            if (!fs.Name.StartsWith("明石"))
+            if (!fs.Spec.IsRepairShip)
             {
-                repair.Invalidate();
+                repair.UpdateTarget(new ShipStatus[0]);
                 repair.Deck = deck;
                 return;
             }
-            var cap = fs.Slot.Count(item => item.Spec.Name == "艦艇修理施設") + 2;
+            if (repair.DeckChanged(deck))
+            {
+                repair.State = State.Reset;
+                repair.Deck = deck;
+            }
+            var target = RepairTarget(deck);
+            if (repair.IsRepaired(target))
+                repair.State = State.Reset;
+            repair.UpdateTarget(target);
+        }
+
+        private ShipStatus[] RepairTarget(int[] deck)
+        {
+            var fs = _shipInfo.GetStatus(deck[0]);
+            if (fs.DamageLevel >= ShipStatus.Damage.Half)
+                return new ShipStatus[0];
+            var cap = fs.Slot.Count(item => item.Spec.IsRepairFacility) + 2;
             /*
              * 泊地修理の条件を満たさない艦はMaxHp==NowHpのダミーを設定する。
              * - 入渠中の艦娘は終わったときに回復扱いされないようNowHp=MaxHpに
              * - 中破以上でNowHp=MaxHpにすると回復扱いされるのでNowHp=MaxHp=0に
             */
-            var target = (from id in deck.Take(cap)
+            return (from id in deck.Take(cap)
                 let s = _shipInfo.GetStatus(id)
                 let full = new ShipStatus {NowHp = s.MaxHp, MaxHp = s.MaxHp}
                 let zero = new ShipStatus()
                 select _dockInfo.InNDock(id) ? full : s.DamageLevel >= ShipStatus.Damage.Half ? zero : s).ToArray();
-            repair.State = State.Continue;
-            if (repair.DeckChanged(deck) || repair.IsRepaired(target))
-                repair.State = State.Reset;
-            repair.UpdateTarget(target);
-            repair.Deck = deck;
         }
 
         public RepairSpan[] GetTimers(int fleet)
