@@ -236,6 +236,10 @@ namespace KancolleSniffer
 
         public bool CheckReparing() => Enumerable.Range(0, ShipInfo.FleetCount).Any(CheckReparing);
 
+        public bool CheckPresetReparing()
+            => _shipInfo.PresetDeck.Where(deck => deck != null)
+                .Any(deck => RepairTarget(deck).Any(s => s.NowHp < s.MaxHp));
+
         public Notice[] GetNotice()
         {
             var now = DateTime.Now;

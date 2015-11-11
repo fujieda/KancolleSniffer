@@ -221,6 +221,11 @@ namespace KancolleSniffer
                 _miscTextInfo.InspectPracticeEnemyInfo(data);
                 return Update.Item;
             }
+            if (url.EndsWith("api_get_member/preset_deck"))
+            {
+                _shipInfo.InspectPresetDeck(data);
+                return Update.None;
+            }
             return Update.None;
         }
 
@@ -357,6 +362,11 @@ namespace KancolleSniffer
                 _shipInfo.InspectDeck(new[] {data});
                 _akashiTimer.CheckFleet();
                 return Update.Ship;
+            }
+            if (url.EndsWith("api_req_hensei/preset_register"))
+            {
+                _shipInfo.InspectPresetRegister(data);
+                return Update.None;
             }
             if (url.EndsWith("api_req_hokyu/charge"))
             {

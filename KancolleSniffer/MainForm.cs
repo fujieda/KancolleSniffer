@@ -138,7 +138,8 @@ namespace KancolleSniffer
         {
             if (_debugLogFile != null)
             {
-                File.AppendAllText(_debugLogFile, $"url: {url}\nrequest: {request}\nresponse: {(response ?? "(null)")}\n");
+                File.AppendAllText(_debugLogFile,
+                    $"url: {url}\nrequest: {request}\nresponse: {(response ?? "(null)")}\n");
             }
         }
 
@@ -553,8 +554,9 @@ namespace KancolleSniffer
 
         private void NotifyAkashiTimer()
         {
-            var msgs = _sniffer.AkashiTimer.GetNotice();
-            if (msgs.Length == 0 || !_sniffer.AkashiTimer.CheckReparing())
+            var akashi = _sniffer.AkashiTimer;
+            var msgs = akashi.GetNotice();
+            if (msgs.Length == 0 || !(akashi.CheckReparing() || akashi.CheckPresetReparing()))
                 return;
             if (msgs[0].Proceeded == "20分経過しました。")
             {
@@ -733,20 +735,20 @@ namespace KancolleSniffer
 
         private void UpdateAkashiTimer()
         {
-            var span = _sniffer.AkashiTimer.PresetDeckTimer;
-            var repairing = _sniffer.AkashiTimer.CheckReparing(_currentFleet);
-            if (_config.UsePresetAkashi)
+            var akashi = _sniffer.AkashiTimer;
+            var span = akashi.PresetDeckTimer;
+            if (_config.UsePresetAkashi && !akashi.CheckReparing(_currentFleet))
             {
-                labelPresetDeckTimer.ForeColor = span == TimeSpan.Zero && !repairing ? Color.Red : DefaultForeColor;
-                labelPresetDeckTimer.Text = span == TimeSpan.MinValue || repairing ? "" : span.ToString(@"mm\:ss");
+                labelPresetDeckTimer.ForeColor =
+                    span == TimeSpan.Zero && akashi.CheckPresetReparing() ? Color.Red : DefaultForeColor;
+                labelPresetDeckTimer.Text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
             }
             else
             {
                 labelPresetDeckTimer.ForeColor = DefaultForeColor;
                 labelPresetDeckTimer.Text = "";
             }
-            _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet),
-                _sniffer.AkashiTimer.GetTimers(_currentFleet));
+            _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet), akashi.GetTimers(_currentFleet));
             NotifyAkashiTimer();
         }
 

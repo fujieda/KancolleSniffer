@@ -194,6 +194,7 @@ namespace KancolleSniffer
         private int _hqLevel;
         private readonly List<int> _escapedShips = new List<int>();
         private int _combinedFleetType;
+        private readonly int[][] _presetDeck = new int[5][];
 
         public ShipInfo(ItemInfo itemInfo)
         {
@@ -388,6 +389,26 @@ namespace KancolleSniffer
             _shipInfo.Remove(ship);
         }
 
+        public void InspectPresetDeck(dynamic json)
+        {
+            foreach (KeyValuePair<string, dynamic> entry in json.api_deck)
+                InspectPresetRegister(entry.Value);
+        }
+
+        public void InspectPresetRegister(dynamic json)
+        {
+            var no = (int)json.api_preset_no - 1;
+            _presetDeck[no] = json.api_ship;
+        }
+
+        public void InspectPresetDelete(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            _presetDeck[int.Parse(values["api_preset_no"])] = null;
+        }
+
+        public int[][] PresetDeck => _presetDeck;
+
         public void StartSortie(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
@@ -416,7 +437,7 @@ namespace KancolleSniffer
 
         public int[] GetDeck(int fleet) => _decks[fleet];
 
-        public ShipStatus GetStatus(int  id)
+        public ShipStatus GetStatus(int id)
         {
             var s = _shipInfo[id];
             s.Slot = (from item in s.Slot select _itemInfo.GetStatus(item.Id)).ToArray();
