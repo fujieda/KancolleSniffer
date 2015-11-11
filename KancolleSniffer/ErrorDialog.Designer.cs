@@ -62,6 +62,7 @@ namespace KancolleSniffer
             this.textBoxDetails.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxDetails.Size = new System.Drawing.Size(348, 162);
             this.textBoxDetails.TabIndex = 5;
+            this.textBoxDetails.WordWrap = false;
             // 
             // buttonContinue
             // 
