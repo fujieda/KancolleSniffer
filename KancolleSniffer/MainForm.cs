@@ -731,20 +731,11 @@ namespace KancolleSniffer
             }
         }
 
-        private bool _presetDeckTimerAvailable;
-
-
-        private void labelPresetDeckTimer_Click(object sender, EventArgs e)
-        {
-            _presetDeckTimerAvailable = !_presetDeckTimerAvailable;
-            UpdateAkashiTimer();
-        }
-
         private void UpdateAkashiTimer()
         {
             var span = _sniffer.AkashiTimer.PresetDeckTimer;
             var repairing = _sniffer.AkashiTimer.CheckReparing(_currentFleet);
-            if (_presetDeckTimerAvailable)
+            if (_config.UsePresetAkashi)
             {
                 labelPresetDeckTimer.ForeColor = span == TimeSpan.Zero && !repairing ? Color.Red : DefaultForeColor;
                 labelPresetDeckTimer.Text = span == TimeSpan.MinValue || repairing ? "" : span.ToString(@"mm\:ss");

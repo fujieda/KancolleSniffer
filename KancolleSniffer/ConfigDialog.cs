@@ -64,6 +64,7 @@ namespace KancolleSniffer
             checkBoxReset14.Checked = _config.ResetHours.Contains(14);
             radioButtonResultRankAlways.Checked = _config.AlwaysShowResultRank;
             radioButtonResultRankWhenClick.Checked = !_config.AlwaysShowResultRank;
+            checkBoxPresetAkashi.Checked = _config.UsePresetAkashi;
 
             numericUpDownSoundVolume.Value = _config.SoundVolume;
 
@@ -169,6 +170,7 @@ namespace KancolleSniffer
 
             _config.AlwaysShowResultRank = radioButtonResultRankAlways.Checked;
             _main.UpdateFighterPower();
+            _config.UsePresetAkashi = checkBoxPresetAkashi.Checked;
 
             _config.SoundVolume = (int)numericUpDownSoundVolume.Value;
 

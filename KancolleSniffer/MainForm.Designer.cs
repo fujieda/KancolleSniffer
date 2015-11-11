@@ -60,6 +60,7 @@ namespace KancolleSniffer
             this.labelNumOfShips = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panelShipInfo = new System.Windows.Forms.Panel();
+            this.labelGuide = new System.Windows.Forms.Label();
             this.labelPresetDeckTimer = new System.Windows.Forms.Label();
             this.panelBattleInfo = new System.Windows.Forms.Panel();
             this.labelEnemyFighterPower = new System.Windows.Forms.Label();
@@ -163,7 +164,6 @@ namespace KancolleSniffer
             this.labelFuelSq4 = new System.Windows.Forms.Label();
             this.toolTipAchievement = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipFigherPower = new System.Windows.Forms.ToolTip(this.components);
-            this.labelGuide = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -314,13 +314,22 @@ namespace KancolleSniffer
             this.panelShipInfo.Size = new System.Drawing.Size(220, 134);
             this.panelShipInfo.TabIndex = 2;
             // 
+            // labelGuide
+            // 
+            this.labelGuide.AutoSize = true;
+            this.labelGuide.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.labelGuide.Location = new System.Drawing.Point(31, 51);
+            this.labelGuide.Name = "labelGuide";
+            this.labelGuide.Size = new System.Drawing.Size(158, 13);
+            this.labelGuide.TabIndex = 44;
+            this.labelGuide.Text = "右クリックでメニューが出ます。";
+            // 
             // labelPresetDeckTimer
             // 
             this.labelPresetDeckTimer.Location = new System.Drawing.Point(2, 3);
             this.labelPresetDeckTimer.Name = "labelPresetDeckTimer";
             this.labelPresetDeckTimer.Size = new System.Drawing.Size(31, 12);
             this.labelPresetDeckTimer.TabIndex = 43;
-            this.labelPresetDeckTimer.Click += new System.EventHandler(this.labelPresetDeckTimer_Click);
             // 
             // panelBattleInfo
             // 
@@ -1238,16 +1247,6 @@ namespace KancolleSniffer
             // toolTipAchievement
             // 
             this.toolTipAchievement.ShowAlways = true;
-            // 
-            // labelGuide
-            // 
-            this.labelGuide.AutoSize = true;
-            this.labelGuide.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelGuide.Location = new System.Drawing.Point(31, 51);
-            this.labelGuide.Name = "labelGuide";
-            this.labelGuide.Size = new System.Drawing.Size(158, 13);
-            this.labelGuide.TabIndex = 44;
-            this.labelGuide.Text = "右クリックでメニューが出ます。";
             // 
             // MainForm
             // 

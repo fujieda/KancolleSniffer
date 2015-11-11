@@ -120,6 +120,7 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
+            this.checkBoxPresetAkashi = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tabPageShow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -339,6 +340,7 @@ namespace KancolleSniffer
             // 
             // tabPageAchievement
             // 
+            this.tabPageAchievement.Controls.Add(this.checkBoxPresetAkashi);
             this.tabPageAchievement.Controls.Add(this.groupBox3);
             this.tabPageAchievement.Controls.Add(this.groupBox2);
             this.tabPageAchievement.Location = new System.Drawing.Point(4, 40);
@@ -914,6 +916,16 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
+            // checkBoxPresetAkashi
+            // 
+            this.checkBoxPresetAkashi.AutoSize = true;
+            this.checkBoxPresetAkashi.Location = new System.Drawing.Point(20, 124);
+            this.checkBoxPresetAkashi.Name = "checkBoxPresetAkashi";
+            this.checkBoxPresetAkashi.Size = new System.Drawing.Size(117, 16);
+            this.checkBoxPresetAkashi.TabIndex = 19;
+            this.checkBoxPresetAkashi.Text = "プリセット明石を使う";
+            this.checkBoxPresetAkashi.UseVisualStyleBackColor = true;
+            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -937,6 +949,7 @@ namespace KancolleSniffer
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginEquips)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).EndInit();
             this.tabPageAchievement.ResumeLayout(false);
+            this.tabPageAchievement.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -1038,5 +1051,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton radioButtonResultRankWhenClick;
         private System.Windows.Forms.RadioButton radioButtonResultRankAlways;
+        private System.Windows.Forms.CheckBox checkBoxPresetAkashi;
     }
 }

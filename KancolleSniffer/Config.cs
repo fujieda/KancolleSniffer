@@ -92,6 +92,7 @@ namespace KancolleSniffer
         public List<int> NotifyConditions { get; set; }
         public List<int> ResetHours { get; set; }
         public bool AlwaysShowResultRank { get; set; }
+        public bool UsePresetAkashi { get; set; }
         public int SoundVolume { get; set; }
         public string MissionSoundFile { get; set; }
         public string NDockSoundFile { get; set; }
