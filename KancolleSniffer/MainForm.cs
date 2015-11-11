@@ -21,11 +21,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -197,36 +195,7 @@ namespace KancolleSniffer
         {
             if (e.Mode != PowerModes.Resume || !_config.Proxy.Auto)
                 return;
-            Task.Run(() =>
-            {
-                for (var i = 0; i < 5; Thread.Sleep(10000), i++)
-                {
-                    WebResponse res = null;
-                    SystemProxy.Refresh();
-                    var system = WebRequest.GetSystemWebProxy();
-                    if (!system.GetProxy(new Uri("http://125.6.184.16/")).IsLoopback)
-                    {
-                        File.AppendAllText("wakeup.log",
-                            $"[{DateTime.Now.ToString("g")}] proxy settings doesn't work.\r\n");
-                        continue;
-                    }
-                    try
-                    {
-                        var req = WebRequest.Create("http://kancollesniffer.osdn.jp/version");
-                        res = req.GetResponse();
-                        break;
-                    }
-                    catch
-                    {
-                        File.AppendAllText("wakeup.log",
-                            $"[{DateTime.Now.ToString("g")}] failed to connect internet.\r\n");
-                    }
-                    finally
-                    {
-                        res?.Close();
-                    }
-                }
-            });
+            SystemProxy.EnsureRefresh(true);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -237,7 +206,10 @@ namespace KancolleSniffer
             Task.Run(() => ShutdownProxy());
             _logServer?.Stop();
             if (_config.Proxy.Auto)
+            {
                 _systemProxy.RestoreSettings();
+                SystemProxy.EnsureRefresh(false);
+            }
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
         }
 
