@@ -206,9 +206,12 @@ function pickChartData(data, range)
         first = moment(last).subtract(1, 'months').valueOf();
         break;
     case 3:
-        first = moment(data[0][0]).valueOf();
+        first = moment(last).subtract(3, 'months').valueOf();
         break;
     case 4:
+        first = moment(data[0][0]).valueOf();
+        break;
+    case 5:
         fromDate = $('#chart_from').datepicker("getDate");
         toDate = $('#chart_to').datepicker("getDate");
         if (fromDate == null || toDate == null)
@@ -602,11 +605,17 @@ function initTableDatePicker()
 function initChartDatePicker()
 {
     $('#chart_from').datepicker({
-        onClose: function() {if (selectedRange == 4) drawChart();}
+        onClose: function() {if (useChartDatePicker()) drawChart();}
     })
     $('#chart_to').datepicker({
-        onClose: function() {if (selectedRange == 4) drawChart();}
+        onClose: function() {if (useChartDatePicker()) drawChart();}
     });
+}
+
+function useChartDatePicker()
+{
+    return (chartType == 0 && selectedRange == 5) ||
+        (chartType == 1 && selectedRange == 4);
 }
 
 $(function() {
@@ -722,6 +731,7 @@ $(function() {
 <li>一日</li>
 <li>一週間</li>
 <li>一か月</li>
+<li>三か月</li>
 <li>すべて</li>
 <li>期間指定</li>
 </ul>
