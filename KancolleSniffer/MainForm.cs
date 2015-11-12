@@ -19,11 +19,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -101,23 +103,21 @@ namespace KancolleSniffer
                 ShowServerError(url, request, response);
                 return;
             }
-            response = response.Remove(0, "svdata=".Length);
+            response = UnescapeString(response.Remove(0, "svdata=".Length));
+            WriteDebugLog(url, request, response);
             try
             {
-                var json = DynamicJson.Parse(response);
-                WriteDebugLog(url, request, json.ToString());
-                var update = _sniffer.Sniff(url, request, json);
+                var update = _sniffer.Sniff(url, request, DynamicJson.Parse(response));
                 if (update == Sniffer.Update.Error)
                 {
-                    ShowServerError(url, request, json.ToString());
+                    ShowServerError(url, request, response);
                     return;
                 }
                 UpdateInfo(update);
             }
-            catch (XmlException)
+            catch (XmlException e)
             {
-                WriteDebugLog(url, request, response);
-                ShowServerError(url, request, response);
+                ShowServerError(url, request, response, e);
             }
             catch (RuntimeBinderException e)
             {
@@ -137,17 +137,31 @@ namespace KancolleSniffer
             if (_debugLogFile != null)
             {
                 File.AppendAllText(_debugLogFile,
-                    $"url: {url}\nrequest: {request}\nresponse: {(response ?? "(null)")}\n");
+                    $"url: {url}\nrequest: {request}\nresponse: {response ?? "(null)"}\n");
             }
         }
 
-        private void ShowServerError(string url, string request, string response)
+        private void ShowServerError(string url, string request, string response, Exception e = null)
         {
             if (_errorDialog.Visible)
                 return;
             if (_errorDialog.ShowDialog(this, "サーバーからの応答が異常です。",
-                $"url: {url}\r\nrequest: {request}\r\nresponse: {(response ?? "(null)")}\r\n") == DialogResult.Abort)
+                $"{(e == null ? "" : e.Message + "\r\n")}url: {url}\r\nrequest: {request}\r\nresponse: {response ?? "(null)"}\r\n") ==
+                DialogResult.Abort)
                 Application.Exit();
+        }
+
+        private string UnescapeString(string s)
+        {
+            try
+            {
+                var rx = new Regex(@"\\[uU]([0-9A-Fa-f]{4})");
+                return rx.Replace(s, match => ((char)int.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
+            }
+            catch (ArgumentException)
+            {
+                return s;
+            }
         }
 
         private void UpdateInfo(Sniffer.Update update)
