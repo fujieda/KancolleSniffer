@@ -115,7 +115,8 @@ function to5am(tick)
 }
 
 var selectedTable = 0;
-var selectedRange = 0;
+var seqChartRange = 0;
+var diffChartRange = 0;
 var chartType = 0;
 
 function drawChart(data)
@@ -133,7 +134,7 @@ function drawChart(data)
 
 function drawSeqChart(data)
 {
-    picked = pickChartData(data.data, selectedRange);
+    picked = pickChartData(data.data, seqChartRange);
     var header = ["日付","燃料","弾薬","鋼材","ボーキ","高速建造材","高速修復材","開発資材","改修資材"];
     picked.data.unshift(header);
     var chart = c3.generate({
@@ -266,7 +267,7 @@ function pickChartData(data, range)
 
 function drawDiffChart(data)
 {
-    picked = pickDiffChartData(data.data, selectedRange);
+    picked = pickDiffChartData(data.data, diffChartRange);
     var header = ["日付","燃料","弾薬","鋼材","ボーキ"];
     picked.data.unshift(header);
     var chart = c3.generate({
@@ -554,35 +555,34 @@ function initAction()
     $('#range_seq li').click(function() {
         var tab = $('#range_seq li');
         var i = tab.index(this);
-        selectedRange = i;
+        seqChartRange = i;
         chartType = 0;
         drawChart();
         tab.removeClass('select');
         tab.eq(i).addClass('select');
-        sessionStorage.setItem('prevRange', i);
+        sessionStorage.setItem('prevSeqRange', i);
     });
     $('#range_diff li').click(function() {
         var tab = $('#range_diff li');
         var i = tab.index(this);
-        selectedRange = i;
+        diffChartRange = i;
         chartType = 1;
         drawChart();
         tab.removeClass('select');
         tab.eq(i).addClass('select');
-        sessionStorage.setItem('prevRange', i);
+        sessionStorage.setItem('prevDiffRange', i);
     });
     $('input[name="chart_type"]:radio').change(function() {
         if ($(this).val() == 0) {
             $("#range_seq").show();
             $("#range_diff").hide();
-            $("#range_seq li").removeClass('select');
             chartType = 0;
         } else {
             $("#range_seq").hide();
             $("#range_diff").show();
-            $("#range_diff li").removeClass('select');
             chartType = 1;
         }
+        drawChart();
         sessionStorage.setItem('chartType', $(this).val());
     });
     $('#tooltip').change(function() {
@@ -614,8 +614,8 @@ function initChartDatePicker()
 
 function useChartDatePicker()
 {
-    return (chartType == 0 && selectedRange == 5) ||
-        (chartType == 1 && selectedRange == 4);
+    return (chartType == 0 && seqChartRange == 5) ||
+        (chartType == 1 && diffChartRange == 4);
 }
 
 $(function() {
@@ -628,8 +628,10 @@ $(function() {
     initSortieStat();
     var type = sessionStorage.getItem('chartType');
     chartType = type == null ? 0 : +type;
-    var range = sessionStorage.getItem('prevRange');
-    selectedRange = range == null ? 0 : +range;
+    var range = sessionStorage.getItem('prevSeqRange');
+    seqChartRange = range == null ? 0 : +range;
+    range = sessionStorage.getItem('prevDiffRange');
+    seqDiffRange = range == null ? 0 : +range;
     $('input[name="chart_type"]:radio').eq(chartType).prop("checked", true);
     if (chartType == 0) {
         $('#range_seq').show()
@@ -639,9 +641,9 @@ $(function() {
         $('#range_diff').show()
     }
     $('#range_diff li').removeClass('select');
-    $('#range_diff li').eq(range).addClass('select');
+    $('#range_diff li').eq(diffChartRange).addClass('select');
     $('#range_seq li').removeClass('select');
-    $('#range_seq li').eq(range).addClass('select');
+    $('#range_seq li').eq(seqChartRange).addClass('select');
     var prev = sessionStorage.getItem('prevTab');
     selectTopTab(prev == null ? 0 : +prev);
 });
