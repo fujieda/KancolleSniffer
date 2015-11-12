@@ -114,6 +114,78 @@ function to5am(tick)
     return tick - tick % (3600 * 24000) - 3600 * 4000;
 }
 
+var selectedTable = 0;
+var selectedRange = 0;
+var chartType = 0;
+
+function drawChart(data)
+{
+    if (data == null) {
+        $('#loading').show();
+        $.get("./資材ログ.json?time=" + Date.now(), function (data) { drawChart(data);}, "json");
+        return;
+    }
+    if (chartType == 0)
+        drawSeqChart(data)
+    else
+        drawDiffChart(data)
+}
+
+function drawSeqChart(data)
+{
+    picked = pickChartData(data.data, selectedRange);
+    var header = ["日付","燃料","弾薬","鋼材","ボーキ","高速建造材","高速修復材","開発資材","改修資材"];
+    picked.data.unshift(header);
+    var chart = c3.generate({
+        bindto: '#chart',
+        size: {
+            height: 400,
+            width: 800
+        },
+        data: {
+            x: '日付',
+            xFormat: '%Y-%m-%d %X',
+            rows: picked.data,
+            axes: {
+                燃料: 'y',
+                弾薬: 'y',
+                鋼材: 'y',
+                ボーキ: 'y',
+                高速建造材: 'y2',
+                高速修復材: 'y2',
+                開発資材: 'y2',
+                改修資材: 'y2'
+            }
+        },
+        point: {
+            show: false
+        },
+        tooltip: {
+            show: $('#tooltip').prop('checked')
+        },
+        grid: {
+            x: {
+                lines: picked.grid
+            }
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    rotate: 30,
+                    format: function (x) { return moment(x).format("MM-DD HH:mm"); },
+                    values: picked.tick
+                },
+                height: 60
+            },
+            y2: {
+                show: true
+            }
+        },
+        onrendered: function () { $('#loading').hide(); }
+    });
+}
+
 function pickChartData(data, range)
 {
     var newdata = [];
@@ -189,18 +261,10 @@ function pickChartData(data, range)
     return { data: newdata, tick: ticks, grid: grid };
 }
 
-var selectedTable = 0;
-var selectedRange = 0;
-
-function drawChart(data)
+function drawDiffChart(data)
 {
-    if (data == null) {
-        $('#loading').show();
-        $.get("./資材ログ.json?time=" + Date.now(), function (data) { drawChart(data);}, "json");
-        return;
-    }
-    picked = pickChartData(data.data, selectedRange);
-    var header = ["日付","燃料","弾薬","鋼材","ボーキ","高速建造材","高速修復材","開発資材","改修資材"];
+    picked = pickDiffChartData(data.data, selectedRange);
+    var header = ["日付","燃料","弾薬","鋼材","ボーキ"];
     picked.data.unshift(header);
     var chart = c3.generate({
         bindto: '#chart',
@@ -217,14 +281,14 @@ function drawChart(data)
                 弾薬: 'y',
                 鋼材: 'y',
                 ボーキ: 'y',
-                高速建造材: 'y2',
-                高速修復材: 'y2',
-                開発資材: 'y2',
-                改修資材: 'y2'
-            }
+            },
+            type: 'bar',
+            groups: [["燃料", "弾薬", "鋼材", "ボーキ"]]
         },
-        point: {
-            show: false
+        bar: {
+                width: {
+                    ratio: picked.width
+              }
         },
         tooltip: {
             show: $('#tooltip').prop('checked')
@@ -232,6 +296,11 @@ function drawChart(data)
         grid: {
             x: {
                 lines: picked.grid
+            },
+            y: {
+                lines: [
+                    {value: 0}
+                ]
             }
         },
         axis: {
@@ -244,12 +313,96 @@ function drawChart(data)
                 },
                 height: 60
             },
-            y2: {
-                show: true
-            }
         },
         onrendered: function () { $('#loading').hide(); }
     });
+}
+
+function pickDiffChartData(data, range)
+{
+    var newdata = [];
+    var ticks = [];
+    var grid = [];
+    var first = moment(data[0][0]).valueOf();
+    var last = moment(data[data.length - 1][0]).valueOf();
+    var interval, tickInterval, lastTick;
+    const oneDay = 3600 * 24 * 1000;
+    switch (range) {
+    case 0:
+        first = moment(last).subtract(1, 'months').valueOf();
+        break;
+    case 1:
+        first = moment(last).subtract(3, 'months').valueOf();
+        break;
+    case 2:
+        first = moment(last).subtract(6, 'months').subtract(1, 'weeks').valueOf();
+        break;
+    case 3:
+        first = moment(data[0][0]).valueOf();
+        break;
+    case 4:
+        fromDate = $('#chart_from').datepicker("getDate");
+        toDate = $('#chart_to').datepicker("getDate");
+        if (fromDate == null || toDate == null)
+            return { data: [], tick: [], grid: [] };
+        from = fromDate.valueOf() + 3600 * 5000;
+        to = toDate.valueOf() + oneDay + 3600 * 5000;
+        first = Math.max(first, from);
+        last = Math.min(last, to);
+        break;
+    }
+    if (last <= first + oneDay * 2 * 31) {
+        interval = oneDay;
+        tickInterval = oneDay * 2;
+        lastTick = to5am(last);
+        barWidth = 0.3;
+    } else if (last <= first + oneDay * 3 * 31) {
+        interval = oneDay;
+        tickInterval = oneDay * 7;
+        lastTick = to5am(last);
+        barWidth = 0.1;
+    } else {
+        interval = oneDay * 7;
+        tickInterval = oneDay * 14;
+        lastTick = to5am(moment(last).day(1).valueOf());
+        barWidth = 0.3;
+        if (last <= first + oneDay * 8 * 31){
+            tickInterval = oneDay * 7;
+            barWidth = 0.6;
+        }
+    }
+    var last_date = lastTick;
+    var prev_row;
+    for (var i = data.length - 1; i >= 0; i--) {
+        var row = data[i];
+        var date = parseDate(row[0]).valueOf();
+        if (date > first && date <= last) {
+            if (!prev_row) {
+                prev_row = row;
+                continue;
+            }
+            if (date <= last_date) {
+                var newrow = [prev_row[0]];
+                for (var r = 1; r < 5; r++) {
+                    newrow.push(prev_row[r] - row[r] )
+                }
+                newdata.unshift(newrow);
+                last_date = last_date - interval;
+                prev_row = row;
+            }
+        } else {
+            break;
+        }
+    }
+    if (tickInterval >= oneDay * 7)
+        lastTick = moment(lastTick).day(1).hour(5).minute(0).valueOf();
+    for (var tick = lastTick; tick > last_date; tick -= tickInterval)
+    {
+        var str = toString(moment(tick));
+        ticks.unshift(str);
+        grid.unshift({value: str});
+    }
+    return { data: newdata, tick: ticks, grid: grid, width: barWidth };
 }
 
 function setSortieStat(data) {
@@ -395,14 +548,39 @@ function initAction()
         selectTopTab(i);
         sessionStorage.setItem('prevTab', i);
     });
-    $('.tab1 li').click(function() {
-        var tab = $('.tab1 li');
+    $('#range_seq li').click(function() {
+        var tab = $('#range_seq li');
         var i = tab.index(this);
         selectedRange = i;
+        chartType = 0;
         drawChart();
         tab.removeClass('select');
         tab.eq(i).addClass('select');
         sessionStorage.setItem('prevRange', i);
+    });
+    $('#range_diff li').click(function() {
+        var tab = $('#range_diff li');
+        var i = tab.index(this);
+        selectedRange = i;
+        chartType = 1;
+        drawChart();
+        tab.removeClass('select');
+        tab.eq(i).addClass('select');
+        sessionStorage.setItem('prevRange', i);
+    });
+    $('input[name="chart_type"]:radio').change(function() {
+        if ($(this).val() == 0) {
+            $("#range_seq").show();
+            $("#range_diff").hide();
+            $("#range_seq li").removeClass('select');
+            chartType = 0;
+        } else {
+            $("#range_seq").hide();
+            $("#range_diff").show();
+            $("#range_diff li").removeClass('select');
+            chartType = 1;
+        }
+        sessionStorage.setItem('chartType', $(this).val());
     });
     $('#tooltip').change(function() {
         drawChart();
@@ -439,9 +617,22 @@ $(function() {
     $('table').addClass('display compact cell-border');
     initTables();
     initSortieStat();
+    var type = sessionStorage.getItem('chartType');
+    chartType = type == null ? 0 : +type;
     var range = sessionStorage.getItem('prevRange');
     selectedRange = range == null ? 0 : +range;
-    $('.tab1 li').eq(range).addClass('select');
+    $('input[name="chart_type"]:radio').eq(chartType).prop("checked", true);
+    if (chartType == 0) {
+        $('#range_seq').show()
+        $('#range_diff').hide()
+    } else {
+        $('#range_seq').hide()
+        $('#range_diff').show()
+    }
+    $('#range_diff li').removeClass('select');
+    $('#range_diff li').eq(range).addClass('select');
+    $('#range_seq li').removeClass('select');
+    $('#range_seq li').eq(range).addClass('select');
     var prev = sessionStorage.getItem('prevTab');
     selectTopTab(prev == null ? 0 : +prev);
 });
@@ -521,11 +712,24 @@ $(function() {
 </table>
 
 <li class="hide">
-<ul class="tab tab1" style="float: left; margin-right: 2px;">
+<form id="chart_type">
+<div style="margin: 0px 0px 0.5em 1em;">
+<label><input type="radio" name="chart_type" value="0" checked="checked">連続</label>
+<label><input type="radio" name="chart_type" value="1">差分</label>
+</div>
+</form>
+<ul class="tab tab1" id="range_seq" style="float: left; margin-right: 0.2em">
 <li>一日</li>
 <li>一週間</li>
 <li>一か月</li>
 <li>すべて</li>
+<li>期間指定</li>
+</ul>
+<ul class="tab tab1" id="range_diff" style="float: left; margin-right: 0.2em">
+<li>一か月(日)</li>
+<li>三か月(日)</li>
+<li>半年(週)</li>
+<li>すべて(週)</li>
 <li>期間指定</li>
 </ul>
 <div style="padding: 0.2em 0em;">
