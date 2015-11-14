@@ -542,7 +542,8 @@ namespace KancolleSniffer
         {
             var akashi = _sniffer.AkashiTimer;
             var msgs = akashi.GetNotice();
-            if (msgs.Length == 0 || !(akashi.CheckReparing() || akashi.CheckPresetReparing()))
+            if (msgs.All(msg => msg.Completed != "" || msg.Proceeded != "") ||
+                !(akashi.CheckReparing() || akashi.CheckPresetReparing()))
                 return;
             if (msgs[0].Proceeded == "20分経過しました。")
             {
