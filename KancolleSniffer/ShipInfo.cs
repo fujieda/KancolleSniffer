@@ -439,7 +439,9 @@ namespace KancolleSniffer
 
         public ShipStatus GetStatus(int id)
         {
-            var s = _shipInfo[id];
+            ShipStatus s;
+            if (!_shipInfo.TryGetValue(id, out s))
+                return new ShipStatus();
             s.Slot = (from item in s.Slot select _itemInfo.GetStatus(item.Id)).ToArray();
             s.SlotEx = _itemInfo.GetStatus(s.SlotEx.Id);
             s.Escaped = _escapedShips.Contains(id);
