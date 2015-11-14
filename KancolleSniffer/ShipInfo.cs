@@ -404,7 +404,7 @@ namespace KancolleSniffer
         public void InspectPresetDelete(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
-            _presetDeck[int.Parse(values["api_preset_no"])] = null;
+            _presetDeck[int.Parse(values["api_preset_no"]) - 1] = null;
         }
 
         public int[][] PresetDeck => _presetDeck;
