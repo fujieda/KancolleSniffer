@@ -203,7 +203,7 @@ namespace KancolleSniffer
         private ShipStatus[] RepairTarget(int[] deck)
         {
             var fs = _shipInfo.GetStatus(deck[0]);
-            if (fs.DamageLevel >= ShipStatus.Damage.Half)
+            if (!fs.Spec.IsRepairShip || _dockInfo.InNDock(fs.Id) || fs.DamageLevel >= ShipStatus.Damage.Half)
                 return new ShipStatus[0];
             var cap = fs.Slot.Count(item => item.Spec.IsRepairFacility) + 2;
             /*
