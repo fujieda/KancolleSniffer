@@ -34,7 +34,6 @@ using System.Xml;
 using Codeplex.Data;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Win32;
-using Nekoxy;
 using static System.Math;
 using Timer = System.Windows.Forms.Timer;
 
@@ -90,12 +89,12 @@ namespace KancolleSniffer
             _noticeQueue = new NoticeQueue(Ring);
         }
 
-        private void HttpProxy_AfterSessionComplete(Session session)
+        private void HttpProxy_AfterSessionComplete(HttpProxy.Session session)
         {
-            Invoke(new Action<Session>(ProcessRequest), session);
+            Invoke(new Action<HttpProxy.Session>(ProcessRequest), session);
         }
 
-        private void ProcessRequest(Session session)
+        private void ProcessRequest(HttpProxy.Session session)
         {
             var url = session.Request.PathAndQuery;
             var request = session.Request.BodyAsString;
@@ -121,6 +120,10 @@ namespace KancolleSniffer
                     return;
                 }
                 UpdateInfo(update);
+            }
+            catch (FormatException e)
+            {
+                ShowServerError(url, request, response, e);
             }
             catch (XmlException e)
             {

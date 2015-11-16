@@ -81,6 +81,7 @@
     <Compile Include="ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="HttpProxy.cs" />
     <Compile Include="ItemTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -155,12 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Nekoxy\Nekoxy.csproj">
-      <Project>{92dfa8a8-a110-4692-862d-7f0c229794b5}</Project>
-      <Name>Nekoxy</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
