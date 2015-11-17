@@ -16,11 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.IO;
-using System.Net;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 // ReSharper disable UnusedMember.Local
 
@@ -130,53 +126,6 @@ namespace KancolleSniffer
         {
             InternetSetOption(IntPtr.Zero, InternetOption.INTERNET_OPTION_PROXY_SETTINGS_CHANGED, IntPtr.Zero, 0);
             InternetSetOption(IntPtr.Zero, InternetOption.INTERNET_OPTION_REFRESH, IntPtr.Zero, 0);
-        }
-
-        public static void EnsureRefresh(bool enabling)
-        {
-            Task.Run(() =>
-            {
-                for (var i = 0; i < 5; Thread.Sleep(10000), i++)
-                {
-                    if (enabling && !ProxySettingsWorking)
-                    {
-                        File.AppendAllText("wakeup.log",
-                            $"[{DateTime.Now.ToString("g")}] proxy settings doesn't work.\r\n");
-                        continue;
-                    }
-                    if (!InternetConnectionWorking)
-                    {
-                        File.AppendAllText("wakeup.log",
-                            $"[{DateTime.Now.ToString("g")}] failed to connect internet.\r\n");
-                    }
-                    Refresh();
-                }
-            });
-        }
-
-        private static bool ProxySettingsWorking =>
-            WebRequest.GetSystemWebProxy().GetProxy(new Uri("http://125.6.184.16/")).IsLoopback;
-
-        private static bool InternetConnectionWorking
-        {
-            get
-            {
-                var req = WebRequest.Create("http://kancollesniffer.osdn.jp/version");
-                WebResponse res = null;
-                try
-                {
-                    res = req.GetResponse();
-                }
-                catch
-                {
-                    return false;
-                }
-                finally
-                {
-                    res?.Close();
-                }
-                return true;
-            }
         }
 
         [DllImport("WinInet.dll", SetLastError = true, CharSet = CharSet.Auto)]
