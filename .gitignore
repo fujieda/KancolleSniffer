@@ -1,4 +1,4 @@
 *.suo
 bin/
 obj/
-KancolleSniffer.Test/logs/
+packages/
