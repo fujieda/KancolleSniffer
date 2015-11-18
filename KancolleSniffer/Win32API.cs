@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -34,19 +35,29 @@ namespace KancolleSniffer
 
         public static bool ProcessAlreadyExists()
         {
-            var cur = Process.GetCurrentProcess();
-            var all = Process.GetProcessesByName(cur.ProcessName);
-            foreach (var p in all)
+            try
             {
-                if (cur.Id == p.Id)
-                    continue;
-                if (p.MainModule.FileName != cur.MainModule.FileName)
-                    continue;
-                if (IsIconic(p.MainWindowHandle))
-                    ShowWindowAsync(p.MainWindowHandle, 9); // SW_RESTORE
-                else
-                    SetForegroundWindow(p.MainWindowHandle);
-                return true;
+                var cur = Process.GetCurrentProcess();
+                var all = Process.GetProcessesByName(cur.ProcessName);
+                foreach (var p in all)
+                {
+                    if (cur.Id == p.Id)
+                        continue;
+                    if (p.MainModule.FileName != cur.MainModule.FileName)
+                        continue;
+                    if (IsIconic(p.MainWindowHandle))
+                        ShowWindowAsync(p.MainWindowHandle, 9); // SW_RESTORE
+                    else
+                        SetForegroundWindow(p.MainWindowHandle);
+                    return true;
+                }
+            }
+            /*
+             * マルウェア対策ソフトが原因でMainModule.FileNameが失敗することがあり、
+             * その場合はWin32Exceptionが発生する。
+            */
+            catch (Win32Exception)
+            {
             }
             return false;
         }
