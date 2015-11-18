@@ -227,7 +227,7 @@ namespace KancolleSniffer
             {
                 if (_start == DateTime.MinValue)
                     return TimeSpan.MinValue;
-                var r = _start + TimeSpan.FromMinutes(20) - DateTime.Now;
+                var r = TimeSpan.FromMinutes(20) - TimeSpan.FromSeconds((int)(DateTime.Now - _start).TotalSeconds);
                 return r >= TimeSpan.Zero ? r : TimeSpan.Zero;
             }
         }
