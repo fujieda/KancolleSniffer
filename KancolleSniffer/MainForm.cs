@@ -757,16 +757,11 @@ namespace KancolleSniffer
         {
             var akashi = _sniffer.AkashiTimer;
             var span = akashi.PresetDeckTimer;
-            if (_config.UsePresetAkashi && !akashi.CheckReparing(_currentFleet))
+            if (_config.UsePresetAkashi)
             {
                 labelAkashiRepairTimer.ForeColor =
                     span == TimeSpan.Zero && akashi.CheckPresetReparing() ? Color.Red : DefaultForeColor;
                 labelAkashiRepairTimer.Text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
-            }
-            else
-            {
-                labelAkashiRepairTimer.ForeColor = DefaultForeColor;
-                labelAkashiRepairTimer.Text = "";
             }
             _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet), akashi.GetTimers(_currentFleet));
             NotifyAkashiTimer();
