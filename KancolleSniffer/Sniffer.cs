@@ -368,6 +368,10 @@ namespace KancolleSniffer
                 _shipInfo.InspectPresetRegister(data);
                 return Update.None;
             }
+            if (url.EndsWith("api_req_hensei/combined"))
+            {
+                _shipInfo.InspectCombined(request);
+            }
             if (url.EndsWith("api_req_hokyu/charge"))
             {
                 _shipInfo.InspectCharge(data);

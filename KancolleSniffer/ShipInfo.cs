@@ -407,6 +407,12 @@ namespace KancolleSniffer
             _presetDeck[int.Parse(values["api_preset_no"]) - 1] = null;
         }
 
+        public void InspectCombined(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            _combinedFleetType = int.Parse(values["api_combined_type"]);
+        }
+
         public int[][] PresetDeck => _presetDeck;
 
         public void StartSortie(string request)
