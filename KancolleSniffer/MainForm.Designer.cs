@@ -61,7 +61,6 @@ namespace KancolleSniffer
             this.label1 = new System.Windows.Forms.Label();
             this.panelShipInfo = new System.Windows.Forms.Panel();
             this.labelGuide = new System.Windows.Forms.Label();
-            this.labelPresetDeckTimer = new System.Windows.Forms.Label();
             this.panelCombinedFleet = new System.Windows.Forms.Panel();
             this.panelBattleInfo = new System.Windows.Forms.Panel();
             this.labelEnemyFighterPower = new System.Windows.Forms.Label();
@@ -74,6 +73,7 @@ namespace KancolleSniffer
             this.label27 = new System.Windows.Forms.Label();
             this.labelCondTimerTitle = new System.Windows.Forms.Label();
             this.labelCondTimer = new System.Windows.Forms.Label();
+            this.labelAkashiRepairTimer = new System.Windows.Forms.Label();
             this.panelMaterialHistory = new System.Windows.Forms.Panel();
             this.labelBouxiteHistory = new System.Windows.Forms.Label();
             this.labelSteelHistory = new System.Windows.Forms.Label();
@@ -165,6 +165,7 @@ namespace KancolleSniffer
             this.labelFuelSq4 = new System.Windows.Forms.Label();
             this.toolTipAchievement = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipFigherPower = new System.Windows.Forms.ToolTip(this.components);
+            this.labelAkashiRepair = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -302,7 +303,6 @@ namespace KancolleSniffer
             // 
             this.panelShipInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelShipInfo.Controls.Add(this.labelGuide);
-            this.panelShipInfo.Controls.Add(this.labelPresetDeckTimer);
             this.panelShipInfo.Controls.Add(this.panelCombinedFleet);
             this.panelShipInfo.Controls.Add(this.panelBattleInfo);
             this.panelShipInfo.Controls.Add(this.labelLoS);
@@ -325,13 +325,6 @@ namespace KancolleSniffer
             this.labelGuide.Size = new System.Drawing.Size(158, 13);
             this.labelGuide.TabIndex = 44;
             this.labelGuide.Text = "右クリックでメニューが出ます。";
-            // 
-            // labelPresetDeckTimer
-            // 
-            this.labelPresetDeckTimer.Location = new System.Drawing.Point(2, 3);
-            this.labelPresetDeckTimer.Name = "labelPresetDeckTimer";
-            this.labelPresetDeckTimer.Size = new System.Drawing.Size(31, 12);
-            this.labelPresetDeckTimer.TabIndex = 43;
             // 
             // panelCombinedFleet
             // 
@@ -437,6 +430,13 @@ namespace KancolleSniffer
             this.labelCondTimer.Size = new System.Drawing.Size(31, 12);
             this.labelCondTimer.TabIndex = 38;
             this.labelCondTimer.Text = "00:00";
+            // 
+            // labelAkashiRepairTimer
+            // 
+            this.labelAkashiRepairTimer.Location = new System.Drawing.Point(179, 276);
+            this.labelAkashiRepairTimer.Name = "labelAkashiRepairTimer";
+            this.labelAkashiRepairTimer.Size = new System.Drawing.Size(31, 12);
+            this.labelAkashiRepairTimer.TabIndex = 43;
             // 
             // panelMaterialHistory
             // 
@@ -1260,12 +1260,23 @@ namespace KancolleSniffer
             // 
             this.toolTipAchievement.ShowAlways = true;
             // 
+            // labelAkashiRepair
+            // 
+            this.labelAkashiRepair.AutoSize = true;
+            this.labelAkashiRepair.Location = new System.Drawing.Point(151, 276);
+            this.labelAkashiRepair.Name = "labelAkashiRepair";
+            this.labelAkashiRepair.Size = new System.Drawing.Size(29, 12);
+            this.labelAkashiRepair.TabIndex = 54;
+            this.labelAkashiRepair.Text = "修理";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.labelAkashiRepair);
+            this.Controls.Add(this.labelAkashiRepairTimer);
             this.Controls.Add(this.panelMaterialHistory);
             this.Controls.Add(this.labelBucketHistory);
             this.Controls.Add(this.labelBullSq4);
@@ -1446,9 +1457,10 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelQuestColor2;
         private System.Windows.Forms.ToolTip toolTipFigherPower;
         private System.Windows.Forms.ToolStripMenuItem CaptureToolStripMenuItem;
-        private System.Windows.Forms.Label labelPresetDeckTimer;
+        private System.Windows.Forms.Label labelAkashiRepairTimer;
         private System.Windows.Forms.Label labelGuide;
         private System.Windows.Forms.Panel panelCombinedFleet;
+        private System.Windows.Forms.Label labelAkashiRepair;
     }
 }
 

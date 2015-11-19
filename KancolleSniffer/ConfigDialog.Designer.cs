@@ -64,6 +64,7 @@ namespace KancolleSniffer
             this.checkBoxBalloon = new System.Windows.Forms.CheckBox();
             this.checkBoxFlash = new System.Windows.Forms.CheckBox();
             this.tabPageAchievement = new System.Windows.Forms.TabPage();
+            this.checkBoxPresetAkashi = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.radioButtonResultRankWhenClick = new System.Windows.Forms.RadioButton();
             this.radioButtonResultRankAlways = new System.Windows.Forms.RadioButton();
@@ -120,7 +121,6 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
-            this.checkBoxPresetAkashi = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tabPageShow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -350,6 +350,16 @@ namespace KancolleSniffer
             this.tabPageAchievement.TabIndex = 2;
             this.tabPageAchievement.Text = "機能";
             this.tabPageAchievement.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxPresetAkashi
+            // 
+            this.checkBoxPresetAkashi.AutoSize = true;
+            this.checkBoxPresetAkashi.Location = new System.Drawing.Point(20, 124);
+            this.checkBoxPresetAkashi.Name = "checkBoxPresetAkashi";
+            this.checkBoxPresetAkashi.Size = new System.Drawing.Size(141, 16);
+            this.checkBoxPresetAkashi.TabIndex = 19;
+            this.checkBoxPresetAkashi.Text = "プリセット明石修理を使う";
+            this.checkBoxPresetAkashi.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
@@ -915,16 +925,6 @@ namespace KancolleSniffer
             // 
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
-            // 
-            // checkBoxPresetAkashi
-            // 
-            this.checkBoxPresetAkashi.AutoSize = true;
-            this.checkBoxPresetAkashi.Location = new System.Drawing.Point(20, 124);
-            this.checkBoxPresetAkashi.Name = "checkBoxPresetAkashi";
-            this.checkBoxPresetAkashi.Size = new System.Drawing.Size(117, 16);
-            this.checkBoxPresetAkashi.TabIndex = 19;
-            this.checkBoxPresetAkashi.Text = "プリセット明石を使う";
-            this.checkBoxPresetAkashi.UseVisualStyleBackColor = true;
             // 
             // ConfigDialog
             // 

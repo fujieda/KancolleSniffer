@@ -84,7 +84,6 @@ namespace KancolleSniffer
                 _ndockFinishTimeMode = !_ndockFinishTimeMode;
                 UpdateTimers();
             });
-            labelPresetDeckTimer.BackColor = ShipLabels.ColumnColors[1];
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
         }
@@ -307,6 +306,7 @@ namespace KancolleSniffer
             _sniffer.Item.MarginShips = _config.MarginShips;
             _sniffer.Item.MarginEquips = _config.MarginEquips;
             _sniffer.Achievement.ResetHours = _config.ResetHours;
+            labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible = _config.UsePresetAkashi;
         }
 
         public void ApplyDebugLogSetting()
@@ -759,14 +759,14 @@ namespace KancolleSniffer
             var span = akashi.PresetDeckTimer;
             if (_config.UsePresetAkashi && !akashi.CheckReparing(_currentFleet))
             {
-                labelPresetDeckTimer.ForeColor =
+                labelAkashiRepairTimer.ForeColor =
                     span == TimeSpan.Zero && akashi.CheckPresetReparing() ? Color.Red : DefaultForeColor;
-                labelPresetDeckTimer.Text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
+                labelAkashiRepairTimer.Text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
             }
             else
             {
-                labelPresetDeckTimer.ForeColor = DefaultForeColor;
-                labelPresetDeckTimer.Text = "";
+                labelAkashiRepairTimer.ForeColor = DefaultForeColor;
+                labelAkashiRepairTimer.Text = "";
             }
             _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet), akashi.GetTimers(_currentFleet));
             NotifyAkashiTimer();
