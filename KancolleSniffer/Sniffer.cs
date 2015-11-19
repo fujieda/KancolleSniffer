@@ -371,6 +371,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_hensei/combined"))
             {
                 _shipInfo.InspectCombined(request);
+                return Update.Ship;
             }
             if (url.EndsWith("api_req_hokyu/charge"))
             {

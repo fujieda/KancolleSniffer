@@ -555,6 +555,9 @@ namespace KancolleSniffer
         {
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             _shipLabels.SetShipInfo(statuses);
+            if (_sniffer.CombinedFleetType == 0)
+                _combinedFleet = false;
+            labelFleet1.Text = _combinedFleet ? "連合" : "第一";
             panelCombinedFleet.Visible = _combinedFleet;
             if (_combinedFleet)
                 _shipLabels.SetCombinedShipInfo(_sniffer.GetShipStatuses(0), _sniffer.GetShipStatuses(1));
@@ -907,21 +910,10 @@ namespace KancolleSniffer
             {
                 if (fleet > 0)
                     return;
-                if (_sniffer.CombinedFleetType > 0 && !_combinedFleet)
-                {
-                    labelFleet1.Text = "連合";
-                    _combinedFleet = true;
-                }
-                else
-                {
-                    labelFleet1.Text = "第一";
-                    _combinedFleet = false;
-                }
+                _combinedFleet = _sniffer.CombinedFleetType > 0 && !_combinedFleet;
                 UpdatePanelShipInfo();
                 return;
             }
-            if (_combinedFleet)
-                labelFleet1.Text = "第一";
             _combinedFleet = false;
             _currentFleet = fleet;
             foreach (var label in _labelCheckFleets)
