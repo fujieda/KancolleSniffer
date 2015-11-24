@@ -28,7 +28,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using Codeplex.Data;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Win32;
 using static System.Math;
@@ -110,7 +109,7 @@ namespace KancolleSniffer
             WriteDebugLog(url, request, response);
             try
             {
-                var update = _sniffer.Sniff(url, request, DynamicJson.Parse(response));
+                var update = _sniffer.Sniff(url, request, JsonParser.Parse(response));
                 if (update == Sniffer.Update.Error)
                 {
                     ShowServerError(url, request, response);
@@ -459,7 +458,7 @@ namespace KancolleSniffer
                 lines.Add(_playLog.Current.Substring(s.Length));
             }
             labelPlayLog.Visible = !labelPlayLog.Visible;
-            var json = DynamicJson.Parse(lines[2]);
+            var json = JsonParser.Parse(lines[2]);
             UpdateInfo(_sniffer.Sniff(lines[0], lines[1], json));
         }
 

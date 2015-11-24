@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Codeplex.Data;
 using ExpressionToCodeLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -52,7 +51,7 @@ namespace KancolleSniffer.Test
                             throw new Exception($"ログに不正な行が含まれています: {ln:d}行目");
                         triple.Add(line.Substring(s.Length));
                     }
-                    var json = DynamicJson.Parse(triple[2]);
+                    var json = JsonParser.Parse(triple[2]);
                     sniffer.Sniff(triple[0], triple[1], json);
                     action?.Invoke(sniffer);
                 }
