@@ -420,7 +420,9 @@ namespace KancolleSniffer
             checkBoxShipType.Checked = config.ShipType;
             ActiveControl = panelShipList;
             for (var i = 0; i < GroupCount; i++)
-                _groupSettings[i] = new HashSet<int>(config.ShipGroup[i]);
+                _groupSettings[i] = config.ShipGroup.Count == 0
+                    ? new HashSet<int>()
+                    : new HashSet<int>(config.ShipGroup[i]);
             comboBoxGroup.SelectedIndex = 0;
             if (config.Location.X == int.MinValue)
                 return;
@@ -432,19 +434,18 @@ namespace KancolleSniffer
 
         private void ShipListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var config = _config.ShipList;
-            var all = _sniffer.ShipList.Select(s => s.Id).ToArray();
-            for (var i = 0; i < GroupCount; i++)
-            {
-                if (_groupSettings[i] == null)
-                    break;
-                if (all.Length > 0)
-                    _groupSettings[i].IntersectWith(all);
-                config.ShipGroup[i] = _groupSettings[i].ToList();
-            }
             e.Cancel = true;
             if (!Visible)
                 return;
+            var config = _config.ShipList;
+            var all = _sniffer.ShipList.Select(s => s.Id).ToArray();
+            config.ShipGroup.Clear();
+            for (var i = 0; i < GroupCount; i++)
+            {
+                if (all.Length > 0)
+                    _groupSettings[i].IntersectWith(all);
+                config.ShipGroup.Add(_groupSettings[i].ToList());
+            }
             var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
             config.Location = bounds.Location;
             config.Size = bounds.Size;

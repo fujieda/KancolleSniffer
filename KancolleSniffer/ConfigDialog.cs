@@ -34,11 +34,8 @@ namespace KancolleSniffer
             InitializeComponent();
             _config = config;
             _main = main;
-            listBoxSoundFile.Items.AddRange(new object[]
-            {
-                "遠征終了", "入渠終了", "建造完了", "艦娘数超過", "装備数超過",
-                "大破警告", "泊地修理20分経過", "泊地修理進行", "泊地修理完了", "疲労回復"
-            });
+            // ReSharper disable once CoVariantArrayConversion
+            listBoxSoundFile.Items.AddRange(_config.Sounds.SoundNames);
             numericUpDownMaterialLogInterval.Maximum = 1440;
         }
 
@@ -63,19 +60,9 @@ namespace KancolleSniffer
             radioButtonResultRankWhenClick.Checked = !_config.AlwaysShowResultRank;
             checkBoxPresetAkashi.Checked = _config.UsePresetAkashi;
 
-            numericUpDownSoundVolume.Value = _config.SoundVolume;
-
-            _soundSetting["遠征終了"] = _config.MissionSoundFile;
-            _soundSetting["入渠終了"] = _config.NDockSoundFile;
-            _soundSetting["建造完了"] = _config.KDockSoundFile;
-            _soundSetting["艦娘数超過"] = _config.MaxShipsSoundFile;
-            _soundSetting["装備数超過"] = _config.MaxEquipsSoundFile;
-            _soundSetting["大破警告"] = _config.DamagedShipSoundFile;
-            _soundSetting["泊地修理20分経過"] = _config.Akashi20MinSoundFile;
-            _soundSetting["泊地修理進行"] = _config.AkashiProgressSoundFile;
-            _soundSetting["泊地修理完了"] = _config.AkashiCompleteSoundFile;
-            _soundSetting["疲労回復"] = _config.ConditionSoundFile;
-
+            numericUpDownSoundVolume.Value = _config.Sounds.Volume;
+            foreach (var name in _config.Sounds.SoundNames)
+                _soundSetting[name] = _config.Sounds[name];
             listBoxSoundFile.SelectedIndex = -1;
             listBoxSoundFile.SelectedIndex = 0;
 
@@ -173,18 +160,9 @@ namespace KancolleSniffer
             _main.UpdateFighterPower();
             _config.UsePresetAkashi = checkBoxPresetAkashi.Checked;
 
-            _config.SoundVolume = (int)numericUpDownSoundVolume.Value;
-
-            _config.MissionSoundFile = _soundSetting["遠征終了"];
-            _config.NDockSoundFile = _soundSetting["入渠終了"];
-            _config.KDockSoundFile = _soundSetting["建造完了"];
-            _config.MaxShipsSoundFile = _soundSetting["艦娘数超過"];
-            _config.MaxEquipsSoundFile = _soundSetting["装備数超過"];
-            _config.DamagedShipSoundFile = _soundSetting["大破警告"];
-            _config.Akashi20MinSoundFile = _soundSetting["泊地修理20分経過"];
-            _config.AkashiProgressSoundFile = _soundSetting["泊地修理進行"];
-            _config.AkashiCompleteSoundFile = _soundSetting["泊地修理完了"];
-            _config.ConditionSoundFile = _soundSetting["疲労回復"];
+            _config.Sounds.Volume = (int)numericUpDownSoundVolume.Value;
+            foreach (var name in _config.Sounds.SoundNames)
+                _config.Sounds[name] = _soundSetting[name];
         }
 
         private bool ValidatePorts(out int listen, out int outbound, out int server)

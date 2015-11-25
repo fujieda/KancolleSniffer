@@ -16,7 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using Codeplex.Data;
+using System.Linq;
+using System.Xml.Serialization;
 
 namespace KancolleSniffer
 {
@@ -44,14 +45,12 @@ namespace KancolleSniffer
         public Point Location { get; set; }
         public Size Size { get; set; }
         public bool ShipType { get; set; }
-        public List<int>[] ShipGroup { get; set; }
+        public List<List<int>> ShipGroup { get; set; }
 
         public ShipListConfig()
         {
             Location = new Point(int.MinValue, int.MinValue);
-            ShipGroup = new List<int>[ShipListForm.GroupCount];
-            for (var i = 0; i < ShipGroup.Length; i++)
-                ShipGroup[i] = new List<int>();
+            ShipGroup = new List<List<int>>();
         }
     }
 
@@ -79,67 +78,73 @@ namespace KancolleSniffer
         public string Token { get; set; } = "";
     }
 
+    public class SoundConfig
+    {
+        public int Volume { get; set; } = 100;
+
+        public string[] Files { get; set; } = {
+            "ensei.mp3",
+            "nyuukyo.mp3",
+            "kenzou.mp3",
+            "kanmusu.mp3",
+            "soubi.mp3",
+            "taiha.mp3",
+            "20min.mp3",
+            "syuuri.mp3",
+            "syuuri2.mp3",
+            "hirou.mp3"
+        };
+
+        public readonly string[] SoundNames =
+        {
+            "遠征終了", "入渠終了", "建造完了", "艦娘数超過", "装備数超過",
+            "大破警告", "泊地修理20分経過", "泊地修理進行", "泊地修理完了", "疲労回復"
+        };
+
+        private readonly Dictionary<string, int> _names = new Dictionary<string, int>();
+
+        public SoundConfig()
+        {
+            var idx = 0;
+            foreach (var name in SoundNames)
+                _names[name] = idx++;
+        }
+
+        public string this[string name]
+        {
+            get { return Files[_names[name]]; }
+            set { Files[_names[name]] = value; }
+        }
+    }
+
     public class Config
     {
         private readonly string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
         private readonly string _configFileName;
 
-        public Point Location { get; set; }
+        public Point Location { get; set; } = new Point(int.MinValue, int.MinValue);
         public bool TopMost { get; set; }
         public bool HideOnMinimized { get; set; }
-        public bool FlashWindow { get; set; }
+        public bool FlashWindow { get; set; } = true;
         public bool ShowBaloonTip { get; set; }
-        public bool PlaySound { get; set; }
-        public int MarginShips { get; set; }
-        public int MarginEquips { get; set; }
-        public List<int> NotifyConditions { get; set; }
-        public List<int> ResetHours { get; set; }
+        public bool PlaySound { get; set; } = true;
+        public int MarginShips { get; set; } = 4;
+        public int MarginEquips { get; set; } = 10;
+        public List<int> NotifyConditions { get; set; } = new List<int>(new[] {40, 49});
+        public List<int> ResetHours { get; set; } = new List<int>(new[] {2});
         public bool AlwaysShowResultRank { get; set; }
         public bool UsePresetAkashi { get; set; }
-        public int SoundVolume { get; set; }
-        public string MissionSoundFile { get; set; }
-        public string NDockSoundFile { get; set; }
-        public string KDockSoundFile { get; set; }
-        public string MaxShipsSoundFile { get; set; }
-        public string MaxEquipsSoundFile { get; set; }
-        public string DamagedShipSoundFile { get; set; }
-        public string Akashi20MinSoundFile { get; set; }
-        public string AkashiProgressSoundFile { get; set; }
-        public string AkashiCompleteSoundFile { get; set; }
-        public string ConditionSoundFile { get; set; }
+        public SoundConfig Sounds { get; set; } = new SoundConfig();
         public bool DebugLogging { get; set; }
-        public string DebugLogFile { get; set; }
-        public ProxyConfig Proxy { get; set; }
-        public ShipListConfig ShipList { get; set; }
-        public LogConfig Log { get; set; }
-        public KancolleDbConfig KancolleDb { get; set; }
+        public string DebugLogFile { get; set; } = "log.txt";
+        public ProxyConfig Proxy { get; set; } = new ProxyConfig();
+        public ShipListConfig ShipList { get; set; } = new ShipListConfig();
+        public LogConfig Log { get; set; } = new LogConfig();
+        public KancolleDbConfig KancolleDb { get; set; } = new KancolleDbConfig();
 
         public Config()
         {
-            _configFileName = Path.Combine(_baseDir, "config.json");
-            Location = new Point(int.MinValue, int.MinValue);
-            FlashWindow = ShowBaloonTip = PlaySound = true;
-            MarginShips = 4;
-            MarginEquips = 10;
-            NotifyConditions = new List<int>(new[] {40, 49});
-            ResetHours = new List<int>(new[] {2});
-            AlwaysShowResultRank = false;
-            SoundVolume = 100;
-            MissionSoundFile = "ensei.mp3";
-            NDockSoundFile = "nyuukyo.mp3";
-            KDockSoundFile = "kenzou.mp3";
-            MaxShipsSoundFile = "kanmusu.mp3";
-            MaxEquipsSoundFile = "soubi.mp3";
-            DamagedShipSoundFile = "taiha.mp3";
-            Akashi20MinSoundFile = "20min.mp3";
-            AkashiProgressSoundFile = "syuuri.mp3";
-            AkashiCompleteSoundFile = "syuuri2.mp3";
-            ConditionSoundFile = "hirou.mp3";
-            DebugLogFile = "log.txt";
-            Proxy = new ProxyConfig();
-            ShipList = new ShipListConfig();
-            Log = new LogConfig();
-            KancolleDb = new KancolleDbConfig();
+            _configFileName = Path.Combine(_baseDir, "config.xml");
             ConvertPath(PrependBaseDir);
         }
 
@@ -147,31 +152,35 @@ namespace KancolleSniffer
         {
             try
             {
-                var config = (Config)DynamicJson.Parse(File.ReadAllText(_configFileName));
+                var serializer = new XmlSerializer(typeof(Config));
+                Config config;
+                using (var file = File.OpenText(_configFileName))
+                    config = (Config)serializer.Deserialize(file);
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(config, null), null);
-                ConvertPath(PrependBaseDir);
             }
             catch (FileNotFoundException)
             {
+                ReadOldConfig();
+                Save();
             }
+            ConvertPath(PrependBaseDir);
         }
 
         public void Save()
         {
             ConvertPath(StripBaseDir);
-            File.WriteAllText(_configFileName, DynamicJson.Serialize(this));
+            var serializer = new XmlSerializer(typeof(Config));
+            using (var file = File.CreateText(_configFileName))
+                serializer.Serialize(file, this);
         }
 
         private void ConvertPath(Func<string, string> func)
         {
-            foreach (var property in GetType().GetProperties())
-            {
-                if (!property.Name.EndsWith("File"))
-                    continue;
-                property.SetValue(this, func((string)property.GetValue(this)));
-            }
+            DebugLogFile = func(DebugLogFile);
             Log.OutputDir = func(Log.OutputDir);
+            for (var i = 0; i < Sounds.Files.Length; i++)
+                Sounds.Files[i] = func(Sounds.Files[i]);
         }
 
         private string StripBaseDir(string path)
@@ -183,5 +192,53 @@ namespace KancolleSniffer
         }
 
         private string PrependBaseDir(string path) => Path.IsPathRooted(path) ? path : Path.Combine(_baseDir, path);
+
+        private void ReadOldConfig()
+        {
+            var old = Path.Combine(_baseDir, "config.json");
+            var json = (dynamic)JsonParser.Parse(File.ReadAllText(old));
+            Location = new Point((int)json.Location.X, (int)json.Location.Y);
+            foreach (var property in (from prop in GetType().GetProperties()
+                let type = prop.PropertyType
+                where type == typeof(bool) || type == typeof(int) || type == typeof(string)
+                select prop))
+            {
+                if (!json.IsDefined(property.Name))
+                    continue;
+                var v = json[property.Name];
+                property.SetValue(this, property.PropertyType == typeof(int) ? (int)v : v);
+            }
+            NotifyConditions = new List<int>((int[])json.NotifyConditions);
+            ResetHours = new List<int>((int[])json.ResetHours);
+            Sounds.Volume = (int)json.SoundVolume;
+            var idx = 0;
+            foreach (var name in new[]
+            {
+                "Mission", "NDock", "KDock", "MaxShips", "MaxEquips",
+                "DamagedShip", "Akashi20Min", "AkashiProgress", "AkashiComplete", "Condition"
+            })
+            {
+                if (json.IsDefined(name + "SoundFile"))
+                    Sounds.Files[idx] = json[name + "SoundFile"];
+                idx++;
+            }
+            Proxy.Auto = json.Proxy.Auto;
+            Proxy.Listen = (int)json.Proxy.Listen;
+            Proxy.UseUpstream = json.Proxy.UseUpstream;
+            Proxy.UpstreamPort = (int)json.Proxy.UpstreamPort;
+            var sl = json.ShipList;
+            ShipList.Location = new Point((int)sl.Location.X, (int)sl.Location.Y);
+            ShipList.Size = new Size((int)sl.Size.Width, (int)sl.Size.Height);
+            ShipList.ShipType = sl.ShipType;
+            var sg = (int[][])sl.ShipGroup;
+            ShipList.ShipGroup = new List<List<int>>();
+            foreach (var g in sg)
+                ShipList.ShipGroup.Add(new List<int>(g));
+            Log.On = json.Log.On;
+            Log.OutputDir = json.Log.OutputDir;
+            Log.MaterialLogInterval = (int)json.Log.MaterialLogInterval;
+            Log.ServerOn = json.Log.ServerOn;
+            Log.Listen = (int)json.Log.Listen;
+        }
     }
 }
