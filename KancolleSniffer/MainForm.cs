@@ -84,6 +84,7 @@ namespace KancolleSniffer
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
             _config.Load();
+            _sniffer.LoadState();
         }
 
         private void HttpProxy_AfterSessionComplete(HttpProxy.Session session)
@@ -206,7 +207,6 @@ namespace KancolleSniffer
             ApplyConfig();
             ApplyDebugLogSetting();
             ApplyLogSetting();
-            _sniffer.LoadState();
             ApplyProxySetting();
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
             if (_config.KancolleDb.On)

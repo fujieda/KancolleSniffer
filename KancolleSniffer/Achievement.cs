@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace KancolleSniffer
 {
@@ -29,7 +30,11 @@ namespace KancolleSniffer
         private const double ExpPerAch = 1428.0;
         public double Value => (_current - Start) / ExpPerAch;
         public double ValueOfMonth => (_current - StartOfMonth) / ExpPerAch;
-        public List<int> ResetHours { get; set; }
+
+        [XmlIgnore]
+        public List<int> ResetHours { private get; set; }
+
+        [XmlIgnore]
         public bool NeedSave { get; private set; }
 
         public Achievement()
@@ -88,17 +93,11 @@ namespace KancolleSniffer
         {
             var ac = status.Achievement;
             if (ac == null)
-            {
-                Start = status.ExperiencePoint;
-                LastReset = status.LastResetTime;
-            }
-            else
-            {
-                Start = ac.Start;
-                StartOfMonth = ac.StartOfMonth;
-                LastReset = ac.LastReset;
-                LastResetOfMonth = ac.LastResetOfMonth;
-            }
+                return;
+            Start = ac.Start;
+            StartOfMonth = ac.StartOfMonth;
+            LastReset = ac.LastReset;
+            LastResetOfMonth = ac.LastResetOfMonth;
         }
     }
 }

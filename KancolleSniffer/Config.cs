@@ -196,7 +196,15 @@ namespace KancolleSniffer
         private void ReadOldConfig()
         {
             var old = Path.Combine(_baseDir, "config.json");
-            var json = (dynamic)JsonParser.Parse(File.ReadAllText(old));
+            dynamic json;
+            try
+            {
+                json = JsonParser.Parse(File.ReadAllText(old));
+            }
+            catch (FileNotFoundException)
+            {
+                return;
+            }
             Location = new Point((int)json.Location.X, (int)json.Location.Y);
             foreach (var property in (from prop in GetType().GetProperties()
                 let type = prop.PropertyType

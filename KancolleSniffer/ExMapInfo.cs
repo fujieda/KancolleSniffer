@@ -119,7 +119,7 @@ namespace KancolleSniffer
             NeedSave = false;
             status.ExMapState = new ExMapState
             {
-                ClearStatusList = _clearStatus.Values.ToArray(),
+                ClearStatusList = _clearStatus.Values.ToList(),
                 LastReset = _lastReset
             };
         }
@@ -135,7 +135,7 @@ namespace KancolleSniffer
 
         public class ExMapState
         {
-            public ClearStatus[] ClearStatusList { get; set; }
+            public List<ClearStatus> ClearStatusList { get; set; }
             public DateTime LastReset { get; set; }
         }
     }

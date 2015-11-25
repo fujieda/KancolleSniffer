@@ -14,6 +14,7 @@
 
 using System;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace KancolleSniffer
 {
@@ -131,12 +132,12 @@ namespace KancolleSniffer
         public void SaveState(Status status)
         {
             NeedSave = false;
-            status.MatreialHistory = MaterialHistory;
+            status.MaterialHistory = MaterialHistory.ToList();
         }
 
         public void LoadState(Status status)
         {
-            status.MatreialHistory?.CopyTo(MaterialHistory, 0);
+            status.MaterialHistory?.CopyTo(MaterialHistory, 0);
         }
     }
 
@@ -160,6 +161,7 @@ namespace KancolleSniffer
         public int BegOfDay { get; set; }
         public int BegOfWeek { get; set; }
         public DateTime LastSet { get; set; }
+        [XmlIgnore]
         public bool NeedSave { get; set; }
 
         public int Now
