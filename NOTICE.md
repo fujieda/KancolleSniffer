@@ -16,14 +16,6 @@ limitations under the License.
 
 ## 利用しているソフトウェア
 
-### [DynamicJson](http://dynamicjson.codeplex.com/)
-
-ver 1.2.0.0 (May. 21th, 2010)
-
-created and maintained by neuecc <ils@neue.cc><br>
-licensed under Microsoft Public License(Ms-PL)<br>
-http://neue.cc/
-
 ### [Double-buffered Tree and Listviews](http://www.codeproject.com/Articles/37253/Double-buffered-Tree-and-Listviews)
 
 The MIT License (MIT)
