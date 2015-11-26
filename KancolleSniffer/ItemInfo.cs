@@ -204,24 +204,22 @@ namespace KancolleSniffer
             Id = id == 0 ? -1 : id;
         }
 
+        private readonly Dictionary<int, int[]> _alvBonus = new Dictionary<int, int[]>
+        {
+            {06, new[] {0, 1, 3, 7, 11, 16, 16, 25}}, // 艦戦
+            {07, new[] {0, 1, 1, 2, 02, 02, 02, 03}}, // 艦爆
+            {08, new[] {0, 1, 1, 2, 02, 02, 02, 03}}, // 艦攻
+            {11, new[] {0, 1, 2, 3, 03, 05, 05, 09}}  // 水爆
+        };
+
         public int AlvBonus
         {
             get
             {
-                if (Alv != 7)
+                int[] table;
+                if (!_alvBonus.TryGetValue(Spec.Type, out table))
                     return 0;
-                switch (Spec.Type)
-                {
-                    case 6: // 艦戦
-                        return 25;
-                    case 7: // 艦爆
-                        return 3;
-                    case 8: // 艦攻
-                        return 3;
-                    case 11: // 水爆
-                        return 9;
-                }
-                return 0;
+                return table[Alv];
             }
         }
     }
