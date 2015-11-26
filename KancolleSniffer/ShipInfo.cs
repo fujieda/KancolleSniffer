@@ -146,6 +146,13 @@ namespace KancolleSniffer
                 return (int)(bonus * (vanilla / 5 + all * 2 + (aircraft > 0 ? 10 : 25)));
             }
         }
+
+        public int PreparedDamageControl =>
+            (DamageLevel < Damage.Badly)
+                ? -1
+                : SlotEx.Spec.Id == 42 || SlotEx.Spec.Id == 43
+                    ? SlotEx.Spec.Id
+                    : Slot.FirstOrDefault(item => item.Spec.Id == 42 || item.Spec.Id == 43)?.Spec.Id ?? -1;
     }
 
     public struct ChargeStatus

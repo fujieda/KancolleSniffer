@@ -334,7 +334,9 @@ namespace KancolleSniffer
 
         public void SetName(ShipStatus status)
         {
-            SetName((status.Escaped ? "[避]" : "") + status.Name);
+            var dc = status.PreparedDamageControl;
+            var dcname = dc == 42 ? "[ダ]" : dc == 43 ? "[メ]" : "";
+            SetName((status.Escaped ? "[避]" : dcname) + status.Name);
         }
 
         public void SetName(string name)
