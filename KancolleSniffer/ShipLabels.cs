@@ -17,6 +17,7 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using static System.Math;
@@ -334,9 +335,10 @@ namespace KancolleSniffer
 
         public void SetName(ShipStatus status)
         {
+            var empty = status.Id != -1 && status.Slot.All(e => e.Id == -1) ? "▫" : "";
             var dc = status.PreparedDamageControl;
             var dcname = dc == 42 ? "[ダ]" : dc == 43 ? "[メ]" : "";
-            SetName((status.Escaped ? "[避]" : dcname) + status.Name);
+            SetName((status.Escaped ? "[避]" : dcname) + status.Name + empty);
         }
 
         public void SetName(string name)
