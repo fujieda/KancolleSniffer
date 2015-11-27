@@ -48,7 +48,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -78,6 +77,7 @@
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="HttpProxy.cs" />
+    <Compile Include="HttpUtility.cs" />
     <Compile Include="ItemTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
