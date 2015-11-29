@@ -159,7 +159,8 @@ namespace KancolleSniffer
             try
             {
                 var rx = new Regex(@"\\[uU]([0-9A-Fa-f]{4})");
-                return rx.Replace(s, match => ((char)int.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
+                return rx.Replace(s,
+                    match => ((char)int.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
             }
             catch (ArgumentException)
             {
@@ -682,11 +683,12 @@ namespace KancolleSniffer
                 entry.Timer.Update();
                 SetTimerColor(entry.label, entry.Timer);
                 var rest = entry.Timer.Rest;
-                entry.label.Text = _missionFinishTimeMode
-                    ? entry.Timer.EndTime == DateTime.MinValue
-                        ? "-------"
-                        : entry.Timer.EndTime.ToString(@"dd\ HH\:mm")
-                    : rest.ToString(@"hh\:mm\:ss");
+                entry.label.Text =
+                    entry.Timer.EndTime == DateTime.MinValue
+                        ? ""
+                        : _missionFinishTimeMode
+                            ? entry.Timer.EndTime.ToString(@"dd\ HH\:mm")
+                            : rest.ToString(@"hh\:mm\:ss");
                 if (!entry.Timer.NeedRing)
                     continue;
                 _noticeQueue.Enqueue("遠征が終わりました", entry.Name, _config.MissionSoundFile);
@@ -708,7 +710,8 @@ namespace KancolleSniffer
                 var timer = _sniffer.KDock[i];
                 timer.Update();
                 SetTimerColor(kdock[i], timer);
-                kdock[i].Text = timer.Rest.ToString(@"hh\:mm\:ss");
+
+                kdock[i].Text = timer.EndTime == DateTime.MinValue ? "" : timer.Rest.ToString(@"hh\:mm\:ss");
                 if (!timer.NeedRing)
                     continue;
                 _noticeQueue.Enqueue("建造が終わりました", $"第{i + 1:D}ドック", _config.KDockSoundFile);

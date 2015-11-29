@@ -578,13 +578,12 @@ namespace KancolleSniffer
             // 
             // labelConstruct3
             // 
-            this.labelConstruct3.AutoSize = true;
             this.labelConstruct3.BackColor = System.Drawing.Color.Transparent;
-            this.labelConstruct3.Location = new System.Drawing.Point(30, 33);
+            this.labelConstruct3.Location = new System.Drawing.Point(28, 33);
             this.labelConstruct3.Name = "labelConstruct3";
-            this.labelConstruct3.Size = new System.Drawing.Size(45, 12);
+            this.labelConstruct3.Size = new System.Drawing.Size(47, 12);
             this.labelConstruct3.TabIndex = 6;
-            this.labelConstruct3.Text = "00:00:00";
+            this.labelConstruct3.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label12
             // 
@@ -597,12 +596,11 @@ namespace KancolleSniffer
             // 
             // labelConstruct4
             // 
-            this.labelConstruct4.AutoSize = true;
-            this.labelConstruct4.Location = new System.Drawing.Point(30, 48);
+            this.labelConstruct4.Location = new System.Drawing.Point(28, 48);
             this.labelConstruct4.Name = "labelConstruct4";
-            this.labelConstruct4.Size = new System.Drawing.Size(45, 12);
+            this.labelConstruct4.Size = new System.Drawing.Size(47, 12);
             this.labelConstruct4.TabIndex = 7;
-            this.labelConstruct4.Text = "00:00:00";
+            this.labelConstruct4.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label11
             // 
@@ -615,12 +613,11 @@ namespace KancolleSniffer
             // 
             // labelConstruct2
             // 
-            this.labelConstruct2.AutoSize = true;
-            this.labelConstruct2.Location = new System.Drawing.Point(30, 18);
+            this.labelConstruct2.Location = new System.Drawing.Point(28, 18);
             this.labelConstruct2.Name = "labelConstruct2";
-            this.labelConstruct2.Size = new System.Drawing.Size(45, 12);
+            this.labelConstruct2.Size = new System.Drawing.Size(47, 12);
             this.labelConstruct2.TabIndex = 5;
-            this.labelConstruct2.Text = "00:00:00";
+            this.labelConstruct2.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label10
             // 
@@ -633,12 +630,11 @@ namespace KancolleSniffer
             // 
             // labelConstruct1
             // 
-            this.labelConstruct1.AutoSize = true;
-            this.labelConstruct1.Location = new System.Drawing.Point(30, 3);
+            this.labelConstruct1.Location = new System.Drawing.Point(28, 3);
             this.labelConstruct1.Name = "labelConstruct1";
-            this.labelConstruct1.Size = new System.Drawing.Size(45, 12);
+            this.labelConstruct1.Size = new System.Drawing.Size(47, 12);
             this.labelConstruct1.TabIndex = 4;
-            this.labelConstruct1.Text = "00:00:00";
+            this.labelConstruct1.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label9
             // 
@@ -721,7 +717,6 @@ namespace KancolleSniffer
             this.labelMission3.Name = "labelMission3";
             this.labelMission3.Size = new System.Drawing.Size(47, 12);
             this.labelMission3.TabIndex = 8;
-            this.labelMission3.Text = "00:00:00";
             this.labelMission3.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.labelMission3.Click += new System.EventHandler(this.labelMission_Click);
             // 
@@ -731,7 +726,6 @@ namespace KancolleSniffer
             this.labelMission2.Name = "labelMission2";
             this.labelMission2.Size = new System.Drawing.Size(47, 12);
             this.labelMission2.TabIndex = 7;
-            this.labelMission2.Text = "00:00:00";
             this.labelMission2.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.labelMission2.Click += new System.EventHandler(this.labelMission_Click);
             // 
@@ -741,7 +735,6 @@ namespace KancolleSniffer
             this.labelMission1.Name = "labelMission1";
             this.labelMission1.Size = new System.Drawing.Size(47, 12);
             this.labelMission1.TabIndex = 6;
-            this.labelMission1.Text = "00:00:00";
             this.labelMission1.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.labelMission1.Click += new System.EventHandler(this.labelMission_Click);
             // 

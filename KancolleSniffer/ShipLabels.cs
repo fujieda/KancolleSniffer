@@ -92,16 +92,24 @@ namespace KancolleSniffer
 
         public void SetShipInfo(ShipStatus[] statuses)
         {
-            var empty = new ShipStatus();
             for (var i = 0; i < _labels.Length; i++)
             {
                 var labels = _labels[i];
-                var s = i < statuses.Length ? statuses[i] : empty;
-                labels[0].SetHp(s);
-                labels[1].SetCond(s);
-                labels[2].SetLevel(s);
-                labels[3].SetExpToNext(s);
-                labels[4].SetName(s);
+                if (i < statuses.Length)
+                {
+                    var s = statuses[i];
+                    labels[0].SetHp(s);
+                    labels[1].SetCond(s);
+                    labels[2].SetLevel(s);
+                    labels[3].SetExpToNext(s);
+                    labels[4].SetName(s);
+                }
+                else
+                {
+                    labels[0].Text = labels[1].Text = labels[2].Text = labels[3].Text = "";
+                    labels[4].SetName("");
+                    labels[0].BackColor = labels[1].BackColor = labels[0].PresetColor;
+                }
             }
         }
 
@@ -291,10 +299,9 @@ namespace KancolleSniffer
                     {
                         new ShipLabel
                         {
-                            Location = new Point(93, y),
+                            Location = new Point(138, y),
                             AutoSize = true,
-                            AnchorRight = true,
-                            Text = "00:00:00"
+                            AnchorRight = true
                         },
                         new ShipLabel {Location = new Point(29, y), AutoSize = true} // 名前のZ-orderを下に
                     });
@@ -317,10 +324,17 @@ namespace KancolleSniffer
         {
             var label = _ndockLabels[dock][0];
             label.ForeColor = timer.IsFinished ? Color.Red : Color.Black;
-            if (finishTime)
-                label.SetRepairFinishTime(timer.EndTime);
+            if (timer.EndTime == DateTime.MinValue)
+            {
+                label.Text = "";
+            }
             else
-                label.SetRepairTime(timer.Rest);
+            {
+                if (finishTime)
+                    label.Text = timer.EndTime.ToString(@"dd\ HH\:mm");
+                else
+                    label.SetRepairTime(timer.Rest);
+            }
         }
     }
 
@@ -372,12 +386,6 @@ namespace KancolleSniffer
 
         public void SetCond(ShipStatus status)
         {
-            if (status.Level == 0)
-            {
-                Text = "0";
-                BackColor = PresetColor;
-                return;
-            }
             var cond = status.Cond;
             Text = cond.ToString("D");
             BackColor = cond >= 50
@@ -405,11 +413,6 @@ namespace KancolleSniffer
         public void SetRepairTime(TimeSpan span)
         {
             Text = $@"{(int)span.TotalHours:d2}:{span:mm\:ss}";
-        }
-
-        public void SetRepairFinishTime(DateTime time)
-        {
-            Text = time == DateTime.MinValue ? "-------" : time.ToString(@"dd\ HH\:mm");
         }
 
         public void SetFleet(ShipStatus status)
