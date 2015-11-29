@@ -89,8 +89,11 @@ namespace KancolleSniffer
 
         public Update Sniff(string url, string request, dynamic json)
         {
-            if (!json.api_result() || (int)json.api_result != 1)
+            if (!json.api_result())
                 return Update.Error;
+            var r = (int)json.api_result;
+            if (r != 1)
+                return r == 201 ? Update.None : Update.Error;
             var data = json.api_data() ? json.api_data : new object();
 
             if (url.EndsWith("api_start2"))
