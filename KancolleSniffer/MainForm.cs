@@ -146,10 +146,8 @@ namespace KancolleSniffer
 
         private void ShowServerError(string url, string request, string response, Exception e = null)
         {
-            if (_errorDialog.Visible)
-                return;
             if (_errorDialog.ShowDialog(this, "サーバーからの応答が異常です。",
-                $"{(e == null ? "" : e.Message + "\r\n")}url: {url}\r\nrequest: {request}\r\nresponse: {response ?? "(null)"}\r\n") ==
+                $"{(e == null ? "" : e + "\r\n")}url: {url}\r\nrequest: {request}\r\nresponse: {response ?? "(null)"}\r\n") ==
                 DialogResult.Abort)
                 Application.Exit();
         }

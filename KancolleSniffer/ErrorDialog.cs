@@ -20,7 +20,7 @@ using System.Windows.Forms;
 
 namespace KancolleSniffer
 {
-    public partial class ErrorDialog: Form
+    public partial class ErrorDialog : Form
     {
         public ErrorDialog()
         {
@@ -32,8 +32,10 @@ namespace KancolleSniffer
 
         public DialogResult ShowDialog(IWin32Window owner, string message, string details)
         {
+            if (Visible)
+                return DialogResult.Ignore;
             labelMessage.Text = message;
-            textBoxDetails.Text = details;
+            textBoxDetails.Text = details.Length < 1500 ? details : details.Substring(0, 1500) + "...";
             return ShowDialog(owner);
         }
     }

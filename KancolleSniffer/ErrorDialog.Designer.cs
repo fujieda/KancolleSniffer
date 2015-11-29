@@ -55,32 +55,32 @@ namespace KancolleSniffer
             // 
             // textBoxDetails
             // 
-            this.textBoxDetails.Location = new System.Drawing.Point(14, 72);
+            this.textBoxDetails.Location = new System.Drawing.Point(14, 73);
             this.textBoxDetails.Multiline = true;
             this.textBoxDetails.Name = "textBoxDetails";
             this.textBoxDetails.ReadOnly = true;
-            this.textBoxDetails.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxDetails.Size = new System.Drawing.Size(348, 162);
+            this.textBoxDetails.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBoxDetails.Size = new System.Drawing.Size(298, 121);
             this.textBoxDetails.TabIndex = 5;
             this.textBoxDetails.WordWrap = false;
             // 
             // buttonContinue
             // 
             this.buttonContinue.DialogResult = System.Windows.Forms.DialogResult.Ignore;
-            this.buttonContinue.Location = new System.Drawing.Point(206, 248);
+            this.buttonContinue.Location = new System.Drawing.Point(156, 207);
             this.buttonContinue.Name = "buttonContinue";
             this.buttonContinue.Size = new System.Drawing.Size(75, 23);
-            this.buttonContinue.TabIndex = 4;
+            this.buttonContinue.TabIndex = 3;
             this.buttonContinue.Text = "継続";
             this.buttonContinue.UseVisualStyleBackColor = true;
             // 
             // buttonExit
             // 
             this.buttonExit.DialogResult = System.Windows.Forms.DialogResult.Abort;
-            this.buttonExit.Location = new System.Drawing.Point(287, 248);
+            this.buttonExit.Location = new System.Drawing.Point(237, 207);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(75, 23);
-            this.buttonExit.TabIndex = 3;
+            this.buttonExit.TabIndex = 4;
             this.buttonExit.Text = "終了";
             this.buttonExit.UseVisualStyleBackColor = true;
             // 
@@ -93,9 +93,9 @@ namespace KancolleSniffer
             // 
             // labelMessage
             // 
-            this.labelMessage.Location = new System.Drawing.Point(62, 12);
+            this.labelMessage.Location = new System.Drawing.Point(57, 12);
             this.labelMessage.Name = "labelMessage";
-            this.labelMessage.Size = new System.Drawing.Size(300, 32);
+            this.labelMessage.Size = new System.Drawing.Size(255, 32);
             this.labelMessage.TabIndex = 1;
             this.labelMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -110,11 +110,10 @@ namespace KancolleSniffer
             // 
             // ErrorDialog
             // 
-            this.AcceptButton = this.buttonExit;
+            this.AcceptButton = this.buttonContinue;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.buttonContinue;
-            this.ClientSize = new System.Drawing.Size(374, 283);
+            this.ClientSize = new System.Drawing.Size(324, 242);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.labelMessage);
             this.Controls.Add(this.labelSystemIcon);
