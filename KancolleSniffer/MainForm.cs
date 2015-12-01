@@ -726,7 +726,17 @@ namespace KancolleSniffer
 
         private void UpdateCondTimers()
         {
-            var timer = _sniffer.GetConditionTimer(_currentFleet);
+            DateTime timer;
+            if (_combinedFleet)
+            {
+                var timer1 = _sniffer.GetConditionTimer(0);
+                var timer2 = _sniffer.GetConditionTimer(1);
+                timer = timer2 > timer1 ? timer2 : timer1;
+            }
+            else
+            {
+                timer = _sniffer.GetConditionTimer(_currentFleet);
+            }
             var now = DateTime.Now;
             if (timer == DateTime.MinValue)
             {
