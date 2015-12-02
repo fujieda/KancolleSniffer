@@ -193,7 +193,7 @@ namespace KancolleSniffer
                 var friend = combined ? _guard : _friend; // 雷撃の対象は護衛
                 CalcSimpleDamage(json.api_opening_atack, friend, _enemyHp);
             }
-            if (json.api_hougeki1 != null)
+            if (json.api_hougeki1() && json.api_hougeki1 != null)
             {
                 var friend = combined && !surfaceFleet ? _guard : _friend; // 空母機動部隊は一巡目が護衛
                 CalcHougekiDamage(json.api_hougeki1, friend, _enemyHp);

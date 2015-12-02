@@ -276,6 +276,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 連合艦隊(水上打撃部隊)で開幕雷撃で戦闘が終わる場合を正しく処理する
+        /// </summary>
+        [TestMethod]
+        // ReSharper disable once InconsistentNaming
+        public void CombinedFleetSurfaceWithoutAnyShelling()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_surface_004");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.P);
+        }
+
+        /// <summary>
         /// ship2に代わるship_deckを処理する
         /// </summary>
         [TestMethod]
