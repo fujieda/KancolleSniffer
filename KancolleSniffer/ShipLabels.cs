@@ -160,16 +160,24 @@ namespace KancolleSniffer
 
         public void SetCombinedShipInfo(ShipStatus[] first, ShipStatus[] second)
         {
-            var empty = new ShipStatus();
             for (var i = 0; i < _combinedLabels.Length; i++)
             {
                 var idx = i % ShipInfo.MemberCount;
                 var statuses = i < ShipInfo.MemberCount ? first : second;
                 var labels = _combinedLabels[i];
-                var s = idx < statuses.Length ? statuses[idx] : empty;
-                labels[0].SetHp(s);
-                labels[1].SetCond(s);
-                labels[2].SetName(s);
+                if (idx < statuses.Length)
+                {
+                    var s = statuses[idx];
+                    labels[0].SetHp(s);
+                    labels[1].SetCond(s);
+                    labels[2].SetName(s);
+                }
+                else
+                {
+                    labels[0].Text = labels[1].Text = "";
+                    labels[2].SetName("");
+                    labels[0].BackColor = labels[1].BackColor = labels[0].PresetColor;
+                }
             }
         }
 
