@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace KancolleSniffer
         private readonly TcpListener _listener;
         private readonly string _indexDir = AppDomain.CurrentDomain.BaseDirectory;
         private string _outputDir = AppDomain.CurrentDomain.BaseDirectory;
+        private readonly List<Socket> _sockets = new List<Socket>();
 
         public int Port { get; private set; }
 
@@ -62,6 +64,8 @@ namespace KancolleSniffer
                 while (true)
                 {
                     var socket = _listener.AcceptSocket();
+                    lock (_sockets)
+                        _sockets.Add(socket);
                     new Thread(Process).Start(socket);
                 }
             }
@@ -152,6 +156,8 @@ namespace KancolleSniffer
             }
             finally
             {
+                lock (_sockets)
+                    _sockets.Remove(client);
                 client.Close();
             }
         }
@@ -235,6 +241,8 @@ namespace KancolleSniffer
         {
             IsListening = false;
             _listener.Server.Close();
+            lock (_sockets)
+                _sockets.ForEach(s => s.Close());
         }
     }
 }
