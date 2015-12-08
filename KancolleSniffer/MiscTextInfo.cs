@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
+using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -87,6 +87,7 @@ namespace KancolleSniffer
             1290000, 1329000, 1372000, 1419000, 1470000, 1525000, 1584000, 1647000, 1714000, 1785000,
             1860000, 1940000, 2025000, 2115000, 2210000, 2310000, 2415000, 2525000, 2640000, 2760000,
             2887000, 3021000, 3162000, 3310000, 3465000, 3628000, 3799000, 3978000, 4165000, 4360000,
+            4564000, 4777000, 4999000, 5230000, 5470000
         };
 
         public void InspectPracticeEnemyInfo(dynamic json)
@@ -95,10 +96,9 @@ namespace KancolleSniffer
             var ships = json.api_deck.api_ships;
             var s1 = (int)ships[0].api_id != -1 ? (int)ships[0].api_level : 1;
             var s2 = (int)ships[1].api_id != -1 ? (int)ships[1].api_level : 1;
-            var exp = _expTable[s1 - 1] / 100.0 + _expTable[s2 - 1] / 300.0;
-            if (exp >= 500)
-                exp = 500 + (int)Math.Sqrt(exp - 500);
-            Text += $"獲得経験値 : {(int)exp}\r\nS勝利 : {(int)((int)exp * 1.2)}";
+            var raw = _expTable[Min(s1, _expTable.Length) - 1] / 100.0 + _expTable[Min(s2, _expTable.Length) - 1] / 300.0;
+            var exp = raw >= 500 ? 500 + (int)Sqrt(raw - 500) : (int)raw;
+            Text += $"獲得経験値 : {exp}\r\nS勝利 : {(int)(exp * 1.2)}";
         }
     }
 }
