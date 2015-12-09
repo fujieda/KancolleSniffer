@@ -283,7 +283,6 @@ namespace KancolleSniffer
                 return;
             }
             parent.Size = new Size(parent.Width, (int)Round(ShipLabel.ScaleFactor.Height * (num * 16 + 3)));
-            var colors = new[] {Color.FromArgb(255, 225, 225, 21), Color.Orange, Color.Red};
             for (var i = 0; i < num; i++)
             {
                 var s = list[i];
@@ -291,9 +290,7 @@ namespace KancolleSniffer
                 labels[fleet].SetFleet(s);
                 labels[name].SetName(s);
                 labels[time].SetRepairTime(s);
-                labels[damage].BackColor = (int)s.DamageLevel == 0
-                    ? labels[damage].PresetColor
-                    : colors[(int)s.DamageLevel - 1];
+                labels[damage].BackColor = ShipLabel.DamageColor(s, labels[damage].PresetColor);
             }
         }
 
@@ -382,14 +379,28 @@ namespace KancolleSniffer
 
         public void SetHp(ShipStatus status)
         {
-            SetHp(status.NowHp, status.MaxHp);
+            Text = $"{status.NowHp:D}/{status.MaxHp:D}";
+            BackColor = DamageColor(status, PresetColor);
         }
 
         public void SetHp(int now, int max)
         {
-            var colors = new[] {PresetColor, Color.FromArgb(255, 240, 240, 100), Color.Orange, Color.Red};
-            Text = $"{now:D}/{max:D}";
-            BackColor = colors[(int)ShipStatus.CalcDamage(now, max)];
+            SetHp(new ShipStatus {NowHp = now, MaxHp = max});
+        }
+
+        public static Color DamageColor(ShipStatus status, Color backcolor)
+        {
+            switch (status.DamageLevel)
+            {
+                case ShipStatus.Damage.Badly:
+                    return Color.Red;
+                case ShipStatus.Damage.Half:
+                    return Color.Orange;
+                case ShipStatus.Damage.Small:
+                    return Color.FromArgb(225, 225, 21);
+                default:
+                    return backcolor;
+            }
         }
 
         public void SetCond(ShipStatus status)
