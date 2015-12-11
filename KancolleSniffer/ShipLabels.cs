@@ -362,7 +362,7 @@ namespace KancolleSniffer
 
         public void SetName(string name)
         {
-            var lu = name != null && new Regex(@"^\p{Lu}").IsMatch(name);
+            var lu = name != null && new Regex(@"^(?:\[.\])?\p{Lu}").IsMatch(name);
             var shift = (int)Round(ScaleFactor.Height);
             if (lu && Font.Equals(Parent.Font))
             {
