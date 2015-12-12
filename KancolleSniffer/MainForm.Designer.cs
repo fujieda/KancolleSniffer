@@ -165,6 +165,7 @@ namespace KancolleSniffer
             this.labelFuelSq4 = new System.Windows.Forms.Label();
             this.toolTipAchievement = new System.Windows.Forms.ToolTip(this.components);
             this.labelAkashiRepair = new System.Windows.Forms.Label();
+            this.labelPresetAkashiTimer = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -301,6 +302,7 @@ namespace KancolleSniffer
             // panelShipInfo
             // 
             this.panelShipInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelShipInfo.Controls.Add(this.labelPresetAkashiTimer);
             this.panelShipInfo.Controls.Add(this.labelGuide);
             this.panelShipInfo.Controls.Add(this.panelCombinedFleet);
             this.panelShipInfo.Controls.Add(this.panelBattleInfo);
@@ -1261,6 +1263,13 @@ namespace KancolleSniffer
             this.labelAkashiRepair.TabIndex = 54;
             this.labelAkashiRepair.Text = "修理";
             // 
+            // labelPresetAkashiTimer
+            // 
+            this.labelPresetAkashiTimer.Location = new System.Drawing.Point(2, 3);
+            this.labelPresetAkashiTimer.Name = "labelPresetAkashiTimer";
+            this.labelPresetAkashiTimer.Size = new System.Drawing.Size(31, 12);
+            this.labelPresetAkashiTimer.TabIndex = 55;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1452,6 +1461,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelGuide;
         private System.Windows.Forms.Panel panelCombinedFleet;
         private System.Windows.Forms.Label labelAkashiRepair;
+        private System.Windows.Forms.Label labelPresetAkashiTimer;
     }
 }
 

@@ -84,6 +84,7 @@ namespace KancolleSniffer
                 _ndockFinishTimeMode = !_ndockFinishTimeMode;
                 UpdateTimers();
             });
+            labelPresetAkashiTimer.BackColor = ShipLabels.ColumnColors[1];
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
         }
@@ -305,7 +306,8 @@ namespace KancolleSniffer
             _sniffer.Item.MarginShips = _config.MarginShips;
             _sniffer.Item.MarginEquips = _config.MarginEquips;
             _sniffer.Achievement.ResetHours = _config.ResetHours;
-            labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible = _config.UsePresetAkashi;
+            labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible =
+                labelPresetAkashiTimer.Visible = _config.UsePresetAkashi;
         }
 
         public void ApplyDebugLogSetting()
@@ -768,16 +770,31 @@ namespace KancolleSniffer
 
         private void UpdateAkashiTimer()
         {
+            if (_config.UsePresetAkashi)
+                UpdatePresetAkashiTimer();
+            _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet),
+                _sniffer.AkashiTimer.GetTimers(_currentFleet));
+            NotifyAkashiTimer();
+        }
+
+        private void UpdatePresetAkashiTimer()
+        {
             var akashi = _sniffer.AkashiTimer;
             var span = akashi.PresetDeckTimer;
-            if (_config.UsePresetAkashi)
+            var color = span == TimeSpan.Zero && akashi.CheckPresetReparing() ? Color.Red : DefaultForeColor;
+            var text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
+            labelAkashiRepairTimer.ForeColor = color;
+            labelAkashiRepairTimer.Text = text;
+            if (akashi.CheckPresetReparing() && !akashi.CheckReparing(_currentFleet))
             {
-                labelAkashiRepairTimer.ForeColor =
-                    span == TimeSpan.Zero && akashi.CheckPresetReparing() ? Color.Red : DefaultForeColor;
-                labelAkashiRepairTimer.Text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
+                labelPresetAkashiTimer.ForeColor = color;
+                labelPresetAkashiTimer.Text = text;
             }
-            _shipLabels.SetAkashiTimer(_sniffer.GetShipStatuses(_currentFleet), akashi.GetTimers(_currentFleet));
-            NotifyAkashiTimer();
+            else
+            {
+                labelPresetAkashiTimer.ForeColor = DefaultForeColor;
+                labelPresetAkashiTimer.Text = "";
+            }
         }
 
         private void UpdateDamagedShipList()
