@@ -371,6 +371,11 @@ namespace KancolleSniffer
                 _shipInfo.InspectPresetRegister(data);
                 return Update.None;
             }
+            if (url.EndsWith("api_req_hensei/preset_delete"))
+            {
+                _shipInfo.InspectPresetDelete(request);
+                return Update.Timer;
+            }
             if (url.EndsWith("api_req_hensei/combined"))
             {
                 _shipInfo.InspectCombined(request);
