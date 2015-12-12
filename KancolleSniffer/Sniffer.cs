@@ -460,7 +460,7 @@ namespace KancolleSniffer
 
         public ChargeStatus[] ChargeStatuses => _shipInfo.ChargeStatuses;
 
-        public int GetFighterPower(int fleet, bool withBonus) => _shipInfo.GetFighterPower(fleet, withBonus);
+        public int GetFighterPower(int fleet) => _shipInfo.GetFighterPower(fleet);
 
         public double GetFleetLineOfSights(int fleet) => _shipInfo.GetLineOfSights(fleet);
 

@@ -189,9 +189,9 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_escape_001");
-            PAssert.That(() => sniffer.GetFighterPower(0, false) == 187);
+            PAssert.That(() => sniffer.GetFighterPower(0) == 187);
             SniffLogFile(sniffer, "combined_escape_002");
-            PAssert.That(() => sniffer.GetFighterPower(0, false) == 65);
+            PAssert.That(() => sniffer.GetFighterPower(0) == 65);
         }
 
         /// <summary>
@@ -328,8 +328,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "fighterpower_001");
-            PAssert.That(() => sniffer.GetFighterPower(0, true) == 155);
-            PAssert.That(() => sniffer.GetFighterPower(0, false) == 106);
+            PAssert.That(() => sniffer.GetFighterPower(0) == 155);
         }
 
         /// <summary>
