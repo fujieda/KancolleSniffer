@@ -186,7 +186,7 @@ namespace KancolleSniffer
             parent.SuspendLayout();
             for (var i = 0; i < _akashiTimers.Length; i++)
             {
-                const int x = 51;
+                const int x = 55;
                 var y = 3 + 16 * (i + 1);
                 ShipLabel label;
                 parent.Controls.Add(
@@ -218,6 +218,7 @@ namespace KancolleSniffer
             {
                 var label = _akashiTimers[i];
                 var labelHp = _labels[i][0];
+                var labelName = _labels[i][4];
                 if (i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
                 {
                     label.Visible = false;
@@ -229,6 +230,7 @@ namespace KancolleSniffer
                 label.Visible = true;
                 label.Text = timer.Span.ToString(@"mm\:ss");
                 label.ForeColor = Control.DefaultForeColor;
+                labelName.SetShortName(stat);
                 if (timer.Diff == 0)
                 {
                     labelHp.ForeColor = Control.DefaultForeColor;
@@ -352,12 +354,18 @@ namespace KancolleSniffer
         private int _right = int.MinValue;
         private int _left;
 
-        public void SetName(ShipStatus status)
+        public void SetShortName(ShipStatus status)
+        {
+            SetName(status, true);
+        }
+
+        public void SetName(ShipStatus status, bool shortName = false)
         {
             var empty = status.Id != -1 && status.Slot.All(e => e.Id == -1) ? "▫" : "";
             var dc = status.PreparedDamageControl;
             var dcname = dc == 42 ? "[ダ]" : dc == 43 ? "[メ]" : "";
-            SetName((status.Escaped ? "[避]" : dcname) + status.Name + empty);
+            var name = shortName ? status.Spec.ShortName : status.Name;
+            SetName((status.Escaped ? "[避]" : dcname) + name + empty);
         }
 
         public void SetName(string name)

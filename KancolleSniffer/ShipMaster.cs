@@ -29,7 +29,7 @@ namespace KancolleSniffer
             var dict = new Dictionary<double, string>();
             foreach (var entry in json.api_mst_stype)
                 dict[entry.api_id] = entry.api_name;
-            dict[8] = "高速戦艦" ;
+            dict[8] = "高速戦艦";
             foreach (var entry in json.api_mst_ship)
             {
                 var shipSpec = _shipSpecs[(int)entry.api_id] = new ShipSpec
@@ -41,6 +41,7 @@ namespace KancolleSniffer
                     ShipType = (int)entry.api_stype,
                     ShipTypeName = dict[entry.api_stype]
                 };
+                shipSpec.ShortName = ShortName(shipSpec.Name);
                 int[] maxEq;
                 shipSpec.MaxEq = entry.api_maxeq()
                     ? entry.api_maxeq
@@ -59,6 +60,31 @@ namespace KancolleSniffer
             return name + "(" + flagship + ")";
         }
 
+        private readonly Dictionary<string, string> _shortNameDict = new Dictionary<string, string>
+        {
+            {"千代田航改", "千代田航"},
+            {"千代田航改二", "千代田航"},
+            {"千歳航改二", "千歳航改"},
+            {"五十鈴改二", "五十鈴改"},
+            {"あきつ丸改", "あきつ丸"},
+            {"Bismarck改", "Bismarck"},
+            {"Bismarck twei", "Bismarck"},
+            {"Bismarck drei", "Bismarck"},
+            {"Prinz Eugen", "Prinz Eug"},
+            {"Prinz Eugen改", "Prinz Eug"},
+            {"Graf Zeppelin", "Graf Zep"},
+            {"Libeccio改", "Libeccio"},
+            {"阿武隈改二", "阿武隈改"},
+            {"瑞鶴改二甲", "瑞鶴改二"},
+            {"翔鶴改二甲", "瑞鶴改二"},
+        };
+
+        private string ShortName(string name)
+        {
+            string r;
+            return _shortNameDict.TryGetValue(name, out r) ? r : name;
+        }
+
         public ShipSpec this[int id] => _shipSpecs[id];
     }
 
@@ -66,6 +92,7 @@ namespace KancolleSniffer
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string ShortName { get; set; }
         public int FuelMax { get; set; }
         public int BullMax { get; set; }
         public int[] MaxEq { get; set; }
