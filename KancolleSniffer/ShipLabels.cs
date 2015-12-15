@@ -405,7 +405,7 @@ namespace KancolleSniffer
                 case ShipStatus.Damage.Half:
                     return Color.Orange;
                 case ShipStatus.Damage.Small:
-                    return Color.FromArgb(225, 225, 21);
+                    return Color.FromArgb(240, 240, 0);
                 default:
                     return backcolor;
             }
