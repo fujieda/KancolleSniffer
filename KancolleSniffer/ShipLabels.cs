@@ -253,7 +253,7 @@ namespace KancolleSniffer
                 parent.Controls.AddRange(_damagedShipList[i] = new[]
                 {
                     new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
-                    new ShipLabel {Location = new Point(119, y), Size = new Size(4, height - 1)},
+                    new ShipLabel {Location = new Point(119, y), Size = new Size(5, height - 1)},
                     new ShipLabel {Location = new Point(75, y), AutoSize = true},
                     new ShipLabel {Location = new Point(9, y), AutoSize = true},
                     new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, height + 3)}
