@@ -45,6 +45,7 @@ namespace KancolleSniffer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShipListForm));
             this.panelShipList = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
@@ -66,10 +67,13 @@ namespace KancolleSniffer
             this.label11 = new System.Windows.Forms.Label();
             this.panelItemHeader = new System.Windows.Forms.Panel();
             this.richTextBoxMiscText = new System.Windows.Forms.RichTextBox();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.CopyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.equipPanel = new KancolleSniffer.EquipPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelShipList
@@ -78,6 +82,7 @@ namespace KancolleSniffer
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panelShipList.AutoScroll = true;
             this.panelShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelShipList.ContextMenuStrip = this.contextMenuStrip;
             this.panelShipList.Location = new System.Drawing.Point(6, 23);
             this.panelShipList.Name = "panelShipList";
             this.panelShipList.Size = new System.Drawing.Size(238, 263);
@@ -275,6 +280,22 @@ namespace KancolleSniffer
             this.richTextBoxMiscText.TabIndex = 0;
             this.richTextBoxMiscText.Text = "";
             // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CopyToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(123, 26);
+            // 
+            // CopyToolStripMenuItem
+            // 
+            this.CopyToolStripMenuItem.Name = "CopyToolStripMenuItem";
+            this.CopyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.CopyToolStripMenuItem.ShowShortcutKeys = false;
+            this.CopyToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.CopyToolStripMenuItem.Text = "コピー(&C)";
+            this.CopyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
+            // 
             // equipPanel
             // 
             this.equipPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -282,6 +303,7 @@ namespace KancolleSniffer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.equipPanel.AutoScroll = true;
             this.equipPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.equipPanel.ContextMenuStrip = this.contextMenuStrip;
             this.equipPanel.Location = new System.Drawing.Point(6, 23);
             this.equipPanel.Name = "equipPanel";
             this.equipPanel.Size = new System.Drawing.Size(238, 263);
@@ -292,6 +314,7 @@ namespace KancolleSniffer
             this.itemTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.itemTreeView.ContextMenuStrip = this.contextMenuStrip;
             this.itemTreeView.Location = new System.Drawing.Point(6, 23);
             this.itemTreeView.Name = "itemTreeView";
             this.itemTreeView.Size = new System.Drawing.Size(238, 263);
@@ -327,6 +350,7 @@ namespace KancolleSniffer
             this.panelGroupHeader.PerformLayout();
             this.panelRepairHeader.ResumeLayout(false);
             this.panelRepairHeader.PerformLayout();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -356,5 +380,7 @@ namespace KancolleSniffer
         private EquipPanel equipPanel;
         private ItemTreeView itemTreeView;
         private System.Windows.Forms.RichTextBox richTextBoxMiscText;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem CopyToolStripMenuItem;
     }
 }

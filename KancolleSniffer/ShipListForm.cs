@@ -514,5 +514,15 @@ namespace KancolleSniffer
             else
                 ActiveControl = panelShipList;
         }
+
+        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InEquip)
+                Clipboard.SetText(TextGenerator.GenerateFleetInfo(_sniffer));
+            if (InItemList)
+                Clipboard.SetText(TextGenerator.GenerateItemList(_sniffer.ItemList));
+            if (InShipStatus)
+                Clipboard.SetText(TextGenerator.GenerateShipList(FilterByGroup(_sniffer.ShipList)));
+        }
     }
 }
