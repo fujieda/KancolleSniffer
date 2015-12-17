@@ -41,7 +41,7 @@ namespace KancolleSniffer
                        into grp
                        select grp.Key + $",{grp.Count()}"));
 
-        public static string GenerateFleetInfo(Sniffer sniffer)
+        public static string GenerateFleetData(Sniffer sniffer)
         {
             var sb = new StringBuilder();
             var fn = new[] { "第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊" };
@@ -66,6 +66,39 @@ namespace KancolleSniffer
                 }
                 sb.Append($"制空: {sniffer.GetFighterPower(f)} 索敵: {sniffer.GetFleetLineOfSights(f):F1}\r\n");
             }
+            return sb.ToString();
+        }
+
+        public static string GenerateDeckBuilderData(Sniffer sniffer)
+        {
+            var sb = new StringBuilder("{\"version\": 3,");
+            for (var f = 0; f < ShipInfo.FleetCount; f++)
+            {
+                if (f != 0)
+                    sb.Append(",");
+                sb.Append($"\"f{f + 1}\":{{");
+                var ships = sniffer.GetShipStatuses(f);
+                for (var s = 0; s < ships.Length; s++)
+                {
+                    if (s != 0)
+                        sb.Append(",");
+                    var st = ships[s];
+                    sb.Append($"\"s{s + 1}\":{{\"id\":\"{st.Spec.Id}\",\"lv\":{st.Level},\"luck\":{st.Lucky},\"items\":{{");
+                    var items = st.Slot;
+                    for (var i = 0; i < items.Length; i++)
+                    {
+                        var it = items[i];
+                        if (it.Id == -1)
+                            continue;
+                        if (i != 0)
+                            sb.Append(",");
+                        sb.Append($"\"i{i + 1}\":{{\"id\":{it.Spec.Id},\"rf\":{(it.Alv != 0 ? it.Alv : it.Level)}}}");
+                    }
+                    sb.Append("}}");
+                }
+                sb.Append("}");
+            }
+            sb.Append("}");
             return sb.ToString();
         }
     }
