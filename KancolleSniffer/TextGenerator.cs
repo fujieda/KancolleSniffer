@@ -16,6 +16,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -43,8 +44,9 @@ namespace KancolleSniffer
 
         public static string GenerateFleetData(Sniffer sniffer)
         {
+            var dict = new ItemName();
             var sb = new StringBuilder();
-            var fn = new[] { "第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊" };
+            var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             for (var f = 0; f < fn.Length; f++)
             {
                 sb.Append(fn[f] + "\r\n");
@@ -53,20 +55,49 @@ namespace KancolleSniffer
                     sb.Append($"{s.Name} Lv{s.Level}");
                     foreach (var item in s.Slot.Where(item => item.Id != -1))
                     {
-                        sb.Append(" " + item.Spec.Name +
+                        sb.Append(" " + dict[item.Spec.Name] +
                                   (item.Alv == 0 ? "" : "+" + item.Alv) +
                                   (item.Level == 0 ? "" : "★" + item.Level));
                     }
                     if (s.SlotEx.Id > 0)
                     {
                         var item = s.SlotEx;
-                        sb.Append(" " + item.Spec.Name);
+                        sb.Append(" " + dict[item.Spec.Name]);
                     }
                     sb.Append("\r\n");
                 }
                 sb.Append($"制空: {sniffer.GetFighterPower(f)} 索敵: {sniffer.GetFleetLineOfSights(f):F1}\r\n");
             }
             return sb.ToString();
+        }
+
+        private class ItemName
+        {
+            private readonly Dictionary<string, string> _dict = new Dictionary<string, string>();
+
+            public ItemName()
+            {
+                try
+                {
+                    foreach (var line in File.ReadLines("ItemName.csv"))
+                    {
+                        var cols = line.Split(',');
+                        _dict[cols[0]] = cols[1];
+                    }
+                }
+                catch (IOException)
+                {
+                }
+            }
+
+            public string this[string name]
+            {
+                get
+                {
+                    string shortName;
+                    return _dict.TryGetValue(name, out shortName) ? shortName : name;
+                }
+            }
         }
 
         public static string GenerateDeckBuilderData(Sniffer sniffer)
