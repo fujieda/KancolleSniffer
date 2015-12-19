@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Web;
+using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -204,22 +205,34 @@ namespace KancolleSniffer
             Id = id == 0 ? -1 : id;
         }
 
-        private readonly Dictionary<int, int[]> _alvBonus = new Dictionary<int, int[]>
+        private readonly double[] _alvBonusMin =
         {
-            {06, new[] {0, 1, 3, 7, 11, 16, 16, 25}}, // 艦戦
-            {07, new[] {0, 1, 1, 2, 02, 02, 02, 03}}, // 艦爆
-            {08, new[] {0, 1, 1, 2, 02, 02, 02, 03}}, // 艦攻
-            {11, new[] {0, 1, 2, 3, 03, 05, 05, 09}}  // 水爆
+            Sqrt(0.0), Sqrt(1.0), Sqrt(2.5), Sqrt(4.0), Sqrt(5.5), Sqrt(7.0),
+            Sqrt(8.5), Sqrt(10.0)
         };
 
-        public int AlvBonus
+        private readonly double[] _alvBonusMax =
+        {
+            Sqrt(0.9), Sqrt(2.4), Sqrt(3.9), Sqrt(5.4), Sqrt(6.9), Sqrt(8.4),
+            Sqrt(9.9), Sqrt(12.0)
+        };
+
+        private readonly Dictionary<int, int[]> _alvTypeBonus = new Dictionary<int, int[]>
+        {
+            {06, new[] {0, 0, 2, 5, 9, 14, 14, 22}}, // 艦戦
+            {07, new[] {0, 0, 0, 0, 0, 0, 0, 0}}, // 艦爆
+            {08, new[] {0, 0, 0, 0, 0, 0, 0, 0}}, // 艦攻
+            {11, new[] {0, 0, 1, 1, 1, 3, 3, 6}} // 水爆
+        };
+
+        public double[] AlvBonus
         {
             get
             {
                 int[] table;
-                if (!_alvBonus.TryGetValue(Spec.Type, out table))
-                    return 0;
-                return table[Alv];
+                if (!_alvTypeBonus.TryGetValue(Spec.Type, out table))
+                    return new[] {0.0, 0.0};
+                return new[] {table[Alv] + _alvBonusMin[Alv], table[Alv] + _alvBonusMax[Alv]};
             }
         }
     }

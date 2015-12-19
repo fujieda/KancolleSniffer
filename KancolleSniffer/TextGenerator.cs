@@ -66,7 +66,8 @@ namespace KancolleSniffer
                     }
                     sb.Append("\r\n");
                 }
-                sb.Append($"制空: {sniffer.GetFighterPower(f)} 索敵: {sniffer.GetFleetLineOfSights(f):F1}\r\n");
+                var fp = sniffer.GetFighterPower(f);
+                sb.Append($"制空: {fp[0]}～{fp[1]} 索敵: {sniffer.GetFleetLineOfSights(f):F1}\r\n");
             }
             return sb.ToString();
         }

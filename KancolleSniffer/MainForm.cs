@@ -600,7 +600,9 @@ namespace KancolleSniffer
 
         public void UpdateFighterPower()
         {
-            labelFighterPower.Text = _sniffer.GetFighterPower(_currentFleet).ToString("D");
+            var fp = _sniffer.GetFighterPower(_currentFleet);
+            labelFighterPower.Text = fp[0].ToString("D");
+            toolTipFighterPower.SetToolTip(labelFighterPower, fp[0] == fp[1] ? $"{fp[0]}" : $"{fp[0]}～{fp[1]}");
         }
 
         private void UpdateLoS()

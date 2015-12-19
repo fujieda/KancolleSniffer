@@ -492,13 +492,17 @@ namespace KancolleSniffer
                 select new ChargeStatus(flag.Fuel != 0 ? flag.Fuel : others.Fuel + 5,
                     flag.Bull != 0 ? flag.Bull : others.Bull + 5)).ToArray();
 
-        public int GetFighterPower(int fleet)
-            => GetShipStatuses(fleet).Where(s => !s.Escaped).SelectMany(ship =>
+        public int[] GetFighterPower(int fleet)
+            => GetShipStatuses(fleet).Where(ship => !ship.Escaped).SelectMany(ship =>
                 ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
-                {
-                    var item = _itemInfo.GetStatus(slot.Id);
-                    return item.Spec.CanAirCombat ? (int)Floor(item.Spec.AntiAir * Sqrt(onslot)) + item.AlvBonus : 0;
-                })).Sum();
+                    !slot.Spec.CanAirCombat
+                        ? new[] {0, 0}
+                        : new[]
+                        {
+                            (int)(slot.Spec.AntiAir * Sqrt(onslot) + slot.AlvBonus[0]),
+                            (int)(slot.Spec.AntiAir * Sqrt(onslot) + slot.AlvBonus[1])
+                        }))
+                .Aggregate(new[] {0, 0}, (prev, fp) => new[] {prev[0] + fp[0], prev[1] + fp[1]});
 
         public ShipStatus[] GetDamagedShipList(DockInfo dockInfo)
             => (from s in ShipList
