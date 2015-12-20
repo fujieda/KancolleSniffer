@@ -76,6 +76,12 @@ namespace KancolleSniffer
         }
     }
 
+    public class KancolleDbConfig
+    {
+        public bool On { get; set; }
+        public string Token { get; set; } = "";
+    }
+
     public class Config
     {
         private readonly string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -109,6 +115,7 @@ namespace KancolleSniffer
         public ProxyConfig Proxy { get; set; }
         public ShipListConfig ShipList { get; set; }
         public LogConfig Log { get; set; }
+        public KancolleDbConfig KancolleDb { get; set; }
 
         public Config()
         {
@@ -135,6 +142,7 @@ namespace KancolleSniffer
             Proxy = new ProxyConfig();
             ShipList = new ShipListConfig();
             Log = new LogConfig();
+            KancolleDb = new KancolleDbConfig();
             ConvertPath(PrependBaseDir);
         }
 

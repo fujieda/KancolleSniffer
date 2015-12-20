@@ -85,6 +85,8 @@ namespace KancolleSniffer
             LoadProxySettings();
             LoadLogSettings();
             LoadDebugSettings();
+            checkBoxKancolleDbOn.Checked = _config.KancolleDb.On;
+            textBoxKancolleDbToken.Text = _config.KancolleDb.Token;
         }
 
         private void LoadProxySettings()
@@ -147,6 +149,8 @@ namespace KancolleSniffer
             if (!ApplyLogSettings(server))
                 DialogResult = DialogResult.None;
             ApplyDebugSettings();
+            _config.KancolleDb.On = checkBoxKancolleDbOn.Checked;
+            _config.KancolleDb.Token = textBoxKancolleDbToken.Text;
 
             _config.TopMost = checkBoxTopMost.Checked;
             _config.HideOnMinimized = checkBoxHideOnMinimized.Checked;

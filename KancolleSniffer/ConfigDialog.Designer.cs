@@ -109,6 +109,11 @@ namespace KancolleSniffer
             this.textBoxOutput = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.buttonOutputDir = new System.Windows.Forms.Button();
+            this.tabPageCollabo = new System.Windows.Forms.TabPage();
+            this.groupBoxKancolleDb = new System.Windows.Forms.GroupBox();
+            this.textBoxKancolleDbToken = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.checkBoxKancolleDbOn = new System.Windows.Forms.CheckBox();
             this.tabPageDebug = new System.Windows.Forms.TabPage();
             this.buttonPlayDebugLog = new System.Windows.Forms.Button();
             this.buttonDebugLogOpenFile = new System.Windows.Forms.Button();
@@ -138,6 +143,8 @@ namespace KancolleSniffer
             this.tabPageLog.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).BeginInit();
+            this.tabPageCollabo.SuspendLayout();
+            this.groupBoxKancolleDb.SuspendLayout();
             this.tabPageDebug.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -152,6 +159,7 @@ namespace KancolleSniffer
             this.tabControl.Controls.Add(this.tabPageVersion);
             this.tabControl.Controls.Add(this.tabPageProxy);
             this.tabControl.Controls.Add(this.tabPageLog);
+            this.tabControl.Controls.Add(this.tabPageCollabo);
             this.tabControl.Controls.Add(this.tabPageDebug);
             this.tabControl.Location = new System.Drawing.Point(7, 6);
             this.tabControl.Multiline = true;
@@ -819,6 +827,54 @@ namespace KancolleSniffer
             this.buttonOutputDir.UseVisualStyleBackColor = true;
             this.buttonOutputDir.Click += new System.EventHandler(this.buttonOutputDir_Click);
             // 
+            // tabPageCollabo
+            // 
+            this.tabPageCollabo.Controls.Add(this.groupBoxKancolleDb);
+            this.tabPageCollabo.Location = new System.Drawing.Point(4, 40);
+            this.tabPageCollabo.Name = "tabPageCollabo";
+            this.tabPageCollabo.Size = new System.Drawing.Size(256, 158);
+            this.tabPageCollabo.TabIndex = 8;
+            this.tabPageCollabo.Text = "連携";
+            this.tabPageCollabo.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxKancolleDb
+            // 
+            this.groupBoxKancolleDb.Controls.Add(this.textBoxKancolleDbToken);
+            this.groupBoxKancolleDb.Controls.Add(this.label8);
+            this.groupBoxKancolleDb.Controls.Add(this.checkBoxKancolleDbOn);
+            this.groupBoxKancolleDb.Location = new System.Drawing.Point(11, 11);
+            this.groupBoxKancolleDb.Name = "groupBoxKancolleDb";
+            this.groupBoxKancolleDb.Size = new System.Drawing.Size(234, 48);
+            this.groupBoxKancolleDb.TabIndex = 0;
+            this.groupBoxKancolleDb.TabStop = false;
+            this.groupBoxKancolleDb.Text = "艦これ統計データベース";
+            // 
+            // textBoxKancolleDbToken
+            // 
+            this.textBoxKancolleDbToken.Location = new System.Drawing.Point(135, 18);
+            this.textBoxKancolleDbToken.Name = "textBoxKancolleDbToken";
+            this.textBoxKancolleDbToken.Size = new System.Drawing.Size(93, 19);
+            this.textBoxKancolleDbToken.TabIndex = 2;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(73, 21);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(63, 12);
+            this.label8.TabIndex = 1;
+            this.label8.Text = "アクセスキー:";
+            // 
+            // checkBoxKancolleDbOn
+            // 
+            this.checkBoxKancolleDbOn.AutoSize = true;
+            this.checkBoxKancolleDbOn.Location = new System.Drawing.Point(6, 20);
+            this.checkBoxKancolleDbOn.Name = "checkBoxKancolleDbOn";
+            this.checkBoxKancolleDbOn.Size = new System.Drawing.Size(67, 16);
+            this.checkBoxKancolleDbOn.TabIndex = 0;
+            this.checkBoxKancolleDbOn.Text = "送信する";
+            this.checkBoxKancolleDbOn.UseVisualStyleBackColor = true;
+            // 
             // tabPageDebug
             // 
             this.tabPageDebug.Controls.Add(this.buttonPlayDebugLog);
@@ -969,6 +1025,9 @@ namespace KancolleSniffer
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).EndInit();
+            this.tabPageCollabo.ResumeLayout(false);
+            this.groupBoxKancolleDb.ResumeLayout(false);
+            this.groupBoxKancolleDb.PerformLayout();
             this.tabPageDebug.ResumeLayout(false);
             this.tabPageDebug.PerformLayout();
             this.ResumeLayout(false);
@@ -1052,5 +1111,10 @@ namespace KancolleSniffer
         private System.Windows.Forms.RadioButton radioButtonResultRankWhenClick;
         private System.Windows.Forms.RadioButton radioButtonResultRankAlways;
         private System.Windows.Forms.CheckBox checkBoxPresetAkashi;
+        private System.Windows.Forms.TabPage tabPageCollabo;
+        private System.Windows.Forms.GroupBox groupBoxKancolleDb;
+        private System.Windows.Forms.TextBox textBoxKancolleDbToken;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.CheckBox checkBoxKancolleDbOn;
     }
 }
