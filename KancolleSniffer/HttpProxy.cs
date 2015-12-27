@@ -15,6 +15,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -234,28 +235,29 @@ namespace KancolleSniffer
                 }
             }
 
-            public string ModifiedHeaders =>
-                RemoveTransferEncoding(SetConnectionClose(Headers));
+            public virtual string ModifiedHeaders => SetConnectionClose(Headers);
 
             private string SetConnectionClose(string headers)
             {
-                foreach (var name in new[] {"connection", "keep-alive", "proxy-connection"})
+                return InsertHeader(RemoveHeaders(headers,
+                    new[] {"connection", "keep-alive", "proxy-connection"}), "Connection: close\r\n");
+            }
+
+            protected string RemoveHeaders(string headers, string[] fields)
+            {
+                foreach (var f in fields)
                 {
-                    var m = MatchField(name, headers);
+                    var m = MatchField(f, headers);
                     if (!m.Success)
                         continue;
                     headers = headers.Remove(m.Index, m.Length);
                 }
-                return headers.Insert(headers.Length - 2, "Connection: close\r\n");
+                return headers;
             }
 
-            private string RemoveTransferEncoding(string headers)
+            protected string InsertHeader(string headers, string header)
             {
-                var m = MatchField("transfer-encoding", headers);
-                if (!m.Success)
-                    return headers;
-                return headers.Remove(m.Index, m.Length).
-                    Insert(headers.Length - m.Length - 2, $"Content-Length: {Body.Length}\r\n");
+                return headers.Insert(headers.Length - 2, header);
             }
 
             protected virtual void SetHeaders(string headers)
@@ -272,7 +274,7 @@ namespace KancolleSniffer
                 Host = GetField("host");
             }
 
-            private Match MatchField(string name, string headers)
+            protected Match MatchField(string name, string headers)
             {
                 var regex = new Regex("^" + name + ":\\s*([^\r]+)\r\n",
                     RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -316,6 +318,14 @@ namespace KancolleSniffer
                 {
                     Body = stream.ReadToEnd();
                 }
+                if (ContentEncoding == null)
+                    return;
+                var dc = new MemoryStream();
+                if (ContentEncoding == "gzip")
+                    new GZipStream(new MemoryStream(Body), CompressionMode.Decompress).CopyTo(dc);
+                else if (ContentEncoding == "deflate")
+                    new DeflateStream(new MemoryStream(Body), CompressionMode.Decompress).CopyTo(dc);
+                Body = dc.ToArray();
             }
         }
 
@@ -344,6 +354,14 @@ namespace KancolleSniffer
         public class Response : Message
         {
             private string _statusLine;
+
+            public override string ModifiedHeaders =>
+                InsertContentLength(RemoveHeaders(base.ModifiedHeaders, new [] {"transfer-encoding", "content-encoding", "content-length"}));
+
+            private string InsertContentLength(string headers)
+            {
+                return Body == null ? headers : InsertHeader(headers, $"Content-Length: {Body.Length}\r\n");
+            }
 
             public string StatusLine
             {
