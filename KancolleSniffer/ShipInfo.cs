@@ -233,7 +233,8 @@ namespace KancolleSniffer
                 InspectDeck(json.api_deck_port);
                 InspectShipData(json.api_ship);
                 InspectBasic(json.api_basic);
-                _combinedFleetType = json.api_combined_flag() ? (int)json.api_combined_flag : 0;
+                if (json.api_combined_flag())
+                    _combinedFleetType =  (int)json.api_combined_flag;
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
             }
             else if (json.api_data()) // ship2
@@ -424,7 +425,7 @@ namespace KancolleSniffer
 
         public int[][] PresetDeck => _presetDeck;
 
-        public void StartSortie(string request)
+        public void InspectMapStart(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
             var fleet = int.Parse(values["api_deck_id"]) - 1;
@@ -436,6 +437,7 @@ namespace KancolleSniffer
             {
                 _inSortie[0] = _inSortie[1] = true;
             }
+            SetBadlyDamagedShips();
         }
 
         public void RepairShip(int id)
@@ -524,6 +526,22 @@ namespace KancolleSniffer
                 result += Sqrt(s.LoS - items) * 1.6841056;
             }
             return result > 0 ? result + (_hqLevel + 4) / 5 * 5 * -0.6142467 : 0.0;
+        }
+
+        public string[] BadlyDamagedShips { get; private set; } = new string[0];
+
+        public void SetBadlyDamagedShips()
+        {
+            BadlyDamagedShips =
+                _inSortie.SelectMany((sortie, i) => sortie ? GetShipStatuses(i) : new ShipStatus[0])
+                    .Where(s => !s.Escaped && s.DamageLevel == ShipStatus.Damage.Badly)
+                    .Select(s => s.Name)
+                    .ToArray();
+        }
+
+        public void ClearBadlyDamagedShips()
+        {
+            BadlyDamagedShips = new string[0];
         }
 
         public void SetEscapedShips(List<int> ships)

@@ -578,8 +578,8 @@ namespace KancolleSniffer
 
         private void NotifyDamagedShip()
         {
-            if (_sniffer.Battle.HasDamagedShip)
-                _noticeQueue.Enqueue("大破した艦娘がいます", string.Join(" ", _sniffer.Battle.DamagedShipNames),
+            if (_sniffer.BadlyDamagedShips.Any())
+                _noticeQueue.Enqueue("大破した艦娘がいます", string.Join(" ", _sniffer.BadlyDamagedShips),
                     _config.DamagedShipSoundFile);
         }
 

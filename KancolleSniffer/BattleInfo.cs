@@ -47,8 +47,6 @@ namespace KancolleSniffer
         public bool InBattle { get; set; }
         public string Formation { get; private set; }
         public int EnemyFighterPower { get; private set; }
-        public bool HasDamagedShip { get; set; }
-        public string[] DamagedShipNames { get; private set; }
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
@@ -290,7 +288,7 @@ namespace KancolleSniffer
             foreach (var e in ships.Zip(_friend, (ship, now) => new {ship, now}))
                 e.now.UpdateShipStatus(e.ship);
             if (warnDamagedShip)
-                UpdateDamgedShipNames(ships);
+                _shipInfo.SetBadlyDamagedShips();
             SetEnemyResultStatus();
         }
 
@@ -301,13 +299,6 @@ namespace KancolleSniffer
                 EnemyResultStatus[i].MaxHp = _enemyStartHp[i];
                 EnemyResultStatus[i].NowHp = _enemyHp[i];
             }
-        }
-
-        private void UpdateDamgedShipNames(IEnumerable<ShipStatus> ships)
-        {
-            DamagedShipNames =
-                (from s in ships where s.DamageLevel == ShipStatus.Damage.Badly && !s.Escaped select s.Name).ToArray();
-            HasDamagedShip = DamagedShipNames.Any();
         }
 
         public void InspectCombinedBattle(dynamic json, bool surfaceFleet)
@@ -348,14 +339,14 @@ namespace KancolleSniffer
             foreach (var e in ships.Zip(_friend.Concat(_guard), (ship, now) => new {ship, now}))
                 e.now.UpdateShipStatus(e.ship);
             if (warnDamagedShip)
-                UpdateDamgedShipNames(ships);
+                _shipInfo.SetBadlyDamagedShips();
             SetEnemyResultStatus();
         }
 
         public void CauseCombinedBattleEscape()
         {
             _shipInfo.SetEscapedShips(_escapingShips);
-            UpdateDamgedShipNames(_shipInfo.GetShipStatuses(0).Concat(_shipInfo.GetShipStatuses(1)));
+            _shipInfo.SetBadlyDamagedShips();
         }
 
         private class Record

@@ -130,6 +130,7 @@ namespace KancolleSniffer
             _logger.InspectBasic(data.api_basic);
             _logger.InspectMaterial(data.api_material);
             _shipInfo.InspectShip(data);
+            _shipInfo.ClearBadlyDamagedShips();
             _conditionTimer.CalcRegenTime();
             _missionInfo.InspectDeck(data.api_deck_port);
             _dockInfo.InspectNDock(data.api_ndock);
@@ -139,7 +140,6 @@ namespace KancolleSniffer
                 _questInfo.QuestCount = (int)data.api_parallel_quest_count;
             _battleInfo.CleanupResult();
             _battleInfo.InBattle = false;
-            _battleInfo.HasDamagedShip = false;
             _shipInfo.ClearEscapedShips();
             _miscTextInfo.ClearIfNeeded();
             SaveState();
@@ -296,7 +296,7 @@ namespace KancolleSniffer
             {
                 if (url.EndsWith("/battle"))
                 {
-                    _shipInfo.StartSortie(request); // 演習を出撃中とみなす
+                    _shipInfo.InspectMapStart(request); // 演習を出撃中とみなす
                     _conditionTimer.InvalidateCond();
                     _miscTextInfo.ClearFlag = true;
                 }
@@ -414,12 +414,12 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_map/start"))
             {
-                _shipInfo.StartSortie(request);
+                _shipInfo.InspectMapStart(request); // 出撃中判定が必要なので_conditionTimerより前
                 _conditionTimer.InvalidateCond();
                 _exMapInfo.InspectMapStart(data);
                 _logger.InspectMapStart(data);
                 _miscTextInfo.ClearFlag = true;
-                return Update.Timer;
+                return Update.Timer | Update.Ship;
             }
             if (url.EndsWith("api_req_map/next"))
             {
@@ -467,6 +467,8 @@ namespace KancolleSniffer
         public ShipStatus[] DamagedShipList => _shipInfo.GetDamagedShipList(_dockInfo);
 
         public ShipStatus[] ShipList => _shipInfo.ShipList;
+
+        public string[] BadlyDamagedShips => _shipInfo.BadlyDamagedShips;
 
         public ItemStatus[] ItemList => _itemInfo.GetItemListWithOwner(ShipList);
 
