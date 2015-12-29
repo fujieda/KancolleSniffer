@@ -198,7 +198,7 @@ namespace KancolleSniffer
         private int _hqLevel;
         private readonly List<int> _escapedShips = new List<int>();
         private int _combinedFleetType;
-        private readonly int[][] _presetDeck = new int[5][];
+        private readonly int[][] _presetDeck = new int[8][];
 
         public ShipInfo(ItemInfo itemInfo)
         {
