@@ -27,7 +27,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Win32;
 using static System.Math;
@@ -123,10 +122,6 @@ namespace KancolleSniffer
             {
                 ShowServerError(url, request, response, e);
             }
-            catch (XmlException e)
-            {
-                ShowServerError(url, request, response, e);
-            }
             catch (RuntimeBinderException e)
             {
                 if (_errorDialog.ShowDialog(this,
@@ -136,6 +131,11 @@ namespace KancolleSniffer
             catch (LogIOException e)
             {
                 if (_errorDialog.ShowDialog(this, e.Message, e.InnerException.ToString()) == DialogResult.Abort)
+                    Application.Exit();
+            }
+            catch (Exception e)
+            {
+                if (_errorDialog.ShowDialog(this, "エラーが発生しました。", e.ToString()) == DialogResult.Abort)
                     Application.Exit();
             }
         }
