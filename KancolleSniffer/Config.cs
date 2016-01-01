@@ -130,8 +130,8 @@ namespace KancolleSniffer
         public bool PlaySound { get; set; } = true;
         public int MarginShips { get; set; } = 4;
         public int MarginEquips { get; set; } = 10;
-        public List<int> NotifyConditions { get; set; } = new List<int>(new[] {40, 49});
-        public List<int> ResetHours { get; set; } = new List<int>(new[] {2});
+        public List<int> NotifyConditions { get; set; }
+        public List<int> ResetHours { get; set; }
         public bool AlwaysShowResultRank { get; set; }
         public bool UsePresetAkashi { get; set; }
         public SoundConfig Sounds { get; set; } = new SoundConfig();
@@ -148,6 +148,12 @@ namespace KancolleSniffer
             ConvertPath(PrependBaseDir);
         }
 
+        public void InitializeValues()
+        {
+            NotifyConditions = new List<int>(new[] {40, 49});
+            ResetHours = new List<int>(new int[] {2});
+        }
+
         public void Load()
         {
             try
@@ -161,6 +167,7 @@ namespace KancolleSniffer
             }
             catch (FileNotFoundException)
             {
+                InitializeValues();
                 ReadOldConfig();
                 Save();
             }
