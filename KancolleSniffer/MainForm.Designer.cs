@@ -529,6 +529,7 @@ namespace KancolleSniffer
             this.panelDock.Name = "panelDock";
             this.panelDock.Size = new System.Drawing.Size(140, 64);
             this.panelDock.TabIndex = 4;
+            this.panelDock.Click += new System.EventHandler(this.labelNDock_Click);
             // 
             // label8
             // 
@@ -538,6 +539,7 @@ namespace KancolleSniffer
             this.label8.Size = new System.Drawing.Size(29, 12);
             this.label8.TabIndex = 3;
             this.label8.Text = "第四";
+            this.label8.Click += new System.EventHandler(this.labelNDock_Click);
             // 
             // label7
             // 
@@ -547,6 +549,7 @@ namespace KancolleSniffer
             this.label7.Size = new System.Drawing.Size(29, 12);
             this.label7.TabIndex = 2;
             this.label7.Text = "第三";
+            this.label7.Click += new System.EventHandler(this.labelNDock_Click);
             // 
             // label6
             // 
@@ -556,6 +559,7 @@ namespace KancolleSniffer
             this.label6.Size = new System.Drawing.Size(29, 12);
             this.label6.TabIndex = 1;
             this.label6.Text = "第二";
+            this.label6.Click += new System.EventHandler(this.labelNDock_Click);
             // 
             // label5
             // 
@@ -565,6 +569,7 @@ namespace KancolleSniffer
             this.label5.Size = new System.Drawing.Size(29, 12);
             this.label5.TabIndex = 0;
             this.label5.Text = "第一";
+            this.label5.Click += new System.EventHandler(this.labelNDock_Click);
             // 
             // panel1
             // 
@@ -702,6 +707,7 @@ namespace KancolleSniffer
             this.labelMissionName3.Name = "labelMissionName3";
             this.labelMissionName3.Size = new System.Drawing.Size(113, 12);
             this.labelMissionName3.TabIndex = 5;
+            this.labelMissionName3.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // labelMissionName2
             // 
@@ -709,6 +715,7 @@ namespace KancolleSniffer
             this.labelMissionName2.Name = "labelMissionName2";
             this.labelMissionName2.Size = new System.Drawing.Size(113, 12);
             this.labelMissionName2.TabIndex = 4;
+            this.labelMissionName2.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // labelMissionName1
             // 
@@ -716,6 +723,7 @@ namespace KancolleSniffer
             this.labelMissionName1.Name = "labelMissionName1";
             this.labelMissionName1.Size = new System.Drawing.Size(113, 12);
             this.labelMissionName1.TabIndex = 3;
+            this.labelMissionName1.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // labelMission3
             // 
@@ -752,6 +760,7 @@ namespace KancolleSniffer
             this.label15.Size = new System.Drawing.Size(53, 12);
             this.label15.TabIndex = 2;
             this.label15.Text = "第四艦隊";
+            this.label15.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // label14
             // 
@@ -761,6 +770,7 @@ namespace KancolleSniffer
             this.label14.Size = new System.Drawing.Size(53, 12);
             this.label14.TabIndex = 1;
             this.label14.Text = "第三艦隊";
+            this.label14.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // label13
             // 
@@ -770,6 +780,7 @@ namespace KancolleSniffer
             this.label13.Size = new System.Drawing.Size(53, 12);
             this.label13.TabIndex = 0;
             this.label13.Text = "第二艦隊";
+            this.label13.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // timerMain
             // 

@@ -669,6 +669,13 @@ namespace KancolleSniffer
             _shipLabels.SetNDockLabels(_sniffer.NDock);
         }
 
+
+        private void labelNDock_Click(object sender, EventArgs e)
+        {
+            _ndockFinishTimeMode = !_ndockFinishTimeMode;
+            UpdateTimers();
+        }
+
         private void UpdateMissionLabels()
         {
             foreach (var entry in
