@@ -14,7 +14,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace KancolleSniffer
 {
@@ -23,12 +25,20 @@ namespace KancolleSniffer
         public int Category { get; set; }
         public string Name { get; set; }
         public int Progress { get; set; }
+        public Color Color { get; set; }
     }
 
     public class QuestInfo
     {
         private DateTime _lastCreared;
         private readonly SortedDictionary<int, QuestStatus> _quests = new SortedDictionary<int, QuestStatus>();
+
+        private readonly Color[] _color =
+        {
+            Color.FromArgb(60, 141, 76), Color.FromArgb(232, 57, 41), Color.FromArgb(136, 204, 120),
+            Color.FromArgb(52, 147, 185), Color.FromArgb(220, 198, 126), Color.FromArgb(168, 111, 76),
+            Color.FromArgb(200, 148, 231), Color.FromArgb(232, 57, 41)
+        };
 
         public int QuestCount { get; set; }
 
@@ -69,7 +79,13 @@ namespace KancolleSniffer
                     switch (state)
                     {
                         case 2:
-                            _quests[id] = new QuestStatus {Category = cat, Name = name, Progress = progress};
+                            _quests[id] = new QuestStatus
+                            {
+                                Category = cat,
+                                Name = name,
+                                Progress = progress,
+                                Color = cat <= _color.Length ? _color[cat - 1] : Control.DefaultBackColor
+                            };
                             break;
                         case 1:
                         case 3:

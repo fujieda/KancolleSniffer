@@ -200,7 +200,6 @@ namespace KancolleSniffer
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
             RestoreLocation();
             if (_config.HideOnMinimized && WindowState == FormWindowState.Minimized)
                 ShowInTaskbar = false;
@@ -823,19 +822,12 @@ namespace KancolleSniffer
             var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5, labelQuest6};
             var progress = new[]
             {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5, labelProgress6};
-            var color = new[]
-            {
-                Color.FromArgb(60, 141, 76), Color.FromArgb(232, 57, 41), Color.FromArgb(136, 204, 120),
-                Color.FromArgb(52, 147, 185), Color.FromArgb(220, 198, 126), Color.FromArgb(168, 111, 76),
-                Color.FromArgb(200, 148, 231)
-            };
-
             var quests = _sniffer.Quests;
             for (var i = 0; i < name.Length; i++)
             {
                 if (i < quests.Length)
                 {
-                    category[i].BackColor = color[quests[i].Category - 1];
+                    category[i].BackColor = quests[i].Color;
                     name[i].Text = quests[i].Name;
                     progress[i].Text = $"{quests[i].Progress:D}%";
                 }
