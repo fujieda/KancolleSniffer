@@ -166,7 +166,7 @@ namespace KancolleSniffer
             }
 
             private static readonly Regex HostAndPortRegex =
-                new Regex("http://([^:/]+)(?::(\\d)+)?/", RegexOptions.Compiled);
+                new Regex("http://([^:/]+)(?::(\\d+))?/", RegexOptions.Compiled);
 
             private Socket ConnectServer()
             {
@@ -186,14 +186,27 @@ namespace KancolleSniffer
                         port = int.Parse(m.Groups[2].Value);
                     _session.Request.RequestLine = _session.Request.RequestLine.Remove(m.Index, m.Length - 1);
                 }
-                if (host == null)
-                    host = _session.Request.Host;
-                if (host == null)
-                    throw new HttpProxyAbort("Can't find destinatio host");
+                if (host == null && !ParseAuthority(_session.Request.Host, ref host, ref port))
+                    throw new HttpProxyAbort("Can't find destination host");
                 connect:
                 var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Connect(host, port);
                 return socket;
+            }
+
+            private static readonly Regex AuthorityRegex = new Regex("([^:]+)(?::(\\d+))?");
+
+            private bool ParseAuthority(string authority, ref string host, ref int port)
+            {
+                if (string.IsNullOrEmpty(authority))
+                    return false;
+                var m = AuthorityRegex.Match(authority);
+                if (!m.Success)
+                    return false;
+                host = m.Groups[1].Value;
+                if (m.Groups[2].Success)
+                    port = int.Parse(m.Groups[2].Value);
+                return true;
             }
 
             private void Close()
