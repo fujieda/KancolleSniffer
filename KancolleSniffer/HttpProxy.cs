@@ -103,6 +103,11 @@ namespace KancolleSniffer
                 try
                 {
                     ReceiveRequest();
+                    if (_session.Request.Method == "CONNECT")
+                    {
+                        HandleConnect();
+                        return;
+                    }
                     SendRequest();
                     ReceiveResponse();
                     SendResponse();
@@ -163,6 +168,44 @@ namespace KancolleSniffer
             {
                 _clientStream.WriteLines(_session.Response.StatusLine + _session.Response.ModifiedHeaders)
                     .Write(_session.Response.Body);
+            }
+
+            private void HandleConnect()
+            {
+                var host = "";
+                var port = 443;
+                if (!ParseAuthority(_session.Request.PathAndQuery, ref host, ref port))
+                    return;
+                _server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                _server.Connect(host, port);
+                _clientStream.WriteLines("HTTP/1.0 200 Connection established\r\n\r\n");
+                Task[] tasks =
+                {
+                    Task.Run(() => { TunnnelSockets(_client, _server); }),
+                    Task.Run(() => { TunnnelSockets(_server, _client); })
+                };
+                Task.WaitAll(tasks);
+            }
+
+            private void TunnnelSockets(Socket from, Socket to)
+            {
+                try
+                {
+                    var buf = new byte[8192];
+                    while (true)
+                    {
+                        var n = from.Receive(buf);
+                        if (n == 0)
+                            break;
+                        var sent = to.Send(buf, n, SocketFlags.None);
+                        if (sent < n)
+                            break;
+                    }
+                    to.Shutdown(SocketShutdown.Send);
+                }
+                catch (SocketException)
+                {
+                }
             }
 
             private static readonly Regex HostAndPortRegex =
@@ -376,7 +419,8 @@ namespace KancolleSniffer
             private string _statusLine;
 
             public override string ModifiedHeaders =>
-                InsertContentLength(RemoveHeaders(base.ModifiedHeaders, new [] {"transfer-encoding", "content-encoding", "content-length"}));
+                InsertContentLength(RemoveHeaders(base.ModifiedHeaders,
+                    new[] {"transfer-encoding", "content-encoding", "content-length"}));
 
             private string InsertContentLength(string headers)
             {
