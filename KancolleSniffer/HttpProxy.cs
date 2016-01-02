@@ -307,7 +307,14 @@ namespace KancolleSniffer
                     if (Body == null)
                         return "";
                     var m = CharsetRegx.Match(ContentType ?? "");
-                    var encoding = m.Success ? Encoding.GetEncoding(m.Groups[1].Value) : Encoding.ASCII;
+                    var encoding = Encoding.ASCII;
+                    if (m.Success)
+                    {
+                        var name = m.Groups[1].Value;
+                        if (name == "utf8")
+                            name = "UTF-8";
+                        encoding = Encoding.GetEncoding(name);
+                    }
                     return encoding.GetString(Body);
                 }
             }
