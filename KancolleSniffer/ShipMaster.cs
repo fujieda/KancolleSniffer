@@ -73,7 +73,7 @@ namespace KancolleSniffer
             {"Libeccio改", "Libeccio"},
             {"阿武隈改二", "阿武隈改"},
             {"瑞鶴改二甲", "瑞鶴改二"},
-            {"翔鶴改二甲", "瑞鶴改二"},
+            {"翔鶴改二甲", "翔鶴改二"},
         };
 
         private string ShortName(string name)
