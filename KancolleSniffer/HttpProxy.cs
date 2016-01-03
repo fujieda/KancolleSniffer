@@ -394,10 +394,17 @@ namespace KancolleSniffer
                 if (ContentEncoding == null)
                     return;
                 var dc = new MemoryStream();
-                if (ContentEncoding == "gzip")
-                    new GZipStream(new MemoryStream(Body), CompressionMode.Decompress).CopyTo(dc);
-                else if (ContentEncoding == "deflate")
-                    new DeflateStream(new MemoryStream(Body), CompressionMode.Decompress).CopyTo(dc);
+                try
+                {
+                    if (ContentEncoding == "gzip")
+                        new GZipStream(new MemoryStream(Body), CompressionMode.Decompress).CopyTo(dc);
+                    else if (ContentEncoding == "deflate")
+                        new DeflateStream(new MemoryStream(Body), CompressionMode.Decompress).CopyTo(dc);
+                }
+                catch (Exception ex)
+                {
+                    throw new HttpProxyAbort($"Fail to decode {ContentEncoding}: " + ex.Message);
+                }
                 Body = dc.ToArray();
             }
         }
