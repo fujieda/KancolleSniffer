@@ -109,6 +109,8 @@ namespace KancolleSniffer
                         return;
                     }
                     SendRequest();
+                    ReceiveRequestBody();
+                    SendRequestBody();
                     ReceiveResponse();
                     SendResponse();
                     Close();
@@ -134,6 +136,10 @@ namespace KancolleSniffer
                 var requestLine = _clientStream.ReadLine();
                 _session.Request.RequestLine = requestLine;
                 _session.Request.Headers = _clientStream.ReadHeaders();
+            }
+
+            private void ReceiveRequestBody()
+            {
                 if (_session.Request.ContentLength != -1 || _session.Request.TransferEncoding != null)
                     _session.Request.ReadBody(_clientStream);
             }
@@ -142,8 +148,12 @@ namespace KancolleSniffer
             {
                 _server = ConnectServer();
                 _serverStream = new HttpStream(_server).
-                    WriteLines(_session.Request.RequestLine + _session.Request.ModifiedHeaders).
-                    Write(_session.Request.Body);
+                    WriteLines(_session.Request.RequestLine + _session.Request.ModifiedHeaders);
+            }
+
+            private void SendRequestBody()
+            {
+                _serverStream.Write(_session.Request.Body);
             }
 
             private void ReceiveResponse()
