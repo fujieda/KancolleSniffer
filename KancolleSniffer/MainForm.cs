@@ -94,10 +94,10 @@ namespace KancolleSniffer
         private void ProcessRequest(HttpProxy.Session session)
         {
             var url = session.Request.PathAndQuery;
-            var request = session.Request.BodyAsString;
-            var response = session.Response.BodyAsString;
             if (!url.Contains("kcsapi/"))
                 return;
+            var request = session.Request.BodyAsString;
+            var response = session.Response.BodyAsString;
             if (response == null || !response.StartsWith("svdata="))
             {
                 WriteDebugLog(url, request, response);
