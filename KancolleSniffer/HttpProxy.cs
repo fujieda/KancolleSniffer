@@ -522,10 +522,11 @@ namespace KancolleSniffer
                     var size = ReadLine();
                     if (size.Length < 3)
                         break;
+                    var ext = size.IndexOf(';');
+                    size = ext == -1 ? size.Substring(0, size.Length - 2) : size.Substring(0, ext);
                     int val;
-                    if (!int.TryParse(size.Substring(0, size.Length - 2),
-                        NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out val))
-                        break;
+                    if (!int.TryParse(size, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out val))
+                        throw new HttpProxyAbort("Can't parse chunk size: " + size);
                     if (val == 0)
                     {
                         ReadLine();
@@ -536,6 +537,11 @@ namespace KancolleSniffer
                     buf.Write(chunk, 0, chunk.Length);
                     ReadLine();
                 }
+                string line;
+                do
+                {
+                    line = ReadLine();
+                } while (line != "" && line != "\r\n");
                 return buf.ToArray();
             }
 
