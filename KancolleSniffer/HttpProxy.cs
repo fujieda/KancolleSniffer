@@ -571,52 +571,39 @@ namespace KancolleSniffer
 
             public int Read(byte[] buf, int offset, int count)
             {
-                try
+                var total = 0;
+                do
                 {
-                    var total = 0;
-                    do
+                    int n;
+                    if (_position < _available)
                     {
-                        int n;
-                        if (_position < _available)
-                        {
-                            n = Math.Min(count, _available - _position);
-                            Buffer.BlockCopy(_buffer, _position, buf, 0, n);
-                            _position += n;
-                        }
-                        else
-                        {
-                            n = _socket.Receive(buf, offset, count, SocketFlags.None);
-                            if (n == 0)
-                                return total == 0 ? n : total;
-                        }
-                        count -= n;
-                        offset += n;
-                        total += n;
-                    } while (count > 0);
-                    return total;
-                }
-                catch (IOException)
-                {
-                    return -1;
-                }
+                        n = Math.Min(count, _available - _position);
+                        Buffer.BlockCopy(_buffer, _position, buf, 0, n);
+                        _position += n;
+                    }
+                    else
+                    {
+                        n = _socket.Receive(buf, offset, count, SocketFlags.None);
+                        if (n == 0)
+                            return total == 0 ? n : total;
+                    }
+                    count -= n;
+                    offset += n;
+                    total += n;
+                } while (count > 0);
+                return total;
             }
 
             public void Write(byte[] buf, int offset, int count)
             {
-                try
+                do
                 {
-                    do
-                    {
-                        var n = _socket.Send(buf, offset, count, SocketFlags.None);
-                        if (n == 0)
-                            return;
-                        count -= n;
-                        offset += n;
-                    } while (count > 0);
-                }
-                catch (IOException)
-                {
-                }
+                    var n = _socket.Send(buf, offset, count, SocketFlags.None);
+                    if (n == 0)
+                        return;
+                    count -= n;
+                    offset += n;
+                } while (count > 0);
             }
 
             public HttpStream Close()
