@@ -116,14 +116,9 @@ namespace KancolleSniffer
                     Close();
                     AfterSessionComplete?.Invoke(_session);
                 }
-                catch (SocketException)
+                catch (Exception e)
                 {
-                }
-                catch (IOException)
-                {
-                }
-                catch (HttpProxyAbort)
-                {
+                    File.AppendAllText("debug.log", e.ToString());
                 }
                 finally
                 {
