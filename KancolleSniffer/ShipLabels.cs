@@ -315,7 +315,6 @@ namespace KancolleSniffer
                     label.Click += onClick;
                 }
             }
-            parent.Click += onClick;
         }
 
         public void SetNDockLabels(NameAndTimer[] ndock)

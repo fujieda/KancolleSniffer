@@ -74,11 +74,7 @@ namespace KancolleSniffer
             _shipLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
             _shipLabels.CreateCombinedShipLabels(panelCombinedFleet, ShowShipOnShipList);
             _shipLabels.CreateDamagedShipList(panelDamagedShipList, panelDamagedShipList_Click);
-            _shipLabels.CreateNDockLabels(panelDock, (obj, args) =>
-            {
-                _ndockFinishTimeMode = !_ndockFinishTimeMode;
-                UpdateTimers();
-            });
+            _shipLabels.CreateNDockLabels(panelDock, labelNDock_Click);
             labelPresetAkashiTimer.BackColor = ShipLabels.ColumnColors[1];
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
