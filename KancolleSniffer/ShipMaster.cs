@@ -70,6 +70,7 @@ namespace KancolleSniffer
             {"Prinz Eugen", "Prinz Eug"},
             {"Prinz Eugen改", "Prinz Eug"},
             {"Graf Zeppelin", "Graf Zep"},
+            {"Graf Zeppelin改", "Graf Zep"},
             {"Libeccio改", "Libeccio"},
             {"阿武隈改二", "阿武隈改"},
             {"瑞鶴改二甲", "瑞鶴改二"},
