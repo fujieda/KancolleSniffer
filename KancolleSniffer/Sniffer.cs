@@ -559,5 +559,10 @@ namespace KancolleSniffer
             if (prev > _spare && _spare >= Rest)
                 NeedRing = true;
         }
+
+        public string ToString(bool finish = false)
+            => EndTime == DateTime.MinValue
+                ? ""
+                : finish ? EndTime.ToString(@"dd\ HH\:mm") : $@"{(int)Rest.TotalHours:d2}:{Rest:mm\:ss}";
     }
 }

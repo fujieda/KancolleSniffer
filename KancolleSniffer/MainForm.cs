@@ -694,13 +694,7 @@ namespace KancolleSniffer
             {
                 entry.Timer.Update();
                 SetTimerColor(entry.label, entry.Timer);
-                var rest = entry.Timer.Rest;
-                entry.label.Text =
-                    entry.Timer.EndTime == DateTime.MinValue
-                        ? ""
-                        : _missionFinishTimeMode
-                            ? entry.Timer.EndTime.ToString(@"dd\ HH\:mm")
-                            : rest.ToString(@"hh\:mm\:ss");
+                entry.label.Text = entry.Timer.ToString(_missionFinishTimeMode);
                 if (!entry.Timer.NeedRing)
                     continue;
                 _noticeQueue.Enqueue("遠征が終わりました", entry.Name, _config.Sounds["遠征終了"]);

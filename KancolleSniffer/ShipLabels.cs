@@ -327,17 +327,7 @@ namespace KancolleSniffer
         {
             var label = _ndockLabels[dock][0];
             label.ForeColor = timer.IsFinished ? Color.Red : Color.Black;
-            if (timer.EndTime == DateTime.MinValue)
-            {
-                label.Text = "";
-            }
-            else
-            {
-                if (finishTime)
-                    label.Text = timer.EndTime.ToString(@"dd\ HH\:mm");
-                else
-                    label.SetRepairTime(timer.Rest);
-            }
+            label.Text = timer.ToString(finishTime);
         }
     }
 
