@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -227,7 +228,7 @@ namespace KancolleSniffer
                 label.Visible = true;
                 label.Text = timer.Span.ToString(@"mm\:ss");
                 label.ForeColor = Control.DefaultForeColor;
-                labelName.SetShortName(stat);
+                labelName.SetName(stat, _shortNameDict);
                 if (timer.Diff == 0)
                 {
                     labelHp.ForeColor = Control.DefaultForeColor;
@@ -239,6 +240,26 @@ namespace KancolleSniffer
                 labelHp.SetHp(stat.NowHp + timer.Diff, stat.MaxHp);
             }
         }
+
+        private readonly Dictionary<string, string> _shortNameDict = new Dictionary<string, string>
+        {
+            {"千代田航改", "千代田航"},
+            {"千代田航改二", "千代田航"},
+            {"千歳航改二", "千歳航改"},
+            {"五十鈴改二", "五十鈴改"},
+            {"あきつ丸改", "あきつ丸"},
+            {"Bismarck改", "Bismarck"},
+            {"Bismarck twei", "Bismarck"},
+            {"Bismarck drei", "Bismarck"},
+            {"Prinz Eugen", "Prinz Eug"},
+            {"Prinz Eugen改", "Prinz Eug"},
+            {"Graf Zeppelin", "Graf Zep"},
+            {"Graf Zeppelin改", "Graf Zep"},
+            {"Libeccio改", "Libeccio"},
+            {"阿武隈改二", "阿武隈改"},
+            {"瑞鶴改二甲", "瑞鶴改二"},
+            {"翔鶴改二甲", "翔鶴改二"},
+        };
 
         public void CreateDamagedShipList(Control parent, EventHandler onClick)
         {
@@ -340,17 +361,14 @@ namespace KancolleSniffer
         private int _right = int.MinValue;
         private int _left;
 
-        public void SetShortName(ShipStatus status)
+        public void SetName(ShipStatus status, Dictionary<string, string> convDict = null)
         {
-            SetName(status, true);
-        }
-
-        public void SetName(ShipStatus status, bool shortName = false)
-        {
+            string name;
+            if (convDict == null || !convDict.TryGetValue(status.Name, out name))
+                name = status.Name;
             var empty = status.Id != -1 && status.Slot.All(e => e.Id == -1) ? "▫" : "";
             var dc = status.PreparedDamageControl;
             var dcname = dc == 42 ? "[ダ]" : dc == 43 ? "[メ]" : "";
-            var name = shortName ? status.Spec.ShortName : status.Name;
             SetName((status.Escaped ? "[避]" : dcname) + name + empty);
         }
 
