@@ -493,7 +493,7 @@ namespace KancolleSniffer
         public int[] GetFighterPower(int fleet)
             => GetShipStatuses(fleet).Where(ship => !ship.Escaped).SelectMany(ship =>
                 ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
-                    !slot.Spec.CanAirCombat
+                    !slot.Spec.CanAirCombat || onslot == 0
                         ? new[] {0, 0}
                         : new[]
                         {
