@@ -392,7 +392,7 @@ namespace KancolleSniffer
             rpl[1].SetLevel(s);
             rpl[2].SetRepairTime(s);
             rpl[3].Text = TimeSpan.FromSeconds(s.RepairSecPerHp).ToString(@"mm\:ss");
-            rpl[4].SetName(s);
+            rpl[4].SetName(s, new Dictionary<string, string> {{"Graf Zeppelin改", "Graf Zeppelin"}});
             rpl[5].SetFleet(s);
             rpp.Visible = true;
         }

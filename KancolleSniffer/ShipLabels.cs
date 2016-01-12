@@ -308,7 +308,11 @@ namespace KancolleSniffer
                 var s = list[i];
                 var labels = _damagedShipList[i];
                 labels[fleet].SetFleet(s);
-                labels[name].SetName(s);
+                labels[name].SetName(s, new Dictionary<string, string>
+                {
+                    {"Graf Zeppelin", "Graf Zeppeli"},
+                    {"Graf Zeppelin改", "Graf Zeppeli"},
+                });
                 labels[time].SetRepairTime(s);
                 labels[damage].BackColor = ShipLabel.DamageColor(s, labels[damage].PresetColor);
             }
@@ -340,8 +344,16 @@ namespace KancolleSniffer
 
         public void SetNDockLabels(NameAndTimer[] ndock)
         {
+            var dict = new Dictionary<string, string>
+            {
+                {"Graf Zeppelin", "Graf Zeppeli"},
+                {"Graf Zeppelin改", "Graf Zeppeli"},
+            };
             for (var i = 0; i < _ndockLabels.Length; i++)
-                _ndockLabels[i][1].SetName(ndock[i].Name);
+            {
+                string name;
+                _ndockLabels[i][1].SetName(dict.TryGetValue(ndock[i].Name, out name) ? name : ndock[i].Name);
+            }
         }
 
         public void SetNDockTimer(int dock, RingTimer timer, bool finishTime)
