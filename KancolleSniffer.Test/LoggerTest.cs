@@ -220,6 +220,21 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void ReloadBeforeBattleResult()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "reload_002");
+            PAssert.That(() => "2015-01-01 00:00:00,鎮守府正面海域,1,出撃,S,同航戦,単縦陣,単縦陣,敵偵察艦,駆逐艦,深雪," +
+                               "天龍改(Lv79),40/40,大潮(Lv1),16/16,初霜(Lv1),16/16,,,,,,,駆逐イ級,0/20,,,,,,,,,,|" +
+                               "2015-01-01 00:00:00,鎮守府正面海域,1,出撃,S,同航戦,単縦陣,単縦陣,敵偵察艦,,," +
+                               "天龍改(Lv79),40/40,大潮(Lv1),6/16,初霜(Lv1),16/16,,,,,,,駆逐イ級,0/20,,,,,,,,,,|"
+                               == result);
+        }
+
+        [TestMethod]
         public void InspectMaterial()
         {
             var sniffer = new Sniffer();

@@ -115,6 +115,7 @@ namespace KancolleSniffer
         {
             _start = true;
             _map = json;
+            _battle = null;
         }
 
         public void InspectMapNext(dynamic json)
