@@ -108,6 +108,8 @@ namespace KancolleSniffer
 
         public bool IsRepairFacility => Type == 31;
 
+        public double ContactTriggerRate => Type == 10 || Type == 9 ? 0.04 : 0;
+
         public Color Color
         {
             get

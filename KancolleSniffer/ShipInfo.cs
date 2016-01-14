@@ -230,7 +230,7 @@ namespace KancolleSniffer
                 InspectShipData(json.api_ship);
                 InspectBasic(json.api_basic);
                 if (json.api_combined_flag())
-                    _combinedFleetType =  (int)json.api_combined_flag;
+                    _combinedFleetType = (int)json.api_combined_flag;
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
             }
             else if (json.api_data()) // ship2
@@ -501,6 +501,11 @@ namespace KancolleSniffer
                             (int)(slot.Spec.AntiAir * Sqrt(onslot) + slot.AlvBonus[1])
                         }))
                 .Aggregate(new[] {0, 0}, (prev, fp) => new[] {prev[0] + fp[0], prev[1] + fp[1]});
+
+        public double GetContactTriggerRate(int fleet)
+            => GetShipStatuses(fleet).Where(ship => !ship.Escaped).SelectMany(ship =>
+                ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
+                    slot.Spec.ContactTriggerRate * slot.Spec.LoS * Sqrt(onslot))).Sum();
 
         public ShipStatus[] GetDamagedShipList(DockInfo dockInfo)
             => (from s in ShipList

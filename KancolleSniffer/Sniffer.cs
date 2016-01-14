@@ -459,6 +459,8 @@ namespace KancolleSniffer
 
         public int[] GetFighterPower(int fleet) => _shipInfo.GetFighterPower(fleet);
 
+        public double GetContactTriggerRate(int fleet) => _shipInfo.GetContactTriggerRate(fleet);
+
         public double GetFleetLineOfSights(int fleet) => _shipInfo.GetLineOfSights(fleet);
 
         public ShipStatus[] DamagedShipList => _shipInfo.GetDamagedShipList(_dockInfo);

@@ -606,7 +606,10 @@ namespace KancolleSniffer
         {
             var fp = _sniffer.GetFighterPower(_currentFleet);
             labelFighterPower.Text = fp[0].ToString("D");
-            toolTipFighterPower.SetToolTip(labelFighterPower, fp[0] == fp[1] ? $"{fp[0]}" : $"{fp[0]}～{fp[1]}");
+            var cr = _sniffer.GetContactTriggerRate(_currentFleet) * 100;
+            var text = "制空: " + (fp[0] == fp[1] ? $"{fp[0]}" : $"{fp[0]}～{fp[1]}") +
+                       $" 触接: {cr:f1}";
+            toolTipFighterPower.SetToolTip(labelFighterPower, text);
         }
 
         private void UpdateLoS()
