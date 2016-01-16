@@ -68,7 +68,7 @@ namespace KancolleSniffer
             this.labelLoS = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.labelFighterPower = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
+            this.labelFighterPowerCaption = new System.Windows.Forms.Label();
             this.labelCondTimerTitle = new System.Windows.Forms.Label();
             this.labelCondTimer = new System.Windows.Forms.Label();
             this.labelAkashiRepairTimer = new System.Windows.Forms.Label();
@@ -307,7 +307,7 @@ namespace KancolleSniffer
             this.panelShipInfo.Controls.Add(this.labelLoS);
             this.panelShipInfo.Controls.Add(this.label19);
             this.panelShipInfo.Controls.Add(this.labelFighterPower);
-            this.panelShipInfo.Controls.Add(this.label27);
+            this.panelShipInfo.Controls.Add(this.labelFighterPowerCaption);
             this.panelShipInfo.Controls.Add(this.labelCondTimerTitle);
             this.panelShipInfo.Controls.Add(this.labelCondTimer);
             this.panelShipInfo.Location = new System.Drawing.Point(6, 57);
@@ -412,14 +412,14 @@ namespace KancolleSniffer
             this.labelFighterPower.Text = "0";
             this.labelFighterPower.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label27
+            // labelFighterPowerCaption
             // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(2, 117);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(29, 12);
-            this.label27.TabIndex = 23;
-            this.label27.Text = "制空";
+            this.labelFighterPowerCaption.AutoSize = true;
+            this.labelFighterPowerCaption.Location = new System.Drawing.Point(2, 117);
+            this.labelFighterPowerCaption.Name = "labelFighterPowerCaption";
+            this.labelFighterPowerCaption.Size = new System.Drawing.Size(29, 12);
+            this.labelFighterPowerCaption.TabIndex = 23;
+            this.labelFighterPowerCaption.Text = "制空";
             // 
             // labelCondTimerTitle
             // 
@@ -1420,7 +1420,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelCheckFleet2;
         private System.Windows.Forms.Label labelFleet2;
         private System.Windows.Forms.Label labelFighterPower;
-        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label labelFighterPowerCaption;
         private System.Windows.Forms.Label labelLogin;
         private System.Windows.Forms.Label labelAchievement;
         private System.Windows.Forms.Label label28;

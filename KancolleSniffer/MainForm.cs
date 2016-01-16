@@ -610,6 +610,7 @@ namespace KancolleSniffer
             var text = "制空: " + (fp[0] == fp[1] ? $"{fp[0]}" : $"{fp[0]}～{fp[1]}") +
                        $" 触接: {cr:f1}";
             toolTipFighterPower.SetToolTip(labelFighterPower, text);
+            toolTipFighterPower.SetToolTip(labelFighterPowerCaption, text);
         }
 
         private void UpdateLoS()
