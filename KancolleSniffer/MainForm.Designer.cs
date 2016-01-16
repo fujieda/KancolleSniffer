@@ -1279,6 +1279,10 @@ namespace KancolleSniffer
             this.labelAkashiRepair.TabIndex = 54;
             this.labelAkashiRepair.Text = "修理";
             // 
+            // toolTipFighterPower
+            // 
+            this.toolTipFighterPower.ShowAlways = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);

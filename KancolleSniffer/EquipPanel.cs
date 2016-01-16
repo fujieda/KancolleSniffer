@@ -26,7 +26,7 @@ namespace KancolleSniffer
         private EquipColumn[] _equipList;
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private readonly List<Panel> _panelList = new List<Panel>();
-        private readonly ToolTip _toolTip = new ToolTip();
+        private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
 
         private class EquipColumn
         {
