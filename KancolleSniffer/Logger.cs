@@ -138,7 +138,8 @@ namespace KancolleSniffer
                 return;
             }
             var fships = new List<string>();
-            var deck = _shipInfo.GetDeck(_battle.api_dock_id() ? (int)_battle.api_dock_id - 1 : 0);
+            var deckId = _battle.api_dock_id() ? (int)_battle.api_dock_id - 1 : 0;
+            var deck = _shipInfo.GetDeck(deckId);
             fships.AddRange(deck.Select(id =>
             {
                 if (id == -1)
@@ -150,7 +151,8 @@ namespace KancolleSniffer
             var edeck = ((int[])_battle.api_ship_ke).Skip(1).ToArray();
             var eships = edeck.Select((id, i) =>
             {
-                if (id == -1) return ",";
+                if (id == -1)
+                    return ",";
                 var s = estatus[i];
                 return $"{s.Name},{s.NowHp}/{s.MaxHp}";
             });
@@ -177,6 +179,8 @@ namespace KancolleSniffer
                 else
                     dropName += "+" + itemName;
             }
+            var fp = _shipInfo.GetFighterPower(deckId);
+            var fpower = fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1];
             _writer("海戦・ドロップ報告書", string.Join(",", _nowFunc().ToString(DateTimeFormat),
                 result.api_quest_name,
                 cell, boss,
@@ -187,10 +191,13 @@ namespace KancolleSniffer
                 result.api_enemy_info.api_deck_name,
                 dropType, dropName,
                 string.Join(",", fships),
-                string.Join(",", eships)),
+                string.Join(",", eships),
+                fpower, _battleInfo.EnemyFighterPower,
+                AirControlLevelName(_battle)),
                 "日付,海域,マス,ボス,ランク,艦隊行動,味方陣形,敵陣形,敵艦隊,ドロップ艦種,ドロップ艦娘," +
                 "味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP," +
-                "敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP"
+                "敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP," +
+                "味方制空値,敵制空値,制空状態"
                 );
             _map = _battle = null;
             _start = false;
@@ -225,7 +232,7 @@ namespace KancolleSniffer
             }
         }
 
-        private static String BattleFormationName(int f)
+        private static string BattleFormationName(int f)
         {
             switch (f)
             {
@@ -239,6 +246,33 @@ namespace KancolleSniffer
                     return "Ｔ字戦(不利)";
                 default:
                     return "同航戦";
+            }
+        }
+
+        private string AirControlLevelName(dynamic json)
+        {
+            // BattleInfo.AirControlLevelは夜戦で消されているかもしれないので、こちらで改めて調べる。
+            if (!json.api_kouku())
+                return "";
+            var stage1 = json.api_kouku.api_stage1;
+            if (stage1 == null)
+                return "";
+            if (stage1.api_f_count == 0 && stage1.api_e_count == 0)
+                return "";
+            switch ((int)stage1.api_disp_seiku)
+            {
+                case 0:
+                    return "航空均衡";
+                case 1:
+                    return "制空権確保";
+                case 2:
+                    return "航空優勢";
+                case 3:
+                    return "航空劣勢";
+                case 4:
+                    return "制空権喪失";
+                default:
+                    return "";
             }
         }
 

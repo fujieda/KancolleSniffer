@@ -193,6 +193,7 @@ namespace KancolleSniffer
                 {
                     var delimiter = "";
                     var material = path.EndsWith("資材ログ.json"); // 末尾の空データを削除する必要がある
+                    var battle = path.EndsWith("海戦・ドロップ報告書.json"); // データを40個にそろえる必要がある
                     foreach (var line in File.ReadLines(csv, encoding).Skip(1))
                     {
                         var data = line.Split(',');
@@ -205,8 +206,13 @@ namespace KancolleSniffer
                         }
                         if (date < from || to < date)
                             continue;
+                        IEnumerable<string> entries = data;
+                        if (material)
+                            entries = data.Take(9);
+                        if (battle)
+                            entries = data.Concat(Enumerable.Repeat("", 3)).Take(38);
                         client.Send(encoding.GetBytes(delimiter + "[\"" +
-                                                      string.Join("\",\"", (material ? data.Take(9) : data)) + "\"]"));
+                                                      string.Join("\",\"", entries) + "\"]"));
                         delimiter = ",\n";
                     }
                 }

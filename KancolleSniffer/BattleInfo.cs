@@ -40,10 +40,9 @@ namespace KancolleSniffer
         private int[] _enemyStartHp;
         private readonly List<int> _escapingShips = new List<int>();
 
-        public const int IncollectFighterPowerFlag = 0x10000;
         public bool InBattle { get; set; }
         public string Formation { get; private set; }
-        public int EnemyFighterPower { get; private set; }
+        public string EnemyFighterPower { get; private set; }
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
@@ -147,22 +146,22 @@ namespace KancolleSniffer
             return (int)stage1.api_disp_seiku;
         }
 
-        private int CalcEnemyFighterPower(dynamic json)
+        private string CalcEnemyFighterPower(dynamic json)
         {
-            var missing = 0;
+            var missing = "";
             var maxEq = ((int[])json.api_ship_ke).Skip(1).SelectMany(id =>
             {
                 var r = _shipInfo.GetSpec(id).MaxEq;
                 if (r != null)
                     return r;
-                missing = IncollectFighterPowerFlag;
+                missing = "+";
                 return new int[5];
-            });
+            }).ToArray();
             var equips = ((int[][])json.api_eSlot).SelectMany(x => x);
             return (from slot in equips.Zip(maxEq, (id, max) => new {id, max})
                 let spec = _itemInfo.GetSpecByItemId(slot.id)
                 where spec.CanAirCombat
-                select (int)Floor(spec.AntiAir * Sqrt(slot.max))).DefaultIfEmpty().Sum() | missing;
+                select (int)Floor(spec.AntiAir * Sqrt(slot.max))).DefaultIfEmpty().Sum() + missing;
         }
 
         private void CalcDamage(dynamic json, bool surfaceFleet = false)
