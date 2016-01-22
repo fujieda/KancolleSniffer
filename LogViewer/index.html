@@ -26,6 +26,8 @@ body {
 .tab li.select {background: #ccc;}
 .contents {list-style-type: none; margin: 0em; padding: 0em;}
 .hide {display: none;}
+.c3 .tick {font-family:'Lucida Grande','Hiragino Kaku Gothic ProN', Meiryo, sans-serif; font-size: 12px;}
+.c3-legend-item {font-family:'Lucida Grande','Hiragino Kaku Gothic ProN', Meiryo, sans-serif; font-size: 14px;}
 #loading {
     width: 48px;
     height: 48px;
@@ -177,7 +179,7 @@ function drawSeqChart(data)
                     format: function (x) { return moment(x).format("MM-DD HH:mm"); },
                     values: picked.tick
                 },
-                height: 60
+                height: 65
             },
             y2: {
                 show: true
@@ -315,7 +317,7 @@ function drawDiffChart(data)
                     format: function (x) { return moment(x).format("MM-DD HH:mm"); },
                     values: picked.tick
                 },
-                height: 60
+                height: 65
             },
         },
         onrendered: function () { $('#loading').hide(); }
