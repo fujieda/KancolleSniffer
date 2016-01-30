@@ -106,6 +106,7 @@ namespace KancolleSniffer.Test
             Assert.AreEqual("api_result", (string)(dynamic)JsonParser.Parse(@"""api_result"""));
             Assert.AreEqual("/\"\\\b\f\n\r\t", (string)(dynamic)JsonParser.Parse(@"""\/\""\\\b\f\n\r\t"""));
             Assert.AreEqual("大和改二", (string)(dynamic)JsonParser.Parse(@"""\u5927\u548c\u6539\u4e8c"""));
+            Assert.AreEqual(@"\", (string)(dynamic)JsonParser.Parse(@"""\\"""));
         }
 
         [TestMethod]

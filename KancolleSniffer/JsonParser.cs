@@ -110,17 +110,22 @@ namespace KancolleSniffer
         {
             Consume();
             var len = 0;
-            var prev = 0;
             while (true)
             {
                 var ch = LookAhead();
-                if (ch == '"' && prev != '\\')
+                if (ch == '\\')
+                {
+                    Consume();
+                    Consume();
+                    len += 2;
+                    continue;
+                }
+                if (ch == '"')
                 {
                     Consume();
                     break;
                 }
                 len++;
-                prev = ch;
                 Consume();
             }
             return Unescape(_source.Substring(_position - len - 1, len));
