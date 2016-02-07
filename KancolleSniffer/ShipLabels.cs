@@ -312,6 +312,7 @@ namespace KancolleSniffer
                 {
                     {"Graf Zeppelin", "Graf Zeppeli"},
                     {"Graf Zeppelin改", "Graf Zeppeli"},
+                    {"千代田航改二", "千代田航改"}
                 });
                 labels[time].SetRepairTime(s);
                 labels[damage].BackColor = ShipLabel.DamageColor(s, labels[damage].PresetColor);
@@ -348,6 +349,7 @@ namespace KancolleSniffer
             {
                 {"Graf Zeppelin", "Graf Zeppeli"},
                 {"Graf Zeppelin改", "Graf Zeppeli"},
+                {"千代田航改二", "千代田航改"}
             };
             for (var i = 0; i < _ndockLabels.Length; i++)
             {
