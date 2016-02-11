@@ -26,7 +26,9 @@ namespace KancolleSniffer
         B,
         C,
         D,
-        E
+        E,
+        // ReSharper disable once InconsistentNaming
+        NA
     }
 
     public class BattleInfo
@@ -53,7 +55,7 @@ namespace KancolleSniffer
             _itemInfo = itemInfo;
         }
 
-        public void InspectBattle(dynamic json)
+        public void InspectBattle(dynamic json, bool isLdAirBattle = false)
         {
             InBattle = true;
             Formation = FormationName(json);
@@ -66,7 +68,7 @@ namespace KancolleSniffer
             else
                 CalcDamage(json);
             ClearOverKill(_enemyHp);
-            ResultRank = CalcResultRank();
+            ResultRank = isLdAirBattle ? BattleResultRank.NA : CalcResultRank();
         }
 
         private int DeckId(dynamic json)

@@ -285,7 +285,7 @@ namespace KancolleSniffer
         {
             if (IsNormalBattleAPI(url))
             {
-                _battleInfo.InspectBattle(data);
+                _battleInfo.InspectBattle(data, url.EndsWith("ld_airbattle"));
                 _logger.InspectBattle(data);
                 return Update.Ship | Update.Battle;
             }
@@ -336,6 +336,7 @@ namespace KancolleSniffer
         {
             return url.EndsWith("api_req_sortie/battle") ||
                    url.EndsWith("api_req_sortie/airbattle") ||
+                   url.EndsWith("api_req_sortie/ld_airbattle") ||
                    url.EndsWith("api_req_battle_midnight/battle") ||
                    url.EndsWith("api_req_battle_midnight/sp_midnight");
         }

@@ -335,9 +335,21 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "fighterpower_001");
-            PAssert.That(() => sniffer.GetFighterPower(0).SequenceEqual(new [] {156, 159}));
+            PAssert.That(() => sniffer.GetFighterPower(0).SequenceEqual(new[] {156, 159}));
             SniffLogFile(sniffer, "fighterpower_002");
             PAssert.That(() => sniffer.GetFighterPower(0).SequenceEqual(new[] {140, 143}), "全滅したスロットがある");
+        }
+
+        /// <summary>
+        /// 空襲戦を正しく処理する
+        /// </summary>
+        [TestMethod]
+        public void LdAirBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "ld_airbattle_001");
+            AssertEqualBattleResult(sniffer, new[] {31, 59, 62, 14, 36, 47});
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.NA);
         }
 
         /// <summary>
