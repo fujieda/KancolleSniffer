@@ -27,8 +27,6 @@ namespace KancolleSniffer
         C,
         D,
         E,
-        // ReSharper disable once InconsistentNaming
-        NA
     }
 
     public class BattleInfo
@@ -68,7 +66,7 @@ namespace KancolleSniffer
             else
                 CalcDamage(json);
             ClearOverKill(_enemyHp);
-            ResultRank = isLdAirBattle ? BattleResultRank.NA : CalcResultRank();
+            ResultRank = isLdAirBattle ? CalcLdAirBattleRank() : CalcResultRank();
         }
 
         private int DeckId(dynamic json)
@@ -421,6 +419,31 @@ namespace KancolleSniffer
                 ship.Slot = _slot;
                 ship.SlotEx = _slotEx;
             }
+        }
+
+        private BattleResultRank CalcLdAirBattleRank()
+        {
+            var combined = _friend.Concat(_guard).ToArray();
+            var friendNowShips = combined.Count(r => r.NowHp > 0);
+            var friendGauge = combined.Sum(r => r.Damage);
+            var friendSunk = combined.Count(r => r.NowHp == 0);
+            var friendGaugeRate = Floor((double)friendGauge / combined.Sum(r => r.StartHp) * 100);
+
+            if (friendSunk == 0)
+            {
+                if (friendGauge == 0)
+                    return BattleResultRank.P;
+                if (friendGaugeRate < 10)
+                    return BattleResultRank.A;
+                if (friendGaugeRate < 20)
+                    return BattleResultRank.B;
+                if (friendGaugeRate < 50)
+                    return BattleResultRank.C;
+                return BattleResultRank.D;
+            }
+            if (friendSunk < friendNowShips)
+                return BattleResultRank.D;
+            return BattleResultRank.E;
         }
 
         // 以下のコードは航海日誌拡張版の以下のファイルのcalcResultRankを移植したもの

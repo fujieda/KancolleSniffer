@@ -639,7 +639,7 @@ namespace KancolleSniffer
 
         private void ShowResultRank()
         {
-            var result = new[] {"完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E", "不明"};
+            var result = new[] {"完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E"};
             labelResultRank.Text = result[(int)_sniffer.Battle.ResultRank];
         }
 

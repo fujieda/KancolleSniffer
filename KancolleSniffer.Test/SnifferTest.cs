@@ -349,7 +349,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "ld_airbattle_001");
             AssertEqualBattleResult(sniffer, new[] {31, 59, 62, 14, 36, 47});
-            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.NA);
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.A);
         }
 
         /// <summary>
