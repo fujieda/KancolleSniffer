@@ -481,11 +481,22 @@ function setSortieStat(data) {
     }
     for (term in r) {
         var table = [];
+        var pushed = {};
         for (map in r[term].stat)
         {
+            if (pushed[map])
+                continue;
             var e = r[term].stat[map];
             e.map = map;
             table.push(e);
+            pushed[map] = 1;
+            boss = map + " - ボス";
+            e = r[term].stat[boss];
+            if (!e)
+                continue;
+            e.map = boss;
+            table.push(e);
+            pushed[boss] = 1;
         }
         var dt = $("#sortie_stat_" + term).DataTable();
         dt.clear();
