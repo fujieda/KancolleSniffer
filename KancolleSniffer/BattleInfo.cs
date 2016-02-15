@@ -53,7 +53,7 @@ namespace KancolleSniffer
             _itemInfo = itemInfo;
         }
 
-        public void InspectBattle(dynamic json, bool isLdAirBattle = false)
+        public void InspectBattle(dynamic json, string url)
         {
             InBattle = true;
             Formation = FormationName(json);
@@ -66,7 +66,7 @@ namespace KancolleSniffer
             else
                 CalcDamage(json);
             ClearOverKill(_enemyHp);
-            ResultRank = isLdAirBattle ? CalcLdAirBattleRank() : CalcResultRank();
+            ResultRank = url.EndsWith("ld_airbattle") ? CalcLdAirBattleRank() : CalcResultRank();
         }
 
         private int DeckId(dynamic json)
@@ -297,7 +297,7 @@ namespace KancolleSniffer
             }
         }
 
-        public void InspectCombinedBattle(dynamic json, bool surfaceFleet)
+        public void InspectCombinedBattle(dynamic json, string url)
         {
             InBattle = true;
             Formation = FormationName(json);
@@ -309,9 +309,9 @@ namespace KancolleSniffer
             if (IsNightBattle(json))
                 CalcHougekiDamage(json.api_hougeki, _guard, _enemyHp);
             else
-                CalcDamage(json, surfaceFleet);
+                CalcDamage(json, url.EndsWith("battle_water"));
             ClearOverKill(_enemyHp);
-            ResultRank = CalcResultRank();
+            ResultRank = url.EndsWith("ld_airbattle") ? CalcLdAirBattleRank() : CalcResultRank();
         }
 
         public void InspectCombinedBattleResult(dynamic json)

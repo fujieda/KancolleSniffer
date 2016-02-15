@@ -285,7 +285,7 @@ namespace KancolleSniffer
         {
             if (IsNormalBattleAPI(url))
             {
-                _battleInfo.InspectBattle(data, url.EndsWith("ld_airbattle"));
+                _battleInfo.InspectBattle(data, url);
                 _logger.InspectBattle(data);
                 return Update.Ship | Update.Battle;
             }
@@ -297,7 +297,7 @@ namespace KancolleSniffer
                     _conditionTimer.InvalidateCond();
                     _miscTextInfo.ClearFlag = true;
                 }
-                _battleInfo.InspectBattle(data);
+                _battleInfo.InspectBattle(data, url);
                 return Update.Ship | Update.Battle | Update.Timer;
             }
             if (url.EndsWith("api_req_sortie/battleresult"))
@@ -314,7 +314,7 @@ namespace KancolleSniffer
             }
             if (IsCombinedBattleAPI(url))
             {
-                _battleInfo.InspectCombinedBattle(data, url.EndsWith("battle_water"));
+                _battleInfo.InspectCombinedBattle(data, url);
                 _logger.InspectBattle(data);
                 return Update.Ship | Update.Battle;
             }
@@ -345,6 +345,7 @@ namespace KancolleSniffer
         {
             return url.EndsWith("api_req_combined_battle/battle") ||
                    url.EndsWith("api_req_combined_battle/airbattle") ||
+                   url.EndsWith("api_req_combined_battle/ld_airbattle") ||
                    url.EndsWith("api_req_combined_battle/battle_water") ||
                    url.EndsWith("api_req_combined_battle/midnight_battle") ||
                    url.EndsWith("api_req_combined_battle/sp_midnight");

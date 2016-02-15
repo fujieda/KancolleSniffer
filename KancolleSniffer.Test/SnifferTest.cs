@@ -353,6 +353,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 連合艦隊の空襲戦を正しく処理する
+        /// </summary>
+        [TestMethod]
+        public void CombinedLdAirBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "ld_airbattle_002");
+            AssertEauqlCombinedResult(sniffer, new[] {31, 77, 77, 37, 41, 39}, new[] {45, 59, 64, 35, 36, 10});
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.A);
+        }
+
+        /// <summary>
         /// 2-5をクリアしたときの特別戦果を反映する
         /// </summary>
         [TestMethod]
