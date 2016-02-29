@@ -29,13 +29,13 @@ namespace KancolleSniffer
                    select $"{ship.Id},{ship.Spec.ShipTypeName},{ship.Name},{ship.Level}");
 
         public static string GenerateItemList(IEnumerable<ItemStatus> itemList)
-            => "区分,装備名,改修・熟練度,個数\r\n" +
+            => "区分,装備名,熟練度,改修,個数\r\n" +
                string.Join("\r\n",
                    (from item in itemList
                        where item.Spec.Id != -1
                        orderby item.Spec.Type, item.Spec.Id, item.Alv, item.Level
                        group item by
-                           $"{item.Spec.TypeName},{item.Spec.Name},{(item.Level == 0 ? item.Alv == 0 ? 0 : item.Alv : item.Level)}"
+                           $"{item.Spec.TypeName},{item.Spec.Name},{item.Alv},{item.Level}"
                        into grp
                        select grp.Key + $",{grp.Count()}"));
 
