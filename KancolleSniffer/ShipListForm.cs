@@ -490,7 +490,7 @@ namespace KancolleSniffer
         {
             UpdateList();
             SetActiveControl();
-            copyToolStripMenuItem.Enabled = InShipStatus;
+            copyToolStripMenuItem.Enabled = InShipStatus | InItemList;
         }
 
         private void ShipListForm_KeyPress(object sender, KeyPressEventArgs e)
