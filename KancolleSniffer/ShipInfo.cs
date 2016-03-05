@@ -127,7 +127,7 @@ namespace KancolleSniffer
                 foreach (var spec in Slot.Select(item => _itemInfo.GetStatus(item.Id).Spec))
                 {
                     vanilla -= spec.AntiSubmarine;
-                    if (spec.IsReconSeaplane) // 水偵は除外
+                    if (!spec.HaveAntiSubmarine)
                         continue;
                     if (spec.IsSonar)
                         sonar += spec.AntiSubmarine;

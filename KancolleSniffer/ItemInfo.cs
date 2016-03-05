@@ -48,6 +48,7 @@ namespace KancolleSniffer
                     case 7: // 艦爆
                     case 8: // 艦攻
                     case 11: // 水爆
+                    case 45: // 水戦
                         return true;
                 }
                 return false;
@@ -91,6 +92,7 @@ namespace KancolleSniffer
                     case 9:
                     case 10:
                     case 11:
+                    case 45:
                     case 25: // オートジャイロ
                     case 26: // 対潜哨戒機
                         return true;
@@ -104,7 +106,7 @@ namespace KancolleSniffer
 
         public bool IsDepthCharge => Type == 15;
 
-        public bool IsReconSeaplane => Type == 10;
+        public bool HaveAntiSubmarine => Type != 10 && Type != 45 && AntiSubmarine > 0;
 
         public bool IsRepairFacility => Type == 31;
 
@@ -220,7 +222,8 @@ namespace KancolleSniffer
             {06, new[] {0, 0, 2, 5, 9, 14, 14, 22}}, // 艦戦
             {07, new[] {0, 0, 0, 0, 0, 0, 0, 0}}, // 艦爆
             {08, new[] {0, 0, 0, 0, 0, 0, 0, 0}}, // 艦攻
-            {11, new[] {0, 0, 1, 1, 1, 3, 3, 6}} // 水爆
+            {11, new[] {0, 0, 1, 1, 1, 3, 3, 6}}, // 水爆
+            {45, new[] {0, 0, 0, 0, 0, 0, 0, 0}} // 水戦
         };
 
         public double[] AlvBonus
