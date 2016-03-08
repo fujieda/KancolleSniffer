@@ -166,7 +166,7 @@ namespace KancolleSniffer
                             return (int)(b.RepairTime - a.RepairTime).TotalSeconds;
                         break;
                 }
-                if (a.Level != b.Level)
+                if ((!_type || _order == SortOrder.ExpToNext) && a.Level != b.Level)
                     return b.Level - a.Level;
                 if (_order == SortOrder.ExpToNext && a.ExpToNext != b.ExpToNext)
                     return a.ExpToNext - b.ExpToNext;
