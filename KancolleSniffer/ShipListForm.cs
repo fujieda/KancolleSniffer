@@ -128,7 +128,7 @@ namespace KancolleSniffer
                     return b.Level - a.Level;
                 if (a.ExpToNext != b.ExpToNext)
                     return a.ExpToNext - b.ExpToNext;
-                return a.Spec.Id - b.Spec.Id;
+                return a.Spec.SortNo - b.Spec.SortNo;
             }
         }
 
