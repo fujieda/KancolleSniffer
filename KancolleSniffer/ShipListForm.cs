@@ -39,6 +39,14 @@ namespace KancolleSniffer
         public const int GroupCount = 4;
         private readonly HashSet<int>[] _groupSettings = new HashSet<int>[GroupCount];
 
+        public enum SortOrder
+        {
+            None,
+            Cond,
+            ExpToNext,
+            Repair
+        }
+
         public ShipListForm(Sniffer sniffer, Config config)
         {
             InitializeComponent();
@@ -74,18 +82,39 @@ namespace KancolleSniffer
             }
             else
             {
+                SetHeaderSortOrder();
                 CreateShipList();
                 CreateListLabels();
                 SetShipLabels();
             }
         }
 
+        private void SetHeaderSortOrder()
+        {
+            switch (_config.ShipList.SortOrder)
+            {
+                case SortOrder.None:
+                    labelHeaderCond.Text = "cond";
+                    labelHeaderExp.Text = "Exp";
+                    break;
+                case SortOrder.Cond:
+                    labelHeaderCond.Text = "cond▴";
+                    labelHeaderExp.Text = "Exp";
+                    break;
+                case SortOrder.ExpToNext:
+                    labelHeaderCond.Text = "cond";
+                    labelHeaderExp.Text = "Exp▴";
+                    break;
+            }
+        }
+
         private void CreateShipList()
         {
             var ships = InRepairList ? _sniffer.DamagedShipList : FilterByGroup(_sniffer.ShipList).ToArray();
+            var order = InRepairList ? SortOrder.Repair : _config.ShipList.SortOrder;
             if (!_config.ShipList.ShipType)
             {
-                _shipList = ships.OrderBy(s => s, new CompareShip(false, InRepairList)).ToArray();
+                _shipList = ships.OrderBy(s => s, new CompareShip(false, order)).ToArray();
                 return;
             }
             var types = ships.Select(s => new {Id = s.Spec.ShipType, Name = s.Spec.ShipTypeName}).Distinct().
@@ -94,9 +123,10 @@ namespace KancolleSniffer
                     {
                         Spec = new ShipSpec {Name = stype.Name, ShipType = stype.Id},
                         Level = 1000,
-                        NowHp = -1000
+                        NowHp = -1000,
+                        Cond = -1000
                     });
-            _shipList = ships.Concat(types).OrderBy(s => s, new CompareShip(true, InRepairList)).ToArray();
+            _shipList = ships.Concat(types).OrderBy(s => s, new CompareShip(true, order)).ToArray();
         }
 
         private IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships)
@@ -110,25 +140,39 @@ namespace KancolleSniffer
         private class CompareShip : IComparer<ShipStatus>
         {
             private readonly bool _type;
-            private readonly bool _repair;
+            private readonly SortOrder _order;
 
-            public CompareShip(bool type, bool repair)
+            public CompareShip(bool type, SortOrder order)
             {
                 _type = type;
-                _repair = repair;
+                _order = order;
             }
 
             public int Compare(ShipStatus a, ShipStatus b)
             {
                 if (_type && a.Spec.ShipType != b.Spec.ShipType)
                     return a.Spec.ShipType - b.Spec.ShipType;
-                if (_repair && a.RepairTime != b.RepairTime)
-                    return (int)(b.RepairTime - a.RepairTime).TotalSeconds;
+                switch (_order)
+                {
+                    case SortOrder.None:
+                    case SortOrder.ExpToNext:
+                        break;
+                    case SortOrder.Cond:
+                        if (a.Cond != b.Cond)
+                            return a.Cond - b.Cond;
+                        break;
+                    case SortOrder.Repair:
+                        if (a.RepairTime != b.RepairTime)
+                            return (int)(b.RepairTime - a.RepairTime).TotalSeconds;
+                        break;
+                }
                 if (a.Level != b.Level)
                     return b.Level - a.Level;
-                if (a.ExpToNext != b.ExpToNext)
+                if (_order == SortOrder.ExpToNext && a.ExpToNext != b.ExpToNext)
                     return a.ExpToNext - b.ExpToNext;
-                return a.Spec.SortNo - b.Spec.SortNo;
+                if (a.Spec.SortNo != b.Spec.SortNo)
+                    return a.Spec.SortNo - b.Spec.SortNo;
+                return a.Id - b.Id;
             }
         }
 
@@ -530,6 +574,18 @@ namespace KancolleSniffer
         private void deckBuilderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(TextGenerator.GenerateDeckBuilderData(_sniffer));
+        }
+
+        private void labelHeaderCond_Click(object sender, EventArgs e)
+        {
+            _config.ShipList.SortOrder = _config.ShipList.SortOrder == SortOrder.Cond ? SortOrder.None : SortOrder.Cond;
+            UpdateList();
+        }
+
+        private void labelHeaderExp_Click(object sender, EventArgs e)
+        {
+            _config.ShipList.SortOrder = _config.ShipList.SortOrder == SortOrder.ExpToNext ? SortOrder.None : SortOrder.ExpToNext;
+            UpdateList();
         }
     }
 }

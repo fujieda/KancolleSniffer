@@ -48,8 +48,8 @@ namespace KancolleSniffer
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.labelHeaderCond = new System.Windows.Forms.Label();
+            this.labelHeaderExp = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.checkBoxShipType = new System.Windows.Forms.CheckBox();
             this.panelGroupHeader = new System.Windows.Forms.Panel();
@@ -94,14 +94,14 @@ namespace KancolleSniffer
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(153, 48);
+            this.contextMenuStrip.Size = new System.Drawing.Size(123, 26);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
             this.copyToolStripMenuItem.ShowShortcutKeys = false;
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.copyToolStripMenuItem.Text = "コピー(&C)";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
@@ -114,23 +114,25 @@ namespace KancolleSniffer
             this.label1.TabIndex = 13;
             this.label1.Text = "HP";
             // 
-            // label2
+            // labelHeaderCond
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(132, 8);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(29, 12);
-            this.label2.TabIndex = 13;
-            this.label2.Text = "cond";
+            this.labelHeaderCond.AutoSize = true;
+            this.labelHeaderCond.Location = new System.Drawing.Point(132, 8);
+            this.labelHeaderCond.Name = "labelHeaderCond";
+            this.labelHeaderCond.Size = new System.Drawing.Size(29, 12);
+            this.labelHeaderCond.TabIndex = 13;
+            this.labelHeaderCond.Text = "cond";
+            this.labelHeaderCond.Click += new System.EventHandler(this.labelHeaderCond_Click);
             // 
-            // label4
+            // labelHeaderExp
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(200, 8);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(24, 12);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "Exp";
+            this.labelHeaderExp.AutoSize = true;
+            this.labelHeaderExp.Location = new System.Drawing.Point(200, 8);
+            this.labelHeaderExp.Name = "labelHeaderExp";
+            this.labelHeaderExp.Size = new System.Drawing.Size(24, 12);
+            this.labelHeaderExp.TabIndex = 14;
+            this.labelHeaderExp.Text = "Exp";
+            this.labelHeaderExp.Click += new System.EventHandler(this.labelHeaderExp_Click);
             // 
             // label3
             // 
@@ -161,7 +163,7 @@ namespace KancolleSniffer
             this.panelGroupHeader.Controls.Add(this.label6);
             this.panelGroupHeader.Location = new System.Drawing.Point(103, 3);
             this.panelGroupHeader.Name = "panelGroupHeader";
-            this.panelGroupHeader.Size = new System.Drawing.Size(119, 19);
+            this.panelGroupHeader.Size = new System.Drawing.Size(127, 19);
             this.panelGroupHeader.TabIndex = 16;
             // 
             // label5
@@ -257,7 +259,7 @@ namespace KancolleSniffer
             this.panelRepairHeader.Controls.Add(this.label11);
             this.panelRepairHeader.Location = new System.Drawing.Point(104, 3);
             this.panelRepairHeader.Name = "panelRepairHeader";
-            this.panelRepairHeader.Size = new System.Drawing.Size(120, 19);
+            this.panelRepairHeader.Size = new System.Drawing.Size(126, 19);
             this.panelRepairHeader.TabIndex = 2;
             // 
             // label10
@@ -282,7 +284,7 @@ namespace KancolleSniffer
             // 
             this.panelItemHeader.Location = new System.Drawing.Point(58, 3);
             this.panelItemHeader.Name = "panelItemHeader";
-            this.panelItemHeader.Size = new System.Drawing.Size(166, 19);
+            this.panelItemHeader.Size = new System.Drawing.Size(172, 19);
             this.panelItemHeader.TabIndex = 0;
             // 
             // richTextBoxMiscText
@@ -352,8 +354,8 @@ namespace KancolleSniffer
             this.Controls.Add(this.panelRepairHeader);
             this.Controls.Add(this.panelGroupHeader);
             this.Controls.Add(this.checkBoxShipType);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.labelHeaderExp);
+            this.Controls.Add(this.labelHeaderCond);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.richTextBoxMiscText);
@@ -384,8 +386,8 @@ namespace KancolleSniffer
 
         private System.Windows.Forms.Panel panelShipList;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label labelHeaderCond;
+        private System.Windows.Forms.Label labelHeaderExp;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkBoxShipType;
         private System.Windows.Forms.Panel panelGroupHeader;

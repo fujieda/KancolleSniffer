@@ -45,6 +45,7 @@ namespace KancolleSniffer
         public Point Location { get; set; }
         public Size Size { get; set; }
         public bool ShipType { get; set; }
+        public ShipListForm.SortOrder SortOrder { get; set; } = ShipListForm.SortOrder.ExpToNext;
         public List<List<int>> ShipGroup { get; set; }
 
         public ShipListConfig()
