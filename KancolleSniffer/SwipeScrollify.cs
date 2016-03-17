@@ -83,6 +83,8 @@ namespace KancolleSniffer
             private bool _touch;
             private Point _mouseStart;
             private Point _panelStart;
+            private Point _scrollStart;
+            private const int ScrollCount = 6;
 
             public PanelHandler(Panel panel)
             {
@@ -105,7 +107,7 @@ namespace KancolleSniffer
                 }
                 if (!found)
                     return;
-                _mouseStart = Control.MousePosition;
+                _mouseStart = _scrollStart = Control.MousePosition;
                 _panelStart = _panel.AutoScrollPosition;
             }
 
@@ -116,10 +118,17 @@ namespace KancolleSniffer
                 var cur = Control.MousePosition;
                 var dx = cur.X - _mouseStart.X;
                 var dy = cur.Y - _mouseStart.Y;
-                if (_touch)
+                if (!_touch)
+                {
+                    if (!(Abs(dx) > ScrollCount || Abs(dy) > ScrollCount))
+                        return;
+                   _touch = true;
+                }
+                if (Abs(_scrollStart.X - cur.X) > ScrollCount || Abs(_scrollStart.Y - cur.Y) > ScrollCount)
+                {
                     _panel.AutoScrollPosition = new Point(-_panelStart.X - dx, -_panelStart.Y - dy);
-                else if (Abs(dx) > 5 || Abs(dy) > 5)
-                    _touch = true;
+                    _scrollStart = cur;
+                }
             }
 
             public void MouseUp(IntPtr handle, ref bool handled)
