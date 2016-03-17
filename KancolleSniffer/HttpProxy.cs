@@ -118,7 +118,7 @@ namespace KancolleSniffer
                 }
                 catch (Exception e)
                 {
-                    File.AppendAllText("debug.log", e.ToString());
+                    File.AppendAllText("debug.log", $"[{DateTime.Now.ToString("g")}] " + e + "\r\n");
                 }
                 finally
                 {
