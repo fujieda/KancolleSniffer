@@ -516,17 +516,20 @@ namespace KancolleSniffer
         public double GetLineOfSights(int fleet)
         {
             var result = 0.0;
-            foreach (var s in _decks[fleet].Select(id => _shipInfo[id]))
+            var emptyBonus = 6;
+            foreach (var s in GetShipStatuses(fleet))
             {
-                var items = 0;
-                foreach (var spec in s.Slot.Select(item => _itemInfo.GetStatus(item.Id).Spec))
+                emptyBonus--;
+                var itemLoS = 0;
+                foreach (var item in s.Slot)
                 {
-                    items += spec.LoS;
-                    result += spec.LoS * spec.LoSScaleFactor();
+                    var spec = item.Spec;
+                    itemLoS += spec.LoS;
+                    result += (spec.LoS + item.LoSLevelBonus) * spec.LoSScaleFactor;
                 }
-                result += Sqrt(s.LoS - items) * 1.6841056;
+                result += Sqrt(s.LoS - itemLoS);
             }
-            return result > 0 ? result + (_hqLevel + 4) / 5 * 5 * -0.6142467 : 0.0;
+            return result > 0 ? result - Ceiling(_hqLevel * 0.4) + emptyBonus * 2 : 0.0;
         }
 
         public string[] BadlyDamagedShips { get; private set; } = new string[0];

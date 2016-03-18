@@ -55,29 +55,39 @@ namespace KancolleSniffer
             }
         }
 
-        // http://ch.nicovideo.jp/biikame/blomaga/ar663428
-        public double LoSScaleFactor()
+        // http://ja.kancolle.wikia.com/wiki/%E3%83%9E%E3%83%83%E3%83%97%E7%B4%A2%E6%95%B5
+        public double LoSScaleFactor
         {
-            switch (Type)
+            get
             {
-                case 7: // 艦爆
-                    return 1.0376255;
-                case 8: // 艦攻
-                    return 1.3677954;
-                case 9: // 艦偵
-                    return 1.6592780;
-                case 10: // 水偵
-                    return 2.0000000;
-                case 11: // 水爆
-                    return 1.7787282;
-                case 12: // 小型電探
-                    return 1.0045358;
-                case 13: // 大型電探
-                    return 0.9906638;
+                switch (Type)
+                {
+                    case 6: // 艦戦
+                    case 7: // 艦爆
+                        return 0.6;
+                    case 8: // 艦攻
+                        return 0.8;
+                    case 9: // 艦偵
+                        return 1;
+                    case 10: // 水偵
+                        return 1.2;
+                    case 11: // 水爆
+                        return 1.1;
+                    case 12: // 小型電探
+                    case 13: // 大型電探
+                    case 26: // 対潜哨戒機
+                    case 29: // 探照灯
+                    case 34: // 司令部
+                    case 35: // 航空要員
+                    case 39: // 水上艦要員
+                    case 40: // 大型ソナー
+                    case 41: // 大型飛行艇
+                    case 42: // 大型探照灯
+                    case 45: // 水戦
+                        return 0.6;
+                }
+                return 0;
             }
-            if (Name == "探照灯")
-                return 0.9067950;
-            return 0;
         }
 
         public bool IsAircraft
@@ -234,6 +244,23 @@ namespace KancolleSniffer
                 if (!_alvTypeBonus.TryGetValue(Spec.Type, out table))
                     return new[] {0.0, 0.0};
                 return new[] {table[Alv] + _alvBonusMin[Alv], table[Alv] + _alvBonusMax[Alv]};
+            }
+        }
+
+        public double LoSLevelBonus
+        {
+            get
+            {
+                switch (Spec.Type)
+                {
+                    case 10: // 水偵
+                        return 1.2 * Sqrt(Level);
+                    case 12: // 小型電探
+                    case 13: // 大型電探
+                        return 1.25 * Sqrt(Level);
+                    default:
+                        return 0;
+                }
             }
         }
     }

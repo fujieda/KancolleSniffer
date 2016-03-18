@@ -341,6 +341,19 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// マップ索敵の判定式(33)を正しく計算する
+        /// </summary>
+        [TestMethod]
+        public void LineOfSight()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "lineofsight_001");
+            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0) - 39.45) < 0.01);
+            SniffLogFile(sniffer, "lineofsight_002");
+            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0) - -25.10) < 0.01, "艦隊に空きがある");
+        }
+
+        /// <summary>
         /// 空襲戦を正しく処理する
         /// </summary>
         [TestMethod]
