@@ -122,7 +122,7 @@ namespace KancolleSniffer
                             continue;
                         if (i != 0)
                             sb.Append(",");
-                        sb.Append($"\"i{i + 1}\":{{\"id\":{it.Spec.Id},\"rf\":{(it.Alv != 0 ? it.Alv : it.Level)}}}");
+                        sb.Append($"\"i{i + 1}\":{{\"id\":{it.Spec.Id},\"rf\":{(it.Alv != 0 && !it.Spec.IsReconSeaplane ? it.Alv : it.Level)}}}");
                     }
                     sb.Append("}}");
                 }

@@ -129,6 +129,8 @@ namespace KancolleSniffer
             }
         }
 
+        public bool IsReconSeaplane => Type == 10;
+
         public bool IsSonar => Type == 14 || // ソナー
                                Type == 40; // 大型ソナー
 
