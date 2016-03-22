@@ -304,6 +304,18 @@ namespace KancolleSniffer
             }
         }
 
+        public double TorpedoLevelBonus
+        {
+            get
+            {
+                if (Spec.Type == 5) // 魚雷
+                    return 1.2 * Sqrt(Level);
+                if (Spec.IconType == 15) // 機銃
+                    return 1.2 * Sqrt(Level);
+                return 0;
+            }
+        }
+
         public double AntiSubmarineLevelBonus
         {
             get
@@ -312,6 +324,30 @@ namespace KancolleSniffer
                 {
                     case 14:
                     case 15:
+                        return Sqrt(Level);
+                    default:
+                        return 0;
+                }
+            }
+        }
+
+        public double NightBattleLevelBonus
+        {
+            get
+            {
+                switch (Spec.Type)
+                {
+                    case 1: // 小口径
+                    case 2: // 中口径
+                    case 3: // 大口径
+                        return Sqrt(Level);
+                    case 4: // 副砲
+                        return Spec.IconType == 15 ? 0 : Sqrt(Level);
+                    case 5: // 魚雷
+                    case 19: // 徹甲弾
+                    case 29: // 探照灯
+                    case 36: // 高射装置
+                    case 42: // 大型探照灯
                         return Sqrt(Level);
                     default:
                         return 0;

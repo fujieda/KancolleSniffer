@@ -36,6 +36,7 @@ namespace KancolleSniffer
             public string Equip { get; set; }
             public Color Color { get; set; }
             public string Spec { get; set; }
+            public string Spec2 { get; set; }
             public string AircraftSpec { get; set; }
 
             public EquipColumn()
@@ -109,14 +110,17 @@ namespace KancolleSniffer
                         drumShips++;
                     drumTotal += drum;
                     levelTotal += s.Level;
-                    var rfp = s.RealFirepower;
-                    var ras = s.RealAntiSubmarine;
+                    var fire = s.RealFirepower;
+                    var subm = s.RealAntiSubmarine;
+                    var torp = s.RealTorpedo;
+                    var night = s.NightBattlePower;
                     ships.Add(new EquipColumn
                     {
                         Ship = (s.Escaped ? "[避]" : "") + s.Name + " Lv" + s.Level,
                         Id = s.Id,
                         // ReSharper disable CompareOfFloatsByEqualityOperator
-                        Spec = (rfp == 0 ? "" : $"砲{rfp:f1}") + (ras == 0 ? "" : $" 潜{ras:f1}")
+                        Spec = (fire == 0 ? "" : $"砲{fire:f1}") + (subm == 0 ? "" : $" 潜{subm:f1}"),
+                        Spec2 = (torp == 0 ? "" : $"雷{torp:f1}") + (night == 0 ? "" : $" 夜{night:f1}")
                         // ReSharper restore CompareOfFloatsByEqualityOperator
                     });
                     ships.AddRange(equips);
@@ -192,6 +196,7 @@ namespace KancolleSniffer
             labels[3].BackColor = e.Color;
             labels[4].Text = e.Spec;
             _toolTip.SetToolTip(labels[2], e.AircraftSpec != "" ? e.AircraftSpec : "");
+            _toolTip.SetToolTip(labels[4], e.Spec2 != "" ? e.Spec2 : "");
             lbp.Visible = true;
         }
 

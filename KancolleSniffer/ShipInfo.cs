@@ -39,6 +39,7 @@ namespace KancolleSniffer
         public ItemStatus SlotEx { get; set; }
         public int LoS { get; set; }
         public int Firepower { get; set; }
+        public int Torpedo { get; set; }
         public int AntiSubmarine { get; set; }
         public int Lucky { get; set; }
         public bool Escaped { get; set; }
@@ -107,6 +108,16 @@ namespace KancolleSniffer
             }
         }
 
+        public double RealTorpedo
+        {
+            get
+            {
+                if (Spec.IsAircraftCarrier || Torpedo == 0)
+                    return 0;
+                return Torpedo + Slot.Sum(item => item.TorpedoLevelBonus) + 5;
+            }
+        }
+
         public double RealAntiSubmarine
         {
             get
@@ -137,6 +148,16 @@ namespace KancolleSniffer
                 var bonus = sonar && dc ? 1.15 : 1.0;
                 var levelBonus = Slot.Sum(item => item.AntiSubmarineLevelBonus);
                 return bonus * (Sqrt(vanilla) * 2 + all * 1.5 + levelBonus + (aircraft ? 8 : 13));
+            }
+        }
+
+        public double NightBattlePower
+        {
+            get
+            {
+                if (Spec.IsAircraftCarrier && Spec.Id != 353 && Spec.Id != 432) // Graf Zeppelin以外の空母
+                    return 0;
+                return Firepower + Torpedo + Slot.Sum(item => item.NightBattleLevelBonus);
             }
         }
 
@@ -286,6 +307,7 @@ namespace KancolleSniffer
                     SlotEx = entry.api_slot_ex() ? new ItemStatus((int)entry.api_slot_ex) : new ItemStatus(),
                     LoS = (int)entry.api_sakuteki[0],
                     Firepower = (int)entry.api_karyoku[0],
+                    Torpedo = (int)entry.api_raisou[0],
                     AntiSubmarine = (int)entry.api_taisen[0],
                     Lucky = (int)entry.api_lucky[0]
                 };
