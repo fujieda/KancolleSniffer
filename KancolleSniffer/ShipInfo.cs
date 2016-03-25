@@ -21,7 +21,6 @@ namespace KancolleSniffer
 {
     public class ShipStatus
     {
-        private readonly ItemInfo _itemInfo;
         public int Id { get; set; }
         public int Fleet { get; set; } // ShipListだけで使う
         public ShipSpec Spec { get; set; }
@@ -46,9 +45,8 @@ namespace KancolleSniffer
 
         public Damage DamageLevel => CalcDamage(NowHp, MaxHp);
 
-        public ShipStatus(ItemInfo itemInfo = null)
+        public ShipStatus()
         {
-            _itemInfo = itemInfo;
             Id = -1;
             Spec = new ShipSpec();
             OnSlot = new int[0];
@@ -99,12 +97,9 @@ namespace KancolleSniffer
                     return 0;
                 if (!Spec.IsAircraftCarrier)
                     return Firepower + 5;
-                var specs = (from item in Slot
-                    let spec = _itemInfo.GetStatus(item.Id).Spec
-                    where spec.IsAircraft
-                    select new {torpedo = spec.Torpedo, bomber = spec.Bomber}).ToArray();
-                var torpedo = specs.Sum(s => s.torpedo);
-                var bomber = specs.Sum(s => s.bomber);
+                var specs = (from item in Slot where item.Spec.IsAircraft select item.Spec).ToArray();
+                var torpedo = specs.Sum(s => s.Torpedo);
+                var bomber = specs.Sum(s => s.Bomber);
                 if (torpedo == 0 && bomber == 0)
                     return 0;
                 return (int)((Firepower + torpedo) * 1.5 + bomber * 2 + 55);
@@ -124,7 +119,7 @@ namespace KancolleSniffer
                 var aircraft = 0;
                 var all = 0;
                 var vanilla = AntiSubmarine;
-                foreach (var spec in Slot.Select(item => _itemInfo.GetStatus(item.Id).Spec))
+                foreach (var spec in Slot.Select(item => item.Spec))
                 {
                     vanilla -= spec.AntiSubmarine;
                     if (!spec.HaveAntiSubmarine)
@@ -274,7 +269,7 @@ namespace KancolleSniffer
         {
             foreach (var entry in json)
             {
-                _shipInfo[(int)entry.api_id] = new ShipStatus(_itemInfo)
+                _shipInfo[(int)entry.api_id] = new ShipStatus
                 {
                     Id = (int)entry.api_id,
                     Spec = _shipMaster[(int)entry.api_ship_id],
@@ -455,7 +450,7 @@ namespace KancolleSniffer
             ShipStatus s;
             if (!_shipInfo.TryGetValue(id, out s))
                 return new ShipStatus();
-            s.Slot = (from item in s.Slot select _itemInfo.GetStatus(item.Id)).ToArray();
+            s.Slot = s.Slot.Select(item => _itemInfo.GetStatus(item.Id)).ToArray();
             s.SlotEx = _itemInfo.GetStatus(s.SlotEx.Id);
             s.Escaped = _escapedShips.Contains(id);
             return s;
