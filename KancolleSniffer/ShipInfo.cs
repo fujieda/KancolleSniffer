@@ -89,35 +89,37 @@ namespace KancolleSniffer
             steal = (int)(Spec.FuelMax * 0.2 * 0.3 * damage);
         }
 
-        public int RealFirepower
+        public double RealFirepower
         {
             get
             {
                 if (Spec.IsSubmarine)
                     return 0;
+                var levelBonus = Slot.Sum(item => item.FirePowerLevelBonus);
                 if (!Spec.IsAircraftCarrier)
-                    return Firepower + 5;
+                    return Firepower + levelBonus + 5;
                 var specs = (from item in Slot where item.Spec.IsAircraft select item.Spec).ToArray();
                 var torpedo = specs.Sum(s => s.Torpedo);
                 var bomber = specs.Sum(s => s.Bomber);
                 if (torpedo == 0 && bomber == 0)
                     return 0;
-                return (int)((Firepower + torpedo) * 1.5 + bomber * 2 + 55);
+                return (int)((Firepower + torpedo + levelBonus + (int)(bomber * 1.3)) * 1.5) + 55;
             }
         }
 
-        public int RealAntiSubmarine
+        public double RealAntiSubmarine
         {
             get
             {
                 if (!Spec.IsAntiSubmarine)
                     return 0;
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (Spec.IsAircraftCarrier && RealFirepower == 0) // 砲撃戦に参加しない
                     return 0;
                 var sonar = false;
                 var dc = false;
                 var aircraft = false;
-                var all = 0;
+                var all = 0.0;
                 var vanilla = AntiSubmarine;
                 foreach (var spec in Slot.Select(item => item.Spec))
                 {
@@ -133,7 +135,8 @@ namespace KancolleSniffer
                 if (vanilla == 0 && !aircraft) // 素対潜0で航空機なしは対潜攻撃なし
                     return 0;
                 var bonus = sonar && dc ? 1.15 : 1.0;
-                return (int)(bonus * (vanilla / 5 + all * 2 + (aircraft ? 10 : 25)));
+                var levelBonus = Slot.Sum(item => item.AntiSubmarineLevelBonus);
+                return bonus * (Sqrt(vanilla) * 2 + all * 1.5 + levelBonus + (aircraft ? 8 : 13));
             }
         }
 

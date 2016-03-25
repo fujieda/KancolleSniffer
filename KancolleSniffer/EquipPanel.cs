@@ -115,7 +115,9 @@ namespace KancolleSniffer
                     {
                         Ship = (s.Escaped ? "[避]" : "") + s.Name + " Lv" + s.Level,
                         Id = s.Id,
-                        Spec = (rfp == 0 ? "" : "砲" + rfp) + (ras == 0 ? "" : " 潜" + ras)
+                        // ReSharper disable CompareOfFloatsByEqualityOperator
+                        Spec = (rfp == 0 ? "" : $"砲{rfp:f1}") + (ras == 0 ? "" : $" 潜{ras:f1}")
+                        // ReSharper restore CompareOfFloatsByEqualityOperator
                     });
                     ships.AddRange(equips);
                 }

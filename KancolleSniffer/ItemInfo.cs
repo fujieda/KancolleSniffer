@@ -279,6 +279,45 @@ namespace KancolleSniffer
                 }
             }
         }
+
+        public double FirePowerLevelBonus
+        {
+            get
+            {
+                switch (Spec.Type)
+                {
+                    case 1: // 小口径
+                    case 2: // 中口径
+                        return Sqrt(Level);
+                    case 3: // 大口径
+                        return 1.5 * Sqrt(Level);
+                    case 4: // 副砲
+                        return Sqrt(Level);
+                    case 14: // ソナー
+                    case 15: // 爆雷
+                        return 0.75 * Sqrt(Level);
+                    case 19: // 徹甲弾
+                        return Sqrt(Level);
+                    default:
+                        return 0;
+                }
+            }
+        }
+
+        public double AntiSubmarineLevelBonus
+        {
+            get
+            {
+                switch (Spec.Type)
+                {
+                    case 14:
+                    case 15:
+                        return Sqrt(Level);
+                    default:
+                        return 0;
+                }
+            }
+        }
     }
 
     public class ItemInfo
