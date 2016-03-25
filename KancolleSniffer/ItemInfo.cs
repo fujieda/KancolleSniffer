@@ -112,12 +112,27 @@ namespace KancolleSniffer
             }
         }
 
+        public int RealAntiSubmarine
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case 1: // 小口径(12.7cm連装高角砲(後期型))
+                    case 10: // 水偵
+                    case 12: // 小型電探(22号対水上電探改四)
+                    case 45: // 水戦
+                        return 0;
+                    default:
+                        return AntiSubmarine;
+                }
+            }
+        }
+
         public bool IsSonar => Type == 14 || // ソナー
                                Type == 40; // 大型ソナー
 
         public bool IsDepthCharge => Type == 15;
-
-        public bool HaveAntiSubmarine => Type != 10 && Type != 45 && AntiSubmarine > 0;
 
         public bool IsRepairFacility => Type == 31;
 

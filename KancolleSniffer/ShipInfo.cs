@@ -114,28 +114,26 @@ namespace KancolleSniffer
                     return 0;
                 if (Spec.IsAircraftCarrier && RealFirepower == 0) // 砲撃戦に参加しない
                     return 0;
-                var sonar = 0;
-                var dc = 0;
-                var aircraft = 0;
+                var sonar = false;
+                var dc = false;
+                var aircraft = false;
                 var all = 0;
                 var vanilla = AntiSubmarine;
                 foreach (var spec in Slot.Select(item => item.Spec))
                 {
                     vanilla -= spec.AntiSubmarine;
-                    if (!spec.HaveAntiSubmarine)
-                        continue;
                     if (spec.IsSonar)
-                        sonar += spec.AntiSubmarine;
+                        sonar = true;
                     else if (spec.IsDepthCharge)
-                        dc += spec.AntiSubmarine;
+                        dc = true;
                     else if (spec.IsAircraft)
-                        aircraft += spec.AntiSubmarine;
-                    all += spec.AntiSubmarine;
+                        aircraft = true;
+                    all += spec.RealAntiSubmarine;
                 }
-                if (vanilla == 0 && aircraft == 0) // 素対潜0で航空機なしは対潜攻撃なし
+                if (vanilla == 0 && !aircraft) // 素対潜0で航空機なしは対潜攻撃なし
                     return 0;
-                var bonus = sonar > 0 && dc > 0 ? 1.15 : 1.0;
-                return (int)(bonus * (vanilla / 5 + all * 2 + (aircraft > 0 ? 10 : 25)));
+                var bonus = sonar && dc ? 1.15 : 1.0;
+                return (int)(bonus * (vanilla / 5 + all * 2 + (aircraft ? 10 : 25)));
             }
         }
 
