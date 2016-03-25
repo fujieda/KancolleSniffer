@@ -102,9 +102,10 @@ namespace KancolleSniffer
                     case 9:
                     case 10:
                     case 11:
-                    case 45:
                     case 25: // オートジャイロ
                     case 26: // 対潜哨戒機
+                    case 41: // 大艇
+                    case 45:
                         return true;
                 }
                 return false;
