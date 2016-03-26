@@ -22,7 +22,7 @@ namespace KancolleSniffer
     public class ShipStatus
     {
         public int Id { get; set; }
-        public int Fleet { get; set; } // ShipListだけで使う
+        public int Fleet { get; set; }
         public ShipSpec Spec { get; set; }
 
         public string Name => Spec.Name;
@@ -45,6 +45,8 @@ namespace KancolleSniffer
         public bool Escaped { get; set; }
 
         public Damage DamageLevel => CalcDamage(NowHp, MaxHp);
+
+        public int CombinedFleetType { get; set; }
 
         public ShipStatus()
         {
@@ -98,13 +100,33 @@ namespace KancolleSniffer
                     return 0;
                 var levelBonus = Slot.Sum(item => item.FirePowerLevelBonus);
                 if (!Spec.IsAircraftCarrier)
-                    return Firepower + levelBonus + 5;
+                    return Firepower + levelBonus + CombinedFleetFirepowerBonus + 5;
                 var specs = (from item in Slot where item.Spec.IsAircraft select item.Spec).ToArray();
                 var torpedo = specs.Sum(s => s.Torpedo);
                 var bomber = specs.Sum(s => s.Bomber);
                 if (torpedo == 0 && bomber == 0)
                     return 0;
-                return (int)((Firepower + torpedo + levelBonus + (int)(bomber * 1.3)) * 1.5) + 55;
+                return (int)((Firepower + torpedo + levelBonus + (int)(bomber * 1.3) + CombinedFleetFirepowerBonus) * 1.5) + 55;
+            }
+        }
+
+        private int CombinedFleetFirepowerBonus
+        {
+            get
+            {
+                switch (CombinedFleetType)
+                {
+                    case 0:
+                        return 0;
+                    case 1: // 機動
+                        return Fleet == 0 ? 2 : 10;
+                    case 2: // 水上
+                        return Fleet == 0 ? 10 : -5;
+                    case 3: // 輸送
+                        return Fleet == 0 ? -5 : 10;
+                    default:
+                        return 0;
+                }
             }
         }
 
@@ -114,9 +136,11 @@ namespace KancolleSniffer
             {
                 if (Spec.IsAircraftCarrier || Torpedo == 0)
                     return 0;
-                return Torpedo + Slot.Sum(item => item.TorpedoLevelBonus) + 5;
+                return Torpedo + Slot.Sum(item => item.TorpedoLevelBonus) + CombinedFleetTorpedoPenalty + 5;
             }
         }
+
+        private int CombinedFleetTorpedoPenalty => CombinedFleetType > 0 && Fleet == 1 ? -5 : 0;
 
         public double RealAntiSubmarine
         {
@@ -476,6 +500,9 @@ namespace KancolleSniffer
             s.Slot = s.Slot.Select(item => _itemInfo.GetStatus(item.Id)).ToArray();
             s.SlotEx = _itemInfo.GetStatus(s.SlotEx.Id);
             s.Escaped = _escapedShips.Contains(id);
+            int idx;
+            s.Fleet = FindFleet(s.Id, out idx);
+            s.CombinedFleetType = s.Fleet < 2 ? _combinedFleetType : 0;
             return s;
         }
 
@@ -487,15 +514,7 @@ namespace KancolleSniffer
 
         public int CombinedFleetType => _combinedFleetType;
 
-        public ShipStatus[] ShipList
-            => _shipInfo.Values.Where(s => s.Level != 0).Select(s =>
-            {
-                int oi;
-                var f = FindFleet(s.Id, out oi);
-                s.Fleet = f;
-                s.Escaped = _escapedShips.Contains(s.Id);
-                return s;
-            }).ToArray();
+        public ShipStatus[] ShipList => _shipInfo.Keys.Where(id => id != -1).Select(GetStatus).ToArray();
 
         public ChargeStatus[] ChargeStatuses
             => (from deck in _decks
