@@ -114,7 +114,7 @@ namespace KancolleSniffer
                     var subm = s.RealAntiSubmarine;
                     var torp = s.RealTorpedo;
                     var night = s.NightBattlePower;
-                    ships.Add(new EquipColumn
+                    var ship = new EquipColumn
                     {
                         Ship = (s.Escaped ? "[避]" : "") + s.Name + " Lv" + s.Level,
                         Id = s.Id,
@@ -122,7 +122,13 @@ namespace KancolleSniffer
                         Spec = (fire == 0 ? "" : $"砲{fire:f1}") + (subm == 0 ? "" : $" 潜{subm:f1}"),
                         Spec2 = (torp == 0 ? "" : $"雷{torp:f1}") + (night == 0 ? "" : $" 夜{night:f1}")
                         // ReSharper restore CompareOfFloatsByEqualityOperator
-                    });
+                    };
+                    if (ship.Spec == "")
+                    {
+                        ship.Spec = ship.Spec2;
+                        ship.Spec2 = "";
+                    }
+                    ships.Add(ship);
                     ships.AddRange(equips);
                 }
                 list.Add(new EquipColumn
