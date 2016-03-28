@@ -455,8 +455,8 @@ namespace KancolleSniffer
 
         private void ShipListForm_Load(object sender, EventArgs e)
         {
-            panelShipList.Width = (int)Round(PanelWidth * ShipLabel.ScaleFactor.Width) + 3 +
-                                  SystemInformation.VerticalScrollBarWidth;
+            panelShipList.Width = itemTreeView.Width = equipPanel.Width =
+                (int)Round(PanelWidth * ShipLabel.ScaleFactor.Width) + 3 + SystemInformation.VerticalScrollBarWidth;
             Width = panelShipList.Width + 12 + (Width - ClientSize.Width);
             MinimumSize = new Size(Width, 0);
             MaximumSize = new Size(Width, int.MaxValue);

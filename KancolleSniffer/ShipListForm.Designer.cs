@@ -323,9 +323,8 @@ namespace KancolleSniffer
             // 
             // equipPanel
             // 
-            this.equipPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.equipPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.equipPanel.AutoScroll = true;
             this.equipPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.equipPanel.ContextMenuStrip = this.contextMenuStripFleetData;
@@ -336,9 +335,8 @@ namespace KancolleSniffer
             // 
             // itemTreeView
             // 
-            this.itemTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.itemTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.itemTreeView.ContextMenuStrip = this.contextMenuStrip;
             this.itemTreeView.Location = new System.Drawing.Point(6, 23);
             this.itemTreeView.Name = "itemTreeView";
