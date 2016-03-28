@@ -319,7 +319,7 @@ namespace KancolleSniffer
             // 
             this.labelPresetAkashiTimer.Location = new System.Drawing.Point(2, 3);
             this.labelPresetAkashiTimer.Name = "labelPresetAkashiTimer";
-            this.labelPresetAkashiTimer.Size = new System.Drawing.Size(31, 12);
+            this.labelPresetAkashiTimer.Size = new System.Drawing.Size(32, 12);
             this.labelPresetAkashiTimer.TabIndex = 55;
             // 
             // labelGuide
@@ -423,7 +423,7 @@ namespace KancolleSniffer
             // 
             // labelCondTimerTitle
             // 
-            this.labelCondTimerTitle.Location = new System.Drawing.Point(129, 117);
+            this.labelCondTimerTitle.Location = new System.Drawing.Point(128, 117);
             this.labelCondTimerTitle.Name = "labelCondTimerTitle";
             this.labelCondTimerTitle.Size = new System.Drawing.Size(60, 12);
             this.labelCondTimerTitle.TabIndex = 39;
@@ -441,7 +441,7 @@ namespace KancolleSniffer
             // 
             this.labelAkashiRepairTimer.Location = new System.Drawing.Point(179, 276);
             this.labelAkashiRepairTimer.Name = "labelAkashiRepairTimer";
-            this.labelAkashiRepairTimer.Size = new System.Drawing.Size(31, 12);
+            this.labelAkashiRepairTimer.Size = new System.Drawing.Size(32, 12);
             this.labelAkashiRepairTimer.TabIndex = 43;
             // 
             // panelMaterialHistory
