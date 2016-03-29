@@ -62,9 +62,6 @@ namespace KancolleSniffer
             {
                 switch (Type)
                 {
-                    case 6: // 艦戦
-                    case 7: // 艦爆
-                        return 0.6;
                     case 8: // 艦攻
                         return 0.8;
                     case 9: // 艦偵
@@ -73,20 +70,9 @@ namespace KancolleSniffer
                         return 1.2;
                     case 11: // 水爆
                         return 1.1;
-                    case 12: // 小型電探
-                    case 13: // 大型電探
-                    case 26: // 対潜哨戒機
-                    case 29: // 探照灯
-                    case 34: // 司令部
-                    case 35: // 航空要員
-                    case 39: // 水上艦要員
-                    case 40: // 大型ソナー
-                    case 41: // 大型飛行艇
-                    case 42: // 大型探照灯
-                    case 45: // 水戦
+                    default:
                         return 0.6;
                 }
-                return 0;
             }
         }
 
