@@ -589,7 +589,7 @@ namespace KancolleSniffer
 
         private void UpdateLoS()
         {
-            labelLoS.Text = _sniffer.GetFleetLineOfSights(_currentFleet).ToString("F1");
+            labelLoS.Text = (Floor(_sniffer.GetFleetLineOfSights(_currentFleet) * 10) / 10.0).ToString("F1");
         }
 
         private void UpdateBattleInfo()
