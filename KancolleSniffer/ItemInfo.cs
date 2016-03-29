@@ -138,7 +138,21 @@ namespace KancolleSniffer
 
         public bool IsRepairFacility => Type == 31;
 
-        public double ContactTriggerRate => Type == 10 || Type == 9 ? 0.04 : 0;
+        public double ContactTriggerRate
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case 9: // 艦偵
+                    case 10: // 水偵
+                    case 41: // 大艇
+                        return 0.04;
+                    default:
+                        return 0;
+                }
+            }
+        }
 
         public Color Color
         {

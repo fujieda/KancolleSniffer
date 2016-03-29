@@ -354,6 +354,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 触接開始率を正しく計算する
+        /// </summary>
+        [TestMethod]
+        public void ContactTriggerRage()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "contact_001");
+            PAssert.That(() => Math.Abs(sniffer.GetContactTriggerRate(0) - 1.8182) < 0.0001);
+        }
+
+        /// <summary>
         /// 空襲戦を正しく処理する
         /// </summary>
         [TestMethod]
