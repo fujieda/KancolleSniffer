@@ -146,6 +146,12 @@ namespace KancolleSniffer
         {
             var data = json.api_data() ? json.api_data : new object();
 
+            if (url.EndsWith("api_get_member/require_info"))
+            {
+                _itemInfo.InspectSlotItem(data.api_slot_item, true);
+                _dockInfo.InspectKDock(data.api_kdock);
+                return Update.Timer;
+            }
             if (url.EndsWith("api_get_member/basic"))
             {
                 _itemInfo.InspectBasic(data);
