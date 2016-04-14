@@ -96,7 +96,6 @@ namespace KancolleSniffer
             if (response == null || !response.StartsWith("svdata="))
             {
                 WriteDebugLog(url, request, response);
-                ShowServerError(url, request, response);
                 return;
             }
             if (_config.KancolleDb.On)
@@ -105,17 +104,7 @@ namespace KancolleSniffer
             WriteDebugLog(url, request, response);
             try
             {
-                var update = _sniffer.Sniff(url, request, JsonParser.Parse(response));
-                if (update == Sniffer.Update.Error)
-                {
-                    ShowServerError(url, request, response);
-                    return;
-                }
-                UpdateInfo(update);
-            }
-            catch (FormatException e)
-            {
-                ShowServerError(url, request, response, e);
+                UpdateInfo(_sniffer.Sniff(url, request, JsonParser.Parse(response)));
             }
             catch (RuntimeBinderException e)
             {
@@ -142,14 +131,6 @@ namespace KancolleSniffer
                 File.AppendAllText(_debugLogFile,
                     $"url: {url}\nrequest: {request}\nresponse: {response ?? "(null)"}\n");
             }
-        }
-
-        private void ShowServerError(string url, string request, string response, Exception e = null)
-        {
-            if (_errorDialog.ShowDialog(this, "サーバーからの応答が異常です。",
-                $"{(e == null ? "" : e + "\r\n")}url: {url}\r\nrequest: {request}\r\nresponse: {response ?? "(null)"}\r\n") ==
-                DialogResult.Abort)
-                Application.Exit();
         }
 
         private string UnescapeString(string s)
