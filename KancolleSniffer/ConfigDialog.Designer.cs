@@ -123,6 +123,9 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
+            this.label14 = new System.Windows.Forms.Label();
+            this.comboBoxZoom = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageShow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -167,6 +170,9 @@ namespace KancolleSniffer
             // 
             // tabPageShow
             // 
+            this.tabPageShow.Controls.Add(this.label15);
+            this.tabPageShow.Controls.Add(this.comboBoxZoom);
+            this.tabPageShow.Controls.Add(this.label14);
             this.tabPageShow.Controls.Add(this.checkBoxHideOnMinimized);
             this.tabPageShow.Controls.Add(this.checkBoxTopMost);
             this.tabPageShow.Location = new System.Drawing.Point(4, 40);
@@ -979,6 +985,37 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(9, 57);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(35, 12);
+            this.label14.TabIndex = 4;
+            this.label14.Text = "ズーム";
+            // 
+            // comboBoxZoom
+            // 
+            this.comboBoxZoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxZoom.FormattingEnabled = true;
+            this.comboBoxZoom.Items.AddRange(new object[] {
+            "100%",
+            "125%",
+            "150%"});
+            this.comboBoxZoom.Location = new System.Drawing.Point(47, 54);
+            this.comboBoxZoom.Name = "comboBoxZoom";
+            this.comboBoxZoom.Size = new System.Drawing.Size(48, 20);
+            this.comboBoxZoom.TabIndex = 5;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(97, 57);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(61, 12);
+            this.label15.TabIndex = 6;
+            this.label15.Text = "(要再起動)";
+            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1113,5 +1150,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.TextBox textBoxKancolleDbToken;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox checkBoxKancolleDbOn;
+        private System.Windows.Forms.ComboBox comboBoxZoom;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
     }
 }

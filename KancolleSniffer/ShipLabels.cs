@@ -370,6 +370,7 @@ namespace KancolleSniffer
     public class ShipLabel : Label
     {
         public static SizeF ScaleFactor { get; set; }
+        public static Font LatinFont { get; set; } = new Font("Tahoma", 8f);
         public Color PresetColor { get; set; }
         public bool AnchorRight { get; set; }
         private int _right = int.MinValue;
@@ -393,7 +394,7 @@ namespace KancolleSniffer
             if (lu && Font.Equals(Parent.Font))
             {
                 Location += new Size(0, -shift);
-                Font = new Font("Tahoma", 8f);
+                Font = LatinFont;
             }
             else if (!lu && !Font.Equals(Parent.Font))
             {

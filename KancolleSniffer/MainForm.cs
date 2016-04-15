@@ -78,6 +78,7 @@ namespace KancolleSniffer
             _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
             _config.Load();
+            PerformZoom();
             _sniffer.LoadState();
         }
 
@@ -244,6 +245,19 @@ namespace KancolleSniffer
         {
             if (_configDialog.ShowDialog(this) == DialogResult.OK)
                 ApplyConfig();
+        }
+
+        private void PerformZoom()
+        {
+            if (_config.Zoom == 100)
+                return;
+            var prev = CurrentAutoScaleDimensions;
+            foreach (var control in new Control[] {this, _shipListForm, labelLogin, labelGuide})
+                control.Font = new Font(control.Font.FontFamily, control.Font.Size * _config.Zoom / 100);
+            ShipLabel.LatinFont = new Font("Tahoma", 8f * _config.Zoom / 100);
+            var cur = CurrentAutoScaleDimensions;
+            ShipLabel.ScaleFactor = new SizeF(ShipLabel.ScaleFactor.Width * cur.Width / prev.Width,
+                ShipLabel.ScaleFactor.Height * cur.Height / prev.Height);
         }
 
         private void RestoreLocation()

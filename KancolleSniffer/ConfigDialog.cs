@@ -47,6 +47,7 @@ namespace KancolleSniffer
 
             checkBoxTopMost.Checked = _config.TopMost;
             checkBoxHideOnMinimized.Checked = _config.HideOnMinimized;
+            comboBoxZoom.SelectedItem = _config.Zoom + "%";
             checkBoxFlash.Checked = _config.FlashWindow;
             checkBoxBalloon.Checked = _config.ShowBaloonTip;
             checkBoxSound.Checked = _config.PlaySound;
@@ -138,6 +139,7 @@ namespace KancolleSniffer
 
             _config.TopMost = checkBoxTopMost.Checked;
             _config.HideOnMinimized = checkBoxHideOnMinimized.Checked;
+            _config.Zoom = int.Parse(comboBoxZoom.SelectedItem.ToString().Substring(0, 3));
             _config.FlashWindow = checkBoxFlash.Checked;
             _config.ShowBaloonTip = checkBoxBalloon.Checked;
             _config.PlaySound = checkBoxSound.Checked;
