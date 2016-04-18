@@ -433,6 +433,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// ドラッグ＆ドロップで離れた空き番号を使って編成をローテートする
+        /// </summary>
+        [TestMethod]
+        public void RotateFleetMemberWithDragAndDrop()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "deck_005");
+            var result = sniffer.GetDeck(0);
+            PAssert.That(() => new[] {57391, 50, 24475, 113, -1, -1}.SequenceEqual(result));
+        }
+
+        /// <summary>
         /// 編成で艦隊に配置ずみの艦娘を交換する
         /// </summary>
         [TestMethod]

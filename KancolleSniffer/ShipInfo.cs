@@ -400,9 +400,14 @@ namespace KancolleSniffer
         private void WithdrowShip(int fleet, int idx)
         {
             var deck = _decks[fleet];
-            for (var i = idx; i < deck.Length - 1; i++)
-                deck[i] = deck[i + 1];
-            deck[deck.Length - 1] = -1;
+            var j = idx;
+            for (var i = idx + 1; i < deck.Length; i++)
+            {
+                if (deck[i] != -1)
+                    deck[j++] = deck[i];
+            }
+            for (; j < deck.Length; j++)
+                deck[j] = -1;
         }
 
         public void InspectPowerup(string request, dynamic json)
