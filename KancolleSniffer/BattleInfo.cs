@@ -352,7 +352,6 @@ namespace KancolleSniffer
             private ItemStatus _slotEx;
             public int NowHp;
             public int StartHp;
-            public int Damage;
 
             public static Record[] Setup(int[] rawHp, int[] rawMax, ItemStatus[][] slots, ItemStatus[] slotEx)
             {
@@ -378,10 +377,8 @@ namespace KancolleSniffer
                 if (NowHp > damage)
                 {
                     NowHp -= damage;
-                    Damage += damage;
                     return;
                 }
-                Damage += NowHp;
                 NowHp = 0;
                 if (_slotEx.Spec.Id == 42) // ダメコン
                 {
@@ -425,7 +422,7 @@ namespace KancolleSniffer
         {
             var combined = _friend.Concat(_guard).ToArray();
             var friendNowShips = combined.Count(r => r.NowHp > 0);
-            var friendGauge = combined.Sum(r => r.Damage);
+            var friendGauge = combined.Sum(r => r.StartHp - r.NowHp);
             var friendSunk = combined.Count(r => r.NowHp == 0);
             var friendGaugeRate = Floor((double)friendGauge / combined.Sum(r => r.StartHp) * 100);
 
@@ -478,7 +475,7 @@ namespace KancolleSniffer
             var friendNowShips = combined.Count(r => r.NowHp > 0);
             var enemyNowShips = _enemyHp.Count(hp => hp > 0);
             // 総ダメージ
-            var friendGauge = combined.Sum(r => r.Damage);
+            var friendGauge = Max(combined.Sum(r => r.StartHp - r.NowHp), 0); // ダメコン・女神発動で負になりうる
             var enemyGauge = _enemyStartHp.Sum() - _enemyHp.Sum();
             // 轟沈・撃沈数
             var friendSunk = combined.Count(r => r.NowHp == 0);

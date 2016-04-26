@@ -239,7 +239,7 @@ namespace KancolleSniffer.Test
             AssertEqualBattleResult(sniffer, new[] {30, 1, 3}, "戦闘前");
             PAssert.That(() => sniffer.GetShipStatuses(0)[1].Slot.Select(item => item.Id).
                 SequenceEqual(new[] {2, 4593, -1, -1, -1}), "ダメコンを二つ装備");
-            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.S, "判定はS勝利");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.P, "判定は完全勝利");
             SniffLogFile(sniffer, "damecon_002");
             AssertEqualBattleResult(sniffer, new[] {30, 1, 3}, "戦闘後");
             PAssert.That(() => sniffer.GetShipStatuses(0)[1].Slot.Select(item => item.Id).
