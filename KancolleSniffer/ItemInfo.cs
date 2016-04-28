@@ -180,6 +180,7 @@ namespace KancolleSniffer
                     case 19: // 缶
                         return Color.FromArgb(254, 195, 77);
                     case 20: // 大発
+                    case 36: // 特型内火艇
                         return Color.FromArgb(154, 163, 90);
                     case 21: // オートジャイロ
                         return Color.FromArgb(99, 203, 115);
@@ -208,6 +209,10 @@ namespace KancolleSniffer
                         return Color.FromArgb(142, 203, 152);
                     case 34: // 戦闘糧食
                         return Color.FromArgb(254, 254, 254);
+                    case 35: // 補給物資
+                        return Color.FromArgb(90, 200, 155);
+                    case 37: // 陸上攻撃機
+                        return Color.FromArgb(33, 194, 89);
                     default:
                         return SystemColors.Control;
                 }
