@@ -39,6 +39,7 @@ namespace KancolleSniffer
         private int[] _enemyHp;
         private int[] _enemyStartHp;
         private readonly List<int> _escapingShips = new List<int>();
+        private int _flagshipRecoveryType;
 
         public bool InBattle { get; set; }
         public string Formation { get; private set; }
@@ -67,6 +68,14 @@ namespace KancolleSniffer
                 CalcDamage(json);
             ClearOverKill(_enemyHp);
             ResultRank = url.EndsWith("ld_airbattle") ? CalcLdAirBattleRank() : CalcResultRank();
+        }
+
+        public void InspectMapNext(string request)
+        {
+            var type = HttpUtility.ParseQueryString(request)["api_recovery_type"];
+            if (type == null)
+                return;
+            _flagshipRecoveryType = int.Parse(type);
         }
 
         private int DeckId(dynamic json)
@@ -104,6 +113,7 @@ namespace KancolleSniffer
             var nowhps = (int[])json.api_nowhps;
             _fleet = combined ? 0 : DeckId(json);
             var fstats = _shipInfo.GetShipStatuses(_fleet);
+            FlagshipRecovery(fstats[0]);
             _friend = Record.Setup(
                 nowhps, (int[])json.api_maxhps,
                 fstats.Select(s => s.Slot).ToArray(),
@@ -126,6 +136,41 @@ namespace KancolleSniffer
             else
             {
                 _guard = new Record[0];
+            }
+        }
+
+        private void FlagshipRecovery(ShipStatus flagship)
+        {
+            switch (_flagshipRecoveryType)
+            {
+                case 0:
+                    return;
+                case 1:
+                    flagship.NowHp = flagship.MaxHp / 2;
+                    ConsumeSlotItem(flagship, 42); // ダメコン
+                    break;
+                case 2:
+                    flagship.NowHp = flagship.MaxHp;
+                    ConsumeSlotItem(flagship, 43); // 女神
+                    break;
+            }
+            _flagshipRecoveryType = 0;
+        }
+
+        private static void ConsumeSlotItem(ShipStatus ship, int id)
+        {
+            if (ship.SlotEx.Spec.Id == id)
+            {
+                ship.SlotEx = new ItemStatus();
+                return;
+            }
+            for (var i = 0; i < ship.Slot.Length; i++)
+            {
+                if (ship.Slot[i].Spec.Id == id)
+                {
+                    ship.Slot[i] = new ItemStatus();
+                    break;
+                }
             }
         }
 
@@ -347,10 +392,8 @@ namespace KancolleSniffer
 
         private class Record
         {
-            private int _maxHp;
-            private ItemStatus[] _slot;
-            private ItemStatus _slotEx;
-            public int NowHp;
+            private ShipStatus _status;
+            public int NowHp => _status.NowHp;
             public int StartHp;
 
             public static Record[] Setup(int[] rawHp, int[] rawMax, ItemStatus[][] slots, ItemStatus[] slotEx)
@@ -360,13 +403,17 @@ namespace KancolleSniffer
                 var r = new Record[hp.Length];
                 for (var i = 0; i < hp.Length; i++)
                 {
-                    r[i] = new Record
+                    var s = new ShipStatus
                     {
                         NowHp = hp[i],
+                        MaxHp = max[i],
+                        SlotEx = slotEx[i],
+                        Slot = slots[i].ToArray()
+                    };
+                    r[i] = new Record
+                    {
+                        _status = s,
                         StartHp = hp[i],
-                        _maxHp = max[i],
-                        _slot = slots[i].ToArray(),
-                        _slotEx = slotEx[i],
                     };
                 }
                 return r;
@@ -374,37 +421,24 @@ namespace KancolleSniffer
 
             public void ApplyDamage(int damage)
             {
-                if (NowHp > damage)
+                if (_status.NowHp > damage)
                 {
-                    NowHp -= damage;
+                    _status.NowHp -= damage;
                     return;
                 }
-                NowHp = 0;
-                if (_slotEx.Spec.Id == 42) // ダメコン
+                _status.NowHp = 0;
+                foreach (var item in new[] {_status.SlotEx}.Concat(_status.Slot))
                 {
-                    _slotEx = new ItemStatus();
-                    NowHp = (int)(_maxHp * 0.2);
-                    return;
-                }
-                if (_slotEx.Spec.Id == 43) // 女神
-                {
-                    _slotEx = new ItemStatus();
-                    NowHp = _maxHp;
-                    return;
-                }
-                for (var j = 0; j < _slot.Length; j++)
-                {
-                    var id = _slot[j].Spec.Id;
-                    if (id == 42) // ダメコン
+                    if (item.Spec.Id == 42)
                     {
-                        _slot[j] = new ItemStatus();
-                        NowHp = (int)(_maxHp * 0.2);
+                        _status.NowHp = (int)(_status.MaxHp * 0.2);
+                        ConsumeSlotItem(_status, 42);
                         break;
                     }
-                    if (id == 43) // 女神
+                    if (item.Spec.Id == 43)
                     {
-                        _slot[j] = new ItemStatus();
-                        NowHp = _maxHp;
+                        _status.NowHp = _status.MaxHp;
+                        ConsumeSlotItem(_status, 43);
                         break;
                     }
                 }
@@ -413,8 +447,8 @@ namespace KancolleSniffer
             public void UpdateShipStatus(ShipStatus ship)
             {
                 ship.NowHp = NowHp;
-                ship.Slot = _slot;
-                ship.SlotEx = _slotEx;
+                ship.Slot = _status.Slot;
+                ship.SlotEx = _status.SlotEx;
             }
         }
 

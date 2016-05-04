@@ -427,6 +427,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_map/next"))
             {
+                _battleInfo.InspectMapNext(request);
                 _exMapInfo.InspectMapNext(data);
                 _logger.InspectMapNext(data);
                 return Update.None;
