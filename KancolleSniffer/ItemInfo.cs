@@ -517,7 +517,7 @@ namespace KancolleSniffer
         {
             foreach (var id in ids.Where(id => id != -1 && !_itemInfo.ContainsKey(id)))
             {
-                _itemInfo[id] = new ItemStatus();
+                _itemInfo[id] = new ItemStatus(id);
                 NowEquips++;
             }
         }

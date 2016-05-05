@@ -518,6 +518,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 解体された艦の装備数を全体の装備数から引く
+        /// </summary>
+        [TestMethod]
+        public void CountItemsOnDeletedShip()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "destroyship_001");
+            PAssert.That(() => sniffer.Item.NowEquips == 879, "ドロップしたばかりの艦娘を解体する場合");
+        }
+
+        /// <summary>
         /// 資材の変動を正しく反映する
         /// </summary>
         [TestMethod]
