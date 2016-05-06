@@ -98,8 +98,10 @@ namespace KancolleSniffer
             {
                 if (Spec.IsSubmarine)
                     return 0;
+                var isRyuseiAttack = Spec.Id == 352 && // 速吸改
+                                     Slot.Any(item => item.Spec.Type == 8); // 艦攻装備
                 var levelBonus = Slot.Sum(item => item.FirePowerLevelBonus);
-                if (!Spec.IsAircraftCarrier)
+                if (!Spec.IsAircraftCarrier && !isRyuseiAttack)
                     return Firepower + levelBonus + CombinedFleetFirepowerBonus + 5;
                 var specs = (from item in Slot where item.Spec.IsAircraft select item.Spec).ToArray();
                 var torpedo = specs.Sum(s => s.Torpedo);
