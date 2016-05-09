@@ -474,7 +474,7 @@ namespace KancolleSniffer
         {
             var values = HttpUtility.ParseQueryString(request);
             var fleet = int.Parse(values["api_deck_id"]) - 1;
-            if (_combinedFleetType == 0)
+            if (_combinedFleetType == 0 || fleet > 1)
             {
                 _inSortie[fleet] = true;
             }

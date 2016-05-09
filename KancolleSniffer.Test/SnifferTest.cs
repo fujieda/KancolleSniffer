@@ -328,6 +328,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 連合艦隊に大破艦がいる状態で第3艦隊が出撃したときに警告しない
+        /// </summary>
+        [TestMethod]
+        public void NotWarnDamagedShipInCombinedFleetOnMapStart()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "mapstart_002");
+            PAssert.That(() => !sniffer.BadlyDamagedShips.Any());
+        }
+
+        /// <summary>
         /// 熟練度込みの制空値を正しく計算する
         /// </summary>
         [TestMethod]
