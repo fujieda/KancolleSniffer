@@ -31,6 +31,7 @@ namespace KancolleSniffer
         private class EquipColumn
         {
             public string Fleet { get; set; }
+            public string Fleet2 { get; set; }
             public string Ship { get; set; }
             public int Id { get; set; }
             public string Equip { get; set; }
@@ -59,6 +60,7 @@ namespace KancolleSniffer
         {
             var list = new List<EquipColumn>();
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
+            var tp = 0.0;
             for (var f = 0; f < fn.Length; f++)
             {
                 var drumTotal = 0;
@@ -110,6 +112,8 @@ namespace KancolleSniffer
                         drumShips++;
                     drumTotal += drum;
                     levelTotal += s.Level;
+                    if (f < 2)
+                        tp += s.TransportPoint;
                     var fire = s.RealFirepower;
                     var subm = s.RealAntiSubmarine;
                     var torp = s.RealTorpedo;
@@ -138,6 +142,7 @@ namespace KancolleSniffer
                 });
                 list.AddRange(ships);
             }
+            list[0].Fleet2 = $"TP: S{(int)tp} A{(int)(tp * 0.7)}";
             _equipList = list.ToArray();
         }
 
@@ -201,6 +206,8 @@ namespace KancolleSniffer
             labels[3].Visible = e.Equip != "";
             labels[3].BackColor = e.Color;
             labels[4].Text = e.Spec;
+            if (e.Fleet != "" && e.Fleet2 != "")
+                _toolTip.SetToolTip(labels[0], e.Fleet2);
             _toolTip.SetToolTip(labels[2], e.AircraftSpec != "" ? e.AircraftSpec : "");
             _toolTip.SetToolTip(labels[4], e.Spec2 != "" ? e.Spec2 : "");
             lbp.Visible = true;

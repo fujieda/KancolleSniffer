@@ -111,6 +111,36 @@ namespace KancolleSniffer
             }
         }
 
+        public double TransportPoint
+        {
+            get
+            {
+                switch (ShipType)
+                {
+                    case 2:
+                        return 5.0;
+                    case 3:
+                        return 2.0;
+                    case 6:
+                        return 4.0;
+                    case 10:
+                        return 7.0;
+                    case 15:
+                        return 15.0;
+                    case 16:
+                        return 9.0;
+                    case 17:
+                        return 12.0;
+                    case 20:
+                        return 7.0;
+                    case 21:
+                        return 6.0;
+                    default:
+                        return 0;
+                }
+            }
+        }
+
         public bool IsSubmarine => ShipType == 13 || ShipType == 14;
 
         public bool IsAircraftCarrier => ShipType == 7 || ShipType == 11 || ShipType == 18;

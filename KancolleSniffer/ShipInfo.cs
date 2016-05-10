@@ -193,6 +193,9 @@ namespace KancolleSniffer
                 : SlotEx.Spec.Id == 42 || SlotEx.Spec.Id == 43
                     ? SlotEx.Spec.Id
                     : Slot.FirstOrDefault(item => item.Spec.Id == 42 || item.Spec.Id == 43)?.Spec.Id ?? -1;
+
+        public double TransportPoint
+            => Spec.TransportPoint + Slot.Sum(item => item.Spec.TransportPoint) + SlotEx.Spec.TransportPoint;
     }
 
     public struct ChargeStatus
