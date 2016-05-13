@@ -178,7 +178,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_get_member/questlist"))
             {
-                _questInfo.Inspect(data);
+                _questInfo.InspectQuestList(data);
                 return Update.QuestList;
             }
             if (url.EndsWith("api_get_member/deck"))
@@ -437,6 +437,11 @@ namespace KancolleSniffer
                 _materialInfo.InspectMissionResult(data);
                 _logger.InspectMissionResult(data);
                 return Update.Item;
+            }
+            if (url.EndsWith("api_req_quest/clearitemget"))
+            {
+                _questInfo.InspectClearItemGet(request);
+                return Update.QuestList;
             }
             return Update.None;
         }

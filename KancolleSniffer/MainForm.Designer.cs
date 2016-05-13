@@ -858,9 +858,9 @@ namespace KancolleSniffer
             // 
             // labelProgress6
             // 
-            this.labelProgress6.Location = new System.Drawing.Point(194, 78);
+            this.labelProgress6.Location = new System.Drawing.Point(188, 78);
             this.labelProgress6.Name = "labelProgress6";
-            this.labelProgress6.Size = new System.Drawing.Size(23, 12);
+            this.labelProgress6.Size = new System.Drawing.Size(29, 12);
             this.labelProgress6.TabIndex = 11;
             this.labelProgress6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -873,41 +873,41 @@ namespace KancolleSniffer
             // 
             // labelProgress5
             // 
-            this.labelProgress5.Location = new System.Drawing.Point(194, 63);
+            this.labelProgress5.Location = new System.Drawing.Point(188, 63);
             this.labelProgress5.Name = "labelProgress5";
-            this.labelProgress5.Size = new System.Drawing.Size(23, 12);
+            this.labelProgress5.Size = new System.Drawing.Size(29, 12);
             this.labelProgress5.TabIndex = 9;
             this.labelProgress5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelProgress4
             // 
-            this.labelProgress4.Location = new System.Drawing.Point(194, 48);
+            this.labelProgress4.Location = new System.Drawing.Point(188, 48);
             this.labelProgress4.Name = "labelProgress4";
-            this.labelProgress4.Size = new System.Drawing.Size(23, 12);
+            this.labelProgress4.Size = new System.Drawing.Size(29, 12);
             this.labelProgress4.TabIndex = 8;
             this.labelProgress4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelProgress3
             // 
-            this.labelProgress3.Location = new System.Drawing.Point(194, 33);
+            this.labelProgress3.Location = new System.Drawing.Point(188, 33);
             this.labelProgress3.Name = "labelProgress3";
-            this.labelProgress3.Size = new System.Drawing.Size(23, 12);
+            this.labelProgress3.Size = new System.Drawing.Size(29, 12);
             this.labelProgress3.TabIndex = 7;
             this.labelProgress3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelProgress2
             // 
-            this.labelProgress2.Location = new System.Drawing.Point(194, 18);
+            this.labelProgress2.Location = new System.Drawing.Point(188, 18);
             this.labelProgress2.Name = "labelProgress2";
-            this.labelProgress2.Size = new System.Drawing.Size(23, 12);
+            this.labelProgress2.Size = new System.Drawing.Size(29, 12);
             this.labelProgress2.TabIndex = 6;
             this.labelProgress2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelProgress1
             // 
-            this.labelProgress1.Location = new System.Drawing.Point(194, 3);
+            this.labelProgress1.Location = new System.Drawing.Point(188, 3);
             this.labelProgress1.Name = "labelProgress1";
-            this.labelProgress1.Size = new System.Drawing.Size(23, 12);
+            this.labelProgress1.Size = new System.Drawing.Size(29, 12);
             this.labelProgress1.TabIndex = 5;
             this.labelProgress1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 

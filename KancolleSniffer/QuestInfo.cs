@@ -42,7 +42,7 @@ namespace KancolleSniffer
 
         public int QuestCount { get; set; }
 
-        public void Inspect(dynamic json)
+        public void InspectQuestList(dynamic json)
         {
             var resetTime = DateTime.Today.AddHours(5);
             if (DateTime.Now >= resetTime && _lastCreared < resetTime)
@@ -78,6 +78,12 @@ namespace KancolleSniffer
                     }
                     switch (state)
                     {
+                        case 1:
+                            _quests.Remove(id);
+                            break;
+                        case 3:
+                            progress = 100;
+                            goto case 2;
                         case 2:
                             _quests[id] = new QuestStatus
                             {
@@ -87,10 +93,6 @@ namespace KancolleSniffer
                                 Color = cat <= _color.Length ? _color[cat - 1] : Control.DefaultBackColor
                             };
                             break;
-                        case 1:
-                        case 3:
-                            _quests.Remove(id);
-                            continue;
                     }
                 }
                 if (_quests.Count <= QuestCount)
@@ -101,6 +103,12 @@ namespace KancolleSniffer
                  */
                 _quests.Clear();
             }
+        }
+
+        public void InspectClearItemGet(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            _quests.Remove(int.Parse(values["api_quest_id"]));
         }
 
         public QuestStatus[] Quests => _quests.Values.ToArray();
