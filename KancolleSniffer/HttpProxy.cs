@@ -530,10 +530,7 @@ namespace KancolleSniffer
                     if (!int.TryParse(size, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out val))
                         throw new HttpProxyAbort("Can't parse chunk size: " + size);
                     if (val == 0)
-                    {
-                        ReadLine();
                         break;
-                    }
                     var chunk = new byte[val];
                     Read(chunk, 0, chunk.Length);
                     buf.Write(chunk, 0, chunk.Length);
