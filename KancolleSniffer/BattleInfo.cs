@@ -212,6 +212,8 @@ namespace KancolleSniffer
         private void CalcDamage(dynamic json, bool surfaceFleet = false)
         {
             var combined = json.api_nowhps_combined();
+            if (json.api_air_base_attack())
+                CalcAirBaseAttackDamage(json.api_air_base_attack);
             if (json.api_kouku.api_stage3 != null)
                 CalcSimpleDamage(json.api_kouku.api_stage3, _friend, _enemyHp);
             if (json.api_kouku.api_stage3_combined() && json.api_kouku.api_stage3_combined != null)
@@ -262,6 +264,16 @@ namespace KancolleSniffer
                 var stage3 = json.api_support_airatack.api_stage3;
                 if (stage3 != null)
                     CalcSimpleDamage(stage3.api_edam, _enemyHp);
+            }
+        }
+
+        private void CalcAirBaseAttackDamage(dynamic json)
+        {
+            foreach (var entry in json)
+            {
+                if (!entry.api_stage3() || entry.api_stage3 == null)
+                    continue;
+                CalcSimpleDamage(entry.api_stage3.api_edam, _enemyHp);
             }
         }
 
