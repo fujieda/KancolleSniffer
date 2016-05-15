@@ -600,6 +600,30 @@ namespace KancolleSniffer.Test
                 new[] {201650, 189718, 261500, 123227, 2743, 2828, 3000, 44}
             };
             PAssert.That(() => SequenceOfSequenceEqual(expected2, result2));
+
+            var sniffer3 = new Sniffer();
+            var result3 = new List<int[]>();
+            SniffLogFile(sniffer3, "material_003", sn =>
+            {
+                var cur = sn.Material.Current;
+                if (result3.Count == 0)
+                {
+                    result3.Add(cur);
+                }
+                else
+                {
+                    if (!result3.Last().SequenceEqual(cur))
+                        result3.Add(cur);
+                }
+            });
+            var expected3 = new List<int[]>
+            {
+                new[] {0, 0, 0, 0, 0, 0, 0, 0},
+                new[] {288194, 282623, 299496, 295958, 3000, 2968, 2997, 7},
+                new[] {288185, 282623, 299496, 295943, 3000, 2968, 2997, 7},
+                new[] {288161, 282623, 299496, 295903, 3000, 2968, 2997, 7},
+            };
+            PAssert.That(() => SequenceOfSequenceEqual(expected3, result3), "基地航空隊の補充");
         }
 
         private bool SequenceOfSequenceEqual<T>(IEnumerable<IEnumerable<T>> a, IEnumerable<IEnumerable<T>> b)

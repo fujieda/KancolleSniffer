@@ -109,11 +109,23 @@ namespace KancolleSniffer
             SetMaterials((int[])json.api_after_material);
         }
 
+        public void InspectAirCorpsSupply(dynamic json)
+        {
+            SetMaterial(Material.Fuel, (int)json.api_after_fuel);
+            SetMaterial(Material.Bouxite, (int)json.api_after_bauxite);
+        }
+
         public void SetMaterials(int[] material)
         {
             UpdatePrevPort();
             for (var i = 0; i < material.Length; i++)
                 MaterialHistory[i].Now = material[i];
+        }
+
+        public void SetMaterial(Material m, int v)
+        {
+            UpdatePrevPort();
+            MaterialHistory[(int)m].Now = v;
         }
 
         public void AddMaterials(int[] v)

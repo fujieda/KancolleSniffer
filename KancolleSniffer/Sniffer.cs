@@ -443,6 +443,11 @@ namespace KancolleSniffer
                 _questInfo.InspectClearItemGet(request);
                 return Update.QuestList;
             }
+            if (url.EndsWith("api_req_air_corps/supply"))
+            {
+                _materialInfo.InspectAirCorpsSupply(data);
+                return Update.Item;
+            }
             return Update.None;
         }
 
