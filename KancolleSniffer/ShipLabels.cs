@@ -115,6 +115,7 @@ namespace KancolleSniffer
         {
             parent.SuspendLayout();
             const int top = 3, height = 12, lh = 16;
+            const int parentWidth = 220; // parent.Widthを使うとDPIスケーリング時に計算がくるうので
             ShipLabel[] headings;
             parent.Controls.AddRange(headings = new[]
             {
@@ -122,7 +123,7 @@ namespace KancolleSniffer
                 new ShipLabel {Location = new Point(86, top), Text = "cnd", AutoSize = true},
                 new ShipLabel {Location = new Point(177, top), Text = "HP", AutoSize = true},
                 new ShipLabel {Location = new Point(195, top), Text = "cnd", AutoSize = true},
-                new ShipLabel {Location = new Point(0, 1), Size = new Size(parent.Width, lh - 1)}
+                new ShipLabel {Location = new Point(0, 1), Size = new Size(parentWidth, lh - 1)}
             });
             foreach (var label in headings)
             {
@@ -131,7 +132,7 @@ namespace KancolleSniffer
             }
             for (var i = 0; i < _combinedLabels.Length; i++)
             {
-                var x = (parent.Width / 2) * (i / ShipInfo.MemberCount);
+                var x = parentWidth / 2 * (i / ShipInfo.MemberCount);
                 var y = top + lh * ((i % ShipInfo.MemberCount) + 1);
                 parent.Controls.AddRange(_combinedLabels[i] = new[]
                 {
@@ -143,7 +144,7 @@ namespace KancolleSniffer
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new ShipLabel {Location = new Point(x + 2, y), AutoSize = true}, // 名前のZ-orderを下に
-                    new ShipLabel {Location = new Point(x, y - 2), Size = new Size(parent.Width / 2, lh - 1)}
+                    new ShipLabel {Location = new Point(x, y - 2), Size = new Size(parentWidth / 2, lh - 1)}
                 });
                 foreach (var label in _combinedLabels[i])
                 {
