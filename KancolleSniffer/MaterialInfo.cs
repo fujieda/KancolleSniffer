@@ -115,6 +115,12 @@ namespace KancolleSniffer
             SetMaterial(Material.Bouxite, (int)json.api_after_bauxite);
         }
 
+        public void InspectAirCorpsSetPlane(dynamic json)
+        {
+            if (json.api_after_bauxite())
+                SetMaterial(Material.Bouxite, (int)json.api_after_bauxite);
+        }
+
         public void SetMaterials(int[] material)
         {
             UpdatePrevPort();

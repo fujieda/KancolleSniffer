@@ -543,7 +543,7 @@ namespace KancolleSniffer.Test
         /// 資材の変動を正しく反映する
         /// </summary>
         [TestMethod]
-        public void MaterialVariation()
+        public void MaterialChanges()
         {
             var sniffer1 = new Sniffer();
             var result1 = new List<int[]>();
@@ -600,7 +600,14 @@ namespace KancolleSniffer.Test
                 new[] {201650, 189718, 261500, 123227, 2743, 2828, 3000, 44}
             };
             PAssert.That(() => SequenceOfSequenceEqual(expected2, result2));
+        }
 
+        /// <summary>
+        /// 基地航空隊における資材の変動を反映する
+        /// </summary>
+        [TestMethod]
+        public void MaterialChangesInAirCorps()
+        {
             var sniffer3 = new Sniffer();
             var result3 = new List<int[]>();
             SniffLogFile(sniffer3, "material_003", sn =>
@@ -623,7 +630,31 @@ namespace KancolleSniffer.Test
                 new[] {288185, 282623, 299496, 295943, 3000, 2968, 2997, 7},
                 new[] {288161, 282623, 299496, 295903, 3000, 2968, 2997, 7},
             };
-            PAssert.That(() => SequenceOfSequenceEqual(expected3, result3), "基地航空隊の補充");
+            PAssert.That(() => SequenceOfSequenceEqual(expected3, result3), "航空機の補充");
+
+            var sniffer4 = new Sniffer();
+            var result4 = new List<int[]>();
+            SniffLogFile(sniffer4, "material_004", sn =>
+            {
+                var cur = sn.Material.Current;
+                if (result4.Count == 0)
+                {
+                    result4.Add(cur);
+                }
+                else
+                {
+                    if (!result4.Last().SequenceEqual(cur))
+                        result4.Add(cur);
+                }
+            });
+            var expected4 = new List<int[]>
+            {
+                new[] {0, 0, 0, 0, 0, 0, 0, 0},
+                new[] {261012, 252252, 298492, 279622, 3000, 2842, 3000, 22},
+                new[] {261012, 252252, 298492, 279538, 3000, 2842, 3000, 22},
+                new[] {261012, 252252, 298492, 279454, 3000, 2842, 3000, 22},
+            };
+            PAssert.That(() => SequenceOfSequenceEqual(expected4, result4), "航空機の配備");
         }
 
         private bool SequenceOfSequenceEqual<T>(IEnumerable<IEnumerable<T>> a, IEnumerable<IEnumerable<T>> b)

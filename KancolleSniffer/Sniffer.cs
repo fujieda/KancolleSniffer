@@ -448,6 +448,11 @@ namespace KancolleSniffer
                 _materialInfo.InspectAirCorpsSupply(data);
                 return Update.Item;
             }
+            if (url.EndsWith("api_req_air_corps/set_plane"))
+            {
+                _materialInfo.InspectAirCorpsSetPlane(data);
+                return Update.Item;
+            }
             return Update.None;
         }
 
