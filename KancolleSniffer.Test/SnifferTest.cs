@@ -260,6 +260,20 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 旗艦大破で女神を使った進撃を反映する
+        /// </summary>
+        [TestMethod]
+        public void DamageControlForFlagShip()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "damecon_005");
+            var fs = sniffer.GetShipStatuses(0)[0];
+            PAssert.That(() => fs.SlotEx.Id == -1);
+            PAssert.That(() => fs.NowHp == fs.MaxHp);
+            PAssert.That(() => sniffer.BadlyDamagedShips.Length == 0);
+        }
+
+        /// <summary>
         /// 連合艦隊(水上打撃部隊)で二回目の砲撃戦がない場合を正しく処理する
         /// </summary>
         [TestMethod]

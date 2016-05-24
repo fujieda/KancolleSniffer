@@ -154,6 +154,8 @@ namespace KancolleSniffer
                     ConsumeSlotItem(flagship, 43); // 女神
                     break;
             }
+            if (_flagshipRecoveryType != 0)
+                _shipInfo.SetBadlyDamagedShips();
             _flagshipRecoveryType = 0;
         }
 
