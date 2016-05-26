@@ -274,6 +274,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 戦闘開始時に大破艦がいても夜戦突入時に警告を出さない
+        /// </summary>
+        [TestMethod]
+        public void NotWarnDamagedShipOnRunIntoNightBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "damecon_006");
+            PAssert.That(() => sniffer.BadlyDamagedShips.Length == 0);
+        }
+
+        /// <summary>
         /// 連合艦隊(水上打撃部隊)で二回目の砲撃戦がない場合を正しく処理する
         /// </summary>
         [TestMethod]

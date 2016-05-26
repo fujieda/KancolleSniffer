@@ -344,6 +344,8 @@ namespace KancolleSniffer
                 e.now.UpdateShipStatus(e.ship);
             if (warnDamagedShip)
                 _shipInfo.SetBadlyDamagedShips();
+            else
+                _shipInfo.ClearBadlyDamagedShips();
             SetEnemyResultStatus();
         }
 
@@ -395,6 +397,8 @@ namespace KancolleSniffer
                 e.now.UpdateShipStatus(e.ship);
             if (warnDamagedShip)
                 _shipInfo.SetBadlyDamagedShips();
+            else
+                _shipInfo.ClearBadlyDamagedShips();
             SetEnemyResultStatus();
         }
 
