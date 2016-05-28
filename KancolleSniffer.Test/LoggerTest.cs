@@ -265,6 +265,19 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void WriteMaterialLogOnSortie()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
+            sniffer.EnableLog(LogType.Material);
+            SnifferTest.SniffLogFile(sniffer, "battle_001");
+            PAssert.That(() => "2015-01-01 00:00:00,39636,36912,43064,47519,1329,1424,2030,19|"+
+                               "2015-01-01 00:00:00,39636,36912,43064,47519,1329,1424,2030,19|"
+                               == result);
+        }
+
+        [TestMethod]
         public void InspectCreateItem()
         {
             var sniffer = new Sniffer();

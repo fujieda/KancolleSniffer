@@ -47,7 +47,7 @@ namespace KancolleSniffer
         private dynamic _basic;
         private int _kdockId;
         private DateTime _prevTime;
-        private int[] _currentMaterial;
+        private int[] _currentMaterial = new int[Enum.GetValues(typeof(Material)).Length];
         private int _materialLogInterval = 10;
         private bool _start;
 
@@ -116,6 +116,8 @@ namespace KancolleSniffer
             _start = true;
             _map = json;
             _battle = null;
+            if ((_logType & LogType.Material) != 0)
+                WriteMaterialLog(_nowFunc());
         }
 
         public void InspectMapNext(dynamic json)
@@ -334,16 +336,20 @@ namespace KancolleSniffer
         {
             if ((_logType & LogType.Material) == 0)
                 return;
+            foreach (var e in json)
+                _currentMaterial[(int)e.api_id - 1] = (int)e.api_value;
             var now = _nowFunc();
             if (now - _prevTime < TimeSpan.FromMinutes(_materialLogInterval))
                 return;
+            WriteMaterialLog(now);
+        }
+
+        public void WriteMaterialLog(DateTime now)
+        {
             _prevTime = now;
-            var material = new int[8];
-            foreach (var e in json)
-                material[(int)e.api_id - 1] = (int)e.api_value;
             _writer("資材ログ",
                 now.ToString(DateTimeFormat) + "," +
-                string.Join(",", material),
+                string.Join(",", _currentMaterial),
                 "日付,燃料,弾薬,鋼材,ボーキ,高速建造材,高速修復材,開発資材,改修資材");
         }
 
