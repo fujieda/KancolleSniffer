@@ -434,6 +434,11 @@ namespace KancolleSniffer
             _shipInfo[ship].Slot = ((int[])json.api_slot).Select(id => new ItemStatus(id)).ToArray();
         }
 
+        public void InspectSlotDeprive(dynamic json)
+        {
+            InspectShipData(new[] {json.api_ship_data.api_set_ship, json.api_ship_data.api_unset_ship});
+        }
+
         public void InspectDestroyShip(string request, dynamic json)
         {
             var values = HttpUtility.ParseQueryString(request);
