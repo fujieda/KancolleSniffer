@@ -277,9 +277,13 @@ function pickChartData(data, range)
         interval = 3600 * 2000;
         tickInterval = oneDay * 7;
         lastTick = to5am(moment(last).day(1).valueOf());
-    } else {
+    } else if (last <= first + oneDay * 126) {
         interval = 3600 * 12000;
         tickInterval = oneDay * 14;
+        lastTick = to5am(moment(last).day(1).valueOf());
+    } else {
+        interval = 3600 * 24000;
+        tickInterval = oneDay * 28;
         lastTick = to5am(moment(last).day(1).valueOf());
     }
     var last_data;
@@ -406,12 +410,12 @@ function pickDiffChartData(data, range)
         barWidth = 0.1;
     } else {
         interval = oneDay * 7;
-        tickInterval = oneDay * 14;
+        tickInterval = oneDay * 28;
         lastTick = to5am(moment(last).day(1).valueOf());
-        barWidth = 0.3;
-        if (last <= first + oneDay * 8 * 31){
-            tickInterval = oneDay * 7;
-            barWidth = 0.6;
+        barWidth = 0.1;
+        if (last <= first + oneDay * 6 * 38){
+            tickInterval = oneDay * 14;
+            barWidth = 0.3;
         }
     }
     var last_date = lastTick;
