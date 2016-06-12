@@ -8,8 +8,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.7/css/jquery.dataTables.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -120,6 +120,8 @@ var selectedTable = 0;
 var seqChartRange = 0;
 var diffChartRange = 0;
 var chartType = 0;
+var showChart = false;
+var currentPickedData;
 
 function drawChart(data)
 {
@@ -128,22 +130,61 @@ function drawChart(data)
         $.get("./資材ログ.json?time=" + Date.now(), function (data) { drawChart(data);}, "json");
         return;
     }
-    if (chartType == 0)
-        drawSeqChart(data)
-    else
-        drawDiffChart(data)
+    if (chartType == 0) {
+        var picked = pickChartData(data.data, seqChartRange);
+        var header = ["日付","燃料","弾薬","鋼材","ボーキ","高速建造材","高速修復材","開発資材","改修資材"];
+        picked.data.unshift(header);
+        drawSeqChart(picked);
+        currentPickedData = picked;
+    } else {
+        var picked = pickDiffChartData(data.data, diffChartRange);
+        var header = ["日付","燃料","弾薬","鋼材","ボーキ"];
+        picked.data.unshift(header);
+        drawDiffChart(picked)
+        currentPickedData = picked;
+    }
 }
 
-function drawSeqChart(data)
+function redrawChart()
 {
-    picked = pickChartData(data.data, seqChartRange);
-    var header = ["日付","燃料","弾薬","鋼材","ボーキ","高速建造材","高速修復材","開発資材","改修資材"];
-    picked.data.unshift(header);
+    if (!currentPickedData)
+        return;
+    $('#loading').show();
+    setTimeout(function() {
+        if (chartType == 0)
+            drawSeqChart(currentPickedData);
+        else
+            drawDiffChart(currentPickedData);
+    });
+}
+
+var timer;
+$(window).resize(function() {
+    if (timer)
+        clearTimeout(timer);
+    timer = setTimeout(function() {
+        if (showChart)
+            redrawChart();
+    }, 200);
+});
+
+function chartSize()
+{
+    var pxPerEm = Number($('#chart').css('fontSize').match(/(\d*(\.\d*)?)px/)[1]);
+    return {
+        height: Math.max($(document).height() - 15 * pxPerEm, 400),
+        width: Math.max($(document).width() - 6 * pxPerEm, 800)
+    };
+}
+
+function drawSeqChart(picked)
+{
+    size = chartSize();
     var chart = c3.generate({
         bindto: '#chart',
         size: {
-            height: 400,
-            width: 800
+            height: size.height,
+            width: size.width
         },
         data: {
             x: '日付',
@@ -179,7 +220,6 @@ function drawSeqChart(data)
                     format: function (x) { return moment(x).format("MM-DD HH:mm"); },
                     values: picked.tick
                 },
-                height: 65
             },
             y2: {
                 show: true
@@ -267,16 +307,14 @@ function pickChartData(data, range)
     return { data: newdata, tick: ticks, grid: grid };
 }
 
-function drawDiffChart(data)
+function drawDiffChart(picked)
 {
-    picked = pickDiffChartData(data.data, diffChartRange);
-    var header = ["日付","燃料","弾薬","鋼材","ボーキ"];
-    picked.data.unshift(header);
+    size = chartSize();
     var chart = c3.generate({
         bindto: '#chart',
         size: {
-            height: 400,
-            width: 800
+            height: size.height,
+            width: size.width
         },
         data: {
             x: '日付',
@@ -317,7 +355,6 @@ function drawDiffChart(data)
                     format: function (x) { return moment(x).format("MM-DD HH:mm"); },
                     values: picked.tick
                 },
-                height: 65
             },
         },
         onrendered: function () { $('#loading').hide(); }
@@ -538,10 +575,12 @@ function initSortieStat()
 function selectTopTab(i)
 {
     var chart = tables;
+    showChart = false;
     if (i < tables) {
         selectedTable = i;
         showLog();
     } else if (i == chart) {
+        showChart = true;
         drawChart();
     } else if (i == chart + 1) {
         setSortieStat();
@@ -761,7 +800,7 @@ $(function() {
 <input type="text" id="chart_from" style="width: 7em">～<input type="text" id="chart_to" style="width: 7em">
 <label><input type="checkbox" id="tooltip" value="" style="margin-left: 2em;">ツールチップ</label>
 </div>
-<div id="chart" style="clear: both; width: 800px; margin: 1em;"></div>
+<div id="chart" style="clear: both; margin: 1em;"></div>
 
 <li class="hide">
 <h3>今日</h3>
