@@ -208,7 +208,7 @@ namespace KancolleSniffer
              * - 中破以上でNowHp=MaxHpにすると回復扱いされるのでNowHp=MaxHp=0に
             */
             return (from id in deck.Take(cap)
-                let s = _shipInfo.GetStatus(id)
+                let s = (ShipStatus)_shipInfo.GetStatus(id).Clone()
                 let full = new ShipStatus {NowHp = s.MaxHp, MaxHp = s.MaxHp}
                 let zero = new ShipStatus()
                 select _dockInfo.InNDock(id) ? full : s.DamageLevel >= ShipStatus.Damage.Half ? zero : s).ToArray();

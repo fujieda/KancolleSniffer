@@ -19,7 +19,7 @@ using static System.Math;
 
 namespace KancolleSniffer
 {
-    public class ShipStatus
+    public class ShipStatus : ICloneable
     {
         public int Id { get; set; }
         public int Fleet { get; set; }
@@ -196,6 +196,11 @@ namespace KancolleSniffer
 
         public double TransportPoint
             => Spec.TransportPoint + Slot.Sum(item => item.Spec.TransportPoint) + SlotEx.Spec.TransportPoint;
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     public struct ChargeStatus
