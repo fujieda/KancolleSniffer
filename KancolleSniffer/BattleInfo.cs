@@ -231,6 +231,11 @@ namespace KancolleSniffer
                 return;
             if (json.api_support_info() && json.api_support_info != null)
                 CalcSupportDamage(json.api_support_info);
+            if (json.api_opening_taisen() && json.api_opening_taisen != null)
+            {
+                var friend = combined ? _guard : _friend; // 先制対潜攻撃の対象は護衛(たぶん)
+                CalcHougekiDamage(json.api_opening_taisen, friend, _enemyHp);
+            }
             if (json.api_opening_atack != null)
             {
                 var friend = combined ? _guard : _friend; // 雷撃の対象は護衛

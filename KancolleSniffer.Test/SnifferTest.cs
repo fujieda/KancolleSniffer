@@ -364,6 +364,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 先制対潜攻撃を正しく処理する
+        /// </summary>
+        [TestMethod]
+        public void OpeningTaisen()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "opening_taisen_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.P);
+        }
+
+        /// <summary>
         /// 熟練度込みの制空値を正しく計算する
         /// </summary>
         [TestMethod]
