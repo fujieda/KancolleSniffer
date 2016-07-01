@@ -341,7 +341,7 @@ namespace KancolleSniffer
             {
                 if (Spec.Type == 5) // 魚雷
                     return 1.2 * Sqrt(Level);
-                if (Spec.IconType == 15) // 機銃
+                if (Spec.Type == 21) // 機銃
                     return 1.2 * Sqrt(Level);
                 return 0;
             }
@@ -373,7 +373,7 @@ namespace KancolleSniffer
                     case 3: // 大口径
                         return Sqrt(Level);
                     case 4: // 副砲
-                        return Spec.IconType == 15 ? 0 : Sqrt(Level);
+                        return Sqrt(Level);
                     case 5: // 魚雷
                     case 19: // 徹甲弾
                     case 29: // 探照灯
