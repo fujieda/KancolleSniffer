@@ -554,8 +554,8 @@ namespace KancolleSniffer
                         ? new[] {0, 0}
                         : new[]
                         {
-                            (int)(slot.Spec.AntiAir * Sqrt(onslot) + slot.AlvBonus[0]),
-                            (int)(slot.Spec.AntiAir * Sqrt(onslot) + slot.AlvBonus[1])
+                            (int)((slot.Spec.AntiAir + slot.Level * 0.2) * Sqrt(onslot) + slot.AlvBonus[0]),
+                            (int)((slot.Spec.AntiAir + slot.Level * 0.2) * Sqrt(onslot) + slot.AlvBonus[1])
                         }))
                 .Aggregate(new[] {0, 0}, (prev, fp) => new[] {prev[0] + fp[0], prev[1] + fp[1]});
 
