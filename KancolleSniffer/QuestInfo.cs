@@ -105,10 +105,15 @@ namespace KancolleSniffer
             }
         }
 
-        public void InspectClearItemGet(string request)
+        public void InspectStop(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
             _quests.Remove(int.Parse(values["api_quest_id"]));
+        }
+
+        public void InspectClearItemGet(string request)
+        {
+            InspectStop(request);
         }
 
         public QuestStatus[] Quests => _quests.Values.ToArray();

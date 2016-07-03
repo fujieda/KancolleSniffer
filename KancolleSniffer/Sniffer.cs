@@ -443,6 +443,11 @@ namespace KancolleSniffer
                 _logger.InspectMissionResult(data);
                 return Update.Item;
             }
+            if (url.EndsWith("api_req_quest/stop"))
+            {
+                _questInfo.InspectStop(request);
+                return Update.QuestList;
+            }
             if (url.EndsWith("api_req_quest/clearitemget"))
             {
                 _questInfo.InspectClearItemGet(request);
