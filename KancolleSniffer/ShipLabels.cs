@@ -260,6 +260,7 @@ namespace KancolleSniffer
             {"阿武隈改二", "阿武隈改"},
             {"瑞鶴改二甲", "瑞鶴改二"},
             {"翔鶴改二甲", "翔鶴改二"},
+            {"朝潮改二丁", "朝潮改二"}
         };
 
         public void CreateDamagedShipList(Control parent, EventHandler onClick)
