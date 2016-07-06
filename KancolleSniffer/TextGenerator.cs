@@ -101,7 +101,7 @@ namespace KancolleSniffer
 
         public static string GenerateDeckBuilderData(Sniffer sniffer)
         {
-            var sb = new StringBuilder("{\"version\": 3,");
+            var sb = new StringBuilder("{\"version\": 4,");
             for (var f = 0; f < ShipInfo.FleetCount; f++)
             {
                 if (f != 0)
@@ -122,7 +122,7 @@ namespace KancolleSniffer
                             continue;
                         if (i != 0)
                             sb.Append(",");
-                        sb.Append($"\"i{i + 1}\":{{\"id\":{it.Spec.Id},\"rf\":{(it.Alv != 0 && !it.Spec.IsReconSeaplane ? it.Alv : it.Level)}}}");
+                        sb.Append($"\"i{i + 1}\":{{\"id\":{it.Spec.Id},\"rf\":{it.Level},\"mas\":{it.Alv}}}");
                     }
                     sb.Append("}}");
                 }
