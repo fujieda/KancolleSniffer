@@ -407,7 +407,7 @@ namespace KancolleSniffer
                 if (MaxShips != 0)
                 {
                     var limit = MaxShips - MarginShips;
-                    RingShips = _nowShips < limit && value >= limit;
+                    RingShips = RingShips || _nowShips < limit && value >= limit;
                 }
                 _nowShips = value;
             }
@@ -423,7 +423,7 @@ namespace KancolleSniffer
                 if (MaxEquips != 0)
                 {
                     var limit = MaxEquips - MarginEquips;
-                    RingEquips = _nowEquips < limit && value >= limit;
+                    RingEquips = RingEquips || _nowEquips < limit && value >= limit;
                 }
                 _nowEquips = value;
             }

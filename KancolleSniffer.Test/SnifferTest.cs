@@ -576,6 +576,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 装備数の超過を警告する
+        /// </summary>
+        [TestMethod]
+        public void WarnItemCount()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "item_count_001");
+            PAssert.That(() => sniffer.Item.RingEquips);
+        }
+
+        /// <summary>
         /// 資材の変動を正しく反映する
         /// </summary>
         [TestMethod]
