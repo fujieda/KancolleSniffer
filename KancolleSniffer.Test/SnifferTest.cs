@@ -581,9 +581,12 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void WarnItemCount()
         {
-            var sniffer = new Sniffer();
-            SniffLogFile(sniffer, "item_count_001");
-            PAssert.That(() => sniffer.Item.RingEquips);
+            var sniffer1 = new Sniffer();
+            SniffLogFile(sniffer1, "item_count_001");
+            PAssert.That(() => sniffer1.Item.RingEquips, "出撃から母港に戻ったとき");
+            var sniffer2 = new Sniffer();
+            SniffLogFile(sniffer2, "item_count_002");
+            PAssert.That(() => sniffer2.Item.RingEquips, "ログインしたとき");
         }
 
         /// <summary>

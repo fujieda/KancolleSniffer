@@ -440,7 +440,10 @@ namespace KancolleSniffer
         public void InspectBasic(dynamic json)
         {
             MaxShips = (int)json.api_max_chara;
+            var check = MaxEquips == 0;
             MaxEquips = (int)json.api_max_slotitem;
+            if (check)
+                RingEquips = NowEquips >= MaxEquips - MarginEquips;
         }
 
         public void InspectMaster(dynamic json)
