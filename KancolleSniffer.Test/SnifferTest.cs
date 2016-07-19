@@ -388,6 +388,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 改修効果込みの制空値を正しく計算する
+        /// </summary>
+        [TestMethod]
+        public void FighterPowerWithImprovement()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "fighterpower_003");
+            PAssert.That(() => sniffer.GetFighterPower(0).SequenceEqual(new [] {135, 135}));
+        }
+
+        /// <summary>
         /// マップ索敵の判定式(33)を正しく計算する
         /// </summary>
         [TestMethod]

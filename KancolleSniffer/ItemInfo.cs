@@ -292,6 +292,18 @@ namespace KancolleSniffer
             }
         }
 
+        public double FighterPowerLevelBonus
+        {
+            get
+            {
+                if (Spec.Type == 6)
+                    return 0.2 * Level;
+                if (Spec.Type == 7) // 改修可能なのは爆戦のみ
+                    return 0.25 * Level;
+                return 0;
+            }
+        }
+
         public double LoSLevelBonus
         {
             get
