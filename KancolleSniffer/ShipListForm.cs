@@ -560,10 +560,7 @@ namespace KancolleSniffer
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (InItemList)
-                Clipboard.SetText(TextGenerator.GenerateItemList(_sniffer.ItemList));
-            if (InShipStatus)
-                Clipboard.SetText(TextGenerator.GenerateShipList(FilterByGroup(_sniffer.ShipList)));
+            Clipboard.SetText(TextGenerator.GenerateItemList(_sniffer.ItemList));
         }
 
         private void textToolStripMenuItem_Click(object sender, EventArgs e)
@@ -586,6 +583,16 @@ namespace KancolleSniffer
         {
             _config.ShipList.SortOrder = _config.ShipList.SortOrder == SortOrder.ExpToNext ? SortOrder.None : SortOrder.ExpToNext;
             UpdateList();
+        }
+
+        private void csvToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(TextGenerator.GenerateShipList(FilterByGroup(_sniffer.ShipList)));
+        }
+
+        private void kantaiSarashiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(TextGenerator.GenerateKantaiSarashiData(FilterByGroup(_sniffer.ShipList)));
         }
     }
 }

@@ -42,6 +42,7 @@ namespace KancolleSniffer
         public int Torpedo { get; set; }
         public int AntiSubmarine { get; set; }
         public int Lucky { get; set; }
+        public bool Locked { get; set; }
         public bool Escaped { get; set; }
 
         public Damage DamageLevel => CalcDamage(NowHp, MaxHp);
@@ -343,7 +344,8 @@ namespace KancolleSniffer
                     Firepower = (int)entry.api_karyoku[0],
                     Torpedo = (int)entry.api_raisou[0],
                     AntiSubmarine = (int)entry.api_taisen[0],
-                    Lucky = (int)entry.api_lucky[0]
+                    Lucky = (int)entry.api_lucky[0],
+                    Locked = entry.api_locked() && entry.api_locked == 1
                 };
                 _itemInfo.CountNewItems((int[])entry.api_slot);
             }

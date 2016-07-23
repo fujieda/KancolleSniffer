@@ -39,12 +39,18 @@ namespace KancolleSniffer
                     ShipType = (int)entry.api_stype,
                     ShipTypeName = dict[entry.api_stype]
                 };
+                if (entry.api_afterlv())
+                {
+                    shipSpec.Remodel.Level = (int)entry.api_afterlv;
+                    shipSpec.Remodel.After = int.Parse(entry.api_aftershipid);
+                }
                 int[] maxEq;
                 shipSpec.MaxEq = entry.api_maxeq()
                     ? entry.api_maxeq
                     : MissingData.MaxEq.TryGetValue(shipSpec.Id, out maxEq) ? maxEq : null;
             }
             _shipSpecs[-1] = new ShipSpec();
+            SetRemodelBaseAndStep();
         }
 
         // 深海棲艦の名前にelite/flagshipを付ける
@@ -58,6 +64,32 @@ namespace KancolleSniffer
         }
 
         public ShipSpec this[int id] => _shipSpecs[id];
+
+        private void SetRemodelBaseAndStep()
+        {
+            // 改造後のデータをマーク
+            foreach (var spec in _shipSpecs.Values)
+            {
+                if (spec.Remodel.After == 0)
+                    continue;
+                _shipSpecs[spec.Remodel.After].Remodel.Base = 1;
+            }
+            foreach (var spec in _shipSpecs.Values)
+            {
+                if (spec.Remodel.Base != 0)
+                    continue;
+                spec.Remodel.Base = spec.Id;
+                var step = 0;
+                var hash = new HashSet<int> {0, spec.Id};
+                var s = spec;
+                while (hash.Add(s.Remodel.After))
+                {
+                    s.Remodel.Step = ++step;
+                    s = _shipSpecs[s.Remodel.After];
+                    s.Remodel.Base = spec.Id;
+                }
+            }
+        }
     }
 
     public class ShipSpec
@@ -70,6 +102,15 @@ namespace KancolleSniffer
         public int[] MaxEq { get; set; }
         public int ShipType { get; set; }
         public string ShipTypeName { get; set; }
+        public RemodelInfo Remodel { get; } = new RemodelInfo();
+
+        public class RemodelInfo
+        {
+            public int Level { get; set; }
+            public int After { get; set; }
+            public int Base { get; set; } // 艦隊晒しページ用
+            public int Step { get; set; } // 同上
+        }
 
         public ShipSpec()
         {

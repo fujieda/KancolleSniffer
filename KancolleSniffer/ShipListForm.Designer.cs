@@ -69,12 +69,16 @@ namespace KancolleSniffer
             this.contextMenuStripFleetData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.textToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deckBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripShipList = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kantaiSarashiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.equipPanel = new KancolleSniffer.EquipPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
             this.contextMenuStrip.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
             this.contextMenuStripFleetData.SuspendLayout();
+            this.contextMenuStripShipList.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelShipList
@@ -83,7 +87,7 @@ namespace KancolleSniffer
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panelShipList.AutoScroll = true;
             this.panelShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelShipList.ContextMenuStrip = this.contextMenuStrip;
+            this.panelShipList.ContextMenuStrip = this.contextMenuStripShipList;
             this.panelShipList.Location = new System.Drawing.Point(6, 23);
             this.panelShipList.Name = "panelShipList";
             this.panelShipList.Size = new System.Drawing.Size(238, 263);
@@ -321,6 +325,28 @@ namespace KancolleSniffer
             this.deckBuilderToolStripMenuItem.Text = "デッキビルダー形式でコピー(&D)";
             this.deckBuilderToolStripMenuItem.Click += new System.EventHandler(this.deckBuilderToolStripMenuItem_Click);
             // 
+            // contextMenuStripShipList
+            // 
+            this.contextMenuStripShipList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.csvToolStripMenuItem,
+            this.kantaiSarashiToolStripMenuItem});
+            this.contextMenuStripShipList.Name = "contextMenuStripShipList";
+            this.contextMenuStripShipList.Size = new System.Drawing.Size(215, 48);
+            // 
+            // csvToolStripMenuItem
+            // 
+            this.csvToolStripMenuItem.Name = "csvToolStripMenuItem";
+            this.csvToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.csvToolStripMenuItem.Text = "CSV形式でコピー(&C)";
+            this.csvToolStripMenuItem.Click += new System.EventHandler(this.csvToolStripMenuItem_Click);
+            // 
+            // kantaiSarashiToolStripMenuItem
+            // 
+            this.kantaiSarashiToolStripMenuItem.Name = "kantaiSarashiToolStripMenuItem";
+            this.kantaiSarashiToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.kantaiSarashiToolStripMenuItem.Text = "艦隊晒し形式でコピー(&K)";
+            this.kantaiSarashiToolStripMenuItem.Click += new System.EventHandler(this.kantaiSarashiToolStripMenuItem_Click);
+            // 
             // equipPanel
             // 
             this.equipPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -375,6 +401,7 @@ namespace KancolleSniffer
             this.panelRepairHeader.ResumeLayout(false);
             this.panelRepairHeader.PerformLayout();
             this.contextMenuStripFleetData.ResumeLayout(false);
+            this.contextMenuStripShipList.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -409,5 +436,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.ContextMenuStrip contextMenuStripFleetData;
         private System.Windows.Forms.ToolStripMenuItem textToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deckBuilderToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripShipList;
+        private System.Windows.Forms.ToolStripMenuItem csvToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem kantaiSarashiToolStripMenuItem;
     }
 }

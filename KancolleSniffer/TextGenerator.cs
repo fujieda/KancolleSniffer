@@ -28,6 +28,22 @@ namespace KancolleSniffer
                    orderby ship.Spec.ShipType, -ship.Level, ship.ExpToNext
                    select $"{ship.Id},{ship.Spec.ShipTypeName},{ship.Name},{ship.Level},{ship.Cond}");
 
+        public static string GenerateKantaiSarashiData(IEnumerable<ShipStatus> shipList)
+        {
+            return ".2|" +
+                   string.Join("|", from ship in shipList
+                       where ship.Locked
+                       group ship by ship.Spec.Remodel.Base
+                       into grp
+                       orderby grp.Key
+                       select grp.Key + ":" + string.Join(",", from ship in grp
+                           orderby -ship.Level
+                           select ship.Level +
+                                  (ship.Level >= ship.Spec.Remodel.Level && ship.Spec.Remodel.Step != 0
+                                      ? "." + ship.Spec.Remodel.Step
+                                      : "")));
+        }
+
         public static string GenerateItemList(IEnumerable<ItemStatus> itemList)
             => "区分,装備名,熟練度,改修,個数\r\n" +
                string.Join("\r\n",
@@ -113,7 +129,8 @@ namespace KancolleSniffer
                     if (s != 0)
                         sb.Append(",");
                     var st = ships[s];
-                    sb.Append($"\"s{s + 1}\":{{\"id\":\"{st.Spec.Id}\",\"lv\":{st.Level},\"luck\":{st.Lucky},\"items\":{{");
+                    sb.Append(
+                        $"\"s{s + 1}\":{{\"id\":\"{st.Spec.Id}\",\"lv\":{st.Level},\"luck\":{st.Lucky},\"items\":{{");
                     var items = st.Slot;
                     for (var i = 0; i < items.Length; i++)
                     {
