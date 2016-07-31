@@ -572,7 +572,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "createitem_001");
-            PAssert.That(() => sniffer.Item.NowEquips == 606);
+            PAssert.That(() => sniffer.Item.NowEquips == 900);
         }
 
         /// <summary>

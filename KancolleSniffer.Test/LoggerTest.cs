@@ -272,7 +272,7 @@ namespace KancolleSniffer.Test
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Material);
             SnifferTest.SniffLogFile(sniffer, "battle_001");
-            PAssert.That(() => "2015-01-01 00:00:00,39636,36912,43064,47519,1329,1424,2030,19|"+
+            PAssert.That(() => "2015-01-01 00:00:00,39636,36912,43064,47519,1329,1424,2030,19|" +
                                "2015-01-01 00:00:00,39636,36912,43064,47519,1329,1424,2030,19|"
                                == result);
         }
@@ -285,8 +285,8 @@ namespace KancolleSniffer.Test
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.CreateItem);
             SnifferTest.SniffLogFile(sniffer, "createitem_001");
-            PAssert.That(() => "2015-01-01 00:00:00,7.7mm機銃,対空機銃,10,20,20,10,天津風改(127),114|" +
-                               "2015-01-01 00:00:00,失敗,,10,20,20,10,天津風改(127),114|"
+            PAssert.That(() => "2015-01-01 00:00:00,12cm単装砲,小口径主砲,10,10,30,10,綾波改二(145),120|" +
+                               "2015-01-01 00:00:00,失敗,,10,10,30,10,綾波改二(145),120|"
                                == result);
         }
 
@@ -298,8 +298,8 @@ namespace KancolleSniffer.Test
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.CreateShip);
             SnifferTest.SniffLogFile(sniffer, "createship_001");
-            PAssert.That(() => "2015-01-01 00:00:00,通常艦建造,球磨,軽巡洋艦,30,30,30,30,1,1,明石改(50),116|" +
-                               "2015-01-01 00:00:00,大型艦建造,筑摩,重巡洋艦,1500,1500,2000,1000,1,0,明石改(50),116|"
+            PAssert.That(() => "2015-01-01 00:00:00,通常艦建造,雷,駆逐艦,30,30,30,30,1,1,綾波改二(145),120|" +
+                               "2015-01-01 00:00:00,大型艦建造,霧島,高速戦艦,1500,1500,2000,1000,1,0,綾波改二(145),120|"
                                == result);
         }
 
