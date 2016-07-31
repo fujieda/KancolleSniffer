@@ -570,9 +570,12 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void CountItem()
         {
-            var sniffer = new Sniffer();
-            SniffLogFile(sniffer, "createitem_001");
-            PAssert.That(() => sniffer.Item.NowEquips == 900);
+            var sniffer1 = new Sniffer();
+            SniffLogFile(sniffer1, "createitem_001");
+            PAssert.That(() => sniffer1.Item.NowEquips == 900);
+            var sniffer2 = new Sniffer();
+            SniffLogFile(sniffer2, "createship_001");
+            PAssert.That(() => sniffer2.Item.NowEquips == 904);
         }
 
         /// <summary>

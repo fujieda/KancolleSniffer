@@ -533,7 +533,7 @@ namespace KancolleSniffer
                 InspectSlotItem(json.api_after_slot);
             if (!json.api_use_slot_id())
                 return;
-            DeleteItems(((int[])json.api_use_slot_id));
+            DeleteItems((int[])json.api_use_slot_id);
         }
 
         public void DeleteItems(ItemStatus[] items)
@@ -550,22 +550,15 @@ namespace KancolleSniffer
             }
         }
 
-        public void CountNewItems(int[] ids)
-        {
-            foreach (var id in ids.Where(id => id != -1 && !_itemInfo.ContainsKey(id)))
-            {
-                _itemInfo[id] = new ItemStatus(id);
-                NowEquips++;
-            }
-        }
-
-        public string GetName(int id) => _itemInfo[id].Spec.Name;
-
-        public int GetItemId(int id) => _itemInfo[id].Spec.Id;
-
         public ItemSpec GetSpecByItemId(int id) => _itemSpecs[id];
 
-        public ItemStatus GetStatus(int id) => _itemInfo[id];
+        public string GetName(int id) => GetStatus(id).Spec.Name;
+
+        public ItemStatus GetStatus(int id)
+        {
+            ItemStatus item;
+            return _itemInfo.TryGetValue(id, out item) ? item : new ItemStatus(id);
+        }
 
         public ItemStatus[] GetItemListWithOwner(ShipStatus[] shipList)
         {

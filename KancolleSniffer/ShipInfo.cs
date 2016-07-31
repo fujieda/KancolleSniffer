@@ -347,7 +347,6 @@ namespace KancolleSniffer
                     Lucky = (int)entry.api_lucky[0],
                     Locked = entry.api_locked() && entry.api_locked == 1
                 };
-                _itemInfo.CountNewItems((int[])entry.api_slot);
             }
         }
 
