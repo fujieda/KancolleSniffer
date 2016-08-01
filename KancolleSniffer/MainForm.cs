@@ -396,7 +396,17 @@ namespace KancolleSniffer
         private void timerMain_Tick(object sender, EventArgs e)
         {
             if (_started)
-                UpdateTimers();
+            {
+                try
+                {
+                    UpdateTimers();
+                }
+                catch (Exception ex)
+                {
+                    if (_errorDialog.ShowDialog(this, "エラーが発生しました。", ex.ToString()) == DialogResult.Abort)
+                        Application.Exit();
+                }
+            }
             if (_playLog == null || _configDialog.Visible)
             {
                 labelPlayLog.Visible = false;
