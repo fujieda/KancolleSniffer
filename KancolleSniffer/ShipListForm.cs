@@ -464,9 +464,9 @@ namespace KancolleSniffer
             checkBoxShipType.Checked = config.ShipType;
             ActiveControl = panelShipList;
             for (var i = 0; i < GroupCount; i++)
-                _groupSettings[i] = config.ShipGroup.Count == 0
-                    ? new HashSet<int>()
-                    : new HashSet<int>(config.ShipGroup[i]);
+                _groupSettings[i] = i < config.ShipGroup.Count
+                    ? new HashSet<int>(config.ShipGroup[i])
+                    : new HashSet<int>();
             comboBoxGroup.SelectedIndex = 0;
             if (config.Location.X == int.MinValue)
                 return;
