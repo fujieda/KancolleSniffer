@@ -161,7 +161,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/slot_item"))
             {
                 _itemInfo.InspectSlotItem(data, true);
-                return Update.None;
+                return Update.Item;
             }
             if (url.EndsWith("api_get_member/kdock"))
             {
