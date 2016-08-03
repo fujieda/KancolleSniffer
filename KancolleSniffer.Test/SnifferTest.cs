@@ -604,6 +604,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// ドロップ艦のいる出撃から戻ったときに、slot_itemを受信する前にItemListを取得しても例外を出さない
+        /// </summary>
+        [TestMethod]
+        public void GetItemListBeforeReceivingSlotItem()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "dropship_001");
+            PAssert.That(() => sniffer.ItemList[0].Ship.Id == 250);
+        }
+
+        /// <summary>
         /// 資材の変動を正しく反映する
         /// </summary>
         [TestMethod]

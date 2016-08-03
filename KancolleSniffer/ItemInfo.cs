@@ -566,9 +566,9 @@ namespace KancolleSniffer
                 e.Value.Ship = new ShipStatus();
             foreach (var s in shipList)
             {
-                foreach (var id in s.Slot)
-                    _itemInfo[id.Id].Ship = s;
-                _itemInfo[s.SlotEx.Id].Ship = s;
+                foreach (var item in s.Slot)
+                    item.Ship = s;
+                s.SlotEx.Ship = s;
             }
             return (from e in _itemInfo where e.Key != -1 select e.Value).ToArray();
         }
