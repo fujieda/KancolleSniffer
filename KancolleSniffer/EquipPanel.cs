@@ -93,12 +93,10 @@ namespace KancolleSniffer
                                 airspec = "航空戦 " + (int)(normal * 0.8) + "/" + (int)(normal * 1.5);
                             }
                         }
+
                         equips.Add(new EquipColumn
                         {
-                            Equip = item.Spec.Name +
-                                    (item.Alv == 0 ? "" : "+" + item.Alv) +
-                                    (item.Level == 0 ? "" : "★" + item.Level) +
-                                    (!item.Spec.IsAircraft ? "" : " " + onslot + "/" + max),
+                            Equip = GenEquipString(item, onslot, max),
                             AircraftSpec = airspec,
                             Color = item.Spec.Color
                         });
@@ -146,6 +144,29 @@ namespace KancolleSniffer
             _equipList = list.ToArray();
         }
 
+        private string GenEquipString(ItemStatus item, int onslot, int max)
+        {
+            var name = item.Spec.Name;
+            var attr = (item.Alv == 0 ? "" : "+" + item.Alv) +
+                       (item.Level == 0 ? "" : "★" + item.Level) +
+                       (!item.Spec.IsAircraft ? "" : " " + onslot + "/" + max);
+            var proposed = new Size(int.MaxValue, int.MaxValue);
+            const int maxWidth = 180;
+            var result = name + attr;
+            if (TextRenderer.MeasureText(result, Font, proposed).Width <= maxWidth)
+                return result;
+            attr = " " + attr;
+            var truncated = "";
+            foreach (var ch in name)
+            {
+                var tmp = truncated + ch;
+                if (TextRenderer.MeasureText(tmp + attr, Font, proposed).Width > maxWidth)
+                    break;
+                truncated = tmp;
+            }
+            return truncated + attr;
+        }
+
         private void CreateEquipLabels()
         {
             for (var i = _labelList.Count; i < _equipList.Length; i++)
@@ -168,8 +189,8 @@ namespace KancolleSniffer
             {
                 new ShipLabel {Location = new Point(1, 2), AutoSize = true},
                 new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(40, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(37, 2), Size = new Size(4, LabelHeight - 2)},
+                new ShipLabel {Location = new Point(38, 2), AutoSize = true},
+                new ShipLabel {Location = new Point(35, 2), Size = new Size(4, LabelHeight - 2)},
                 new ShipLabel {Location = new Point(217, 2), AutoSize = true, AnchorRight = true}
             };
             _labelList.Add(labels);
