@@ -35,40 +35,41 @@ namespace KancolleSniffer
 
         private TreeNode CreateItemNodes(IEnumerable<ItemStatus> itemList)
         {
-            var grouped = from byId in
-                (from item in itemList
-                    where item.Spec.Id != -1
-                    orderby item.Spec.Type, item.Spec.Id, item.Alv, item.Level descending, item.Ship.Spec.Id
-                    group item by new {item.Spec.Id, item.Alv, item.Level})
-                group byId by byId.First().Spec.Type;
+            var grouped = from byItem in (from item in itemList
+                where item.Spec.Id != -1
+                orderby item.Spec.Type, item.Spec.Id, item.Alv, item.Level descending
+                group item by new {item.Spec.Id, item.Alv, item.Level}
+                into grp
+                from byShip in
+                    (from item in grp
+                        let ship = item.Ship
+                        orderby ship.Level descending, ship.Spec.SortNo
+                        group item by item.Ship.Id)
+                group byShip by grp.Key)
+                group byItem by byItem.First().First().Spec.Type;
+
             var root = new TreeNode();
             foreach (var byType in grouped)
             {
-                var typeName = byType.First().First().Spec.TypeName;
+                var typeName = byType.First().First().First().Spec.TypeName;
                 var typeNode = new TreeNode();
                 typeNode.Name = typeNode.Text = typeName;
                 root.Nodes.Add(typeNode);
                 foreach (var byItem in byType)
                 {
-                    var item = byItem.First();
+                    var item = byItem.First().First();
                     var itemNode = new TreeNode();
                     itemNode.Name = itemNode.Text = item.Spec.Name +
                                                     (item.Alv == 0 ? "" : "+" + item.Alv) +
                                                     (item.Level == 0 ? "" : "★" + item.Level);
                     typeNode.Nodes.Add(itemNode);
-
-                    var shipGroup = (from i in byItem group i.Ship by i.Ship.Id).ToArray();
-                    foreach (var name in
-                        from grp in shipGroup
-                        where grp.Key != -1
-                        let ship = grp.First()
-                        select (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") +
-                               ship.Name + "Lv" + ship.Level + "×" + grp.Count())
+                    foreach (var byShip in byItem)
                     {
-                        itemNode.Nodes.Add(name, name);
-                    }
-                    foreach (var name in (from grp in shipGroup where grp.Key == -1 select "未装備×" + grp.Count()))
-                    {
+                        var ship = byShip.First().Ship;
+                        var name = byShip.Key == -1
+                            ? "未装備x" + byShip.Count()
+                            : (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") +
+                              ship.Name + "Lv" + ship.Level + "×" + byShip.Count();
                         itemNode.Nodes.Add(name, name);
                     }
                 }
