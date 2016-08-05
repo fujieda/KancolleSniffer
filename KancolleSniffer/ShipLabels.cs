@@ -378,6 +378,11 @@ namespace KancolleSniffer
         private int _right = int.MinValue;
         private int _left;
 
+        public ShipLabel()
+        {
+            UseMnemonic = false;
+        }
+
         public void SetName(ShipStatus status, Dictionary<string, string> convDict = null)
         {
             string name;
