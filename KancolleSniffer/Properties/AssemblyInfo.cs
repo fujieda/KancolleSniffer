@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("KancolleSniffer")]
-[assembly: AssemblyCopyright("Copyright ©  Kazuhiro Fujieda 2013-2016")]
+[assembly: AssemblyCopyright("Copyright © 2013-2016 Kazuhiro Fujieda")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // すべての値を指定するか、下のように '*' を使ってビルドおよびリビジョン番号を 
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("8.15.0.0")]
-[assembly: AssemblyFileVersion("8.15.0.0")]
+[assembly: AssemblyVersion("8.16.0.0")]
+[assembly: AssemblyFileVersion("8.16.0.0")]
