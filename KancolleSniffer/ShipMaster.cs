@@ -78,13 +78,15 @@ namespace KancolleSniffer
             {
                 if (spec.Remodel.Base != 0)
                     continue;
-                spec.Remodel.Base = spec.Id;
                 var step = 0;
-                var hash = new HashSet<int> {0, spec.Id};
+                var hash = new HashSet<int> {spec.Id};
                 var s = spec;
-                while (hash.Add(s.Remodel.After))
+                s.Remodel.Base = spec.Id;
+                while (s.Remodel.After != 0)
                 {
                     s.Remodel.Step = ++step;
+                    if (!hash.Add(s.Remodel.After))
+                        break;
                     s = _shipSpecs[s.Remodel.After];
                     s.Remodel.Base = spec.Id;
                 }
