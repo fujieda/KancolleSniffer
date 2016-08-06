@@ -78,7 +78,7 @@ namespace KancolleSniffer
             this.label3 = new System.Windows.Forms.Label();
             this.tabPageVersion = new System.Windows.Forms.TabPage();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.label7 = new System.Windows.Forms.Label();
+            this.labelCopyright = new System.Windows.Forms.Label();
             this.linkLabelProductName = new System.Windows.Forms.LinkLabel();
             this.labelVersion = new System.Windows.Forms.Label();
             this.labelLatest = new System.Windows.Forms.Label();
@@ -524,7 +524,7 @@ namespace KancolleSniffer
             // tabPageVersion
             // 
             this.tabPageVersion.Controls.Add(this.richTextBox1);
-            this.tabPageVersion.Controls.Add(this.label7);
+            this.tabPageVersion.Controls.Add(this.labelCopyright);
             this.tabPageVersion.Controls.Add(this.linkLabelProductName);
             this.tabPageVersion.Controls.Add(this.labelVersion);
             this.tabPageVersion.Controls.Add(this.labelLatest);
@@ -547,14 +547,13 @@ namespace KancolleSniffer
             this.richTextBox1.TabIndex = 15;
             this.richTextBox1.Text = "このソフトウェアはApache Licenseバージョン2.0でライセンスします。";
             // 
-            // label7
+            // labelCopyright
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(11, 35);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(212, 12);
-            this.label7.TabIndex = 13;
-            this.label7.Text = "Copyright © 2013-2015 Kazuhiro Fujieda";
+            this.labelCopyright.Location = new System.Drawing.Point(11, 35);
+            this.labelCopyright.Name = "labelCopyright";
+            this.labelCopyright.Size = new System.Drawing.Size(212, 12);
+            this.labelCopyright.TabIndex = 13;
+            this.labelCopyright.Text = "";
             // 
             // linkLabelProductName
             // 
@@ -1101,7 +1100,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.TextBox textBoxSoundFile;
         private System.Windows.Forms.NumericUpDown numericUpDownSoundVolume;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label labelCopyright;
         private System.Windows.Forms.LinkLabel linkLabelProductName;
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label labelLatest;

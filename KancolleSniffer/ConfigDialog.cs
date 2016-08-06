@@ -44,6 +44,7 @@ namespace KancolleSniffer
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
             labelVersion.Text = "バージョン" + version;
             SetLatestVersion(version);
+            labelCopyright.Text = FileVersionInfo.GetVersionInfo(Application.ExecutablePath).LegalCopyright;
 
             checkBoxTopMost.Checked = _config.TopMost;
             checkBoxHideOnMinimized.Checked = _config.HideOnMinimized;
