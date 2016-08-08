@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -22,6 +21,15 @@ using static System.Math;
 
 namespace KancolleSniffer
 {
+    public enum ShipNameWidth
+    {
+        AkashiTimer = 53,
+        NDock = 69,
+        RepairList = NDock,
+        RepairListFull = 75,
+        Max = int.MaxValue
+    }
+
     public class ShipLabels
     {
         private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
@@ -229,7 +237,7 @@ namespace KancolleSniffer
                 label.Visible = true;
                 label.Text = timer.Span.ToString(@"mm\:ss");
                 label.ForeColor = Control.DefaultForeColor;
-                labelName.SetName(stat, _shortNameDict);
+                labelName.SetName(stat, ShipNameWidth.AkashiTimer);
                 if (timer.Diff == 0)
                 {
                     labelHp.ForeColor = Control.DefaultForeColor;
@@ -241,27 +249,6 @@ namespace KancolleSniffer
                 labelHp.SetHp(stat.NowHp + timer.Diff, stat.MaxHp);
             }
         }
-
-        private readonly Dictionary<string, string> _shortNameDict = new Dictionary<string, string>
-        {
-            {"千代田航改", "千代田航"},
-            {"千代田航改二", "千代田航"},
-            {"千歳航改二", "千歳航改"},
-            {"五十鈴改二", "五十鈴改"},
-            {"あきつ丸改", "あきつ丸"},
-            {"Bismarck改", "Bismarck"},
-            {"Bismarck twei", "Bismarck"},
-            {"Bismarck drei", "Bismarck"},
-            {"Prinz Eugen", "Prinz Eug"},
-            {"Prinz Eugen改", "Prinz Eug"},
-            {"Graf Zeppelin", "Graf Zep"},
-            {"Graf Zeppelin改", "Graf Zep"},
-            {"Libeccio改", "Libeccio"},
-            {"阿武隈改二", "阿武隈改"},
-            {"瑞鶴改二甲", "瑞鶴改二"},
-            {"翔鶴改二甲", "翔鶴改二"},
-            {"朝潮改二丁", "朝潮改二"}
-        };
 
         public void CreateRepairList(Control parent, EventHandler onClick)
         {
@@ -310,12 +297,7 @@ namespace KancolleSniffer
                 var s = list[i];
                 var labels = _repairList[i];
                 labels[fleet].SetFleet(s);
-                labels[name].SetName(s, new Dictionary<string, string>
-                {
-                    {"Graf Zeppelin", "Graf Zeppeli"},
-                    {"Graf Zeppelin改", "Graf Zeppeli"},
-                    {"千代田航改二", "千代田航改"}
-                });
+                labels[name].SetName(s, ShipNameWidth.RepairList);
                 labels[time].SetRepairTime(s);
                 labels[damage].BackColor = ShipLabel.DamageColor(s, labels[damage].PresetColor);
             }
@@ -347,17 +329,8 @@ namespace KancolleSniffer
 
         public void SetNDockLabels(NameAndTimer[] ndock)
         {
-            var dict = new Dictionary<string, string>
-            {
-                {"Graf Zeppelin", "Graf Zeppeli"},
-                {"Graf Zeppelin改", "Graf Zeppeli"},
-                {"千代田航改二", "千代田航改"}
-            };
             for (var i = 0; i < _ndockLabels.Length; i++)
-            {
-                string name;
-                _ndockLabels[i][1].SetName(dict.TryGetValue(ndock[i].Name, out name) ? name : ndock[i].Name);
-            }
+                _ndockLabels[i][1].SetName("", ndock[i].Name, "", ShipNameWidth.NDock);
         }
 
         public void SetNDockTimer(int dock, RingTimer timer, bool finishTime)
@@ -383,20 +356,24 @@ namespace KancolleSniffer
             UseMnemonic = false;
         }
 
-        public void SetName(ShipStatus status, Dictionary<string, string> convDict = null)
+        public void SetName(ShipStatus status, ShipNameWidth width = ShipNameWidth.Max)
         {
-            string name;
-            if (convDict == null || !convDict.TryGetValue(status.Name, out name))
-                name = status.Name;
             var empty = status.Id != -1 && status.Slot.All(e => e.Id == -1) ? "▫" : "";
             var dc = status.PreparedDamageControl;
             var dcname = dc == 42 ? "[ダ]" : dc == 43 ? "[メ]" : "";
-            SetName((status.Escaped ? "[避]" : dcname) + name + empty);
+            SetName((status.Escaped ? "[避]" : dcname), status.Name, empty, width);
         }
 
         public void SetName(string name)
         {
-            var lu = name != null && new Regex(@"^(?:\[.\])?\p{Lu}").IsMatch(name);
+            SetName("", name, "");
+        }
+
+        public void SetName(string prefix, string name, string suffix, ShipNameWidth width = ShipNameWidth.Max)
+        {
+            if (name == null)
+                return;
+            var lu = new Regex(@"^\p{Lu}").IsMatch(name);
             var shift = (int)Round(ScaleFactor.Height);
             if (lu && Font.Equals(Parent.Font))
             {
@@ -408,7 +385,22 @@ namespace KancolleSniffer
                 Location += new Size(0, shift);
                 Font = Parent.Font;
             }
-            Text = name;
+            var result = prefix + name + suffix;
+            var measured = TextRenderer.MeasureText(result, Font).Width;
+            if (measured <= (int)width)
+            {
+                Text = result;
+                return;
+            }
+            var truncated = "";
+            foreach (var ch in name)
+            {
+                var tmp = truncated + ch;
+                if (TextRenderer.MeasureText(tmp, Font).Width > (int)width)
+                    break;
+                truncated = tmp;
+            }
+            Text = prefix + truncated.TrimEnd(' ') + suffix;
         }
 
         public void SetHp(ShipStatus status)
