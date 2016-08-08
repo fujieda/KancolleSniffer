@@ -42,7 +42,7 @@ namespace KancolleSniffer
         private bool _combinedFleet;
         private readonly Label[] _labelCheckFleets;
         private readonly ShipLabels _shipLabels;
-        private readonly ShipListForm _shipListForm;
+        private readonly ListForm _listForm;
         private readonly NoticeQueue _noticeQueue;
         private bool _started;
         private string _debugLogFile;
@@ -70,12 +70,12 @@ namespace KancolleSniffer
             SetupFleetClick();
             _shipLabels = new ShipLabels();
             _shipLabels.CreateAkashiTimers(panelShipInfo);
-            _shipLabels.CreateLabels(panelShipInfo, ShowShipOnShipList);
+            _shipLabels.CreateShipLabels(panelShipInfo, ShowShipOnShipList);
             _shipLabels.CreateCombinedShipLabels(panelCombinedFleet, ShowShipOnShipList);
-            _shipLabels.CreateDamagedShipList(panelDamagedShipList, panelDamagedShipList_Click);
+            _shipLabels.CreateRepairList(panelRepairList, panelRepairList_Click);
             _shipLabels.CreateNDockLabels(panelDock, labelNDock_Click);
             labelPresetAkashiTimer.BackColor = ShipLabels.ColumnColors[1];
-            _shipListForm = new ShipListForm(_sniffer, _config) {Owner = this};
+            _listForm = new ListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
             _config.Load();
             PerformZoom();
@@ -252,7 +252,7 @@ namespace KancolleSniffer
             if (_config.Zoom == 100)
                 return;
             var prev = CurrentAutoScaleDimensions;
-            foreach (var control in new Control[] {this, _shipListForm, labelLogin, labelGuide})
+            foreach (var control in new Control[] {this, _listForm, labelLogin, labelGuide})
                 control.Font = new Font(control.Font.FontFamily, control.Font.Size * _config.Zoom / 100);
             ShipLabel.LatinFont = new Font("Tahoma", 8f * _config.Zoom / 100);
             var cur = CurrentAutoScaleDimensions;
@@ -272,7 +272,7 @@ namespace KancolleSniffer
 
         private void ApplyConfig()
         {
-            _shipListForm.TopMost = TopMost = _config.TopMost;
+            _listForm.TopMost = TopMost = _config.TopMost;
             _sniffer.Item.MarginShips = _config.MarginShips;
             _sniffer.Item.MarginEquips = _config.MarginEquips;
             _sniffer.Achievement.ResetHours = _config.ResetHours;
@@ -439,13 +439,13 @@ namespace KancolleSniffer
 
         private void ShowShipOnShipList(object sender, EventArgs ev)
         {
-            if (!_shipListForm.Visible)
+            if (!_listForm.Visible)
                 return;
             var idx = (int)((Control)sender).Tag;
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             if (statuses.Length <= idx)
                 return;
-            _shipListForm.ShowShip(statuses[idx].Id);
+            _listForm.ShowShip(statuses[idx].Id);
         }
 
         private void UpdateItemInfo()
@@ -462,8 +462,8 @@ namespace KancolleSniffer
                 "今月 " + _sniffer.Achievement.ValueOfMonth.ToString("F1") + "\n" +
                 "EO " + _sniffer.ExMap.Achievement);
             UpdateMaterialHistry();
-            if (_shipListForm.Visible)
-                _shipListForm.UpdateList();
+            if (_listForm.Visible)
+                _listForm.UpdateList();
         }
 
         private void UpdateNumOfShips()
@@ -529,21 +529,21 @@ namespace KancolleSniffer
             UpdatePanelShipInfo();
             NotifyDamagedShip();
             UpdateChargeInfo();
-            UpdateDamagedShipList();
-            if (_shipListForm.Visible)
-                _shipListForm.UpdateList();
+            UpdateRepairList();
+            if (_listForm.Visible)
+                _listForm.UpdateList();
         }
 
         private void UpdatePanelShipInfo()
         {
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
-            _shipLabels.SetShipInfo(statuses);
+            _shipLabels.SetShipLabels(statuses);
             if (_sniffer.CombinedFleetType == 0)
                 _combinedFleet = false;
             labelFleet1.Text = _combinedFleet ? "連合" : "第一";
             panelCombinedFleet.Visible = _combinedFleet;
             if (_combinedFleet)
-                _shipLabels.SetCombinedShipInfo(_sniffer.GetShipStatuses(0), _sniffer.GetShipStatuses(1));
+                _shipLabels.SetCombinedShipLabels(_sniffer.GetShipStatuses(0), _sniffer.GetShipStatuses(1));
             UpdateAkashiTimer();
             UpdateFighterPower();
             UpdateLoS();
@@ -784,9 +784,9 @@ namespace KancolleSniffer
             }
         }
 
-        private void UpdateDamagedShipList()
+        private void UpdateRepairList()
         {
-            _shipLabels.SetDamagedShipList(_sniffer.DamagedShipList);
+            _shipLabels.SetRepairList(_sniffer.RepairList);
         }
 
         private void UpdateQuestList()
@@ -987,34 +987,34 @@ namespace KancolleSniffer
             UpdateItemInfo();
         }
 
-        private void labelDamgedShipListButton_Click(object sender, EventArgs e)
+        private void labelRepairListButton_Click(object sender, EventArgs e)
         {
-            if (panelDamagedShipList.Visible)
+            if (panelRepairList.Visible)
             {
-                panelDamagedShipList.Visible = false;
-                labelDamgedShipListButton.BackColor = DefaultBackColor;
+                panelRepairList.Visible = false;
+                labelRepairListButton.BackColor = DefaultBackColor;
             }
             else
             {
-                panelDamagedShipList.Visible = true;
-                panelDamagedShipList.BringToFront();
-                labelDamgedShipListButton.BackColor = SystemColors.ActiveCaption;
+                panelRepairList.Visible = true;
+                panelRepairList.BringToFront();
+                labelRepairListButton.BackColor = SystemColors.ActiveCaption;
             }
         }
 
-        private void panelDamagedShipList_Click(object sender, EventArgs e)
+        private void panelRepairList_Click(object sender, EventArgs e)
         {
-            panelDamagedShipList.Visible = false;
-            labelDamgedShipListButton.BackColor = DefaultBackColor;
+            panelRepairList.Visible = false;
+            labelRepairListButton.BackColor = DefaultBackColor;
         }
 
         private void ShipListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _shipListForm.UpdateList();
-            _shipListForm.Show();
-            if (_shipListForm.WindowState == FormWindowState.Minimized)
-                _shipListForm.WindowState = FormWindowState.Normal;
-            _shipListForm.Activate();
+            _listForm.UpdateList();
+            _listForm.Show();
+            if (_listForm.WindowState == FormWindowState.Minimized)
+                _listForm.WindowState = FormWindowState.Normal;
+            _listForm.Activate();
         }
 
         private void LogToolStripMenuItem_Click(object sender, EventArgs e)

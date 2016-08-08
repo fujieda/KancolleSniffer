@@ -19,7 +19,7 @@ using System.Windows.Forms;
 
 namespace KancolleSniffer
 {
-    public class EquipPanel : Panel
+    public class FleetPanel : Panel
     {
         private const int LineHeight = 14;
         private const int LabelHeight = 12;
@@ -179,7 +179,7 @@ namespace KancolleSniffer
             var lbp = new Panel
             {
                 Location = new Point(0, y),
-                Size = new Size(ShipListForm.PanelWidth, LineHeight),
+                Size = new Size(ListForm.PanelWidth, LineHeight),
                 BackColor = ShipLabels.ColumnColors[(i + 1) % 2],
                 Visible = false
             };

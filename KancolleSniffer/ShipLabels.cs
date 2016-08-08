@@ -27,12 +27,12 @@ namespace KancolleSniffer
         private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
         private readonly ShipLabel[][] _combinedLabels = new ShipLabel[ShipInfo.MemberCount * 2][];
         private readonly ShipLabel[] _akashiTimers = new ShipLabel[ShipInfo.MemberCount];
-        private readonly ShipLabel[][] _damagedShipList = new ShipLabel[16][];
-        private Control _panelDamagedShipList;
+        private readonly ShipLabel[][] _repairList = new ShipLabel[16][];
+        private Control _panelRepairList;
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         public static Color[] ColumnColors = {SystemColors.Control, Color.FromArgb(255, 250, 250, 250)};
 
-        public void CreateLabels(Control parent, EventHandler onClick)
+        public void CreateShipLabels(Control parent, EventHandler onClick)
         {
             parent.SuspendLayout();
             const int top = 3, height = 12, lh = 16;
@@ -88,7 +88,7 @@ namespace KancolleSniffer
             parent.ResumeLayout();
         }
 
-        public void SetShipInfo(ShipStatus[] statuses)
+        public void SetShipLabels(ShipStatus[] statuses)
         {
             for (var i = 0; i < _labels.Length; i++)
             {
@@ -157,7 +157,7 @@ namespace KancolleSniffer
             parent.ResumeLayout();
         }
 
-        public void SetCombinedShipInfo(ShipStatus[] first, ShipStatus[] second)
+        public void SetCombinedShipLabels(ShipStatus[] first, ShipStatus[] second)
         {
             for (var i = 0; i < _combinedLabels.Length; i++)
             {
@@ -263,14 +263,14 @@ namespace KancolleSniffer
             {"朝潮改二丁", "朝潮改二"}
         };
 
-        public void CreateDamagedShipList(Control parent, EventHandler onClick)
+        public void CreateRepairList(Control parent, EventHandler onClick)
         {
             parent.SuspendLayout();
-            for (var i = 0; i < _damagedShipList.Length; i++)
+            for (var i = 0; i < _repairList.Length; i++)
             {
                 var y = 3 + i * 16;
                 const int height = 12;
-                parent.Controls.AddRange(_damagedShipList[i] = new[]
+                parent.Controls.AddRange(_repairList[i] = new[]
                 {
                     new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
                     new ShipLabel {Location = new Point(119, y), Size = new Size(5, height - 1)},
@@ -278,26 +278,26 @@ namespace KancolleSniffer
                     new ShipLabel {Location = new Point(9, y), AutoSize = true},
                     new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, height + 3)}
                 });
-                foreach (var label in _damagedShipList[i])
+                foreach (var label in _repairList[i])
                 {
                     label.Scale();
                     label.PresetColor = label.BackColor = ColumnColors[(i + 1) % 2];
                     label.Click += onClick;
                 }
             }
-            _panelDamagedShipList = parent;
+            _panelRepairList = parent;
             parent.ResumeLayout();
         }
 
-        public void SetDamagedShipList(ShipStatus[] list)
+        public void SetRepairList(ShipStatus[] list)
         {
             const int fleet = 0, name = 3, time = 2, damage = 1;
-            var parent = _panelDamagedShipList;
-            var num = Min(list.Length, _damagedShipList.Length);
+            var parent = _panelRepairList;
+            var num = Min(list.Length, _repairList.Length);
             if (num == 0)
             {
                 parent.Size = new Size(parent.Width, (int)Round(ShipLabel.ScaleFactor.Height * 19));
-                var labels = _damagedShipList[0];
+                var labels = _repairList[0];
                 labels[fleet].Text = "";
                 labels[name].SetName("なし");
                 labels[time].Text = "";
@@ -308,7 +308,7 @@ namespace KancolleSniffer
             for (var i = 0; i < num; i++)
             {
                 var s = list[i];
-                var labels = _damagedShipList[i];
+                var labels = _repairList[i];
                 labels[fleet].SetFleet(s);
                 labels[name].SetName(s, new Dictionary<string, string>
                 {

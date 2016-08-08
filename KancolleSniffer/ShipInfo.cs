@@ -564,7 +564,7 @@ namespace KancolleSniffer
                 ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
                     slot.Spec.ContactTriggerRate * slot.Spec.LoS * Sqrt(onslot))).Sum();
 
-        public ShipStatus[] GetDamagedShipList(DockInfo dockInfo)
+        public ShipStatus[] GetRepairList(DockInfo dockInfo)
             => (from s in ShipList
                 where s.NowHp < s.MaxHp && !dockInfo.InNDock(s.Id)
                 select s).OrderByDescending(s => s.RepairTime).ToArray();

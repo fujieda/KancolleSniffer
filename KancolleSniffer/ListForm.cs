@@ -21,7 +21,7 @@ using static System.Math;
 
 namespace KancolleSniffer
 {
-    public partial class ShipListForm : Form
+    public partial class ListForm : Form
     {
         private readonly Sniffer _sniffer;
         private readonly Config _config;
@@ -47,7 +47,7 @@ namespace KancolleSniffer
             Repair
         }
 
-        public ShipListForm(Sniffer sniffer, Config config)
+        public ListForm(Sniffer sniffer, Config config)
         {
             InitializeComponent();
             _sniffer = sniffer;
@@ -110,7 +110,7 @@ namespace KancolleSniffer
 
         private void CreateShipList()
         {
-            var ships = InRepairList ? _sniffer.DamagedShipList : FilterByGroup(_sniffer.ShipList).ToArray();
+            var ships = InRepairList ? _sniffer.RepairList : FilterByGroup(_sniffer.ShipList).ToArray();
             var order = InRepairList ? SortOrder.Repair : _config.ShipList.SortOrder;
             if (!_config.ShipList.ShipType)
             {

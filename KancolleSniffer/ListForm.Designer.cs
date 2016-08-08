@@ -1,5 +1,5 @@
 ﻿// Copyright (C) 2014 Kazuhiro Fujieda <fujieda@users.osdn.me>
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -14,7 +14,7 @@
 
 namespace KancolleSniffer
 {
-    partial class ShipListForm
+    partial class ListForm
     {
         /// <summary>
         /// Required designer variable.
@@ -43,7 +43,7 @@ namespace KancolleSniffer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShipListForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ListForm));
             this.panelShipList = new System.Windows.Forms.Panel();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,7 +72,7 @@ namespace KancolleSniffer
             this.contextMenuStripShipList = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kantaiSarashiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.equipPanel = new KancolleSniffer.EquipPanel();
+            this.equipPanel = new KancolleSniffer.FleetPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
             this.contextMenuStrip.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
@@ -428,7 +428,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel panelItemHeader;
-        private EquipPanel equipPanel;
+        private FleetPanel equipPanel;
         private ItemTreeView itemTreeView;
         private System.Windows.Forms.RichTextBox richTextBoxMiscText;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;

@@ -45,7 +45,7 @@ namespace KancolleSniffer
         public Point Location { get; set; }
         public Size Size { get; set; }
         public bool ShipType { get; set; }
-        public ShipListForm.SortOrder SortOrder { get; set; } = ShipListForm.SortOrder.ExpToNext;
+        public ListForm.SortOrder SortOrder { get; set; } = ListForm.SortOrder.ExpToNext;
         public List<List<int>> ShipGroup { get; set; }
 
         public ShipListConfig()
@@ -153,7 +153,7 @@ namespace KancolleSniffer
         public void InitializeValues()
         {
             NotifyConditions = new List<int>(new[] {40, 49});
-            ResetHours = new List<int>(new int[] {2});
+            ResetHours = new List<int>(new[] {2});
         }
 
         public void Load()

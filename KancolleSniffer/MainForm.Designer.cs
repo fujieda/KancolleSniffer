@@ -148,8 +148,8 @@ namespace KancolleSniffer
             this.labelBucketHistory = new System.Windows.Forms.Label();
             this.label36 = new System.Windows.Forms.Label();
             this.labelMaterialHistoryButton = new System.Windows.Forms.Label();
-            this.panelDamagedShipList = new System.Windows.Forms.Panel();
-            this.labelDamgedShipListButton = new System.Windows.Forms.Label();
+            this.panelRepairList = new System.Windows.Forms.Panel();
+            this.labelRepairListButton = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.imageListFuelSq = new System.Windows.Forms.ImageList(this.components);
             this.labelFuelSq1 = new System.Windows.Forms.Label();
@@ -1134,25 +1134,25 @@ namespace KancolleSniffer
             this.labelMaterialHistoryButton.TabIndex = 10;
             this.labelMaterialHistoryButton.Click += new System.EventHandler(this.labelMaterialHistoryButton_Click);
             // 
-            // panelDamagedShipList
+            // panelRepairList
             // 
-            this.panelDamagedShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelDamagedShipList.Location = new System.Drawing.Point(6, 207);
-            this.panelDamagedShipList.Name = "panelDamagedShipList";
-            this.panelDamagedShipList.Size = new System.Drawing.Size(129, 19);
-            this.panelDamagedShipList.TabIndex = 44;
-            this.panelDamagedShipList.Visible = false;
-            this.panelDamagedShipList.Click += new System.EventHandler(this.panelDamagedShipList_Click);
+            this.panelRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelRepairList.Location = new System.Drawing.Point(6, 207);
+            this.panelRepairList.Name = "panelRepairList";
+            this.panelRepairList.Size = new System.Drawing.Size(129, 19);
+            this.panelRepairList.TabIndex = 44;
+            this.panelRepairList.Visible = false;
+            this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
             // 
-            // labelDamgedShipListButton
+            // labelRepairListButton
             // 
-            this.labelDamgedShipListButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelDamgedShipListButton.Image = ((System.Drawing.Image)(resources.GetObject("labelDamgedShipListButton.Image")));
-            this.labelDamgedShipListButton.Location = new System.Drawing.Point(121, 193);
-            this.labelDamgedShipListButton.Name = "labelDamgedShipListButton";
-            this.labelDamgedShipListButton.Size = new System.Drawing.Size(14, 14);
-            this.labelDamgedShipListButton.TabIndex = 45;
-            this.labelDamgedShipListButton.Click += new System.EventHandler(this.labelDamgedShipListButton_Click);
+            this.labelRepairListButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelRepairListButton.Image = ((System.Drawing.Image)(resources.GetObject("labelRepairListButton.Image")));
+            this.labelRepairListButton.Location = new System.Drawing.Point(121, 193);
+            this.labelRepairListButton.Name = "labelRepairListButton";
+            this.labelRepairListButton.Size = new System.Drawing.Size(14, 14);
+            this.labelRepairListButton.TabIndex = 45;
+            this.labelRepairListButton.Click += new System.EventHandler(this.labelRepairListButton_Click);
             // 
             // label31
             // 
@@ -1162,7 +1162,7 @@ namespace KancolleSniffer
             this.label31.Size = new System.Drawing.Size(41, 12);
             this.label31.TabIndex = 46;
             this.label31.Text = "要修復";
-            this.label31.Click += new System.EventHandler(this.labelDamgedShipListButton_Click);
+            this.label31.Click += new System.EventHandler(this.labelRepairListButton_Click);
             // 
             // imageListFuelSq
             // 
@@ -1301,8 +1301,8 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelFuelSq2);
             this.Controls.Add(this.labelBullSq1);
             this.Controls.Add(this.labelFuelSq1);
-            this.Controls.Add(this.labelDamgedShipListButton);
-            this.Controls.Add(this.panelDamagedShipList);
+            this.Controls.Add(this.labelRepairListButton);
+            this.Controls.Add(this.panelRepairList);
             this.Controls.Add(this.label31);
             this.Controls.Add(this.labelMaterialHistoryButton);
             this.Controls.Add(this.label36);
@@ -1434,8 +1434,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFuelHistory;
         private System.Windows.Forms.Label label36;
         private System.Windows.Forms.Label labelMaterialHistoryButton;
-        private System.Windows.Forms.Panel panelDamagedShipList;
-        private System.Windows.Forms.Label labelDamgedShipListButton;
+        private System.Windows.Forms.Panel panelRepairList;
+        private System.Windows.Forms.Label labelRepairListButton;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripNotifyIcon;
         private System.Windows.Forms.ToolStripMenuItem NotifyIconOpenToolStripMenuItem;
