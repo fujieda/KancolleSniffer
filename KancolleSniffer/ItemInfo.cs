@@ -479,7 +479,7 @@ namespace KancolleSniffer
                     Bomber = (int)entry.api_baku
                 };
             }
-            _itemSpecs[-1] = new ItemSpec();
+            _itemSpecs[-1] = _itemSpecs[0] = new ItemSpec();
             foreach (var entry in json.api_mst_useitem)
                 _useItemName[(int)entry.api_id] = entry.api_name;
         }

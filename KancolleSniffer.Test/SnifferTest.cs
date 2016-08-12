@@ -375,6 +375,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 敵の空スロットの値が-1ではなく0のときにエラーにならない
+        /// </summary>
+        [TestMethod]
+        public void ZeroValueEmptySlot()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "battle_006");
+            PAssert.That(() => sniffer.Battle.EnemyFighterPower == "0");
+        }
+
+        /// <summary>
         /// 熟練度込みの制空値を正しく計算する
         /// </summary>
         [TestMethod]
