@@ -31,6 +31,7 @@ namespace KancolleSniffer
         public int AntiSubmarine;
         public int Torpedo;
         public int Bomber;
+        public int Interception;
 
         public ItemSpec()
         {
@@ -92,6 +93,8 @@ namespace KancolleSniffer
                     case 26: // 対潜哨戒機
                     case 41: // 大艇
                     case 45:
+                    case 47: // 陸上攻撃機
+                    case 48: // 局地戦闘機
                         return true;
                 }
                 return false;
@@ -234,7 +237,9 @@ namespace KancolleSniffer
                     case 35: // 補給物資
                         return Color.FromArgb(90, 200, 155);
                     case 37: // 陸上攻撃機
-                        return Color.FromArgb(33, 194, 89);
+                        return Color.FromArgb(57, 182, 78);
+                    case 38: // 局地戦闘機
+                        return Color.FromArgb(57, 182, 78);
                     default:
                         return SystemColors.Control;
                 }
@@ -278,7 +283,8 @@ namespace KancolleSniffer
             {07, new[] {0, 0, 0, 0, 0, 0, 0, 0}}, // 艦爆
             {08, new[] {0, 0, 0, 0, 0, 0, 0, 0}}, // 艦攻
             {11, new[] {0, 0, 1, 1, 1, 3, 3, 6}}, // 水爆
-            {45, new[] {0, 0, 2, 5, 9, 14, 14, 22}} // 水戦
+            {45, new[] {0, 0, 2, 5, 9, 14, 14, 22}}, // 水戦
+            {48, new[] {0, 0, 2, 5, 9, 14, 14, 22}} // 局地戦闘機
         };
 
         public double[] AlvBonus
@@ -465,18 +471,20 @@ namespace KancolleSniffer
                 dict[(int)entry.api_id] = entry.api_name;
             foreach (var entry in json.api_mst_slotitem)
             {
+                var type = (int)entry.api_type[2];
                 _itemSpecs[(int)entry.api_id] = new ItemSpec
                 {
                     Id = (int)entry.api_id,
                     Name = (string)entry.api_name,
-                    Type = (int)entry.api_type[2],
+                    Type = type,
                     TypeName = dict[(int)entry.api_type[2]],
                     IconType = (int)entry.api_type[3],
                     AntiAir = (int)entry.api_tyku,
                     LoS = (int)entry.api_saku,
                     AntiSubmarine = (int)entry.api_tais,
                     Torpedo = (int)entry.api_raig,
-                    Bomber = (int)entry.api_baku
+                    Bomber = (int)entry.api_baku,
+                    Interception = type == 48 ? (int)entry.api_houk : 0 // 局地戦闘機は回避の値が迎撃
                 };
             }
             _itemSpecs[-1] = _itemSpecs[0] = new ItemSpec();

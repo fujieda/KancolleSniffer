@@ -410,6 +410,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 基地航空隊の制空値を正しく計算する
+        /// </summary>
+        [TestMethod]
+        public void FighterPowerOfBaseAirCorps()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "fighterpower_004");
+            PAssert.That(() => sniffer.BaseAirCorps[0].FighterPower[1] == 301);
+        }
+
+        /// <summary>
         /// マップ索敵の判定式(33)を正しく計算する
         /// </summary>
         [TestMethod]

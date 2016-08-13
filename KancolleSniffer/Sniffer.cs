@@ -34,6 +34,7 @@ namespace KancolleSniffer
         private readonly Logger _logger;
         private readonly ExMapInfo _exMapInfo = new ExMapInfo();
         private readonly MiscTextInfo _miscTextInfo = new MiscTextInfo();
+        private readonly BaseAirCoprs _baseAirCoprs;
         private readonly Status _status = new Status();
         private bool _saveState;
         private readonly List<IHaveState> _haveState;
@@ -62,6 +63,7 @@ namespace KancolleSniffer
             _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo);
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
+            _baseAirCoprs = new BaseAirCoprs(_itemInfo);
             _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo};
         }
 
@@ -230,6 +232,11 @@ namespace KancolleSniffer
             {
                 _shipInfo.InspectPresetDeck(data);
                 return Update.None;
+            }
+            if (url.EndsWith("api_get_member/base_air_corps"))
+            {
+                _baseAirCoprs.Inspect(data);
+                return Update.Ship;
             }
             return Update.None;
         }
@@ -461,7 +468,13 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_air_corps/set_plane"))
             {
                 _materialInfo.InspectAirCorpsSetPlane(data);
-                return Update.Item;
+                _baseAirCoprs.InspectSetPlane(request, data);
+                return Update.Item | Update.Ship;
+            }
+            if (url.EndsWith("api_req_air_corps/set_action"))
+            {
+                _baseAirCoprs.InspectSetAction(request);
+                return Update.Ship;
             }
             return Update.None;
         }
@@ -513,6 +526,8 @@ namespace KancolleSniffer
         public ExMapInfo ExMap => _exMapInfo;
 
         public string MiscText => _miscTextInfo.Text;
+
+        public BaseAirCoprs.AirCorpsInfo[] BaseAirCorps => _baseAirCoprs.AirCorps;
 
         public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)
         {

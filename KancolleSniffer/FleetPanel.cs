@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
@@ -141,6 +142,29 @@ namespace KancolleSniffer
                 list.AddRange(ships);
             }
             list[0].Fleet2 = $"TP: S{(int)tp} A{(int)(tp * 0.7)}";
+            if (sniffer.BaseAirCorps != null)
+            {
+                var name = new[] {"第一", "第二", "第三"};
+                list.Add(new EquipColumn {Fleet = "基地航空隊"});
+                var i = 0;
+                foreach (var corps in sniffer.BaseAirCorps)
+                {
+                    if (i >= name.Length)
+                        break;
+                    var fp = corps.FighterPower;
+                    list.Add(new EquipColumn
+                    {
+                        Ship = name[i++] + " " + corps.ActionName,
+                        Spec = "制空" + (fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1]) + " 距離" + corps.Distance
+                    });
+                    list.AddRange(corps.Planes.Select(plane => new EquipColumn
+                    {
+                        Equip =
+                            plane.State != 1 ? plane.StateName : GenEquipString(plane.Slot, plane.Count, plane.MaxCount),
+                        Color = plane.Slot.Spec.Color
+                    }));
+                }
+            }
             _equipList = list.ToArray();
         }
 
