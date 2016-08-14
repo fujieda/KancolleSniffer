@@ -253,7 +253,7 @@ namespace KancolleSniffer
         public ItemSpec Spec { get; set; } = new ItemSpec();
         public int Level { get; set; }
         public int Alv { get; set; }
-        public ShipStatus Ship { get; set; }
+        public ShipStatus Holder { get; set; }
 
         public ItemStatus()
         {
@@ -568,18 +568,13 @@ namespace KancolleSniffer
             return _itemInfo.TryGetValue(id, out item) ? item : new ItemStatus(id);
         }
 
-        public ItemStatus[] GetItemListWithOwner(ShipStatus[] shipList)
+        public void ClearHolder()
         {
-            foreach (var e in _itemInfo)
-                e.Value.Ship = new ShipStatus();
-            foreach (var s in shipList)
-            {
-                foreach (var item in s.Slot)
-                    item.Ship = s;
-                s.SlotEx.Ship = s;
-            }
-            return (from e in _itemInfo where e.Key != -1 select e.Value).ToArray();
+            foreach (var item in _itemInfo.Values)
+                item.Holder = new ShipStatus();
         }
+
+        public ItemStatus[] ItemList => (from e in _itemInfo where e.Key != -1 select e.Value).ToArray();
 
         public string GetUseItemName(int id) => _useItemName[id];
     }

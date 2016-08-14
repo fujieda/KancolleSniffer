@@ -42,9 +42,9 @@ namespace KancolleSniffer
                 into grp
                 from byShip in
                     (from item in grp
-                        let ship = item.Ship
+                        let ship = item.Holder
                         orderby ship.Level descending, ship.Spec.SortNo
-                        group item by item.Ship.Id)
+                        group item by item.Holder.Id)
                 group byShip by grp.Key)
                 group byItem by byItem.First().First().Spec.Type;
 
@@ -65,7 +65,7 @@ namespace KancolleSniffer
                     typeNode.Nodes.Add(itemNode);
                     foreach (var byShip in byItem)
                     {
-                        var ship = byShip.First().Ship;
+                        var ship = byShip.First().Holder;
                         var name = byShip.Key == -1
                             ? "未装備x" + byShip.Count()
                             : (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") +
@@ -83,16 +83,16 @@ namespace KancolleSniffer
             {
                 Level = org.Level,
                 Spec = org.Spec,
-                Ship = new ShipStatus {Id = org.Ship.Id, Fleet = org.Ship.Fleet}
+                Holder = new ShipStatus {Id = org.Holder.Id, Fleet = org.Holder.Fleet}
             };
         }
 
         private class ItemStatusComparer : IEqualityComparer<ItemStatus>
         {
             public bool Equals(ItemStatus x, ItemStatus y)
-                => x.Level == y.Level && x.Spec == y.Spec && x.Ship.Id == y.Ship.Id && x.Ship.Fleet == y.Ship.Fleet;
+                => x.Level == y.Level && x.Spec == y.Spec && x.Holder.Id == y.Holder.Id && x.Holder.Fleet == y.Holder.Fleet;
 
-            public int GetHashCode(ItemStatus obj) => obj.Level + obj.Spec.GetHashCode() + obj.Ship.GetHashCode();
+            public int GetHashCode(ItemStatus obj) => obj.Level + obj.Spec.GetHashCode() + obj.Holder.GetHashCode();
         }
 
         [DllImport("user32.dll")]

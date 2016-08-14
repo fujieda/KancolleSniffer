@@ -633,7 +633,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "dropship_001");
-            PAssert.That(() => sniffer.ItemList[0].Ship.Id == 250);
+            PAssert.That(() => sniffer.ItemList[0].Holder.Id == 250);
         }
 
         /// <summary>

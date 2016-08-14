@@ -515,7 +515,15 @@ namespace KancolleSniffer
 
         public string[] BadlyDamagedShips => _shipInfo.BadlyDamagedShips;
 
-        public ItemStatus[] ItemList => _itemInfo.GetItemListWithOwner(ShipList);
+        public ItemStatus[] ItemList
+        {
+            get
+            {
+                _itemInfo.ClearHolder();
+                _shipInfo.SetItemHolder();
+                return _itemInfo.ItemList;
+            }
+        }
 
         public AkashiTimer AkashiTimer => _akashiTimer;
 
