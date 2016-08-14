@@ -69,7 +69,7 @@ namespace KancolleSniffer
                         var name = byShip.Key == -1
                             ? "未装備x" + byShip.Count()
                             : (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") +
-                              ship.Name + "Lv" + ship.Level + "×" + byShip.Count();
+                              ship.Name + (ship.Level > 0 ? "Lv" + ship.Level : "") + "×" + byShip.Count();
                         itemNode.Nodes.Add(name, name);
                     }
                 }
@@ -90,7 +90,8 @@ namespace KancolleSniffer
         private class ItemStatusComparer : IEqualityComparer<ItemStatus>
         {
             public bool Equals(ItemStatus x, ItemStatus y)
-                => x.Level == y.Level && x.Spec == y.Spec && x.Holder.Id == y.Holder.Id && x.Holder.Fleet == y.Holder.Fleet;
+                => x.Level == y.Level && x.Spec == y.Spec && x.Holder.Id == y.Holder.Id &&
+                   x.Holder.Fleet == y.Holder.Fleet;
 
             public int GetHashCode(ItemStatus obj) => obj.Level + obj.Spec.GetHashCode() + obj.Holder.GetHashCode();
         }

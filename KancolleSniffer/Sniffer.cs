@@ -136,6 +136,8 @@ namespace KancolleSniffer
             _achievement.InspectBasic(data.api_basic);
             if (data.api_parallel_quest_count()) // 昔のログにはないので
                 _questInfo.QuestCount = (int)data.api_parallel_quest_count;
+            if (data.api_event_object())
+                _baseAirCoprs.InspectEventObject(data.api_event_object);
             _battleInfo.CleanupResult();
             _battleInfo.InBattle = false;
             _shipInfo.ClearEscapedShips();
@@ -521,6 +523,7 @@ namespace KancolleSniffer
             {
                 _itemInfo.ClearHolder();
                 _shipInfo.SetItemHolder();
+                _baseAirCoprs.SetItemHolder();
                 return _itemInfo.ItemList;
             }
         }

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.Linq;
 using static System.Math;
 
@@ -20,6 +21,7 @@ namespace KancolleSniffer
     public class BaseAirCoprs
     {
         private readonly ItemInfo _itemInfo;
+        private List<int> _relocationgPlanes;
 
         public BaseAirCoprs(ItemInfo item)
         {
@@ -124,7 +126,11 @@ namespace KancolleSniffer
             var planeInfo = json.api_plane_info[0];
             var airCorps = AirCorps[int.Parse(values["api_base_id"]) - 1];
             airCorps.Distance = (int)json.api_distance;
-            airCorps.Planes[(int)planeInfo.api_squadron_id - 1] = new PlaneInfo
+            var planeId = (int)planeInfo.api_squadron_id - 1;
+            var prev = airCorps.Planes[planeId];
+            if (prev.Slot.Id != -1)
+                _relocationgPlanes.Add(prev.Slot.Id);
+            airCorps.Planes[planeId] = new PlaneInfo
             {
                 Slot = _itemInfo.GetStatus((int)planeInfo.api_slotid),
                 State = (int)planeInfo.api_state,
@@ -144,6 +150,36 @@ namespace KancolleSniffer
             {
                 AirCorps[int.Parse(entry.baseId) - 1].Action = int.Parse(entry.action);
             }
+        }
+
+        public void InspectEventObject(dynamic json)
+        {
+            _relocationgPlanes = json.api_base_convert_slot()
+                ? new List<int>((int[])json.api_base_convert_slot)
+                : new List<int>();
+        }
+
+        public void SetItemHolder()
+        {
+            if (AirCorps == null)
+                return;
+            var name = new[] {"第一", "第二", "第三"};
+            var i = 0;
+            foreach (var airCorps in AirCorps)
+            {
+                if (i >= name.Length)
+                    break;
+                var ship = new ShipStatus {Id = 1000 + i, Spec = new ShipSpec {Name = name[i++] + "基地航空隊"}};
+                foreach (var plane in airCorps.Planes)
+                {
+                    if (plane.State != 1)
+                        continue;
+                    _itemInfo.GetStatus(plane.Slot.Id).Holder = ship;
+                }
+            }
+            var relocating = new ShipStatus {Id = 1500, Spec = new ShipSpec {Name = "配置転換中"}};
+            foreach (var id in _relocationgPlanes)
+                _itemInfo.GetStatus(id).Holder = relocating;
         }
     }
 }

@@ -52,6 +52,7 @@ namespace KancolleSniffer
         public ShipStatus()
         {
             Id = -1;
+            Fleet = -1;
             Spec = new ShipSpec();
             OnSlot = new int[0];
             Slot = new ItemStatus[0];
