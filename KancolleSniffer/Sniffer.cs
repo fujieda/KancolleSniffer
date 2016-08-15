@@ -465,6 +465,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_air_corps/supply"))
             {
                 _materialInfo.InspectAirCorpsSupply(data);
+                _baseAirCoprs.InspectSupply(request, data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_air_corps/set_plane"))

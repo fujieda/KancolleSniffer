@@ -123,20 +123,28 @@ namespace KancolleSniffer
             if (AirCorps == null)
                 return;
             var values = HttpUtility.ParseQueryString(request);
-            var planeInfo = json.api_plane_info[0];
             var airCorps = AirCorps[int.Parse(values["api_base_id"]) - 1];
-            airCorps.Distance = (int)json.api_distance;
-            var planeId = (int)planeInfo.api_squadron_id - 1;
-            var prev = airCorps.Planes[planeId];
-            if (prev.Slot.Id != -1)
-                _relocationgPlanes.Add(prev.Slot.Id);
-            airCorps.Planes[planeId] = new PlaneInfo
+            if (json.api_distance()) // 2016春イベにはない
+                airCorps.Distance = (int)json.api_distance;
+            foreach (var planeInfo in json.api_plane_info)
             {
-                Slot = _itemInfo.GetStatus((int)planeInfo.api_slotid),
-                State = (int)planeInfo.api_state,
-                Count = planeInfo.api_count() ? (int)planeInfo.api_count : 0,
-                MaxCount = planeInfo.api_max_count() ? (int)planeInfo.api_max_count : 0,
-            };
+                var planeId = (int)planeInfo.api_squadron_id - 1;
+                var prev = airCorps.Planes[planeId];
+                if (prev.Slot.Id != -1)
+                    _relocationgPlanes.Add(prev.Slot.Id);
+                airCorps.Planes[planeId] = new PlaneInfo
+                {
+                    Slot = _itemInfo.GetStatus((int)planeInfo.api_slotid),
+                    State = (int)planeInfo.api_state,
+                    Count = planeInfo.api_count() ? (int)planeInfo.api_count : 0,
+                    MaxCount = planeInfo.api_max_count() ? (int)planeInfo.api_max_count : 0,
+                };
+            }
+        }
+
+        public void InspectSupply(string request, dynamic json)
+        {
+            InspectSetPlane(request, json);
         }
 
         public void InspectSetAction(string request)
