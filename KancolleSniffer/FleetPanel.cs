@@ -111,7 +111,7 @@ namespace KancolleSniffer
                         drumShips++;
                     drumTotal += drum;
                     levelTotal += s.Level;
-                    if (f < 2)
+                    if (f < (sniffer.CombinedFleetType == 3 ? 2 : 1))
                         tp += s.TransportPoint;
                     var fire = s.RealFirepower;
                     var subm = s.RealAntiSubmarine;
