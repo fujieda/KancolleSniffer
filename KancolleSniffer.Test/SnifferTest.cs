@@ -469,6 +469,20 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// TPを正しく計算する
+        /// </summary>
+        [TestMethod]
+        public void TransportPoint()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "transportpoint_001");
+            ItemSpec.IncreaceLandPowerTp = false;
+            PAssert.That(() => (int)sniffer.GetShipStatuses(0).Sum(s => s.TransportPoint) == 27);
+            ItemSpec.IncreaceLandPowerTp = true;
+            PAssert.That(() => (int)sniffer.GetShipStatuses(0).Sum(s => s.TransportPoint) == 37, "陸上戦力揚陸時");
+        }
+
+        /// <summary>
         /// 2-5をクリアしたときの特別戦果を反映する
         /// </summary>
         [TestMethod]

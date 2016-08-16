@@ -21,6 +21,7 @@ namespace KancolleSniffer
 {
     public class ItemSpec
     {
+        public static bool IncreaceLandPowerTp = true;
         public int Id;
         public string Name;
         public int Type;
@@ -152,9 +153,9 @@ namespace KancolleSniffer
                     case 68: // 大発動艇
                         return 8.0;
                     case 166: // 大発動艇(八九式中戦車&陸戦隊)
-                        return 8.0;
+                        return IncreaceLandPowerTp ? 13.0 : 8.0;
                     case 167: // 特二式内火艇
-                        return 2.0;
+                        return IncreaceLandPowerTp ? 7.0 : 2.0;
                     case 145: // 戦闘糧食
                         return 1.0;
                     case 150: // 秋刀魚の缶詰
