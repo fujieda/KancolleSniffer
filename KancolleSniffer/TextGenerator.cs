@@ -75,6 +75,20 @@ namespace KancolleSniffer
                 sb.Append($"制空: {(fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1])} " +
                           $"索敵: {sniffer.GetFleetLineOfSights(f):F1}\r\n");
             }
+            if (sniffer.BaseAirCorps != null)
+            {
+                sb.Append("基地航空隊\r\n");
+                var i = 0;
+                var name = new[] {"第一 ", "第二 ", "第三 "};
+                foreach (var airCorps in sniffer.BaseAirCorps)
+                {
+                    sb.Append(name[i++]);
+                    sb.Append(
+                        string.Join(",",
+                            from plane in airCorps.Planes
+                            select plane.State == 1 ? dict[plane.Slot.Spec.Name] : plane.StateName) + "\r\n");
+                }
+            }
             return sb.ToString();
         }
 
