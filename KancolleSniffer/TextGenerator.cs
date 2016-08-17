@@ -63,22 +63,14 @@ namespace KancolleSniffer
             for (var f = 0; f < fn.Length; f++)
             {
                 sb.Append(fn[f] + "\r\n");
-                foreach (var s in sniffer.GetShipStatuses(f))
-                {
-                    sb.Append($"{s.Name} Lv{s.Level}");
-                    foreach (var item in s.Slot.Where(item => item.Id != -1))
-                    {
-                        sb.Append(" " + dict[item.Spec.Name] +
-                                  (item.Alv == 0 ? "" : "+" + item.Alv) +
-                                  (item.Level == 0 ? "" : "★" + item.Level));
-                    }
-                    if (s.SlotEx.Id > 0)
-                    {
-                        var item = s.SlotEx;
-                        sb.Append(" " + dict[item.Spec.Name]);
-                    }
-                    sb.Append("\r\n");
-                }
+                sb.Append(string.Concat(from s in sniffer.GetShipStatuses(f)
+                    select ($"{s.Name} Lv{s.Level} " +
+                           string.Join(",",
+                               from item in s.Slot.Concat(new[] {s.SlotEx})
+                               where item.Id != -1
+                               select dict[item.Spec.Name] +
+                                      (item.Alv == 0 ? "" : "+" + item.Alv) +
+                                      (item.Level == 0 ? "" : "★" + item.Level))).TrimEnd(' ') + "\r\n"));
                 var fp = sniffer.GetFighterPower(f);
                 sb.Append($"制空: {(fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1])} " +
                           $"索敵: {sniffer.GetFleetLineOfSights(f):F1}\r\n");
