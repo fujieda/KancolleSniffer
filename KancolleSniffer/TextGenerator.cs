@@ -65,12 +65,10 @@ namespace KancolleSniffer
                 sb.Append(fn[f] + "\r\n");
                 sb.Append(string.Concat(from s in sniffer.GetShipStatuses(f)
                     select ($"{s.Name} Lv{s.Level} " +
-                           string.Join(",",
-                               from item in s.Slot.Concat(new[] {s.SlotEx})
-                               where item.Id != -1
-                               select dict[item.Spec.Name] +
-                                      (item.Alv == 0 ? "" : "+" + item.Alv) +
-                                      (item.Level == 0 ? "" : "★" + item.Level))).TrimEnd(' ') + "\r\n"));
+                            string.Join(",",
+                                from item in s.Slot.Concat(new[] {s.SlotEx})
+                                where item.Id != -1
+                                select dict[item.Spec.Name] + ItemStatusString(item))).TrimEnd(' ') + "\r\n"));
                 var fp = sniffer.GetFighterPower(f);
                 sb.Append($"制空: {(fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1])} " +
                           $"索敵: {sniffer.GetFleetLineOfSights(f):F1}\r\n");
@@ -86,11 +84,16 @@ namespace KancolleSniffer
                     sb.Append(
                         string.Join(",",
                             from plane in airCorps.Planes
-                            select plane.State == 1 ? dict[plane.Slot.Spec.Name] : plane.StateName) + "\r\n");
+                            select plane.State == 1
+                                ? dict[plane.Slot.Spec.Name] + ItemStatusString(plane.Slot)
+                                : plane.StateName) + "\r\n");
                 }
             }
             return sb.ToString();
         }
+
+        private static string ItemStatusString(ItemStatus item)
+            => (item.Alv == 0 ? "" : "+" + item.Alv) + (item.Level == 0 ? "" : "★" + item.Level);
 
         private class ItemName
         {
