@@ -495,12 +495,8 @@ namespace KancolleSniffer
         private void UpdateBucketHistory()
         {
             var count = _sniffer.Material.MaterialHistory[(int)Material.Bucket];
-            var day = count.Now - count.BegOfDay;
-            var week = count.Now - count.BegOfWeek;
-            if (day >= 1000)
-                day = 999;
-            if (week >= 1000)
-                week = 999;
+            var day = CutOverflow(count.Now - count.BegOfDay, 999);
+            var week = CutOverflow(count.Now - count.BegOfWeek, 999);
             labelBucketHistory.Text = $"{day:+#;-#;±0} 今日\n{week:+#;-#;±0} 今週";
         }
 
@@ -511,17 +507,20 @@ namespace KancolleSniffer
             for (var i = 0; i < labels.Length; i++)
             {
                 var count = _sniffer.Material.MaterialHistory[i];
-                var port = count.Now - _sniffer.Material.PrevPort[i];
-                if (port >= 100000)
-                    port = 99999;
-                var day = count.Now - count.BegOfDay;
-                if (day >= 100000)
-                    day = 99999;
-                var week = count.Now - count.BegOfWeek;
-                if (week >= 100000)
-                    week = 99999;
+                var port = CutOverflow(count.Now - _sniffer.Material.PrevPort[i], 99999);
+                var day = CutOverflow(count.Now - count.BegOfDay, 99999);
+                var week = CutOverflow(count.Now - count.BegOfWeek, 99999);
                 labels[i].Text = $"{text[i]}\n{port:+#;-#;±0}\n{day:+#;-#;±0}\n{week:+#;-#;±0}";
             }
+        }
+
+        private int CutOverflow(int value, int limit)
+        {
+            if (value > limit)
+                return limit;
+            if (value < -limit)
+                return -limit;
+            return value;
         }
 
         private void UpdateShipInfo()
