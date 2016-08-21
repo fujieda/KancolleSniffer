@@ -191,6 +191,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 護衛退避した艦娘を除いて勝利判定を計算する
+        /// </summary>
+        [TestMethod]
+        public void BattleResultRankWithEscapedShip()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_escape_005");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.D);
+        }
+
+
+        /// <summary>
         /// 夜戦の開始時に昼戦の結果を反映する
         /// </summary>
         [TestMethod]

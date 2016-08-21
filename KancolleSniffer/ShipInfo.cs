@@ -201,7 +201,9 @@ namespace KancolleSniffer
 
         public object Clone()
         {
-            return MemberwiseClone();
+            var r = (ShipStatus)MemberwiseClone();
+            r.Slot = r.Slot.ToArray(); // 戦闘中のダメコンの消費が見えないように複製する
+            return r;
         }
     }
 

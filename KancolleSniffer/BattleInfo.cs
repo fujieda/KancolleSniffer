@@ -114,10 +114,7 @@ namespace KancolleSniffer
             _fleet = combined ? 0 : DeckId(json);
             var fstats = _shipInfo.GetShipStatuses(_fleet);
             FlagshipRecovery(fstats[0]);
-            _friend = Record.Setup(
-                nowhps, (int[])json.api_maxhps,
-                fstats.Select(s => s.Slot).ToArray(),
-                fstats.Select(s => s.SlotEx).ToArray());
+            _friend = Record.Setup(fstats);
             _enemyHp = nowhps.Skip(7).TakeWhile(hp => hp != -1).ToArray();
             _enemyStartHp = (int[])_enemyHp.Clone();
             EnemyResultStatus =
@@ -127,11 +124,7 @@ namespace KancolleSniffer
             if (combined)
             {
                 var gstats = _shipInfo.GetShipStatuses(1);
-                _guard = Record.Setup(
-                    (int[])json.api_nowhps_combined,
-                    (int[])json.api_maxhps_combined,
-                    gstats.Select(s => s.Slot).ToArray(),
-                    gstats.Select(s => s.SlotEx).ToArray());
+                _guard = Record.Setup(gstats);
             }
             else
             {
@@ -417,30 +410,11 @@ namespace KancolleSniffer
         {
             private ShipStatus _status;
             public int NowHp => _status.NowHp;
+            public bool Escaped => _status.Escaped;
             public int StartHp;
 
-            public static Record[] Setup(int[] rawHp, int[] rawMax, ItemStatus[][] slots, ItemStatus[] slotEx)
-            {
-                var hp = rawHp.Skip(1).Take(6).TakeWhile(h => h != -1).ToArray();
-                var max = rawMax.Skip(1).Take(6).TakeWhile(h => h != -1).ToArray();
-                var r = new Record[hp.Length];
-                for (var i = 0; i < hp.Length; i++)
-                {
-                    var s = new ShipStatus
-                    {
-                        NowHp = hp[i],
-                        MaxHp = max[i],
-                        SlotEx = slotEx[i],
-                        Slot = slots[i].ToArray()
-                    };
-                    r[i] = new Record
-                    {
-                        _status = s,
-                        StartHp = hp[i],
-                    };
-                }
-                return r;
-            }
+            public static Record[] Setup(ShipStatus[] ships) =>
+                    (from s in ships select new Record {_status = (ShipStatus)s.Clone(), StartHp = s.NowHp}).ToArray();
 
             public void ApplyDamage(int damage)
             {
@@ -538,7 +512,7 @@ namespace KancolleSniffer
             var friendSunk = combined.Count(r => r.NowHp == 0);
             var enemySunk = _enemyHp.Count(hp => hp == 0);
 
-            var friendGaugeRate = Floor((double)friendGauge / combined.Sum(r => r.StartHp) * 100);
+            var friendGaugeRate = Floor((double)friendGauge / combined.Where(r => !r.Escaped).Sum(r => r.StartHp) * 100);
             var enemyGaugeRate = Floor((double)enemyGauge / _enemyStartHp.Sum() * 100);
             var equalOrMore = enemyGaugeRate > (0.9 * friendGaugeRate);
             var superior = enemyGaugeRate > 0 && enemyGaugeRate > (2.5 * friendGaugeRate);
