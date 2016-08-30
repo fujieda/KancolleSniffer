@@ -63,8 +63,10 @@ namespace KancolleSniffer
                 if (plane.State != 1)
                     return prev;
                 var slot = plane.Slot;
-                var unskilled = (slot.Spec.AntiAir + slot.Spec.Interception * 1.5 + slot.FighterPowerLevelBonus) *
-                                Sqrt(plane.Count);
+                var intercepterBonus = Action == 2
+                    ? slot.Spec.AntiBomber * 2 + slot.Spec.Interception
+                    : slot.Spec.Interception * 1.5;
+                var unskilled = (slot.Spec.AntiAir + intercepterBonus + slot.FighterPowerLevelBonus) * Sqrt(plane.Count);
                 return new[]
                 {
                     prev[0] + (int)(unskilled + slot.AlvBonus[0]),

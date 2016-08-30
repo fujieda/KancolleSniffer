@@ -430,6 +430,8 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "fighterpower_004");
             PAssert.That(() => sniffer.BaseAirCorps[0].FighterPower[1] == 301);
+            sniffer.BaseAirCorps[0].Action = 2; // 防空
+            PAssert.That(()=>sniffer.BaseAirCorps[0].FighterPower[1] == 320);
         }
 
         /// <summary>
