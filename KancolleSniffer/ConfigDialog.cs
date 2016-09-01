@@ -129,6 +129,11 @@ namespace KancolleSniffer
             int listen, outbound, server;
             if (!ValidatePorts(out listen, out outbound, out server))
                 return;
+            if (radioButtonAutoConfigOn.Checked && radioButtonServerOff.Checked)
+            {
+                ShowToolTip("自動設定には閲覧サーバーが必要です。", radioButtonServerOff);
+                return;
+            }
             DialogResult = DialogResult.OK;
             if (!ApplyProxySettings(listen, outbound))
                 DialogResult = DialogResult.None;

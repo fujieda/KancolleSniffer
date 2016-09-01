@@ -305,9 +305,7 @@ namespace KancolleSniffer
             }
             if (_config.Proxy.Auto && result)
             {
-                _systemProxy.SetAutoProxyUrl(HttpProxy.LocalPort == 8080
-                    ? ProxyConfig.AutoConfigUrl
-                    : ProxyConfig.AutoConfigUrlWithPort + HttpProxy.LocalPort);
+                _systemProxy.SetAutoProxyUrl($"http://localhost:{_config.Log.Listen}/proxy.pac?port={_config.Proxy.Listen}");
             }
             _prevProxyPort = _config.Proxy.Listen;
             return result;
@@ -349,6 +347,8 @@ namespace KancolleSniffer
         public bool ApplyLogSetting()
         {
             var result = true;
+            if (_config.Proxy.Auto)
+                _config.Log.ServerOn = true;
             if (_config.Log.ServerOn)
             {
                 result = StartLogServer();

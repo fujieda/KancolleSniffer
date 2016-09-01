@@ -74,12 +74,13 @@ namespace KancolleSniffer
             }
         }
 
-        private void Process(Object obj)
+        private void Process(object obj)
         {
             var client = (Socket)obj;
             var data = new byte[4096];
             var from = DateTime.MinValue;
             var to = DateTime.MaxValue;
+            var port = 8080;
             try
             {
                 if (client.Receive(data) == 0)
@@ -117,6 +118,10 @@ namespace KancolleSniffer
                         double.TryParse(query["to"], out tick);
                         to = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(tick / 1000);
                     }
+                    if (query["port"] != null)
+                    {
+                        port = int.Parse(query["port"]);
+                    }
                 }
 
                 path = path == "/" ? "index.html" : path.Substring(1);
@@ -140,6 +145,11 @@ namespace KancolleSniffer
                 if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
                 {
                     SendFile(client, full, "application/javascript");
+                    return;
+                }
+                if (path.EndsWith("proxy.pac"))
+                {
+                    SendProxyPac(client, port);
                     return;
                 }
                 SendError(client, "404 Not Found");
@@ -237,6 +247,49 @@ namespace KancolleSniffer
                 client.SendFile(path, ((MemoryStream)writer.BaseStream).ToArray(), null,
                     TransmitFileOptions.UseDefaultWorkerThread);
             }
+        }
+
+        private void SendProxyPac(Socket client, int port)
+        {
+            var header = new StreamWriter(new MemoryStream(), Encoding.ASCII);
+            header.Write("HTTP/1.1 200 OK\r\n");
+            header.Write("Server: KancolleSniffer\r\n");
+            header.Write("Date: {0:R}\r\n", DateTime.Now);
+            header.Write("Content-Type: {0}\r\n", "application/x-ns-proxy-autoconfig");
+            header.Write("Connection: close\r\n\r\n");
+            header.Flush();
+            client.Send(((MemoryStream)header.BaseStream).ToArray());
+
+            var pacfile = @"
+function FindProxyForURL(url, host) {
+  if(isInNet(host, ""203.104.209.71"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.184.15"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.184.16"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.187.205"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.187.229"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.187.253"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.188.25"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.248.135"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.7"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.39"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.71"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.103"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.135"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.167"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.215"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.247"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.209.23"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.209.39"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.209.55"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.209.102"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.209.87"", ""255.255.255.255"")) {
+       return ""PROXY 127.0.0.1:8080"";
+    }
+  else {
+    return ""DIRECT"";
+  }
+}".Replace("8080", port.ToString());
+            client.Send(Encoding.ASCII.GetBytes(pacfile));
         }
 
         public void Stop()
