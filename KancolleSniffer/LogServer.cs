@@ -17,158 +17,92 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 
 namespace KancolleSniffer
 {
     public class LogServer
     {
-        private readonly TcpListener _listener;
-        private readonly string _indexDir = AppDomain.CurrentDomain.BaseDirectory;
-        private string _outputDir = AppDomain.CurrentDomain.BaseDirectory;
-        private readonly List<Socket> _sockets = new List<Socket>();
+        private static readonly string IndexDir = AppDomain.CurrentDomain.BaseDirectory;
+        private static string _outputDir = AppDomain.CurrentDomain.BaseDirectory;
 
-        public int Port { get; private set; }
-
-        public bool IsListening { get; private set; }
-
-        public string OutputDir
+        public static string OutputDir
         {
             set { _outputDir = value; }
         }
 
-        public LogServer(int port)
+        public static void Process(Socket client, string requestLine)
         {
-            _listener = new TcpListener(IPAddress.Loopback, port);
-        }
-
-        public void Start()
-        {
-            _listener.Start();
-            Port = ((IPEndPoint)_listener.LocalEndpoint).Port;
-            IsListening = true;
-            new Thread(Listen).Start();
-        }
-
-        private void Listen()
-        {
-            try
-            {
-                while (true)
-                {
-                    var socket = _listener.AcceptSocket();
-                    lock (_sockets)
-                        _sockets.Add(socket);
-                    new Thread(Process).Start(socket);
-                }
-            }
-            catch (SocketException)
-            {
-            }
-            finally
-            {
-                _listener.Stop();
-            }
-        }
-
-        private void Process(object obj)
-        {
-            var client = (Socket)obj;
-            var data = new byte[4096];
             var from = DateTime.MinValue;
             var to = DateTime.MaxValue;
-            var port = 8080;
-            try
+            var request = requestLine.Split(' ');
+            if (request.Length != 3)
             {
-                if (client.Receive(data) == 0)
-                    return;
-                var request = Encoding.UTF8.GetString(data).Split('\r')[0].Split(' ');
-                if (request.Length != 3)
+                SendError(client, "400 Bad Request");
+                return;
+            }
+            if (!request[0].StartsWith("GET", StringComparison.OrdinalIgnoreCase))
+            {
+                SendError(client, "501 Not Implemented");
+                return;
+            }
+            var tmp = request[1].Split('?');
+            var path = HttpUtility.UrlDecode(tmp[0]);
+            if (path == null || !path.StartsWith("/"))
+            {
+                SendError(client, "400 Bad Request");
+                return;
+            }
+            if (tmp.Length == 2)
+            {
+                var query = HttpUtility.ParseQueryString(tmp[1]);
+                if (query["from"] != null)
                 {
-                    SendError(client, "400 Bad Request");
-                    return;
+                    double tick;
+                    double.TryParse(query["from"], out tick);
+                    from = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(tick / 1000);
                 }
-                if (!request[0].StartsWith("GET", StringComparison.OrdinalIgnoreCase))
+                if (query["to"] != null)
                 {
-                    SendError(client, "501 Not Implemented");
-                    return;
+                    double tick;
+                    double.TryParse(query["to"], out tick);
+                    to = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(tick / 1000);
                 }
-                var tmp = request[1].Split('?');
-                var path = HttpUtility.UrlDecode(tmp[0]);
-                if (path == null || !path.StartsWith("/"))
-                {
-                    SendError(client, "400 Bad Request");
-                    return;
-                }
-                if (tmp.Length == 2)
-                {
-                    var query = HttpUtility.ParseQueryString(tmp[1]);
-                    if (query["from"] != null)
-                    {
-                        double tick;
-                        double.TryParse(query["from"], out tick);
-                        from = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(tick / 1000);
-                    }
-                    if (query["to"] != null)
-                    {
-                        double tick;
-                        double.TryParse(query["to"], out tick);
-                        to = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(tick / 1000);
-                    }
-                    if (query["port"] != null)
-                    {
-                        port = int.Parse(query["port"]);
-                    }
-                }
+            }
 
-                path = path == "/" ? "index.html" : path.Substring(1);
-                var full = Path.Combine(_indexDir, path);
-                var csv = Path.Combine(_outputDir, path);
-                if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
-                {
-                    SendFile(client, full, "text/html");
-                    return;
-                }
-                if (path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) && File.Exists(csv))
-                {
-                    SendFile(client, csv, "text/csv; charset=Shift_JIS");
-                    return;
-                }
-                if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                {
-                    SendJsonData(client, csv, from, to);
-                    return;
-                }
-                if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
-                {
-                    SendFile(client, full, "application/javascript");
-                    return;
-                }
-                if (path.EndsWith("proxy.pac"))
-                {
-                    SendProxyPac(client, port);
-                    return;
-                }
-                SendError(client, "404 Not Found");
-            }
-            catch (IOException)
+            path = path == "/" ? "index.html" : path.Substring(1);
+            var full = Path.Combine(IndexDir, path);
+            var csv = Path.Combine(_outputDir, path);
+            if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
             {
+                SendFile(client, full, "text/html");
+                return;
             }
-            catch (SocketException)
+            if (path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) && File.Exists(csv))
             {
+                SendFile(client, csv, "text/csv; charset=Shift_JIS");
+                return;
             }
-            finally
+            if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                lock (_sockets)
-                    _sockets.Remove(client);
-                client.Close();
+                SendJsonData(client, csv, from, to);
+                return;
             }
+            if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
+            {
+                SendFile(client, full, "application/javascript");
+                return;
+            }
+            if (path.EndsWith("proxy.pac"))
+            {
+                SendProxyPac(client, HttpProxy.LocalPort);
+                return;
+            }
+            SendError(client, "404 Not Found");
         }
 
-        private void SendError(Socket client, string error)
+        private static void SendError(Socket client, string error)
         {
             using (var writer = new StreamWriter(new MemoryStream(), Encoding.ASCII))
             {
@@ -183,17 +117,18 @@ namespace KancolleSniffer
             }
         }
 
-        private void SendJsonData(Socket client, string path, DateTime from, DateTime to)
+        private static void SendJsonData(Socket client, string path, DateTime from, DateTime to)
         {
-            var header = new StreamWriter(new MemoryStream(), Encoding.ASCII);
-            header.Write("HTTP/1.1 200 OK\r\n");
-            header.Write("Server: KancolleSniffer\r\n");
-            header.Write("Date: {0:R}\r\n", DateTime.Now);
-            header.Write("Content-Type: {0}\r\n", "application/json; charset=Shift_JIS");
-            header.Write("Connection: close\r\n\r\n");
-            header.Flush();
-            client.Send(((MemoryStream)header.BaseStream).ToArray());
-
+            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
+            {
+                header.Write("HTTP/1.1 200 OK\r\n");
+                header.Write("Server: KancolleSniffer\r\n");
+                header.Write("Date: {0:R}\r\n", DateTime.Now);
+                header.Write("Content-Type: {0}\r\n", "application/json; charset=Shift_JIS");
+                header.Write("Connection: close\r\n\r\n");
+                header.Flush();
+                client.Send(((MemoryStream)header.BaseStream).ToArray());
+            }
             var csv = path.Replace(".json", ".csv");
             var encoding = Encoding.GetEncoding("Shift_JIS");
             client.Send(encoding.GetBytes("{ \"data\": [\n"));
@@ -233,34 +168,35 @@ namespace KancolleSniffer
             }
         }
 
-        private void SendFile(Socket client, string path, string mime)
+        private static void SendFile(Socket client, string path, string mime)
         {
-            using (var writer = new StreamWriter(new MemoryStream(), Encoding.ASCII))
+            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
             {
-                writer.Write("HTTP/1.1 200 OK\r\n");
-                writer.Write("Server: KancolleSniffer\r\n");
-                writer.Write("Date: {0:R}\r\n", DateTime.Now);
-                writer.Write("Content-Length: {0}\r\n", new FileInfo(path).Length);
-                writer.Write("Content-Type: {0}\r\n", mime);
-                writer.Write("Connection: close\r\n\r\n");
-                writer.Flush();
-                client.SendFile(path, ((MemoryStream)writer.BaseStream).ToArray(), null,
+                header.Write("HTTP/1.1 200 OK\r\n");
+                header.Write("Server: KancolleSniffer\r\n");
+                header.Write("Date: {0:R}\r\n", DateTime.Now);
+                header.Write("Content-Length: {0}\r\n", new FileInfo(path).Length);
+                header.Write("Content-Type: {0}\r\n", mime);
+                header.Write("Connection: close\r\n\r\n");
+                header.Flush();
+                client.SendFile(path, ((MemoryStream)header.BaseStream).ToArray(), null,
                     TransmitFileOptions.UseDefaultWorkerThread);
             }
         }
 
-        private void SendProxyPac(Socket client, int port)
+        private static void SendProxyPac(Socket client, int port)
         {
-            var header = new StreamWriter(new MemoryStream(), Encoding.ASCII);
-            header.Write("HTTP/1.1 200 OK\r\n");
-            header.Write("Server: KancolleSniffer\r\n");
-            header.Write("Date: {0:R}\r\n", DateTime.Now);
-            header.Write("Content-Type: {0}\r\n", "application/x-ns-proxy-autoconfig");
-            header.Write("Connection: close\r\n\r\n");
-            header.Flush();
-            client.Send(((MemoryStream)header.BaseStream).ToArray());
-
-            var pacfile = @"
+            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
+            {
+                header.Write("HTTP/1.1 200 OK\r\n");
+                header.Write("Server: KancolleSniffer\r\n");
+                header.Write("Date: {0:R}\r\n", DateTime.Now);
+                header.Write("Content-Type: application/x-ns-proxy-autoconfig\r\n");
+                header.Write("Connection: close\r\n\r\n");
+                header.Flush();
+                client.Send(((MemoryStream)header.BaseStream).ToArray());
+            }
+            var pacFile = @"
 function FindProxyForURL(url, host) {
   if(isInNet(host, ""203.104.209.71"", ""255.255.255.255"") ||
      isInNet(host, ""125.6.184.15"", ""255.255.255.255"") ||
@@ -289,15 +225,7 @@ function FindProxyForURL(url, host) {
     return ""DIRECT"";
   }
 }".Replace("8080", port.ToString());
-            client.Send(Encoding.ASCII.GetBytes(pacfile));
-        }
-
-        public void Stop()
-        {
-            IsListening = false;
-            _listener.Server.Close();
-            lock (_sockets)
-                _sockets.ForEach(s => s.Close());
+            client.Send(Encoding.ASCII.GetBytes(pacFile));
         }
     }
 }

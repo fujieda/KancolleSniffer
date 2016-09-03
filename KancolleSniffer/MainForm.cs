@@ -47,7 +47,6 @@ namespace KancolleSniffer
         private bool _started;
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
-        private LogServer _logServer;
         private int _prevProxyPort;
         private readonly SystemProxy _systemProxy = new SystemProxy();
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
@@ -206,7 +205,6 @@ namespace KancolleSniffer
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.Save();
             Task.Run(() => ShutdownProxy());
-            _logServer?.Stop();
             if (_config.Proxy.Auto)
                 _systemProxy.RestoreSettings();
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
@@ -305,7 +303,7 @@ namespace KancolleSniffer
             }
             if (_config.Proxy.Auto && result)
             {
-                _systemProxy.SetAutoProxyUrl($"http://localhost:{_config.Log.Listen}/proxy.pac?port={_config.Proxy.Listen}");
+                _systemProxy.SetAutoProxyUrl($"http://localhost:{_config.Proxy.Listen}/proxy.pac");
             }
             _prevProxyPort = _config.Proxy.Listen;
             return result;
@@ -344,48 +342,12 @@ namespace KancolleSniffer
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
-        public bool ApplyLogSetting()
+        public void ApplyLogSetting()
         {
-            var result = true;
-            if (_config.Proxy.Auto)
-                _config.Log.ServerOn = true;
-            if (_config.Log.ServerOn)
-            {
-                result = StartLogServer();
-            }
-            else
-            {
-                _logServer?.Stop();
-                _logServer = null;
-            }
+            LogServer.OutputDir = _config.Log.OutputDir;
             _sniffer.EnableLog(_config.Log.On ? LogType.All : LogType.None);
             _sniffer.MaterialLogInterval = _config.Log.MaterialLogInterval;
             _sniffer.LogOutputDir = _config.Log.OutputDir;
-            return result;
-        }
-
-        private bool StartLogServer()
-        {
-            var port = _config.Log.Listen;
-            if (_logServer?.Port == port)
-                return true;
-            _logServer?.Stop();
-            _logServer = null;
-            try
-            {
-                _logServer = new LogServer(port);
-                _logServer.Start();
-            }
-            catch (SocketException e) when (e.SocketErrorCode == SocketError.AddressAlreadyInUse)
-            {
-                if (WarnConflictPortNumber("閲覧サーバー", port, true) == DialogResult.No)
-                    return false;
-                _logServer = new LogServer(0);
-                _logServer.Start();
-                _config.Log.Listen = _logServer.Port;
-            }
-            _logServer.OutputDir = _config.Log.OutputDir;
-            return true;
         }
 
         public static bool IsVisibleOnAnyScreen(Rectangle rect)
@@ -1018,7 +980,7 @@ namespace KancolleSniffer
 
         private void LogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("http://localhost:" + _config.Log.Listen + "/");
+            Process.Start("http://localhost:" + _config.Proxy.Listen + "/");
         }
 
         private void CaptureToolStripMenuItem_Click(object sender, EventArgs e)

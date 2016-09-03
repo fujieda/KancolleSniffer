@@ -93,9 +93,6 @@ namespace KancolleSniffer
             textBoxOutput.Select(textBoxOutput.Text.Length, 0);
             folderBrowserDialogOutputDir.SelectedPath = _config.Log.OutputDir;
             numericUpDownMaterialLogInterval.Value = _config.Log.MaterialLogInterval;
-            radioButtonServerOn.Checked = _config.Log.ServerOn;
-            radioButtonServerOff.Checked = !_config.Log.ServerOn;
-            textBoxServer.Text = _config.Log.Listen.ToString("D");
         }
 
         private void LoadDebugSettings()
@@ -129,16 +126,10 @@ namespace KancolleSniffer
             int listen, outbound, server;
             if (!ValidatePorts(out listen, out outbound, out server))
                 return;
-            if (radioButtonAutoConfigOn.Checked && radioButtonServerOff.Checked)
-            {
-                ShowToolTip("自動設定には閲覧サーバーが必要です。", radioButtonServerOff);
-                return;
-            }
             DialogResult = DialogResult.OK;
             if (!ApplyProxySettings(listen, outbound))
                 DialogResult = DialogResult.None;
-            if (!ApplyLogSettings(server))
-                DialogResult = DialogResult.None;
+            ApplyLogSettings();
             ApplyDebugSettings();
             _config.KancolleDb.On = checkBoxKancolleDbOn.Checked;
             _config.KancolleDb.Token = textBoxKancolleDbToken.Text;
@@ -181,16 +172,9 @@ namespace KancolleSniffer
                 return false;
             if (radioButtonUpstreamOn.Checked && !ValidatePortNumber(textBoxPort, out outbound))
                 return false;
-            if (radioButtonServerOn.Checked && !ValidatePortNumber(textBoxServer, out server))
-                return false;
             if (radioButtonUpstreamOn.Checked && listen == outbound)
             {
                 ShowToolTip("受信と送信に同じポートは使えません。", textBoxPort);
-                return false;
-            }
-            if (radioButtonServerOn.Checked && server == listen)
-            {
-                ShowToolTip("プロキシの受信ポートと同じポートは使えません。", textBoxServer);
                 return false;
             }
             return true;
@@ -209,17 +193,12 @@ namespace KancolleSniffer
             return true;
         }
 
-        private bool ApplyLogSettings(int server)
+        private void ApplyLogSettings()
         {
             _config.Log.On = checkBoxOutput.Checked;
             _config.Log.MaterialLogInterval = (int)numericUpDownMaterialLogInterval.Value;
             _config.Log.OutputDir = textBoxOutput.Text;
-            _config.Log.ServerOn = radioButtonServerOn.Checked;
-            _config.Log.Listen = server;
-            if (!_main.ApplyLogSetting())
-                return false;
-            textBoxServer.Text = _config.Log.Listen.ToString();
-            return true;
+            _main.ApplyLogSetting();
         }
 
         private void ApplyDebugSettings()
@@ -272,12 +251,6 @@ namespace KancolleSniffer
         {
             var off = ((RadioButton)sender).Checked;
             textBoxPort.Enabled = !off;
-        }
-
-        private void radioButtonServerOff_CheckedChanged(object sender, EventArgs e)
-        {
-            var off = ((RadioButton)sender).Checked;
-            textBoxServer.Enabled = !off;
         }
 
         private void buttonOutputDir_Click(object sender, EventArgs e)

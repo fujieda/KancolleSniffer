@@ -47,7 +47,7 @@ namespace KancolleSniffer
         {
             _listener = new TcpListener(IPAddress.Loopback, LocalPort);
             _listener.Start();
-            LocalPort = ((IPEndPoint)(_listener.LocalEndpoint)).Port;
+            LocalPort = ((IPEndPoint)_listener.LocalEndpoint).Port;
             IsInListening = true;
             Task.Run(() => AcceptClient());
         }
@@ -106,6 +106,11 @@ namespace KancolleSniffer
                     if (_session.Request.Method == "CONNECT")
                     {
                         HandleConnect();
+                        return;
+                    }
+                    if (_session.Request.Host.StartsWith("localhost"))
+                    {
+                        LogServer.Process(_client, _session.Request.RequestLine);
                         return;
                     }
                     SendRequest();

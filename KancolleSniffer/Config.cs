@@ -58,16 +58,12 @@ namespace KancolleSniffer
         public bool On { get; set; }
         public string OutputDir { get; set; }
         public int MaterialLogInterval { get; set; }
-        public bool ServerOn { get; set; }
-        public int Listen { get; set; }
 
         public LogConfig()
         {
             On = true;
             OutputDir = "";
             MaterialLogInterval = 10;
-            ServerOn = true;
-            Listen = 8008;
         }
     }
 
@@ -252,8 +248,6 @@ namespace KancolleSniffer
             Log.On = json.Log.On;
             Log.OutputDir = json.Log.OutputDir;
             Log.MaterialLogInterval = (int)json.Log.MaterialLogInterval;
-            Log.ServerOn = json.Log.ServerOn;
-            Log.Listen = (int)json.Log.Listen;
         }
     }
 }

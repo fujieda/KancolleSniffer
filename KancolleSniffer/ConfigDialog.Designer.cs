@@ -45,6 +45,9 @@ namespace KancolleSniffer
             this.components = new System.ComponentModel.Container();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageShow = new System.Windows.Forms.TabPage();
+            this.label15 = new System.Windows.Forms.Label();
+            this.comboBoxZoom = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.checkBoxHideOnMinimized = new System.Windows.Forms.CheckBox();
             this.checkBoxTopMost = new System.Windows.Forms.CheckBox();
             this.tabPageNotification = new System.Windows.Forms.TabPage();
@@ -94,11 +97,6 @@ namespace KancolleSniffer
             this.textBoxListen = new System.Windows.Forms.TextBox();
             this.labelListen = new System.Windows.Forms.Label();
             this.tabPageLog = new System.Windows.Forms.TabPage();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButtonServerOff = new System.Windows.Forms.RadioButton();
-            this.radioButtonServerOn = new System.Windows.Forms.RadioButton();
-            this.textBoxServer = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.checkBoxOutput = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -123,9 +121,6 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
-            this.label14 = new System.Windows.Forms.Label();
-            this.comboBoxZoom = new System.Windows.Forms.ComboBox();
-            this.label15 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageShow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -141,7 +136,6 @@ namespace KancolleSniffer
             this.groupBoxUpstream.SuspendLayout();
             this.groupBoxAutoConfig.SuspendLayout();
             this.tabPageLog.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).BeginInit();
             this.tabPageCollabo.SuspendLayout();
             this.groupBoxKancolleDb.SuspendLayout();
@@ -182,6 +176,37 @@ namespace KancolleSniffer
             this.tabPageShow.TabIndex = 0;
             this.tabPageShow.Text = "表示";
             this.tabPageShow.UseVisualStyleBackColor = true;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(97, 57);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(61, 12);
+            this.label15.TabIndex = 6;
+            this.label15.Text = "(要再起動)";
+            // 
+            // comboBoxZoom
+            // 
+            this.comboBoxZoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxZoom.FormattingEnabled = true;
+            this.comboBoxZoom.Items.AddRange(new object[] {
+            "100%",
+            "125%",
+            "150%"});
+            this.comboBoxZoom.Location = new System.Drawing.Point(47, 54);
+            this.comboBoxZoom.Name = "comboBoxZoom";
+            this.comboBoxZoom.Size = new System.Drawing.Size(48, 20);
+            this.comboBoxZoom.TabIndex = 5;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(9, 57);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(35, 12);
+            this.label14.TabIndex = 4;
+            this.label14.Text = "ズーム";
             // 
             // checkBoxHideOnMinimized
             // 
@@ -553,7 +578,6 @@ namespace KancolleSniffer
             this.labelCopyright.Name = "labelCopyright";
             this.labelCopyright.Size = new System.Drawing.Size(212, 12);
             this.labelCopyright.TabIndex = 13;
-            this.labelCopyright.Text = "";
             // 
             // linkLabelProductName
             // 
@@ -699,7 +723,6 @@ namespace KancolleSniffer
             // 
             // tabPageLog
             // 
-            this.tabPageLog.Controls.Add(this.groupBox1);
             this.tabPageLog.Controls.Add(this.label10);
             this.tabPageLog.Controls.Add(this.checkBoxOutput);
             this.tabPageLog.Controls.Add(this.label9);
@@ -714,58 +737,6 @@ namespace KancolleSniffer
             this.tabPageLog.TabIndex = 6;
             this.tabPageLog.Text = "報告書";
             this.tabPageLog.UseVisualStyleBackColor = true;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.radioButtonServerOff);
-            this.groupBox1.Controls.Add(this.radioButtonServerOn);
-            this.groupBox1.Controls.Add(this.textBoxServer);
-            this.groupBox1.Controls.Add(this.label12);
-            this.groupBox1.Location = new System.Drawing.Point(11, 83);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(234, 48);
-            this.groupBox1.TabIndex = 15;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "閲覧サーバー";
-            // 
-            // radioButtonServerOff
-            // 
-            this.radioButtonServerOff.AutoSize = true;
-            this.radioButtonServerOff.Location = new System.Drawing.Point(59, 18);
-            this.radioButtonServerOff.Name = "radioButtonServerOff";
-            this.radioButtonServerOff.Size = new System.Drawing.Size(47, 16);
-            this.radioButtonServerOff.TabIndex = 10;
-            this.radioButtonServerOff.TabStop = true;
-            this.radioButtonServerOff.Text = "無効";
-            this.radioButtonServerOff.UseVisualStyleBackColor = true;
-            this.radioButtonServerOff.CheckedChanged += new System.EventHandler(this.radioButtonServerOff_CheckedChanged);
-            // 
-            // radioButtonServerOn
-            // 
-            this.radioButtonServerOn.AutoSize = true;
-            this.radioButtonServerOn.Location = new System.Drawing.Point(6, 18);
-            this.radioButtonServerOn.Name = "radioButtonServerOn";
-            this.radioButtonServerOn.Size = new System.Drawing.Size(47, 16);
-            this.radioButtonServerOn.TabIndex = 9;
-            this.radioButtonServerOn.TabStop = true;
-            this.radioButtonServerOn.Text = "有効";
-            this.radioButtonServerOn.UseVisualStyleBackColor = true;
-            // 
-            // textBoxServer
-            // 
-            this.textBoxServer.Location = new System.Drawing.Point(175, 17);
-            this.textBoxServer.Name = "textBoxServer";
-            this.textBoxServer.Size = new System.Drawing.Size(36, 19);
-            this.textBoxServer.TabIndex = 11;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(114, 20);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(59, 12);
-            this.label12.TabIndex = 8;
-            this.label12.Text = "受信ポート:";
             // 
             // label10
             // 
@@ -984,37 +955,6 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(9, 57);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(35, 12);
-            this.label14.TabIndex = 4;
-            this.label14.Text = "ズーム";
-            // 
-            // comboBoxZoom
-            // 
-            this.comboBoxZoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxZoom.FormattingEnabled = true;
-            this.comboBoxZoom.Items.AddRange(new object[] {
-            "100%",
-            "125%",
-            "150%"});
-            this.comboBoxZoom.Location = new System.Drawing.Point(47, 54);
-            this.comboBoxZoom.Name = "comboBoxZoom";
-            this.comboBoxZoom.Size = new System.Drawing.Size(48, 20);
-            this.comboBoxZoom.TabIndex = 5;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(97, 57);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(61, 12);
-            this.label15.TabIndex = 6;
-            this.label15.Text = "(要再起動)";
-            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1055,8 +995,6 @@ namespace KancolleSniffer
             this.groupBoxAutoConfig.PerformLayout();
             this.tabPageLog.ResumeLayout(false);
             this.tabPageLog.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).EndInit();
             this.tabPageCollabo.ResumeLayout(false);
             this.groupBoxKancolleDb.ResumeLayout(false);
@@ -1128,11 +1066,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.NumericUpDown numericUpDownMaterialLogInterval;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogOutputDir;
         private System.Windows.Forms.TabPage tabPageDebug;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton radioButtonServerOff;
-        private System.Windows.Forms.RadioButton radioButtonServerOn;
-        private System.Windows.Forms.TextBox textBoxServer;
-        private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Button buttonPlayDebugLog;
         private System.Windows.Forms.Button buttonDebugLogOpenFile;
         private System.Windows.Forms.TextBox textBoxDebugLog;
