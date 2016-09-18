@@ -301,7 +301,7 @@ namespace KancolleSniffer
                 InspectDeck(json.api_deck_data);
                 InspectShipData(json.api_ship_data);
             }
-            else if (json.api_ship()) // getship
+            else if (json.api_ship()) // getshipとpowerup
             {
                 InspectShipData(new[] {json.api_ship});
             }
@@ -433,7 +433,7 @@ namespace KancolleSniffer
             foreach (var ship in ships)
                 _shipInfo.Remove(int.Parse(ship));
             InspectDeck(json.api_deck);
-            InspectShip(json.api_ship);
+            InspectShip(json);
         }
 
         public void InspectSlotExchange(string request, dynamic json)

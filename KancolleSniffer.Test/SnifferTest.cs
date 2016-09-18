@@ -603,6 +603,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 近代化改修の結果をすぐに反映する
+        /// </summary>
+        [TestMethod]
+        public void PowerupResult()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "powerup_001");
+            PAssert.That(() => Math.Abs(sniffer.GetShipStatuses(0)[0].RealFirepower - 30) < 0.0001);
+        }
+
+        /// <summary>
         /// 改修による資材の減少をすぐに反映する
         /// </summary>
         [TestMethod]
