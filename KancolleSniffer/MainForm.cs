@@ -23,7 +23,6 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
@@ -192,11 +191,7 @@ namespace KancolleSniffer
         {
             if (e.Mode != PowerModes.Resume || !_config.Proxy.Auto)
                 return;
-            Task.Run(() =>
-            {
-                for (var i = 0; i < 5; Thread.Sleep(10000), i++)
-                    SystemProxy.Refresh();
-            });
+            SystemProxy.Refresh();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

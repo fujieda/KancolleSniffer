@@ -122,7 +122,6 @@ namespace KancolleSniffer
         public static void Refresh()
         {
             InternetSetOption(IntPtr.Zero, InternetOption.INTERNET_OPTION_PROXY_SETTINGS_CHANGED, IntPtr.Zero, 0);
-            InternetSetOption(IntPtr.Zero, InternetOption.INTERNET_OPTION_REFRESH, IntPtr.Zero, 0);
         }
 
         [DllImport("WinInet.dll", SetLastError = true, CharSet = CharSet.Auto)]
