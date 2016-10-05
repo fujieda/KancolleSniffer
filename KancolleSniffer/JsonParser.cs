@@ -298,12 +298,7 @@ namespace KancolleSniffer
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
-            result = false;
-            if (_type != JsonType.Object)
-                return false;
-            if (!_dict.ContainsKey(binder.Name))
-                return true;
-            result = true;
+            result = _type == JsonType.Object && _dict.ContainsKey(binder.Name);
             return true;
         }
 

@@ -123,7 +123,6 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(RuntimeBinderException))]
         public void CheckPropertyOfBool()
         {
             Assert.IsFalse(((dynamic)JsonParser.Parse("true")).api_result());
