@@ -50,7 +50,7 @@ namespace KancolleSniffer
         public void InspectMapInfo(dynamic json)
         {
             Text = "[海域ゲージ]\r\n";
-            foreach (var entry in json)
+            foreach (var entry in json.api_map_info() ? json.api_map_info : json)
             {
                 var map = (int)entry.api_id;
                 if (entry.api_eventmap())

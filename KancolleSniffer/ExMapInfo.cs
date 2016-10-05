@@ -46,7 +46,7 @@ namespace KancolleSniffer
 
         public void InspectMapInfo(dynamic json)
         {
-            foreach (var entry in json)
+            foreach (var entry in json.api_map_info() ? json.api_map_info : json)
             {
                 var map = (int)entry.api_id;
                 if (map % 10 <= 4)
