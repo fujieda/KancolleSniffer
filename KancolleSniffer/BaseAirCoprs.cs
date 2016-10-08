@@ -21,14 +21,21 @@ namespace KancolleSniffer
     public class BaseAirCoprs
     {
         private readonly ItemInfo _itemInfo;
-        private List<int> _relocationgPlanes;
+        private List<int> _relocationgPlanes = new List<int>();
 
         public BaseAirCoprs(ItemInfo item)
         {
             _itemInfo = item;
         }
 
-        public AirCorpsInfo[] AirCorps { get; set; }
+        public BaseInfo[] AllAirCorps { get; set; }
+
+        public class BaseInfo
+        {
+            public int AreaId { get; set; }
+            public string AreaName => AreaId == 6 ? "中部海域" : "限定海域";
+            public AirCorpsInfo[] AirCorps { get; set; }
+        }
 
         public class AirCorpsInfo
         {
@@ -103,29 +110,33 @@ namespace KancolleSniffer
 
         public void Inspect(dynamic json)
         {
-            AirCorps = (from entry in (dynamic[])json
-                select
-                    new AirCorpsInfo
-                    {
-                        Distance = (int)entry.api_distance,
-                        Action = (int)entry.api_action_kind,
-                        Planes = (from plane in (dynamic[])entry.api_plane_info
-                            select new PlaneInfo
-                            {
-                                Slot = _itemInfo.GetStatus((int)plane.api_slotid),
-                                State = (int)plane.api_state,
-                                Count = plane.api_count() ? (int)plane.api_count : 0,
-                                MaxCount = plane.api_max_count() ? (int)plane.api_max_count : 0,
-                            }).ToArray()
-                    }).ToArray();
+            AllAirCorps = (from entry in (dynamic[])json
+                group
+                new AirCorpsInfo
+                {
+                    Distance = (int)entry.api_distance,
+                    Action = (int)entry.api_action_kind,
+                    Planes = (from plane in (dynamic[])entry.api_plane_info
+                        select new PlaneInfo
+                        {
+                            Slot = _itemInfo.GetStatus((int)plane.api_slotid),
+                            State = (int)plane.api_state,
+                            Count = plane.api_count() ? (int)plane.api_count : 0,
+                            MaxCount = plane.api_max_count() ? (int)plane.api_max_count : 0,
+                        }).ToArray()
+                } by entry.api_area_id() ? (int)entry.api_area_id : 0
+                into grp
+                select new BaseInfo {AreaId = grp.Key, AirCorps = grp.ToArray()}).ToArray();
         }
 
         public void InspectSetPlane(string request, dynamic json)
         {
-            if (AirCorps == null)
+            if (AllAirCorps == null)
                 return;
             var values = HttpUtility.ParseQueryString(request);
-            var airCorps = AirCorps[int.Parse(values["api_base_id"]) - 1];
+            var areaId = int.Parse(values["api_area_id"] ?? "0");
+            var airCorps =
+                AllAirCorps.First(b => b.AreaId == areaId).AirCorps[int.Parse(values["api_base_id"]) - 1];
             if (json.api_distance()) // 2016春イベにはない
                 airCorps.Distance = (int)json.api_distance;
             foreach (var planeInfo in json.api_plane_info)
@@ -151,42 +162,59 @@ namespace KancolleSniffer
 
         public void InspectSetAction(string request)
         {
-            if (AirCorps == null)
+            if (AllAirCorps == null)
                 return;
             var values = HttpUtility.ParseQueryString(request);
+            var areaId = int.Parse(values["api_area_id"] ?? "0");
+            var airCorps = AllAirCorps.First(b => b.AreaId == areaId).AirCorps;
             foreach (var entry in
                 values["api_base_id"].Split(',')
                     .Zip(values["api_action_kind"].Split(','), (b, a) => new {baseId = b, action = a}))
             {
-                AirCorps[int.Parse(entry.baseId) - 1].Action = int.Parse(entry.action);
+                airCorps[int.Parse(entry.baseId) - 1].Action = int.Parse(entry.action);
             }
         }
 
-        public void InspectEventObject(dynamic json)
+        public void InspectPlaneInfo(dynamic json)
         {
             _relocationgPlanes = json.api_base_convert_slot()
                 ? new List<int>((int[])json.api_base_convert_slot)
                 : new List<int>();
         }
 
+        public void InspectEventObject(dynamic json)
+        {
+            InspectPlaneInfo(json);
+        }
+
         public void SetItemHolder()
         {
-            if (AirCorps == null)
+            if (AllAirCorps == null)
                 return;
             var name = new[] {"第一", "第二", "第三"};
             var i = 0;
-            foreach (var airCorps in AirCorps)
+            foreach (var baseInfo in AllAirCorps)
             {
-                if (i >= name.Length)
-                    break;
-                var ship = new ShipStatus {Id = 1000 + i, Spec = new ShipSpec {Name = name[i++] + "基地航空隊"}};
-                foreach (var plane in airCorps.Planes)
+                var areaAame = baseInfo.AreaName;
+                foreach (var airCorps in baseInfo.AirCorps)
                 {
-                    if (plane.State != 1)
-                        continue;
-                    _itemInfo.GetStatus(plane.Slot.Id).Holder = ship;
+                    if (i >= name.Length)
+                        break;
+                    var ship = new ShipStatus
+                    {
+                        Id = 1000 + i,
+                        Spec = new ShipSpec {Name = areaAame + " " + name[i++] + "航空隊"}
+                    };
+                    foreach (var plane in airCorps.Planes)
+                    {
+                        if (plane.State != 1)
+                            continue;
+                        _itemInfo.GetStatus(plane.Slot.Id).Holder = ship;
+                    }
                 }
             }
+            if (_relocationgPlanes == null)
+                return;
             var relocating = new ShipStatus {Id = 1500, Spec = new ShipSpec {Name = "配置転換中"}};
             foreach (var id in _relocationgPlanes)
                 _itemInfo.GetStatus(id).Holder = relocating;

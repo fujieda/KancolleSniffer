@@ -145,24 +145,30 @@ namespace KancolleSniffer
             if (sniffer.BaseAirCorps != null)
             {
                 var name = new[] {"第一", "第二", "第三"};
-                list.Add(new EquipColumn {Fleet = "基地航空隊"});
-                var i = 0;
-                foreach (var corps in sniffer.BaseAirCorps)
+                foreach (var baseInfo in sniffer.BaseAirCorps)
                 {
-                    if (i >= name.Length)
-                        break;
-                    var fp = corps.FighterPower;
-                    list.Add(new EquipColumn
+                    list.Add(new EquipColumn {Fleet = baseInfo.AreaName + " 基地航空隊"});
+                    var i = 0;
+                    foreach (var airCorps in baseInfo.AirCorps)
                     {
-                        Ship = name[i++] + " " + corps.ActionName,
-                        Spec = "制空" + (fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1]) + " 距離" + corps.Distance
-                    });
-                    list.AddRange(corps.Planes.Select(plane => new EquipColumn
-                    {
-                        Equip =
-                            plane.State != 1 ? plane.StateName : GenEquipString(plane.Slot, plane.Count, plane.MaxCount),
-                        Color = plane.Slot.Spec.Color
-                    }));
+                        if (i >= name.Length)
+                            break;
+                        var fp = airCorps.FighterPower;
+                        list.Add(new EquipColumn
+                        {
+                            Ship = name[i++] + " " + airCorps.ActionName,
+                            Spec = "制空" + (fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1]) +
+                                   " 距離" + airCorps.Distance
+                        });
+                        list.AddRange(airCorps.Planes.Select(plane => new EquipColumn
+                        {
+                            Equip =
+                                plane.State != 1
+                                    ? plane.StateName
+                                    : GenEquipString(plane.Slot, plane.Count, plane.MaxCount),
+                            Color = plane.Slot.Spec.Color
+                        }));
+                    }
                 }
             }
             _equipList = list.ToArray();

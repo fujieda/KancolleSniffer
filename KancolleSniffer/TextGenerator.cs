@@ -75,18 +75,21 @@ namespace KancolleSniffer
             }
             if (sniffer.BaseAirCorps != null)
             {
-                sb.Append("基地航空隊\r\n");
-                var i = 0;
-                var name = new[] {"第一 ", "第二 ", "第三 "};
-                foreach (var airCorps in sniffer.BaseAirCorps)
+                foreach (var baseInfo in sniffer.BaseAirCorps)
                 {
-                    sb.Append(name[i++]);
-                    sb.Append(
-                        string.Join(",",
-                            from plane in airCorps.Planes
-                            select plane.State == 1
-                                ? dict[plane.Slot.Spec.Name] + ItemStatusString(plane.Slot)
-                                : plane.StateName) + "\r\n");
+                    sb.Append(baseInfo.AreaName + " 基地航空隊\r\n");
+                    var i = 0;
+                    var name = new[] {"第一 ", "第二 ", "第三 "};
+                    foreach (var airCorps in baseInfo.AirCorps)
+                    {
+                        sb.Append(name[i++]);
+                        sb.Append(
+                            string.Join(",",
+                                from plane in airCorps.Planes
+                                select plane.State == 1
+                                    ? dict[plane.Slot.Spec.Name] + ItemStatusString(plane.Slot)
+                                    : plane.StateName) + "\r\n");
+                    }
                 }
             }
             return sb.ToString();

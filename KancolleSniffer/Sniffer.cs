@@ -138,6 +138,8 @@ namespace KancolleSniffer
                 _questInfo.QuestCount = (int)data.api_parallel_quest_count;
             if (data.api_event_object())
                 _baseAirCoprs.InspectEventObject(data.api_event_object);
+            if (data.api_plane_info())
+                _baseAirCoprs.InspectPlaneInfo(data.api_plane_info);
             _battleInfo.CleanupResult();
             _battleInfo.InBattle = false;
             _shipInfo.ClearEscapedShips();
@@ -223,6 +225,8 @@ namespace KancolleSniffer
             {
                 _exMapInfo.InspectMapInfo(data);
                 _miscTextInfo.InspectMapInfo(data);
+                if (data.api_air_base())
+                    _baseAirCoprs.Inspect(data.api_air_base);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_member/get_practice_enemyinfo"))
@@ -539,7 +543,7 @@ namespace KancolleSniffer
 
         public string MiscText => _miscTextInfo.Text;
 
-        public BaseAirCoprs.AirCorpsInfo[] BaseAirCorps => _baseAirCoprs.AirCorps;
+        public BaseAirCoprs.BaseInfo[] BaseAirCorps => _baseAirCoprs.AllAirCorps;
 
         public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)
         {
