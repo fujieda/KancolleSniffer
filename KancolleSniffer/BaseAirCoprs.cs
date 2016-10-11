@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using static System.Math;
 
@@ -134,9 +136,7 @@ namespace KancolleSniffer
             if (AllAirCorps == null)
                 return;
             var values = HttpUtility.ParseQueryString(request);
-            var areaId = int.Parse(values["api_area_id"] ?? "0");
-            var airCorps =
-                AllAirCorps.First(b => b.AreaId == areaId).AirCorps[int.Parse(values["api_base_id"]) - 1];
+            var airCorps = GetBaseInfo(values).AirCorps[int.Parse(values["api_base_id"]) - 1];
             if (json.api_distance()) // 2016春イベにはない
                 airCorps.Distance = (int)json.api_distance;
             foreach (var planeInfo in json.api_plane_info)
@@ -165,14 +165,34 @@ namespace KancolleSniffer
             if (AllAirCorps == null)
                 return;
             var values = HttpUtility.ParseQueryString(request);
-            var areaId = int.Parse(values["api_area_id"] ?? "0");
-            var airCorps = AllAirCorps.First(b => b.AreaId == areaId).AirCorps;
+            var airCorps = GetBaseInfo(values).AirCorps;
             foreach (var entry in
                 values["api_base_id"].Split(',')
                     .Zip(values["api_action_kind"].Split(','), (b, a) => new {baseId = b, action = a}))
             {
                 airCorps[int.Parse(entry.baseId) - 1].Action = int.Parse(entry.action);
             }
+        }
+
+        public void InspectExpandBase(string request, dynamic json)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var baseInfo = GetBaseInfo(values);
+            var airCorps = baseInfo.AirCorps;
+            Array.Resize(ref airCorps, airCorps.Length + 1);
+            baseInfo.AirCorps = airCorps;
+            airCorps[airCorps.Length - 1] = new AirCorpsInfo
+            {
+                Planes =
+                    ((dynamic[])json[0].api_plane_info).
+                        Select(plane => new PlaneInfo {Slot = new ItemStatus()}).ToArray()
+            };
+        }
+
+        private BaseInfo GetBaseInfo(NameValueCollection values)
+        {
+            var areaId = int.Parse(values["api_area_id"] ?? "0"); // 古いAPIに対応するため
+            return AllAirCorps.First(b => b.AreaId == areaId);
         }
 
         public void InspectPlaneInfo(dynamic json)

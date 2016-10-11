@@ -483,6 +483,11 @@ namespace KancolleSniffer
                 _baseAirCoprs.InspectSetAction(request);
                 return Update.Ship;
             }
+            if (url.EndsWith("api_req_air_corps/expand_base"))
+            {
+                _baseAirCoprs.InspectExpandBase(request, data);
+                return Update.Ship;
+            }
             return Update.None;
         }
 
