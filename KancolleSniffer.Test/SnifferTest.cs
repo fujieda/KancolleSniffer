@@ -497,6 +497,25 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 敵の連合艦隊に対応する
+        /// </summary>
+        [TestMethod]
+        public void EnemyCombinedBattle()
+        {
+            var sniffer1 = new Sniffer();
+            SniffLogFile(sniffer1, "ec_battle_001");
+            PAssert.That(() => sniffer1.Battle.ResultRank == BattleResultRank.S, "昼戦のみ");
+
+            var sniffer2 = new Sniffer();
+            SniffLogFile(sniffer2, "ec_battle_002");
+            PAssert.That(() => sniffer2.Battle.ResultRank == BattleResultRank.S, "夜戦込み");
+
+            var sniffer3 = new Sniffer();
+            SniffLogFile(sniffer3, "ec_battle_003");
+            PAssert.That(() => sniffer3.Battle.ResultRank == BattleResultRank.A, "護衛を撃ちもらす");
+        }
+
+        /// <summary>
         /// 2-5をクリアしたときの特別戦果を反映する
         /// </summary>
         [TestMethod]

@@ -301,7 +301,7 @@ namespace KancolleSniffer
 
         private Update ApiBattle(string url, string request, dynamic data)
         {
-            if (IsNormalBattleAPI(url))
+            if (IsNormalBattleAPI(url) || IsCombinedBattleAPI(url))
             {
                 _battleInfo.InspectBattle(data, url);
                 _logger.InspectBattle(data);
@@ -318,7 +318,7 @@ namespace KancolleSniffer
                 _battleInfo.InspectBattle(data, url);
                 return Update.Ship | Update.Battle | Update.Timer;
             }
-            if (url.EndsWith("api_req_sortie/battleresult"))
+            if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_combined_battle/battleresult"))
             {
                 _battleInfo.InspectBattleResult(data);
                 _exMapInfo.InspectBattleResult(data);
@@ -328,18 +328,6 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_practice/battle_result"))
             {
                 _battleInfo.InspectPracticeResult(data);
-                return Update.Ship;
-            }
-            if (IsCombinedBattleAPI(url))
-            {
-                _battleInfo.InspectCombinedBattle(data, url);
-                _logger.InspectBattle(data);
-                return Update.Ship | Update.Battle;
-            }
-            if (url.EndsWith("api_req_combined_battle/battleresult"))
-            {
-                _battleInfo.InspectCombinedBattleResult(data);
-                _logger.InspectBattleResult(data);
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_combined_battle/goback_port"))
@@ -366,7 +354,9 @@ namespace KancolleSniffer
                    url.EndsWith("api_req_combined_battle/ld_airbattle") ||
                    url.EndsWith("api_req_combined_battle/battle_water") ||
                    url.EndsWith("api_req_combined_battle/midnight_battle") ||
-                   url.EndsWith("api_req_combined_battle/sp_midnight");
+                   url.EndsWith("api_req_combined_battle/sp_midnight") ||
+                   url.EndsWith("api_req_combined_battle/ec_battle") ||
+                   url.EndsWith("api_req_combined_battle/ec_midnight_battle");
         }
 
         private Update ApiOthers(string url, string request, dynamic data)
