@@ -35,7 +35,8 @@ namespace KancolleSniffer
                 {25, new ClearStatus {Map = 25, Cleared = false, Rate = 100}},
                 {35, new ClearStatus {Map = 35, Cleared = false, Rate = 150}},
                 {45, new ClearStatus {Map = 45, Cleared = false, Rate = 180}},
-                {55, new ClearStatus {Map = 55, Cleared = false, Rate = 200}}
+                {55, new ClearStatus {Map = 55, Cleared = false, Rate = 200}},
+                {65, new ClearStatus {Map = 65, Cleared = false, Rate = 250}}
             };
 
         private DateTime _lastReset;

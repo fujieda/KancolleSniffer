@@ -44,7 +44,9 @@ namespace KancolleSniffer
             {54, 5},
             {55, 5},
             {62, 3},
-            {63, 4}
+            {63, 4},
+            {64, 5},
+            {65, 6}
         };
 
         public void InspectMapInfo(dynamic json)
