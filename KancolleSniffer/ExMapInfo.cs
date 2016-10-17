@@ -54,7 +54,7 @@ namespace KancolleSniffer
                     continue;
                 ClearStatus stat;
                 if (!_clearStatus.TryGetValue(map, out stat))
-                    _clearStatus.Add(map, stat = new ClearStatus { Map = map});
+                    continue;
                 var prev = stat.Cleared;
                 stat.Cleared = (int)entry.api_cleared == 1;
                 if (prev != stat.Cleared)
@@ -74,7 +74,7 @@ namespace KancolleSniffer
                 return;
             ClearStatus stat;
             if (!_clearStatus.TryGetValue(_currentMap, out stat))
-                _clearStatus.Add(_currentMap, stat = new ClearStatus{Map = _currentMap});
+                _clearStatus.Add(_currentMap, stat = new ClearStatus {Map = _currentMap});
             stat.Cleared = true;
             stat.Rate = (int)json.api_get_eo_rate;
             NeedSave = true;
@@ -91,7 +91,7 @@ namespace KancolleSniffer
                 return;
             ClearStatus stat;
             if (!_clearStatus.TryGetValue(_currentMap, out stat))
-                _clearStatus.Add(_currentMap, stat = new ClearStatus{Map = _currentMap});
+                _clearStatus.Add(_currentMap, stat = new ClearStatus {Map = _currentMap});
             stat.Cleared = true;
             stat.Rate = rate;
             NeedSave = true;
@@ -131,7 +131,11 @@ namespace KancolleSniffer
                 return;
             _lastReset = status.ExMapState.LastReset;
             foreach (var s in status.ExMapState.ClearStatusList)
+            {
+                if (s.Map == 65)
+                    s.Rate = 250;
                 _clearStatus[s.Map] = s;
+            }
         }
 
         public class ExMapState
