@@ -67,21 +67,36 @@ namespace KancolleSniffer
                 }
             }
 
-            public int[] FighterPower => Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
+            public int[] FighterPower
             {
-                if (plane.State != 1)
-                    return prev;
-                var slot = plane.Slot;
-                var intercepterBonus = Action == 2
-                    ? slot.Spec.AntiBomber * 2 + slot.Spec.Interception
-                    : slot.Spec.Interception * 1.5;
-                var unskilled = (slot.Spec.AntiAir + intercepterBonus + slot.FighterPowerLevelBonus) * Sqrt(plane.Count);
-                return new[]
+                get
                 {
-                    prev[0] + (int)(unskilled + slot.AlvBonus[0]),
-                    prev[1] + (int)(unskilled + slot.AlvBonus[1])
-                };
-            });
+                    var airDefenceBonus = Action == 2
+                            ? Planes.Select(plane => plane.Slot.Spec.AirDefenceBonus).Max()
+                            : 1.0;
+                    var fighterPower = Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
+                    {
+                        if (plane.State != 1)
+                            return prev;
+                        var slot = plane.Slot;
+                        var intercepterBonus = Action == 2
+                            ? slot.Spec.AntiBomber * 2 + slot.Spec.Interception
+                            : slot.Spec.Interception * 1.5;
+                        var unskilled = (slot.Spec.AntiAir + intercepterBonus + slot.FighterPowerLevelBonus) *
+                                        Sqrt(plane.Count);
+                        return new[]
+                        {
+                            prev[0] + (int)(unskilled + slot.AlvBonus[0]),
+                            prev[1] + (int)(unskilled + slot.AlvBonus[1])
+                        };
+                    });
+                    return new[]
+                    {
+                        (int)(fighterPower[0] * airDefenceBonus),
+                        (int)(fighterPower[1] * airDefenceBonus)
+                    };
+                }
+            }
         }
 
         public class PlaneInfo

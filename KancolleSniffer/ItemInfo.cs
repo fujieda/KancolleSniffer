@@ -167,6 +167,22 @@ namespace KancolleSniffer
             }
         }
 
+        public double AirDefenceBonus
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case 9:
+                        return LoS <= 7 ? 1.2 : 1.3;
+                    case 10:
+                    case 41:
+                        return LoS <= 7 ? 1.1 : LoS <= 8 ? 1.13 : 1.16;
+                }
+                return 1;
+            }
+        }
+
         public Color Color
         {
             get

@@ -428,10 +428,21 @@ namespace KancolleSniffer.Test
         public void FighterPowerOfBaseAirCorps()
         {
             var sniffer = new Sniffer();
-            SniffLogFile(sniffer, "fighterpower_004");
+            SniffLogFile(sniffer, "baseaircorps_001");
             PAssert.That(() => sniffer.BaseAirCorps[0].AirCorps[0].FighterPower[1] == 301);
             sniffer.BaseAirCorps[0].AirCorps[0].Action = 2; // 防空
             PAssert.That(()=>sniffer.BaseAirCorps[0].AirCorps[0].FighterPower[1] == 320);
+        }
+
+        /// <summary>
+        /// 基地航空隊の防空時の偵察機補正を含む制空値を計算する
+        /// </summary>
+        [TestMethod]
+        public void FighterPowerWithReconBonus()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "baseaircorps_002");
+            PAssert.That(() => sniffer.BaseAirCorps[0].AirCorps[2].FighterPower[0] == 349);
         }
 
         /// <summary>
