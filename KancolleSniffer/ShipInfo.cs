@@ -253,7 +253,7 @@ namespace KancolleSniffer
         private int _hqLevel;
         private readonly List<int> _escapedShips = new List<int>();
         private int _combinedFleetType;
-        private readonly int[][] _presetDeck = new int[8][];
+        private int[][] _presetDeck = new int[0][];
 
         public ShipInfo(ItemInfo itemInfo)
         {
@@ -463,6 +463,7 @@ namespace KancolleSniffer
 
         public void InspectPresetDeck(dynamic json)
         {
+            _presetDeck = new int[(int)json.api_max_num][];
             foreach (KeyValuePair<string, dynamic> entry in json.api_deck)
                 InspectPresetRegister(entry.Value);
         }
