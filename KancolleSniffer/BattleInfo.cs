@@ -74,8 +74,14 @@ namespace KancolleSniffer
             {
                 CalcDamage(json, url.EndsWith("battle_water"));
             }
-            ClearOverKill(_enemyHp);
+            ClearEnemyOverKill();
             ResultRank = url.EndsWith("ld_airbattle") ? CalcLdAirBattleRank() : CalcResultRank();
+        }
+
+        private void ClearEnemyOverKill()
+        {
+            _enemyHp = _enemyHp.Select(hp => hp < 0 ? 0 : hp).ToArray();
+            _enemyGuardHp = _enemyGuardHp.Select(hp => hp < 0 ? 0 : hp).ToArray();
         }
 
         public void InspectMapNext(string request)
@@ -383,13 +389,6 @@ namespace KancolleSniffer
             }
         }
 
-        private void ClearOverKill(int[] result)
-        {
-            for (var i = 0; i < result.Length; i++)
-                if (result[i] < 0)
-                    result[i] = 0;
-        }
-
         public void InspectBattleResult(dynamic json)
         {
             ShowResult();
@@ -450,6 +449,7 @@ namespace KancolleSniffer
             private ShipStatus _status;
             public int NowHp => _status.NowHp;
             public bool Escaped => _status.Escaped;
+            public ShipStatus.Damage DamageLevel => _status.DamageLevel;
             public int StartHp;
 
             public static Record[] Setup(ShipStatus[] ships) =>
@@ -513,87 +513,50 @@ namespace KancolleSniffer
             return BattleResultRank.E;
         }
 
-        // 以下のコードは航海日誌拡張版の以下のファイルのcalcResultRankを移植したもの
-        // https://github.com/nekopanda/logbook/blob/94ceca4be6d4ce79a8759d1ee747fb9827c08edc/main/logbook/dto/BattleExDto.java
-        //
-        // The MIT License (MIT)
-        //
-        // Copyright (c) 2014-2015 航海日誌拡張版開発者
-        //
-        // Permission is hereby granted, free of charge, to any person obtaining a copy
-        // of this software and associated documentation files (the "Software"), to deal
-        // in the Software without restriction, including without limitation the rights
-        // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-        // copies of the Software, and to permit persons to whom the Software is
-        // furnished to do so, subject to the following conditions:
-        //
-        // The above copyright notice and this permission notice shall be included in
-        // all copies or substantial portions of the Software.
-        //
-        // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-        // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-        // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-        // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-        // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-        // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-        // THE SOFTWARE.
-        //
         private BattleResultRank CalcResultRank()
         {
             var friend = _friend.Concat(_guard).ToArray();
             var enemyHp = _enemyHp.Concat(_enemyGuardHp).ToArray();
             var enemyStartHp = _enemyStartHp.Concat(_enemyGuardStartHp).ToArray();
-            // 戦闘後に残っている艦数
-            var friendNowShips = friend.Count(r => r.NowHp > 0);
-            var enemyNowShips = enemyHp.Count(hp => hp > 0);
-            // 総ダメージ
-            var friendGauge = Max(friend.Sum(r => r.StartHp - r.NowHp), 0); // ダメコン・女神発動で負になりうる
-            var enemyGauge = enemyStartHp.Sum() - enemyHp.Sum();
-            // 轟沈・撃沈数
-            var friendSunk = friend.Count(r => r.NowHp == 0);
+
+            var friendCount = friend.Length;
+            var friendStartHpTotal = 0;
+            var friendNowHpTotal = 0;
+            var friendSunk = 0;
+            foreach (var ship in friend)
+            {
+                if (ship.Escaped)
+                    continue;
+                friendStartHpTotal += ship.StartHp;
+                friendNowHpTotal += ship.NowHp;
+                if (ship.NowHp == 0)
+                    friendSunk++;
+            }
+            var friendGaugeRate = (int)((double)(friendStartHpTotal - friendNowHpTotal) / friendStartHpTotal * 100);
+
+            var enemyCount = enemyHp.Length;
+            var enemyStartHpTotal = enemyStartHp.Sum();
+            var enemyNowHpTotal = enemyHp.Sum();
             var enemySunk = enemyHp.Count(hp => hp == 0);
+            var enemyGaugeRate = (int)((double)(enemyStartHpTotal - enemyNowHpTotal) / enemyStartHpTotal * 100);
 
-            var friendGaugeRate = Floor((double)friendGauge / friend.Where(r => !r.Escaped).Sum(r => r.StartHp) * 100);
-            var enemyGaugeRate = Floor((double)enemyGauge / enemyStartHp.Sum() * 100);
-            var equalOrMore = enemyGaugeRate > 0.9 * friendGaugeRate;
-            var superior = enemyGaugeRate > 0 && enemyGaugeRate > 2.5 * friendGaugeRate;
-
-            if (friendSunk == 0)
+            if (friendSunk == 0 && enemySunk == enemyCount)
             {
-                if (enemyNowShips == 0)
-                {
-                    if (friendGauge == 0)
-                        return BattleResultRank.P;
-                    return BattleResultRank.S;
-                }
-                if (enemyHp.Length == 6)
-                {
-                    if (enemySunk >= 4)
-                        return BattleResultRank.A;
-                }
-                else if (enemySunk * 2 >= _enemyHp.Length)
-                {
-                    return BattleResultRank.A;
-                }
-                if (_enemyHp[0] == 0)
-                    return BattleResultRank.B;
-                if (superior)
-                    return BattleResultRank.B;
+                if (friendNowHpTotal >= friendStartHpTotal)
+                    return BattleResultRank.P;
+                return BattleResultRank.S;
             }
-            else
-            {
-                if (enemyNowShips == 0)
-                    return BattleResultRank.B;
-                if (_enemyHp[0] == 0 && friendSunk < enemySunk)
-                    return BattleResultRank.B;
-                if (superior)
-                    return BattleResultRank.B;
-                if (_enemyHp[0] == 0)
-                    return BattleResultRank.C;
-            }
-            if (enemyGauge > 0 && equalOrMore)
+            if (friendSunk == 0 && enemySunk >= (int)(enemyCount * 0.7) && enemyCount > 1)
+                return BattleResultRank.A;
+            if (friendSunk < enemySunk && enemyHp[0] == 0)
+                return BattleResultRank.B;
+            if (friendCount == 1 && friend[0].DamageLevel == ShipStatus.Damage.Badly)
+                return BattleResultRank.D;
+            if (enemyGaugeRate > friendGaugeRate * 2.5)
+                return BattleResultRank.B;
+            if (enemyGaugeRate > friendGaugeRate * 0.9)
                 return BattleResultRank.C;
-            if (friendSunk > 0 && friendNowShips == 1)
+            if (friendCount > 1 && friendCount - 1 == friendSunk)
                 return BattleResultRank.E;
             return BattleResultRank.D;
         }
