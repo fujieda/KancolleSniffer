@@ -35,6 +35,7 @@ namespace KancolleSniffer
         private readonly ExMapInfo _exMapInfo = new ExMapInfo();
         private readonly MiscTextInfo _miscTextInfo = new MiscTextInfo();
         private readonly BaseAirCoprs _baseAirCoprs;
+        private readonly PresetDeck _presetDeck = new PresetDeck();
         private readonly Status _status = new Status();
         private bool _saveState;
         private readonly List<IHaveState> _haveState;
@@ -60,7 +61,7 @@ namespace KancolleSniffer
             _shipInfo = new ShipInfo(_itemInfo);
             _conditionTimer = new ConditionTimer(_shipInfo);
             _dockInfo = new DockInfo(_shipInfo, _materialInfo);
-            _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo);
+            _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo, _presetDeck);
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
             _baseAirCoprs = new BaseAirCoprs(_itemInfo);
@@ -236,7 +237,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_get_member/preset_deck"))
             {
-                _shipInfo.InspectPresetDeck(data);
+                _presetDeck.Inspect(data);
                 return Update.None;
             }
             if (url.EndsWith("api_get_member/base_air_corps"))
@@ -375,12 +376,12 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_hensei/preset_register"))
             {
-                _shipInfo.InspectPresetRegister(data);
+                _presetDeck.InspectRegister(data);
                 return Update.None;
             }
             if (url.EndsWith("api_req_hensei/preset_delete"))
             {
-                _shipInfo.InspectPresetDelete(request);
+                _presetDeck.InspectDelete(request);
                 return Update.Timer;
             }
             if (url.EndsWith("api_req_hensei/combined"))

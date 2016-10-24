@@ -89,6 +89,7 @@
     <Compile Include="MaterialInfo.cs" />
     <Compile Include="MiscTextInfo.cs" />
     <Compile Include="MissingData.cs" />
+    <Compile Include="PresetDeck.cs" />
     <Compile Include="ShipLabels.cs" />
     <Compile Include="ListForm.cs">
       <SubType>Form</SubType>

@@ -22,6 +22,7 @@ namespace KancolleSniffer
     {
         private readonly ShipInfo _shipInfo;
         private readonly DockInfo _dockInfo;
+        private readonly PresetDeck _presetDeck;
         private readonly RepairStatus[] _repairStatuses = new RepairStatus[ShipInfo.FleetCount];
         private DateTime _start;
         private DateTime _prev;
@@ -134,10 +135,11 @@ namespace KancolleSniffer
             public string Completed { get; set; }
         }
 
-        public AkashiTimer(ShipInfo ship, DockInfo dock)
+        public AkashiTimer(ShipInfo ship, DockInfo dock, PresetDeck preset)
         {
             _shipInfo = ship;
             _dockInfo = dock;
+            _presetDeck = preset;
             for (var i = 0; i < _repairStatuses.Length; i++)
                 _repairStatuses[i] = new RepairStatus();
         }
@@ -233,7 +235,7 @@ namespace KancolleSniffer
         public bool CheckReparing() => Enumerable.Range(0, ShipInfo.FleetCount).Any(CheckReparing);
 
         public bool CheckPresetReparing()
-            => _shipInfo.PresetDeck.Where(deck => deck != null)
+            => _presetDeck.Decks.Where(deck => deck != null)
                 .Any(deck => RepairTarget(deck).Any(s => s.NowHp < s.MaxHp));
 
         public Notice[] GetNotice()

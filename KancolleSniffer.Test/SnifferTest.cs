@@ -621,6 +621,16 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 拡張した編成記録枠にすぐに記録してもエラーにならない
+        /// </summary>
+        [TestMethod]
+        public void PresetExpand()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "preset_002");
+        }
+
+        /// <summary>
         /// 装備の交換を正しく反映する
         /// </summary>
         [TestMethod]
