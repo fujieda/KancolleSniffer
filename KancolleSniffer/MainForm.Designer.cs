@@ -227,9 +227,9 @@ namespace KancolleSniffer
             // 
             // labelAchievement
             // 
-            this.labelAchievement.Location = new System.Drawing.Point(168, 18);
+            this.labelAchievement.Location = new System.Drawing.Point(167, 18);
             this.labelAchievement.Name = "labelAchievement";
-            this.labelAchievement.Size = new System.Drawing.Size(31, 12);
+            this.labelAchievement.Size = new System.Drawing.Size(32, 12);
             this.labelAchievement.TabIndex = 7;
             this.labelAchievement.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
