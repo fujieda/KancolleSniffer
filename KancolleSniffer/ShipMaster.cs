@@ -163,7 +163,7 @@ namespace KancolleSniffer
                     case 2:
                         return 5.0;
                     case 3:
-                        return 2.0;
+                        return Id == 487 ? 10.0 : 2.0; // 鬼怒改二は大発分を加算
                     case 6:
                         return 4.0;
                     case 10:

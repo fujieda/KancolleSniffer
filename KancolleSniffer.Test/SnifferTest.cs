@@ -499,12 +499,16 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void TransportPoint()
         {
-            var sniffer = new Sniffer();
-            SniffLogFile(sniffer, "transportpoint_001");
+            var sniffer1 = new Sniffer();
+            SniffLogFile(sniffer1, "transportpoint_001");
             ItemSpec.IncreaceLandPowerTp = false;
-            PAssert.That(() => (int)sniffer.GetShipStatuses(0).Sum(s => s.TransportPoint) == 27);
+            PAssert.That(() => (int)sniffer1.GetShipStatuses(0).Sum(s => s.TransportPoint) == 27);
             ItemSpec.IncreaceLandPowerTp = true;
-            PAssert.That(() => (int)sniffer.GetShipStatuses(0).Sum(s => s.TransportPoint) == 37, "陸上戦力揚陸時");
+            PAssert.That(() => (int)sniffer1.GetShipStatuses(0).Sum(s => s.TransportPoint) == 37, "陸上戦力揚陸時");
+
+            var sniffer2 = new Sniffer();
+            SniffLogFile(sniffer2, "transportpoint_002");
+            PAssert.That(() => (int)sniffer2.GetShipStatuses(0).Sum(s => s.TransportPoint) == 22, "鬼怒改二+特大発+おにぎり");
         }
 
         /// <summary>
