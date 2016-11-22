@@ -318,6 +318,22 @@ namespace KancolleSniffer
             }
         }
 
+        public double[] AlvBonusInBase
+        {
+            get
+            {
+                switch (Spec.Type)
+                {
+                    case 9: // 艦偵
+                    case 10: // 水偵
+                    case 41: // 大艇
+                        return new[] {_alvBonusMin[Alv], _alvBonusMax[Alv]};
+                    default:
+                        return AlvBonus;
+                }
+            }
+        }
+
         public double FighterPowerLevelBonus
         {
             get

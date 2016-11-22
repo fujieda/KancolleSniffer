@@ -86,8 +86,8 @@ namespace KancolleSniffer
                                         Sqrt(plane.Count);
                         return new[]
                         {
-                            prev[0] + (int)(unskilled + slot.AlvBonus[0]),
-                            prev[1] + (int)(unskilled + slot.AlvBonus[1])
+                            prev[0] + (int)(unskilled + slot.AlvBonusInBase[0]),
+                            prev[1] + (int)(unskilled + slot.AlvBonusInBase[1])
                         };
                     });
                     return new[]

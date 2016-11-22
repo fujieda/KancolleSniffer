@@ -442,7 +442,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "baseaircorps_002");
-            PAssert.That(() => sniffer.BaseAirCorps[0].AirCorps[2].FighterPower[0] == 349);
+            PAssert.That(() => sniffer.BaseAirCorps[0].AirCorps[2].FighterPower[0] == 353);
         }
 
         /// <summary>
