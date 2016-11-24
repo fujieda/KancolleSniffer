@@ -423,7 +423,7 @@ namespace KancolleSniffer
             {
                 _dockInfo.InspectSpeedChange(request);
                 _conditionTimer.CheckCond();
-                return Update.NDock | Update.Timer | Update.Ship;
+                return Update.NDock | Update.Timer | Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_map/start"))
             {
