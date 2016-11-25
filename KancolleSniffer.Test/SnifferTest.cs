@@ -530,6 +530,22 @@ namespace KancolleSniffer.Test
             PAssert.That(() => sniffer3.Battle.ResultRank == BattleResultRank.A, "護衛を撃ちもらす");
         }
 
+
+        /// <summary>
+        /// 双方連合艦隊の戦闘に対応する
+        /// </summary>
+        [TestMethod]
+        public void BothCombinedBattle()
+        {
+            var sniffer1 = new Sniffer();
+            SniffLogFile(sniffer1, "both_combined_water_001");
+            PAssert.That(() => sniffer1.Battle.ResultRank == BattleResultRank.A);
+
+            var sniffer2 = new Sniffer();
+            SniffLogFile(sniffer2, "both_combined_001");
+            PAssert.That(() => sniffer2.Battle.ResultRank == BattleResultRank.S);
+        }
+
         /// <summary>
         /// 2-5をクリアしたときの特別戦果を反映する
         /// </summary>

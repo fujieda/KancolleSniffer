@@ -357,7 +357,9 @@ namespace KancolleSniffer
                    url.EndsWith("api_req_combined_battle/midnight_battle") ||
                    url.EndsWith("api_req_combined_battle/sp_midnight") ||
                    url.EndsWith("api_req_combined_battle/ec_battle") ||
-                   url.EndsWith("api_req_combined_battle/ec_midnight_battle");
+                   url.EndsWith("api_req_combined_battle/ec_midnight_battle") ||
+                   url.EndsWith("api_req_combined_battle/each_battle") ||
+                   url.EndsWith("api_req_combined_battle/each_battle_water");
         }
 
         private Update ApiOthers(string url, string request, dynamic data)
