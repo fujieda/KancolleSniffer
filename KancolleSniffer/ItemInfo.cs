@@ -160,7 +160,7 @@ namespace KancolleSniffer
                     case 167: // 特二式内火艇
                         return IncreaceLandPowerTp ? 7.0 : 2.0;
                     case 145: // 戦闘糧食
-                        return 4.0;
+                        return 1.0;
                     case 150: // 秋刀魚の缶詰
                         return 1.0;
                     default:
