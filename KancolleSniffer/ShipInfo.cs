@@ -512,8 +512,11 @@ namespace KancolleSniffer
         public void SetItemHolder()
         {
             foreach (var ship in _shipInfo.Values)
+            {
                 foreach (var item in ship.Slot)
                     _itemInfo.GetStatus(item.Id).Holder = ship;
+                _itemInfo.GetStatus(ship.SlotEx.Id).Holder = ship;
+            }
         }
 
         public ShipSpec GetSpec(int id) => _shipMaster[id];

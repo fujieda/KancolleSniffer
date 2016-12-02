@@ -736,6 +736,19 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 装備の所持者を設定する
+        /// </summary>
+        [TestMethod]
+        public void SetItemHolder()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "itemholder_001");
+            var itemIds = new HashSet<int> {75298, 76572, 82725, 90213, 5910};
+            var items = sniffer.ItemList.Where(status => itemIds.Contains(status.Id));
+            PAssert.That(() => items.All(x => x.Holder.Id == 861));
+        }
+
+        /// <summary>
         /// 資材の変動を正しく反映する
         /// </summary>
         [TestMethod]
