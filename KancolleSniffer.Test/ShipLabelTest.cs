@@ -26,7 +26,7 @@ namespace KancolleSniffer.Test
         /// 明石タイマー表示中の艦娘の名前を縮める
         /// </summary>
         [TestMethod]
-        public void TrancateNameForAkashiTimer()
+        public void TruncateNameForAkashiTimer()
         {
             var dict = new Dictionary<string, string>
             {
@@ -42,19 +42,14 @@ namespace KancolleSniffer.Test
                 {"Graf Zeppelin改", "Graf Zep"},
                 {"Libeccio改", "Libeccio"},
             };
-            var label = new ShipLabel {Parent = new Panel()};
-            foreach (var entry in dict)
-            {
-                label.SetName("", entry.Key, "", ShipNameWidth.AkashiTimer);
-                PAssert.That(() => label.Text == entry.Value, entry.Key);
-            }
+            TruncateNameSub(dict, ShipNameWidth.AkashiTimer);
         }
 
         /// <summary>
         /// 入渠中の艦娘名の名前を縮める
         /// </summary>
         [TestMethod]
-        public void TrancateNameForNDock()
+        public void TruncateNameForNDock()
         {
             var dict = new Dictionary<string, string>
             {
@@ -63,19 +58,14 @@ namespace KancolleSniffer.Test
                 {"Graf Zeppelin改", "Graf Zeppeli"},
                 {"千代田航改二", "千代田航改"}
             };
-            var label = new ShipLabel {Parent = new Panel()};
-            foreach (var entry in dict)
-            {
-                label.SetName("", entry.Key, "", ShipNameWidth.NDock);
-                PAssert.That(() => label.Text == entry.Value, entry.Key);
-            }
+            TruncateNameSub(dict, ShipNameWidth.NDock);
         }
 
         /// <summary>
         /// 一覧ウィンドウの要修復一覧の艦娘の名前を縮める
         /// </summary>
         [TestMethod]
-        public void TrancateNameForRepairList()
+        public void TruncateNameForRepairListFull()
         {
             var dict = new Dictionary<string, string>
             {
@@ -83,13 +73,43 @@ namespace KancolleSniffer.Test
                 {"Graf Zeppelin改", "Graf Zeppelin"},
                 {"千代田航改二", "千代田航改"}
             };
+            TruncateNameSub(dict, ShipNameWidth.RepairListFull);
+        }
+
+        /// <summary>
+        /// メインパネルの艦娘の名前を縮める
+        /// </summary>
+        [TestMethod]
+        public void TruncateNameForMainPanel()
+        {
+            var dict = new Dictionary<string, string>
+            {
+                {"Commandant Teste", "Commandant Tes"}
+            };
+            TruncateNameSub(dict, ShipNameWidth.MainPanel);
+        }
+
+        [TestMethod]
+        public void TruncateNameForShipList()
+        {
+            var dict = new Dictionary<string, string>
+            {
+                {"Commandant Test", "Commandant T"},
+                {"Graf Zeppelin改", "Graf Zeppelin"}
+            };
+            TruncateNameSub(dict, ShipNameWidth.ShipList);
+        }
+
+        private void TruncateNameSub(Dictionary<string, string> dict, ShipNameWidth width)
+        {
             var label = new ShipLabel {Parent = new Panel()};
             foreach (var entry in dict)
             {
-                label.SetName("", entry.Key, "", ShipNameWidth.RepairListFull);
+                label.SetName("", entry.Key, "", width);
                 PAssert.That(() => label.Text == entry.Value, entry.Key);
             }
         }
+
 
         /// <summary>
         /// prefixとsuffixを加える
@@ -97,7 +117,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void SetName()
         {
-            var label = new ShipLabel {Parent= new Panel()};
+            var label = new ShipLabel {Parent = new Panel()};
             label.SetName("[避]", "綾波改二", "▫");
             PAssert.That(() => label.Text == "[避]綾波改二▫");
             label.SetName("[避]", "朝潮改二丁", "▫", ShipNameWidth.AkashiTimer);

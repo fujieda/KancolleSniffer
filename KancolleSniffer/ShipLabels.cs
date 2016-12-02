@@ -23,10 +23,13 @@ namespace KancolleSniffer
 {
     public enum ShipNameWidth
     {
+        MainPanel = 93,
         AkashiTimer = 53,
         NDock = 69,
         RepairList = NDock,
         RepairListFull = 75,
+        ShipList = 82,
+        GroupConfig = 82,
         Max = int.MaxValue
     }
 
@@ -108,7 +111,7 @@ namespace KancolleSniffer
                     labels[1].SetCond(s);
                     labels[2].SetLevel(s);
                     labels[3].SetExpToNext(s);
-                    labels[4].SetName(s);
+                    labels[4].SetName(s, ShipNameWidth.MainPanel);
                 }
                 else
                 {

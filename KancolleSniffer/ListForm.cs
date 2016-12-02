@@ -375,7 +375,7 @@ namespace KancolleSniffer
             labels[1].SetCond(s);
             labels[2].SetLevel(s);
             labels[3].SetExpToNext(s);
-            labels[4].SetName(s);
+            labels[4].SetName(s, ShipNameWidth.ShipList);
             labels[5].SetFleet(s);
             lbp.Visible = true;
         }
@@ -411,7 +411,7 @@ namespace KancolleSniffer
                 cbp.Location = new Point(cbp.Left, (int)cbp.Tag + panelShipList.AutoScrollPosition.Y);
             var cfgl = _configLabelList[i];
             cfgl[0].SetLevel(s);
-            cfgl[1].SetName(s);
+            cfgl[1].SetName(s, ShipNameWidth.GroupConfig);
             cfgl[2].SetFleet(s);
             var cb = _checkBoxesList[i];
             for (var j = 0; j < cb.Length; j++)
