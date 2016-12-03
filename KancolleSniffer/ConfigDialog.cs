@@ -113,7 +113,13 @@ namespace KancolleSniffer
                 using (var reader = new StreamReader(stream))
                 {
                     var str = await reader.ReadLineAsync();
-                    Invoke(new Action(() => { labelLatest.Text = version == str ? "最新です" : "最新は" + str + "です"; }));
+                    try
+                    {
+                        Invoke(new Action(() => { labelLatest.Text = version == str ? "最新です" : "最新は" + str + "です"; }));
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
                 }
             }
             catch (WebException)
