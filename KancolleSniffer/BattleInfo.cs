@@ -368,7 +368,7 @@ namespace KancolleSniffer
             for (var i = 0; i < friend.Length; i++)
                 friend[i].ApplyDamage(damage[i + 1]);
             for (var i = 0; i < guard.Length; i++)
-                friend[i].ApplyDamage(damage[i + 6 + 1]);
+                guard[i].ApplyDamage(damage[i + 6 + 1]);
         }
 
         private void CalcSimpleDamage(dynamic rawDamage, Record[] friend)

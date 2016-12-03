@@ -544,6 +544,15 @@ namespace KancolleSniffer.Test
             var sniffer2 = new Sniffer();
             SniffLogFile(sniffer2, "both_combined_001");
             PAssert.That(() => sniffer2.Battle.ResultRank == BattleResultRank.S);
+
+            // 護衛艦隊に雷撃を受ける場合
+            var sniffer3 = new Sniffer();
+            SniffLogFile(sniffer3, "both_combined_002");
+            PAssert.That(() => sniffer2.Battle.ResultRank == BattleResultRank.S);
+            PAssert.That(
+                () => sniffer3.GetShipStatuses(0).Select(s => s.NowHp).SequenceEqual(new[] {89, 86, 87, 78, 87, 57}));
+            PAssert.That(
+                () => sniffer3.GetShipStatuses(1).Select(s => s.NowHp).SequenceEqual(new[] {46, 37, 14, 59, 49, 63}));
         }
 
         /// <summary>
