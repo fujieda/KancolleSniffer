@@ -465,6 +465,56 @@ namespace KancolleSniffer
                 }
             }
         }
+
+        public double EffectiveAntiAirForShip
+        {
+            get
+            {
+                switch (Spec.IconType)
+                {
+                    case 15: // 機銃
+                        return 6 * Spec.AntiAir + 4 * Sqrt(Level);
+                    case 16: // 高角砲
+                        return 4 * Spec.AntiAir + 3 * Sqrt(Level);
+                    case 11: // 電探
+                        return 3 * Spec.AntiAir;
+                    case 30: // 高射装置
+                        return 4 * Spec.AntiAir;
+                }
+                return 0;
+            }
+        }
+
+        public double EffectiveAntiAirForFleet
+        {
+            get
+            {
+                switch (Spec.IconType)
+                {
+                    case 1:
+                    case 2:
+                    case 3: // 主砲
+                    case 4: // 副砲
+                    case 6: // 艦戦
+                    case 7: // 艦爆
+                    case 15: // 機銃
+                        return 0.2 * Spec.AntiAir;
+                    case 11: // 電探
+                        return 0.4 * Spec.AntiAir + 1.5 * Sqrt(Level);
+                    case 12: // 三式弾
+                        return 0.6 * Spec.AntiAir;
+                    case 16: // 高角砲
+                        return 0.35 * Spec.AntiAir + 3 * Sqrt(Level);
+                    case 30: // 高射装置
+                        return 0.35 * Spec.AntiAir;
+                    default:
+                        if (Spec.Type == 10) // 水偵
+                            return 0.2 * Spec.AntiAir;
+                        break;
+                }
+                return 0;
+            }
+        }
     }
 
     public class ItemInfo

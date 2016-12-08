@@ -77,6 +77,7 @@ namespace KancolleSniffer
             this.labelFleet2 = new System.Windows.Forms.Label();
             this.labelFleet1 = new System.Windows.Forms.Label();
             this.fleetPanel = new KancolleSniffer.FleetPanel();
+            this.antiAirPanel = new KancolleSniffer.AntiAirPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
             this.shipListPanel = new KancolleSniffer.ShipListPanel();
             this.contextMenuStripShipList.SuspendLayout();
@@ -246,6 +247,7 @@ namespace KancolleSniffer
             "修復",
             "装備",
             "艦隊",
+            "対空",
             "情報"});
             this.comboBoxGroup.Location = new System.Drawing.Point(6, 4);
             this.comboBoxGroup.Name = "comboBoxGroup";
@@ -393,9 +395,20 @@ namespace KancolleSniffer
             this.labelFleet1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.labelFleet1.Click += new System.EventHandler(this.labelFleet_Click);
             // 
+            // antiAirPanel
+            // 
+            this.antiAirPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.antiAirPanel.AutoScroll = true;
+            this.antiAirPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.antiAirPanel.Location = new System.Drawing.Point(6, 23);
+            this.antiAirPanel.Name = "antiAirPanel";
+            this.antiAirPanel.Size = new System.Drawing.Size(238, 263);
+            this.antiAirPanel.TabIndex = 17;
+            // 
             // fleetPanel
             // 
-            this.fleetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.fleetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.fleetPanel.AutoScroll = true;
             this.fleetPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -433,6 +446,7 @@ namespace KancolleSniffer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(250, 292);
             this.Controls.Add(this.panelFleetHeader);
+            this.Controls.Add(this.antiAirPanel);
             this.Controls.Add(this.panelItemHeader);
             this.Controls.Add(this.panelRepairHeader);
             this.Controls.Add(this.panelGroupHeader);
@@ -504,5 +518,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label1Fleet3;
         private System.Windows.Forms.Label labelFleet2;
         private System.Windows.Forms.Label labelFleet1;
+        private AntiAirPanel antiAirPanel;
     }
 }

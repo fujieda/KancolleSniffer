@@ -41,6 +41,7 @@ namespace KancolleSniffer
         public int Firepower { get; set; }
         public int Torpedo { get; set; }
         public int AntiSubmarine { get; set; }
+        public int AntiAir { get; set; }
         public int Lucky { get; set; }
         public bool Locked { get; set; }
         public bool Escaped { get; set; }
@@ -202,6 +203,20 @@ namespace KancolleSniffer
         public double TransportPoint
             => Spec.TransportPoint + AllSlot.Sum(item => item.Spec.TransportPoint);
 
+        public int EffectiveAntiAirForShip
+        {
+            get
+            {
+                if (Slot.All(item => item.Id == -1))
+                    return AntiAir;
+                var vanilla = AntiAir - Slot.Sum(item => item.Spec.AntiAir);
+                var x = vanilla + Slot.Sum(item => item.EffectiveAntiAirForShip);
+                return (int)(x / 2) * 2;
+            }
+        }
+
+        public int EffectiveAntiAirForFleet => (int)Slot.Sum(item => item.EffectiveAntiAirForFleet);
+
         public object Clone()
         {
             var r = (ShipStatus)MemberwiseClone();
@@ -349,6 +364,7 @@ namespace KancolleSniffer
                     Firepower = (int)entry.api_karyoku[0],
                     Torpedo = (int)entry.api_raisou[0],
                     AntiSubmarine = (int)entry.api_taisen[0],
+                    AntiAir = (int)entry.api_taiku[0],
                     Lucky = (int)entry.api_lucky[0],
                     Locked = entry.api_locked() && entry.api_locked == 1
                 };

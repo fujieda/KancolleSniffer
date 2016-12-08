@@ -54,6 +54,9 @@
   <ItemGroup>
     <Compile Include="Achievement.cs" />
     <Compile Include="AkashiTimer.cs" />
+    <Compile Include="AntiAirPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BaseAirCoprs.cs" />
     <Compile Include="BattleInfo.cs" />
     <Compile Include="Config.cs" />

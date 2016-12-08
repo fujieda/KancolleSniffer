@@ -567,6 +567,22 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 対空砲火のパラメータを計算する
+        /// </summary>
+        [TestMethod]
+        public void AntiAirFire()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "antiairfire_001");
+            var ships = sniffer.GetShipStatuses(0);
+            PAssert.That(() => ships.Sum(ship => ship.EffectiveAntiAirForFleet) == 88);
+            PAssert.That(
+                () =>
+                    ships.Select(ship => ship.EffectiveAntiAirForShip)
+                        .SequenceEqual(new[] {92, 90, 88, 228, 146, 226}));
+        }
+
+        /// <summary>
         /// 2-5をクリアしたときの特別戦果を反映する
         /// </summary>
         [TestMethod]

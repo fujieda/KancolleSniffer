@@ -48,7 +48,7 @@ namespace KancolleSniffer
 
         public void UpdateList()
         {
-            panelItemHeader.Visible = InItemList || InMiscText;
+            panelItemHeader.Visible = InItemList || InAntiAir || InMiscText;
             panelGroupHeader.Visible = InGroupConfig;
             panelRepairHeader.Visible = InRepairList;
             panelFleetHeader.Visible = InFleetInfo;
@@ -56,6 +56,7 @@ namespace KancolleSniffer
             shipListPanel.Visible = shipListPanel.Enabled = InShipStatus || InGroupConfig || InRepairList;
             itemTreeView.Visible = itemTreeView.Enabled = InItemList;
             fleetPanel.Visible = fleetPanel.Enabled = InFleetInfo;
+            antiAirPanel.Visible = antiAirPanel.Enabled = InAntiAir;
             richTextBoxMiscText.Visible = InMiscText;
             if (InItemList)
             {
@@ -64,6 +65,10 @@ namespace KancolleSniffer
             else if (InFleetInfo)
             {
                 fleetPanel.Update(_sniffer);
+            }
+            else if (InAntiAir)
+            {
+                antiAirPanel.Update(_sniffer);
             }
             else if (InMiscText)
             {
@@ -104,6 +109,8 @@ namespace KancolleSniffer
         private bool InItemList => comboBoxGroup.Text == "装備";
 
         private bool InFleetInfo => comboBoxGroup.Text == "艦隊";
+
+        private bool InAntiAir => comboBoxGroup.Text == "対空";
 
         private bool InMiscText => comboBoxGroup.Text == "情報";
 
@@ -162,6 +169,10 @@ namespace KancolleSniffer
             {
                 fleetPanel.ShowShip(id);
             }
+            else if (InAntiAir)
+            {
+                antiAirPanel.ShowShip(id);
+            }
         }
 
         private void checkBoxShipType_CheckedChanged(object sender, EventArgs e)
@@ -185,7 +196,7 @@ namespace KancolleSniffer
 
         private void ShipListForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'X', 'I'},
+            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'X', 'Y', 'I'},
                 x => x == char.ToUpper(e.KeyChar));
             if (g == -1)
                 return;
@@ -203,6 +214,10 @@ namespace KancolleSniffer
             else if (InFleetInfo)
             {
                 ActiveControl = fleetPanel;
+            }
+            else if (InAntiAir)
+            {
+                ActiveControl = antiAirPanel;
             }
             else
             {
