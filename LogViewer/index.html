@@ -274,15 +274,15 @@ function pickChartData(data, range)
         tickInterval = oneDay;
         lastTick = to5am(last);
     } else if (last <= first + oneDay * 63) {
-        interval = 3600 * 2000;
+        interval = 3600 * 1000;
         tickInterval = oneDay * 7;
         lastTick = to5am(moment(last).day(1).valueOf());
     } else if (last <= first + oneDay * 126) {
-        interval = 3600 * 12000;
+        interval = 3600 * 6000;
         tickInterval = oneDay * 14;
         lastTick = to5am(moment(last).day(1).valueOf());
     } else {
-        interval = 3600 * 24000;
+        interval = 3600 * 12000;
         tickInterval = oneDay * 28;
         lastTick = to5am(moment(last).day(1).valueOf());
     }
