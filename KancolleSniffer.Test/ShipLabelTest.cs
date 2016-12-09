@@ -105,23 +105,32 @@ namespace KancolleSniffer.Test
             var label = new ShipLabel {Parent = new Panel()};
             foreach (var entry in dict)
             {
-                label.SetName("", entry.Key, "", width);
+                label.SetName(entry.Key, width);
                 PAssert.That(() => label.Text == entry.Value, entry.Key);
             }
         }
 
-
         /// <summary>
-        /// prefixとsuffixを加える
+        /// prefixを加える
         /// </summary>
         [TestMethod]
         public void SetName()
         {
             var label = new ShipLabel {Parent = new Panel()};
-            label.SetName("[避]", "綾波改二", "▫");
-            PAssert.That(() => label.Text == "[避]綾波改二▫");
-            label.SetName("[避]", "朝潮改二丁", "▫", ShipNameWidth.AkashiTimer);
-            PAssert.That(() => label.Text == "[避]朝潮改二▫");
+            label.SetName(new ShipStatus
+                {
+                    Spec = new ShipSpec {Name = "綾波改二"},
+                    Escaped = true
+                },
+                ShipNameWidth.AkashiTimer);
+            PAssert.That(() => label.Text == "[避]綾波改二");
+            label.SetName(new ShipStatus
+                {
+                    Spec = new ShipSpec {Name = "朝潮改二丁"},
+                    Escaped = true
+                },
+                ShipNameWidth.AkashiTimer);
+            PAssert.That(() => label.Text == "[避]朝潮改二");
         }
     }
 }

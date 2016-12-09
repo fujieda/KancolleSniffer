@@ -334,7 +334,7 @@ namespace KancolleSniffer
         public void SetNDockLabels(NameAndTimer[] ndock)
         {
             for (var i = 0; i < _ndockLabels.Length; i++)
-                _ndockLabels[i][1].SetName("", ndock[i].Name, "", ShipNameWidth.NDock);
+                _ndockLabels[i][1].SetName(ndock[i].Name, ShipNameWidth.NDock);
         }
 
         public void SetNDockTimer(int dock, RingTimer timer, bool finishTime)
@@ -354,6 +354,15 @@ namespace KancolleSniffer
         public bool AnchorRight { get; set; }
         private int _right = int.MinValue;
         private int _left;
+        private SlotStatus _slotStatus;
+
+        [Flags]
+        private enum SlotStatus
+        {
+            Equipped = 0,
+            NormalEmpty = 1,
+            ExtraEmpty = 2
+        }
 
         public ShipLabel()
         {
@@ -362,7 +371,14 @@ namespace KancolleSniffer
 
         public void SetName(ShipStatus status, ShipNameWidth width = ShipNameWidth.Max)
         {
-            var empty = status.Id != -1 && status.Slot.All(e => e.Id == -1) ? "▫" : "";
+            SlotStatus empty = SlotStatus.Equipped;
+            if (status.Id != -1)
+            {
+                if (status.Slot.All(item => item.Id == -1))
+                    empty |= SlotStatus.NormalEmpty;
+                if (status.SlotEx.Id == -1)
+                    empty |= SlotStatus.ExtraEmpty;
+            }
             var dc = status.PreparedDamageControl;
             var dcname = dc == 42 ? "[ダ]" : dc == 43 ? "[メ]" : "";
             SetName((status.Escaped ? "[避]" : dcname), status.Name, empty, width);
@@ -370,13 +386,19 @@ namespace KancolleSniffer
 
         public void SetName(string name)
         {
-            SetName("", name, "");
+            SetName("", name, SlotStatus.Equipped);
         }
 
-        public void SetName(string prefix, string name, string suffix, ShipNameWidth width = ShipNameWidth.Max)
+        public void SetName(string name, ShipNameWidth width)
+        {
+            SetName("", name, SlotStatus.Equipped, width);
+        }
+
+        private void SetName(string prefix, string name, SlotStatus slotStatus, ShipNameWidth width = ShipNameWidth.Max)
         {
             if (name == null)
                 return;
+            _slotStatus = slotStatus;
             var lu = new Regex(@"^\p{Lu}").IsMatch(name);
             var shift = (int)Round(ScaleFactor.Height);
             if (lu && Font.Equals(Parent.Font))
@@ -389,11 +411,12 @@ namespace KancolleSniffer
                 Location += new Size(0, shift);
                 Font = Parent.Font;
             }
-            var result = prefix + name + suffix;
+            var result = prefix + name;
             var measured = TextRenderer.MeasureText(result, Font).Width;
             if (measured <= (int)width)
             {
                 Text = result;
+                Invalidate(); // 必ずOnPaintを実行させるため
                 return;
             }
             var truncated = "";
@@ -404,7 +427,8 @@ namespace KancolleSniffer
                     break;
                 truncated = tmp;
             }
-            Text = prefix + truncated.TrimEnd(' ') + suffix;
+            Text = prefix + truncated.TrimEnd(' ');
+            Invalidate();
         }
 
         public void SetHp(ShipStatus status)
@@ -484,6 +508,25 @@ namespace KancolleSniffer
                 return;
             _left -= Right - _right;
             Location = new Point(_left, Top);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if ((_slotStatus & SlotStatus.NormalEmpty) != 0)
+            {
+                e.Graphics.DrawRectangle(
+                    Pens.Black,
+                    ClientSize.Width - 3 * ScaleFactor.Width, 1 * ScaleFactor.Height,
+                    2 * ScaleFactor.Width, 4 * ScaleFactor.Height);
+            }
+            if ((_slotStatus & SlotStatus.ExtraEmpty) != 0)
+            {
+                e.Graphics.DrawRectangle(
+                    Pens.Black,
+                    ClientSize.Width - 3 * ScaleFactor.Width, 7 * ScaleFactor.Height,
+                    2 * ScaleFactor.Width, 3 * ScaleFactor.Height);
+            }
         }
 
         public void Scale()

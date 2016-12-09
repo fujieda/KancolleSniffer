@@ -282,7 +282,7 @@ namespace KancolleSniffer
 
         public ItemStatus(int id)
         {
-            Id = id == 0 ? -1 : id;
+            Id = id;
         }
 
         private readonly double[] _alvBonusMin =
