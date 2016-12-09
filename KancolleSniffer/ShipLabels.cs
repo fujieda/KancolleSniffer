@@ -30,6 +30,7 @@ namespace KancolleSniffer
         RepairListFull = 75,
         ShipList = 82,
         GroupConfig = 82,
+        Combined = 54,
         Max = int.MaxValue
     }
 
@@ -144,7 +145,7 @@ namespace KancolleSniffer
             for (var i = 0; i < _combinedLabels.Length; i++)
             {
                 var x = parentWidth / 2 * (i / ShipInfo.MemberCount);
-                var y = top + lh * ((i % ShipInfo.MemberCount) + 1);
+                var y = top + lh * (i % ShipInfo.MemberCount + 1);
                 parent.Controls.AddRange(_combinedLabels[i] = new[]
                 {
                     new ShipLabel {Location = new Point(x + 88, y), AutoSize = true, AnchorRight = true},
@@ -180,7 +181,7 @@ namespace KancolleSniffer
                     var s = statuses[idx];
                     labels[0].SetHp(s);
                     labels[1].SetCond(s);
-                    labels[2].SetName(s);
+                    labels[2].SetName(s, ShipNameWidth.Combined);
                 }
                 else
                 {
