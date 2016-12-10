@@ -45,6 +45,9 @@ namespace KancolleSniffer
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ListForm));
             this.panelShipList = new System.Windows.Forms.Panel();
+            this.contextMenuStripShipList = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kantaiSarashiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
@@ -69,16 +72,13 @@ namespace KancolleSniffer
             this.contextMenuStripFleetData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.textToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deckBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextMenuStripShipList = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.kantaiSarashiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.equipPanel = new KancolleSniffer.FleetPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
+            this.contextMenuStripShipList.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
             this.contextMenuStripFleetData.SuspendLayout();
-            this.contextMenuStripShipList.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelShipList
@@ -92,6 +92,28 @@ namespace KancolleSniffer
             this.panelShipList.Name = "panelShipList";
             this.panelShipList.Size = new System.Drawing.Size(238, 263);
             this.panelShipList.TabIndex = 0;
+            // 
+            // contextMenuStripShipList
+            // 
+            this.contextMenuStripShipList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.csvToolStripMenuItem,
+            this.kantaiSarashiToolStripMenuItem});
+            this.contextMenuStripShipList.Name = "contextMenuStripShipList";
+            this.contextMenuStripShipList.Size = new System.Drawing.Size(215, 48);
+            // 
+            // csvToolStripMenuItem
+            // 
+            this.csvToolStripMenuItem.Name = "csvToolStripMenuItem";
+            this.csvToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.csvToolStripMenuItem.Text = "CSV形式でコピー(&C)";
+            this.csvToolStripMenuItem.Click += new System.EventHandler(this.csvToolStripMenuItem_Click);
+            // 
+            // kantaiSarashiToolStripMenuItem
+            // 
+            this.kantaiSarashiToolStripMenuItem.Name = "kantaiSarashiToolStripMenuItem";
+            this.kantaiSarashiToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.kantaiSarashiToolStripMenuItem.Text = "艦隊晒し形式でコピー(&K)";
+            this.kantaiSarashiToolStripMenuItem.Click += new System.EventHandler(this.kantaiSarashiToolStripMenuItem_Click);
             // 
             // contextMenuStrip
             // 
@@ -236,6 +258,7 @@ namespace KancolleSniffer
             this.comboBoxGroup.Size = new System.Drawing.Size(48, 20);
             this.comboBoxGroup.TabIndex = 1;
             this.comboBoxGroup.SelectedIndexChanged += new System.EventHandler(this.comboBoxGroup_SelectedIndexChanged);
+            this.comboBoxGroup.DropDownClosed += new System.EventHandler(this.comboBoxGroup_DropDownClosed);
             // 
             // label12
             // 
@@ -325,28 +348,6 @@ namespace KancolleSniffer
             this.deckBuilderToolStripMenuItem.Text = "デッキビルダー形式でコピー(&D)";
             this.deckBuilderToolStripMenuItem.Click += new System.EventHandler(this.deckBuilderToolStripMenuItem_Click);
             // 
-            // contextMenuStripShipList
-            // 
-            this.contextMenuStripShipList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.csvToolStripMenuItem,
-            this.kantaiSarashiToolStripMenuItem});
-            this.contextMenuStripShipList.Name = "contextMenuStripShipList";
-            this.contextMenuStripShipList.Size = new System.Drawing.Size(215, 48);
-            // 
-            // csvToolStripMenuItem
-            // 
-            this.csvToolStripMenuItem.Name = "csvToolStripMenuItem";
-            this.csvToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-            this.csvToolStripMenuItem.Text = "CSV形式でコピー(&C)";
-            this.csvToolStripMenuItem.Click += new System.EventHandler(this.csvToolStripMenuItem_Click);
-            // 
-            // kantaiSarashiToolStripMenuItem
-            // 
-            this.kantaiSarashiToolStripMenuItem.Name = "kantaiSarashiToolStripMenuItem";
-            this.kantaiSarashiToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-            this.kantaiSarashiToolStripMenuItem.Text = "艦隊晒し形式でコピー(&K)";
-            this.kantaiSarashiToolStripMenuItem.Click += new System.EventHandler(this.kantaiSarashiToolStripMenuItem_Click);
-            // 
             // equipPanel
             // 
             this.equipPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -369,7 +370,7 @@ namespace KancolleSniffer
             this.itemTreeView.Size = new System.Drawing.Size(238, 263);
             this.itemTreeView.TabIndex = 0;
             // 
-            // ShipListForm
+            // ListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -390,18 +391,18 @@ namespace KancolleSniffer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MaximizeBox = false;
-            this.Name = "ShipListForm";
+            this.Name = "ListForm";
             this.Text = "一覧";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ShipListForm_FormClosing);
             this.Load += new System.EventHandler(this.ShipListForm_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ShipListForm_KeyPress);
+            this.contextMenuStripShipList.ResumeLayout(false);
             this.contextMenuStrip.ResumeLayout(false);
             this.panelGroupHeader.ResumeLayout(false);
             this.panelGroupHeader.PerformLayout();
             this.panelRepairHeader.ResumeLayout(false);
             this.panelRepairHeader.PerformLayout();
             this.contextMenuStripFleetData.ResumeLayout(false);
-            this.contextMenuStripShipList.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -530,6 +530,11 @@ namespace KancolleSniffer
                 _groupSettings[group].Remove(_shipList[idx].Id);
         }
 
+        private void comboBoxGroup_DropDownClosed(object sender, EventArgs e)
+        {
+            SetActiveControl();
+        }
+
         private void comboBoxGroup_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateList();
