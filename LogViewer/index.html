@@ -44,6 +44,8 @@ body {
 </head>
 <body>
 <script>
+const oneDay = 3600 * 24 * 1000;
+
 function showLog()
 {
     var query = "?from=" + moment().subtract(1, 'months').valueOf();
@@ -53,7 +55,7 @@ function showLog()
         if (from != null)
             query = "?from=" + from.valueOf();
         if (to != null)
-            query += "&to=" + (to.valueOf() + 3600 * 24 * 1000);
+            query += "&to=" + (to.valueOf() + oneDay);
     }
     var jsons = [
         "海戦・ドロップ報告書.json",
@@ -237,7 +239,6 @@ function pickChartData(data, range)
     var first = moment(data[0][0]).valueOf();
     var last = moment(data[data.length - 1][0]).valueOf();
     var interval, tickInterval, lastTick;
-    const oneDay = 3600 * 24 * 1000;
     switch (range) {
     case 0:
         first = moment(last).subtract(24, 'hours').valueOf();
@@ -452,32 +453,60 @@ function pickDiffChartData(data, range)
     return { data: newdata, tick: ticks, grid: grid, width: barWidth };
 }
 
-function setSortieStat(data) {
-    if (!data) {
-        $('#loading').show();
-        var from = moment().subtract(1, 'months').valueOf();
-        $.get("./海戦・ドロップ報告書.json?time=" + Date.now() + "&from=" + from, function (data) { setSortieStat(data.data);}, "json");
-        return;
-    }
-    var r = {
-        day: {stat: {}},
-        week: {stat: {}},
-        month: {stat: {}}
-    };
-    var initStat = function () { return {start:"-", S:0, A:0, B:0, C:0, D:0, R:0} };
+var sortieStatRange = 0;
+
+function sortieStatBegin() {
     now = moment();
-    r.day.begin = moment(now).hour(5).minute(0);
-    if (now.hour() < 5) {
-        r.day.begin.subtract(1, 'days');
+    var begin = moment(now);
+    if (sortieStatRange == 0) {
+        begin.hour(5).minute(0);
+        if (now.hour() < 5)
+            begin.subtract(1, 'days');
+    } else if (sortieStatRange == 1) {
+        begin.day(1).hour(5).minute(0);
+        if (now.day() == 0 || now.day() == 1 && now.hour() < 5)
+            begin.subtract(1, 'weeks');
+    } else if (sortieStatRange == 2) {
+        if (moment(now).endOf('month').date() == now.date() &&
+            now.hour() >= 22) { // 月末22時以降
+            begin.hour(22);
+        }
+        else {
+            begin.date(1).subtract(1, 'days').hour(22).minute(0);
+        }
+    } else if (sortieStatRange == 3) {
+        begin = new moment(0);
     }
-    r.week.begin = moment(now).day(1).hour(5).minute(0);
-    if (now.day() == 0 || now.day() == 1 && now.hour() < 5) {
-        r.week.begin.subtract(1, 'weeks');
+    return begin;
+}
+
+function loadSortieData() {
+    var from, to;
+    if (sortieStatRange == 3) {
+        var fromDate = $('#sortie_stat_from').datepicker("getDate");
+        var toDate = $('#sortie_stat_to').datepicker("getDate");
+        if (fromDate == null || toDate == null) {
+            setSortieStat([])
+            return;
+        }
+        from = fromDate.valueOf();
+        to = toDate.valueOf() + oneDay;
+    } else {
+        from = sortieStatBegin().valueOf();
+        to = new Date().valueOf();
     }
-    r.month.begin = moment(now).date(1).hour(5).minute(0);
-    if (now.date() == 1 && now.hours() < 5) {
-        r.month.begin.subtract(1, 'months');
-    }
+    $.ajax({
+        url: "./海戦・ドロップ報告書.json?from=" + from + "&to=" + to,
+        success: function (data) { setSortieStat(data.data);},
+        dataType: "json", cache: false
+    });
+}
+
+function gatherSortieStat(data) {
+    var initStat = function () {
+        return {start:"-", S:0, A:0, B:0, C:0, D:0, R:0}
+    };
+    var stat = {};
     for (var i = 0; i < data.length; i++) {
         var row = data[i];
         var date = moment(row[0]);
@@ -492,88 +521,84 @@ function setSortieStat(data) {
         var res = row[4];
         if (res == "E")
             res = "D";
-        for (var term in r) {
-            to = r[term];
-            if (to.begin.isAfter(date))
-                continue;
-            for (var b = 0; b < 4; b++) {
-                var name = b < 2 ? "合計" : map;
-                if (b == 1 || b == 3) {
-                    if (!isBoss)
-                        continue;
-                    name = name + " - ボス";
-                }
-                var mo = to.stat[name];
-                if (!mo) {
-                    mo = to.stat[name] = initStat();
-                    if (name == "合計")
-                        to.stat["合計 - ボス"] = initStat();
-                }
-                mo["R"] += resR;
-                mo[res]++;
-                if ((b == 0 || b == 2) && isStart)
-                {
-                    if (mo.start == "-")
-                        mo.start = 0;
-                    mo.start++
-                }
+        for (var b = 0; b < 4; b++) {
+            var name = b < 2 ? "合計" : map;
+            if (b == 1 || b == 3) {
+                if (!isBoss)
+                    continue;
+                name = name + " - ボス";
+            }
+            var mo = stat[name];
+            if (!mo) {
+                mo = stat[name] = initStat();
+                if (name == "合計")
+                    stat["合計 - ボス"] = initStat();
+            }
+            mo["R"] += resR;
+            mo[res]++;
+            if ((b == 0 || b == 2) && isStart)
+            {
+                if (mo.start == "-")
+                    mo.start = 0;
+                mo.start++
             }
         }
     }
-    for (term in r) {
-        var table = [];
-        var pushed = {};
-        for (map in r[term].stat)
-        {
-            if (pushed[map])
-                continue;
-            var e = r[term].stat[map];
-            e.map = map;
-            table.push(e);
-            pushed[map] = 1;
-            boss = map + " - ボス";
-            e = r[term].stat[boss];
-            if (!e)
-                continue;
-            e.map = boss;
-            table.push(e);
-            pushed[boss] = 1;
-        }
-        var dt = $("#sortie_stat_" + term).DataTable();
-        dt.clear();
-        dt.rows.add(table).draw();
+    return stat;
+}
+
+function arrangeSortieStatTable(stat) {
+    var table = [];
+    var pushed = {};
+    for (map in stat)
+    {
+        if (pushed[map])
+            continue;
+        var e = stat[map];
+        e.map = map;
+        table.push(e);
+        pushed[map] = 1;
+        boss = map + " - ボス";
+        e = stat[boss];
+        if (!e)
+            continue;
+        e.map = boss;
+        table.push(e);
+        pushed[boss] = 1;
     }
+    return table;
+}
+
+function setSortieStat(data) {
+    if (!data) {
+        $('#loading').show();
+        loadSortieData();
+        return;
+    }
+    var stat = gatherSortieStat(data);
+    var table = arrangeSortieStatTable(stat);
+    var dt = $("#sortie_stat").DataTable();
+    dt.clear();
+    dt.rows.add(table).draw();
     $('#loading').hide();
 }
 
-function initSortieStat()
-{
-    var terms = ['day', 'week', 'month'];
-    for (var i = 0; i < terms.length; i++) {
-        $("#sortie_stat_" + terms[i]).dataTable({
-            paging: false,
-            searching: false,
-            ordering: false,
-            columns: terms[i] != 'month' ? [
-                { data: "map" },
-                { data: "start" },
-                { data: "S" },
-                { data: "A" },
-                { data: "B" },
-                { data: "C" },
-                { data: "D" },
-                { data: "R" }
-            ] : [
-                { data: "map" },
-                { data: "start" },
-                { data: "S" },
-                { data: "A" },
-                { data: "B" },
-                { data: "C" },
-                { data: "D" },
-            ]
-        });
-    }
+function initSortieStat() {
+    $("#sortie_stat").dataTable({
+        paging: false,
+        searching: false,
+        ordering: false,
+        columns: [
+            { data: "map" },
+            { data: "start" },
+            { data: "S" },
+            { data: "A" },
+            { data: "B" },
+            { data: "C" },
+            { data: "D" },
+            { data: "R" }
+        ]
+    });
 }
 
 function selectTopTab(i)
@@ -596,8 +621,8 @@ function selectTopTab(i)
     var tab = $('.tab0 li');
     tab.removeClass('select');
     tab.eq(i).addClass('select');
-    $('.contents .hide').hide();
-    $('.contents .hide').eq(i).show();
+    $('#main_contents .hide').hide();
+    $('#main_contents .hide').eq(i).show();
 }
 
 function initAction()
@@ -644,6 +669,14 @@ function initAction()
     $('#tooltip').change(function() {
         drawChart();
     });
+    $('#range_sortie_stat li').click(function () {
+        var tab = $('#range_sortie_stat li');
+        var i = tab.index(this);
+        sortieStatRange = i;
+        tab.removeClass('select');
+        tab.eq(i).addClass('select');
+        setSortieStat();
+    });
 }
 
 function initTableDatePicker()
@@ -662,7 +695,7 @@ function initChartDatePicker()
 {
     $('#chart_from').datepicker({
         onClose: function() {if (useChartDatePicker()) drawChart();}
-    })
+    });
     $('#chart_to').datepicker({
         onClose: function() {if (useChartDatePicker()) drawChart();}
     });
@@ -674,11 +707,22 @@ function useChartDatePicker()
         (chartType == 1 && diffChartRange == 4);
 }
 
+function initSortieStatDatePicker()
+{
+    $('#sortie_stat_from').datepicker({
+        onClose: function() {if (sortieStatRange == 3) setSortieStat();}
+    });
+    $('#sortie_stat_to').datepicker({
+        onClose: function() {if (sortieStatRange == 3) setSortieStat();}
+    });
+}
+
 $(function() {
     $.fn.dataTable.ext.errMode = 'throw';
     initAction();
     initTableDatePicker();
     initChartDatePicker();
+    initSortieStatDatePicker();
     $('table').addClass('display compact cell-border');
     initTables();
     initSortieStat();
@@ -700,6 +744,8 @@ $(function() {
     $('#range_diff li').eq(diffChartRange).addClass('select');
     $('#range_seq li').removeClass('select');
     $('#range_seq li').eq(seqChartRange).addClass('select');
+    $('#range_sortie_stat li').removeClass('select');
+    $('#range_sortie_stat li').eq(sortieStatRange).addClass('select');
     var prev = sessionStorage.getItem('prevTab');
     selectTopTab(prev == null ? 0 : +prev);
 });
@@ -728,7 +774,7 @@ $(function() {
 </p>
 </form>
 
-<ul class="contents">
+<ul class="contents" id="main_contents">
 <li class="hide">
 <table id="log0">
 <thead>
@@ -807,23 +853,20 @@ $(function() {
 <div id="chart" style="clear: both; margin: 1em;"></div>
 
 <li class="hide">
-<h3>今日</h3>
-<table id="sortie_stat_day">
+<ul class="tab tab1" id="range_sortie_stat" style="float: left; margin-right: 0.2em">
+<li>今日</li>
+<li>今週</li>
+<li>今月</li>
+<li>期間指定</li>
+</ul>
+<div style="padding: 0.2em 0em;">
+<input type="text" id="sortie_stat_from" style="width: 7em">～<input type="text" id="sortie_stat_to" style="width: 7em">
+</div>
+
+<table id="sortie_stat">
 <thead>
 <tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th><th>輸送船</th></tr>
 </thead>
-</table>
-
-<h3>今週</h3>
-<table id="sortie_stat_week">
-<thead>
-<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th><th>輸送船</th></tr>
-</table>
-
-<h3>今月</h3>
-<table id="sortie_stat_month">
-<thead>
-<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th></tr>
 </table>
 </ul>
 </body>
