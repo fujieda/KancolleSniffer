@@ -230,19 +230,19 @@ namespace KancolleSniffer
             var fc = _guard.Length > 0;
             var ec = _enemyGuardHp.Length > 0;
             var both = fc && ec;
+            if (json.api_air_base_injection())
+            {
+                var obj = json.api_air_base_injection;
+                CalcAirBaseAttackDamage(obj.IsArray() ? obj : new[] {obj});
+            }
             if (json.api_air_base_attack())
                 CalcAirBaseAttackDamage(json.api_air_base_attack);
-            if (json.api_kouku.api_stage3 != null)
-                CalcSimpleDamage(json.api_kouku.api_stage3, _friend, _enemyHp);
-            if (json.api_kouku.api_stage3_combined() && json.api_kouku.api_stage3_combined != null)
-                CalcSimpleDamage(json.api_kouku.api_stage3_combined, _guard, _enemyGuardHp);
+            if (json.api_injection_kouku()) // 噴式強襲
+                CalcKoukuDamage(json.api_injection_kouku);
+            if (json.api_kouku())
+                CalcKoukuDamage(json.api_kouku);
             if (json.api_kouku2()) // 航空戦2回目
-            {
-                if (json.api_kouku2.api_stage3 != null)
-                    CalcSimpleDamage(json.api_kouku2.api_stage3, _friend, _enemyHp);
-                if (json.api_kouku2.api_stage3_combined() && json.api_kouku2.api_stage3_combined != null)
-                    CalcSimpleDamage(json.api_kouku2.api_stage3_combined, _guard, _enemyGuardHp);
-            }
+                CalcKoukuDamage(json.api_kouku2);
             if (!json.api_opening_atack()) // 航空戦のみ
                 return;
             if (json.api_support_info() && json.api_support_info != null)
@@ -282,9 +282,13 @@ namespace KancolleSniffer
             if (json.api_hougeki2() && json.api_hougeki2 != null)
             {
                 if (json.api_hougeki2.api_at_eflag())
+                {
                     CalcCombinedHougekiDamage(json.api_hougeki2, _friend, _guard, _enemyHp, _enemyGuardHp);
+                }
                 else
+                {
                     CalcHougekiDamage(json.api_hougeki2, _friend, _enemyHp);
+                }
             }
             if (json.api_hougeki3() && json.api_hougeki3 != null)
             {
@@ -322,24 +326,23 @@ namespace KancolleSniffer
             }
             else if (json.api_support_airatack != null)
             {
-                var airattack = json.api_support_airatack;
-                if (airattack.api_stage3 != null)
-                    CalcSimpleDamage(airattack.api_stage3.api_edam, _enemyHp);
-                if (airattack.api_stage3_combined() && airattack.api_stage3_combined != null)
-                    CalcSimpleDamage(airattack.api_stage3_combined.api_edam, _enemyGuardHp);
+                CalcKoukuDamage(json.api_support_airatack);
             }
         }
 
         private void CalcAirBaseAttackDamage(dynamic json)
         {
             foreach (var entry in json)
-            {
-                if (!entry.api_stage3() || entry.api_stage3 == null)
-                    continue;
-                CalcSimpleDamage(entry.api_stage3.api_edam, _enemyHp);
-                if (entry.api_stage3_combined())
-                    CalcSimpleDamage(entry.api_stage3_combined.api_edam, _enemyGuardHp);
-            }
+                CalcKoukuDamage(entry);
+        }
+
+        private void CalcKoukuDamage(dynamic json)
+        {
+            if (!json.api_stage3() || json.api_stage3 == null)
+                return;
+            CalcSimpleDamage(json.api_stage3, _friend, _enemyHp);
+            if (json.api_stage3_combined())
+                CalcSimpleDamage(json.api_stage3_combined, _guard, _enemyGuardHp);
         }
 
         private void CalcSimpleDamage(dynamic json, Record[] friend, int[] enemy)
