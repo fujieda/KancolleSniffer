@@ -52,6 +52,9 @@ namespace KancolleSniffer
                     case 8: // 艦攻
                     case 11: // 水爆
                     case 45: // 水戦
+                    case 56: // 噴式戦闘機
+                    case 57: // 噴式戦闘爆撃機
+                    case 58: // 噴式攻撃機
                         return true;
                 }
                 return false;
@@ -97,11 +100,19 @@ namespace KancolleSniffer
                     case 45:
                     case 47: // 陸上攻撃機
                     case 48: // 局地戦闘機
+                    case 56:
+                    case 57:
+                    case 58:
+                    case 59: // 噴式偵察機
                         return true;
                 }
                 return false;
             }
         }
+
+        public bool IsDiveBomber => Type == 7 || Type == 11 || Type == 57;
+
+        public bool IsTorpedoBomber => Type == 8 || Type == 58;
 
         public int RealAntiSubmarine
         {
@@ -260,6 +271,9 @@ namespace KancolleSniffer
                         return Color.FromArgb(57, 182, 78);
                     case 38: // 局地戦闘機
                         return Color.FromArgb(57, 182, 78);
+                    case 39: // 噴式景雲改
+                    case 40: // 橘花改
+                        return Color.FromArgb(72, 178, 141);
                     default:
                         return SystemColors.Control;
                 }
@@ -297,22 +311,36 @@ namespace KancolleSniffer
             Sqrt(9.9), Sqrt(12.0)
         };
 
-        private readonly Dictionary<int, int[]> _alvTypeBonus = new Dictionary<int, int[]>
+        private int[] AlvTypeBonusTable
         {
-            {06, new[] {0, 0, 2, 5, 9, 14, 14, 22}}, // 艦戦
-            {07, new[] {0, 0, 0, 0, 0, 0, 0, 0}}, // 艦爆
-            {08, new[] {0, 0, 0, 0, 0, 0, 0, 0}}, // 艦攻
-            {11, new[] {0, 0, 1, 1, 1, 3, 3, 6}}, // 水爆
-            {45, new[] {0, 0, 2, 5, 9, 14, 14, 22}}, // 水戦
-            {48, new[] {0, 0, 2, 5, 9, 14, 14, 22}} // 局地戦闘機
-        };
+            get
+            {
+                switch (Spec.Type)
+                {
+                    case 6: // 艦戦
+                    case 45: // 水戦
+                    case 48: // 局地戦闘機
+                    case 56: // 噴式戦闘機
+                        return new[] {0, 0, 2, 5, 9, 14, 14, 22};
+                    case 7: // 艦爆
+                    case 8: // 艦攻
+                    case 57: // 噴式戦闘爆撃機
+                    case 58: // 噴式攻撃機
+                        return new[] {0, 0, 0, 0, 0, 0, 0, 0};
+                    case 11: // 水爆
+                        return new[] {0, 0, 1, 1, 1, 3, 3, 6};
+                    default:
+                        return null;
+                }
+            }
+        }
 
         public double[] AlvBonus
         {
             get
             {
-                int[] table;
-                if (!_alvTypeBonus.TryGetValue(Spec.Type, out table))
+                var table = AlvTypeBonusTable;
+                if (table == null)
                     return new[] {0.0, 0.0};
                 return new[] {table[Alv] + _alvBonusMin[Alv], table[Alv] + _alvBonusMax[Alv]};
             }

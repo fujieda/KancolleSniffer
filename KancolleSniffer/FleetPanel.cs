@@ -82,19 +82,15 @@ namespace KancolleSniffer
                         if (item.Spec.Name == "ドラム缶(輸送用)")
                             drum++;
                         var airspec = "";
-                        if (item.Spec.CanAirCombat)
+                        if (item.Spec.IsDiveBomber) // 爆撃
                         {
-                            if (item.Spec.Type == 7 || item.Spec.Type == 11) // 爆撃
-                            {
-                                airspec = "航空戦 " + (25 + (int)(item.Spec.Bomber * Math.Sqrt(onslot)));
-                            }
-                            else if (item.Spec.Type == 8)
-                            {
-                                var normal = 25 + item.Spec.Torpedo * Math.Sqrt(onslot);
-                                airspec = "航空戦 " + (int)(normal * 0.8) + "/" + (int)(normal * 1.5);
-                            }
+                            airspec = "航空戦 " + (25 + (int)(item.Spec.Bomber * Math.Sqrt(onslot)));
                         }
-
+                        else if (item.Spec.IsTorpedoBomber)
+                        {
+                            var normal = 25 + item.Spec.Torpedo * Math.Sqrt(onslot);
+                            airspec = "航空戦 " + (int)(normal * 0.8) + "/" + (int)(normal * 1.5);
+                        }
                         equips.Add(new EquipColumn
                         {
                             Equip = GenEquipString(item, onslot, max),
