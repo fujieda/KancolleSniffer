@@ -556,6 +556,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 噴式強襲に対応する
+        /// </summary>
+        [TestMethod]
+        public void Injection()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "injection_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.P);
+        }
+
+        /// <summary>
         /// 2-5をクリアしたときの特別戦果を反映する
         /// </summary>
         [TestMethod]
