@@ -423,7 +423,7 @@ namespace KancolleSniffer
             foreach (var ch in name)
             {
                 var tmp = truncated + ch;
-                if (TextRenderer.MeasureText(tmp, Font).Width > (int)width)
+                if (TextRenderer.MeasureText(tmp, Font).Width > (int)width * ScaleFactor.Width)
                     break;
                 truncated = tmp;
             }

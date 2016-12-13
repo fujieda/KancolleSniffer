@@ -48,6 +48,7 @@
       <HintPath>..\packages\Moq.4.2.1506.2515\lib\net40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <Choose>
