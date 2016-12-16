@@ -43,26 +43,26 @@ namespace KancolleSniffer
             var swipe = new SwipeScrollify();
             swipe.AddPanel(shipListPanel);
             swipe.AddTreeView(itemTreeView);
-            swipe.AddPanel(equipPanel);
+            swipe.AddPanel(fleetPanel);
         }
 
         public void UpdateList()
         {
-            panelItemHeader.Visible = InItemList || InEquip || InMiscText;
+            panelItemHeader.Visible = InItemList || InFleetInfo || InMiscText;
             panelGroupHeader.Visible = InGroupConfig;
             panelRepairHeader.Visible = InRepairList;
             // SwipeScrollifyが誤作動するのでEnabledも切り替える
             shipListPanel.Visible = shipListPanel.Enabled = InShipStatus || InGroupConfig || InRepairList;
             itemTreeView.Visible = itemTreeView.Enabled = InItemList;
-            equipPanel.Visible = equipPanel.Enabled = InEquip;
+            fleetPanel.Visible = fleetPanel.Enabled = InFleetInfo;
             richTextBoxMiscText.Visible = InMiscText;
             if (InItemList)
             {
                 itemTreeView.SetNodes(_sniffer.ItemList);
             }
-            else if (InEquip)
+            else if (InFleetInfo)
             {
-                equipPanel.UpdateEquip(_sniffer);
+                fleetPanel.Update(_sniffer);
             }
             else if (InMiscText)
             {
@@ -102,13 +102,13 @@ namespace KancolleSniffer
 
         private bool InItemList => comboBoxGroup.Text == "装備";
 
-        private bool InEquip => comboBoxGroup.Text == "艦隊";
+        private bool InFleetInfo => comboBoxGroup.Text == "艦隊";
 
         private bool InMiscText => comboBoxGroup.Text == "情報";
 
         private void ShipListForm_Load(object sender, EventArgs e)
         {
-            shipListPanel.Width = itemTreeView.Width = equipPanel.Width =
+            shipListPanel.Width = itemTreeView.Width = fleetPanel.Width =
                 (int)Round(PanelWidth * ShipLabel.ScaleFactor.Width) + 3 + SystemInformation.VerticalScrollBarWidth;
             Width = shipListPanel.Width + 12 + (Width - ClientSize.Width);
             MinimumSize = new Size(Width, 0);
@@ -157,9 +157,9 @@ namespace KancolleSniffer
             {
                 shipListPanel.ShowShip(id);
             }
-            else if (InEquip)
+            else if (InFleetInfo)
             {
-                equipPanel.ShowShip(id);
+                fleetPanel.ShowShip(id);
             }
         }
 
@@ -199,9 +199,9 @@ namespace KancolleSniffer
             {
                 ActiveControl = itemTreeView;
             }
-            else if (InEquip)
+            else if (InFleetInfo)
             {
-                ActiveControl = equipPanel;
+                ActiveControl = fleetPanel;
             }
             else
             {

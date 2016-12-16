@@ -72,7 +72,7 @@ namespace KancolleSniffer
             this.contextMenuStripFleetData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.textToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deckBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.equipPanel = new KancolleSniffer.FleetPanel();
+            this.fleetPanel = new KancolleSniffer.FleetPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
             this.contextMenuStripShipList.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
@@ -348,17 +348,17 @@ namespace KancolleSniffer
             this.deckBuilderToolStripMenuItem.Text = "デッキビルダー形式でコピー(&D)";
             this.deckBuilderToolStripMenuItem.Click += new System.EventHandler(this.deckBuilderToolStripMenuItem_Click);
             // 
-            // equipPanel
+            // fleetPanel
             // 
-            this.equipPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.fleetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.equipPanel.AutoScroll = true;
-            this.equipPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.equipPanel.ContextMenuStrip = this.contextMenuStripFleetData;
-            this.equipPanel.Location = new System.Drawing.Point(6, 23);
-            this.equipPanel.Name = "equipPanel";
-            this.equipPanel.Size = new System.Drawing.Size(238, 263);
-            this.equipPanel.TabIndex = 1;
+            this.fleetPanel.AutoScroll = true;
+            this.fleetPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.fleetPanel.ContextMenuStrip = this.contextMenuStripFleetData;
+            this.fleetPanel.Location = new System.Drawing.Point(6, 23);
+            this.fleetPanel.Name = "fleetPanel";
+            this.fleetPanel.Size = new System.Drawing.Size(238, 263);
+            this.fleetPanel.TabIndex = 1;
             // 
             // itemTreeView
             // 
@@ -384,7 +384,7 @@ namespace KancolleSniffer
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.richTextBoxMiscText);
-            this.Controls.Add(this.equipPanel);
+            this.Controls.Add(this.fleetPanel);
             this.Controls.Add(this.itemTreeView);
             this.Controls.Add(this.shipListPanel);
             this.Controls.Add(this.comboBoxGroup);
@@ -429,7 +429,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel panelItemHeader;
-        private FleetPanel equipPanel;
+        private FleetPanel fleetPanel;
         private ItemTreeView itemTreeView;
         private System.Windows.Forms.RichTextBox richTextBoxMiscText;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;

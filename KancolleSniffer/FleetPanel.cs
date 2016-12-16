@@ -24,12 +24,12 @@ namespace KancolleSniffer
     {
         private const int LineHeight = 14;
         private const int LabelHeight = 12;
-        private EquipColumn[] _equipList;
+        private Record[] _table;
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private readonly List<Panel> _panelList = new List<Panel>();
         private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
 
-        private class EquipColumn
+        private class Record
         {
             public string Fleet { get; set; }
             public string Fleet2 { get; set; }
@@ -41,25 +41,25 @@ namespace KancolleSniffer
             public string Spec2 { get; set; }
             public string AircraftSpec { get; set; }
 
-            public EquipColumn()
+            public Record()
             {
                 Fleet = Ship = Equip = AircraftSpec = "";
                 Color = DefaultBackColor;
             }
         }
 
-        public void UpdateEquip(Sniffer sniffer)
+        public void Update(Sniffer sniffer)
         {
-            CreateEquipList(sniffer);
+            CreateTable(sniffer);
             SuspendLayout();
-            CreateEquipLabels();
-            SetEquipLabels();
+            CreateLabels();
+            SetRecords();
             ResumeLayout();
         }
 
-        private void CreateEquipList(Sniffer sniffer)
+        private void CreateTable(Sniffer sniffer)
         {
-            var list = new List<EquipColumn>();
+            var list = new List<Record>();
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             var tp = 0.0;
             for (var f = 0; f < fn.Length; f++)
@@ -67,11 +67,11 @@ namespace KancolleSniffer
                 var drumTotal = 0;
                 var drumShips = 0;
                 var levelTotal = 0;
-                var ships = new List<EquipColumn>();
+                var ships = new List<Record>();
                 foreach (var s in sniffer.GetShipStatuses(f))
                 {
                     var drum = 0;
-                    var equips = new List<EquipColumn>();
+                    var equips = new List<Record>();
                     for (var i = 0; i < s.Slot.Length; i++)
                     {
                         var item = s.Slot[i];
@@ -91,7 +91,7 @@ namespace KancolleSniffer
                             var normal = 25 + item.Spec.Torpedo * Math.Sqrt(onslot);
                             airspec = "航空戦 " + (int)(normal * 0.8) + "/" + (int)(normal * 1.5);
                         }
-                        equips.Add(new EquipColumn
+                        equips.Add(new Record
                         {
                             Equip = GenEquipString(item, onslot, max),
                             AircraftSpec = airspec,
@@ -101,7 +101,7 @@ namespace KancolleSniffer
                     if (s.SlotEx.Id > 0)
                     {
                         var item = s.SlotEx;
-                        equips.Add(new EquipColumn {Equip = item.Spec.Name, Color = item.Spec.Color});
+                        equips.Add(new Record {Equip = item.Spec.Name, Color = item.Spec.Color});
                     }
                     if (drum != 0)
                         drumShips++;
@@ -113,7 +113,7 @@ namespace KancolleSniffer
                     var subm = s.RealAntiSubmarine;
                     var torp = s.RealTorpedo;
                     var night = s.NightBattlePower;
-                    var ship = new EquipColumn
+                    var ship = new Record
                     {
                         Ship = (s.Escaped ? "[避]" : "") + s.Name + " Lv" + s.Level,
                         Id = s.Id,
@@ -130,7 +130,7 @@ namespace KancolleSniffer
                     ships.Add(ship);
                     ships.AddRange(equips);
                 }
-                list.Add(new EquipColumn
+                list.Add(new Record
                 {
                     Fleet = fn[f] + (levelTotal == 0 ? "" : " 合計Lv" + levelTotal) +
                             (drumTotal == 0 ? "" : " ドラム缶" + drumTotal + "(" + drumShips + "隻)")
@@ -143,20 +143,20 @@ namespace KancolleSniffer
                 var name = new[] {"第一", "第二", "第三"};
                 foreach (var baseInfo in sniffer.BaseAirCorps)
                 {
-                    list.Add(new EquipColumn {Fleet = baseInfo.AreaName + " 基地航空隊"});
+                    list.Add(new Record {Fleet = baseInfo.AreaName + " 基地航空隊"});
                     var i = 0;
                     foreach (var airCorps in baseInfo.AirCorps)
                     {
                         if (i >= name.Length)
                             break;
                         var fp = airCorps.FighterPower;
-                        list.Add(new EquipColumn
+                        list.Add(new Record
                         {
                             Ship = name[i++] + " " + airCorps.ActionName,
                             Spec = "制空" + (fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1]) +
                                    " 距離" + airCorps.Distance
                         });
-                        list.AddRange(airCorps.Planes.Select(plane => new EquipColumn
+                        list.AddRange(airCorps.Planes.Select(plane => new Record
                         {
                             Equip =
                                 plane.State != 1
@@ -167,7 +167,7 @@ namespace KancolleSniffer
                     }
                 }
             }
-            _equipList = list.ToArray();
+            _table = list.ToArray();
         }
 
         private string GenEquipString(ItemStatus item, int onslot, int max)
@@ -193,13 +193,13 @@ namespace KancolleSniffer
             return truncated + attr;
         }
 
-        private void CreateEquipLabels()
+        private void CreateLabels()
         {
-            for (var i = _labelList.Count; i < _equipList.Length; i++)
-                CreateEquipLabels(i);
+            for (var i = _labelList.Count; i < _table.Length; i++)
+                CreateLabels(i);
         }
 
-        private void CreateEquipLabels(int i)
+        private void CreateLabels(int i)
         {
             var y = 1 + LineHeight * i;
             var lbp = new Panel
@@ -232,20 +232,20 @@ namespace KancolleSniffer
             }
         }
 
-        private void SetEquipLabels()
+        private void SetRecords()
         {
-            for (var i = 0; i < _equipList.Length; i++)
-                SetEquip(i);
-            for (var i = _equipList.Length; i < _labelList.Count; i++)
+            for (var i = 0; i < _table.Length; i++)
+                SetRecord(i);
+            for (var i = _table.Length; i < _labelList.Count; i++)
                 _panelList[i].Visible = false;
         }
 
-        private void SetEquip(int i)
+        private void SetRecord(int i)
         {
             var lbp = _panelList[i];
             if (!lbp.Visible)
                 lbp.Location = new Point(lbp.Left, (int)lbp.Tag + AutoScrollPosition.Y);
-            var e = _equipList[i];
+            var e = _table[i];
             var labels = _labelList[i];
             labels[0].Text = e.Fleet;
             labels[1].SetName(e.Ship);
@@ -262,7 +262,7 @@ namespace KancolleSniffer
 
         public void ShowShip(int id)
         {
-            var i = Array.FindIndex(_equipList, e => e.Id == id);
+            var i = Array.FindIndex(_table, e => e.Id == id);
             if (i == -1)
                 return;
             var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
