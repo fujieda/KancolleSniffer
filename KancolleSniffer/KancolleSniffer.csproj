@@ -109,6 +109,9 @@
     <Compile Include="QuestInfo.cs" />
     <Compile Include="ConditionTimer.cs" />
     <Compile Include="ShipInfo.cs" />
+    <Compile Include="ShipListPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ShipMaster.cs" />
     <Compile Include="Sniffer.cs" />
     <Compile Include="ItemInfo.cs" />

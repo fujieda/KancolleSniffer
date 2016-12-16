@@ -44,7 +44,7 @@ namespace KancolleSniffer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ListForm));
-            this.panelShipList = new System.Windows.Forms.Panel();
+            this.shipListPanel = new KancolleSniffer.ShipListPanel();
             this.contextMenuStripShipList = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kantaiSarashiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,17 +81,17 @@ namespace KancolleSniffer
             this.contextMenuStripFleetData.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panelShipList
+            // shipListPanel
             // 
-            this.panelShipList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.shipListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.panelShipList.AutoScroll = true;
-            this.panelShipList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelShipList.ContextMenuStrip = this.contextMenuStripShipList;
-            this.panelShipList.Location = new System.Drawing.Point(6, 23);
-            this.panelShipList.Name = "panelShipList";
-            this.panelShipList.Size = new System.Drawing.Size(238, 263);
-            this.panelShipList.TabIndex = 0;
+            this.shipListPanel.AutoScroll = true;
+            this.shipListPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.shipListPanel.ContextMenuStrip = this.contextMenuStripShipList;
+            this.shipListPanel.Location = new System.Drawing.Point(6, 23);
+            this.shipListPanel.Name = "shipListPanel";
+            this.shipListPanel.Size = new System.Drawing.Size(238, 263);
+            this.shipListPanel.TabIndex = 0;
             // 
             // contextMenuStripShipList
             // 
@@ -386,7 +386,7 @@ namespace KancolleSniffer
             this.Controls.Add(this.richTextBoxMiscText);
             this.Controls.Add(this.equipPanel);
             this.Controls.Add(this.itemTreeView);
-            this.Controls.Add(this.panelShipList);
+            this.Controls.Add(this.shipListPanel);
             this.Controls.Add(this.comboBoxGroup);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
@@ -410,7 +410,7 @@ namespace KancolleSniffer
 
         #endregion
 
-        private System.Windows.Forms.Panel panelShipList;
+        private ShipListPanel shipListPanel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelHeaderCond;
         private System.Windows.Forms.Label labelHeaderExp;
