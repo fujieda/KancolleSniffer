@@ -57,6 +57,7 @@ namespace KancolleSniffer
             itemTreeView.Visible = itemTreeView.Enabled = InItemList;
             fleetPanel.Visible = fleetPanel.Enabled = InFleetInfo;
             antiAirPanel.Visible = antiAirPanel.Enabled = InAntiAir;
+            airBattleResultPanel.Visible = airBattleResultPanel.Enabled = InAntiAir;
             richTextBoxMiscText.Visible = InMiscText;
             if (InItemList)
             {
@@ -79,6 +80,11 @@ namespace KancolleSniffer
                 SetHeaderSortOrder();
                 shipListPanel.Update(_sniffer, comboBoxGroup.Text, _config.ShipList.SortOrder, _config.ShipList.ShipType);
             }
+        }
+
+        public void UpdateAirBattleResult()
+        {
+            airBattleResultPanel.SetResult(_sniffer.Battle.AirBattleResults);
         }
 
         private void SetHeaderSortOrder()

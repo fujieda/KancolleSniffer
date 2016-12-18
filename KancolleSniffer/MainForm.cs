@@ -570,6 +570,7 @@ namespace KancolleSniffer
             labelFighterPower.ForeColor = color[battle.AirControlLevel + 1];
             if (_config.AlwaysShowResultRank)
                 ShowResultRank();
+            _listForm.UpdateAirBattleResult();
         }
 
         private void ShowResultRank()

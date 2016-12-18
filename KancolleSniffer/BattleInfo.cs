@@ -49,6 +49,7 @@ namespace KancolleSniffer
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
+        public AirBattleResult AirBattleResults { get; private set; }
 
         public BattleInfo(ShipInfo shipInfo, ItemInfo itemInfo)
         {
@@ -227,6 +228,7 @@ namespace KancolleSniffer
 
         private void CalcDamage(dynamic json, bool surfaceFleet = false)
         {
+            AirBattleResults = new AirBattleResult();
             var fc = _guard.Length > 0;
             var ec = _enemyGuardHp.Length > 0;
             var both = fc && ec;
@@ -240,7 +242,10 @@ namespace KancolleSniffer
             if (json.api_injection_kouku()) // 噴式強襲
                 CalcKoukuDamage(json.api_injection_kouku);
             if (json.api_kouku())
+            {
+                SetAirBattleResult(json.api_kouku);
                 CalcKoukuDamage(json.api_kouku);
+            }
             if (json.api_kouku2()) // 航空戦2回目
                 CalcKoukuDamage(json.api_kouku2);
             if (!json.api_opening_atack()) // 航空戦のみ
@@ -334,6 +339,26 @@ namespace KancolleSniffer
         {
             foreach (var entry in json)
                 CalcKoukuDamage(entry);
+        }
+
+        private void SetAirBattleResult(dynamic json)
+        {
+            if (json.api_stage1 == null || json.api_stage2 == null)
+                return;
+            AirBattleResults.Stage1 = new AirBattleResult.StageResult
+            {
+                FriendCount = (int)json.api_stage1.api_f_count,
+                FriendLost = (int)json.api_stage1.api_f_lostcount,
+                EnemyCount = (int)json.api_stage1.api_e_count,
+                EnemyLost = (int)json.api_stage1.api_e_lostcount
+            };
+            AirBattleResults.Stage2 = new AirBattleResult.StageResult
+            {
+                FriendCount = (int)json.api_stage2.api_f_count,
+                FriendLost = (int)json.api_stage2.api_f_lostcount,
+                EnemyCount = (int)json.api_stage2.api_e_count,
+                EnemyLost = (int)json.api_stage2.api_e_lostcount
+            };
         }
 
         private void CalcKoukuDamage(dynamic json)
