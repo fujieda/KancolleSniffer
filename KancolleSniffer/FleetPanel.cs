@@ -268,5 +268,14 @@ namespace KancolleSniffer
             var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
             AutoScrollPosition = new Point(0, y);
         }
+
+        public void ShowFleet(string fn)
+        {
+            var i = Array.FindIndex(_table, e => e.Fleet.StartsWith(fn));
+            if (i == -1)
+                return;
+            var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
+            AutoScrollPosition = new Point(0, y);
+        }
     }
 }

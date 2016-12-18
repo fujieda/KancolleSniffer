@@ -44,7 +44,6 @@ namespace KancolleSniffer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ListForm));
-            this.shipListPanel = new KancolleSniffer.ShipListPanel();
             this.contextMenuStripShipList = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kantaiSarashiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,26 +71,21 @@ namespace KancolleSniffer
             this.contextMenuStripFleetData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.textToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deckBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.panelFleetHeader = new System.Windows.Forms.Panel();
+            this.labelFleet4 = new System.Windows.Forms.Label();
+            this.label1Fleet3 = new System.Windows.Forms.Label();
+            this.labelFleet2 = new System.Windows.Forms.Label();
+            this.labelFleet1 = new System.Windows.Forms.Label();
             this.fleetPanel = new KancolleSniffer.FleetPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
+            this.shipListPanel = new KancolleSniffer.ShipListPanel();
             this.contextMenuStripShipList.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
             this.contextMenuStripFleetData.SuspendLayout();
+            this.panelFleetHeader.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // shipListPanel
-            // 
-            this.shipListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.shipListPanel.AutoScroll = true;
-            this.shipListPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.shipListPanel.ContextMenuStrip = this.contextMenuStripShipList;
-            this.shipListPanel.Location = new System.Drawing.Point(6, 23);
-            this.shipListPanel.Name = "shipListPanel";
-            this.shipListPanel.Size = new System.Drawing.Size(238, 263);
-            this.shipListPanel.TabIndex = 0;
             // 
             // contextMenuStripShipList
             // 
@@ -348,6 +342,57 @@ namespace KancolleSniffer
             this.deckBuilderToolStripMenuItem.Text = "デッキビルダー形式でコピー(&D)";
             this.deckBuilderToolStripMenuItem.Click += new System.EventHandler(this.deckBuilderToolStripMenuItem_Click);
             // 
+            // panelFleetHeader
+            // 
+            this.panelFleetHeader.Controls.Add(this.labelFleet4);
+            this.panelFleetHeader.Controls.Add(this.label1Fleet3);
+            this.panelFleetHeader.Controls.Add(this.labelFleet2);
+            this.panelFleetHeader.Controls.Add(this.labelFleet1);
+            this.panelFleetHeader.Location = new System.Drawing.Point(58, 3);
+            this.panelFleetHeader.Name = "panelFleetHeader";
+            this.panelFleetHeader.Size = new System.Drawing.Size(172, 19);
+            this.panelFleetHeader.TabIndex = 0;
+            // 
+            // labelFleet4
+            // 
+            this.labelFleet4.AutoSize = true;
+            this.labelFleet4.Location = new System.Drawing.Point(138, 4);
+            this.labelFleet4.Name = "labelFleet4";
+            this.labelFleet4.Size = new System.Drawing.Size(29, 12);
+            this.labelFleet4.TabIndex = 3;
+            this.labelFleet4.Text = "第四";
+            this.labelFleet4.Click += new System.EventHandler(this.labelFleet_Click);
+            // 
+            // label1Fleet3
+            // 
+            this.label1Fleet3.AutoSize = true;
+            this.label1Fleet3.Location = new System.Drawing.Point(100, 4);
+            this.label1Fleet3.Name = "label1Fleet3";
+            this.label1Fleet3.Size = new System.Drawing.Size(29, 12);
+            this.label1Fleet3.TabIndex = 2;
+            this.label1Fleet3.Text = "第三";
+            this.label1Fleet3.Click += new System.EventHandler(this.labelFleet_Click);
+            // 
+            // labelFleet2
+            // 
+            this.labelFleet2.AutoSize = true;
+            this.labelFleet2.Location = new System.Drawing.Point(62, 4);
+            this.labelFleet2.Name = "labelFleet2";
+            this.labelFleet2.Size = new System.Drawing.Size(29, 12);
+            this.labelFleet2.TabIndex = 1;
+            this.labelFleet2.Text = "第二";
+            this.labelFleet2.Click += new System.EventHandler(this.labelFleet_Click);
+            // 
+            // labelFleet1
+            // 
+            this.labelFleet1.AutoSize = true;
+            this.labelFleet1.Location = new System.Drawing.Point(24, 4);
+            this.labelFleet1.Name = "labelFleet1";
+            this.labelFleet1.Size = new System.Drawing.Size(29, 12);
+            this.labelFleet1.TabIndex = 0;
+            this.labelFleet1.Text = "第一";
+            this.labelFleet1.Click += new System.EventHandler(this.labelFleet_Click);
+            // 
             // fleetPanel
             // 
             this.fleetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -370,11 +415,24 @@ namespace KancolleSniffer
             this.itemTreeView.Size = new System.Drawing.Size(238, 263);
             this.itemTreeView.TabIndex = 0;
             // 
+            // shipListPanel
+            // 
+            this.shipListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.shipListPanel.AutoScroll = true;
+            this.shipListPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.shipListPanel.ContextMenuStrip = this.contextMenuStripShipList;
+            this.shipListPanel.Location = new System.Drawing.Point(6, 23);
+            this.shipListPanel.Name = "shipListPanel";
+            this.shipListPanel.Size = new System.Drawing.Size(238, 263);
+            this.shipListPanel.TabIndex = 0;
+            // 
             // ListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(250, 292);
+            this.Controls.Add(this.panelFleetHeader);
             this.Controls.Add(this.panelItemHeader);
             this.Controls.Add(this.panelRepairHeader);
             this.Controls.Add(this.panelGroupHeader);
@@ -403,6 +461,8 @@ namespace KancolleSniffer
             this.panelRepairHeader.ResumeLayout(false);
             this.panelRepairHeader.PerformLayout();
             this.contextMenuStripFleetData.ResumeLayout(false);
+            this.panelFleetHeader.ResumeLayout(false);
+            this.panelFleetHeader.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -440,5 +500,10 @@ namespace KancolleSniffer
         private System.Windows.Forms.ContextMenuStrip contextMenuStripShipList;
         private System.Windows.Forms.ToolStripMenuItem csvToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem kantaiSarashiToolStripMenuItem;
+        private System.Windows.Forms.Panel panelFleetHeader;
+        private System.Windows.Forms.Label labelFleet4;
+        private System.Windows.Forms.Label label1Fleet3;
+        private System.Windows.Forms.Label labelFleet2;
+        private System.Windows.Forms.Label labelFleet1;
     }
 }

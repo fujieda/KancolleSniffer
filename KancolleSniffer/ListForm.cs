@@ -48,9 +48,10 @@ namespace KancolleSniffer
 
         public void UpdateList()
         {
-            panelItemHeader.Visible = InItemList || InFleetInfo || InMiscText;
+            panelItemHeader.Visible = InItemList || InMiscText;
             panelGroupHeader.Visible = InGroupConfig;
             panelRepairHeader.Visible = InRepairList;
+            panelFleetHeader.Visible = InFleetInfo;
             // SwipeScrollifyが誤作動するのでEnabledも切り替える
             shipListPanel.Visible = shipListPanel.Enabled = InShipStatus || InGroupConfig || InRepairList;
             itemTreeView.Visible = itemTreeView.Enabled = InItemList;
@@ -246,6 +247,11 @@ namespace KancolleSniffer
         private void kantaiSarashiToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(TextGenerator.GenerateKantaiSarashiData(shipListPanel.CurrentShipList));
+        }
+
+        private void labelFleet_Click(object sender, EventArgs e)
+        {
+            fleetPanel.ShowFleet(((Label)sender).Text);
         }
     }
 }
