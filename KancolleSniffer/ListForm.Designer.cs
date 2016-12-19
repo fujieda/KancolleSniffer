@@ -355,42 +355,42 @@ namespace KancolleSniffer
             // 
             // labelFleet4
             // 
-            this.labelFleet4.AutoSize = true;
-            this.labelFleet4.Location = new System.Drawing.Point(138, 4);
+            this.labelFleet4.Location = new System.Drawing.Point(138, 1);
             this.labelFleet4.Name = "labelFleet4";
-            this.labelFleet4.Size = new System.Drawing.Size(29, 12);
+            this.labelFleet4.Size = new System.Drawing.Size(29, 18);
             this.labelFleet4.TabIndex = 3;
             this.labelFleet4.Text = "第四";
+            this.labelFleet4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.labelFleet4.Click += new System.EventHandler(this.labelFleet_Click);
             // 
             // label1Fleet3
             // 
-            this.label1Fleet3.AutoSize = true;
-            this.label1Fleet3.Location = new System.Drawing.Point(100, 4);
+            this.label1Fleet3.Location = new System.Drawing.Point(100, 1);
             this.label1Fleet3.Name = "label1Fleet3";
-            this.label1Fleet3.Size = new System.Drawing.Size(29, 12);
+            this.label1Fleet3.Size = new System.Drawing.Size(29, 18);
             this.label1Fleet3.TabIndex = 2;
             this.label1Fleet3.Text = "第三";
+            this.label1Fleet3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label1Fleet3.Click += new System.EventHandler(this.labelFleet_Click);
             // 
             // labelFleet2
             // 
-            this.labelFleet2.AutoSize = true;
-            this.labelFleet2.Location = new System.Drawing.Point(62, 4);
+            this.labelFleet2.Location = new System.Drawing.Point(62, 1);
             this.labelFleet2.Name = "labelFleet2";
-            this.labelFleet2.Size = new System.Drawing.Size(29, 12);
+            this.labelFleet2.Size = new System.Drawing.Size(29, 18);
             this.labelFleet2.TabIndex = 1;
             this.labelFleet2.Text = "第二";
+            this.labelFleet2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.labelFleet2.Click += new System.EventHandler(this.labelFleet_Click);
             // 
             // labelFleet1
             // 
-            this.labelFleet1.AutoSize = true;
-            this.labelFleet1.Location = new System.Drawing.Point(24, 4);
+            this.labelFleet1.Location = new System.Drawing.Point(24, 1);
             this.labelFleet1.Name = "labelFleet1";
-            this.labelFleet1.Size = new System.Drawing.Size(29, 12);
+            this.labelFleet1.Size = new System.Drawing.Size(29, 18);
             this.labelFleet1.TabIndex = 0;
             this.labelFleet1.Text = "第一";
+            this.labelFleet1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.labelFleet1.Click += new System.EventHandler(this.labelFleet_Click);
             // 
             // fleetPanel
@@ -462,7 +462,6 @@ namespace KancolleSniffer
             this.panelRepairHeader.PerformLayout();
             this.contextMenuStripFleetData.ResumeLayout(false);
             this.panelFleetHeader.ResumeLayout(false);
-            this.panelFleetHeader.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
