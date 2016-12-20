@@ -49,7 +49,7 @@ namespace KancolleSniffer
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
-        public AirBattleResult AirBattleResults { get; private set; }
+        public List<AirBattleResult> AirBattleResults { get; } = new List<AirBattleResult>();
 
         public BattleInfo(ShipInfo shipInfo, ItemInfo itemInfo)
         {
@@ -228,26 +228,32 @@ namespace KancolleSniffer
 
         private void CalcDamage(dynamic json, bool surfaceFleet = false)
         {
-            AirBattleResults = new AirBattleResult();
+            AirBattleResults.Clear();
             var fc = _guard.Length > 0;
             var ec = _enemyGuardHp.Length > 0;
             var both = fc && ec;
             if (json.api_air_base_injection())
             {
-                var obj = json.api_air_base_injection;
-                CalcAirBaseAttackDamage(obj.IsArray() ? obj : new[] {obj});
+                AddAirBattleResult(json.api_air_base_injection, "AB噴式");
+                CalcKoukuDamage(json.api_air_base_injection);
+            }
+            if (json.api_injection_kouku())
+            {
+                AddAirBattleResult(json.api_injection_kouku, "噴式");
+                CalcKoukuDamage(json.api_injection_kouku);
             }
             if (json.api_air_base_attack())
                 CalcAirBaseAttackDamage(json.api_air_base_attack);
-            if (json.api_injection_kouku()) // 噴式強襲
-                CalcKoukuDamage(json.api_injection_kouku);
             if (json.api_kouku())
             {
-                SetAirBattleResult(json.api_kouku);
+                AddAirBattleResult(json.api_kouku, "航空戦");
                 CalcKoukuDamage(json.api_kouku);
             }
             if (json.api_kouku2()) // 航空戦2回目
+            {
+                AddAirBattleResult(json.api_kouku2, "航空戦2");
                 CalcKoukuDamage(json.api_kouku2);
+            }
             if (!json.api_opening_atack()) // 航空戦のみ
                 return;
             if (json.api_support_info() && json.api_support_info != null)
@@ -337,28 +343,37 @@ namespace KancolleSniffer
 
         private void CalcAirBaseAttackDamage(dynamic json)
         {
+            var i = 1;
             foreach (var entry in json)
+            {
+                AddAirBattleResult(entry, "基地" + i++);
                 CalcKoukuDamage(entry);
+            }
         }
 
-        private void SetAirBattleResult(dynamic json)
+        private void AddAirBattleResult(dynamic json, string phaseName)
         {
             if (json.api_stage1 == null || json.api_stage2 == null)
                 return;
-            AirBattleResults.Stage1 = new AirBattleResult.StageResult
+            AirBattleResults.Add(new AirBattleResult
             {
-                FriendCount = (int)json.api_stage1.api_f_count,
-                FriendLost = (int)json.api_stage1.api_f_lostcount,
-                EnemyCount = (int)json.api_stage1.api_e_count,
-                EnemyLost = (int)json.api_stage1.api_e_lostcount
-            };
-            AirBattleResults.Stage2 = new AirBattleResult.StageResult
-            {
-                FriendCount = (int)json.api_stage2.api_f_count,
-                FriendLost = (int)json.api_stage2.api_f_lostcount,
-                EnemyCount = (int)json.api_stage2.api_e_count,
-                EnemyLost = (int)json.api_stage2.api_e_lostcount
-            };
+                PhaseName = phaseName,
+                AirControlLevel = json.api_stage1.api_disp_seiku() ? (int)json.api_stage1.api_disp_seiku : 0,
+                Stage1 = new AirBattleResult.StageResult
+                {
+                    FriendCount = (int)json.api_stage1.api_f_count,
+                    FriendLost = (int)json.api_stage1.api_f_lostcount,
+                    EnemyCount = (int)json.api_stage1.api_e_count,
+                    EnemyLost = (int)json.api_stage1.api_e_lostcount
+                },
+                Stage2 = new AirBattleResult.StageResult
+                {
+                    FriendCount = (int)json.api_stage2.api_f_count,
+                    FriendLost = (int)json.api_stage2.api_f_lostcount,
+                    EnemyCount = (int)json.api_stage2.api_e_count,
+                    EnemyLost = (int)json.api_stage2.api_e_lostcount
+                }
+            });
         }
 
         private void CalcKoukuDamage(dynamic json)

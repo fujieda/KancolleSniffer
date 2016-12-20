@@ -401,6 +401,7 @@ namespace KancolleSniffer
             this.airBattleResultPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.airBattleResultPanel.Location = new System.Drawing.Point(6, 23);
             this.airBattleResultPanel.Name = "airBattleResultPanel";
+            this.airBattleResultPanel.ShowResultAutomatic = false;
             this.airBattleResultPanel.Size = new System.Drawing.Size(238, 51);
             this.airBattleResultPanel.TabIndex = 18;
             // 

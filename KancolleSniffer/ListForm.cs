@@ -84,6 +84,7 @@ namespace KancolleSniffer
 
         public void UpdateAirBattleResult()
         {
+            airBattleResultPanel.ShowResultAutomatic = _config.AlwaysShowResultRank;
             airBattleResultPanel.SetResult(_sniffer.Battle.AirBattleResults);
         }
 
