@@ -49,6 +49,8 @@ namespace KancolleSniffer
 
         public int CombinedFleetType { get; set; }
 
+        private IEnumerable<ItemStatus> AllSlot => Slot.Concat(new[] {SlotEx});
+
         public ShipStatus()
         {
             Id = -1;
@@ -102,7 +104,7 @@ namespace KancolleSniffer
                     return 0;
                 var isRyuseiAttack = Spec.Id == 352 && // 速吸改
                                      Slot.Any(item => item.Spec.Type == 8); // 艦攻装備
-                var levelBonus = Slot.Sum(item => item.FirePowerLevelBonus);
+                var levelBonus = AllSlot.Sum(item => item.FirePowerLevelBonus);
                 if (!Spec.IsAircraftCarrier && !isRyuseiAttack)
                     return Firepower + levelBonus + CombinedFleetFirepowerBonus + 5;
                 var specs = (from item in Slot where item.Spec.IsAircraft select item.Spec).ToArray();
@@ -141,7 +143,7 @@ namespace KancolleSniffer
             {
                 if (Spec.IsAircraftCarrier || Torpedo == 0)
                     return 0;
-                return Torpedo + Slot.Sum(item => item.TorpedoLevelBonus) + CombinedFleetTorpedoPenalty + 5;
+                return Torpedo + AllSlot.Sum(item => item.TorpedoLevelBonus) + CombinedFleetTorpedoPenalty + 5;
             }
         }
 
@@ -198,7 +200,7 @@ namespace KancolleSniffer
                     : Slot.FirstOrDefault(item => item.Spec.Id == 42 || item.Spec.Id == 43)?.Spec.Id ?? -1;
 
         public double TransportPoint
-            => Spec.TransportPoint + Slot.Sum(item => item.Spec.TransportPoint) + SlotEx.Spec.TransportPoint;
+            => Spec.TransportPoint + AllSlot.Sum(item => item.Spec.TransportPoint);
 
         public object Clone()
         {
