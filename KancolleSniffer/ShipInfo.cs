@@ -110,7 +110,8 @@ namespace KancolleSniffer
                 var bomber = specs.Sum(s => s.Bomber);
                 if (torpedo == 0 && bomber == 0)
                     return 0;
-                return (int)((Firepower + torpedo + levelBonus + (int)(bomber * 1.3) + CombinedFleetFirepowerBonus) * 1.5) + 55;
+                return (int)((Firepower + torpedo + levelBonus +
+                              (int)(bomber * 1.3) + CombinedFleetFirepowerBonus) * 1.5) + 55;
             }
         }
 
@@ -533,28 +534,28 @@ namespace KancolleSniffer
             => (from deck in _decks
                 let flag = new ChargeStatus(_shipInfo[deck[0]])
                 let others = (from id in deck.Skip(1)
-                    select new ChargeStatus(_shipInfo[id]))
+                        select new ChargeStatus(_shipInfo[id]))
                     .Aggregate(
                         (result, next) =>
-                            new ChargeStatus(Max(result.Fuel, next.Fuel), Max(result.Bull, next.Bull)))
+                                new ChargeStatus(Max(result.Fuel, next.Fuel), Max(result.Bull, next.Bull)))
                 select new ChargeStatus(flag.Fuel != 0 ? flag.Fuel : others.Fuel + 5,
                     flag.Bull != 0 ? flag.Bull : others.Bull + 5)).ToArray();
 
         public int[] GetFighterPower(int fleet)
             => GetShipStatuses(fleet).Where(ship => !ship.Escaped).SelectMany(ship =>
-                ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
-                {
-                    if (!slot.Spec.CanAirCombat || onslot == 0)
-                        return new[] {0, 0};
-                    var unskilled = (slot.Spec.AntiAir + slot.FighterPowerLevelBonus) * Sqrt(onslot);
-                    return new[] {(int)(unskilled + slot.AlvBonus[0]), (int)(unskilled + slot.AlvBonus[1])};
-                }))
+                    ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
+                    {
+                        if (!slot.Spec.CanAirCombat || onslot == 0)
+                            return new[] {0, 0};
+                        var unskilled = (slot.Spec.AntiAir + slot.FighterPowerLevelBonus) * Sqrt(onslot);
+                        return new[] {(int)(unskilled + slot.AlvBonus[0]), (int)(unskilled + slot.AlvBonus[1])};
+                    }))
                 .Aggregate(new[] {0, 0}, (prev, fp) => new[] {prev[0] + fp[0], prev[1] + fp[1]});
 
         public double GetContactTriggerRate(int fleet)
             => GetShipStatuses(fleet).Where(ship => !ship.Escaped).SelectMany(ship =>
                 ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
-                    slot.Spec.ContactTriggerRate * slot.Spec.LoS * Sqrt(onslot))).Sum();
+                        slot.Spec.ContactTriggerRate * slot.Spec.LoS * Sqrt(onslot))).Sum();
 
         public ShipStatus[] GetRepairList(DockInfo dockInfo)
             => (from s in ShipList
