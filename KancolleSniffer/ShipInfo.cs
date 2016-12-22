@@ -207,15 +207,15 @@ namespace KancolleSniffer
         {
             get
             {
-                if (Slot.All(item => item.Id == -1))
+                if (AllSlot.All(item => item.Id == -1 || item.Id == 0))
                     return AntiAir;
-                var vanilla = AntiAir - Slot.Sum(item => item.Spec.AntiAir);
-                var x = vanilla + Slot.Sum(item => item.EffectiveAntiAirForShip);
+                var vanilla = AntiAir - AllSlot.Sum(item => item.Spec.AntiAir);
+                var x = vanilla + AllSlot.Sum(item => item.EffectiveAntiAirForShip);
                 return (int)(x / 2) * 2;
             }
         }
 
-        public int EffectiveAntiAirForFleet => (int)Slot.Sum(item => item.EffectiveAntiAirForFleet);
+        public int EffectiveAntiAirForFleet => (int)AllSlot.Sum(item => item.EffectiveAntiAirForFleet);
 
         public object Clone()
         {
