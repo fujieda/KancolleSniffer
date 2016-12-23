@@ -407,12 +407,12 @@ namespace KancolleSniffer
             this.groupBox3.Size = new System.Drawing.Size(234, 48);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "勝利判定の表示";
+            this.groupBox3.Text = "勝利判定と航空戦の結果の表示";
             // 
             // radioButtonResultRankWhenClick
             // 
             this.radioButtonResultRankWhenClick.AutoSize = true;
-            this.radioButtonResultRankWhenClick.Location = new System.Drawing.Point(59, 21);
+            this.radioButtonResultRankWhenClick.Location = new System.Drawing.Point(65, 21);
             this.radioButtonResultRankWhenClick.Name = "radioButtonResultRankWhenClick";
             this.radioButtonResultRankWhenClick.Size = new System.Drawing.Size(88, 16);
             this.radioButtonResultRankWhenClick.TabIndex = 1;
@@ -425,10 +425,10 @@ namespace KancolleSniffer
             this.radioButtonResultRankAlways.AutoSize = true;
             this.radioButtonResultRankAlways.Location = new System.Drawing.Point(9, 21);
             this.radioButtonResultRankAlways.Name = "radioButtonResultRankAlways";
-            this.radioButtonResultRankAlways.Size = new System.Drawing.Size(44, 16);
+            this.radioButtonResultRankAlways.Size = new System.Drawing.Size(50, 16);
             this.radioButtonResultRankAlways.TabIndex = 0;
             this.radioButtonResultRankAlways.TabStop = true;
-            this.radioButtonResultRankAlways.Text = "常に";
+            this.radioButtonResultRankAlways.Text = "すぐに";
             this.radioButtonResultRankAlways.UseVisualStyleBackColor = true;
             // 
             // groupBox2
