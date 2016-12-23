@@ -29,6 +29,14 @@ namespace KancolleSniffer
         E,
     }
 
+    public enum BattleState
+    {
+        None,
+        Day,
+        Night,
+        Result
+    }
+
     public class BattleInfo
     {
         private readonly ShipInfo _shipInfo;
@@ -43,13 +51,14 @@ namespace KancolleSniffer
         private readonly List<int> _escapingShips = new List<int>();
         private int _flagshipRecoveryType;
 
-        public bool InBattle { get; set; }
+        public BattleState BattleState { get; set; }
         public string Formation { get; private set; }
         public string EnemyFighterPower { get; private set; }
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
         public List<AirBattleResult> AirBattleResults { get; } = new List<AirBattleResult>();
+
 
         public BattleInfo(ShipInfo shipInfo, ItemInfo itemInfo)
         {
@@ -59,7 +68,6 @@ namespace KancolleSniffer
 
         public void InspectBattle(dynamic json, string url)
         {
-            InBattle = true;
             Formation = FormationName(json);
             EnemyFighterPower = CalcEnemyFighterPower(json);
             AirControlLevel = CheckAirControlLevel(json);
@@ -67,12 +75,14 @@ namespace KancolleSniffer
             SetupResult(json);
             if (IsNightBattle(json))
             {
+                BattleState = BattleState.Night;
                 CalcHougekiDamage(json.api_hougeki,
                     _guard.Length > 0 ? _guard : _friend,
                     json.api_active_deck() && json.api_active_deck[1] != 1 ? _enemyGuardHp : _enemyHp);
             }
             else
             {
+                BattleState = BattleState.Day;
                 CalcDamage(json, url.EndsWith("battle_water"));
             }
             ClearEnemyOverKill();
@@ -484,6 +494,7 @@ namespace KancolleSniffer
 
         public void InspectBattleResult(dynamic json)
         {
+            BattleState = BattleState.Result;
             ShowResult();
             CleanupResult();
             SetEscapeShips(json);
@@ -491,6 +502,7 @@ namespace KancolleSniffer
 
         public void InspectPracticeResult(dynamic json)
         {
+            BattleState = BattleState.Result;
             ShowResult(false);
             CleanupResult();
         }

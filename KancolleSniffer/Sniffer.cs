@@ -142,7 +142,7 @@ namespace KancolleSniffer
             if (data.api_plane_info())
                 _baseAirCoprs.InspectPlaneInfo(data.api_plane_info);
             _battleInfo.CleanupResult();
-            _battleInfo.InBattle = false;
+            _battleInfo.BattleState = BattleState.None;
             _shipInfo.ClearEscapedShips();
             _miscTextInfo.ClearIfNeeded();
             SaveState();
@@ -200,14 +200,14 @@ namespace KancolleSniffer
                 // ここだけjsonなので注意
                 _shipInfo.InspectShip(json);
                 _akashiTimer.CheckFleet();
-                _battleInfo.InBattle = false;
+                _battleInfo.BattleState = BattleState.None;
                 return Update.Item | Update.Ship | Update.Battle;
             }
             if (url.EndsWith("api_get_member/ship_deck"))
             {
                 _shipInfo.InspectShip(data);
                 _akashiTimer.CheckFleet();
-                _battleInfo.InBattle = false;
+                _battleInfo.BattleState = BattleState.None;
                 return Update.Ship | Update.Battle;
             }
             if (url.EndsWith("api_get_member/ship3"))

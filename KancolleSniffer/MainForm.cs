@@ -559,8 +559,8 @@ namespace KancolleSniffer
             labelEnemyFighterPower.Text = "";
             labelFighterPower.ForeColor = DefaultForeColor;
             labelResultRank.Text = "判定";
-            panelBattleInfo.Visible = _sniffer.Battle.InBattle;
-            if (!_sniffer.Battle.InBattle)
+            panelBattleInfo.Visible = _sniffer.Battle.BattleState != BattleState.None;
+            if (_sniffer.Battle.BattleState == BattleState.None)
                 return;
             panelBattleInfo.BringToFront();
             var battle = _sniffer.Battle;
