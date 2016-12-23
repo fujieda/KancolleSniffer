@@ -690,7 +690,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "powerup_001");
-            PAssert.That(() => Math.Abs(sniffer.GetShipStatuses(0)[0].RealFirepower - 30) < 0.0001);
+            PAssert.That(() => Math.Abs(sniffer.GetShipStatuses(0)[0].EffectiveFirepower - 30) < 0.0001);
         }
 
         /// <summary>

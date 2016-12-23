@@ -96,7 +96,7 @@ namespace KancolleSniffer
             steal = (int)(Spec.FuelMax * 0.2 * 0.3 * damage);
         }
 
-        public double RealFirepower
+        public double EffectiveFirepower
         {
             get
             {
@@ -137,7 +137,7 @@ namespace KancolleSniffer
             }
         }
 
-        public double RealTorpedo
+        public double EffectiveTorpedo
         {
             get
             {
@@ -149,14 +149,14 @@ namespace KancolleSniffer
 
         private int CombinedFleetTorpedoPenalty => CombinedFleetType > 0 && Fleet == 1 ? -5 : 0;
 
-        public double RealAntiSubmarine
+        public double EffectiveAntiSubmarine
         {
             get
             {
                 if (!Spec.IsAntiSubmarine)
                     return 0;
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (Spec.IsAircraftCarrier && RealFirepower == 0) // 砲撃戦に参加しない
+                if (Spec.IsAircraftCarrier && EffectiveFirepower == 0) // 砲撃戦に参加しない
                     return 0;
                 var sonar = false;
                 var dc = false;
@@ -172,7 +172,7 @@ namespace KancolleSniffer
                         dc = true;
                     else if (spec.IsAircraft)
                         aircraft = true;
-                    all += spec.RealAntiSubmarine;
+                    all += spec.EffectiveAntiSubmarine;
                 }
                 if (vanilla == 0 && !aircraft) // 素対潜0で航空機なしは対潜攻撃なし
                     return 0;

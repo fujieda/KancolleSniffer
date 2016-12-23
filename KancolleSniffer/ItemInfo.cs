@@ -114,7 +114,7 @@ namespace KancolleSniffer
 
         public bool IsTorpedoBomber => Type == 8 || Type == 58;
 
-        public int RealAntiSubmarine
+        public int EffectiveAntiSubmarine
         {
             get
             {
