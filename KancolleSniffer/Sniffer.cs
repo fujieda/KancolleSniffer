@@ -125,7 +125,7 @@ namespace KancolleSniffer
         private Update ApiPort(dynamic data)
         {
             _itemInfo.InspectBasic(data.api_basic);
-            _materialInfo.InspectMaterial(data.api_material, true);
+            _materialInfo.InspectMaterialPort(data.api_material);
             _logger.InspectBasic(data.api_basic);
             _logger.InspectMaterial(data.api_material);
             _shipInfo.InspectShip(data);

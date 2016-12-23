@@ -34,6 +34,7 @@ namespace KancolleSniffer
             for (var i = 0; i < n; i++)
                 MaterialHistory[i] = new MaterialCount();
             PrevPort = new int[n];
+            PrevPort[0] = -1;
         }
 
         public bool NeedSave
@@ -46,25 +47,30 @@ namespace KancolleSniffer
             }
         }
 
-        public void InspectMaterial(dynamic json, bool port = false)
+        public void InspectMaterialPort(dynamic json)
         {
-            if (!port)
-                UpdatePrevPort();
+            InspectMaterial(json);
+            _inPort = true;
+            if (PrevPort[0] == -1)
+            {
+                // 初期化する
+                for (var i = 0; i < MaterialHistory.Length; i++)
+                    PrevPort[i] = MaterialHistory[i].Now;
+            }
+        }
+
+        public void InspectMaterial(dynamic json)
+        {
+            UpdatePrevPort();
             foreach (var entry in json)
             {
                 var i = (int)entry.api_id - 1;
                 var v = (int)entry.api_value;
                 MaterialHistory[i].Now = v;
             }
-            if (!port)
-                return;
-            _inPort = true;
-            if (PrevPort[0] != 0)
-                return;
-            for (var i = 0; i < MaterialHistory.Length; i++)
-                PrevPort[i] = MaterialHistory[i].Now;
         }
 
+        // 母港に戻ってから最初に資材に変化があったときに、母港の時点の資材を記録する
         private void UpdatePrevPort()
         {
             if (!_inPort)
@@ -83,6 +89,7 @@ namespace KancolleSniffer
         {
             if ((int)json.api_clear_result == 0) // 失敗
                 return;
+            // 連続して遠征が帰投したときに資材の増加を積算する
             if (DateTime.Now - _lastMission < TimeSpan.FromMinutes(1))
                 _inPort = false;
             _lastMission = DateTime.Now;
