@@ -67,11 +67,14 @@ namespace KancolleSniffer
             Minor,
             Small,
             Half,
-            Badly
+            Badly,
+            Sunk
         }
 
         public static Damage CalcDamage(int now, int max)
         {
+            if (now == 0 && max > 0)
+                return Damage.Sunk;
             var ratio = max == 0 ? 1 : (double)now / max;
             return ratio > 0.75 ? Damage.Minor : ratio > 0.5 ? Damage.Small : ratio > 0.25 ? Damage.Half : Damage.Badly;
         }
@@ -194,7 +197,7 @@ namespace KancolleSniffer
         }
 
         public int PreparedDamageControl =>
-            (DamageLevel < Damage.Badly)
+            DamageLevel != Damage.Badly
                 ? -1
                 : SlotEx.Spec.Id == 42 || SlotEx.Spec.Id == 43
                     ? SlotEx.Spec.Id

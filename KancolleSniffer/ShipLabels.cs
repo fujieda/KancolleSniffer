@@ -446,6 +446,8 @@ namespace KancolleSniffer
         {
             switch (status.DamageLevel)
             {
+                case ShipStatus.Damage.Sunk:
+                    return Color.CornflowerBlue;
                 case ShipStatus.Damage.Badly:
                     return Color.Red;
                 case ShipStatus.Damage.Half:

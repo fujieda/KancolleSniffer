@@ -297,6 +297,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 轟沈した艦娘に大破警告を出さない
+        /// </summary>
+        [TestMethod]
+        public void NotWarnToSunkShip()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "sunk_001");
+            PAssert.That(() => sniffer.BadlyDamagedShips.SequenceEqual(new [] {"磯波"}));
+        }
+
+        /// <summary>
         /// 連合艦隊(水上打撃部隊)で二回目の砲撃戦がない場合を正しく処理する
         /// </summary>
         [TestMethod]
