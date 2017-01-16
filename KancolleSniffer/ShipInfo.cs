@@ -362,7 +362,7 @@ namespace KancolleSniffer
                     Bull = (int)entry.api_bull,
                     OnSlot = (int[])entry.api_onslot,
                     Slot = ((int[])entry.api_slot).Select(id => new ItemStatus(id)).ToArray(),
-                    SlotEx = entry.api_slot_ex() ? new ItemStatus((int)entry.api_slot_ex) : new ItemStatus(),
+                    SlotEx = entry.api_slot_ex() ? new ItemStatus((int)entry.api_slot_ex) : new ItemStatus(0),
                     LoS = (int)entry.api_sakuteki[0],
                     Firepower = (int)entry.api_karyoku[0],
                     Torpedo = (int)entry.api_raisou[0],
