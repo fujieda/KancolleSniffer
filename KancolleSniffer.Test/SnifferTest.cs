@@ -594,6 +594,25 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 航空戦の結果を処理する
+        /// </summary>
+        [TestMethod]
+        public void AirBattleResult()
+        {
+            var sniffer1 = new Sniffer();
+            SniffLogFile(sniffer1, "battle_001");
+            PAssert.That(() => sniffer1.Battle.AirBattleResults.Count == 0);
+
+            var sniffer2 = new Sniffer();
+            SniffLogFile(sniffer2, "ec_battle_001");
+            PAssert.That(() => sniffer2.Battle.AirBattleResults.Count == 4);
+
+            var sniffer3 = new Sniffer();
+            SniffLogFile(sniffer3, "battle_007");
+            PAssert.That(() => sniffer3.Battle.AirBattleResults.Count == 1, "stage2がない場合");
+        }
+
+        /// <summary>
         /// 2-5をクリアしたときの特別戦果を反映する
         /// </summary>
         [TestMethod]

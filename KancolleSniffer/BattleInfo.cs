@@ -363,7 +363,8 @@ namespace KancolleSniffer
 
         private void AddAirBattleResult(dynamic json, string phaseName)
         {
-            if (json.api_stage1 == null || json.api_stage2 == null)
+            var stage1 = json.api_stage1;
+            if (stage1 == null || (stage1.api_f_count == 0 && stage1.api_e_count == 0))
                 return;
             AirBattleResults.Add(new AirBattleResult
             {
@@ -376,13 +377,21 @@ namespace KancolleSniffer
                     EnemyCount = (int)json.api_stage1.api_e_count,
                     EnemyLost = (int)json.api_stage1.api_e_lostcount
                 },
-                Stage2 = new AirBattleResult.StageResult
-                {
-                    FriendCount = (int)json.api_stage2.api_f_count,
-                    FriendLost = (int)json.api_stage2.api_f_lostcount,
-                    EnemyCount = (int)json.api_stage2.api_e_count,
-                    EnemyLost = (int)json.api_stage2.api_e_lostcount
-                }
+                Stage2 = json.api_stage2 == null
+                    ? new AirBattleResult.StageResult
+                    {
+                        FriendCount = 0,
+                        FriendLost = 0,
+                        EnemyCount = 0,
+                        EnemyLost = 0
+                    }
+                    : new AirBattleResult.StageResult
+                    {
+                        FriendCount = (int)json.api_stage2.api_f_count,
+                        FriendLost = (int)json.api_stage2.api_f_lostcount,
+                        EnemyCount = (int)json.api_stage2.api_e_count,
+                        EnemyLost = (int)json.api_stage2.api_e_lostcount
+                    }
             });
         }
 
