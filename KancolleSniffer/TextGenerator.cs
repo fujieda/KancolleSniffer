@@ -66,7 +66,7 @@ namespace KancolleSniffer
                 sb.Append(string.Concat(from s in sniffer.GetShipStatuses(f)
                     select ($"{s.Name} Lv{s.Level} " +
                             string.Join(",",
-                                from item in s.Slot.Concat(new[] {s.SlotEx})
+                                from item in s.AllSlot
                                 where item.Id != -1
                                 select dict[item.Spec.Name] + ItemStatusString(item))).TrimEnd(' ') + "\r\n"));
                 var fp = sniffer.GetFighterPower(f);
