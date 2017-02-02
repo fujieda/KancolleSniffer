@@ -71,7 +71,7 @@ namespace KancolleSniffer
                                 select dict[item.Spec.Name] + ItemStatusString(item))).TrimEnd(' ') + "\r\n"));
                 var fp = sniffer.GetFighterPower(f);
                 sb.Append($"制空: {(fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1])} " +
-                          $"索敵: {sniffer.GetFleetLineOfSights(f):F1}\r\n");
+                          $"索敵: {sniffer.GetFleetLineOfSights(f, 1):F1}\r\n");
             }
             if (sniffer.BaseAirCorps != null)
             {

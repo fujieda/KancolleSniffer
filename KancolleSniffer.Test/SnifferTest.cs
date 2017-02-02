@@ -464,9 +464,11 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "lineofsight_001");
-            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0) - 39.45) < 0.01);
+            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0, 1) - 39.45) < 0.01);
+            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0, 3) - 115.19) < 0.01);
+            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0, 4) - 153.06) < 0.01);
             SniffLogFile(sniffer, "lineofsight_002");
-            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0) - -25.10) < 0.01, "艦隊に空きがある");
+            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0, 1) - -25.10) < 0.01, "艦隊に空きがある");
         }
 
         /// <summary>

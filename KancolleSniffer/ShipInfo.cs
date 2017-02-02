@@ -584,7 +584,7 @@ namespace KancolleSniffer
                 select s).OrderByDescending(s => s.RepairTime).ToArray();
 
 
-        public double GetLineOfSights(int fleet)
+        public double GetLineOfSights(int fleet, int factor)
         {
             var result = 0.0;
             var emptyBonus = 6;
@@ -596,7 +596,7 @@ namespace KancolleSniffer
                 {
                     var spec = item.Spec;
                     itemLoS += spec.LoS;
-                    result += (spec.LoS + item.LoSLevelBonus) * spec.LoSScaleFactor;
+                    result += (spec.LoS + item.LoSLevelBonus) * spec.LoSScaleFactor * factor;
                 }
                 result += Sqrt(s.LoS - itemLoS);
             }

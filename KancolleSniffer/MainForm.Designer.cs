@@ -66,7 +66,7 @@ namespace KancolleSniffer
             this.labelFormation = new System.Windows.Forms.Label();
             this.labelResultRank = new System.Windows.Forms.Label();
             this.labelLoS = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
+            this.labelLoSCaption = new System.Windows.Forms.Label();
             this.labelFighterPower = new System.Windows.Forms.Label();
             this.labelFighterPowerCaption = new System.Windows.Forms.Label();
             this.labelCondTimerTitle = new System.Windows.Forms.Label();
@@ -164,6 +164,7 @@ namespace KancolleSniffer
             this.toolTipAchievement = new System.Windows.Forms.ToolTip(this.components);
             this.labelAkashiRepair = new System.Windows.Forms.Label();
             this.toolTipFighterPower = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTipLoS = new System.Windows.Forms.ToolTip(this.components);
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -305,7 +306,7 @@ namespace KancolleSniffer
             this.panelShipInfo.Controls.Add(this.panelCombinedFleet);
             this.panelShipInfo.Controls.Add(this.panelBattleInfo);
             this.panelShipInfo.Controls.Add(this.labelLoS);
-            this.panelShipInfo.Controls.Add(this.label19);
+            this.panelShipInfo.Controls.Add(this.labelLoSCaption);
             this.panelShipInfo.Controls.Add(this.labelFighterPower);
             this.panelShipInfo.Controls.Add(this.labelFighterPowerCaption);
             this.panelShipInfo.Controls.Add(this.labelCondTimerTitle);
@@ -394,14 +395,14 @@ namespace KancolleSniffer
             this.labelLoS.Text = "0.0";
             this.labelLoS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label19
+            // labelLoSCaption
             // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(59, 117);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(29, 12);
-            this.label19.TabIndex = 41;
-            this.label19.Text = "索敵";
+            this.labelLoSCaption.AutoSize = true;
+            this.labelLoSCaption.Location = new System.Drawing.Point(59, 117);
+            this.labelLoSCaption.Name = "labelLoSCaption";
+            this.labelLoSCaption.Size = new System.Drawing.Size(29, 12);
+            this.labelLoSCaption.TabIndex = 41;
+            this.labelLoSCaption.Text = "索敵";
             // 
             // labelFighterPower
             // 
@@ -1283,6 +1284,10 @@ namespace KancolleSniffer
             // 
             this.toolTipFighterPower.ShowAlways = true;
             // 
+            // toolTipLoS
+            // 
+            this.toolTipLoS.ShowAlways = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1442,7 +1447,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolStripMenuItem NotifyIconExitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
         private System.Windows.Forms.Label labelLoS;
-        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label labelLoSCaption;
         private System.Windows.Forms.Label labelPlayLog;
         private System.Windows.Forms.Panel panelBattleInfo;
         private System.Windows.Forms.Label labelEnemyFighterPower;
@@ -1476,6 +1481,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelAkashiRepair;
         private System.Windows.Forms.Label labelPresetAkashiTimer;
         private System.Windows.Forms.ToolTip toolTipFighterPower;
+        private System.Windows.Forms.ToolTip toolTipLoS;
     }
 }
 

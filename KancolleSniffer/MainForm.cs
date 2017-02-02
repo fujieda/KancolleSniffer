@@ -550,7 +550,16 @@ namespace KancolleSniffer
 
         private void UpdateLoS()
         {
-            labelLoS.Text = (Floor(_sniffer.GetFleetLineOfSights(_currentFleet) * 10) / 10.0).ToString("F1");
+            labelLoS.Text = RoundDown(_sniffer.GetFleetLineOfSights(_currentFleet, 1)).ToString("F1");
+            var text = $"係数3: {RoundDown(_sniffer.GetFleetLineOfSights(_currentFleet, 3)):F1}\r\n" +
+                       $"係数4: {RoundDown(_sniffer.GetFleetLineOfSights(_currentFleet, 4)):F1}";
+            toolTipLoS.SetToolTip(labelLoS, text);
+            toolTipLoS.SetToolTip(labelLoSCaption, text);
+        }
+
+        private double RoundDown(double number)
+        {
+            return Floor(number * 10) / 10.0;
         }
 
         private void UpdateBattleInfo()
