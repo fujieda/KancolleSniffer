@@ -104,7 +104,7 @@ namespace KancolleSniffer
                     // 完全回復から減らしながら所要時間と経過時間と比較する。
                     for (var d = damage; d >= 2; d--)
                     {
-                        var sec = s.CalcRepairSec(d) + 60;
+                        var sec = s.CalcRepairSec(d) + 70;
                         if (sec <= 20 * 60)
                         {
                             if (d == damage && (prev - start < m20 && now - start >= m20))
