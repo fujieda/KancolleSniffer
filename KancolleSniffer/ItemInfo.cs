@@ -586,12 +586,13 @@ namespace KancolleSniffer
             foreach (var entry in json.api_mst_slotitem)
             {
                 var type = (int)entry.api_type[2];
+                string typeName;
                 _itemSpecs[(int)entry.api_id] = new ItemSpec
                 {
                     Id = (int)entry.api_id,
                     Name = (string)entry.api_name,
                     Type = type,
-                    TypeName = dict[(int)entry.api_type[2]],
+                    TypeName = dict.TryGetValue(type, out typeName) ? typeName : "不明",
                     IconType = (int)entry.api_type[3],
                     AntiAir = (int)entry.api_tyku,
                     LoS = (int)entry.api_saku,
