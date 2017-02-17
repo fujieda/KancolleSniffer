@@ -153,6 +153,12 @@ namespace KancolleSniffer
                             sb.Append(",");
                         sb.Append($"\"i{i + 1}\":{{\"id\":{it.Spec.Id},\"rf\":{it.Level},\"mas\":{it.Alv}}}");
                     }
+                    if (st.SlotEx.Id != 0 && st.SlotEx.Id != -1)
+                    {
+                        if (st.Slot.Any(item => item.Id != -1))
+                            sb.Append(",");
+                        sb.Append($"\"ix\":{{\"id\":{st.SlotEx.Spec.Id},\"rf\":{st.SlotEx.Level}}}");
+                    }
                     sb.Append("}}");
                 }
                 sb.Append("}");
