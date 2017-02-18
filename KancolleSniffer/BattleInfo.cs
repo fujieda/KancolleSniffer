@@ -347,7 +347,7 @@ namespace KancolleSniffer
             }
             else if (json.api_support_airatack != null)
             {
-                CalcKoukuDamage(json.api_support_airatack);
+                CalcSimpleDamage(json.api_support_airatack.api_stage3.api_edam, _enemyHp, _enemyGuardHp);
             }
         }
 

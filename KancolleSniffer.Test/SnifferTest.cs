@@ -241,6 +241,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 敵連合艦隊への航空支援攻撃を反映させる
+        /// </summary>
+        [TestMethod]
+        public void SupportAirAttackResultRank()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "support_002");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.P);
+        }
+
+        /// <summary>
         /// ダメコンの使用を戦闘結果に反映させる
         /// </summary>
         [TestMethod]
