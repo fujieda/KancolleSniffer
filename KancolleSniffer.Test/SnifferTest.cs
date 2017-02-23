@@ -468,6 +468,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 陸上攻撃機の熟練度を制空値に反映させる
+        /// </summary>
+        [TestMethod]
+        public void FighterPowerOfLandBasedAttackAircraft()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "baseaircorps_003");
+            PAssert.That(() => sniffer.BaseAirCorps[1].AirCorps[0].FighterPower[0] == 121);
+        }
+
+        /// <summary>
         /// マップ索敵の判定式(33)を正しく計算する
         /// </summary>
         [TestMethod]

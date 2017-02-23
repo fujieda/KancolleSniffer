@@ -324,6 +324,7 @@ namespace KancolleSniffer
                         return new[] {0, 0, 2, 5, 9, 14, 14, 22};
                     case 7: // 艦爆
                     case 8: // 艦攻
+                    case 47: // 陸攻
                     case 57: // 噴式戦闘爆撃機
                     case 58: // 噴式攻撃機
                         return new[] {0, 0, 0, 0, 0, 0, 0, 0};
