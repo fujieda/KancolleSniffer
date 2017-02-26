@@ -270,9 +270,16 @@ namespace KancolleSniffer
                 CalcSupportDamage(json.api_support_info);
             if (json.api_opening_taisen() && json.api_opening_taisen != null)
             {
-                CalcHougekiDamage(json.api_opening_taisen,
-                    fc ? _guard : _friend, // 先制対潜攻撃の対象は護衛(たぶん)
-                    _enemyHp);
+                if (json.api_opening_taisen.api_at_eflag())
+                {
+                    CalcCombinedHougekiDamage(json.api_opening_taisen, _friend, _guard, _enemyHp, _enemyGuardHp);
+                }
+                else
+                {
+                    CalcHougekiDamage(json.api_opening_taisen,
+                        fc ? _guard : _friend, // 先制対潜攻撃の対象は護衛
+                        _enemyHp);
+                }
             }
             if (json.api_opening_atack != null)
             {
