@@ -140,24 +140,25 @@ namespace KancolleSniffer
                 {
                     if (s != 0)
                         sb.Append(",");
-                    var st = ships[s];
+                    var ship = ships[s];
                     sb.Append(
-                        $"\"s{s + 1}\":{{\"id\":\"{st.Spec.Id}\",\"lv\":{st.Level},\"luck\":{st.Lucky},\"items\":{{");
-                    var items = st.Slot;
+                        $"\"s{s + 1}\":{{\"id\":\"{ship.Spec.Id}\",\"lv\":{ship.Level},\"luck\":{ship.Lucky},\"items\":{{");
+                    var items = ship.Slot;
                     for (var i = 0; i < items.Length; i++)
                     {
-                        var it = items[i];
-                        if (it.Id == -1)
+                        var item = items[i];
+                        if (item.Id == -1)
                             continue;
                         if (i != 0)
                             sb.Append(",");
-                        sb.Append($"\"i{i + 1}\":{{\"id\":{it.Spec.Id},\"rf\":{it.Level},\"mas\":{it.Alv}}}");
+                        sb.Append($"\"i{i + 1}\":{{\"id\":{item.Spec.Id},\"rf\":{item.Level},\"mas\":{item.Alv}}}");
                     }
-                    if (st.SlotEx.Id != 0 && st.SlotEx.Id != -1)
+                    if (ship.SlotEx.Id != 0 && ship.SlotEx.Id != -1)
                     {
-                        if (st.Slot.Any(item => item.Id != -1))
+                        if (ship.Slot.Any(item => item.Id != -1))
                             sb.Append(",");
-                        sb.Append($"\"ix\":{{\"id\":{st.SlotEx.Spec.Id},\"rf\":{st.SlotEx.Level}}}");
+                        var name = ship.Spec.SlotNum == 4 ? "ix" : $"i{ship.Spec.SlotNum + 1}";
+                        sb.Append($"\"{name}\":{{\"id\":{ship.SlotEx.Spec.Id},\"rf\":{ship.SlotEx.Level}}}");
                     }
                     sb.Append("}}");
                 }

@@ -36,6 +36,7 @@ namespace KancolleSniffer
                     Name = ShipName(entry),
                     FuelMax = entry.api_fuel_max() ? (int)entry.api_fuel_max : 0,
                     BullMax = entry.api_bull_max() ? (int)entry.api_bull_max : 0,
+                    SlotNum = (int)entry.api_slot_num,
                     ShipType = (int)entry.api_stype,
                     ShipTypeName = dict[entry.api_stype]
                 };
@@ -101,6 +102,7 @@ namespace KancolleSniffer
         public string Name { get; set; }
         public int FuelMax { get; set; }
         public int BullMax { get; set; }
+        public int SlotNum { get; set; }
         public int[] MaxEq { get; set; }
         public int ShipType { get; set; }
         public string ShipTypeName { get; set; }
