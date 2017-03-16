@@ -140,7 +140,7 @@ namespace KancolleSniffer
                 return;
             }
             var fships = new List<string>();
-            var deckId = _battle.api_dock_id() ? (int)_battle.api_dock_id - 1 : 0;
+            int deckId = BattleInfo.DeckId(_battle);
             var deck = _shipInfo.GetDeck(deckId);
             fships.AddRange(deck.Select(id =>
             {

@@ -105,11 +105,11 @@ namespace KancolleSniffer
 
         private bool IsNightBattle(dynamic json) => json.api_hougeki();
 
-        private int DeckId(dynamic json)
+        public static int DeckId(dynamic json)
         {
             if (json.api_dock_id()) // 昼戦はtypoしている
                 return (int)json.api_dock_id - 1;
-            if (json.api_deck_id is string) // 通常の夜戦では文字列
+            if (json.api_deck_id is string) // 通常の夜戦と連合艦隊(味方のみ)では文字列
                 return int.Parse(json.api_deck_id) - 1;
             return (int)json.api_deck_id - 1;
         }
