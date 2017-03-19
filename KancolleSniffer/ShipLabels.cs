@@ -205,7 +205,7 @@ namespace KancolleSniffer
                         new ShipLabel
                         {
                             Location = new Point(x, y),
-                            Size = new Size(34, 12),
+                            Size = new Size(31, 12),
                             TextAlign = ContentAlignment.TopRight
                         });
                 label.BackColor = ColumnColors[i % 2];
