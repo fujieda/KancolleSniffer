@@ -141,11 +141,13 @@ namespace KancolleSniffer
             var fstats = _shipInfo.GetShipStatuses(_fleet);
             FlagshipRecovery(fstats[0]);
             _friend = Record.Setup(fstats);
-            _enemyHp = nowhps.Skip(7).TakeWhile(hp => hp != -1).ToArray();
+            _enemyHp = nowhps.Skip(7).ToArray();
             _enemyStartHp = (int[])_enemyHp.Clone();
             EnemyResultStatus =
-            (from id in (int[])json.api_ship_ke
-                where id != -1
+            (from id in
+                json.api_ship_ke_combined()
+                    ? ((int[])json.api_ship_ke).Skip(1).Concat(((int[])json.api_ship_ke_combined).Skip(1))
+                    : ((int[])json.api_ship_ke).Skip(1)
                 select new ShipStatus {Id = id, Spec = _shipInfo.GetSpec(id)}).ToArray();
             _guard = new Record[0];
             _enemyGuardHp = new int[0];
@@ -159,7 +161,7 @@ namespace KancolleSniffer
             {
                 _enemyGuardHp =
                     ((int[])json.api_nowhps_combined).
-                        Skip(7).TakeWhile(hp => hp != -1).ToArray();
+                        Skip(7).ToArray();
                 _enemyGuardStartHp = (int[])_enemyGuardHp.Clone();
             }
         }
@@ -541,10 +543,15 @@ namespace KancolleSniffer
 
         private void SetEnemyResultStatus()
         {
-            for (var i = 0; i < EnemyResultStatus.Length; i++)
+            for (var i = 0; i < 6; i++)
             {
                 EnemyResultStatus[i].MaxHp = _enemyStartHp[i];
                 EnemyResultStatus[i].NowHp = _enemyHp[i];
+            }
+            for (var i = 6; i < EnemyResultStatus.Length; i++)
+            {
+                EnemyResultStatus[i].MaxHp = _enemyGuardStartHp[i - 6];
+                EnemyResultStatus[i].NowHp = _enemyGuardHp[i - 6];
             }
         }
 

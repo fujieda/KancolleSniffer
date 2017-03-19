@@ -139,25 +139,8 @@ namespace KancolleSniffer
                 _map = _battle = null;
                 return;
             }
-            var fships = new List<string>();
-            int deckId = BattleInfo.DeckId(_battle);
-            var deck = _shipInfo.GetDeck(deckId);
-            fships.AddRange(deck.Select(id =>
-            {
-                if (id == -1)
-                    return ",";
-                var s = _shipInfo.GetStatus(id);
-                return $"{s.Name}(Lv{s.Level}),{s.NowHp}/{s.MaxHp}";
-            }));
-            var estatus = _battleInfo.EnemyResultStatus;
-            var edeck = ((int[])_battle.api_ship_ke).Skip(1).ToArray();
-            var eships = edeck.Select((id, i) =>
-            {
-                if (id == -1)
-                    return ",";
-                var s = estatus[i];
-                return $"{s.Name},{s.NowHp}/{s.MaxHp}";
-            });
+            var fships = GenerateFirendShipList();
+            var eships = GenerateEnemyShipList();
             var cell = (int)_map.api_no;
             var boss = "";
             if (_start)
@@ -181,7 +164,7 @@ namespace KancolleSniffer
                 else
                     dropName += "+" + itemName;
             }
-            var fp = _shipInfo.GetFighterPower(deckId);
+            var fp = _shipInfo.GetFighterPower(BattleInfo.DeckId(_battle));
             var fpower = fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1];
             _writer("海戦・ドロップ報告書", string.Join(",", _nowFunc().ToString(DateTimeFormat),
                 result.api_quest_name,
@@ -203,6 +186,75 @@ namespace KancolleSniffer
                 );
             _map = _battle = null;
             _start = false;
+        }
+
+        private IEnumerable<string> GenerateFirendShipList()
+        {
+            int deckId = BattleInfo.DeckId(_battle);
+            if (_battle.api_nowhps_combined() && (int)_battle.api_nowhps_combined[1] != -1)
+            {
+                var main = _shipInfo.GetDeck(0);
+                var guard = _shipInfo.GetDeck(1);
+                return main.Zip(guard, (m, g) =>
+                {
+                    if (m == -1 && g == -1)
+                        return ",";
+                    var name = "";
+                    var hp = "";
+                    if (m != -1)
+                    {
+                        var sm = _shipInfo.GetStatus(m);
+                        name = $"{sm.Name}(Lv{sm.Level})";
+                        hp = $"{sm.NowHp}/{sm.MaxHp}";
+                    }
+                    name += "・";
+                    hp += "・";
+                    if (g != -1)
+                    {
+                        var sg = _shipInfo.GetStatus(g);
+                        name += $"{sg.Name}(Lv{sg.Level})";
+                        hp += $"{sg.NowHp}/{sg.MaxHp}";
+                    }
+                    return name + "," + hp;
+                }).ToList();
+            }
+            var deck = _shipInfo.GetDeck(deckId);
+            return deck.Select(id =>
+            {
+                if (id == -1)
+                    return ",";
+                var s = _shipInfo.GetStatus(id);
+                return $"{s.Name}(Lv{s.Level}),{s.NowHp}/{s.MaxHp}";
+            }).ToList();
+        }
+
+        private IEnumerable<string> GenerateEnemyShipList()
+        {
+            var result = _battleInfo.EnemyResultStatus;
+            if (result.Length <= 6)
+                return result.Select(s => s.Id == -1 ? "," : $"{s.Name},{s.NowHp}/{s.MaxHp}").ToList();
+            var main = result.Take(6);
+            var guard = result.Skip(6);
+            return main.Zip(guard, (m, g) =>
+            {
+                if (m.Id == -1 && g.Id == -1)
+                    return ",";
+                var name = "";
+                var hp = "";
+                if (m.Id != -1)
+                {
+                    name = $"{m.Name}";
+                    hp = $"{m.NowHp}/{m.MaxHp}";
+                }
+                name += "・";
+                hp += "・";
+                if (g.Id != -1)
+                {
+                    name += $"{g.Name}";
+                    hp += $"{g.NowHp}/{g.MaxHp}";
+                }
+                return name + "," + hp;
+            }).ToList();
         }
 
         private string FormationName(dynamic f)
