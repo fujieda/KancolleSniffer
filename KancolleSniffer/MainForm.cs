@@ -113,6 +113,7 @@ namespace KancolleSniffer
             }
             catch (LogIOException e)
             {
+                // ReSharper disable once PossibleNullReferenceException
                 if (_errorDialog.ShowDialog(this, e.Message, e.InnerException.ToString()) == DialogResult.Abort)
                     Application.Exit();
             }
