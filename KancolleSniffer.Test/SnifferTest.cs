@@ -420,6 +420,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// B勝利を正しく判定する
+        /// </summary>
+        [TestMethod]
+        public void JudgeResultRankB()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "battle_008");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.B);
+        }
+
+        /// <summary>
         /// 熟練度込みの制空値を正しく計算する
         /// </summary>
         [TestMethod]
