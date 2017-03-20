@@ -90,25 +90,31 @@ namespace KancolleSniffer
             "hirou.mp3"
         };
 
-        public readonly string[] SoundNames =
-        {
-            "遠征終了", "入渠終了", "建造完了", "艦娘数超過", "装備数超過",
-            "大破警告", "泊地修理20分経過", "泊地修理進行", "泊地修理完了", "疲労回復"
-        };
-
-        private readonly Dictionary<string, int> _names = new Dictionary<string, int>();
-
-        public SoundConfig()
-        {
-            var idx = 0;
-            foreach (var name in SoundNames)
-                _names[name] = idx++;
-        }
-
         public string this[string name]
         {
-            get { return Files[_names[name]]; }
-            set { Files[_names[name]] = value; }
+            get { return Files[Config.NotificationIndex[name]]; }
+            set { Files[Config.NotificationIndex[name]] = value; }
+        }
+    }
+
+    [Flags]
+    public enum NotificationType
+    {
+        FlashWindow = 1,
+        ShowBaloonTip = 1 << 1,
+        PlaySound = 1 << 2,
+        All = (1 << 3) - 1
+    }
+
+    public class NotificationConfig
+    {
+        public NotificationType[] Settings =
+            Config.NotificationNames.Select(x => NotificationType.All).ToArray();
+
+        public NotificationType this[string name]
+        {
+            get { return Settings[Config.NotificationIndex[name]]; }
+            set { Settings[Config.NotificationIndex[name]] = value; }
         }
     }
 
@@ -124,6 +130,7 @@ namespace KancolleSniffer
         public bool FlashWindow { get; set; } = true;
         public bool ShowBaloonTip { get; set; }
         public bool PlaySound { get; set; } = true;
+        public NotificationConfig Notifications { get; set; } = new NotificationConfig();
         public int MarginShips { get; set; } = 4;
         public int MarginEquips { get; set; } = 10;
         public List<int> NotifyConditions { get; set; }
@@ -137,6 +144,15 @@ namespace KancolleSniffer
         public ShipListConfig ShipList { get; set; } = new ShipListConfig();
         public LogConfig Log { get; set; } = new LogConfig();
         public KancolleDbConfig KancolleDb { get; set; } = new KancolleDbConfig();
+
+        public static readonly string[] NotificationNames =
+        {
+            "遠征終了", "入渠終了", "建造完了", "艦娘数超過", "装備数超過",
+            "大破警告", "泊地修理20分経過", "泊地修理進行", "泊地修理完了", "疲労回復"
+        };
+
+        public static readonly Dictionary<string, int> NotificationIndex =
+            NotificationNames.Select((name, i) => new {name, i}).ToDictionary(entry => entry.name, entry => entry.i);
 
         public Config()
         {

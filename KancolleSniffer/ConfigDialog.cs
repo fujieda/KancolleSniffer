@@ -26,7 +26,12 @@ namespace KancolleSniffer
     {
         private readonly Config _config;
         private readonly MainForm _main;
-        private readonly Dictionary<string, string> _soundSetting = new Dictionary<string, string>();
+        private readonly NotificationConfigDialog _notificationConfigDialog;
+
+        private readonly Dictionary<string, NotificationType> _notificationSettings =
+            new Dictionary<string, NotificationType>();
+
+        private readonly Dictionary<string, string> _soundSettings = new Dictionary<string, string>();
         private const string Home = "http://kancollesniffer.osdn.jp/";
 
         public ConfigDialog(Config config, MainForm main)
@@ -35,8 +40,16 @@ namespace KancolleSniffer
             _config = config;
             _main = main;
             // ReSharper disable once CoVariantArrayConversion
-            listBoxSoundFile.Items.AddRange(_config.Sounds.SoundNames);
+            listBoxSoundFile.Items.AddRange(Config.NotificationNames);
             numericUpDownMaterialLogInterval.Maximum = 1440;
+
+            _notificationConfigDialog = new NotificationConfigDialog(_notificationSettings,
+                new Dictionary<NotificationType, CheckBox>
+                {
+                    {NotificationType.FlashWindow, checkBoxFlash},
+                    {NotificationType.ShowBaloonTip, checkBoxBalloon},
+                    {NotificationType.PlaySound, checkBoxSound}
+                });
         }
 
         private void ConfigDialog_Load(object sender, EventArgs e)
@@ -49,13 +62,17 @@ namespace KancolleSniffer
             checkBoxTopMost.Checked = _config.TopMost;
             checkBoxHideOnMinimized.Checked = _config.HideOnMinimized;
             comboBoxZoom.SelectedItem = _config.Zoom + "%";
+
             checkBoxFlash.Checked = _config.FlashWindow;
             checkBoxBalloon.Checked = _config.ShowBaloonTip;
             checkBoxSound.Checked = _config.PlaySound;
+            foreach (var name in Config.NotificationNames)
+                _notificationSettings[name] = _config.Notifications[name];
             numericUpDownMarginShips.Value = _config.MarginShips;
             numericUpDownMarginEquips.Value = _config.MarginEquips;
             checkBoxCond40.Checked = _config.NotifyConditions.Contains(40);
             checkBoxCond49.Checked = _config.NotifyConditions.Contains(49);
+
             checkBoxReset02.Checked = _config.ResetHours.Contains(2);
             checkBoxReset14.Checked = _config.ResetHours.Contains(14);
             radioButtonResultRankAlways.Checked = _config.AlwaysShowResultRank;
@@ -63,8 +80,8 @@ namespace KancolleSniffer
             checkBoxPresetAkashi.Checked = _config.UsePresetAkashi;
 
             numericUpDownSoundVolume.Value = _config.Sounds.Volume;
-            foreach (var name in _config.Sounds.SoundNames)
-                _soundSetting[name] = _config.Sounds[name];
+            foreach (var name in Config.NotificationNames)
+                _soundSettings[name] = _config.Sounds[name];
             listBoxSoundFile.SelectedIndex = -1;
             listBoxSoundFile.SelectedIndex = 0;
 
@@ -146,6 +163,8 @@ namespace KancolleSniffer
             _config.FlashWindow = checkBoxFlash.Checked;
             _config.ShowBaloonTip = checkBoxBalloon.Checked;
             _config.PlaySound = checkBoxSound.Checked;
+            foreach (var name in Config.NotificationNames)
+                _config.Notifications[name] = _notificationSettings[name];
             _config.MarginShips = (int)numericUpDownMarginShips.Value;
             _config.MarginEquips = (int)numericUpDownMarginEquips.Value;
 
@@ -166,8 +185,8 @@ namespace KancolleSniffer
             _config.UsePresetAkashi = checkBoxPresetAkashi.Checked;
 
             _config.Sounds.Volume = (int)numericUpDownSoundVolume.Value;
-            foreach (var name in _config.Sounds.SoundNames)
-                _config.Sounds[name] = _soundSetting[name];
+            foreach (var name in Config.NotificationNames)
+                _config.Sounds[name] = _soundSettings[name];
         }
 
         private bool ValidatePorts(out int listen, out int outbound, out int server)
@@ -216,14 +235,14 @@ namespace KancolleSniffer
 
         private void textBoxSoundFile_TextChanged(object sender, EventArgs e)
         {
-            _soundSetting[(string)listBoxSoundFile.SelectedItem] = textBoxSoundFile.Text;
+            _soundSettings[(string)listBoxSoundFile.SelectedItem] = textBoxSoundFile.Text;
         }
 
         private void listBoxSoundFile_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listBoxSoundFile.SelectedItem == null)
                 return;
-            textBoxSoundFile.Text = _soundSetting[(string)listBoxSoundFile.SelectedItem];
+            textBoxSoundFile.Text = _soundSettings[(string)listBoxSoundFile.SelectedItem];
             textBoxSoundFile.Select(textBoxSoundFile.Text.Length, 0);
         }
 
@@ -239,7 +258,7 @@ namespace KancolleSniffer
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            _main.PlaySound(_soundSetting[(string)listBoxSoundFile.SelectedItem], (int)numericUpDownSoundVolume.Value);
+            _main.PlaySound(_soundSettings[(string)listBoxSoundFile.SelectedItem], (int)numericUpDownSoundVolume.Value);
         }
 
         private void buttonResetAchievement_Click(object sender, EventArgs e)
@@ -306,6 +325,11 @@ namespace KancolleSniffer
         {
             _main.SetPlayLog(textBoxDebugLog.Text);
             DialogResult = DialogResult.Cancel;
+        }
+
+        private void buttonDetailedSettings_Click(object sender, EventArgs e)
+        {
+            _notificationConfigDialog.ShowDialog(this);
         }
     }
 }

@@ -93,6 +93,12 @@
     <Compile Include="MaterialInfo.cs" />
     <Compile Include="MiscTextInfo.cs" />
     <Compile Include="MissingData.cs" />
+    <Compile Include="NotificationConfigDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NotificationConfigDialog.Designer.cs">
+      <DependentUpon>NotificationConfigDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="PresetDeck.cs" />
     <Compile Include="ShipLabels.cs" />
     <Compile Include="ListForm.cs">
@@ -135,6 +141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NotificationConfigDialog.resx">
+      <DependentUpon>NotificationConfigDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -431,7 +431,7 @@ namespace KancolleSniffer
             if (item.RingShips)
             {
                 var message = $"残り{_sniffer.Item.MaxShips - _sniffer.Item.NowShips:D}隻";
-                _noticeQueue.Enqueue("艦娘が多すぎます", message, _config.Sounds["艦娘数超過"]);
+                _noticeQueue.Enqueue("艦娘が多すぎます", message, "艦娘数超過");
                 item.RingShips = false;
             }
         }
@@ -444,7 +444,7 @@ namespace KancolleSniffer
             if (item.RingEquips)
             {
                 var message = $"残り{_sniffer.Item.MaxEquips - _sniffer.Item.NowEquips:D}個";
-                _noticeQueue.Enqueue("装備が多すぎます", message, _config.Sounds["装備数超過"]);
+                _noticeQueue.Enqueue("装備が多すぎます", message, "装備数超過");
                 item.RingEquips = false;
             }
         }
@@ -509,8 +509,7 @@ namespace KancolleSniffer
         private void NotifyDamagedShip()
         {
             if (_sniffer.BadlyDamagedShips.Any())
-                _noticeQueue.Enqueue("大破した艦娘がいます", string.Join(" ", _sniffer.BadlyDamagedShips),
-                    _config.Sounds["大破警告"]);
+                _noticeQueue.Enqueue("大破した艦娘がいます", string.Join(" ", _sniffer.BadlyDamagedShips), "大破警告");
         }
 
         private void NotifyAkashiTimer()
@@ -523,7 +522,7 @@ namespace KancolleSniffer
                 return;
             if (msgs[0].Proceeded == "20分経過しました。")
             {
-                _noticeQueue.Enqueue("泊地修理", msgs[0].Proceeded, _config.Sounds["泊地修理20分経過"]);
+                _noticeQueue.Enqueue("泊地修理", msgs[0].Proceeded, "泊地修理20分経過");
                 msgs[0].Proceeded = "";
                 // 修理完了がいるかもしれないので続ける
             }
@@ -531,9 +530,9 @@ namespace KancolleSniffer
             for (var i = 0; i < fn.Length; i++)
             {
                 if (msgs[i].Proceeded != "")
-                    _noticeQueue.Enqueue("泊地修理 " + fn[i], "修理進行：" + msgs[i].Proceeded, _config.Sounds["泊地修理進行"]);
+                    _noticeQueue.Enqueue("泊地修理 " + fn[i], "修理進行：" + msgs[i].Proceeded, "泊地修理進行");
                 if (msgs[i].Completed != "")
-                    _noticeQueue.Enqueue("泊地修理 " + fn[i], "修理完了：" + msgs[i].Completed, _config.Sounds["泊地修理完了"]);
+                    _noticeQueue.Enqueue("泊地修理 " + fn[i], "修理完了：" + msgs[i].Completed, "泊地修理完了");
             }
         }
 
@@ -644,7 +643,7 @@ namespace KancolleSniffer
                 entry.label.Text = entry.Timer.ToString(_missionFinishTimeMode);
                 if (!entry.Timer.NeedRing)
                     continue;
-                _noticeQueue.Enqueue("遠征が終わりました", entry.Name, _config.Sounds["遠征終了"]);
+                _noticeQueue.Enqueue("遠征が終わりました", entry.Name, "遠征終了");
                 entry.Timer.NeedRing = false;
             }
             for (var i = 0; i < _sniffer.NDock.Length; i++)
@@ -654,7 +653,7 @@ namespace KancolleSniffer
                 _shipLabels.SetNDockTimer(i, entry.Timer, _ndockFinishTimeMode);
                 if (!entry.Timer.NeedRing)
                     continue;
-                _noticeQueue.Enqueue("入渠が終わりました", entry.Name, _config.Sounds["入渠終了"]);
+                _noticeQueue.Enqueue("入渠が終わりました", entry.Name, "入渠終了");
                 entry.Timer.NeedRing = false;
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
@@ -667,7 +666,7 @@ namespace KancolleSniffer
                 kdock[i].Text = timer.EndTime == DateTime.MinValue ? "" : timer.Rest.ToString(@"hh\:mm\:ss");
                 if (!timer.NeedRing)
                     continue;
-                _noticeQueue.Enqueue("建造が終わりました", $"第{i + 1:D}ドック", _config.Sounds["建造完了"]);
+                _noticeQueue.Enqueue("建造が終わりました", $"第{i + 1:D}ドック", "建造完了");
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
@@ -718,7 +717,7 @@ namespace KancolleSniffer
             {
                 if (!_config.NotifyConditions.Contains(notice[i]))
                     return;
-                _noticeQueue.Enqueue("疲労が回復しました", fn[i] + " cond" + notice[i].ToString("D"), _config.Sounds["疲労回復"]);
+                _noticeQueue.Enqueue("疲労が回復しました", fn[i] + " cond" + notice[i].ToString("D"), "疲労回復");
             }
         }
 
@@ -806,28 +805,28 @@ namespace KancolleSniffer
                 _ring(notice.Item1, notice.Item2, notice.Item3);
             }
 
-            public void Enqueue(string title, string message, string soundFile)
+            public void Enqueue(string title, string message, string name)
             {
                 if (_timer.Enabled)
                 {
-                    _queue.Enqueue(new Tuple<string, string, string>(title, message, soundFile));
+                    _queue.Enqueue(new Tuple<string, string, string>(title, message, name));
                 }
                 else
                 {
-                    _ring(title, message, soundFile);
+                    _ring(title, message, name);
                     _timer.Start();
                 }
             }
         }
 
-        private void Ring(string baloonTitle, string baloonMessage, string soundFile)
+        private void Ring(string baloonTitle, string baloonMessage, string name)
         {
-            if (_config.FlashWindow)
+            if (_config.FlashWindow && (_config.Notifications[name] & NotificationType.FlashWindow) != 0)
                 Win32API.FlashWindow(Handle);
-            if (_config.ShowBaloonTip)
+            if (_config.ShowBaloonTip && (_config.Notifications[name] & NotificationType.ShowBaloonTip) != 0)
                 notifyIconMain.ShowBalloonTip(20000, baloonTitle, baloonMessage, ToolTipIcon.Info);
-            if (_config.PlaySound)
-                PlaySound(soundFile, _config.Sounds.Volume);
+            if (_config.PlaySound && (_config.Notifications[name] & NotificationType.PlaySound) != 0)
+                PlaySound(_config.Sounds[name], _config.Sounds.Volume);
         }
 
         [DllImport("winmm.dll")]

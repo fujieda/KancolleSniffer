@@ -121,6 +121,7 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
+            this.buttonDetailedSettings = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageShow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -230,6 +231,7 @@ namespace KancolleSniffer
             // 
             // tabPageNotification
             // 
+            this.tabPageNotification.Controls.Add(this.buttonDetailedSettings);
             this.tabPageNotification.Controls.Add(this.label6);
             this.tabPageNotification.Controls.Add(this.checkBoxCond49);
             this.tabPageNotification.Controls.Add(this.checkBoxCond40);
@@ -349,9 +351,9 @@ namespace KancolleSniffer
             this.checkBoxSound.AutoSize = true;
             this.checkBoxSound.Location = new System.Drawing.Point(11, 53);
             this.checkBoxSound.Name = "checkBoxSound";
-            this.checkBoxSound.Size = new System.Drawing.Size(113, 16);
+            this.checkBoxSound.Size = new System.Drawing.Size(94, 16);
             this.checkBoxSound.TabIndex = 16;
-            this.checkBoxSound.Text = "サウンドを再生する";
+            this.checkBoxSound.Text = "サウンドを再生";
             this.checkBoxSound.UseVisualStyleBackColor = true;
             // 
             // checkBoxBalloon
@@ -359,9 +361,9 @@ namespace KancolleSniffer
             this.checkBoxBalloon.AutoSize = true;
             this.checkBoxBalloon.Location = new System.Drawing.Point(11, 32);
             this.checkBoxBalloon.Name = "checkBoxBalloon";
-            this.checkBoxBalloon.Size = new System.Drawing.Size(172, 16);
+            this.checkBoxBalloon.Size = new System.Drawing.Size(153, 16);
             this.checkBoxBalloon.TabIndex = 15;
-            this.checkBoxBalloon.Text = "通知領域にバルーンを表示する";
+            this.checkBoxBalloon.Text = "通知領域にバルーンを表示";
             this.checkBoxBalloon.UseVisualStyleBackColor = true;
             // 
             // checkBoxFlash
@@ -369,9 +371,9 @@ namespace KancolleSniffer
             this.checkBoxFlash.AutoSize = true;
             this.checkBoxFlash.Location = new System.Drawing.Point(11, 11);
             this.checkBoxFlash.Name = "checkBoxFlash";
-            this.checkBoxFlash.Size = new System.Drawing.Size(127, 16);
+            this.checkBoxFlash.Size = new System.Drawing.Size(100, 16);
             this.checkBoxFlash.TabIndex = 14;
-            this.checkBoxFlash.Text = "ウィンドウを点滅させる";
+            this.checkBoxFlash.Text = "ウィンドウを点滅";
             this.checkBoxFlash.UseVisualStyleBackColor = true;
             // 
             // tabPageAchievement
@@ -955,6 +957,16 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
+            // buttonDetailedSettings
+            // 
+            this.buttonDetailedSettings.Location = new System.Drawing.Point(170, 11);
+            this.buttonDetailedSettings.Name = "buttonDetailedSettings";
+            this.buttonDetailedSettings.Size = new System.Drawing.Size(75, 23);
+            this.buttonDetailedSettings.TabIndex = 26;
+            this.buttonDetailedSettings.Text = "詳細設定...";
+            this.buttonDetailedSettings.UseVisualStyleBackColor = true;
+            this.buttonDetailedSettings.Click += new System.EventHandler(this.buttonDetailedSettings_Click);
+            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1085,5 +1097,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.ComboBox comboBoxZoom;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Button buttonDetailedSettings;
     }
 }
