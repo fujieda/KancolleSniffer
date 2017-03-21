@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -20,11 +20,11 @@ body {
     line-height: 1.5;
     font-size: 14px;
 }
-.tab {overflow: hidden; list-style-type: none; margin: 0em 0em 2em 1em; padding: 0em;}
+.tab {overflow: hidden; list-style-type: none; margin: 0 0 2em 1em; padding: 0;}
 .tab li {background: #eee; padding: 0.3em 1.5em; float: left; margin-right: 2px;}
 .tab1 li {padding: 0.3em 1em;}
 .tab li.select {background: #ccc;}
-.contents {list-style-type: none; margin: 0em; padding: 0em;}
+.contents {list-style-type: none; margin: 0; padding: 0;}
 .hide {display: none;}
 .c3 .tick {font-family:'Lucida Grande','Hiragino Kaku Gothic ProN', Meiryo, sans-serif; font-size: 12px;}
 .c3-legend-item {font-family:'Lucida Grande','Hiragino Kaku Gothic ProN', Meiryo, sans-serif; font-size: 14px;}
@@ -40,18 +40,18 @@ body {
     z-index: 100;
 }
 </style>
-
 </head>
 <body>
 <script>
-const oneDay = 3600 * 24 * 1000;
+/* global moment, c3 */
 
-function showLog()
-{
+var oneDay = 3600 * 24 * 1000;
+
+function showLog() {
     var query = "?from=" + moment().subtract(1, 'months').valueOf();
     if ($('input[name=term]:eq(1)').prop('checked')) {
-        from = $('#term_from').datepicker("getDate");
-        to = $('#term_to').datepicker("getDate");
+        var from = $('#term_from').datepicker("getDate");
+        var to = $('#term_to').datepicker("getDate");
         if (from != null)
             query = "?from=" + from.valueOf();
         if (to != null)
@@ -73,8 +73,7 @@ function showLog()
 
 var tables = 7;
 
-function initTables()
-{
+function initTables() {
     for (var t = 0; t < tables; t++) {
         var opts = {
             destroy: true,
@@ -82,19 +81,19 @@ function initTables()
             stateSave: true,
             order: [[0, "desc"]],
             pageLength: 50,
-            lengthMenu: [[50, 100, 200, -1],[50, 100, 200, "All"]],
+            lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
             drawCallback: function () {
                 $('#loading').hide();
             }
         };
-        if (t == 0) {
-            opts.columns = [{data: 0}, {data: 1}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}];
-        } else if (t == 1) {
+        if (t === 0) {
+            opts.columns = [{ data: 0 }, { data: 1 }, { data: 2 }, { data: 3 }, { data: 4 }, { data: 9 }, { data: 10 }];
+        } else if (t === 1) {
             var entries = [];
-            for (i = 0; i < 38; i++) {
-                if (i == 9 || i == 10)
+            for (var i = 0; i < 38; i++) {
+                if (i === 9 || i === 10)
                     continue;
-                entries.push({data: i})
+                entries.push({ data: i });
             }
             opts.columns = entries;
         }
@@ -102,19 +101,16 @@ function initTables()
     }
 }
 
-const timeFormat = "YYYY-MM-DD HH:mm:ss";
-function parseDate(d)
-{
+var timeFormat = "YYYY-MM-DD HH:mm:ss";
+function parseDate(d) {
     return moment(d, timeFormat);
 }
 
-function toString(d)
-{
+function toString(d) {
     return d.format(timeFormat);
 }
 
-function to5am(tick)
-{
+function to5am(tick) {
     return tick - tick % (3600 * 24000) - 3600 * 4000;
 }
 
@@ -125,35 +121,34 @@ var chartType = 0;
 var showChart = false;
 var currentPickedData;
 
-function drawChart(data)
-{
+function drawChart(data) {
     if (data == null) {
         $('#loading').show();
-        $.get("./資材ログ.json?time=" + Date.now(), function (data) { drawChart(data);}, "json");
+        $.get("./資材ログ.json?time=" + Date.now(), function (d) { drawChart(d); }, "json");
         return;
     }
-    if (chartType == 0) {
-        var picked = pickChartData(data.data, seqChartRange);
-        var header = ["日付","燃料","弾薬","鋼材","ボーキ","高速建造材","高速修復材","開発資材","改修資材"];
+    var picked, header;
+    if (chartType === 0) {
+        picked = pickChartData(data.data, seqChartRange);
+        header = ["日付", "燃料", "弾薬", "鋼材", "ボーキ", "高速建造材", "高速修復材", "開発資材", "改修資材"];
         picked.data.unshift(header);
         drawSeqChart(picked);
         currentPickedData = picked;
     } else {
-        var picked = pickDiffChartData(data.data, diffChartRange);
-        var header = ["日付","燃料","弾薬","鋼材","ボーキ"];
+        picked = pickDiffChartData(data.data, diffChartRange);
+        header = ["日付", "燃料", "弾薬", "鋼材", "ボーキ"];
         picked.data.unshift(header);
-        drawDiffChart(picked)
+        drawDiffChart(picked);
         currentPickedData = picked;
     }
 }
 
-function redrawChart()
-{
+function redrawChart() {
     if (!currentPickedData)
         return;
     $('#loading').show();
-    setTimeout(function() {
-        if (chartType == 0)
+    setTimeout(function () {
+        if (chartType === 0)
             drawSeqChart(currentPickedData);
         else
             drawDiffChart(currentPickedData);
@@ -161,17 +156,16 @@ function redrawChart()
 }
 
 var timer;
-$(window).resize(function() {
+$(window).resize(function () {
     if (timer)
         clearTimeout(timer);
-    timer = setTimeout(function() {
+    timer = setTimeout(function () {
         if (showChart)
             redrawChart();
     }, 200);
 });
 
-function chartSize()
-{
+function chartSize() {
     var pxPerEm = Number($('#chart').css('fontSize').match(/(\d*(\.\d*)?)px/)[1]);
     return {
         height: Math.max($(document).height() - 15 * pxPerEm, 400),
@@ -179,10 +173,9 @@ function chartSize()
     };
 }
 
-function drawSeqChart(picked)
-{
-    size = chartSize();
-    var chart = c3.generate({
+function drawSeqChart(picked) {
+    var size = chartSize();
+    c3.generate({
         bindto: '#chart',
         size: {
             height: size.height,
@@ -221,7 +214,7 @@ function drawSeqChart(picked)
                     rotate: 30,
                     format: function (x) { return moment(x).format("MM-DD HH:mm"); },
                     values: picked.tick
-                },
+                }
             },
             y2: {
                 show: true
@@ -231,8 +224,7 @@ function drawSeqChart(picked)
     });
 }
 
-function pickChartData(data, range)
-{
+function pickChartData(data, range) {
     var newdata = [];
     var ticks = [];
     var grid = [];
@@ -240,31 +232,31 @@ function pickChartData(data, range)
     var last = moment(data[data.length - 1][0]).valueOf();
     var interval, tickInterval, lastTick;
     switch (range) {
-    case 0:
-        first = moment(last).subtract(24, 'hours').valueOf();
-        break;
-    case 1:
-        first = moment(last).subtract(7, 'days').valueOf();
-        break;
-    case 2:
-        first = moment(last).subtract(1, 'months').valueOf();
-        break;
-    case 3:
-        first = moment(last).subtract(3, 'months').valueOf();
-        break;
-    case 4:
-        first = moment(data[0][0]).valueOf();
-        break;
-    case 5:
-        fromDate = $('#chart_from').datepicker("getDate");
-        toDate = $('#chart_to').datepicker("getDate");
-        if (fromDate == null || toDate == null)
-            return { data: [], tick: [], grid: [] };
-        from = fromDate.valueOf() + 3600 * 5000;
-        to = toDate.valueOf() + oneDay + 3600 * 5000;
-        first = Math.max(first, from);
-        last = Math.min(last, to);
-        break;
+        case 0:
+            first = moment(last).subtract(24, 'hours').valueOf();
+            break;
+        case 1:
+            first = moment(last).subtract(7, 'days').valueOf();
+            break;
+        case 2:
+            first = moment(last).subtract(1, 'months').valueOf();
+            break;
+        case 3:
+            first = moment(last).subtract(3, 'months').valueOf();
+            break;
+        case 4:
+            first = moment(data[0][0]).valueOf();
+            break;
+        case 5:
+            var fromDate = $('#chart_from').datepicker("getDate");
+            var toDate = $('#chart_to').datepicker("getDate");
+            if (fromDate == null || toDate == null)
+                return { data: [], tick: [], grid: [] };
+            var from = fromDate.valueOf() + 3600 * 5000;
+            var to = toDate.valueOf() + oneDay + 3600 * 5000;
+            first = Math.max(first, from);
+            last = Math.min(last, to);
+            break;
     }
     if (last <= first + oneDay) {
         interval = 1000;
@@ -287,35 +279,33 @@ function pickChartData(data, range)
         tickInterval = oneDay * 28;
         lastTick = to5am(moment(last).day(1).valueOf());
     }
-    var last_data;
+    var lastData;
     for (var i = data.length - 1; i >= 0; i--) {
         var row = data[i];
         var date = parseDate(row[0]).valueOf();
         if (date > first) {
             if (date <= last) {
                 var v = date - date % interval;
-                if (last_data != v) {
+                if (lastData !== v) {
                     newdata.unshift(row);
-                    last_data = v;
+                    lastData = v;
                 }
             }
         } else {
             break;
         }
     }
-    for (var tick = lastTick; tick > last_data; tick -= tickInterval)
-    {
+    for (var tick = lastTick; tick > lastData; tick -= tickInterval) {
         var str = toString(moment(tick));
         ticks.unshift(str);
-        grid.unshift({value: str});
+        grid.unshift({ value: str });
     }
     return { data: newdata, tick: ticks, grid: grid };
 }
 
-function drawDiffChart(picked)
-{
-    size = chartSize();
-    var chart = c3.generate({
+function drawDiffChart(picked) {
+    var size = chartSize();
+    c3.generate({
         bindto: '#chart',
         size: {
             height: size.height,
@@ -329,15 +319,15 @@ function drawDiffChart(picked)
                 燃料: 'y',
                 弾薬: 'y',
                 鋼材: 'y',
-                ボーキ: 'y',
+                ボーキ: 'y'
             },
             type: 'bar',
             groups: [["燃料", "弾薬", "鋼材", "ボーキ"]]
         },
         bar: {
-                width: {
-                    ratio: picked.width
-              }
+            width: {
+                ratio: picked.width
+            }
         },
         tooltip: {
             show: $('#tooltip').prop('checked')
@@ -348,7 +338,7 @@ function drawDiffChart(picked)
             },
             y: {
                 lines: [
-                    {value: 0}
+                    { value: 0 }
                 ]
             }
         },
@@ -359,46 +349,46 @@ function drawDiffChart(picked)
                     rotate: 30,
                     format: function (x) { return moment(x).format("MM-DD HH:mm"); },
                     values: picked.tick
-                },
-            },
+                }
+            }
         },
         onrendered: function () { $('#loading').hide(); }
     });
 }
 
-function pickDiffChartData(data, range)
-{
+function pickDiffChartData(data, range) {
     var newdata = [];
     var ticks = [];
     var grid = [];
     var first = moment(data[0][0]).valueOf();
     var last = moment(data[data.length - 1][0]).valueOf();
     var interval, tickInterval, lastTick;
-    const oneDay = 3600 * 24 * 1000;
+    var oneDay = 3600 * 24 * 1000;
     switch (range) {
-    case 0:
-        first = moment(last).subtract(1, 'months').valueOf();
-        break;
-    case 1:
-        first = moment(last).subtract(3, 'months').valueOf();
-        break;
-    case 2:
-        first = moment(last).subtract(6, 'months').subtract(1, 'weeks').valueOf();
-        break;
-    case 3:
-        first = moment(data[0][0]).valueOf();
-        break;
-    case 4:
-        fromDate = $('#chart_from').datepicker("getDate");
-        toDate = $('#chart_to').datepicker("getDate");
-        if (fromDate == null || toDate == null)
-            return { data: [], tick: [], grid: [] };
-        from = fromDate.valueOf() + 3600 * 5000;
-        to = toDate.valueOf() + oneDay + 3600 * 5000;
-        first = Math.max(first, from);
-        last = Math.min(last, to);
-        break;
+        case 0:
+            first = moment(last).subtract(1, 'months').valueOf();
+            break;
+        case 1:
+            first = moment(last).subtract(3, 'months').valueOf();
+            break;
+        case 2:
+            first = moment(last).subtract(6, 'months').subtract(1, 'weeks').valueOf();
+            break;
+        case 3:
+            first = moment(data[0][0]).valueOf();
+            break;
+        case 4:
+            var fromDate = $('#chart_from').datepicker("getDate");
+            var toDate = $('#chart_to').datepicker("getDate");
+            if (fromDate == null || toDate == null)
+                return { data: [], tick: [], grid: [] };
+            var from = fromDate.valueOf() + 3600 * 5000;
+            var to = toDate.valueOf() + oneDay + 3600 * 5000;
+            first = Math.max(first, from);
+            last = Math.min(last, to);
+            break;
     }
+    var barWidth;
     if (last <= first + oneDay * 2 * 31) {
         interval = oneDay;
         tickInterval = oneDay * 2;
@@ -414,29 +404,29 @@ function pickDiffChartData(data, range)
         tickInterval = oneDay * 28;
         lastTick = to5am(moment(last).day(1).valueOf());
         barWidth = 0.1;
-        if (last <= first + oneDay * 6 * 38){
+        if (last <= first + oneDay * 6 * 38) {
             tickInterval = oneDay * 14;
             barWidth = 0.3;
         }
     }
-    var last_date = lastTick;
-    var prev_row;
+    var lastDate = lastTick;
+    var prevRow;
     for (var i = data.length - 1; i >= 0; i--) {
         var row = data[i];
         var date = parseDate(row[0]).valueOf();
         if (date > first && date <= last) {
-            if (!prev_row) {
-                prev_row = row;
+            if (!prevRow) {
+                prevRow = row;
                 continue;
             }
-            if (date <= last_date) {
-                var newrow = [prev_row[0]];
+            if (date <= lastDate) {
+                var newrow = [prevRow[0]];
                 for (var r = 1; r < 5; r++) {
-                    newrow.push(prev_row[r] - row[r] )
+                    newrow.push(prevRow[r] - row[r]);
                 }
                 newdata.unshift(newrow);
-                last_date = last_date - interval;
-                prev_row = row;
+                lastDate = lastDate - interval;
+                prevRow = row;
             }
         } else {
             break;
@@ -444,11 +434,10 @@ function pickDiffChartData(data, range)
     }
     if (tickInterval >= oneDay * 7)
         lastTick = moment(lastTick).day(1).hour(5).minute(0).valueOf();
-    for (var tick = lastTick; tick > last_date; tick -= tickInterval)
-    {
+    for (var tick = lastTick; tick > lastDate; tick -= tickInterval) {
         var str = toString(moment(tick));
         ticks.unshift(str);
-        grid.unshift({value: str});
+        grid.unshift({ value: str });
     }
     return { data: newdata, tick: ticks, grid: grid, width: barWidth };
 }
@@ -457,14 +446,14 @@ var sortieStatRange = 0;
 
 function loadSortieData() {
     var from, to;
-    if (sortieStatRange == 0) {
+    if (sortieStatRange === 0) {
         from = moment().subtract(1, 'months').subtract(1, 'day').valueOf();
         to = new Date().valueOf();
     } else {
         var fromDate = $('#sortie_stat_from').datepicker("getDate");
         var toDate = $('#sortie_stat_to').datepicker("getDate");
         if (fromDate == null || toDate == null) {
-            setSortieStat([])
+            setSortieStat([]);
             return;
         }
         from = fromDate.valueOf();
@@ -472,38 +461,38 @@ function loadSortieData() {
     }
     $.ajax({
         url: "./海戦・ドロップ報告書.json?from=" + from + "&to=" + to,
-        success: function (data) { setSortieStat(data.data);},
+        success: function (data) { setSortieStat(data.data); },
         dataType: "json", cache: false
     });
 }
 
-function initSortieStatResult(r) {
+function initSortieStatResult() {
     var now = moment();
     var r;
-    if (sortieStatRange == 0) {
+    if (sortieStatRange === 0) {
         r = {
-            day: {stat: {}},
-            week: {stat: {}},
-            month: {stat: {}}
+            day: { stat: {} },
+            week: { stat: {} },
+            month: { stat: {} }
         };
         r.day.begin = moment(now).hour(5).minute(0).second(0);
         if (now.hour() < 5) {
             r.day.begin.subtract(1, 'days');
         }
         r.week.begin = moment(now).day(1).hour(5).minute(0).second(0);
-        if (now.day() == 0 || now.day() == 1 && now.hour() < 5) {
+        if (now.day() === 0 || now.day() === 1 && now.hour() < 5) {
             r.week.begin.subtract(1, 'weeks');
         }
-        if (moment(now).endOf('month').date() == now.date() &&
+        if (moment(now).endOf('month').date() === now.date() &&
             now.hour() >= 22) { // 月末22時以降
-                r.month.begin = moment(now).hour(22).minute(0).second(0);
+            r.month.begin = moment(now).hour(22).minute(0).second(0);
         } else {
             r.month.begin =
                 moment(now).date(1).subtract(1, 'days').
-                hour(22).minute(0).second(0);
+                    hour(22).minute(0).second(0);
         }
     } else {
-        r = { all: {stat: {}}};
+        r = { all: { stat: {} } };
         r.all.begin = moment(0);
     }
     return r;
@@ -511,30 +500,32 @@ function initSortieStatResult(r) {
 
 function gatherSortieStat(data) {
     var initStat = function () {
-        return {start:"-", S:0, A:0, B:0, C:0, D:0, R:0}
+        return { start: "-", S: 0, A: 0, B: 0, C: 0, D: 0, R: 0 }
     };
     var r = initSortieStatResult();
     for (var i = 0; i < data.length; i++) {
         var row = data[i];
         var date = moment(row[0]);
         var map = row[1];
-        var isBoss = row[3].indexOf("ボス") != -1;
-        var isStart = row[3].indexOf("出撃") != -1;
+        var isBoss = row[3].indexOf("ボス") !== -1;
+        var isStart = row[3].indexOf("出撃") !== -1;
         var resR = 0;
         for (var j = 23; j < row.length; j++) {
             if (/^輸送/.test(row[j]) && /^0\//.test(row[j + 1]))
                 resR++;
         }
         var res = row[4];
-        if (res == "E")
+        if (res === "E")
             res = "D";
         for (var term in r) {
-            to = r[term];
+            if (!r.hasOwnProperty(term))
+                continue;
+            var to = r[term];
             if (to.begin.isAfter(date))
                 continue;
             for (var b = 0; b < 4; b++) {
                 var name = b < 2 ? "合計" : map;
-                if (b == 1 || b == 3) {
+                if (b === 1 || b === 3) {
                     if (!isBoss)
                         continue;
                     name = name + " - ボス";
@@ -542,16 +533,15 @@ function gatherSortieStat(data) {
                 var mo = to.stat[name];
                 if (!mo) {
                     mo = to.stat[name] = initStat();
-                    if (name == "合計")
+                    if (name === "合計")
                         to.stat["合計 - ボス"] = initStat();
                 }
                 mo["R"] += resR;
                 mo[res]++;
-                if ((b == 0 || b == 2) && isStart)
-                {
-                    if (mo.start == "-")
+                if ((b === 0 || b === 2) && isStart) {
+                    if (mo.start === "-")
                         mo.start = 0;
-                    mo.start++
+                    mo.start++;
                 }
             }
         }
@@ -560,18 +550,21 @@ function gatherSortieStat(data) {
 }
 
 function arrangeSortieStatTable(r) {
-    for (term in r) {
+    for (var term in r) {
+        if (!r.hasOwnProperty(term))
+            continue;
         var table = [];
         var pushed = {};
-        for (map in r[term].stat)
-        {
+        for (var map in r[term].stat) {
+            if (!r[term].stat.hasOwnProperty(map))
+                continue;
             if (pushed[map])
                 continue;
             var e = r[term].stat[map];
             e.map = map;
             table.push(e);
             pushed[map] = 1;
-            boss = map + " - ボス";
+            var boss = map + " - ボス";
             e = r[term].stat[boss];
             if (!e)
                 continue;
@@ -591,7 +584,9 @@ function setSortieStat(data) {
     }
     var r = gatherSortieStat(data);
     arrangeSortieStatTable(r);
-    for (term in r) {
+    for (var term in r) {
+        if (!r.hasOwnProperty(term))
+            continue;
         var dt = $("#sortie_stat_" + term).DataTable();
         dt.clear();
         dt.rows.add(r[term].table).draw();
@@ -606,7 +601,7 @@ function initSortieStatTables() {
             paging: false,
             searching: false,
             ordering: false,
-            columns: terms[i] != 'month' ? [
+            columns: terms[i] !== 'month' ? [
                 { data: "map" },
                 { data: "start" },
                 { data: "S" },
@@ -616,29 +611,28 @@ function initSortieStatTables() {
                 { data: "D" },
                 { data: "R" }
             ] : [
-                { data: "map" },
-                { data: "start" },
-                { data: "S" },
-                { data: "A" },
-                { data: "B" },
-                { data: "C" },
-                { data: "D" },
-            ]
+                    { data: "map" },
+                    { data: "start" },
+                    { data: "S" },
+                    { data: "A" },
+                    { data: "B" },
+                    { data: "C" },
+                    { data: "D" }
+                ]
         });
     }
 }
 
-function selectTopTab(i)
-{
+function selectTopTab(i) {
     var chart = tables;
     showChart = false;
     if (i < tables) {
         selectedTable = i;
         showLog();
-    } else if (i == chart) {
+    } else if (i === chart) {
         showChart = true;
         drawChart();
-    } else if (i == chart + 1) {
+    } else if (i === chart + 1) {
         setSortieStat();
     }
     if (i < tables)
@@ -652,15 +646,14 @@ function selectTopTab(i)
     $('#main_contents .hide').eq(i).show();
 }
 
-function initAction()
-{
-    $('.tab0 li').click(function() {
+function initAction() {
+    $('.tab0 li').click(function () {
         var tab = $('.tab0 li');
-        var i = tab.index(this)
+        var i = tab.index(this);
         selectTopTab(i);
         sessionStorage.setItem('prevTab', i);
     });
-    $('#range_seq li').click(function() {
+    $('#range_seq li').click(function () {
         var tab = $('#range_seq li');
         var i = tab.index(this);
         seqChartRange = i;
@@ -670,7 +663,7 @@ function initAction()
         tab.eq(i).addClass('select');
         sessionStorage.setItem('prevSeqRange', i);
     });
-    $('#range_diff li').click(function() {
+    $('#range_diff li').click(function () {
         var tab = $('#range_diff li');
         var i = tab.index(this);
         diffChartRange = i;
@@ -680,8 +673,8 @@ function initAction()
         tab.eq(i).addClass('select');
         sessionStorage.setItem('prevDiffRange', i);
     });
-    $('input[name="chart_type"]:radio').change(function() {
-        if ($(this).val() == 0) {
+    $('input[name="chart_type"]:radio').change(function () {
+        if ($(this).val() === 0) {
             $("#range_seq").show();
             $("#range_diff").hide();
             chartType = 0;
@@ -693,7 +686,7 @@ function initAction()
         drawChart();
         sessionStorage.setItem('chartType', $(this).val());
     });
-    $('#tooltip').change(function() {
+    $('#tooltip').change(function () {
         drawChart();
     });
     $('#range_sortie_stat li').click(function () {
@@ -702,7 +695,7 @@ function initAction()
         sortieStatRange = i;
         tab.removeClass('select');
         tab.eq(i).addClass('select');
-        if (sortieStatRange == 0) {
+        if (sortieStatRange === 0) {
             $('#sortie_stat_recent_tables').show();
             $('#sortie_stat_all_table').hide();
         } else {
@@ -713,45 +706,41 @@ function initAction()
     });
 }
 
-function initTableDatePicker()
-{
+function initTableDatePicker() {
     $('#term_from').datepicker({
         defaultDate: moment().subtract(1, 'months').toDate(),
-        onClose: function() {$('input[name=term]').val(['1'])}
+        onClose: function () { $('input[name=term]').val(['1']) }
     });
     $('#term_to').datepicker({
-        onClose: function() {$('input[name=term]').val(['1'])}
+        onClose: function () { $('input[name=term]').val(['1']) }
     });
     $('#term_apply').click(showLog);
 }
 
-function initChartDatePicker()
-{
+function initChartDatePicker() {
     $('#chart_from').datepicker({
-        onClose: function() {if (useChartDatePicker()) drawChart();}
+        onClose: function () { if (useChartDatePicker()) drawChart(); }
     });
     $('#chart_to').datepicker({
-        onClose: function() {if (useChartDatePicker()) drawChart();}
+        onClose: function () { if (useChartDatePicker()) drawChart(); }
     });
 }
 
-function useChartDatePicker()
-{
-    return (chartType == 0 && seqChartRange == 5) ||
-        (chartType == 1 && diffChartRange == 4);
+function useChartDatePicker() {
+    return (chartType === 0 && seqChartRange === 5) ||
+        (chartType === 1 && diffChartRange === 4);
 }
 
-function initSortieStatDatePicker()
-{
+function initSortieStatDatePicker() {
     $('#sortie_stat_from').datepicker({
-        onClose: function() {if (sortieStatRange == 1) setSortieStat();}
+        onClose: function () { if (sortieStatRange === 1) setSortieStat(); }
     });
     $('#sortie_stat_to').datepicker({
-        onClose: function() {if (sortieStatRange == 1) setSortieStat();}
+        onClose: function () { if (sortieStatRange === 1) setSortieStat(); }
     });
 }
 
-$(function() {
+$(function () {
     $.fn.dataTable.ext.errMode = 'throw';
     initAction();
     initTableDatePicker();
@@ -765,14 +754,14 @@ $(function() {
     var range = sessionStorage.getItem('prevSeqRange');
     seqChartRange = range == null ? 0 : +range;
     range = sessionStorage.getItem('prevDiffRange');
-    seqDiffRange = range == null ? 0 : +range;
+    diffChartRange = range == null ? 0 : +range;
     $('input[name="chart_type"]:radio').eq(chartType).prop("checked", true);
-    if (chartType == 0) {
-        $('#range_seq').show()
-        $('#range_diff').hide()
+    if (chartType === 0) {
+        $('#range_seq').show();
+        $('#range_diff').hide();
     } else {
-        $('#range_seq').hide()
-        $('#range_diff').show()
+        $('#range_seq').hide();
+        $('#range_diff').show();
     }
     $('#range_diff li').removeClass('select');
     $('#range_diff li').eq(diffChartRange).addClass('select');
@@ -860,7 +849,7 @@ $(function() {
 
 <li class="hide">
 <form id="chart_type">
-<div style="margin: 0px 0px 0.5em 1em;">
+<div style="margin: 0 0 0.5em 1em;">
 <label><input type="radio" name="chart_type" value="0" checked="checked">連続</label>
 <label><input type="radio" name="chart_type" value="1">差分</label>
 </div>
@@ -880,7 +869,7 @@ $(function() {
 <li>すべて(週)</li>
 <li>期間指定</li>
 </ul>
-<div style="padding: 0.2em 0em;">
+<div style="padding: 0.2em 0;">
 <input type="text" id="chart_from" style="width: 7em">～<input type="text" id="chart_to" style="width: 7em">
 <label><input type="checkbox" id="tooltip" value="" style="margin-left: 2em;">ツールチップ</label>
 </div>
@@ -891,7 +880,7 @@ $(function() {
 <li>直近</li>
 <li>期間指定</li>
 </ul>
-<div style="padding: 0.2em 0em;">
+<div style="padding: 0.2em 0;">
 <input type="text" id="sortie_stat_from" style="width: 7em">～<input type="text" id="sortie_stat_to" style="width: 7em">
 </div>
 
