@@ -688,6 +688,7 @@ function initAction() {
     });
     $('#tooltip').change(function () {
         drawChart();
+        sessionStorage.setItem('chartTooltip', $(this).prop("checked"));
     });
     $('#range_sortie_stat li').click(function () {
         var tab = $('#range_sortie_stat li');
@@ -740,22 +741,16 @@ function initSortieStatDatePicker() {
     });
 }
 
-$(function () {
-    $.fn.dataTable.ext.errMode = 'throw';
-    initAction();
-    initTableDatePicker();
-    initChartDatePicker();
-    initSortieStatDatePicker();
-    $('table').addClass('display compact cell-border');
-    initTables();
-    initSortieStatTables();
+function restoreChartSettings() {
     var type = sessionStorage.getItem('chartType');
     chartType = type == null ? 0 : +type;
+    var tooltip = sessionStorage.getItem('chartTooltip');
+    $('#tooltip').prop('checked', tooltip === "true");
     var range = sessionStorage.getItem('prevSeqRange');
     seqChartRange = range == null ? 0 : +range;
     range = sessionStorage.getItem('prevDiffRange');
     diffChartRange = range == null ? 0 : +range;
-    $('input[name="chart_type"]:radio').eq(chartType).prop("checked", true);
+    $('input[name="chart_type"]:radio').eq(chartType).prop('checked', true);
     if (chartType === 0) {
         $('#range_seq').show();
         $('#range_diff').hide();
@@ -767,8 +762,20 @@ $(function () {
     $('#range_diff li').eq(diffChartRange).addClass('select');
     $('#range_seq li').removeClass('select');
     $('#range_seq li').eq(seqChartRange).addClass('select');
+}
+
+$(function () {
+    $.fn.dataTable.ext.errMode = 'throw';
+    initAction();
+    initTableDatePicker();
+    initChartDatePicker();
+    initSortieStatDatePicker();
+    $('table').addClass('display compact cell-border');
+    initTables();
+    initSortieStatTables();
     $('#range_sortie_stat li').removeClass('select');
     $('#range_sortie_stat li').eq(sortieStatRange).addClass('select');
+    restoreChartSettings();
     var prev = sessionStorage.getItem('prevTab');
     selectTopTab(prev == null ? 0 : +prev);
 });
