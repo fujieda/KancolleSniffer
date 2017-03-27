@@ -367,10 +367,14 @@ namespace KancolleSniffer
         {
             get
             {
-                if (Spec.Type == 6)
-                    return 0.2 * Level;
-                if (Spec.Type == 7) // 改修可能なのは爆戦のみ
-                    return 0.25 * Level;
+                switch (Spec.Type)
+                {
+                    case 6: // 艦戦
+                    case 45: // 水戦
+                        return 0.2 * Level;
+                    case 7: // 改修可能なのは爆戦のみ
+                        return 0.25 * Level;
+                }
                 return 0;
             }
         }
