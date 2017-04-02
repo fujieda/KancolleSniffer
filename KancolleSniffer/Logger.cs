@@ -24,13 +24,14 @@ namespace KancolleSniffer
     public enum LogType
     {
         None = 0,
-        Mission = 1,
-        Battle = 2,
-        Material = 4,
-        CreateItem = 8,
-        CreateShip = 16,
-        RemodelSlot = 32,
-        All = 63,
+        Mission = 1 << 0,
+        Battle = 1 << 1,
+        Material = 1 << 2,
+        CreateItem = 1 << 3,
+        CreateShip = 1 << 4,
+        RemodelSlot = 1 << 5,
+        Achivement = 1 << 6,
+        All = (1 << 7) - 1
     }
 
     public class Logger
@@ -50,6 +51,10 @@ namespace KancolleSniffer
         private int[] _currentMaterial = new int[Enum.GetValues(typeof(Material)).Length];
         private int _materialLogInterval = 10;
         private bool _start;
+        private int _lastExp = -1;
+        private DateTime _lastDate;
+        private DateTime _endOfMonth;
+        private DateTime _nextDate;
 
         public int MaterialLogInterval
         {
@@ -134,6 +139,17 @@ namespace KancolleSniffer
 
         public void InspectBattleResult(dynamic result)
         {
+            if ((_logType & LogType.Achivement) != 0 && result.api_get_exmap_rate())
+            {
+                var rate = result.api_get_exmap_rate is string
+                    ? int.Parse(result.api_get_exmap_rate)
+                    : (int)result.api_get_exmap_rate;
+                if (rate != 0)
+                {
+                    _writer("戦果", _nowFunc().ToString(DateTimeFormat) + "," + _lastExp + "," + rate,
+                        "日付,経験値,EO");
+                }
+            }
             if ((_logType & LogType.Battle) == 0 || _map == null || _battle == null)
             {
                 _map = _battle = null;
@@ -333,6 +349,38 @@ namespace KancolleSniffer
         public void InspectBasic(dynamic json)
         {
             _basic = json;
+            if ((_logType & LogType.Achivement) == 0)
+                return;
+            var now = _nowFunc();
+            var exp = (int)json.api_experience;
+            var isNewMonth = _endOfMonth == DateTime.MinValue || now.CompareTo(_endOfMonth) >= 0;
+            var isNewDate = _nextDate == DateTime.MinValue || now.CompareTo(_nextDate) >= 0;
+            if (isNewDate || isNewMonth)
+            {
+                if (_lastDate != DateTime.MinValue)
+                {
+                    _writer("戦果", _lastDate.ToString(DateTimeFormat) + "," + _lastExp + ",0", "日付,経験値,EO");
+                }
+                _writer("戦果", now.ToString(DateTimeFormat) + "," + exp + ",0", "日付,経験値,EO");
+                if (isNewMonth)
+                {
+                    _endOfMonth = new DateTime(now.Year, now.Month, DateTime.DaysInMonth(now.Year, now.Month), 22, 0, 0);
+                    if (_endOfMonth.CompareTo(now) <= 0)
+                    {
+                        var days = _endOfMonth.Month == 12
+                            ? DateTime.DaysInMonth(_endOfMonth.Year + 1, 1)
+                            : DateTime.DaysInMonth(_endOfMonth.Year, _endOfMonth.Month);
+                        _endOfMonth = _endOfMonth.AddDays(days);
+                    }
+                }
+                _nextDate = new DateTime(now.Year, now.Month, now.Day, 5, 0, 0);
+                if (now.Hour >= 5)
+                    _nextDate = _nextDate.AddDays(1);
+                if (_nextDate.Day == 1)
+                    _nextDate = _nextDate.AddDays(1);
+            }
+            _lastDate = now;
+            _lastExp = exp;
         }
 
         public void InspectCreateItem(string request, dynamic json)

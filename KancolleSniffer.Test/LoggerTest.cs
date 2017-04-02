@@ -334,5 +334,35 @@ namespace KancolleSniffer.Test
                                "2015-01-01 00:00:00,91式高射装置,10,○,○,10cm連装高角砲,2,0,0,60,40,9,7,明石改(50),摩耶改(98)|"
                                == result);
         }
+
+        [TestMethod]
+        public void Achievement()
+        {
+            var logger = new Logger(null, null, null);
+            logger.EnableLog(LogType.Achivement);
+            var result = "";
+            var dateEnum = new[]
+            {
+                new DateTime(2017, 3, 31, 21, 0, 0),
+                new DateTime(2017, 3, 31, 22, 0, 0),
+                new DateTime(2017, 4, 1, 4, 0, 0),
+                new DateTime(2017, 4, 1, 5, 0, 0),
+                new DateTime(2017, 4, 1, 6, 0, 0),
+                new DateTime(2017, 4, 2, 5, 0, 0),
+                new DateTime(2017, 4, 2, 6,0,0)
+            }.GetEnumerator();
+            logger.SetWriter((path, s, h) => { result += s + "|"; }, () =>
+            {
+                dateEnum.MoveNext();
+                return (DateTime)dateEnum.Current;
+            });
+            for (var i = 0; i < 6; i++)
+                logger.InspectBasic(JsonParser.Parse($"{{\"api_experience\": {i * 1000}}}"));
+            logger.InspectBattleResult(JsonParser.Parse("{\"api_get_exmap_rate\": \"100\"}"));
+            PAssert.That(() =>
+                "2017-03-31 21:00:00,0,0|2017-03-31 21:00:00,0,0|2017-03-31 22:00:00,1000,0|"+
+                "2017-04-01 06:00:00,4000,0|2017-04-02 05:00:00,5000,0|2017-04-02 06:00:00,5000,100|"
+                == result);
+        }
     }
 }
