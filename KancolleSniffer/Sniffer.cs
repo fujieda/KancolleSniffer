@@ -567,6 +567,11 @@ namespace KancolleSniffer
         {
             set { _logger.OutputDir = value; }
         }
+
+        public void FlashLog()
+        {
+            _logger.FlashLog();
+        }
     }
 
     public class NameAndTimer

@@ -86,6 +86,11 @@ namespace KancolleSniffer
             _nowFunc = nowFunc;
         }
 
+        public void FlashLog()
+        {
+            FlashAchivementLog();
+        }
+
         public void InspectMissionResult(dynamic json)
         {
             var r = (int)json.api_clear_result;
@@ -381,6 +386,16 @@ namespace KancolleSniffer
             }
             _lastDate = now;
             _lastExp = exp;
+        }
+
+        private void FlashAchivementLog()
+        {
+            if ((_logType & LogType.Achivement) == 0)
+                return;
+            if (_lastDate != DateTime.MinValue)
+            {
+                _writer("戦果", _lastDate.ToString(DateTimeFormat) + "," + _lastExp + ",0", "日付,経験値,EO");
+            }
         }
 
         public void InspectCreateItem(string request, dynamic json)

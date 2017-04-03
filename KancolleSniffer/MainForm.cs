@@ -198,6 +198,7 @@ namespace KancolleSniffer
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = false;
+            _sniffer.FlashLog();
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.Save();
             Task.Run(() => ShutdownProxy());
