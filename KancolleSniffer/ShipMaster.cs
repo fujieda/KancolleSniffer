@@ -59,7 +59,7 @@ namespace KancolleSniffer
         {
             var name = json.api_name;
             var flagship = json.api_yomi;
-            if ((int)json.api_id <= 500 || flagship == "-" || flagship == "")
+            if ((int)json.api_id <= 1500 || flagship == "-" || flagship == "")
                 return name;
             return name + "(" + flagship + ")";
         }
