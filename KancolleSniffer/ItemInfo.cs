@@ -220,6 +220,7 @@ namespace KancolleSniffer
                     case 9: // 艦偵
                         return Color.FromArgb(254, 191, 0);
                     case 10: // 水上機
+                    case 43: // 水上戦闘機
                         return Color.FromArgb(142, 203, 152);
                     case 11: // 電探
                         return Color.FromArgb(231, 153, 53);
@@ -268,12 +269,13 @@ namespace KancolleSniffer
                     case 35: // 補給物資
                         return Color.FromArgb(90, 200, 155);
                     case 37: // 陸上攻撃機
-                        return Color.FromArgb(57, 182, 78);
                     case 38: // 局地戦闘機
                         return Color.FromArgb(57, 182, 78);
                     case 39: // 噴式景雲改
                     case 40: // 橘花改
                         return Color.FromArgb(72, 178, 141);
+                    case 42: // 潜水艦機材
+                        return Color.FromArgb(158, 187, 226);
                     default:
                         return SystemColors.Control;
                 }
