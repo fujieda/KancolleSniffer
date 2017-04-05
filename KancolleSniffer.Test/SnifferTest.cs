@@ -315,7 +315,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "sunk_001");
-            PAssert.That(() => sniffer.BadlyDamagedShips.SequenceEqual(new [] {"磯波"}));
+            PAssert.That(() => sniffer.BadlyDamagedShips.SequenceEqual(new[] {"磯波"}));
         }
 
         /// <summary>
@@ -414,7 +414,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void ZeroValueEmptySlot()
         {
-            var sniffer = new Sniffer();
+            var sniffer = new Sniffer {UseOldEnemyId = true};
             SniffLogFile(sniffer, "battle_006");
             PAssert.That(() => sniffer.Battle.EnemyFighterPower == "0");
         }
@@ -451,7 +451,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "fighterpower_003");
-            PAssert.That(() => sniffer.GetFighterPower(0).SequenceEqual(new [] {135, 135}));
+            PAssert.That(() => sniffer.GetFighterPower(0).SequenceEqual(new[] {135, 135}));
         }
 
         /// <summary>
@@ -464,7 +464,7 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "baseaircorps_001");
             PAssert.That(() => sniffer.BaseAirCorps[0].AirCorps[0].FighterPower[1] == 301);
             sniffer.BaseAirCorps[0].AirCorps[0].Action = 2; // 防空
-            PAssert.That(()=>sniffer.BaseAirCorps[0].AirCorps[0].FighterPower[1] == 320);
+            PAssert.That(() => sniffer.BaseAirCorps[0].AirCorps[0].FighterPower[1] == 320);
         }
 
         /// <summary>

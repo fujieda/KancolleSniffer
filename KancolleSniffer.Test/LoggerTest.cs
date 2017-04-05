@@ -115,7 +115,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void InspectBattleResult()
         {
-            var sniffer = new Sniffer();
+            var sniffer = new Sniffer {UseOldEnemyId = true};
             var result = "";
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Battle);
@@ -142,7 +142,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void InspectBattleResultOfSpMidnight()
         {
-            var sniffer = new Sniffer();
+            var sniffer = new Sniffer {UseOldEnemyId = true};
             var result = "";
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Battle);
@@ -157,7 +157,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void InspectCombinedBattleResult()
         {
-            var sniffer = new Sniffer();
+            var sniffer = new Sniffer {UseOldEnemyId = true};
             var result = "";
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Battle);
@@ -177,7 +177,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void InspectBothCombinedBattleResult()
         {
-            var sniffer = new Sniffer();
+            var sniffer = new Sniffer {UseOldEnemyId = true};
             var result = "";
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2017, 1, 1));
             sniffer.EnableLog(LogType.Battle);
@@ -193,7 +193,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void InspectBattleResultStartAndBoss()
         {
-            var sniffer = new Sniffer();
+            var sniffer = new Sniffer {UseOldEnemyId = true};
             var result = "";
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Battle);
@@ -228,7 +228,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void InspectBattleResultDropItemAndShip()
         {
-            var sniffer = new Sniffer();
+            var sniffer = new Sniffer {UseOldEnemyId = true};
             var result = "";
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Battle);
@@ -252,7 +252,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void ReloadBeforeBattleResult()
         {
-            var sniffer = new Sniffer();
+            var sniffer = new Sniffer {UseOldEnemyId = true};
             var result = "";
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2015, 1, 1));
             sniffer.EnableLog(LogType.Battle);
@@ -349,7 +349,7 @@ namespace KancolleSniffer.Test
                 new DateTime(2017, 4, 1, 5, 0, 0),
                 new DateTime(2017, 4, 1, 6, 0, 0),
                 new DateTime(2017, 4, 2, 5, 0, 0),
-                new DateTime(2017, 4, 2, 6,0,0)
+                new DateTime(2017, 4, 2, 6, 0, 0)
             }.GetEnumerator();
             logger.SetWriter((path, s, h) => { result += s + "|"; }, () =>
             {
@@ -360,7 +360,7 @@ namespace KancolleSniffer.Test
                 logger.InspectBasic(JsonParser.Parse($"{{\"api_experience\": {i * 1000}}}"));
             logger.InspectBattleResult(JsonParser.Parse("{\"api_get_exmap_rate\": \"100\"}"));
             PAssert.That(() =>
-                "2017-03-31 21:00:00,0,0|2017-03-31 21:00:00,0,0|2017-03-31 22:00:00,1000,0|"+
+                "2017-03-31 21:00:00,0,0|2017-03-31 21:00:00,0,0|2017-03-31 22:00:00,1000,0|" +
                 "2017-04-01 06:00:00,4000,0|2017-04-02 05:00:00,5000,0|2017-04-02 06:00:00,5000,100|"
                 == result);
         }

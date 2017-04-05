@@ -21,6 +21,8 @@ namespace KancolleSniffer
         public const int NumSlots = 5;
         private readonly Dictionary<int, ShipSpec> _shipSpecs = new Dictionary<int, ShipSpec>();
 
+        public bool UseOldEnemyId { get; set; }
+
         public void Inspect(dynamic json)
         {
             var dict = new Dictionary<double, string>();
@@ -48,7 +50,7 @@ namespace KancolleSniffer
                 int[] maxEq;
                 shipSpec.MaxEq = entry.api_maxeq()
                     ? entry.api_maxeq
-                    : MissingData.MaxEq.TryGetValue(shipSpec.Id, out maxEq) ? maxEq : null;
+                    : MissingData.MaxEq.TryGetValue(shipSpec.Id + (UseOldEnemyId ? 1000 : 0), out maxEq) ? maxEq : null;
             }
             _shipSpecs[-1] = new ShipSpec();
             SetRemodelBaseAndStep();
@@ -59,7 +61,7 @@ namespace KancolleSniffer
         {
             var name = json.api_name;
             var flagship = json.api_yomi;
-            if ((int)json.api_id <= 1500 || flagship == "-" || flagship == "")
+            if ((int)json.api_id <= (UseOldEnemyId ? 500 : 1500) || flagship == "-" || flagship == "")
                 return name;
             return name + "(" + flagship + ")";
         }

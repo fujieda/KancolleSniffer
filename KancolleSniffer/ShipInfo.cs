@@ -628,5 +628,10 @@ namespace KancolleSniffer
         {
             _escapedShips.Clear();
         }
+
+        public bool UseOldEnemyId
+        {
+            set { _shipMaster.UseOldEnemyId = value; }
+        }
     }
 }
