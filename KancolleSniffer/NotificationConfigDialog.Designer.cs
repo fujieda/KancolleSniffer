@@ -65,6 +65,7 @@
             this.checkBoxShowBaloonTip.TabIndex = 2;
             this.checkBoxShowBaloonTip.Text = "通知領域";
             this.checkBoxShowBaloonTip.UseVisualStyleBackColor = true;
+            this.checkBoxShowBaloonTip.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // checkBoxPlaySound
             // 
@@ -75,6 +76,7 @@
             this.checkBoxPlaySound.TabIndex = 3;
             this.checkBoxPlaySound.Text = "サウンド";
             this.checkBoxPlaySound.UseVisualStyleBackColor = true;
+            this.checkBoxPlaySound.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // buttonClose
             // 
