@@ -77,6 +77,7 @@ namespace KancolleSniffer
             _noticeQueue = new NoticeQueue(Ring);
             _config.Load();
             PerformZoom();
+            _shipLabels.AdjustAkashiTimers();
             _sniffer.LoadState();
         }
 

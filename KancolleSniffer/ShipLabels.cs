@@ -215,6 +215,20 @@ namespace KancolleSniffer
             parent.ResumeLayout();
         }
 
+        public void AdjustAkashiTimers()
+        {
+            var scale = ShipLabel.ScaleFactor;
+            if (scale.Height < 1.2 || scale.Height > 1.3)
+                return;
+            for (var i = 0; i < _akashiTimers.Length; i++)
+            {
+                const int x = 55;
+                var y = 3 + 16 * (i + 1);
+                _akashiTimers[i].Location = new Point((int)Round(x * scale.Width) - 3, (int)Round(y * scale.Height));
+                _akashiTimers[i].Size = new Size((int)Round(31 * scale.Width) + 1, (int)Round(12 * scale.Height));
+            }
+        }
+
         public void SetAkashiTimer(ShipStatus[] statuses, AkashiTimer.RepairSpan[] timers)
         {
             var shortest = -1;
