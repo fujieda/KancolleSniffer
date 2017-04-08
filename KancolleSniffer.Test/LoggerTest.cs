@@ -364,5 +364,23 @@ namespace KancolleSniffer.Test
                 "2017-04-01 06:00:00,4000,0|2017-04-02 05:00:00,5000,0|2017-04-02 06:00:00,5000,100|"
                 == result);
         }
+
+        /// <summary>
+        /// 敵艦のIDの振り直しに対応する
+        /// </summary>
+        [TestMethod]
+        public void NewId()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2017, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "newid_001");
+            PAssert.That(() =>
+                "2017-01-01 00:00:00,サーモン海域,1,出撃,S,反航戦,単縦陣,輪形陣,敵ピケット艦隊,重巡洋艦,古鷹," +
+                "Iowa改(Lv131),101/101,赤城改(Lv155),85/85,加賀改(Lv155),87/87,千歳航改二(Lv143),65/65,鈴谷改二(Lv99),61/61,大淀改(Lv155),53/53," +
+                "軽母ヌ級(elite),0/70,軽巡ヘ級(flagship),0/57,駆逐ロ級(flagship),0/43,駆逐ロ級(flagship),0/43,駆逐イ級(elite),0/30,駆逐イ級(elite),0/30," +
+                "371～373,24,制空権確保|" == result);
+        }
     }
 }
