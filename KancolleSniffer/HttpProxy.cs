@@ -103,6 +103,8 @@ namespace KancolleSniffer
                 try
                 {
                     ReceiveRequest();
+                    if (_session.Request.Method == null)
+                        return;
                     if (_session.Request.Method == "CONNECT")
                     {
                         HandleConnect();
@@ -134,6 +136,8 @@ namespace KancolleSniffer
             private void ReceiveRequest()
             {
                 var requestLine = _clientStream.ReadLine();
+                if (requestLine == "")
+                    return;
                 _session.Request.RequestLine = requestLine;
                 _session.Request.Headers = _clientStream.ReadHeaders();
             }
