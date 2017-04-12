@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -33,6 +34,7 @@ namespace KancolleSniffer
 
         private readonly Dictionary<string, string> _soundSettings = new Dictionary<string, string>();
         private const string Home = "http://kancollesniffer.osdn.jp/";
+        private Point _prevPosition = new Point(int.MinValue, int.MinValue);
 
         public ConfigDialog(Config config, MainForm main)
         {
@@ -54,6 +56,8 @@ namespace KancolleSniffer
 
         private void ConfigDialog_Load(object sender, EventArgs e)
         {
+            if (_prevPosition.X != int.MinValue)
+                Location = _prevPosition;
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
             labelVersion.Text = "バージョン" + version;
             SetLatestVersion(version);
@@ -330,6 +334,11 @@ namespace KancolleSniffer
         private void buttonDetailedSettings_Click(object sender, EventArgs e)
         {
             _notificationConfigDialog.ShowDialog(this);
+        }
+
+        private void ConfigDialog_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _prevPosition = Location;
         }
     }
 }

@@ -51,6 +51,7 @@ namespace KancolleSniffer
             this.checkBoxHideOnMinimized = new System.Windows.Forms.CheckBox();
             this.checkBoxTopMost = new System.Windows.Forms.CheckBox();
             this.tabPageNotification = new System.Windows.Forms.TabPage();
+            this.buttonDetailedSettings = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.checkBoxCond49 = new System.Windows.Forms.CheckBox();
             this.checkBoxCond40 = new System.Windows.Forms.CheckBox();
@@ -121,7 +122,6 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
-            this.buttonDetailedSettings = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageShow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -251,6 +251,16 @@ namespace KancolleSniffer
             this.tabPageNotification.TabIndex = 1;
             this.tabPageNotification.Text = "通知";
             this.tabPageNotification.UseVisualStyleBackColor = true;
+            // 
+            // buttonDetailedSettings
+            // 
+            this.buttonDetailedSettings.Location = new System.Drawing.Point(170, 11);
+            this.buttonDetailedSettings.Name = "buttonDetailedSettings";
+            this.buttonDetailedSettings.Size = new System.Drawing.Size(75, 23);
+            this.buttonDetailedSettings.TabIndex = 26;
+            this.buttonDetailedSettings.Text = "詳細設定...";
+            this.buttonDetailedSettings.UseVisualStyleBackColor = true;
+            this.buttonDetailedSettings.Click += new System.EventHandler(this.buttonDetailedSettings_Click);
             // 
             // label6
             // 
@@ -957,16 +967,6 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
-            // buttonDetailedSettings
-            // 
-            this.buttonDetailedSettings.Location = new System.Drawing.Point(170, 11);
-            this.buttonDetailedSettings.Name = "buttonDetailedSettings";
-            this.buttonDetailedSettings.Size = new System.Drawing.Size(75, 23);
-            this.buttonDetailedSettings.TabIndex = 26;
-            this.buttonDetailedSettings.Text = "詳細設定...";
-            this.buttonDetailedSettings.UseVisualStyleBackColor = true;
-            this.buttonDetailedSettings.Click += new System.EventHandler(this.buttonDetailedSettings_Click);
-            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -981,6 +981,7 @@ namespace KancolleSniffer
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "設定";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigDialog_FormClosing);
             this.Load += new System.EventHandler(this.ConfigDialog_Load);
             this.tabControl.ResumeLayout(false);
             this.tabPageShow.ResumeLayout(false);
