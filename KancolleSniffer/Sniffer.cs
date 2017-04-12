@@ -432,6 +432,7 @@ namespace KancolleSniffer
                 _shipInfo.InspectMapStart(request); // 出撃中判定が必要なので_conditionTimerより前
                 _conditionTimer.InvalidateCond();
                 _exMapInfo.InspectMapStart(data);
+                _battleInfo.InspectMapStart(data);
                 _logger.InspectMapStart(data);
                 _miscTextInfo.ClearFlag = true;
                 return Update.Timer | Update.Ship;
@@ -440,6 +441,7 @@ namespace KancolleSniffer
             {
                 _battleInfo.InspectMapNext(request);
                 _exMapInfo.InspectMapNext(data);
+                _battleInfo.InspectMapNext(data);
                 _logger.InspectMapNext(data);
                 return Update.None;
             }

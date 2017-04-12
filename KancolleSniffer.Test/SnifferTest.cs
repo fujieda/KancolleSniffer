@@ -91,7 +91,6 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "battle_002");
             AssertEqualBattleResult(sniffer, new[] {28, 1, 13});
-            PAssert.That(() => sniffer.BadlyDamagedShips.Any());
         }
 
         private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected, string msg = null)
@@ -109,11 +108,9 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_surface_001");
             AssertEauqlCombinedResult(sniffer, new[] {40, 77, 77, 33, 51, 47}, new[] {39, 35, 11, 39, 37, 40});
-            PAssert.That(() => !sniffer.BadlyDamagedShips.Any());
 
             SniffLogFile(sniffer, "combined_surface_002");
             AssertEauqlCombinedResult(sniffer, new[] {40, 77, 77, 33, 15, 6}, new[] {39, 35, 4, 3, 14, 40});
-            PAssert.That(() => sniffer.BadlyDamagedShips.Any());
         }
 
         private void AssertEauqlCombinedResult(Sniffer sniffer, IEnumerable<int> expected0, IEnumerable<int> expected1,
@@ -315,7 +312,8 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "sunk_001");
-            PAssert.That(() => sniffer.BadlyDamagedShips.SequenceEqual(new[] {"磯波"}));
+            AssertEqualBattleResult(sniffer, new[]{26, 0, 1, 3});
+            PAssert.That(() => sniffer.BadlyDamagedShips.SequenceEqual(new[] {"菊月", "雪風"}));
         }
 
         /// <summary>
@@ -428,6 +426,30 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "battle_008");
             PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.B);
+        }
+
+        /// <summary>
+        /// 最終セルで大破警告を出さない
+        /// </summary>
+        [TestMethod]
+        public void NotWarnDamagedShipInLastCell()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "taiha_001");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[2].NowHp == 2);
+            PAssert.That(() => !sniffer.BadlyDamagedShips.Any());
+        }
+
+        /// <summary>
+        /// 道中で大破警告を出す
+        /// </summary>
+        [TestMethod]
+        public void WarnDamagedShip()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "taiha_002");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[2].NowHp == 1);
+            PAssert.That(() => sniffer.BadlyDamagedShips.Any());
         }
 
         /// <summary>

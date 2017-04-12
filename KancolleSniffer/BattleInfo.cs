@@ -50,6 +50,7 @@ namespace KancolleSniffer
         private int[] _enemyGuardStartHp;
         private readonly List<int> _escapingShips = new List<int>();
         private int _flagshipRecoveryType;
+        private bool _lastCell;
 
         public BattleState BattleState { get; set; }
         public string Formation { get; private set; }
@@ -58,7 +59,6 @@ namespace KancolleSniffer
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
         public List<AirBattleResult> AirBattleResults { get; } = new List<AirBattleResult>();
-
 
         public BattleInfo(ShipInfo shipInfo, ItemInfo itemInfo)
         {
@@ -206,6 +206,7 @@ namespace KancolleSniffer
         public void CleanupResult()
         {
             _friend = null;
+            _lastCell = false;
         }
 
         private int CheckAirControlLevel(dynamic json)
@@ -510,10 +511,20 @@ namespace KancolleSniffer
             }
         }
 
+        public void InspectMapStart(dynamic json)
+        {
+            InspectMapNext(json);
+        }
+
+        public void InspectMapNext(dynamic json)
+        {
+            _lastCell = (int)json.api_next == 0;
+        }
+
         public void InspectBattleResult(dynamic json)
         {
             BattleState = BattleState.Result;
-            ShowResult();
+            ShowResult(!_lastCell);
             CleanupResult();
             SetEscapeShips(json);
         }
