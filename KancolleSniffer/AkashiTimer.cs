@@ -44,6 +44,8 @@ namespace KancolleSniffer
             private ShipStatus[] _target = new ShipStatus[0];
             private int[] _deck = new int[0];
 
+            private int RepairTime(ShipStatus ship, int damage) => ship.CalcRepairSec(damage) + 70;
+
             public int[] Deck
             {
                 set { _deck = value; }
@@ -74,7 +76,7 @@ namespace KancolleSniffer
                         return new RepairSpan(1, TimeSpan.Zero);
                     for (var d = 2; d <= damage; d++)
                     {
-                        var sec = s.CalcRepairSec(d) + 60;
+                        var sec = RepairTime(s, d);
                         if (sec <= 20 * 60)
                             continue;
                         if (TimeSpan.FromSeconds(sec) > spent)
@@ -104,7 +106,7 @@ namespace KancolleSniffer
                     // 完全回復から減らしながら所要時間と経過時間と比較する。
                     for (var d = damage; d >= 2; d--)
                     {
-                        var sec = s.CalcRepairSec(d) + 70;
+                        var sec = RepairTime(s, d);
                         if (sec <= 20 * 60)
                         {
                             if (d == damage && (prev - start < m20 && now - start >= m20))
