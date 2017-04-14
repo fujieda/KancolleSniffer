@@ -43,6 +43,11 @@ namespace KancolleSniffer
         {
             private ShipStatus[] _target = new ShipStatus[0];
             private int[] _deck = new int[0];
+            private const int FirstRepairTime = 20;
+
+            private bool PassedFirstRepairTime(DateTime start, DateTime prev, DateTime now) =>
+                prev - start < TimeSpan.FromMinutes(FirstRepairTime) &&
+                now - start >= TimeSpan.FromMinutes(FirstRepairTime);
 
             private int RepairTime(ShipStatus ship, int damage) => ship.CalcRepairSec(damage) + 70;
 
@@ -70,14 +75,14 @@ namespace KancolleSniffer
                     var damage = s.MaxHp - s.NowHp;
                     if (damage == 0)
                         return new RepairSpan(0, TimeSpan.MinValue);
-                    if (spent < TimeSpan.FromMinutes(20))
-                        return new RepairSpan(0, TimeSpan.FromMinutes(20) - spent);
+                    if (spent < TimeSpan.FromMinutes(FirstRepairTime))
+                        return new RepairSpan(0, TimeSpan.FromMinutes(FirstRepairTime) - spent);
                     if (damage == 1)
                         return new RepairSpan(1, TimeSpan.Zero);
                     for (var d = 2; d <= damage; d++)
                     {
                         var sec = RepairTime(s, d);
-                        if (sec <= 20 * 60)
+                        if (sec <= FirstRepairTime * 60)
                             continue;
                         if (TimeSpan.FromSeconds(sec) > spent)
                             return new RepairSpan(d - 1, TimeSpan.FromSeconds(sec) - spent);
@@ -88,7 +93,6 @@ namespace KancolleSniffer
 
             public Notice GetNotice(DateTime start, DateTime prev, DateTime now)
             {
-                var m20 = TimeSpan.FromMinutes(20);
                 var proc = new List<string>();
                 var comp = new List<string>();
                 foreach (var s in _target)
@@ -98,7 +102,7 @@ namespace KancolleSniffer
                         continue;
                     if (damage == 1)
                     {
-                        if (prev - start < m20 && now - start >= m20)
+                        if (PassedFirstRepairTime(start, prev, now))
                             comp.Add(s.Name);
                         continue;
                     }
@@ -107,9 +111,9 @@ namespace KancolleSniffer
                     for (var d = damage; d >= 2; d--)
                     {
                         var sec = RepairTime(s, d);
-                        if (sec <= 20 * 60)
+                        if (sec <= FirstRepairTime * 60)
                         {
-                            if (d == damage && (prev - start < m20 && now - start >= m20))
+                            if (d == damage && PassedFirstRepairTime(start, prev, now))
                                 comp.Add(s.Name);
                             continue;
                         }
