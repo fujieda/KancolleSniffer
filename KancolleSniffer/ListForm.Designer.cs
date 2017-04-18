@@ -442,7 +442,6 @@ namespace KancolleSniffer
             // 
             this.shipListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.shipListPanel.AutoScroll = true;
             this.shipListPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.shipListPanel.ContextMenuStrip = this.contextMenuStripShipList;
             this.shipListPanel.Location = new System.Drawing.Point(6, 23);

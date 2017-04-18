@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
@@ -23,37 +24,74 @@ namespace KancolleSniffer
     public class ShipListPanel : Panel
     {
         private const int LabelHeight = 12;
-        private const int LineHeight = 16;
+        public const int LineHeight = 16;
         private ShipStatus[] _shipList;
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private readonly List<Panel> _labelPanelList = new List<Panel>();
         private readonly List<CheckBox[]> _checkBoxesList = new List<CheckBox[]>();
-        private readonly List<ShipLabel[]> _configLabelList = new List<ShipLabel[]>();
-        private readonly List<Panel> _checkBoxPanelList = new List<Panel>();
+        private readonly List<ShipLabel[]> _groupingLabelList = new List<ShipLabel[]>();
+        private readonly List<Panel> _groupingPanelList = new List<Panel>();
         private readonly List<ShipLabel[]> _repairLabelList = new List<ShipLabel[]>();
         private readonly List<Panel> _repairPanelList = new List<Panel>();
+        private string _mode;
 
         public const int GroupCount = 4;
         public HashSet<int>[] GroupSettings { get; } = new HashSet<int>[GroupCount];
 
-        public void Update(Sniffer sniffer, string mode, ListForm.SortOrder sortOrder, bool byShipType)
+        public ScrollBar ScrollBar { get; }
+
+        private class FastWheelScrollBar : VScrollBar
         {
-            CreateShipList(sniffer, mode, sortOrder, byShipType);
-            CreateListLabels();
-            SetShipLabels(mode);
+            protected override void OnMouseWheel(MouseEventArgs ev)
+            {
+                Value = Math.Max(Minimum, Math.Min(Maximum - LargeChange + 1,
+                    Value - ev.Delta * SystemInformation.MouseWheelScrollLines / 120));
+            }
         }
 
-        void CreateShipList(Sniffer sniffer, string mode, ListForm.SortOrder sortOrder, bool byShipType)
+        public ShipListPanel()
         {
-            var ships = mode == "修復" ? sniffer.RepairList : FilterByGroup(sniffer.ShipList, mode).ToArray();
-            var order = mode == "修復" ? ListForm.SortOrder.Repair : sortOrder;
+            ScrollBar = new FastWheelScrollBar {Dock = DockStyle.Right, Visible = false};
+            ScrollBar.ValueChanged += ScrollBarOnValueChanged;
+            Controls.Add(ScrollBar);
+        }
+
+        private void ScrollBarOnValueChanged(object sender, EventArgs eventArgs)
+        {
+            SetShipLabels();
+        }
+
+        protected override void OnResize(EventArgs ev)
+        {
+            base.OnResize(ev);
+            if (_shipList == null || _shipList.Length == 0)
+                return;
+            SetupLabels();
+            SetShipLabels();
+        }
+
+        public void Update(Sniffer sniffer, string mode, ListForm.SortOrder sortOrder, bool byShipType)
+        {
+            _mode = mode;
+            CreateShipList(sniffer, sortOrder, byShipType);
+            if (_shipList.Length == 0)
+                return;
+            SetupLabels();
+            SetShipLabels();
+        }
+
+        void CreateShipList(Sniffer sniffer, ListForm.SortOrder sortOrder, bool byShipType)
+        {
+            var ships = _mode == "修復" ? sniffer.RepairList : FilterByGroup(sniffer.ShipList, _mode).ToArray();
+            var order = _mode == "修復" ? ListForm.SortOrder.Repair : sortOrder;
             if (!byShipType)
             {
                 _shipList = ships.OrderBy(s => s, new CompareShip(false, order)).ToArray();
                 return;
             }
-            var types = ships.Select(s => new {Id = s.Spec.ShipType, Name = s.Spec.ShipTypeName}).Distinct().
-                Select(stype =>
+            var types = ships.Select(s => new {Id = s.Spec.ShipType, Name = s.Spec.ShipTypeName})
+                .Distinct()
+                .Select(stype =>
                     new ShipStatus
                     {
                         Spec = new ShipSpec {Name = stype.Name, ShipType = stype.Id},
@@ -76,18 +114,20 @@ namespace KancolleSniffer
 
         private class CompareShip : IComparer<ShipStatus>
         {
-            private readonly bool _type;
+            private readonly bool _shipType;
             private readonly ListForm.SortOrder _order;
 
             public CompareShip(bool type, ListForm.SortOrder order)
             {
-                _type = type;
+                _shipType = type;
                 _order = order;
             }
 
             public int Compare(ShipStatus a, ShipStatus b)
             {
-                if (_type && a.Spec.ShipType != b.Spec.ShipType)
+                if (a == null || b == null)
+                    throw new ArgumentNullException();
+                if (_shipType && a.Spec.ShipType != b.Spec.ShipType)
                     return a.Spec.ShipType - b.Spec.ShipType;
                 switch (_order)
                 {
@@ -103,7 +143,7 @@ namespace KancolleSniffer
                             return (int)(b.RepairTime - a.RepairTime).TotalSeconds;
                         break;
                 }
-                if ((!_type || _order == ListForm.SortOrder.ExpToNext) && a.Level != b.Level)
+                if ((!_shipType || _order == ListForm.SortOrder.ExpToNext) && a.Level != b.Level)
                     return b.Level - a.Level;
                 if (_order == ListForm.SortOrder.ExpToNext && a.ExpToNext != b.ExpToNext)
                     return a.ExpToNext - b.ExpToNext;
@@ -113,19 +153,42 @@ namespace KancolleSniffer
             }
         }
 
-        private void CreateListLabels()
+        private void SetupLabels()
         {
             SuspendLayout();
-            for (var i = _labelList.Count; i < _shipList.Length; i++)
+            for (var i = _labelList.Count; i * LineHeight < Height; i++)
             {
-                CreateConfigComponents(i);
+                CreateGroupingComponents(i);
                 CreateRepairLabels(i);
                 CreateShipLabels(i);
             }
+            for (var i = 0; i * LineHeight < Height; i++)
+            {
+                _labelPanelList[i].Visible = InShipStatus(_mode);
+                _groupingPanelList[i].Visible = _mode == "分類";
+                _repairPanelList[i].Visible = _mode == "修復";
+            }
+            SetupScrollBar();
             ResumeLayout();
         }
 
-        private void CreateConfigComponents(int i)
+        private void SetupScrollBar()
+        {
+            ScrollBar.Visible = _shipList.Length * LineHeight > Height;
+            if (!ScrollBar.Visible)
+            {
+                ScrollBar.Value = 0;
+                return;
+            }
+            ScrollBar.Minimum = 0;
+            var max = _shipList.Length - Height / LineHeight;
+            ScrollBar.LargeChange = Math.Min(10, max);
+            ScrollBar.Maximum =
+                Math.Max(0, max + ScrollBar.LargeChange - 1); // ScrollBarを最大まで動かしてもmaxには届かない
+            ScrollBar.Value = Math.Min(ScrollBar.Value, max);
+        }
+
+        private void CreateGroupingComponents(int i)
         {
             var y = 3 + LineHeight * i;
             var cfgp = new Panel
@@ -133,7 +196,6 @@ namespace KancolleSniffer
                 Location = new Point(0, y - 2),
                 Size = new Size(ListForm.PanelWidth, LineHeight - 1),
                 BackColor = ShipLabels.ColumnColors[(i + 1) % 2],
-                Visible = false
             };
             cfgp.Scale(ShipLabel.ScaleFactor);
             cfgp.Tag = cfgp.Location.Y;
@@ -143,7 +205,7 @@ namespace KancolleSniffer
                 {
                     Location = new Point(91, 2),
                     Size = new Size(23, LabelHeight),
-                    TextAlign = ContentAlignment.MiddleRight,
+                    TextAlign = ContentAlignment.MiddleRight
                 },
                 new ShipLabel {Location = new Point(10, 2), AutoSize = true},
                 new ShipLabel {Location = new Point(1, 2), AutoSize = true}
@@ -162,9 +224,9 @@ namespace KancolleSniffer
                 cb[j].Scale(ShipLabel.ScaleFactor);
                 cb[j].CheckedChanged += checkboxGroup_CheckedChanged;
             }
-            _configLabelList.Add(cfgl);
+            _groupingLabelList.Add(cfgl);
             _checkBoxesList.Add(cb);
-            _checkBoxPanelList.Add(cfgp);
+            _groupingPanelList.Add(cfgp);
             // ReSharper disable CoVariantArrayConversion
             cfgp.Controls.AddRange(cfgl);
             cfgp.Controls.AddRange(cb);
@@ -185,11 +247,11 @@ namespace KancolleSniffer
             var idx = (int)cb.Tag / 10;
             if (cb.Checked)
             {
-                GroupSettings[group].Add(_shipList[idx].Id);
+                GroupSettings[group].Add(_shipList[idx + ScrollBar.Value].Id);
             }
             else
             {
-                GroupSettings[group].Remove(_shipList[idx].Id);
+                GroupSettings[group].Remove(_shipList[idx + ScrollBar.Value].Id);
             }
         }
 
@@ -202,7 +264,6 @@ namespace KancolleSniffer
                 Location = new Point(0, y - 2),
                 Size = new Size(ListForm.PanelWidth, LineHeight - 1),
                 BackColor = ShipLabels.ColumnColors[(i + 1) % 2],
-                Visible = false
             };
             rpp.Scale(ShipLabel.ScaleFactor);
             rpp.Tag = rpp.Location.Y;
@@ -241,11 +302,9 @@ namespace KancolleSniffer
             {
                 Location = new Point(0, y - 2),
                 Size = new Size(ListForm.PanelWidth, LineHeight - 1),
-                BackColor = ShipLabels.ColumnColors[(i + 1) % 2],
-                Visible = false
+                BackColor = ShipLabels.ColumnColors[(i + 1) % 2]
             };
             lbp.Scale(ShipLabel.ScaleFactor);
-            lbp.Tag = lbp.Location.Y;
             var labels = new[]
             {
                 new ShipLabel {Location = new Point(126, 2), AutoSize = true, AnchorRight = true},
@@ -283,42 +342,48 @@ namespace KancolleSniffer
             }
         }
 
-        private void SetShipLabels(string mode)
+        private void SetShipLabels()
         {
+            SuspendDrawing();
             SuspendLayout();
-            for (var i = 0; i < _shipList.Length; i++)
+            for (var i = 0; i < (Height + LineHeight - 1) / LineHeight; i++)
             {
-                if (!InShipStatus(mode))
-                    _labelPanelList[i].Visible = false;
-                if (mode != "分類")
-                    _checkBoxPanelList[i].Visible = false;
-                if (mode != "修復")
-                    _repairPanelList[i].Visible = false;
-            }
-            for (var i = 0; i < _shipList.Length; i++)
-            {
-                if (InShipStatus(mode))
+                if (InShipStatus(_mode))
                     SetShipStatus(i);
-                if (mode == "分類")
-                    SetGroupConfig(i);
-                if (mode == "修復")
+                if (_mode == "分類")
+                    SetGrouping(i);
+                if (_mode == "修復")
                     SetRepairList(i);
             }
-            for (var i = _shipList.Length; i < _labelPanelList.Count; i++)
-            {
-                _labelPanelList[i].Visible = _checkBoxPanelList[i].Visible = _repairPanelList[i].Visible = false;
-            }
             ResumeLayout();
+            ResumeDrawing();
+        }
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, IntPtr lParam);
+
+        private void SuspendDrawing()
+        {
+            SendMessage(Handle, 11, false, IntPtr.Zero); // WM_SETREDRAW = 11
+        }
+
+        public void ResumeDrawing()
+        {
+            SendMessage(Handle, 11, true, IntPtr.Zero);
+            Refresh();
         }
 
         private bool InShipStatus(string mode) => Array.Exists(new[] {"全員", "A", "B", "C", "D"}, x => mode == x);
 
         private void SetShipStatus(int i)
         {
-            var lbp = _labelPanelList[i];
-            if (!lbp.Visible)
-                lbp.Location = new Point(lbp.Left, (int)lbp.Tag + AutoScrollPosition.Y);
-            var s = _shipList[i];
+            var panel = _labelPanelList[i];
+            if (i + ScrollBar.Value >= _shipList.Length)
+            {
+                panel.Visible = false;
+                return;
+            }
+            var s = _shipList[i + ScrollBar.Value];
             var labels = _labelList[i];
             if (s.Level == 1000) // 艦種の表示
             {
@@ -331,15 +396,12 @@ namespace KancolleSniffer
             labels[3].SetExpToNext(s);
             labels[4].SetName(s, ShipNameWidth.ShipList);
             labels[5].SetFleet(s);
-            lbp.Visible = true;
+            panel.Visible = true;
         }
 
         private void SetShipType(int i)
         {
-            var lbp = _labelPanelList[i];
-            if (!lbp.Visible)
-                lbp.Location = new Point(lbp.Left, (int)lbp.Tag + AutoScrollPosition.Y);
-            var s = _shipList[i];
+            var s = _shipList[i + ScrollBar.Value];
             var labels = _labelList[i];
             for (var c = 0; c < 4; c++)
             {
@@ -348,43 +410,51 @@ namespace KancolleSniffer
             }
             labels[4].SetName("");
             labels[5].Text = s.Name;
-            lbp.Visible = true;
+            _labelPanelList[i].Visible = true;
         }
 
-        private void SetGroupConfig(int i)
+        private void SetGrouping(int i)
         {
-            var cbp = _checkBoxPanelList[i];
-            var s = _shipList[i];
-            if (s.Level == 1000)
+            var panel = _groupingPanelList[i];
+            if (i + ScrollBar.Value >= _shipList.Length)
             {
-                SetShipType(i);
-                cbp.Visible = false;
+                panel.Visible = false;
+                _labelPanelList[i].Visible = false;
                 return;
             }
-            if (!cbp.Visible)
-                cbp.Location = new Point(cbp.Left, (int)cbp.Tag + AutoScrollPosition.Y);
-            var cfgl = _configLabelList[i];
-            cfgl[0].SetLevel(s);
-            cfgl[1].SetName(s, ShipNameWidth.GroupConfig);
-            cfgl[2].SetFleet(s);
+            var s = _shipList[i + ScrollBar.Value];
+            var labels = _groupingLabelList[i];
+            if (s.Level == 1000)
+            {
+                panel.Visible = false;
+                SetShipType(i);
+                return;
+            }
+            labels[0].SetLevel(s);
+            labels[1].SetName(s, ShipNameWidth.GroupConfig);
+            labels[2].SetFleet(s);
             var cb = _checkBoxesList[i];
             for (var j = 0; j < cb.Length; j++)
                 cb[j].Checked = GroupSettings[j].Contains(s.Id);
-            cbp.Visible = true;
+            panel.Visible = true;
         }
 
         private void SetRepairList(int i)
         {
-            var rpp = _repairPanelList[i];
-            var s = _shipList[i];
-            if (s.Level == 1000)
+            var panel = _repairPanelList[i];
+            if (i + ScrollBar.Value >= _shipList.Length)
             {
-                SetShipType(i);
-                rpp.Visible = false;
+                panel.Visible = false;
+                _labelPanelList[i].Visible = false;
                 return;
             }
-            if (!rpp.Visible)
-                rpp.Location = new Point(rpp.Left, (int)rpp.Tag + AutoScrollPosition.Y);
+            var s = _shipList[i + ScrollBar.Value];
+            if (s.Level == 1000)
+            {
+                panel.Visible = false;
+                SetShipType(i);
+                return;
+            }
             var rpl = _repairLabelList[i];
             rpl[0].SetHp(s);
             rpl[1].SetLevel(s);
@@ -392,7 +462,7 @@ namespace KancolleSniffer
             rpl[3].Text = TimeSpan.FromSeconds(s.RepairSecPerHp).ToString(@"mm\:ss");
             rpl[4].SetName(s, ShipNameWidth.RepairListFull);
             rpl[5].SetFleet(s);
-            rpp.Visible = true;
+            panel.Visible = true;
         }
 
         public void ShowShip(int id)
@@ -400,8 +470,8 @@ namespace KancolleSniffer
             var i = Array.FindIndex(_shipList, s => s.Id == id);
             if (i == -1)
                 return;
-            var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
-            AutoScrollPosition = new Point(0, y);
+            ScrollBar.Value = Math.Min(i, ScrollBar.Maximum + 1 - ScrollBar.LargeChange);
+            SetShipLabels();
         }
     }
 }
