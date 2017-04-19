@@ -38,6 +38,14 @@ namespace KancolleSniffer
             _filter.MouseUp += handler.MouseUp;
         }
 
+        public void AddShipListPanel(ShipListPanel panel)
+        {
+            var handler = new ShipListPanelHandler(panel);
+            _filter.MouseDown += handler.MouseDown;
+            _filter.MouseMove += handler.MouseMove;
+            _filter.MouseUp += handler.MouseUp;
+        }
+
         public void AddTreeView(TreeView treeView)
         {
             var handler = new TreeViewHandler(treeView);
@@ -137,6 +145,70 @@ namespace KancolleSniffer
                     handled = true;
                 _touch = false;
                 _mouseStart = _panelStart = Point.Empty;
+            }
+        }
+        private class ShipListPanelHandler
+        {
+            private readonly ShipListPanel _panel;
+            private bool _touch;
+            private Point _mouseStart;
+            private int _barStart = -1;
+            private Point _scrollStart;
+            private const int ScrollCount = ShipListPanel.LineHeight;
+
+            public ShipListPanelHandler(ShipListPanel panel)
+            {
+                _panel = panel;
+            }
+
+            public void MouseDown(IntPtr handle, ref bool handled)
+            {
+                if (!_mouseStart.IsEmpty)
+                    return;
+                if (!_panel.RectangleToScreen(_panel.ClientRectangle).Contains(Control.MousePosition) ||
+                    _panel.ScrollBar.RectangleToScreen(_panel.ScrollBar.ClientRectangle).Contains(Control.MousePosition))
+                    return;
+                var found = false;
+                for (var control = Control.FromHandle(handle); control != null; control = control.Parent)
+                {
+                    if (control != _panel)
+                        continue;
+                    found = true;
+                    break;
+                }
+                if (!found)
+                    return;
+                _mouseStart = _scrollStart = Control.MousePosition;
+                _barStart = _panel.ScrollBar.Value;
+            }
+
+            public void MouseMove(IntPtr handle, ref bool handled)
+            {
+                if (_mouseStart.IsEmpty)
+                    return;
+                var cur = Control.MousePosition;
+                var dy = cur.Y - _mouseStart.Y;
+                if (!_touch)
+                {
+                    if (Abs(dy) <= ScrollCount)
+                        return;
+                    _touch = true;
+                }
+                if (Abs(_scrollStart.Y - cur.Y) > ScrollCount)
+                {
+                    var bar = _panel.ScrollBar;
+                    bar.Value = Max(0, Min(bar.Maximum - bar.LargeChange + 1, _barStart - dy / ScrollCount));
+                    _scrollStart = cur;
+                }
+            }
+
+            public void MouseUp(IntPtr handle, ref bool handled)
+            {
+                if (_touch && _barStart != -1 && _barStart != _panel.ScrollBar.Value)
+                    handled = true;
+                _touch = false;
+                _barStart = -1;
+                _mouseStart = Point.Empty;
             }
         }
 

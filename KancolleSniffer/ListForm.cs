@@ -41,7 +41,7 @@ namespace KancolleSniffer
             _sniffer = sniffer;
             _config = config;
             var swipe = new SwipeScrollify();
-            //swipe.AddPanel(shipListPanel);
+            swipe.AddShipListPanel(shipListPanel);
             swipe.AddTreeView(itemTreeView);
             swipe.AddPanel(fleetPanel);
         }
