@@ -132,6 +132,12 @@ namespace KancolleSniffer
 
         public void InspectMapNext(dynamic json)
         {
+            if ((_logType & LogType.Achivement) != 0 && json.api_get_eo_rate() && (int)json.api_get_eo_rate != 0)
+            {
+                _writer("戦果",
+                    _nowFunc().ToString(DateTimeFormat) + "," + _lastExp + "," + (int)json.api_get_eo_rate,
+                    "日付,経験値,EO");
+            }
             _map = json;
         }
 

@@ -349,7 +349,8 @@ namespace KancolleSniffer.Test
                 new DateTime(2017, 4, 1, 5, 0, 0),
                 new DateTime(2017, 4, 1, 6, 0, 0),
                 new DateTime(2017, 4, 2, 5, 0, 0),
-                new DateTime(2017, 4, 2, 6, 0, 0)
+                new DateTime(2017, 4, 2, 6, 0, 0),
+                new DateTime(2017, 4, 2, 7, 0, 0)
             }.GetEnumerator();
             logger.SetWriter((path, s, h) => { result += s + "|"; }, () =>
             {
@@ -359,9 +360,11 @@ namespace KancolleSniffer.Test
             for (var i = 0; i < 6; i++)
                 logger.InspectBasic(JsonParser.Parse($"{{\"api_experience\": {i * 1000}}}"));
             logger.InspectBattleResult(JsonParser.Parse("{\"api_get_exmap_rate\": \"100\"}"));
+            logger.InspectMapNext(JsonParser.Parse("{\"api_get_eo_rate\": 75}"));
             PAssert.That(() =>
                 "2017-03-31 21:00:00,0,0|2017-03-31 21:00:00,0,0|2017-03-31 22:00:00,1000,0|" +
-                "2017-04-01 06:00:00,4000,0|2017-04-02 05:00:00,5000,0|2017-04-02 06:00:00,5000,100|"
+                "2017-04-01 06:00:00,4000,0|2017-04-02 05:00:00,5000,0|" +
+                "2017-04-02 06:00:00,5000,100|2017-04-02 07:00:00,5000,75|"
                 == result);
         }
 
