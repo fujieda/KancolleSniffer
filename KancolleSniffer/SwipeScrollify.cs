@@ -141,8 +141,6 @@ namespace KancolleSniffer
 
             public void MouseUp(IntPtr handle, ref bool handled)
             {
-                if (_touch && !_panelStart.IsEmpty && _panelStart != _panel.AutoScrollPosition)
-                    handled = true;
                 _touch = false;
                 _mouseStart = _panelStart = Point.Empty;
             }
@@ -204,8 +202,6 @@ namespace KancolleSniffer
 
             public void MouseUp(IntPtr handle, ref bool handled)
             {
-                if (_touch && _barStart != -1 && _barStart != _panel.ScrollBar.Value)
-                    handled = true;
                 _touch = false;
                 _barStart = -1;
                 _mouseStart = Point.Empty;
