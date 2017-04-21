@@ -575,9 +575,9 @@ namespace KancolleSniffer
                 return;
             panelBattleInfo.BringToFront();
             var battle = _sniffer.Battle;
-            var color = new[] {DefaultForeColor, DefaultForeColor, Color.Blue, Color.Green, Color.Orange, Color.Red};
             labelFormation.Text = battle.Formation;
             labelEnemyFighterPower.Text = battle.EnemyFighterPower;
+            var color = new[] { DefaultForeColor, DefaultForeColor, Color.FromArgb(0, 90, 255), Color.Green, Color.Orange, Color.Red };
             labelFighterPower.ForeColor = color[battle.AirControlLevel + 1];
             if (_config.AlwaysShowResultRank)
                 ShowResultRank();
