@@ -448,11 +448,13 @@ namespace KancolleSniffer
         public void InspectPowerup(string request, dynamic json)
         {
             var values = HttpUtility.ParseQueryString(request);
-            var ships = values["api_id_items"].Split(',');
+            var ships = values["api_id_items"].Split(',').Select(int.Parse).ToArray();
+            if (!_shipInfo.ContainsKey(ships[0])) // 二重に実行された場合
+                return;
             _itemInfo.NowShips -= ships.Length;
-            _itemInfo.DeleteItems(ships.SelectMany(s => _shipInfo[int.Parse(s)].Slot).ToArray());
-            foreach (var ship in ships)
-                _shipInfo.Remove(int.Parse(ship));
+            _itemInfo.DeleteItems(ships.SelectMany(id => _shipInfo[id].Slot).ToArray());
+            foreach (var id in ships)
+                _shipInfo.Remove(id);
             InspectDeck(json.api_deck);
             InspectShip(json);
         }

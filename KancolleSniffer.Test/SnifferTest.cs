@@ -797,6 +797,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 近代化改修が二重に行われた場合に対応する
+        /// </summary>
+        [TestMethod]
+        public void DuplicatedPowerup()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "powerup_002");
+            PAssert.That(() => sniffer.Item.NowShips == 218);
+        }
+
+        /// <summary>
         /// 改修による資材の減少をすぐに反映する
         /// </summary>
         [TestMethod]
