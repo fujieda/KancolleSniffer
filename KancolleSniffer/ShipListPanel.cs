@@ -49,7 +49,9 @@ namespace KancolleSniffer
 
         private void ScrollBarOnValueChanged(object sender, EventArgs eventArgs)
         {
+            SuspendDrawing();
             SetShipLabels();
+            ResumeDrawing();
         }
 
         protected override void OnResize(EventArgs ev)
@@ -57,8 +59,10 @@ namespace KancolleSniffer
             base.OnResize(ev);
             if (_shipList == null || _shipList.Length == 0)
                 return;
+            SuspendDrawing();
             SetupLabels();
             SetShipLabels();
+            ResumeDrawing();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -71,8 +75,26 @@ namespace KancolleSniffer
         {
             _mode = mode;
             CreateShipList(sniffer, sortOrder, byShipType);
+            SuspendDrawing();
             SetupLabels();
             SetShipLabels();
+            ResumeDrawing();
+        }
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, IntPtr lParam);
+
+        private void SuspendDrawing()
+        {
+            SendMessage(Handle, 11, false, IntPtr.Zero); // WM_SETREDRAW = 11
+            SuspendLayout();
+        }
+
+        public void ResumeDrawing()
+        {
+            ResumeLayout();
+            SendMessage(Handle, 11, true, IntPtr.Zero);
+            Refresh();
         }
 
         void CreateShipList(Sniffer sniffer, ListForm.SortOrder sortOrder, bool byShipType)
@@ -150,7 +172,6 @@ namespace KancolleSniffer
 
         private void SetupLabels()
         {
-            SuspendLayout();
             for (var i = _labelList.Count; i * LineHeight < Height; i++)
             {
                 CreateGroupingComponents(i);
@@ -164,7 +185,6 @@ namespace KancolleSniffer
                 _repairPanelList[i].Visible = _mode == "修復";
             }
             SetupScrollBar();
-            ResumeLayout();
         }
 
         private void SetupScrollBar()
@@ -339,8 +359,6 @@ namespace KancolleSniffer
 
         private void SetShipLabels()
         {
-            SuspendDrawing();
-            SuspendLayout();
             for (var i = 0; i < (Height + LineHeight - 1) / LineHeight; i++)
             {
                 if (InShipStatus(_mode))
@@ -350,22 +368,6 @@ namespace KancolleSniffer
                 if (_mode == "修復")
                     SetRepairList(i);
             }
-            ResumeLayout();
-            ResumeDrawing();
-        }
-
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, IntPtr lParam);
-
-        private void SuspendDrawing()
-        {
-            SendMessage(Handle, 11, false, IntPtr.Zero); // WM_SETREDRAW = 11
-        }
-
-        public void ResumeDrawing()
-        {
-            SendMessage(Handle, 11, true, IntPtr.Zero);
-            Refresh();
         }
 
         private bool InShipStatus(string mode) => Array.Exists(new[] {"全員", "A", "B", "C", "D"}, x => mode == x);
