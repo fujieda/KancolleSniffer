@@ -228,7 +228,7 @@ namespace KancolleSniffer
             }
             else
             {
-                ActiveControl = shipListPanel.ScrollBar;
+                ActiveControl = shipListPanel;
             }
         }
 

@@ -40,18 +40,9 @@ namespace KancolleSniffer
 
         public ScrollBar ScrollBar { get; }
 
-        private class FastWheelScrollBar : VScrollBar
-        {
-            protected override void OnMouseWheel(MouseEventArgs ev)
-            {
-                Value = Math.Max(Minimum, Math.Min(Maximum - LargeChange + 1,
-                    Value - ev.Delta * SystemInformation.MouseWheelScrollLines / 120));
-            }
-        }
-
         public ShipListPanel()
         {
-            ScrollBar = new FastWheelScrollBar {Dock = DockStyle.Right, Visible = false};
+            ScrollBar = new VScrollBar {Dock = DockStyle.Right, Visible = false};
             ScrollBar.ValueChanged += ScrollBarOnValueChanged;
             Controls.Add(ScrollBar);
         }
@@ -68,6 +59,12 @@ namespace KancolleSniffer
                 return;
             SetupLabels();
             SetShipLabels();
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            ScrollBar.Value = Math.Max(ScrollBar.Minimum, Math.Min(ScrollBar.Maximum - ScrollBar.LargeChange + 1,
+                ScrollBar.Value - e.Delta * SystemInformation.MouseWheelScrollLines / 120));
         }
 
         public void Update(Sniffer sniffer, string mode, ListForm.SortOrder sortOrder, bool byShipType)
