@@ -71,8 +71,6 @@ namespace KancolleSniffer
         {
             _mode = mode;
             CreateShipList(sniffer, sortOrder, byShipType);
-            if (_shipList.Length == 0)
-                return;
             SetupLabels();
             SetShipLabels();
         }
