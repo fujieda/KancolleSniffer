@@ -196,8 +196,9 @@ namespace KancolleSniffer
                 return;
             }
             ScrollBar.Minimum = 0;
-            var max = _shipList.Length - Height / LineHeight;
-            ScrollBar.LargeChange = Math.Min(10, max);
+            var lines = Math.Max(1, Height / LineHeight);
+            var max = _shipList.Length - lines;
+            ScrollBar.LargeChange = Math.Min(lines, max);
             ScrollBar.Maximum =
                 Math.Max(0, max + ScrollBar.LargeChange - 1); // ScrollBarを最大まで動かしてもmaxには届かない
             ScrollBar.Value = Math.Min(ScrollBar.Value, max);
