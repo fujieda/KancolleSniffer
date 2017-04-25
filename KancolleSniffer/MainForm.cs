@@ -504,7 +504,7 @@ namespace KancolleSniffer
             if (_combinedFleet)
                 _shipLabels.SetCombinedShipLabels(_sniffer.GetShipStatuses(0), _sniffer.GetShipStatuses(1));
             UpdateAkashiTimer();
-            UpdateFighterPower();
+            UpdateFighterPower(_combinedFleet);
             UpdateLoS();
             UpdateCondTimers();
         }
@@ -539,13 +539,17 @@ namespace KancolleSniffer
             }
         }
 
-        public void UpdateFighterPower()
+        public void UpdateFighterPower(bool combined)
         {
-            var fp = _sniffer.GetFighterPower(_currentFleet);
+            var fp = combined
+                ? _sniffer.GetFighterPower(0).Zip(_sniffer.GetFighterPower(1), (a, b) => a + b).ToArray()
+                : _sniffer.GetFighterPower(_currentFleet);
             labelFighterPower.Text = fp[0].ToString("D");
-            var cr = _sniffer.GetContactTriggerRate(_currentFleet) * 100;
+            var cr = combined
+                ? _sniffer.GetContactTriggerRate(0) + _sniffer.GetContactTriggerRate(1)
+                : _sniffer.GetContactTriggerRate(_currentFleet);
             var text = "制空: " + (fp[0] == fp[1] ? $"{fp[0]}" : $"{fp[0]}～{fp[1]}") +
-                       $" 触接: {cr:f1}";
+                       $" 触接: {cr * 100:f1}";
             toolTipFighterPower.SetToolTip(labelFighterPower, text);
             toolTipFighterPower.SetToolTip(labelFighterPowerCaption, text);
         }
@@ -566,23 +570,36 @@ namespace KancolleSniffer
 
         private void UpdateBattleInfo()
         {
-            labelFormation.Text = "";
-            labelEnemyFighterPower.Text = "";
-            labelFighterPower.ForeColor = DefaultForeColor;
-            labelResultRank.Text = "判定";
-            panelBattleInfo.Visible = _sniffer.Battle.BattleState != BattleState.None;
+            ResetBattleInfo();
             if (_sniffer.Battle.BattleState == BattleState.None)
                 return;
             panelBattleInfo.BringToFront();
             var battle = _sniffer.Battle;
             labelFormation.Text = battle.Formation;
-            labelEnemyFighterPower.Text = battle.EnemyFighterPower;
-            var color = new[] { DefaultForeColor, DefaultForeColor, Color.FromArgb(0, 90, 255), Color.Green, Color.Orange, Color.Red };
-            labelFighterPower.ForeColor = color[battle.AirControlLevel + 1];
+            UpdateBattleFighterPower();
             if (_config.AlwaysShowResultRank)
                 ShowResultRank();
             if (_sniffer.Battle.BattleState == BattleState.Day)
                 _listForm.UpdateAirBattleResult();
+        }
+
+        private void ResetBattleInfo()
+        {
+            labelFormation.Text = "";
+            labelEnemyFighterPower.Text = "";
+            labelFighterPower.ForeColor = DefaultForeColor;
+            labelResultRank.Text = "判定";
+            panelBattleInfo.Visible = _sniffer.Battle.BattleState != BattleState.None;
+        }
+
+        private void UpdateBattleFighterPower()
+        {
+            var battle = _sniffer.Battle;
+            labelEnemyFighterPower.Text = battle.EnemyFighterPower;
+            UpdateFighterPower(_sniffer.CombinedFleetType > 0 && battle.EnemyIsCombined);
+            var color = new[]
+                {DefaultForeColor, DefaultForeColor, Color.FromArgb(0, 90, 255), Color.Green, Color.Orange, Color.Red};
+            labelFighterPower.ForeColor = color[battle.AirControlLevel + 1];
         }
 
         private void ShowResultRank()
@@ -767,7 +784,7 @@ namespace KancolleSniffer
             };
             var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5, labelQuest6};
             var progress = new[]
-            {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5, labelProgress6};
+                {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5, labelProgress6};
             var quests = _sniffer.Quests;
             for (var i = 0; i < name.Length; i++)
             {
@@ -838,6 +855,7 @@ namespace KancolleSniffer
 
 // ReSharper disable InconsistentNaming
         private const int MM_MCINOTIFY = 0x3B9;
+
         private const int MCI_NOTIFY_SUCCESSFUL = 1;
 // ReSharper restore InconsistentNaming
 

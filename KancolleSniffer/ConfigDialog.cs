@@ -185,7 +185,6 @@ namespace KancolleSniffer
                 _config.ResetHours.Add(14);
 
             _config.AlwaysShowResultRank = radioButtonResultRankAlways.Checked;
-            _main.UpdateFighterPower();
             _config.UsePresetAkashi = checkBoxPresetAkashi.Checked;
 
             _config.Sounds.Volume = (int)numericUpDownSoundVolume.Value;

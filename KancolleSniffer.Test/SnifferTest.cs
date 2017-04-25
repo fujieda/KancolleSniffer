@@ -512,6 +512,21 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 敵艦隊の制空値を計算する
+        /// </summary>
+        [TestMethod]
+        public void EnemyFighterPower()
+        {
+            var sniffer1 = new Sniffer{UseOldEnemyId = true};
+            SniffLogFile(sniffer1, "airbattle_002");
+            PAssert.That(() => sniffer1.Battle.EnemyFighterPower == "28");
+
+            var sniffer2 = new Sniffer {UseOldEnemyId = true};
+            SniffLogFile(sniffer2, "both_combined_001");
+            PAssert.That(() => sniffer2.Battle.EnemyFighterPower == "389");
+        }
+
+        /// <summary>
         /// マップ索敵の判定式(33)を正しく計算する
         /// </summary>
         [TestMethod]

@@ -26,7 +26,7 @@ namespace KancolleSniffer
         B,
         C,
         D,
-        E,
+        E
     }
 
     public enum BattleState
@@ -58,6 +58,7 @@ namespace KancolleSniffer
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
+        public bool EnemyIsCombined => EnemyResultStatus.Length > 6;
         public List<AirBattleResult> AirBattleResults { get; } = new List<AirBattleResult>();
 
         public BattleInfo(ShipInfo shipInfo, ItemInfo itemInfo)
@@ -69,10 +70,10 @@ namespace KancolleSniffer
         public void InspectBattle(dynamic json, string url)
         {
             Formation = FormationName(json);
-            EnemyFighterPower = CalcEnemyFighterPower(json);
             AirControlLevel = CheckAirControlLevel(json);
             ShowResult(false); // 昼戦の結果を夜戦のときに表示する
             SetupResult(json);
+            EnemyFighterPower = CalcEnemyFighterPower(json);
             if (IsNightBattle(json))
             {
                 BattleState = BattleState.Night;
@@ -160,8 +161,7 @@ namespace KancolleSniffer
             if (combined.Length > 7) // 敵が連合艦隊
             {
                 _enemyGuardHp =
-                    ((int[])json.api_nowhps_combined).
-                        Skip(7).TakeWhile(hp => hp != -1).ToArray();
+                    ((int[])json.api_nowhps_combined).Skip(7).TakeWhile(hp => hp != -1).ToArray();
                 _enemyGuardStartHp = (int[])_enemyGuardHp.Clone();
             }
         }
@@ -224,19 +224,25 @@ namespace KancolleSniffer
         private string CalcEnemyFighterPower(dynamic json)
         {
             var missing = "";
-            var maxEq = ((int[])json.api_ship_ke).Skip(1).SelectMany(id =>
+            var ships = ((int[])json.api_ship_ke).Skip(1);
+            if (json.api_ship_ke_combined() && _guard.Length > 0)
+                ships = ships.Concat(((int[])json.api_ship_ke_combined).Skip(1));
+            var maxEq = ships.SelectMany(id =>
             {
                 var r = _shipInfo.GetSpec(id).MaxEq;
                 if (r != null)
                     return r;
                 missing = "+";
                 return new int[5];
-            }).ToArray();
+            });
             var equips = ((int[][])json.api_eSlot).SelectMany(x => x);
+            if (json.api_eSlot_combined() && _guard.Length > 0)
+                equips = equips.Concat(((int[][])json.api_eSlot_combined).SelectMany(x => x));
             return (from slot in equips.Zip(maxEq, (id, max) => new {id, max})
                        let spec = _itemInfo.GetSpecByItemId(slot.id)
                        where spec.CanAirCombat
-                       select (int)Floor(spec.AntiAir * Sqrt(slot.max))).DefaultIfEmpty().Sum() + missing;
+                       select (int)Floor(spec.AntiAir * Sqrt(slot.max))).DefaultIfEmpty()
+                   .Sum() + missing;
         }
 
         private void CalcDamage(dynamic json, bool surfaceFleet = false)
@@ -488,8 +494,7 @@ namespace KancolleSniffer
             var damages = ((dynamic[])hougeki.api_damage).Skip(1).Select(x => (int[])x);
             var eflags = ((int[])hougeki.api_at_eflag).Skip(1);
             foreach (var turn in
-                targets.Zip(damages, (t, d) => new {t, d}).
-                    Zip(eflags, (td, e) => new {e, td.t, td.d}))
+                targets.Zip(damages, (t, d) => new {t, d}).Zip(eflags, (td, e) => new {e, td.t, td.d}))
             {
                 foreach (var hit in turn.t.Zip(turn.d, (t, d) => new {t, d}))
                 {
