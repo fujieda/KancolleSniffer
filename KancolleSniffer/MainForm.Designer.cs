@@ -62,7 +62,7 @@ namespace KancolleSniffer
             this.panelCombinedFleet = new System.Windows.Forms.Panel();
             this.panelBattleInfo = new System.Windows.Forms.Panel();
             this.labelEnemyFighterPower = new System.Windows.Forms.Label();
-            this.label30 = new System.Windows.Forms.Label();
+            this.labelEnemyFighterPowerCaption = new System.Windows.Forms.Label();
             this.labelFormation = new System.Windows.Forms.Label();
             this.labelResultRank = new System.Windows.Forms.Label();
             this.labelLoS = new System.Windows.Forms.Label();
@@ -344,7 +344,7 @@ namespace KancolleSniffer
             // panelBattleInfo
             // 
             this.panelBattleInfo.Controls.Add(this.labelEnemyFighterPower);
-            this.panelBattleInfo.Controls.Add(this.label30);
+            this.panelBattleInfo.Controls.Add(this.labelEnemyFighterPowerCaption);
             this.panelBattleInfo.Controls.Add(this.labelFormation);
             this.panelBattleInfo.Controls.Add(this.labelResultRank);
             this.panelBattleInfo.Location = new System.Drawing.Point(59, 116);
@@ -361,14 +361,14 @@ namespace KancolleSniffer
             this.labelEnemyFighterPower.TabIndex = 3;
             this.labelEnemyFighterPower.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label30
+            // labelEnemyFighterPowerCaption
             // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(90, 1);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(41, 12);
-            this.label30.TabIndex = 2;
-            this.label30.Text = "敵制空";
+            this.labelEnemyFighterPowerCaption.AutoSize = true;
+            this.labelEnemyFighterPowerCaption.Location = new System.Drawing.Point(90, 1);
+            this.labelEnemyFighterPowerCaption.Name = "labelEnemyFighterPowerCaption";
+            this.labelEnemyFighterPowerCaption.Size = new System.Drawing.Size(41, 12);
+            this.labelEnemyFighterPowerCaption.TabIndex = 2;
+            this.labelEnemyFighterPowerCaption.Text = "敵制空";
             // 
             // labelFormation
             // 
@@ -1451,7 +1451,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelPlayLog;
         private System.Windows.Forms.Panel panelBattleInfo;
         private System.Windows.Forms.Label labelEnemyFighterPower;
-        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label labelEnemyFighterPowerCaption;
         private System.Windows.Forms.Label labelFormation;
         private System.Windows.Forms.Label labelResultRank;
         private System.Windows.Forms.ImageList imageListFuelSq;

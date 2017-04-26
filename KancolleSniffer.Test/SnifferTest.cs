@@ -414,7 +414,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer {UseOldEnemyId = true};
             SniffLogFile(sniffer, "battle_006");
-            PAssert.That(() => sniffer.Battle.EnemyFighterPower == "0");
+            PAssert.That(() => sniffer.Battle.EnemyFighterPower.AirCombat == 0);
         }
 
         /// <summary>
@@ -519,11 +519,11 @@ namespace KancolleSniffer.Test
         {
             var sniffer1 = new Sniffer{UseOldEnemyId = true};
             SniffLogFile(sniffer1, "airbattle_002");
-            PAssert.That(() => sniffer1.Battle.EnemyFighterPower == "28");
+            PAssert.That(() => sniffer1.Battle.EnemyFighterPower.AirCombat == 28);
 
             var sniffer2 = new Sniffer {UseOldEnemyId = true};
             SniffLogFile(sniffer2, "both_combined_001");
-            PAssert.That(() => sniffer2.Battle.EnemyFighterPower == "389");
+            PAssert.That(() => sniffer2.Battle.EnemyFighterPower.AirCombat == 389);
         }
 
         /// <summary>

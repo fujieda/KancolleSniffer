@@ -204,7 +204,7 @@ namespace KancolleSniffer
                 dropType, dropName,
                 string.Join(",", fships),
                 string.Join(",", eships),
-                fpower, _battleInfo.EnemyFighterPower,
+                fpower, _battleInfo.EnemyFighterPower.AirCombat + _battleInfo.EnemyFighterPower.UnknownMark,
                 AirControlLevelName(_battle)),
                 "日付,海域,マス,ボス,ランク,艦隊行動,味方陣形,敵陣形,敵艦隊,ドロップ艦種,ドロップ艦娘," +
                 "味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP," +

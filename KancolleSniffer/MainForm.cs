@@ -595,7 +595,14 @@ namespace KancolleSniffer
         private void UpdateBattleFighterPower()
         {
             var battle = _sniffer.Battle;
-            labelEnemyFighterPower.Text = battle.EnemyFighterPower;
+            var power = battle.EnemyFighterPower;
+            labelEnemyFighterPower.Text = power.AirCombat + power.UnknownMark;
+            if (power.AirCombat != power.Interception)
+            {
+                var text = "防空: " + power.Interception + power.UnknownMark;
+                toolTipFighterPower.SetToolTip(labelEnemyFighterPower, text);
+                toolTipFighterPower.SetToolTip(labelEnemyFighterPowerCaption, text);
+            }
             UpdateFighterPower(_sniffer.CombinedFleetType > 0 && battle.EnemyIsCombined);
             var color = new[]
                 {DefaultForeColor, DefaultForeColor, Color.FromArgb(0, 90, 255), Color.Green, Color.Orange, Color.Red};

@@ -37,6 +37,14 @@ namespace KancolleSniffer
         Result
     }
 
+    public class EnemyFighterPower
+    {
+        public bool HasUnknown { get; set; }
+        public string UnknownMark => HasUnknown ? "+" : "";
+        public int AirCombat { get; set; }
+        public int Interception { get; set; }
+    }
+
     public class BattleInfo
     {
         private readonly ShipInfo _shipInfo;
@@ -54,7 +62,7 @@ namespace KancolleSniffer
 
         public BattleState BattleState { get; set; }
         public string Formation { get; private set; }
-        public string EnemyFighterPower { get; private set; }
+        public EnemyFighterPower EnemyFighterPower { get; private set; }
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
@@ -221,9 +229,9 @@ namespace KancolleSniffer
             return (int)stage1.api_disp_seiku;
         }
 
-        private string CalcEnemyFighterPower(dynamic json)
+        private EnemyFighterPower CalcEnemyFighterPower(dynamic json)
         {
-            var missing = "";
+            var result = new EnemyFighterPower();
             var ships = ((int[])json.api_ship_ke).Skip(1);
             if (json.api_ship_ke_combined() && _guard.Length > 0)
                 ships = ships.Concat(((int[])json.api_ship_ke_combined).Skip(1));
@@ -232,17 +240,23 @@ namespace KancolleSniffer
                 var r = _shipInfo.GetSpec(id).MaxEq;
                 if (r != null)
                     return r;
-                missing = "+";
+                result.HasUnknown = true;
                 return new int[5];
             });
             var equips = ((int[][])json.api_eSlot).SelectMany(x => x);
             if (json.api_eSlot_combined() && _guard.Length > 0)
                 equips = equips.Concat(((int[][])json.api_eSlot_combined).SelectMany(x => x));
-            return (from slot in equips.Zip(maxEq, (id, max) => new {id, max})
-                       let spec = _itemInfo.GetSpecByItemId(slot.id)
-                       where spec.CanAirCombat
-                       select (int)Floor(spec.AntiAir * Sqrt(slot.max))).DefaultIfEmpty()
-                   .Sum() + missing;
+            foreach (var entry in from slot in equips.Zip(maxEq, (id, max) => new { id, max })
+                let spec = _itemInfo.GetSpecByItemId(slot.id)
+                let perSlot = (int)Floor(spec.AntiAir * Sqrt(slot.max))
+                select new { spec, perSlot })
+            {
+                if (entry.spec.CanAirCombat)
+                    result.AirCombat += entry.perSlot;
+                if (entry.spec.IsAircraft)
+                    result.Interception += entry.perSlot;
+            }
+            return result;
         }
 
         private void CalcDamage(dynamic json, bool surfaceFleet = false)
