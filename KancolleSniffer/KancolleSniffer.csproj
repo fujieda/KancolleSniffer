@@ -67,6 +67,7 @@
     <Compile Include="ConfigDialog.Designer.cs">
       <DependentUpon>ConfigDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="CUDColor.cs" />
     <Compile Include="DbTreeView.cs">
       <SubType>Component</SubType>
     </Compile>

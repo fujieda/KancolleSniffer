@@ -262,7 +262,7 @@ namespace KancolleSniffer
                     continue;
                 }
                 if (i == shortest)
-                    label.ForeColor = Color.Red;
+                    label.ForeColor = CUDColor.Red;
                 labelHp.ForeColor = Color.DimGray;
                 labelHp.SetHp(stat.NowHp + timer.Diff, stat.MaxHp);
             }
@@ -354,7 +354,7 @@ namespace KancolleSniffer
         public void SetNDockTimer(int dock, RingTimer timer, bool finishTime)
         {
             var label = _ndockLabels[dock][0];
-            label.ForeColor = timer.IsFinished ? Color.Red : Color.Black;
+            label.ForeColor = timer.IsFinished ? CUDColor.Red : Color.Black;
             label.Text = timer.ToString(finishTime);
         }
     }
@@ -463,9 +463,9 @@ namespace KancolleSniffer
                 case ShipStatus.Damage.Sunk:
                     return Color.CornflowerBlue;
                 case ShipStatus.Damage.Badly:
-                    return Color.Red;
+                    return CUDColor.Red;
                 case ShipStatus.Damage.Half:
-                    return Color.Orange;
+                    return CUDColor.Orange;
                 case ShipStatus.Damage.Small:
                     return Color.FromArgb(240, 240, 0);
                 default:
@@ -478,10 +478,10 @@ namespace KancolleSniffer
             var cond = status.Cond;
             Text = cond.ToString("D");
             BackColor = cond >= 50
-                ? Color.Yellow
+                ? CUDColor.Yellow
                 : cond >= 30
                     ? PresetColor
-                    : cond >= 20 ? Color.Orange : Color.Red;
+                    : cond >= 20 ? CUDColor.Orange : CUDColor.Red;
         }
 
         public void SetLevel(ShipStatus status)

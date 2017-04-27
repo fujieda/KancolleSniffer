@@ -138,7 +138,7 @@ namespace KancolleSniffer
                 return;
             var result = _resultList[_resultIndex];
             _phaseName.Text = result.PhaseName;
-            var color = new[] {DefaultForeColor, Color.Blue, Color.Green, Color.Orange, Color.Red};
+            var color = new[] {DefaultForeColor, CUDColor.Blue, CUDColor.Green, CUDColor.Orange, CUDColor.Red};
             _stage1.ForeColor = color[result.AirControlLevel];
             var stages = new[] {result.Stage1, result.Stage2};
             for (var i = 0; i < 2; i++)

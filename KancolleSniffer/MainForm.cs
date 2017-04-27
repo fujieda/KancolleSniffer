@@ -430,7 +430,7 @@ namespace KancolleSniffer
         {
             var item = _sniffer.Item;
             labelNumOfShips.Text = $"{item.NowShips:D}/{item.MaxShips:D}";
-            labelNumOfShips.ForeColor = item.TooManyShips ? Color.Red : Color.Black;
+            labelNumOfShips.ForeColor = item.TooManyShips ? CUDColor.Red : Color.Black;
             if (item.RingShips)
             {
                 var message = $"残り{_sniffer.Item.MaxShips - _sniffer.Item.NowShips:D}隻";
@@ -443,7 +443,7 @@ namespace KancolleSniffer
         {
             var item = _sniffer.Item;
             labelNumOfEquips.Text = $"{item.NowEquips:D}/{item.MaxEquips:D}";
-            labelNumOfEquips.ForeColor = item.TooManyEquips ? Color.Red : Color.Black;
+            labelNumOfEquips.ForeColor = item.TooManyEquips ? CUDColor.Red : Color.Black;
             if (item.RingEquips)
             {
                 var message = $"残り{_sniffer.Item.MaxEquips - _sniffer.Item.NowEquips:D}個";
@@ -604,9 +604,9 @@ namespace KancolleSniffer
                 toolTipFighterPower.SetToolTip(labelEnemyFighterPowerCaption, text);
             }
             UpdateFighterPower(_sniffer.CombinedFleetType > 0 && battle.EnemyIsCombined);
-            var color = new[]
-                {DefaultForeColor, DefaultForeColor, Color.FromArgb(0, 90, 255), Color.Green, Color.Orange, Color.Red};
-            labelFighterPower.ForeColor = color[battle.AirControlLevel + 1];
+            labelFighterPower.ForeColor = new[]
+                {DefaultForeColor, DefaultForeColor, CUDColor.Blue, CUDColor.Green, CUDColor.Orange, CUDColor.Red}[
+                battle.AirControlLevel + 1];
         }
 
         private void ShowResultRank()
@@ -702,7 +702,7 @@ namespace KancolleSniffer
 
         private void SetTimerColor(Label label, RingTimer timer)
         {
-            label.ForeColor = timer.IsFinished ? Color.Red : Color.Black;
+            label.ForeColor = timer.IsFinished ? CUDColor.Red : Color.Black;
         }
 
         private void UpdateCondTimers()
@@ -761,7 +761,7 @@ namespace KancolleSniffer
         {
             var akashi = _sniffer.AkashiTimer;
             var span = akashi.PresetDeckTimer;
-            var color = span == TimeSpan.Zero && akashi.CheckPresetReparing() ? Color.Red : DefaultForeColor;
+            var color = span == TimeSpan.Zero && akashi.CheckPresetReparing() ? CUDColor.Red : DefaultForeColor;
             var text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
             labelAkashiRepairTimer.ForeColor = color;
             labelAkashiRepairTimer.Text = text;
