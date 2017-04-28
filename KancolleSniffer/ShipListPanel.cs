@@ -18,6 +18,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -67,7 +68,7 @@ namespace KancolleSniffer
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            ScrollBar.Value = Math.Max(ScrollBar.Minimum, Math.Min(ScrollBar.Maximum - ScrollBar.LargeChange + 1,
+            ScrollBar.Value = Max(ScrollBar.Minimum, Min(ScrollBar.Maximum - ScrollBar.LargeChange + 1,
                 ScrollBar.Value - e.Delta * SystemInformation.MouseWheelScrollLines / 120));
         }
 
@@ -189,7 +190,7 @@ namespace KancolleSniffer
 
         private void SetupScrollBar()
         {
-            var needBar = _shipList.Length * LineHeight > Height;
+            var needBar = _shipList.Length * LineHeight * ShipLabel.ScaleFactor.Height > Height;
             if (!needBar)
             {
                 ScrollBar.Visible = false;
@@ -198,12 +199,12 @@ namespace KancolleSniffer
             }
             ScrollBar.Visible = true;
             ScrollBar.Minimum = 0;
-            var lines = Math.Max(1, Height / LineHeight);
+            var lines = Max(1, Height / (int)Round(LineHeight * ShipLabel.ScaleFactor.Height));
             var max = _shipList.Length - lines;
-            ScrollBar.LargeChange = Math.Min(lines, max);
+            ScrollBar.LargeChange = Min(lines, max);
             ScrollBar.Maximum =
-                Math.Max(0, max + ScrollBar.LargeChange - 1); // ScrollBarを最大まで動かしてもmaxには届かない
-            ScrollBar.Value = Math.Min(ScrollBar.Value, max);
+                Max(0, max + ScrollBar.LargeChange - 1); // ScrollBarを最大まで動かしてもmaxには届かない
+            ScrollBar.Value = Min(ScrollBar.Value, max);
         }
 
         private void CreateGroupingComponents(int i)
@@ -470,7 +471,7 @@ namespace KancolleSniffer
             var i = Array.FindIndex(_shipList, s => s.Id == id);
             if (i == -1)
                 return;
-            ScrollBar.Value = Math.Min(i, ScrollBar.Maximum + 1 - ScrollBar.LargeChange);
+            ScrollBar.Value = Min(i, ScrollBar.Maximum + 1 - ScrollBar.LargeChange);
             SetShipLabels();
         }
     }
