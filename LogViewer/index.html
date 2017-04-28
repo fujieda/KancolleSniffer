@@ -752,7 +752,7 @@ function initAction() {
         sessionStorage.setItem('prevDiffRange', i);
     });
     $('input[name="chart_type"]:radio').change(function () {
-        if ($(this).val() === 0) {
+        if ($(this).val() === "0") {
             $("#range_seq").show();
             $("#range_diff").hide();
             chartType = 0;
