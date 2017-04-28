@@ -189,12 +189,14 @@ namespace KancolleSniffer
 
         private void SetupScrollBar()
         {
-            ScrollBar.Visible = _shipList.Length * LineHeight > Height;
-            if (!ScrollBar.Visible)
+            var needBar = _shipList.Length * LineHeight > Height;
+            if (!needBar)
             {
+                ScrollBar.Visible = false;
                 ScrollBar.Value = 0;
                 return;
             }
+            ScrollBar.Visible = true;
             ScrollBar.Minimum = 0;
             var lines = Math.Max(1, Height / LineHeight);
             var max = _shipList.Length - lines;
