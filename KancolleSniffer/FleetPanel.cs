@@ -101,7 +101,7 @@ namespace KancolleSniffer
                     if (s.SlotEx.Id > 0)
                     {
                         var item = s.SlotEx;
-                        equips.Add(new Record {Equip = item.Spec.Name, Color = item.Spec.Color});
+                        equips.Add(new Record {Equip = GenEquipString(item, 0, 0), Color = item.Spec.Color});
                     }
                     if (drum != 0)
                         drumShips++;
