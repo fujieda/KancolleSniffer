@@ -113,12 +113,13 @@ namespace KancolleSniffer
                     var subm = s.EffectiveAntiSubmarine;
                     var torp = s.EffectiveTorpedo;
                     var night = s.NightBattlePower;
+                    var oasa = s.CanOpeningAntiSubmarineAttack ? "*" : "";
                     var ship = new Record
                     {
                         Ship = (s.Escaped ? "[避]" : "") + s.Name + " Lv" + s.Level,
                         Id = s.Id,
                         // ReSharper disable CompareOfFloatsByEqualityOperator
-                        Spec = (fire == 0 ? "" : $"砲{fire:f1}") + (subm == 0 ? "" : $" 潜{subm:f1}"),
+                        Spec = (fire == 0 ? "" : $"砲{fire:f1}") + (subm == 0 ? "" : $" 潜{subm:f1}{oasa}"),
                         Spec2 = (torp == 0 ? "" : $"雷{torp:f1}") + (night == 0 ? "" : $" 夜{night:f1}")
                         // ReSharper restore CompareOfFloatsByEqualityOperator
                     };
