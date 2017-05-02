@@ -43,7 +43,7 @@ body {
 </head>
 <body>
 <script>
-/* global moment, c3 */
+/* global moment, c3, $ */
 
 var oneDay = 3600 * 24 * 1000;
 
@@ -143,15 +143,17 @@ function drawChart(data) {
     }
 }
 
+var chartSeq, chartDiff;
+
 function redrawChart() {
     if (!currentPickedData)
         return;
     $('#loading').show();
     setTimeout(function () {
         if (chartType === 0)
-            drawSeqChart(currentPickedData);
-        else
-            drawDiffChart(currentPickedData);
+            chartSeq.resize(chartSize());
+        if (chartType === 1)
+            chartDiff.resize(chartSize());
     });
 }
 
@@ -175,7 +177,7 @@ function chartSize() {
 
 function drawSeqChart(picked) {
     var size = chartSize();
-    c3.generate({
+    chartSeq = c3.generate({
         bindto: '#chart',
         size: {
             height: size.height,
@@ -305,7 +307,7 @@ function pickChartData(data, range) {
 
 function drawDiffChart(picked) {
     var size = chartSize();
-    c3.generate({
+    chartDiff = c3.generate({
         bindto: '#chart',
         size: {
             height: size.height,
