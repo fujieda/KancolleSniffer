@@ -175,6 +175,8 @@ function chartSize() {
     };
 }
 
+var seqChartUnselected = {};
+
 function drawSeqChart(picked) {
     var size = chartSize();
     chartSeq = c3.generate({
@@ -222,8 +224,20 @@ function drawSeqChart(picked) {
                 show: true
             }
         },
+        legend: {
+            item: {
+                onclick: function(id) {
+                    seqChartUnselected[id] = !seqChartUnselected[id];
+                    chartSeq.toggle(id);
+                }
+            }
+        },
         onrendered: function () { $('#loading').hide(); }
     });
+    for (var id in seqChartUnselected) {
+        if (seqChartUnselected.hasOwnProperty(id) && seqChartUnselected[id])
+            chartSeq.toggle(id);
+    }
 }
 
 function pickChartData(data, range) {
@@ -305,6 +319,8 @@ function pickChartData(data, range) {
     return { data: newdata, tick: ticks, grid: grid };
 }
 
+var diffChartUnselected = {};
+
 function drawDiffChart(picked) {
     var size = chartSize();
     chartDiff = c3.generate({
@@ -354,8 +370,20 @@ function drawDiffChart(picked) {
                 }
             }
         },
+        legend: {
+            item: {
+                onclick: function(id) {
+                    diffChartUnselected[id] = !diffChartUnselected[id];
+                    chartDiff.toggle(id);
+                }
+            }
+        },
         onrendered: function () { $('#loading').hide(); }
     });
+    for (var id in diffChartUnselected) {
+        if (diffChartUnselected.hasOwnProperty(id) && diffChartUnselected[id])
+            chartDiff.toggle(id);
+    }
 }
 
 function pickDiffChartData(data, range) {
