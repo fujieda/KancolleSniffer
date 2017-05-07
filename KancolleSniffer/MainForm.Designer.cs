@@ -148,7 +148,6 @@ namespace KancolleSniffer
             this.labelBucketHistory = new System.Windows.Forms.Label();
             this.label36 = new System.Windows.Forms.Label();
             this.labelMaterialHistoryButton = new System.Windows.Forms.Label();
-            this.panelRepairList = new System.Windows.Forms.Panel();
             this.labelRepairListButton = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.imageListFuelSq = new System.Windows.Forms.ImageList(this.components);
@@ -165,6 +164,7 @@ namespace KancolleSniffer
             this.labelAkashiRepair = new System.Windows.Forms.Label();
             this.toolTipFighterPower = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipLoS = new System.Windows.Forms.ToolTip(this.components);
+            this.panelRepairList = new KancolleSniffer.RepairListForMain();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -1135,16 +1135,6 @@ namespace KancolleSniffer
             this.labelMaterialHistoryButton.TabIndex = 10;
             this.labelMaterialHistoryButton.Click += new System.EventHandler(this.labelMaterialHistoryButton_Click);
             // 
-            // panelRepairList
-            // 
-            this.panelRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelRepairList.Location = new System.Drawing.Point(6, 207);
-            this.panelRepairList.Name = "panelRepairList";
-            this.panelRepairList.Size = new System.Drawing.Size(129, 19);
-            this.panelRepairList.TabIndex = 44;
-            this.panelRepairList.Visible = false;
-            this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
-            // 
             // labelRepairListButton
             // 
             this.labelRepairListButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1287,6 +1277,16 @@ namespace KancolleSniffer
             // toolTipLoS
             // 
             this.toolTipLoS.ShowAlways = true;
+            // 
+            // panelRepairList
+            // 
+            this.panelRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelRepairList.Location = new System.Drawing.Point(6, 207);
+            this.panelRepairList.Name = "panelRepairList";
+            this.panelRepairList.Size = new System.Drawing.Size(129, 21);
+            this.panelRepairList.TabIndex = 4;
+            this.panelRepairList.Visible = false;
+            this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
             // 
             // MainForm
             // 
@@ -1439,7 +1439,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFuelHistory;
         private System.Windows.Forms.Label label36;
         private System.Windows.Forms.Label labelMaterialHistoryButton;
-        private System.Windows.Forms.Panel panelRepairList;
         private System.Windows.Forms.Label labelRepairListButton;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripNotifyIcon;
@@ -1482,6 +1481,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelPresetAkashiTimer;
         private System.Windows.Forms.ToolTip toolTipFighterPower;
         private System.Windows.Forms.ToolTip toolTipLoS;
+        private RepairListForMain panelRepairList;
     }
 }
 

@@ -70,8 +70,8 @@ namespace KancolleSniffer
             _shipLabels.CreateAkashiTimers(panelShipInfo);
             _shipLabels.CreateShipLabels(panelShipInfo, ShowShipOnShipList);
             _shipLabels.CreateCombinedShipLabels(panelCombinedFleet, ShowShipOnShipList);
-            _shipLabels.CreateRepairList(panelRepairList, panelRepairList_Click);
             _shipLabels.CreateNDockLabels(panelDock, labelNDock_Click);
+            panelRepairList.CreateLabels(panelRepairList_Click);
             labelPresetAkashiTimer.BackColor = ShipLabels.ColumnColors[1];
             _listForm = new ListForm(_sniffer, _config) {Owner = this};
             _noticeQueue = new NoticeQueue(Ring);
@@ -779,7 +779,7 @@ namespace KancolleSniffer
 
         private void UpdateRepairList()
         {
-            _shipLabels.SetRepairList(_sniffer.RepairList);
+            panelRepairList.SetRepairList(_sniffer.RepairList);
         }
 
         private void UpdateQuestList()

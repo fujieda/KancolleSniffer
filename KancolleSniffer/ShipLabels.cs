@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -39,8 +40,6 @@ namespace KancolleSniffer
         private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
         private readonly ShipLabel[][] _combinedLabels = new ShipLabel[ShipInfo.MemberCount * 2][];
         private readonly ShipLabel[] _akashiTimers = new ShipLabel[ShipInfo.MemberCount];
-        private readonly ShipLabel[][] _repairList = new ShipLabel[16][];
-        private Control _panelRepairList;
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         public static Color[] ColumnColors = {SystemColors.Control, Color.FromArgb(255, 250, 250, 250)};
 
@@ -268,59 +267,6 @@ namespace KancolleSniffer
             }
         }
 
-        public void CreateRepairList(Control parent, EventHandler onClick)
-        {
-            parent.SuspendLayout();
-            for (var i = 0; i < _repairList.Length; i++)
-            {
-                var y = 3 + i * 16;
-                const int height = 12;
-                parent.Controls.AddRange(_repairList[i] = new[]
-                {
-                    new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
-                    new ShipLabel {Location = new Point(119, y), Size = new Size(5, height - 1)},
-                    new ShipLabel {Location = new Point(75, y), AutoSize = true},
-                    new ShipLabel {Location = new Point(9, y), AutoSize = true},
-                    new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, height + 3)}
-                });
-                foreach (var label in _repairList[i])
-                {
-                    label.Scale();
-                    label.PresetColor = label.BackColor = ColumnColors[(i + 1) % 2];
-                    label.Click += onClick;
-                }
-            }
-            _panelRepairList = parent;
-            parent.ResumeLayout();
-        }
-
-        public void SetRepairList(ShipStatus[] list)
-        {
-            const int fleet = 0, name = 3, time = 2, damage = 1;
-            var parent = _panelRepairList;
-            var num = Min(list.Length, _repairList.Length);
-            if (num == 0)
-            {
-                parent.Size = new Size(parent.Width, (int)Round(ShipLabel.ScaleFactor.Height * 19));
-                var labels = _repairList[0];
-                labels[fleet].Text = "";
-                labels[name].SetName("なし");
-                labels[time].Text = "";
-                labels[damage].BackColor = labels[damage].PresetColor;
-                return;
-            }
-            parent.Size = new Size(parent.Width, (int)Round(ShipLabel.ScaleFactor.Height * (num * 16 + 3)));
-            for (var i = 0; i < num; i++)
-            {
-                var s = list[i];
-                var labels = _repairList[i];
-                labels[fleet].SetFleet(s);
-                labels[name].SetName(s, ShipNameWidth.RepairList);
-                labels[time].SetRepairTime(s);
-                labels[damage].BackColor = ShipLabel.DamageColor(s, labels[damage].PresetColor);
-            }
-        }
-
         public void CreateNDockLabels(Control parent, EventHandler onClick)
         {
             for (var i = 0; i < _ndockLabels.Length; i++)
@@ -359,7 +305,7 @@ namespace KancolleSniffer
         }
     }
 
-    [System.ComponentModel.DesignerCategory("Code")]
+    [DesignerCategory("Code")]
     public class ShipLabel : Label
     {
         public static SizeF ScaleFactor { get; set; }
@@ -481,7 +427,9 @@ namespace KancolleSniffer
                 ? CUDColor.Yellow
                 : cond >= 30
                     ? PresetColor
-                    : cond >= 20 ? CUDColor.Orange : CUDColor.Red;
+                    : cond >= 20
+                        ? CUDColor.Orange
+                        : CUDColor.Red;
         }
 
         public void SetLevel(ShipStatus status)
