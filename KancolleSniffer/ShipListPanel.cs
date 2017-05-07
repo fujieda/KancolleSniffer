@@ -58,7 +58,7 @@ namespace KancolleSniffer
         protected override void OnResize(EventArgs ev)
         {
             base.OnResize(ev);
-            if (_shipList == null || _shipList.Length == 0)
+            if (_shipList == null || _shipList.Length == 0 || !Visible)
                 return;
             SuspendDrawing();
             SetupLabels();
