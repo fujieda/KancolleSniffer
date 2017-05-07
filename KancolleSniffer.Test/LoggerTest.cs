@@ -316,7 +316,7 @@ namespace KancolleSniffer.Test
             sniffer.EnableLog(LogType.CreateShip);
             SnifferTest.SniffLogFile(sniffer, "createship_001");
             PAssert.That(() => "2015-01-01 00:00:00,通常艦建造,雷,駆逐艦,30,30,30,30,1,1,綾波改二(145),120|" +
-                               "2015-01-01 00:00:00,大型艦建造,霧島,高速戦艦,1500,1500,2000,1000,1,0,綾波改二(145),120|"
+                               "2015-01-01 00:00:00,大型艦建造,霧島,巡洋戦艦,1500,1500,2000,1000,1,0,綾波改二(145),120|"
                                == result);
         }
 

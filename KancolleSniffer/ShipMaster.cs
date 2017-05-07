@@ -28,7 +28,7 @@ namespace KancolleSniffer
             var dict = new Dictionary<double, string>();
             foreach (var entry in json.api_mst_stype)
                 dict[entry.api_id] = entry.api_name;
-            dict[8] = "高速戦艦";
+            dict[8] = "巡洋戦艦";
             foreach (var entry in json.api_mst_ship)
             {
                 var shipSpec = _shipSpecs[(int)entry.api_id] = new ShipSpec
