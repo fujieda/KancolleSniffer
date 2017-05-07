@@ -198,6 +198,7 @@ namespace KancolleSniffer
             {
                 switch (ShipType)
                 {
+                    case 1: // 海防艦
                     case 2: // 駆逐
                     case 3: // 軽巡
                     case 4: // 雷巡
