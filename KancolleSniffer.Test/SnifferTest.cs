@@ -453,6 +453,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 連合艦隊の第二艦隊の旗艦の大破警告を出さない
+        /// </summary>
+        [TestMethod]
+        public void NotWarnDamagedFlagshipInGuardFleet()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "taiha_003");
+            PAssert.That(() => sniffer.GetShipStatuses(1)[0].NowHp == 12);
+            PAssert.That(() => !sniffer.BadlyDamagedShips.Any());
+        }
+
+        /// <summary>
         /// 熟練度込みの制空値を正しく計算する
         /// </summary>
         [TestMethod]

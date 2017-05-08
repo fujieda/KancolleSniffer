@@ -614,7 +614,11 @@ namespace KancolleSniffer
         public void SetBadlyDamagedShips()
         {
             BadlyDamagedShips =
-                _inSortie.SelectMany((sortie, i) => sortie ? GetShipStatuses(i) : new ShipStatus[0])
+                _inSortie.SelectMany((flag, i) => !flag
+                        ? new ShipStatus[0]
+                        : _combinedFleetType > 0 && i == 1
+                            ? GetShipStatuses(1).Skip(1) // 連合艦隊第二の旗艦を飛ばす
+                            : GetShipStatuses(i))
                     .Where(s => !s.Escaped && s.DamageLevel == ShipStatus.Damage.Badly)
                     .Select(s => s.Name)
                     .ToArray();
