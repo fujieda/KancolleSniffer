@@ -227,20 +227,17 @@ namespace KancolleSniffer
             if (AllAirCorps == null)
                 return;
             var name = new[] {"第一", "第二", "第三"};
-            var i = 0;
-            foreach (var baseInfo in AllAirCorps)
+            foreach (var baseInfo in AllAirCorps.Select((data, i) => new {data, i}))
             {
-                var areaAame = baseInfo.AreaName;
-                foreach (var airCorps in baseInfo.AirCorps)
+                var areaAame = baseInfo.data.AreaName;
+                foreach (var airCorps in baseInfo.data.AirCorps.Select((data, i) => new {data, i}))
                 {
-                    if (i >= name.Length)
-                        break;
                     var ship = new ShipStatus
                     {
-                        Id = 1000 + i,
-                        Spec = new ShipSpec {Name = areaAame + " " + name[i++] + "航空隊"}
+                        Id = 10000 + baseInfo.i * 1000 + airCorps.i,
+                        Spec = new ShipSpec {Name = areaAame + " " + name[airCorps.i] + "航空隊"}
                     };
-                    foreach (var plane in airCorps.Planes)
+                    foreach (var plane in airCorps.data.Planes)
                     {
                         if (plane.State != 1)
                             continue;
