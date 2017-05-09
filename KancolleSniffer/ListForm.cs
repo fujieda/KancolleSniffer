@@ -31,7 +31,11 @@ namespace KancolleSniffer
         {
             None,
             Cond,
+            CondAscend = Cond,
+            CondDescend,
             ExpToNext,
+            ExpToNextAscend = ExpToNext,
+            ExpToNextDescend,
             Repair
         }
 
@@ -96,13 +100,21 @@ namespace KancolleSniffer
                     labelHeaderCond.Text = "cond";
                     labelHeaderExp.Text = "Exp";
                     break;
-                case SortOrder.Cond:
+                case SortOrder.CondAscend:
                     labelHeaderCond.Text = "cond▴";
                     labelHeaderExp.Text = "Exp";
                     break;
-                case SortOrder.ExpToNext:
+                case SortOrder.CondDescend:
+                    labelHeaderCond.Text = "cond▾";
+                    labelHeaderExp.Text = "Exp";
+                    break;
+                case SortOrder.ExpToNextAscend:
                     labelHeaderCond.Text = "cond";
                     labelHeaderExp.Text = "Exp▴";
+                    break;
+                case SortOrder.ExpToNextDescend:
+                    labelHeaderCond.Text = "cond";
+                    labelHeaderExp.Text = "Exp▾";
                     break;
             }
         }
@@ -249,15 +261,37 @@ namespace KancolleSniffer
 
         private void labelHeaderCond_Click(object sender, EventArgs e)
         {
-            _config.ShipList.SortOrder = _config.ShipList.SortOrder == SortOrder.Cond ? SortOrder.None : SortOrder.Cond;
+            var sl = _config.ShipList;
+            switch (sl.SortOrder)
+            {
+                case SortOrder.CondAscend:
+                    sl.SortOrder = SortOrder.CondDescend;
+                    break;
+                case SortOrder.CondDescend:
+                    sl.SortOrder = SortOrder.None;
+                    break;
+                default:
+                    sl.SortOrder = SortOrder.CondAscend;
+                    break;
+            }
             UpdateList();
         }
 
         private void labelHeaderExp_Click(object sender, EventArgs e)
         {
-            _config.ShipList.SortOrder = _config.ShipList.SortOrder == SortOrder.ExpToNext
-                ? SortOrder.None
-                : SortOrder.ExpToNext;
+            var sl = _config.ShipList;
+            switch (sl.SortOrder)
+            {
+                case SortOrder.ExpToNextAscend:
+                    sl.SortOrder = SortOrder.ExpToNextDescend;
+                    break;
+                case SortOrder.ExpToNextDescend:
+                    sl.SortOrder = SortOrder.None;
+                    break;
+                default:
+                    sl.SortOrder = SortOrder.ExpToNextAscend;
+                    break;
+            }
             UpdateList();
         }
 

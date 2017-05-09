@@ -145,26 +145,43 @@ namespace KancolleSniffer
             {
                 if (a == null || b == null)
                     throw new ArgumentNullException();
-                if (_shipType && a.Spec.ShipType != b.Spec.ShipType)
-                    return a.Spec.ShipType - b.Spec.ShipType;
-                switch (_order)
+                if (_shipType)
                 {
-                    case ListForm.SortOrder.None:
-                    case ListForm.SortOrder.ExpToNext:
-                        break;
-                    case ListForm.SortOrder.Cond:
-                        if (a.Cond != b.Cond)
-                            return a.Cond - b.Cond;
-                        break;
-                    case ListForm.SortOrder.Repair:
-                        if (a.RepairTime != b.RepairTime)
-                            return (int)(b.RepairTime - a.RepairTime).TotalSeconds;
-                        break;
+                    if (a.Spec.ShipType != b.Spec.ShipType)
+                        return a.Spec.ShipType - b.Spec.ShipType;
+                    if (a.Level != b.Level)
+                    {
+                        if (a.Level == 1000)
+                            return -1;
+                        if (b.Level == 1000)
+                            return 1;
+                    }
                 }
-                if ((!_shipType || _order == ListForm.SortOrder.ExpToNext) && a.Level != b.Level)
-                    return b.Level - a.Level;
-                if (_order == ListForm.SortOrder.ExpToNext && a.ExpToNext != b.ExpToNext)
-                    return a.ExpToNext - b.ExpToNext;
+                if (_order == ListForm.SortOrder.Repair && a.RepairTime != b.RepairTime)
+                    return (int)(b.RepairTime - a.RepairTime).TotalSeconds;
+                if (a.Cond != b.Cond)
+                {
+                    if (_order == ListForm.SortOrder.CondAscend)
+                        return a.Cond - b.Cond;
+                    if (_order == ListForm.SortOrder.CondDescend)
+                        return b.Cond - a.Cond;
+                }
+                if (a.Level != b.Level)
+                {
+                    if (_order == ListForm.SortOrder.ExpToNextAscend)
+                        return b.Level - a.Level;
+                    if (_order == ListForm.SortOrder.ExpToNextDescend)
+                        return a.Level - b.Level;
+                    if (!_shipType) // Condが同じかSortOrder.Noneで艦種なし
+                        return b.Level - a.Level;
+                }
+                if (a.ExpToNext != b.ExpToNext)
+                {
+                    if (_order == ListForm.SortOrder.ExpToNextAscend)
+                        return a.ExpToNext - b.ExpToNext;
+                    if (_order == ListForm.SortOrder.ExpToNextDescend)
+                        return b.ExpToNext - a.ExpToNext;
+                }
                 if (a.Spec.SortNo != b.Spec.SortNo)
                     return a.Spec.SortNo - b.Spec.SortNo;
                 return a.Id - b.Id;
