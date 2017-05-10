@@ -68,9 +68,6 @@
       <DependentUpon>ConfigDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="CUDColor.cs" />
-    <Compile Include="DbTreeView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="DockInfo.cs" />
     <Compile Include="FleetPanel.cs">
       <SubType>Component</SubType>

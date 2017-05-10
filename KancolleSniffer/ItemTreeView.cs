@@ -21,7 +21,7 @@ using System.Windows.Forms;
 
 namespace KancolleSniffer
 {
-    public class ItemTreeView : DbTreeView
+    public class ItemTreeView : TreeView
     {
         private ItemStatus[] _prevItemList;
 
@@ -140,6 +140,24 @@ namespace KancolleSniffer
                     d.Expand();
                 RestoreTreeViewState(d.Nodes, s.Nodes);
             }
+        }
+
+        // ReSharper disable InconsistentNaming
+
+        private const int TV_FIRST = 0x1100;
+        private const int TVM_SETEXTENDEDSTYLE = TV_FIRST + 44;
+        private const int TVS_EX_DOUBLEBUFFER = 0x0004;
+
+        // ReSharper restore InconsistentNaming
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            // Enable double buffer
+            SendMessage(Handle, TVM_SETEXTENDEDSTYLE, (IntPtr)TVS_EX_DOUBLEBUFFER, (IntPtr)TVS_EX_DOUBLEBUFFER);
         }
     }
 }
