@@ -43,13 +43,12 @@ namespace KancolleSniffer
         {
             private ShipStatus[] _target = new ShipStatus[0];
             private int[] _deck = new int[0];
-            private const int FirstRepairTime = 20;
+            private TimeSpan FirstRepairTime => TimeSpan.FromMinutes(20);
 
             private bool PassedFirstRepairTime(DateTime start, DateTime prev, DateTime now) =>
-                prev - start < TimeSpan.FromMinutes(FirstRepairTime) &&
-                now - start >= TimeSpan.FromMinutes(FirstRepairTime);
+                prev - start < FirstRepairTime && now - start >= FirstRepairTime;
 
-            private int RepairTime(ShipStatus ship, int damage) => (int)ship.RepairTimeByDamage(damage).TotalSeconds + 70;
+            private TimeSpan RepairTime(ShipStatus ship, int damage) => ship.RepairTimeByDamage(damage) + TimeSpan.FromSeconds(70);
 
             public int[] Deck
             {
@@ -75,17 +74,17 @@ namespace KancolleSniffer
                     var damage = s.MaxHp - s.NowHp;
                     if (damage == 0)
                         return new RepairSpan(0, TimeSpan.MinValue);
-                    if (spent < TimeSpan.FromMinutes(FirstRepairTime))
-                        return new RepairSpan(0, TimeSpan.FromMinutes(FirstRepairTime) - spent);
+                    if (spent < FirstRepairTime)
+                        return new RepairSpan(0, FirstRepairTime - spent);
                     if (damage == 1)
                         return new RepairSpan(1, TimeSpan.Zero);
                     for (var d = 2; d <= damage; d++)
                     {
-                        var sec = RepairTime(s, d);
-                        if (sec <= FirstRepairTime * 60)
+                        var span = RepairTime(s, d);
+                        if (span <= FirstRepairTime)
                             continue;
-                        if (TimeSpan.FromSeconds(sec) > spent)
-                            return new RepairSpan(d - 1, TimeSpan.FromSeconds(sec) - spent);
+                        if (span > spent)
+                            return new RepairSpan(d - 1, span - spent);
                     }
                     return new RepairSpan(damage, TimeSpan.Zero);
                 }).ToArray();
@@ -110,14 +109,13 @@ namespace KancolleSniffer
                     // 完全回復から減らしながら所要時間と経過時間と比較する。
                     for (var d = damage; d >= 2; d--)
                     {
-                        var sec = RepairTime(s, d);
-                        if (sec <= FirstRepairTime * 60)
+                        var span = RepairTime(s, d);
+                        if (span <= FirstRepairTime)
                         {
                             if (d == damage && PassedFirstRepairTime(start, prev, now))
                                 comp.Add(s.Name);
                             continue;
                         }
-                        var span = TimeSpan.FromSeconds(sec);
                         if (span <= prev - start || now - start < span)
                             continue;
                         if (d == damage)
