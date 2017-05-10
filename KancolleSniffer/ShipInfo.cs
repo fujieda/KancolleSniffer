@@ -37,6 +37,8 @@ namespace KancolleSniffer
         public int[] OnSlot { get; set; }
         public ItemStatus[] Slot { get; set; }
         public ItemStatus SlotEx { get; set; }
+        public int NdockTime { get; set; }
+        public int[] NdockItem { get; set; }
         public int LoS { get; set; }
         public int Firepower { get; set; }
         public int Torpedo { get; set; }
@@ -79,26 +81,11 @@ namespace KancolleSniffer
             return ratio > 0.75 ? Damage.Minor : ratio > 0.5 ? Damage.Small : ratio > 0.25 ? Damage.Half : Damage.Badly;
         }
 
-        public TimeSpan RepairTime => TimeSpan.FromSeconds(CalcRepairSec(MaxHp - NowHp) + 30);
+        public TimeSpan RepairTime => TimeSpan.FromMilliseconds(NdockTime);
 
-        public int CalcRepairSec(int damage) => (int)(RepairSecPerHp * damage);
+        public TimeSpan RepairTimePerHp => TimeSpan.FromMilliseconds((NdockTime - 30 * 1000.0) / (MaxHp - NowHp));
 
-        public double RepairSecPerHp
-        {
-            get
-            {
-                var weight = Spec.RepairWeight;
-                var level = Level < 12 ? Level * 10 : Level * 5 + Floor(Sqrt(Level - 11)) * 10 + 50;
-                return level * weight;
-            }
-        }
-
-        public void CalcMaterialsToRepair(out int fuel, out int steal)
-        {
-            var damage = MaxHp - NowHp;
-            fuel = (int)(Spec.FuelMax * 0.2 * 0.16 * damage);
-            steal = (int)(Spec.FuelMax * 0.2 * 0.3 * damage);
-        }
+        public TimeSpan RepairTimeByDamage(int damage) => TimeSpan.FromTicks(RepairTimePerHp.Ticks * damage);
 
         public double EffectiveFirepower
         {
@@ -367,6 +354,8 @@ namespace KancolleSniffer
                     OnSlot = (int[])entry.api_onslot,
                     Slot = ((int[])entry.api_slot).Select(id => new ItemStatus(id)).ToArray(),
                     SlotEx = entry.api_slot_ex() ? new ItemStatus((int)entry.api_slot_ex) : new ItemStatus(0),
+                    NdockTime = (int)entry.api_ndock_time,
+                    NdockItem = (int[])entry.api_ndock_item,
                     LoS = (int)entry.api_sakuteki[0],
                     Firepower = (int)entry.api_karyoku[0],
                     Torpedo = (int)entry.api_raisou[0],

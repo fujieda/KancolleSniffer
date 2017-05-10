@@ -49,7 +49,7 @@ namespace KancolleSniffer
                 prev - start < TimeSpan.FromMinutes(FirstRepairTime) &&
                 now - start >= TimeSpan.FromMinutes(FirstRepairTime);
 
-            private int RepairTime(ShipStatus ship, int damage) => ship.CalcRepairSec(damage) + 70;
+            private int RepairTime(ShipStatus ship, int damage) => (int)ship.RepairTimeByDamage(damage).TotalSeconds + 70;
 
             public int[] Deck
             {

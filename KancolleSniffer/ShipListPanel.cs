@@ -477,7 +477,7 @@ namespace KancolleSniffer
             rpl[0].SetHp(s);
             rpl[1].SetLevel(s);
             rpl[2].SetRepairTime(s);
-            rpl[3].Text = TimeSpan.FromSeconds(s.RepairSecPerHp).ToString(@"mm\:ss");
+            rpl[3].Text = s.RepairTimePerHp.ToString(@"mm\:ss");
             rpl[4].SetName(s, ShipNameWidth.RepairListFull);
             rpl[5].SetFleet(s);
             panel.Visible = true;
