@@ -161,6 +161,8 @@ namespace KancolleSniffer
                 labels.Time.SetRepairTime(s);
                 labels.Damage.BackColor = ShipLabel.DamageColor(s, labels.Damage.PresetColor);
             }
+            if (_repairList.Length < _repairLabels.Length)
+                ClearLabels(_repairList.Length);
             DrawMark();
         }
 
