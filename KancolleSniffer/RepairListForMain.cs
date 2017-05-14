@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -25,9 +27,29 @@ namespace KancolleSniffer
         private const int PanelPadding = 5;
         private const int LabelPadding = 2;
         private const int LineHeight = 16;
-        private readonly ShipLabel[][] _repairLabels = new ShipLabel[14][];
+        private readonly RepairListLabels[] _repairLabels = new RepairListLabels[14];
         private ShipStatus[] _repairList = new ShipStatus[0];
         private int _repairListPosition;
+
+        private class RepairListLabels : IEnumerable<ShipLabel>
+        {
+            public ShipLabel Fleet { get; set; }
+            public ShipLabel Name { get; set; }
+            public ShipLabel Time { get; set; }
+            public ShipLabel Damage { get; set; }
+            public ShipLabel BackGround { private get; set; }
+
+            public IEnumerator<ShipLabel> GetEnumerator()
+            {
+                foreach (var label in new[] {Fleet, Damage, Time, Name, BackGround})
+                    yield return label;
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+        }
 
         public void CreateLabels(EventHandler onClick)
         {
@@ -36,14 +58,19 @@ namespace KancolleSniffer
             {
                 var y = PanelPadding + LabelPadding + i * LineHeight;
                 const int height = 12;
-                Controls.AddRange(_repairLabels[i] = new[]
+                _repairLabels[i] = new RepairListLabels
                 {
-                    new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
-                    new ShipLabel {Location = new Point(119, y), Size = new Size(5, height - 1)},
-                    new ShipLabel {Location = new Point(75, y), AutoSize = true},
-                    new ShipLabel {Location = new Point(9, y), AutoSize = true},
-                    new ShipLabel {Location = new Point(0, y - LabelPadding), Size = new Size(Width, height + LabelPadding + 1)}
-                });
+                    Fleet = new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
+                    Damage = new ShipLabel {Location = new Point(119, y), Size = new Size(5, height - 1)},
+                    Time = new ShipLabel {Location = new Point(75, y), AutoSize = true},
+                    Name = new ShipLabel {Location = new Point(9, y), AutoSize = true},
+                    BackGround = new ShipLabel
+                    {
+                        Location = new Point(0, y - LabelPadding),
+                        Size = new Size(Width, height + LabelPadding + 1)
+                    }
+                };
+                Controls.AddRange(_repairLabels[i].Cast<Control>().ToArray());
                 foreach (var label in _repairLabels[i])
                 {
                     label.Scale();
@@ -51,19 +78,24 @@ namespace KancolleSniffer
                     label.Click += onClick;
                 }
             }
-            foreach (var label in _repairLabels[0])
+            SetScrollEventHandler();
+            ResumeLayout();
+        }
+
+        private void SetScrollEventHandler()
+        {
+            foreach (var label in _repairLabels.First())
             {
                 label.MouseEnter += TopRepairLabelsOnMouseEnter;
                 label.MouseLeave += TopRepairLabelsOnMouseLeave;
             }
-            _topScrollRepeatTimer.Tick += TopRepairLabelsOnMouseEnter;
             foreach (var label in _repairLabels.Last())
             {
                 label.MouseEnter += BottomRepairLabelsOnMouseEnter;
                 label.MouseLeave += BottomRepairLabelsOnMouseLeave;
             }
+            _topScrollRepeatTimer.Tick += TopRepairLabelsOnMouseEnter;
             _bottomScrollRepeatTimer.Tick += BottomRepairLabelsOnMouseEnter;
-            ResumeLayout();
         }
 
         private readonly Timer _topScrollRepeatTimer = new Timer {Interval = 100};
@@ -99,38 +131,46 @@ namespace KancolleSniffer
 
         public void SetRepairList(ShipStatus[] list)
         {
-            const int fleet = 0, name = 3, time = 2, damage = 1;
             _repairList = list;
+            SetPanelHeight();
             if (list.Length == 0)
             {
-                Size = new Size(Width, (int)Round(ShipLabel.ScaleFactor.Height * (LineHeight + PanelPadding * 2)));
-                var labels = _repairLabels[0];
-                labels[fleet].Text = "";
-                labels[name].SetName("なし");
-                labels[time].Text = "";
-                labels[damage].BackColor = labels[damage].PresetColor;
+                SetPanelHeight();
+                ClearLabels(0);
+                _repairLabels[0].Name.SetName("なし");
                 return;
             }
-            Size = new Size(Width,
-                (int)Round(ShipLabel.ScaleFactor.Height *
-                           (Min(_repairList.Length, _repairLabels.Length) * LineHeight + PanelPadding * 2)));
             _repairListPosition = Min(_repairListPosition, Max(0, _repairList.Length - _repairLabels.Length));
             ShowRepairList();
         }
 
+        private void SetPanelHeight()
+        {
+            var lines = Min(Max(1, _repairList.Length), _repairLabels.Length);
+            Size = new Size(Width, (int)Round(ShipLabel.ScaleFactor.Height * lines * LineHeight + PanelPadding * 2));
+        }
+
         public void ShowRepairList()
         {
-            const int fleet = 0, name = 3, time = 2, damage = 1;
             for (var i = 0; i < Min(_repairList.Length, _repairLabels.Length); i++)
             {
                 var s = _repairList[i + _repairListPosition];
                 var labels = _repairLabels[i];
-                labels[fleet].SetFleet(s);
-                labels[name].SetName(s, ShipNameWidth.RepairList);
-                labels[time].SetRepairTime(s);
-                labels[damage].BackColor = ShipLabel.DamageColor(s, labels[damage].PresetColor);
+                labels.Fleet.SetFleet(s);
+                labels.Name.SetName(s, ShipNameWidth.RepairList);
+                labels.Time.SetRepairTime(s);
+                labels.Damage.BackColor = ShipLabel.DamageColor(s, labels.Damage.PresetColor);
             }
             DrawMark();
+        }
+
+        public void ClearLabels(int i)
+        {
+            var labels = _repairLabels[i];
+            labels.Fleet.Text = "";
+            labels.Name.SetName("");
+            labels.Time.Text = "";
+            labels.Damage.BackColor = labels.Damage.PresetColor;
         }
 
         private void DrawMark()
@@ -153,7 +193,6 @@ namespace KancolleSniffer
                         new PointF(Width * 0.45f, Height - PanelPadding - 2), new PointF(Width * 0.55f, Height - PanelPadding - 2),
                         new PointF(Width * 0.5f, Height - 2), new PointF(Width * 0.45f, Height - PanelPadding - 2)
                     });
-
             }
         }
 
