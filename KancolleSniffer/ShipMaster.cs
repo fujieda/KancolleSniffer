@@ -125,6 +125,40 @@ namespace KancolleSniffer
             MaxEq = new int[0];
         }
 
+        public double RepairWeight
+        {
+            get
+            {
+                switch (ShipType)
+                {
+                    case 1: // 海防艦
+                    case 13: // 潜水艦
+                        return 0.5;
+                    case 2: // 駆逐艦
+                    case 3: // 軽巡洋艦
+                    case 4: // 重雷装巡洋艦
+                    case 14: // 潜水空母
+                    case 16: // 水上機母艦
+                    case 17: // 揚陸艦
+                    case 21: // 練習巡洋艦
+                        return 1.0;
+                    case 5: // 重巡洋艦
+                    case 6: // 航空巡洋艦
+                    case 7: // 軽空母
+                    case 8: // 高速戦艦
+                    case 20: // 潜水母艦
+                        return 1.5;
+                    case 9: // 低速戦艦
+                    case 10: // 航空戦艦
+                    case 11: // 正規空母
+                    case 18: // 装甲空母
+                    case 19: // 工作艦
+                        return 2.0;
+                }
+                return 1.0;
+            }
+        }
+
         public double TransportPoint
         {
             get

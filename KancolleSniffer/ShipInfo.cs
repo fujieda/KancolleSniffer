@@ -81,9 +81,13 @@ namespace KancolleSniffer
             return ratio > 0.75 ? Damage.Minor : ratio > 0.5 ? Damage.Small : ratio > 0.25 ? Damage.Half : Damage.Badly;
         }
 
-        public TimeSpan RepairTime => TimeSpan.FromMilliseconds(NdockTime);
+        public TimeSpan RepairTime => TimeSpan.FromSeconds((int)(RepairTimePerHp.TotalSeconds * (MaxHp - NowHp)) + 30);
 
-        public TimeSpan RepairTimePerHp => TimeSpan.FromMilliseconds((NdockTime - 30 * 1000.0) / (MaxHp - NowHp));
+        public TimeSpan RepairTimePerHp =>
+            TimeSpan.FromSeconds(Spec.RepairWeight *
+                                 (Level < 12
+                                     ? Level * 10
+                                     : Level * 5 + Floor(Sqrt(Level - 11)) * 10 + 50));
 
         public TimeSpan RepairTimeByDamage(int damage) => TimeSpan.FromTicks(RepairTimePerHp.Ticks * damage);
 
