@@ -26,7 +26,7 @@ namespace KancolleSniffer
         private const int LabelPadding = 2;
         private const int LineHeight = 16;
         private readonly ShipLabel[][] _repairLabels = new ShipLabel[14][];
-        private ShipStatus[] _repairList;
+        private ShipStatus[] _repairList = new ShipStatus[0];
         private int _repairListPosition;
 
         public void CreateLabels(EventHandler onClick)
