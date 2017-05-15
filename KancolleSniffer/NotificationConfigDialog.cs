@@ -18,6 +18,7 @@ namespace KancolleSniffer
             checkBoxFlashWindow.Tag = NotificationType.FlashWindow;
             checkBoxShowBaloonTip.Tag = NotificationType.ShowBaloonTip;
             checkBoxPlaySound.Tag = NotificationType.PlaySound;
+            checkBoxPushbullet.Tag = NotificationType.Pushbullet;
 
             // ReSharper disable once CoVariantArrayConversion
             listBoxNotifications.Items.AddRange(Config.NotificationNames);
@@ -31,6 +32,7 @@ namespace KancolleSniffer
             checkBoxFlashWindow.Checked = (notification & NotificationType.FlashWindow) != 0;
             checkBoxShowBaloonTip.Checked = (notification & NotificationType.ShowBaloonTip) != 0;
             checkBoxPlaySound.Checked = (notification & NotificationType.PlaySound) != 0;
+            checkBoxPushbullet.Checked = (notification & NotificationType.Pushbullet) != 0;
         }
 
         private void checkBox_CheckedChanged(object sender, EventArgs e)

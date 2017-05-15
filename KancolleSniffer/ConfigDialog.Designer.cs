@@ -106,6 +106,11 @@ namespace KancolleSniffer
             this.label11 = new System.Windows.Forms.Label();
             this.buttonOutputDir = new System.Windows.Forms.Button();
             this.tabPageCollabo = new System.Windows.Forms.TabPage();
+            this.groupBoxPushbullet = new System.Windows.Forms.GroupBox();
+            this.buttonPushbulletTest = new System.Windows.Forms.Button();
+            this.textBoxPushbulletToken = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.checkBoxPushbulletOn = new System.Windows.Forms.CheckBox();
             this.groupBoxKancolleDb = new System.Windows.Forms.GroupBox();
             this.textBoxKancolleDbToken = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -139,6 +144,7 @@ namespace KancolleSniffer
             this.tabPageLog.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).BeginInit();
             this.tabPageCollabo.SuspendLayout();
+            this.groupBoxPushbullet.SuspendLayout();
             this.groupBoxKancolleDb.SuspendLayout();
             this.tabPageDebug.SuspendLayout();
             this.SuspendLayout();
@@ -814,6 +820,7 @@ namespace KancolleSniffer
             // 
             // tabPageCollabo
             // 
+            this.tabPageCollabo.Controls.Add(this.groupBoxPushbullet);
             this.tabPageCollabo.Controls.Add(this.groupBoxKancolleDb);
             this.tabPageCollabo.Location = new System.Drawing.Point(4, 40);
             this.tabPageCollabo.Name = "tabPageCollabo";
@@ -821,6 +828,56 @@ namespace KancolleSniffer
             this.tabPageCollabo.TabIndex = 8;
             this.tabPageCollabo.Text = "連携";
             this.tabPageCollabo.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxPushbullet
+            // 
+            this.groupBoxPushbullet.Controls.Add(this.buttonPushbulletTest);
+            this.groupBoxPushbullet.Controls.Add(this.textBoxPushbulletToken);
+            this.groupBoxPushbullet.Controls.Add(this.label7);
+            this.groupBoxPushbullet.Controls.Add(this.checkBoxPushbulletOn);
+            this.groupBoxPushbullet.Location = new System.Drawing.Point(11, 66);
+            this.groupBoxPushbullet.Name = "groupBoxPushbullet";
+            this.groupBoxPushbullet.Size = new System.Drawing.Size(234, 48);
+            this.groupBoxPushbullet.TabIndex = 1;
+            this.groupBoxPushbullet.TabStop = false;
+            this.groupBoxPushbullet.Text = "Pushbullet";
+            // 
+            // buttonPushbulletTest
+            // 
+            this.buttonPushbulletTest.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F);
+            this.buttonPushbulletTest.Location = new System.Drawing.Point(191, 16);
+            this.buttonPushbulletTest.Name = "buttonPushbulletTest";
+            this.buttonPushbulletTest.Size = new System.Drawing.Size(37, 23);
+            this.buttonPushbulletTest.TabIndex = 3;
+            this.buttonPushbulletTest.Text = "Test";
+            this.buttonPushbulletTest.UseVisualStyleBackColor = true;
+            this.buttonPushbulletTest.Click += new System.EventHandler(this.buttonPushbulletTest_Click);
+            // 
+            // textBoxPushbulletToken
+            // 
+            this.textBoxPushbulletToken.Location = new System.Drawing.Point(99, 18);
+            this.textBoxPushbulletToken.Name = "textBoxPushbulletToken";
+            this.textBoxPushbulletToken.Size = new System.Drawing.Size(89, 19);
+            this.textBoxPushbulletToken.TabIndex = 2;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(57, 21);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(42, 12);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "トークン:";
+            // 
+            // checkBoxPushbulletOn
+            // 
+            this.checkBoxPushbulletOn.AutoSize = true;
+            this.checkBoxPushbulletOn.Location = new System.Drawing.Point(6, 20);
+            this.checkBoxPushbulletOn.Name = "checkBoxPushbulletOn";
+            this.checkBoxPushbulletOn.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxPushbulletOn.TabIndex = 0;
+            this.checkBoxPushbulletOn.Text = "有効";
+            this.checkBoxPushbulletOn.UseVisualStyleBackColor = true;
             // 
             // groupBoxKancolleDb
             // 
@@ -836,15 +893,15 @@ namespace KancolleSniffer
             // 
             // textBoxKancolleDbToken
             // 
-            this.textBoxKancolleDbToken.Location = new System.Drawing.Point(135, 18);
+            this.textBoxKancolleDbToken.Location = new System.Drawing.Point(121, 18);
             this.textBoxKancolleDbToken.Name = "textBoxKancolleDbToken";
-            this.textBoxKancolleDbToken.Size = new System.Drawing.Size(93, 19);
+            this.textBoxKancolleDbToken.Size = new System.Drawing.Size(107, 19);
             this.textBoxKancolleDbToken.TabIndex = 2;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(73, 21);
+            this.label8.Location = new System.Drawing.Point(57, 21);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(63, 12);
             this.label8.TabIndex = 1;
@@ -855,9 +912,9 @@ namespace KancolleSniffer
             this.checkBoxKancolleDbOn.AutoSize = true;
             this.checkBoxKancolleDbOn.Location = new System.Drawing.Point(6, 20);
             this.checkBoxKancolleDbOn.Name = "checkBoxKancolleDbOn";
-            this.checkBoxKancolleDbOn.Size = new System.Drawing.Size(67, 16);
+            this.checkBoxKancolleDbOn.Size = new System.Drawing.Size(48, 16);
             this.checkBoxKancolleDbOn.TabIndex = 0;
-            this.checkBoxKancolleDbOn.Text = "送信する";
+            this.checkBoxKancolleDbOn.Text = "有効";
             this.checkBoxKancolleDbOn.UseVisualStyleBackColor = true;
             // 
             // tabPageDebug
@@ -1010,6 +1067,8 @@ namespace KancolleSniffer
             this.tabPageLog.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).EndInit();
             this.tabPageCollabo.ResumeLayout(false);
+            this.groupBoxPushbullet.ResumeLayout(false);
+            this.groupBoxPushbullet.PerformLayout();
             this.groupBoxKancolleDb.ResumeLayout(false);
             this.groupBoxKancolleDb.PerformLayout();
             this.tabPageDebug.ResumeLayout(false);
@@ -1099,5 +1158,10 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Button buttonDetailedSettings;
+        private System.Windows.Forms.GroupBox groupBoxPushbullet;
+        private System.Windows.Forms.TextBox textBoxPushbulletToken;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox checkBoxPushbulletOn;
+        private System.Windows.Forms.Button buttonPushbulletTest;
     }
 }

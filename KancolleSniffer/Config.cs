@@ -73,6 +73,12 @@ namespace KancolleSniffer
         public string Token { get; set; } = "";
     }
 
+    public class PushbulletConfig
+    {
+        public bool On { get; set; }
+        public string Token { get; set; } = "";
+    }
+
     public class SoundConfig
     {
         public int Volume { get; set; } = 100;
@@ -103,7 +109,8 @@ namespace KancolleSniffer
         FlashWindow = 1,
         ShowBaloonTip = 1 << 1,
         PlaySound = 1 << 2,
-        All = (1 << 3) - 1
+        Pushbullet = 1 << 3,
+        All = (1 << 3) - 1 // Pushbullet以外
     }
 
     public class NotificationConfig
@@ -144,6 +151,7 @@ namespace KancolleSniffer
         public ShipListConfig ShipList { get; set; } = new ShipListConfig();
         public LogConfig Log { get; set; } = new LogConfig();
         public KancolleDbConfig KancolleDb { get; set; } = new KancolleDbConfig();
+        public PushbulletConfig Pushbullet { get; set; } = new PushbulletConfig();
 
         public static readonly string[] NotificationNames =
         {

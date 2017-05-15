@@ -846,14 +846,21 @@ namespace KancolleSniffer
             }
         }
 
-        private void Ring(string baloonTitle, string baloonMessage, string name)
+        private void Ring(string balloonTitle, string balloonMessage, string name)
         {
             if (_config.FlashWindow && (_config.Notifications[name] & NotificationType.FlashWindow) != 0)
                 Win32API.FlashWindow(Handle);
             if (_config.ShowBaloonTip && (_config.Notifications[name] & NotificationType.ShowBaloonTip) != 0)
-                notifyIconMain.ShowBalloonTip(20000, baloonTitle, baloonMessage, ToolTipIcon.Info);
+                notifyIconMain.ShowBalloonTip(20000, balloonTitle, balloonMessage, ToolTipIcon.Info);
             if (_config.PlaySound && (_config.Notifications[name] & NotificationType.PlaySound) != 0)
                 PlaySound(_config.Sounds[name], _config.Sounds.Volume);
+            if (_config.Pushbullet.On && (_config.Notifications[name] & NotificationType.Pushbullet) != 0)
+            {
+                Task.Run(() =>
+                {
+                    PushBullet.PushNote(_config.Pushbullet.Token, balloonTitle, balloonMessage);
+                });
+            }
         }
 
         [DllImport("winmm.dll")]

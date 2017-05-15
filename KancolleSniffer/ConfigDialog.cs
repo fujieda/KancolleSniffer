@@ -92,8 +92,11 @@ namespace KancolleSniffer
             LoadProxySettings();
             LoadLogSettings();
             LoadDebugSettings();
+
             checkBoxKancolleDbOn.Checked = _config.KancolleDb.On;
             textBoxKancolleDbToken.Text = _config.KancolleDb.Token;
+            checkBoxPushbulletOn.Checked = _config.Pushbullet.On;
+            textBoxPushbulletToken.Text = _config.Pushbullet.Token;
         }
 
         private void LoadProxySettings()
@@ -158,8 +161,11 @@ namespace KancolleSniffer
                 DialogResult = DialogResult.None;
             ApplyLogSettings();
             ApplyDebugSettings();
+
             _config.KancolleDb.On = checkBoxKancolleDbOn.Checked;
             _config.KancolleDb.Token = textBoxKancolleDbToken.Text;
+            _config.Pushbullet.On = checkBoxPushbulletOn.Checked;
+            _config.Pushbullet.Token = textBoxPushbulletToken.Text;
 
             _config.TopMost = checkBoxTopMost.Checked;
             _config.HideOnMinimized = checkBoxHideOnMinimized.Checked;
@@ -338,6 +344,18 @@ namespace KancolleSniffer
         private void ConfigDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
             _prevPosition = Location;
+        }
+
+        private void buttonPushbulletTest_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                PushBullet.PushNote(textBoxPushbulletToken.Text, "KancolleSniffer", "うまくいったかな？");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Pushbulletエラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
