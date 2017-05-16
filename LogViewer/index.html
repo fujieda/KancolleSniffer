@@ -672,6 +672,10 @@ function showAchivementTable(data) {
     var endOfMonth = null;
     var monthExp = 0;
     var monthEo = 0;
+    var endOfYear = null;
+    var yearExp = 0;
+    var carryOverAch = 0;
+    var carryOverEo = 0;
     var prevExp = null;
     var lastExp = -1;
     var nextDate = null;
@@ -680,23 +684,34 @@ function showAchivementTable(data) {
         var date = parseDate(row[0]);
         var exp = row[1] - 0;
         var eo = row[2] - 0;
+        var isNewYear = endOfYear == null || date.isSameOrAfter(endOfYear);
         var isNewMonth = endOfMonth == null || date.isSameOrAfter(endOfMonth);
         var isNewDate = nextDate == null || date.isSameOrAfter(nextDate);
-        if (isNewDate || isNewMonth) {
+        if (isNewDate || isNewMonth || isNewYear) {
             if (nextDate != null) {
                 result.push([
                     (isNewDate ? nextDate.subtract(1, 'days') : endOfMonth).format("YYYY-MM-DD"),
                     new Number((lastExp - prevExp) / expPerAch).toFixed(1), dayEo,
-                    new Number((lastExp - monthExp) / expPerAch + monthEo).toFixed(1)
+                    new Number((lastExp - monthExp) / expPerAch + monthEo + carryOverAch + carryOverEo).toFixed(1)
                 ]);
             }
             prevExp = lastExp === -1 ? exp : lastExp;
+            if (isNewYear) {
+                endOfYear = date.clone().endOf('year').hour(22).startOf('hour');
+                if (endOfYear.isSameOrBefore(date))
+                    endOfYear.add(1, 'year').endOf('year');
+                yearExp = lastExp === -1 ? exp : lastExp;
+            }
             if (isNewMonth) {
                 endOfMonth = date.clone().endOf('month').hour(22).startOf('hour');
                 if (endOfMonth.isSameOrBefore(date))
                     endOfMonth.add(1, 'month').endOf('month');
                 monthExp = lastExp === -1 ? exp : lastExp;
+                carryOverEo = monthEo * expPerAch / 50000;
+                carryOverAch = (monthExp - yearExp) / 50000;
                 monthEo = 0;
+                result.push([endOfMonth.format("YYYY-MM 引継"),
+                    carryOverAch.toFixed(1), carryOverEo.toFixed(1), (carryOverAch + carryOverEo).toFixed(1)]);
             }
             dayEo = 0;
             nextDate = date.clone().hour(5).startOf('hour');
