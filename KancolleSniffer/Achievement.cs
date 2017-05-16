@@ -27,7 +27,7 @@ namespace KancolleSniffer
         public DateTime LastReset { get; set; }
         public DateTime LastResetOfMonth { get; set; }
 
-        private const double ExpPerAch = 1428.0;
+        private const double ExpPerAch = 10000 / 7.0;
         public double Value => (_current - Start) / ExpPerAch;
         public double ValueOfMonth => (_current - StartOfMonth) / ExpPerAch;
 
