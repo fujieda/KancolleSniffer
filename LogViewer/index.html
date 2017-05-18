@@ -669,25 +669,34 @@ function showAchivementTable(data) {
     }
     var result = [];
     var dayEo = 0;
-    var endOfMonth = null;
+    var endOfMonth = moment(0);
     var monthExp = 0;
     var monthEo = 0;
-    var endOfYear = null;
+    var endOfYear = moment(0);
     var yearExp = 0;
     var carryOverAch = 0;
     var carryOverEo = 0;
     var prevExp = null;
+    var lastDate = moment(0);
     var lastExp = -1;
-    var nextDate = null;
+    var nextDate = moment(0);
     for (var i = 0; i < data.length; i++) {
         var row = data[i];
         var date = parseDate(row[0]);
         var exp = row[1] - 0;
         var eo = row[2] - 0;
-        var isNewYear = endOfYear == null || date.isSameOrAfter(endOfYear);
-        var isNewMonth = endOfMonth == null || date.isSameOrAfter(endOfMonth);
-        var isNewDate = nextDate == null || date.isSameOrAfter(nextDate);
+        var isNewYear = date.isSameOrAfter(endOfYear);
+        var isNewMonth = date.isSameOrAfter(endOfMonth);
+        var isNewDate = date.isSameOrAfter(nextDate);
         if (isNewDate || isNewMonth || isNewYear) {
+            if (lastDate.add('hour', 1).isSameOrBefore(date)) {
+                // 2時を過ぎて最初のexpを戦果の計算に使うと、2時をまたいだ出撃の戦果が前日に加算される。
+                // そこで2時前のexpを使って戦果を計算するが、2時前のexpが正しく出力されていない場合は
+                // 戦果を正しく計算できない。記録の間隔が1時間以上空いているときは、2時をまたいだ出撃が
+                // 行われていない可能性が高いので計算には今のexpを使うことにする。
+                // これは5時基準で出力された過去のデータで、妥当な戦果を計算するために必要な処理である。
+                lastExp = exp;
+            }
             if (nextDate != null) {
                 result.push([
                     (isNewDate ? nextDate.subtract(1, 'days') : endOfMonth).format("YYYY-MM-DD"),
@@ -714,14 +723,15 @@ function showAchivementTable(data) {
                     carryOverAch.toFixed(1), carryOverEo.toFixed(1), (carryOverAch + carryOverEo).toFixed(1)]);
             }
             dayEo = 0;
-            nextDate = date.clone().hour(5).startOf('hour');
-            if (date.hour() >= 5)
+            nextDate = date.clone().hour(2).startOf('hour');
+            if (date.hour() >= 2)
                 nextDate.add(1, 'days');
             if (nextDate.date() === 1)
                 nextDate.add(1, 'days');
         }
         dayEo += eo;
         monthEo += eo;
+        lastDate = date;
         lastExp = exp;
     }
     var dt = $('#achivement_table').DataTable();

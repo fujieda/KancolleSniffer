@@ -384,8 +384,8 @@ namespace KancolleSniffer
                         _endOfMonth = _endOfMonth.AddDays(days);
                     }
                 }
-                _nextDate = new DateTime(now.Year, now.Month, now.Day, 5, 0, 0);
-                if (now.Hour >= 5)
+                _nextDate = new DateTime(now.Year, now.Month, now.Day, 2, 0, 0);
+                if (now.Hour >= 2)
                     _nextDate = _nextDate.AddDays(1);
                 if (_nextDate.Day == 1)
                     _nextDate = _nextDate.AddDays(1);
