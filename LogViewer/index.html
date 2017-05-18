@@ -729,8 +729,11 @@ function showAchivementTable(data) {
             if (nextDate.date() === 1)
                 nextDate.add(1, 'days');
         }
-        dayEo += eo;
-        monthEo += eo;
+        if (date.isBefore(date.clone().endOf('month').hour(22).startOf('hour'))) {
+            // 月末22時から翌0時までのEOのボーナス戦果は消える。
+            dayEo += eo;
+            monthEo += eo;
+        }
         lastDate = date;
         lastExp = exp;
     }
