@@ -141,6 +141,24 @@ namespace KancolleSniffer
             _map = json;
         }
 
+        public void InspectClearItemGet(dynamic json)
+        {
+            if ((_logType & LogType.Achivement) == 0)
+                return;
+            if (json.api_bounus_count == 0)
+                return;
+            foreach (var entry in json.api_bounus)
+            {
+                if (entry.api_type != 18)
+                    continue;
+                _writer("戦果",
+                    _nowFunc().ToString(DateTimeFormat) + "," + _lastExp + "," + (int)entry.api_count,
+                    "日付,経験値,EO");
+                break;
+            }
+
+        }
+
         public void InspectBattle(dynamic json)
         {
             if (_battle != null) // 通常の夜戦は無視する

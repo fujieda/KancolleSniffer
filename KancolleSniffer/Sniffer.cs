@@ -459,6 +459,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_quest/clearitemget"))
             {
                 _questInfo.InspectClearItemGet(request);
+                _logger.InspectClearItemGet(data);
                 return Update.QuestList;
             }
             if (url.EndsWith("api_req_air_corps/supply"))

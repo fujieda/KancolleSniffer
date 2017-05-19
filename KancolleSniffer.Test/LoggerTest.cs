@@ -368,6 +368,18 @@ namespace KancolleSniffer.Test
                 == result);
         }
 
+        [TestMethod]
+        public void InspectClearItemGet()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2017, 5, 1));
+            sniffer.EnableLog(LogType.Achivement);
+            SnifferTest.SniffLogFile(sniffer, "clearitemget_001");
+            PAssert.That(() =>
+                "2017-05-01 00:00:00,45417045,0|2017-05-01 00:00:00,45417045,350|" == result);
+        }
+
         /// <summary>
         /// 敵艦のIDの振り直しに対応する
         /// </summary>
