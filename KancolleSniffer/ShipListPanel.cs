@@ -68,6 +68,8 @@ namespace KancolleSniffer
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            if (!ScrollBar.Visible)
+                return;
             ScrollBar.Value = Max(ScrollBar.Minimum, Min(ScrollBar.Maximum - ScrollBar.LargeChange + 1,
                 ScrollBar.Value - e.Delta * SystemInformation.MouseWheelScrollLines / 120));
         }
