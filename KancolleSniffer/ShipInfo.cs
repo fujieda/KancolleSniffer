@@ -89,8 +89,6 @@ namespace KancolleSniffer
                                      ? Level * 10
                                      : Level * 5 + Floor(Sqrt(Level - 11)) * 10 + 50));
 
-        public TimeSpan RepairTimeByDamage(int damage) => TimeSpan.FromTicks(RepairTimePerHp.Ticks * damage);
-
         public double EffectiveFirepower
         {
             get

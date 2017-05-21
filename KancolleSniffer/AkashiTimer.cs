@@ -48,7 +48,9 @@ namespace KancolleSniffer
             private bool PassedFirstRepairTime(DateTime start, DateTime prev, DateTime now) =>
                 prev - start < FirstRepairTime && now - start >= FirstRepairTime;
 
-            private TimeSpan RepairTime(ShipStatus ship, int damage) => ship.RepairTimeByDamage(damage) + TimeSpan.FromSeconds(70);
+            private TimeSpan RepairTime(ShipStatus ship, int damage) =>
+                TimeSpan.FromMinutes(Math.Ceiling(ship.RepairTime.TotalMinutes / (ship.MaxHp - ship.NowHp) * damage));
+
 
             public int[] Deck
             {
