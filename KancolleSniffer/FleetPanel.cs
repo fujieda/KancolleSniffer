@@ -91,9 +91,11 @@ namespace KancolleSniffer
                             var normal = 25 + item.Spec.Torpedo * Math.Sqrt(onslot);
                             airspec = "航空戦 " + (int)(normal * 0.8) + "/" + (int)(normal * 1.5);
                         }
+
                         equips.Add(new Record
                         {
-                            Equip = GenEquipString(item, onslot, max),
+                            Equip = GenEquipString(item),
+                            Spec = item.Spec.IsAircraft ? $"+{item.Alv} {onslot}/{max}" : "",
                             AircraftSpec = airspec,
                             Color = item.Spec.Color
                         });
@@ -101,7 +103,7 @@ namespace KancolleSniffer
                     if (s.SlotEx.Id > 0)
                     {
                         var item = s.SlotEx;
-                        equips.Add(new Record {Equip = GenEquipString(item, 0, 0), Color = item.Spec.Color});
+                        equips.Add(new Record {Equip = GenEquipString(item), Color = item.Spec.Color});
                     }
                     if (drum != 0)
                         drumShips++;
@@ -159,10 +161,8 @@ namespace KancolleSniffer
                         });
                         list.AddRange(airCorps.Planes.Select(plane => new Record
                         {
-                            Equip =
-                                plane.State != 1
-                                    ? plane.StateName
-                                    : GenEquipString(plane.Slot, plane.Count, plane.MaxCount),
+                            Equip = plane.State != 1 ? plane.StateName : GenEquipString(plane.Slot),
+                            Spec = plane.State != 1 ? "" : $"+{plane.Slot.Alv} {plane.Count}/{plane.MaxCount}",
                             Color = plane.Slot.Spec.Color
                         }));
                     }
@@ -171,18 +171,15 @@ namespace KancolleSniffer
             _table = list.ToArray();
         }
 
-        private string GenEquipString(ItemStatus item, int onslot, int max)
+        private string GenEquipString(ItemStatus item)
         {
             var name = item.Spec.Name;
-            var attr = (item.Alv == 0 ? "" : "+" + item.Alv) +
-                       (item.Level == 0 ? "" : "★" + item.Level) +
-                       (!item.Spec.IsAircraft ? "" : " " + onslot + "/" + max);
+            var attr = item.Level == 0 ? "" : "★" + item.Level;
             var proposed = new Size(int.MaxValue, int.MaxValue);
-            const int maxWidth = 180;
+            var maxWidth = item.Spec.IsAircraft ? 132 : 180;
             var result = name + attr;
             if (TextRenderer.MeasureText(result, Font, proposed).Width <= maxWidth)
                 return result;
-            attr = " " + attr;
             var truncated = "";
             foreach (var ch in name)
             {
