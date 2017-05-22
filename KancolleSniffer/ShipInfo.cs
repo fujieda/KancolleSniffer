@@ -152,7 +152,8 @@ namespace KancolleSniffer
                 if (Spec.IsAircraftCarrier && EffectiveFirepower == 0) // 砲撃戦に参加しない
                     return 0;
                 var sonar = false;
-                var dc = false;
+                var projector = false;
+                var depthCharge = false;
                 var aircraft = false;
                 var all = 0.0;
                 var vanilla = AntiSubmarine;
@@ -160,16 +161,33 @@ namespace KancolleSniffer
                 {
                     vanilla -= spec.AntiSubmarine;
                     if (spec.IsSonar)
+                    {
                         sonar = true;
+                    }
                     else if (spec.IsDepthCharge)
-                        dc = true;
+                    {
+                        if (spec.Name.EndsWith("投射機"))
+                            projector = true;
+                        if (spec.Name.EndsWith("爆雷"))
+                            depthCharge = true;
+                    }
                     else if (spec.IsAircraft)
+                    {
                         aircraft = true;
+                    }
                     all += spec.EffectiveAntiSubmarine;
                 }
                 if (vanilla == 0 && !aircraft) // 素対潜0で航空機なしは対潜攻撃なし
                     return 0;
-                var bonus = sonar && dc ? 1.15 : 1.0;
+                var bonus = 1.0;
+                if (sonar && projector)
+                    bonus = 1.15;
+                if (sonar && depthCharge)
+                    bonus = 1.1;
+                if (projector && depthCharge)
+                    bonus = 1.15;
+                if (sonar && projector && depthCharge)
+                    bonus = 1.15 * 1.25;
                 var levelBonus = Slot.Sum(item => item.AntiSubmarineLevelBonus);
                 return bonus * (Sqrt(vanilla) * 2 + all * 1.5 + levelBonus + (aircraft ? 8 : 13));
             }
