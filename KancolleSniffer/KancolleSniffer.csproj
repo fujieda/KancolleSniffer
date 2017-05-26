@@ -105,6 +105,7 @@
     </Compile>
     <Compile Include="NotificationManager.cs" />
     <Compile Include="PresetDeck.cs" />
+    <Compile Include="ProxyManager.cs" />
     <Compile Include="PushBullet.cs" />
     <Compile Include="RepairListForMain.cs">
       <SubType>Component</SubType>

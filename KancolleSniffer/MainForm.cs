@@ -19,14 +19,12 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.Win32;
 using static System.Math;
 
 namespace KancolleSniffer
@@ -36,6 +34,7 @@ namespace KancolleSniffer
         private readonly Sniffer _sniffer = new Sniffer();
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
+        private readonly ProxyManager _proxyManager;
         private int _currentFleet;
         private bool _combinedFleet;
         private readonly Label[] _labelCheckFleets;
@@ -45,8 +44,7 @@ namespace KancolleSniffer
         private bool _started;
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
-        private int _prevProxyPort;
-        private readonly SystemProxy _systemProxy = new SystemProxy();
+
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
         private bool _missionFinishTimeMode;
         private bool _ndockFinishTimeMode;
@@ -75,6 +73,7 @@ namespace KancolleSniffer
             _listForm = new ListForm(_sniffer, _config) {Owner = this};
             _notificationManager = new NotificationManager(Ring);
             _config.Load();
+            _proxyManager = new ProxyManager(_config, this);
             PerformZoom();
             _shipLabels.AdjustAkashiTimers();
             _sniffer.LoadState();
@@ -183,16 +182,8 @@ namespace KancolleSniffer
             ApplyDebugLogSetting();
             ApplyLogSetting();
             ApplyProxySetting();
-            SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
             if (_config.KancolleDb.On)
                 _kancolleDb.Start(_config.KancolleDb.Token);
-        }
-
-        private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
-        {
-            if (e.Mode != PowerModes.Resume || !_config.Proxy.Auto)
-                return;
-            SystemProxy.Refresh();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -209,16 +200,8 @@ namespace KancolleSniffer
             _sniffer.FlashLog();
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.Save();
-            Task.Run(() => ShutdownProxy());
-            if (_config.Proxy.Auto)
-                _systemProxy.RestoreSettings();
-            SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
+            _proxyManager.Shutdown();
             _kancolleDb.Stop();
-        }
-
-        private void ShutdownProxy()
-        {
-            HttpProxy.Shutdown();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -292,59 +275,7 @@ namespace KancolleSniffer
 
         public bool ApplyProxySetting()
         {
-            if (!_config.Proxy.Auto)
-                _systemProxy.RestoreSettings();
-            if (_config.Proxy.UseUpstream)
-            {
-                HttpProxy.UpstreamProxyHost = "127.0.0.1";
-                HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
-            }
-            HttpProxy.IsEnableUpstreamProxy = _config.Proxy.UseUpstream;
-            var result = true;
-            if (!HttpProxy.IsInListening || _config.Proxy.Listen != _prevProxyPort)
-            {
-                ShutdownProxy();
-                result = StartProxy();
-            }
-            if (_config.Proxy.Auto && result)
-            {
-                _systemProxy.SetAutoProxyUrl($"http://localhost:{_config.Proxy.Listen}/proxy.pac");
-            }
-            _prevProxyPort = _config.Proxy.Listen;
-            return result;
-        }
-
-        private bool StartProxy()
-        {
-            try
-            {
-                HttpProxy.Startup(_config.Proxy.Listen, false, false);
-            }
-            catch (SocketException e)
-            {
-                if (e.SocketErrorCode != SocketError.AddressAlreadyInUse)
-                    throw;
-                if (WarnConflictPortNumber("プロキシサーバー", _config.Proxy.Listen, _config.Proxy.Auto) == DialogResult.No ||
-                    !_config.Proxy.Auto)
-                {
-                    _systemProxy.RestoreSettings();
-                    return false;
-                }
-                HttpProxy.Startup(0, false, false);
-                _config.Proxy.Listen = HttpProxy.LocalPort;
-            }
-            return true;
-        }
-
-        private DialogResult WarnConflictPortNumber(string name, int port, bool auto)
-        {
-            var msg = $"{name}のポート番号{port}は他のアプリケーションが使用中です。";
-            var cap = "ポート番号の衝突";
-            return auto
-                ? MessageBox.Show(this, msg + "自動的に別の番号を割り当てますか？", cap,
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                : MessageBox.Show(this, msg + "設定ダイアログでポート番号を変更してください。", cap,
-                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return _proxyManager.ApplyConfig();
         }
 
         public void ApplyLogSetting()
