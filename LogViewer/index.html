@@ -697,7 +697,7 @@ function showAchivementTable(data) {
                 // これは5時基準で出力された過去のデータで、妥当な戦果を計算するために必要な処理である。
                 lastExp = exp;
             }
-            if (nextDate != null) {
+            if (nextDate.valueOf() != 0) {
                 result.push([
                     (isNewDate ? nextDate.subtract(1, 'days') : endOfMonth).format("YYYY-MM-DD"),
                     new Number((lastExp - prevExp) / expPerAch).toFixed(1), dayEo,
