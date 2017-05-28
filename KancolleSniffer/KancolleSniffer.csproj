@@ -125,6 +125,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ShipMaster.cs" />
+    <Compile Include="ShipStatus.cs" />
     <Compile Include="Sniffer.cs" />
     <Compile Include="ItemInfo.cs" />
     <Compile Include="Status.cs" />
