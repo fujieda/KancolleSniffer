@@ -194,8 +194,10 @@ namespace KancolleSniffer
         }
 
         public bool CanOpeningAntiSubmarineAttack =>
-            Spec.Id == 141 || Slot.Any(item => item.Spec.IsSonar) &&
-            (AntiSubmarine >= 100 || Spec.ShipType == 1 && AntiSubmarine >= 60);
+            Spec.Id == 141 || // 五十鈴改二
+            (Name.StartsWith("大鷹")
+                ? Slot.Any(item => item.Spec.Name.Contains("九三一空")) && AntiSubmarine >= 65
+                : Slot.Any(item => item.Spec.IsSonar) && (AntiSubmarine >= 100 || Spec.ShipType == 1 && AntiSubmarine >= 60));
 
         public double NightBattlePower
         {
