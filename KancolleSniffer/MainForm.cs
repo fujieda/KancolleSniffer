@@ -28,7 +28,6 @@ using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Win32;
 using static System.Math;
-using Timer = System.Windows.Forms.Timer;
 
 namespace KancolleSniffer
 {
@@ -42,7 +41,7 @@ namespace KancolleSniffer
         private readonly Label[] _labelCheckFleets;
         private readonly ShipLabels _shipLabels;
         private readonly ListForm _listForm;
-        private readonly NoticeQueue _noticeQueue;
+        private readonly NotificationManager _notificationManager;
         private bool _started;
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
@@ -74,7 +73,7 @@ namespace KancolleSniffer
             panelRepairList.CreateLabels(panelRepairList_Click);
             labelPresetAkashiTimer.BackColor = ShipLabels.ColumnColors[1];
             _listForm = new ListForm(_sniffer, _config) {Owner = this};
-            _noticeQueue = new NoticeQueue(Ring);
+            _notificationManager = new NotificationManager(Ring);
             _config.Load();
             PerformZoom();
             _shipLabels.AdjustAkashiTimers();
@@ -434,7 +433,7 @@ namespace KancolleSniffer
             if (item.RingShips)
             {
                 var message = $"残り{_sniffer.Item.MaxShips - _sniffer.Item.NowShips:D}隻";
-                _noticeQueue.Enqueue("艦娘が多すぎます", message, "艦娘数超過");
+                _notificationManager.Enqueue("艦娘数超過", message);
                 item.RingShips = false;
             }
         }
@@ -447,7 +446,7 @@ namespace KancolleSniffer
             if (item.RingEquips)
             {
                 var message = $"残り{_sniffer.Item.MaxEquips - _sniffer.Item.NowEquips:D}個";
-                _noticeQueue.Enqueue("装備が多すぎます", message, "装備数超過");
+                _notificationManager.Enqueue("装備数超過", message);
                 item.RingEquips = false;
             }
         }
@@ -512,7 +511,7 @@ namespace KancolleSniffer
         private void NotifyDamagedShip()
         {
             if (_sniffer.BadlyDamagedShips.Any())
-                _noticeQueue.Enqueue("大破した艦娘がいます", string.Join(" ", _sniffer.BadlyDamagedShips), "大破警告");
+                _notificationManager.Enqueue("大破警告", string.Join(" ", _sniffer.BadlyDamagedShips));
         }
 
         private void NotifyAkashiTimer()
@@ -525,17 +524,16 @@ namespace KancolleSniffer
                 return;
             if (msgs[0].Proceeded == "20分経過しました。")
             {
-                _noticeQueue.Enqueue("泊地修理", msgs[0].Proceeded, "泊地修理20分経過");
+                _notificationManager.Enqueue("泊地修理20分経過", msgs[0].Proceeded);
                 msgs[0].Proceeded = "";
                 // 修理完了がいるかもしれないので続ける
             }
-            var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
-            for (var i = 0; i < fn.Length; i++)
+            for (var i = 0; i < ShipInfo.FleetCount; i++)
             {
                 if (msgs[i].Proceeded != "")
-                    _noticeQueue.Enqueue("泊地修理 " + fn[i], "修理進行：" + msgs[i].Proceeded, "泊地修理進行");
+                    _notificationManager.Enqueue("泊地修理進行", i, msgs[i].Proceeded);
                 if (msgs[i].Completed != "")
-                    _noticeQueue.Enqueue("泊地修理 " + fn[i], "修理完了：" + msgs[i].Completed, "泊地修理完了");
+                    _notificationManager.Enqueue("泊地修理完了", i, msgs[i].Completed);
             }
         }
 
@@ -670,7 +668,7 @@ namespace KancolleSniffer
                 entry.label.Text = entry.Timer.ToString(_missionFinishTimeMode);
                 if (!entry.Timer.NeedRing)
                     continue;
-                _noticeQueue.Enqueue("遠征が終わりました", entry.Name, "遠征終了");
+                _notificationManager.Enqueue("遠征終了", entry.Name);
                 entry.Timer.NeedRing = false;
             }
             for (var i = 0; i < _sniffer.NDock.Length; i++)
@@ -680,7 +678,7 @@ namespace KancolleSniffer
                 _shipLabels.SetNDockTimer(i, entry.Timer, _ndockFinishTimeMode);
                 if (!entry.Timer.NeedRing)
                     continue;
-                _noticeQueue.Enqueue("入渠が終わりました", entry.Name, "入渠終了");
+                _notificationManager.Enqueue("入渠終了", entry.Name);
                 entry.Timer.NeedRing = false;
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
@@ -693,7 +691,7 @@ namespace KancolleSniffer
                 kdock[i].Text = timer.EndTime == DateTime.MinValue ? "" : timer.Rest.ToString(@"hh\:mm\:ss");
                 if (!timer.NeedRing)
                     continue;
-                _noticeQueue.Enqueue("建造が終わりました", $"第{i + 1:D}ドック", "建造完了");
+                _notificationManager.Enqueue("建造完了", $"第{i + 1:D}ドック");
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
@@ -739,12 +737,11 @@ namespace KancolleSniffer
             var notice = _sniffer.GetConditionNotice();
             if (notice == null)
                 return;
-            var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
-            for (var i = 0; i < fn.Length; i++)
+            for (var i = 0; i < ShipInfo.FleetCount; i++)
             {
                 if (!_config.NotifyConditions.Contains(notice[i]))
                     return;
-                _noticeQueue.Enqueue("疲労が回復しました", fn[i] + " cond" + notice[i].ToString("D"), "疲労回復");
+                _notificationManager.Enqueue("疲労回復" + notice[i], i, "cond" + notice[i]);
             }
         }
 
@@ -805,43 +802,6 @@ namespace KancolleSniffer
                 {
                     category[i].BackColor = DefaultBackColor;
                     name[i].Text = progress[i].Text = "";
-                }
-            }
-        }
-
-        private class NoticeQueue
-        {
-            private readonly Action<string, string, string> _ring;
-            private readonly Queue<Tuple<string, string, string>> _queue = new Queue<Tuple<string, string, string>>();
-            private readonly Timer _timer = new Timer {Interval = 2000};
-
-            public NoticeQueue(Action<string, string, string> ring)
-            {
-                _ring = ring;
-                _timer.Tick += TimerOnTick;
-            }
-
-            private void TimerOnTick(object obj, EventArgs e)
-            {
-                if (_queue.Count == 0)
-                {
-                    _timer.Stop();
-                    return;
-                }
-                var notice = _queue.Dequeue();
-                _ring(notice.Item1, notice.Item2, notice.Item3);
-            }
-
-            public void Enqueue(string title, string message, string name)
-            {
-                if (_timer.Enabled)
-                {
-                    _queue.Enqueue(new Tuple<string, string, string>(title, message, name));
-                }
-                else
-                {
-                    _ring(title, message, name);
-                    _timer.Start();
                 }
             }
         }
