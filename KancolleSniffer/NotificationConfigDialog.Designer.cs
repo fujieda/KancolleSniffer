@@ -118,7 +118,7 @@
             this.Name = "NotificationConfigDialog";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "イベントごとの通知方法の設定";
+            this.Text = "通知方法の詳細設定";
             this.Load += new System.EventHandler(this.NotificationConfigDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
