@@ -665,6 +665,9 @@ $(window).resize(function() {
 
 <achivement-table>
 <div show={mainTabs[mainTab] === "戦果"}>
+<span style="margin-left: 1em;">期間:&nbsp;</span><select style="width: 7em; margin-bottom: 1em;" name="月" onchange={monthChange}>
+<option each={m, i in months} value={m}>{m}</option>
+</select>
 <table id="achivement_table" class="display compact cell-border">
 <thead>
 <tr><th>日付</th><th>戦果</th><th>EO</th><th>月毎</th></tr>
@@ -679,8 +682,9 @@ this.on("mount", function() {
         deferRener: true,
         stateSave: true,
         order: [[0, "desc"]],
-        pageLength: 50,
-        lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
+        paging: false,
+        searching: false,
+        info: false,
         drawCallback: function() {
             $('#loading').hide();
         }
@@ -695,21 +699,22 @@ opts.observable.on("mainTabChanged", function(idx) {
         self.show();
 });
 
-this.show = function(data) {
-    var expPerAch = 10000 / 7.0;
-    if (!data) {
-        $('#loading').show();
-        $.ajax({
-            url: "./戦果.json",
-            success: function(data) {
-                self.show(data.data);
-            },
-            dataType: 'json',
-            cache: false
-        });
+this.months = [];
+
+this.monthChange = function(event) {
+    if (event.target.selectedIndex === 0) {
+        self.show();
         return;
     }
-    var result = [];
+    var dt = $('#achivement_table').DataTable();
+    dt.clear();
+    dt.rows.add(this.result[event.target.value]).draw();
+    this.showChart(event.target.value);
+};
+
+this.calcResult = function(data) {
+    this.result = {};
+    var expPerAch = 10000 / 7.0;
     var dayEo = 0;
     var endOfMonth = moment(0);
     var monthExp = 0;
@@ -740,8 +745,12 @@ this.show = function(data) {
                 lastExp = exp;
             }
             if (nextDate.valueOf() !== 0) {
-                result.push([
-                    (isNewDate ? nextDate.subtract(1, 'days') : endOfMonth).format("YYYY-MM-DD"),
+                var d = isNewDate ? nextDate.subtract(1, 'days') : endOfMonth;
+                var m = d.format("YYYY-MM");
+                if (!this.result[m])
+                    this.result[m] = [];
+                this.result[m].push([
+                    d.format("YYYY-MM-DD"),
                     new Number((lastExp - prevExp) / expPerAch).toFixed(1), dayEo,
                     new Number((lastExp - monthExp) / expPerAch + monthEo + carryOverAch + carryOverEo).toFixed(1)
                 ]);
@@ -761,7 +770,10 @@ this.show = function(data) {
                 carryOverEo = monthEo * expPerAch / 50000;
                 carryOverAch = (monthExp - yearExp) / 50000;
                 monthEo = 0;
-                result.push([endOfMonth.format("YYYY-MM 引継"),
+                m = endOfMonth.format("YYYY-MM");
+                if (!this.result[m])
+                    this.result[m] = [];
+                this.result[m].push([endOfMonth.format("YYYY-MM 引継"),
                     carryOverAch.toFixed(1), carryOverEo.toFixed(1), (carryOverAch + carryOverEo).toFixed(1)]);
             }
             dayEo = 0;
@@ -779,10 +791,33 @@ this.show = function(data) {
         lastDate = date;
         lastExp = exp;
     }
+};
+
+this.show = function(data) {
+    if (!data) {
+        $('#loading').show();
+        $.ajax({
+            url: "./戦果.json",
+            success: function(data) {
+                self.show(data.data);
+            },
+            dataType: 'json',
+            cache: false
+        });
+        return;
+    }
+    this.calcResult(data);
+    this.months = Object.keys(this.result).sort(function(a, b) {
+        if (a === b)
+            return 0;
+        if (a < b)
+            return 1;
+        return -1;
+    });
+    this.update();
     var dt = $('#achivement_table').DataTable();
     dt.clear();
-    dt.rows.add(result).draw();
-    $('#loading').hide();
+    dt.rows.add(this.result[this.months[0]]).draw();
 };
 </script>
 </achivement-table>
