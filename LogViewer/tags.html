@@ -658,6 +658,8 @@ $(window).resize(function() {
     self.timer = setTimeout(function() {
         if (self.mainTabs[self.mainTab] === "資材グラフ")
             opts.observable.trigger("chartSizeChanged");
+        else if (self.mainTabs[self.mainTab] === "戦果")
+            opts.observable.trigger("achivementChartSizeChanged");
     }, 200);
 });
 </script>
@@ -673,6 +675,7 @@ $(window).resize(function() {
 <tr><th>日付</th><th>戦果</th><th>EO</th><th>月毎</th></tr>
 </thead>
 </table>
+<div id="achivementChart" style="margin: 1em;"></div>
 </div>
 
 <script>
@@ -793,6 +796,72 @@ this.calcResult = function(data) {
     }
 };
 
+this.calcChartData = function() {
+    this.chartData = {};
+    for (var month in this.result) {
+        var data = this.chartData[month] = [];
+        var result = this.result[month];
+        var eo = 0;
+        var d;
+        data.push(["日付", "戦果", "EO", "月毎"]);
+        for (var i = 0; i < result.length; i++) {
+            var row = result[i];
+            if (row[0].match(/引継/))
+                continue;
+            d = moment(row[0], "YYYY-MM-DD");
+            eo += row[2];
+            var ach = Number(row[3] - eo).toFixed(1);
+            data.push([d.format("DD"), ach, eo, row[3]]);
+        }
+        var endOfMonth = moment(month, "YYYY-MM").endOf("month");
+        while (d.isBefore(endOfMonth)) {
+            d.add(1, "days");
+            data.push([d.format("DD"), null, null]);
+        }
+    }
+};
+
+this.chartSize = function() {
+    var width = Math.max($(document).width() - 6 * this.pxPerEm, 800);
+    return {
+        height: width * 0.4,
+        width: width
+    };
+};
+
+opts.observable.on("achivementChartSizeChanged", function() {
+    if (!self.chart)
+        return;
+    $('#loading').show();
+    setTimeout(function() {
+        self.chart.resize(self.chartSize());
+    });
+});
+
+this.showChart = function(month) {
+    this.chart = c3.generate({
+        bindto: "#achivementChart",
+        size: this.chartSize(),
+        data: {
+            x: "日付",
+            rows: this.chartData[month],
+            order: null,
+            types: {
+                戦果: "area",
+                EO: "area",
+                月毎: "area"
+            }
+        },
+        line: {
+            connectNull: true
+        },
+        tooltip: {
+            grouped: true
+        },
+        onrendered: function() { $('#loading').hide(); }
+    });
+};
+
 this.show = function(data) {
     if (!data) {
         $('#loading').show();
@@ -807,6 +876,7 @@ this.show = function(data) {
         return;
     }
     this.calcResult(data);
+    this.calcChartData();
     this.months = Object.keys(this.result).sort(function(a, b) {
         if (a === b)
             return 0;
@@ -818,6 +888,7 @@ this.show = function(data) {
     var dt = $('#achivement_table').DataTable();
     dt.clear();
     dt.rows.add(this.result[this.months[0]]).draw();
+    this.showChart(this.months[0]);
 };
 </script>
 </achivement-table>

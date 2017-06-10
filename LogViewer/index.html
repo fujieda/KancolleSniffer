@@ -70,11 +70,11 @@ var mixin = {
     to5am: function(tick) {
         return tick - tick % (3600 * 24000) - 3600 * 4000;
     },
+    pxPerEm: Number(getComputedStyle(document.body, null).fontSize.replace(/[^\d]/g, '')),
     chartSize: function() {
-        var pxPerEm = Number($('#chart').css('fontSize').match(/(\d*(\.\d*)?)px/)[1]);
         return {
-            height: Math.max($(document).height() - 15 * pxPerEm, 400),
-            width: Math.max($(document).width() - 6 * pxPerEm, 800)
+            height: Math.max($(document).height() - 15 * this.pxPerEm, 400),
+            width: Math.max($(document).width() - 6 * this.pxPerEm, 800)
         };
     }
 };
