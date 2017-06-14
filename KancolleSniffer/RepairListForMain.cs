@@ -137,6 +137,7 @@ namespace KancolleSniffer
             {
                 SetPanelHeight();
                 ClearLabels(0);
+                ClearLabels(1);
                 _repairLabels[0].Name.SetName("なし");
                 return;
             }
