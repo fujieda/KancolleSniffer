@@ -197,6 +197,14 @@ namespace KancolleSniffer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            using (var dialog = new ConfirmDialog())
+            {
+                if (dialog.ShowDialog(this) != DialogResult.Yes)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
             e.Cancel = false;
             _sniffer.FlashLog();
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;

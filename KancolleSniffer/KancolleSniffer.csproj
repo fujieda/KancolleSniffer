@@ -67,6 +67,12 @@
     <Compile Include="ConfigDialog.Designer.cs">
       <DependentUpon>ConfigDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfirmDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfirmDialog.Designer.cs">
+      <DependentUpon>ConfirmDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="CUDColor.cs" />
     <Compile Include="DockInfo.cs" />
     <Compile Include="FleetPanel.cs">
@@ -136,6 +142,9 @@
     <Compile Include="Win32API.cs" />
     <EmbeddedResource Include="ConfigDialog.resx">
       <DependentUpon>ConfigDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfirmDialog.resx">
+      <DependentUpon>ConfirmDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
