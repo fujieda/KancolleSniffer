@@ -149,7 +149,7 @@ namespace KancolleSniffer
                 if (!Spec.IsAntiSubmarine)
                     return 0;
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (Spec.IsAircraftCarrier && EffectiveFirepower == 0) // 砲撃戦に参加しない
+                if (Spec.IsAircraftCarrier && EffectiveFirepower == 0 && !CanOpeningAntiSubmarineAttack)
                     return 0;
                 var sonar = false;
                 var projector = false;
@@ -193,11 +193,29 @@ namespace KancolleSniffer
             }
         }
 
-        public bool CanOpeningAntiSubmarineAttack =>
-            Spec.Id == 141 || // 五十鈴改二
-            (Name.StartsWith("大鷹")
-                ? Slot.Any(item => item.Spec.Name.Contains("九三一空")) && AntiSubmarine >= 65
-                : Slot.Any(item => item.Spec.IsSonar) && (AntiSubmarine >= 100 || Spec.ShipType == 1 && AntiSubmarine >= 60));
+        public bool CanOpeningAntiSubmarineAttack
+        {
+            get
+            {
+                if (Name == "五十鈴改二")
+                    return true;
+                switch (Name)
+                {
+                    case "大鷹":
+                        return Slot.Any(item => item.Spec.Name.Contains("九三一空")) && AntiSubmarine >= 65;
+                    case "大鷹改":
+                    case "大鷹改二":
+                        return Slot.Any(item => item.Spec.IsAircraft && item.Spec.EffectiveAntiSubmarine > 0);
+                    default:
+                        return Spec.ShipType == 1
+                            ? Slot.Sum(item => item.Spec.AntiSubmarine) >= 4 && AntiSubmarine >= 75 ||
+                              HaveSonar && AntiSubmarine >= 60
+                            : HaveSonar && AntiSubmarine >= 100;
+                }
+            }
+        }
+
+        private bool HaveSonar => Slot.Any(item => item.Spec.IsSonar);
 
         public double NightBattlePower
         {
