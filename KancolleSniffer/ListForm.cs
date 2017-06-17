@@ -175,7 +175,8 @@ namespace KancolleSniffer
             var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
             config.Location = bounds.Location;
             config.Size = bounds.Size;
-            Hide();
+            if (e.CloseReason != CloseReason.FormOwnerClosing)
+                Hide();
         }
 
         public void ShowShip(int id)
