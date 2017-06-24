@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace KancolleSniffer
         private const int LineHeight = 14;
         private const int LabelHeight = 12;
         private Record[] _table;
-        private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
+        private readonly List<FleetLabels> _labelList = new List<FleetLabels>();
         private readonly List<Panel> _panelList = new List<Panel>();
         private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
 
@@ -197,6 +198,20 @@ namespace KancolleSniffer
                 CreateLabels(i);
         }
 
+        private class FleetLabels : IEnumerable<ShipLabel>
+        {
+            public ShipLabel Fleet { get; set; }
+            public ShipLabel Name { get; set; }
+            public ShipLabel Equip { get; set; }
+            public ShipLabel EquipColor { get; set; }
+            public ShipLabel Spec { get; set; }
+
+            public IEnumerator<ShipLabel> GetEnumerator() =>
+                ((IEnumerable<ShipLabel>)new[] {Fleet, Name, Equip, EquipColor, Spec}).GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+
         private void CreateLabels(int i)
         {
             var y = 1 + LineHeight * i;
@@ -209,18 +224,17 @@ namespace KancolleSniffer
             };
             lbp.Scale(ShipLabel.ScaleFactor);
             lbp.Tag = lbp.Location.Y;
-            var labels = new[]
+            var labels = new FleetLabels
             {
-                new ShipLabel {Location = new Point(1, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(38, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(35, 2), Size = new Size(4, LabelHeight - 2)},
-                new ShipLabel {Location = new Point(217, 2), AutoSize = true, AnchorRight = true}
+                Fleet = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
+                Name = new ShipLabel {Location = new Point(10, 2), AutoSize = true},
+                Equip = new ShipLabel {Location = new Point(38, 2), AutoSize = true},
+                EquipColor = new ShipLabel {Location = new Point(35, 2), Size = new Size(4, LabelHeight - 2)},
+                Spec = new ShipLabel {Location = new Point(217, 2), AutoSize = true, AnchorRight = true}
             };
             _labelList.Add(labels);
             _panelList.Add(lbp);
-            // ReSharper disable once CoVariantArrayConversion
-            lbp.Controls.AddRange(labels);
+            lbp.Controls.AddRange(labels.Cast<Control>().ToArray());
             Controls.Add(lbp);
             foreach (var label in labels)
             {
@@ -245,16 +259,16 @@ namespace KancolleSniffer
                 lbp.Location = new Point(lbp.Left, (int)lbp.Tag + AutoScrollPosition.Y);
             var e = _table[i];
             var labels = _labelList[i];
-            labels[0].Text = e.Fleet;
-            labels[1].SetName(e.Ship);
-            labels[2].Text = e.Equip;
-            labels[3].Visible = e.Equip != "";
-            labels[3].BackColor = e.Color;
-            labels[4].Text = e.Spec;
+            labels.Fleet.Text = e.Fleet;
+            labels.Name.SetName(e.Ship);
+            labels.Equip.Text = e.Equip;
+            labels.EquipColor.Visible = e.Equip != "";
+            labels.EquipColor.BackColor = e.Color;
+            labels.Spec.Text = e.Spec;
             if (e.Fleet != "" && e.Fleet2 != "")
-                _toolTip.SetToolTip(labels[0], e.Fleet2);
-            _toolTip.SetToolTip(labels[2], e.AircraftSpec != "" ? e.AircraftSpec : "");
-            _toolTip.SetToolTip(labels[4], e.Spec2 != "" ? e.Spec2 : "");
+                _toolTip.SetToolTip(labels.Fleet, e.Fleet2);
+            _toolTip.SetToolTip(labels.Equip, e.AircraftSpec != "" ? e.AircraftSpec : "");
+            _toolTip.SetToolTip(labels.Spec, e.Spec2 != "" ? e.Spec2 : "");
             lbp.Visible = true;
         }
 
