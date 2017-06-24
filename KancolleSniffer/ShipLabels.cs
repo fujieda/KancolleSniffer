@@ -316,6 +316,12 @@ namespace KancolleSniffer
         private int _left;
         private SlotStatus _slotStatus;
 
+        public override Color BackColor
+        {
+            get => base.BackColor;
+            set => base.BackColor = value == DefaultBackColor ? PresetColor : value;
+        }
+
         [Flags]
         private enum SlotStatus
         {
