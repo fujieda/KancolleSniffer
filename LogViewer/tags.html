@@ -802,21 +802,21 @@ this.calcChartData = function() {
         var data = this.chartData[month] = [];
         var result = this.result[month];
         var eo = 0;
-        var d;
+        var d = 0;
         data.push(["日付", "戦果", "EO", "月毎"]);
         for (var i = 0; i < result.length; i++) {
             var row = result[i];
             if (row[0].match(/引継/))
                 continue;
-            d = moment(row[0], "YYYY-MM-DD");
+            d = moment(row[0], "YYYY-MM-DD").date();
             eo += row[2];
             var ach = Number(row[3] - eo).toFixed(1);
-            data.push([d.format("DD"), ach, eo, row[3]]);
+            data.push([d, ach, eo, row[3]]);
         }
-        var endOfMonth = moment(month, "YYYY-MM").endOf("month");
-        while (d.isBefore(endOfMonth)) {
-            d.add(1, "days");
-            data.push([d.format("DD"), null, null]);
+        var endOfMonth = moment(month, "YYYY-MM").endOf("month").date();
+        while (d < endOfMonth) {
+            d++;
+            data.push([d, null, null, null]);
         }
     }
 };
@@ -845,18 +845,11 @@ this.showChart = function(month) {
         data: {
             x: "日付",
             rows: this.chartData[month],
-            order: null,
             types: {
                 戦果: "area",
                 EO: "area",
                 月毎: "area"
             }
-        },
-        line: {
-            connectNull: true
-        },
-        tooltip: {
-            grouped: true
         },
         onrendered: function() { $('#loading').hide(); }
     });
