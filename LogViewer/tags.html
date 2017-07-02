@@ -754,8 +754,8 @@ this.calcResult = function(data) {
                     this.result[m] = [];
                 this.result[m].push([
                     d.format("YYYY-MM-DD"),
-                    new Number((lastExp - prevExp) / expPerAch).toFixed(1), dayEo,
-                    new Number((lastExp - monthExp) / expPerAch + monthEo + carryOverAch + carryOverEo).toFixed(1)
+                    ((lastExp - prevExp) / expPerAch).toFixed(1), dayEo,
+                    ((lastExp - monthExp) / expPerAch + monthEo + carryOverAch + carryOverEo).toFixed(1)
                 ]);
             }
             prevExp = lastExp === -1 ? exp : lastExp;
@@ -806,11 +806,14 @@ this.calcChartData = function() {
         data.push(["日付", "戦果", "EO", "月毎"]);
         for (var i = 0; i < result.length; i++) {
             var row = result[i];
-            if (row[0].match(/引継/))
+            if (row[0].match(/引継/)) {
+                eo = row[2] - 0;
+                data.push([0, row[1], row[2], row[3]]);
                 continue;
+            }
             d = moment(row[0], "YYYY-MM-DD").date();
             eo += row[2];
-            var ach = Number(row[3] - eo).toFixed(1);
+            var ach = (row[3] - eo).toFixed(1);
             data.push([d, ach, eo, row[3]]);
         }
         var endOfMonth = moment(month, "YYYY-MM").endOf("month").date();
