@@ -85,7 +85,8 @@ namespace KancolleSniffer
                         var airspec = "";
                         if (item.Spec.IsDiveBomber) // 爆撃
                         {
-                            airspec = "航空戦 " + (25 + (int)(item.Spec.Bomber * Math.Sqrt(onslot)));
+                            airspec = "航空戦 " +
+                                      (25 + (int)((item.Spec.Bomber + item.BomberLevelBonus) * Math.Sqrt(onslot)));
                         }
                         else if (item.Spec.IsTorpedoBomber)
                         {

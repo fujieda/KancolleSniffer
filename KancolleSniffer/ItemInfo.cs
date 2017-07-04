@@ -449,6 +449,8 @@ namespace KancolleSniffer
             }
         }
 
+        public double BomberLevelBonus => Spec.Type == 11 /* 水爆 */ ? 0.2 * Level : 0;
+
         public double NightBattleLevelBonus
         {
             get
