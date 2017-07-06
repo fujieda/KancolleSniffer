@@ -135,10 +135,12 @@ namespace KancolleSniffer
                     ships.Add(ship);
                     ships.AddRange(equips);
                 }
+                var daihatsu = sniffer.GetDaihatsuBonus(f);
                 list.Add(new Record
                 {
                     Fleet = fn[f] + (levelTotal == 0 ? "" : " 合計Lv" + levelTotal) +
-                            (drumTotal == 0 ? "" : " ドラム缶" + drumTotal + "(" + drumShips + "隻)")
+                            (drumTotal == 0 ? "" : " 缶" + drumTotal + "(" + drumShips + "隻)") +
+                            (daihatsu > 0 ? $" 発{daihatsu * 100:f1}%" : "")
                 });
                 list.AddRange(ships);
             }

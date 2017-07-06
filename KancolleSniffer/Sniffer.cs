@@ -523,6 +523,8 @@ namespace KancolleSniffer
 
         public string[] BadlyDamagedShips => _shipInfo.BadlyDamagedShips;
 
+        public double GetDaihatsuBonus(int fleet) => _shipInfo.GetDaihatsuBonus(fleet);
+
         public ItemStatus[] ItemList
         {
             get

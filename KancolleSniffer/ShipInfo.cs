@@ -378,7 +378,6 @@ namespace KancolleSniffer
                 where s.NowHp < s.MaxHp && !dockInfo.InNDock(s.Id)
                 select s).OrderByDescending(s => s.RepairTime).ToArray();
 
-
         public double GetLineOfSights(int fleet, int factor)
         {
             var result = 0.0;
@@ -396,6 +395,59 @@ namespace KancolleSniffer
                 result += Sqrt(s.LoS - itemLoS);
             }
             return result > 0 ? result - Ceiling(_hqLevel * 0.4) + emptyBonus * 2 : 0.0;
+        }
+
+        public double GetDaihatsuBonus(int fleet)
+        {
+            var tokudaiBonus = new[,]
+            {
+                {0.00, 0.00, 0.00, 0.00, 0.00},
+                {0.02, 0.02, 0.02, 0.02, 0.02},
+                {0.04, 0.04, 0.04, 0.04, 0.04},
+                {0.05, 0.05, 0.052, 0.054, 0.054},
+                {0.054, 0.056, 0.058, 0.059, 0.06}
+            };
+            var daihatsu = 0;
+            var tokudai = 0;
+            var bonus = 0.0;
+            var level = 0;
+            var sum = 0;
+            foreach (var ship in GetShipStatuses(fleet))
+            {
+                if (ship.Name == "鬼怒改二")
+                    bonus += 0.05;
+                foreach (var item in ship.Slot)
+                {
+                    switch (item.Spec.Name)
+                    {
+                        case "大発動艇":
+                            level += item.Level;
+                            sum++;
+                            daihatsu++;
+                            bonus += 0.05;
+                            break;
+                        case "特大発動艇":
+                            level += item.Level;
+                            sum++;
+                            tokudai++;
+                            bonus += 0.05;
+                            break;
+                        case "大発動艇(八九式中戦車&陸戦隊)":
+                            level += item.Level;
+                            sum++;
+                            bonus += 0.02;
+                            break;
+                        case "特二式内火艇":
+                            level += item.Level;
+                            sum++;
+                            bonus += 0.01;
+                            break;
+                    }
+                }
+            }
+            var levelAverage = sum == 0 ? 0.0 : (double)level / sum;
+            bonus = Min(bonus, 0.2);
+            return bonus + 0.01 * bonus * levelAverage + tokudaiBonus[Min(tokudai, 4), Min(daihatsu, 4)];
         }
 
         public string[] BadlyDamagedShips { get; private set; } = new string[0];
