@@ -201,7 +201,7 @@ this.diffChartRanges = [
 "一か月(日)",
 "三か月(日)",
 "半年(週)",
-"すべて(週)",
+"すべて(月)",
 "期間指定"
 ];
 
@@ -528,7 +528,7 @@ this.drawDiffChart = function(picked) {
                 type: 'timeseries',
                 tick: {
                     rotate: 30,
-                    format: function(x) { return moment(x).format("MM-DD HH:mm"); },
+                    format: picked.monthly ?  function(x) { return moment(x).format("YYYY-MM"); } : function(x) { return moment(x).format("MM-DD HH:mm"); },
                     values: picked.tick
                 }
             }
@@ -567,8 +567,7 @@ this.pickChartData = function(data, range) {
             first = moment(last).subtract(6, 'months').subtract(1, 'weeks').valueOf();
             break;
         case 3:
-            first = moment(data[0][0]).valueOf();
-            break;
+            return this.pickMonthlyChartData(data);
         case 4:
             var fromDate = $('#chart_from').datepicker("getDate");
             var toDate = $('#chart_to').datepicker("getDate");
@@ -632,6 +631,37 @@ this.pickChartData = function(data, range) {
         grid.unshift({ value: str });
     }
     return { data: newdata, tick: ticks, grid: grid, width: barWidth };
+};
+
+this.pickMonthlyChartData = function(data) {
+    var newdata = [];
+    var ticks = [];
+    var grid = [];
+    var prevRow;
+    var prevMonth;
+    for (var i = data.length - 1; i >= 0; i--) {
+        var row = data[i];
+        if (!prevRow) {
+            prevRow = row;
+            var eom = this.parseDate(row[0]).endOf('month');
+            prevRow[0] = this.toDateString(eom);
+            prevMonth = eom.month();
+            continue;
+        }
+        var date = this.parseDate(row[0]);
+        if (prevMonth !== date.month()) {
+            var newrow = [prevRow[0]];
+            for (var r = 1; r < 5; r++) {
+                newrow.push(prevRow[r] - row[r]);
+            }
+            newdata.unshift(newrow);
+            ticks.unshift(prevRow[0]);
+            grid.unshift({ value: prevRow[0] });
+            prevRow = row;
+            prevMonth = date.month();
+        }
+    }
+    return { monthly: true, data: newdata, tick: ticks, grid: grid, width: 0.5 };
 };
 </script>
 </differential-chart>
