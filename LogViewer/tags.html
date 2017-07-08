@@ -223,7 +223,7 @@ this.rangeTabChange = function(e) {
 
 this.tooltipChange = function(e) {
     opts.chartSpec.tooltip = +e.target.checked;
-    sessionStorage.setItem('chartTooltip', this.tooltip);
+    sessionStorage.setItem('chartTooltip', +e.target.checked);
     opts.observable.trigger("chartSpecChanged");
 };
 
