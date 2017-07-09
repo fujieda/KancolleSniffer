@@ -36,6 +36,8 @@ namespace KancolleSniffer
         {
             var from = DateTime.MinValue;
             var to = DateTime.MaxValue;
+            var timestamp = false;
+
             var request = requestLine.Split(' ');
             if (request.Length != 3)
             {
@@ -69,6 +71,8 @@ namespace KancolleSniffer
                     double.TryParse(query["to"], out tick);
                     to = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(tick / 1000);
                 }
+                if (query["number"] != null)
+                    timestamp = query["number"] == "true";
             }
 
             path = path == "/" ? "index.html" : path.Substring(1);
@@ -86,7 +90,7 @@ namespace KancolleSniffer
             }
             if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                SendJsonData(client, csv, from, to);
+                SendJsonData(client, csv, from, to, timestamp);
                 return;
             }
             if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
@@ -117,7 +121,7 @@ namespace KancolleSniffer
             }
         }
 
-        private static void SendJsonData(Socket client, string path, DateTime from, DateTime to)
+        private static void SendJsonData(Socket client, string path, DateTime from, DateTime to, bool number)
         {
             using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
             {
@@ -156,8 +160,19 @@ namespace KancolleSniffer
                             entries = data.Take(9);
                         if (battle)
                             entries = data.Concat(Enumerable.Repeat("", 3)).Take(38);
-                        client.Send(encoding.GetBytes(delimiter + "[\"" +
-                                                      string.Join("\",\"", entries) + "\"]"));
+                        if (number)
+                        {
+                            var stamp = ((date.ToUniversalTime().Ticks -
+                                          new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks) /
+                                         TimeSpan.TicksPerMillisecond).ToString();
+                            client.Send(encoding.GetBytes(delimiter + "[" + stamp + "," +
+                                                          string.Join(",", entries.Skip(1)) + "]"));
+                        }
+                        else
+                        {
+                            client.Send(encoding.GetBytes(delimiter + "[\"" +
+                                                          string.Join("\",\"", entries) + "\"]"));
+                        }
                         delimiter = ",\n";
                     }
                 }

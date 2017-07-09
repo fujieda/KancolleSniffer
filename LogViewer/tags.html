@@ -283,7 +283,7 @@ this.drawChart = function(data) {
     if (!data) {
         $('#loading').show();
         $.ajax({
-            url: "./資材ログ.json",
+            url: "./資材ログ.json?number=true",
             success: function(d) { self.drawChart(d); },
             dataType: "json", cache: false
         });
@@ -337,7 +337,7 @@ this.drawSeqChart = function(picked) {
                 type: 'timeseries',
                 tick: {
                     rotate: 30,
-                    format: function(x) { return moment(x).format("MM-DD HH:mm"); },
+                    format: "%m-%d %H:%M",
                     values: picked.tick
                 }
             },
@@ -365,8 +365,8 @@ this.pickChartData = function(data, range) {
     var newdata = [];
     var ticks = [];
     var grid = [];
-    var first = moment(data[0][0]).valueOf();
-    var last = moment(data[data.length - 1][0]).valueOf();
+    var first = data[0][0];
+    var last = data[data.length - 1][0];
     var interval, tickInterval, lastTick;
     switch (range) {
         case 0:
@@ -382,7 +382,6 @@ this.pickChartData = function(data, range) {
             first = moment(last).subtract(3, 'months').valueOf();
             break;
         case 4:
-            first = moment(data[0][0]).valueOf();
             break;
         case 5:
             var fromDate = $('#chart_from').datepicker("getDate");
@@ -412,14 +411,15 @@ this.pickChartData = function(data, range) {
         tickInterval = this.oneDay * 14;
         lastTick = this.to5am(moment(last).day(1).valueOf());
     } else {
-        interval = 3600 * 12000;
+        var years = Math.floor((last - first) / (this.oneDay * 365));
+        interval = 3600 * (years > 2 ? 24000 : 12000);
         tickInterval = this.oneDay * 28;
         lastTick = this.to5am(moment(last).day(1).valueOf());
     }
     var lastData;
     for (var i = data.length - 1; i >= 0; i--) {
         var row = data[i];
-        var date = this.parseDate(row[0]).valueOf();
+        var date = row[0];
         if (date > first) {
             if (date <= last) {
                 var v = date - date % interval;
@@ -469,7 +469,7 @@ this.drawChart = function(data) {
     if (!data) {
         $('#loading').show();
         $.ajax({
-            url: "./資材ログ.json",
+            url: "./資材ログ.json?number=true",
             success: function(d) { self.drawChart(d); },
             dataType: "json", cache: false
         });
@@ -494,7 +494,6 @@ this.drawDiffChart = function(picked) {
         },
         data: {
             x: '日付',
-            xFormat: '%Y-%m-%d %X',
             rows: picked.data,
             axes: {
                 燃料: 'y',
@@ -528,7 +527,7 @@ this.drawDiffChart = function(picked) {
                 type: 'timeseries',
                 tick: {
                     rotate: 30,
-                    format: picked.monthly ?  function(x) { return moment(x).format("YYYY-MM"); } : function(x) { return moment(x).format("MM-DD HH:mm"); },
+                    format: picked.monthly ? "%Y-%m" : "%m-%d %H:%M",
                     values: picked.tick
                 }
             }
@@ -553,8 +552,8 @@ this.pickChartData = function(data, range) {
     var newdata = [];
     var ticks = [];
     var grid = [];
-    var first = moment(data[0][0]).valueOf();
-    var last = moment(data[data.length - 1][0]).valueOf();
+    var first = data[0][0];
+    var last = data[data.length - 1][0];
     var interval, tickInterval, lastTick;
     switch (range) {
         case 0:
@@ -604,7 +603,7 @@ this.pickChartData = function(data, range) {
     var prevRow;
     for (var i = data.length - 1; i >= 0; i--) {
         var row = data[i];
-        var date = this.parseDate(row[0]).valueOf();
+        var date = row[0];
         if (date > first && date <= last) {
             if (!prevRow) {
                 prevRow = row;
@@ -626,9 +625,8 @@ this.pickChartData = function(data, range) {
     if (tickInterval >= this.oneDay * 7)
         lastTick = moment(lastTick).day(1).hour(5).minute(0).valueOf();
     for (var tick = lastTick; tick > lastDate; tick -= tickInterval) {
-        var str = self.toDateString(moment(tick));
-        ticks.unshift(str);
-        grid.unshift({ value: str });
+        ticks.unshift(tick);
+        grid.unshift({ value: tick });
     }
     return { data: newdata, tick: ticks, grid: grid, width: barWidth };
 };
@@ -643,22 +641,21 @@ this.pickMonthlyChartData = function(data) {
         var row = data[i];
         if (!prevRow) {
             prevRow = row;
-            var eom = this.parseDate(row[0]).endOf('month');
-            prevRow[0] = this.toDateString(eom);
+            var eom = moment(row[0]).endOf('month');
+            prevRow[0] = eom.valueOf();
             prevMonth = eom.month();
             continue;
         }
-        var date = this.parseDate(row[0]);
-        if (prevMonth !== date.month()) {
+        var date = new Date(row[0]);
+        if (prevMonth !== date.getMonth()) {
             var newrow = [prevRow[0]];
-            for (var r = 1; r < 5; r++) {
+            for (var r = 1; r < 5; r++)
                 newrow.push(prevRow[r] - row[r]);
-            }
             newdata.unshift(newrow);
             ticks.unshift(prevRow[0]);
             grid.unshift({ value: prevRow[0] });
             prevRow = row;
-            prevMonth = date.month();
+            prevMonth = date.getMonth();
         }
     }
     return { monthly: true, data: newdata, tick: ticks, grid: grid, width: 0.5 };
