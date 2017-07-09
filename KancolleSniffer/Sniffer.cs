@@ -550,7 +550,7 @@ namespace KancolleSniffer
 
         public bool UseOldEnemyId
         {
-            set { _shipInfo.UseOldEnemyId = value; }
+            set => _shipInfo.UseOldEnemyId = value;
         }
 
         public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)
@@ -570,12 +570,12 @@ namespace KancolleSniffer
 
         public int MaterialLogInterval
         {
-            set { _logger.MaterialLogInterval = value; }
+            set => _logger.MaterialLogInterval = value;
         }
 
         public string LogOutputDir
         {
-            set { _logger.OutputDir = value; }
+            set => _logger.OutputDir = value;
         }
 
         public void FlashLog()

@@ -29,7 +29,7 @@ namespace KancolleSniffer
 
         public static string OutputDir
         {
-            set { _outputDir = value; }
+            set => _outputDir = value;
         }
 
         public static void Process(Socket client, string requestLine)

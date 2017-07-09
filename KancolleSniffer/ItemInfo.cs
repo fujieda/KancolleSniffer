@@ -542,7 +542,7 @@ namespace KancolleSniffer
 
         public int NowShips
         {
-            get { return _nowShips; }
+            get => _nowShips;
             set
             {
                 if (MaxShips != 0)
@@ -558,7 +558,7 @@ namespace KancolleSniffer
 
         public int NowEquips
         {
-            get { return _nowEquips; }
+            get => _nowEquips;
             private set
             {
                 if (MaxEquips != 0)

@@ -49,7 +49,7 @@ namespace KancolleSniffer
 
         private bool ResultRemained
         {
-            set { _phaseName.BorderStyle = value ? BorderStyle.FixedSingle : BorderStyle.None; }
+            set => _phaseName.BorderStyle = value ? BorderStyle.FixedSingle : BorderStyle.None;
         }
 
         public AirBattleResultPanel()

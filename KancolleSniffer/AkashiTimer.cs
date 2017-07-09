@@ -54,7 +54,7 @@ namespace KancolleSniffer
 
             public int[] Deck
             {
-                set { _deck = value; }
+                set => _deck = value;
             }
 
             public State State { get; set; }

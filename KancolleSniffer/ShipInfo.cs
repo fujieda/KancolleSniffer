@@ -482,7 +482,7 @@ namespace KancolleSniffer
 
         public bool UseOldEnemyId
         {
-            set { _shipMaster.UseOldEnemyId = value; }
+            set => _shipMaster.UseOldEnemyId = value;
         }
     }
 }

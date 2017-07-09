@@ -297,7 +297,7 @@ namespace KancolleSniffer
 
             public string Headers
             {
-                get { return _headers; }
+                get => _headers;
                 set
                 {
                     _headers = value;
@@ -419,7 +419,7 @@ namespace KancolleSniffer
 
             public string RequestLine
             {
-                get { return _requestLine; }
+                get => _requestLine;
                 set
                 {
                     _requestLine = value;
@@ -450,7 +450,7 @@ namespace KancolleSniffer
 
             public string StatusLine
             {
-                get { return _statusLine; }
+                get => _statusLine;
                 set
                 {
                     _statusLine = value;

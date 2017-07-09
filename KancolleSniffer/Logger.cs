@@ -58,12 +58,12 @@ namespace KancolleSniffer
 
         public int MaterialLogInterval
         {
-            set { _materialLogInterval = value; }
+            set => _materialLogInterval = value;
         }
 
         public string OutputDir
         {
-            set { _writer = new LogWriter(value).Write; }
+            set => _writer = new LogWriter(value).Write;
         }
 
         public Logger(ShipInfo ship, ItemInfo item, BattleInfo battle)

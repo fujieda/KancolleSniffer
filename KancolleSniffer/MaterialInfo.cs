@@ -191,7 +191,7 @@ namespace KancolleSniffer
 
         public int Now
         {
-            get { return _now; }
+            get => _now;
             set
             {
                 var prev = _now;

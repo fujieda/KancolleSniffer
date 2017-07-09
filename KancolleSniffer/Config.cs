@@ -98,8 +98,8 @@ namespace KancolleSniffer
 
         public string this[string name]
         {
-            get { return Files[Config.NotificationIndex[name]]; }
-            set { Files[Config.NotificationIndex[name]] = value; }
+            get => Files[Config.NotificationIndex[name]];
+            set => Files[Config.NotificationIndex[name]] = value;
         }
     }
 
@@ -120,8 +120,8 @@ namespace KancolleSniffer
 
         public NotificationType this[string name]
         {
-            get { return Settings[Config.NotificationIndex[name]]; }
-            set { Settings[Config.NotificationIndex[name]] = value; }
+            get => Settings[Config.NotificationIndex[name]];
+            set => Settings[Config.NotificationIndex[name]] = value;
         }
     }
 
