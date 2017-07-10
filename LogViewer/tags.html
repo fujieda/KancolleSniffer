@@ -234,10 +234,16 @@ this.useDatePicker = function() {
 
 this.init = function() {
     $('#chart_from').datepicker({
-        onClose: function() { if (self.useDatePicker()) self.drawChart(); }
+        onClose: function() {
+            if (self.useDatePicker())
+                opts.observable.trigger("chartSpecChanged");
+        }
     });
     $('#chart_to').datepicker({
-        onClose: function() { if (self.useDatePicker()) self.drawChart(); }
+        onClose: function() {
+            if (self.useDatePicker())
+                opts.observable.trigger("chartSpecChanged");
+        }
     });
 };
 
