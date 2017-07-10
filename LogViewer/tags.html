@@ -610,19 +610,21 @@ this.pickChartData = function(data, range) {
     for (var i = data.length - 1; i >= 0; i--) {
         var row = data[i];
         var date = row[0];
-        if (date > first && date <= last) {
-            if (!prevRow) {
-                prevRow = row;
-                continue;
-            }
-            if (date <= lastDate) {
-                var newrow = [lastDate];
-                for (var r = 1; r < 5; r++) {
-                    newrow.push(prevRow[r] - row[r]);
+        if (date > first) {
+            if (date <= last) {
+                if (!prevRow) {
+                    prevRow = row;
+                    continue;
                 }
-                newdata.unshift(newrow);
-                lastDate = lastDate - interval;
-                prevRow = row;
+                if (date <= lastDate) {
+                    var newrow = [lastDate];
+                    for (var r = 1; r < 5; r++) {
+                        newrow.push(prevRow[r] - row[r]);
+                    }
+                    newdata.unshift(newrow);
+                    lastDate = lastDate - interval;
+                    prevRow = row;
+                }
             }
         } else {
             break;
