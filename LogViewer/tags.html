@@ -610,7 +610,7 @@ this.pickChartData = function(data, range) {
                 continue;
             }
             if (date <= lastDate) {
-                var newrow = [prevRow[0]];
+                var newrow = [lastDate];
                 for (var r = 1; r < 5; r++) {
                     newrow.push(prevRow[r] - row[r]);
                 }
