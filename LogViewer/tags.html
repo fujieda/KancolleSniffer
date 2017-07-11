@@ -645,8 +645,10 @@ this.pickMonthlyChartData = function(data) {
     var grid = [];
     var prevRow;
     var prevMonth;
+    var row;
+    var date;
     for (var i = data.length - 1; i >= 0; i--) {
-        var row = data[i];
+        row = data[i];
         if (!prevRow) {
             prevRow = row;
             var eom = moment(row[0]).endOf('month');
@@ -654,7 +656,7 @@ this.pickMonthlyChartData = function(data) {
             prevMonth = eom.month();
             continue;
         }
-        var date = new Date(row[0]);
+        date = new Date(row[0]);
         if (prevMonth !== date.getMonth()) {
             var newrow = [prevRow[0]];
             for (var r = 1; r < 5; r++)
@@ -665,6 +667,14 @@ this.pickMonthlyChartData = function(data) {
             prevRow = row;
             prevMonth = date.getMonth();
         }
+    }
+    if (prevRow && date !== prevRow[0]) {
+        newrow = [prevRow[0]];
+        for (r = 1; r < 5; r++)
+            newrow.push(prevRow[r] - row[r]);
+        newdata.unshift(newrow);
+        ticks.unshift(prevRow[0]);
+        grid.unshift({ value: prevRow[0] });
     }
     return { monthly: true, data: newdata, tick: ticks, grid: grid, width: 0.5 };
 };
