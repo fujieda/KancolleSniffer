@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -94,7 +95,11 @@ namespace KancolleSniffer
         {
             if (e.Mode != PowerModes.Resume || !_config.Proxy.Auto)
                 return;
-            SystemProxy.Refresh();
+            Task.Run(() =>
+            {
+                for (var i = 0; i < 3; i++, Thread.Sleep(10000))
+                    SystemProxy.Refresh();
+            });
         }
 
         public void Shutdown()
