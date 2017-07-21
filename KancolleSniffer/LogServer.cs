@@ -136,45 +136,83 @@ namespace KancolleSniffer
             var csv = path.Replace(".json", ".csv");
             var encoding = Encoding.GetEncoding("Shift_JIS");
             client.Send(encoding.GetBytes("{ \"data\": [\n"));
+            var battle = false;
+            var material = false;
             try
             {
-                if (File.Exists(csv))
+                if (!File.Exists(csv))
+                    return;
+                var records = 0;
+                if (path.EndsWith("遠征報告書.json"))
                 {
-                    var delimiter = "";
-                    var material = path.EndsWith("資材ログ.json"); // 末尾の空データを削除する必要がある
-                    var battle = path.EndsWith("海戦・ドロップ報告書.json"); // データを40個にそろえる必要がある
-                    foreach (var line in File.ReadLines(csv, encoding).Skip(1))
+                    records = 10;
+                }
+                else if (path.EndsWith("改修報告書.json"))
+                {
+                    records = 15;
+                }
+                else if (path.EndsWith("海戦・ドロップ報告書.json"))
+                {
+                    records = 38;
+                    battle = true;
+                }
+                else if (path.EndsWith("開発報告書.json"))
+                {
+                    records = 9;
+                }
+                else if (path.EndsWith("建造報告書.json"))
+                {
+                    records = 12;
+                }
+                else if (path.EndsWith("資材ログ.json"))
+                {
+                    records = 9;
+                    material = true;
+                }
+                else if (path.EndsWith("戦果.json"))
+                {
+                    records = 3;
+                }
+                var delimiter = "";
+                foreach (var line in File.ReadLines(csv, encoding).Skip(1))
+                {
+                    var data = line.Split(',');
+                    if (!DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeLocal, out DateTime date))
                     {
-                        var data = line.Split(',');
-                        DateTime date;
-                        if (!DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
-                            DateTimeStyles.AssumeLocal, out date) &&
-                            DateTime.TryParse(data[0], CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out date))
+                        if (DateTime.TryParse(data[0], CultureInfo.CurrentCulture,
+                            DateTimeStyles.AssumeLocal, out date))
                         {
                             data[0] = date.ToString(Logger.DateTimeFormat);
                         }
-                        if (date < from || to < date)
-                            continue;
-                        IEnumerable<string> entries = data;
-                        if (material)
-                            entries = data.Take(9);
-                        if (battle)
-                            entries = data.Concat(Enumerable.Repeat("", 3)).Take(38);
-                        if (number)
-                        {
-                            var stamp = ((date.ToUniversalTime().Ticks -
-                                          new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks) /
-                                         TimeSpan.TicksPerMillisecond).ToString();
-                            client.Send(encoding.GetBytes(delimiter + "[" + stamp + "," +
-                                                          string.Join(",", entries.Skip(1)) + "]"));
-                        }
                         else
                         {
-                            client.Send(encoding.GetBytes(delimiter + "[\"" +
-                                                          string.Join("\",\"", entries) + "\"]"));
+                            continue;
                         }
-                        delimiter = ",\n";
                     }
+                    if (date < from || to < date)
+                        continue;
+                    IEnumerable<string> entries = data;
+                    if (material)
+                        entries = data.Take(9);
+                    if (battle)
+                        entries = data.Concat(Enumerable.Repeat("", 3)).Take(38);
+                    if (entries.Count() != records)
+                        continue;
+                    if (number)
+                    {
+                        var stamp = ((date.ToUniversalTime().Ticks -
+                                      new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks) /
+                                     TimeSpan.TicksPerMillisecond).ToString();
+                        client.Send(encoding.GetBytes(delimiter + "[" + stamp + "," +
+                                                      string.Join(",", entries.Skip(1)) + "]"));
+                    }
+                    else
+                    {
+                        client.Send(encoding.GetBytes(delimiter + "[\"" +
+                                                      string.Join("\",\"", entries) + "\"]"));
+                    }
+                    delimiter = ",\n";
                 }
             }
             finally
