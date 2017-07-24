@@ -188,12 +188,15 @@ namespace KancolleSniffer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            using (var dialog = new ConfirmDialog())
+            if (!_config.ExitSilently)
             {
-                if (dialog.ShowDialog(this) != DialogResult.Yes)
+                using (var dialog = new ConfirmDialog())
                 {
-                    e.Cancel = true;
-                    return;
+                    if (dialog.ShowDialog(this) != DialogResult.Yes)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
                 }
             }
             e.Cancel = false;

@@ -133,6 +133,7 @@ namespace KancolleSniffer
         public Point Location { get; set; } = new Point(int.MinValue, int.MinValue);
         public bool TopMost { get; set; }
         public bool HideOnMinimized { get; set; }
+        public bool ExitSilently { get; set; }
         public int Zoom { get; set; } = 100;
         public bool FlashWindow { get; set; } = true;
         public bool ShowBaloonTip { get; set; }

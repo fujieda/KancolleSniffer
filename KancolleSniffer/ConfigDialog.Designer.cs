@@ -44,7 +44,7 @@ namespace KancolleSniffer
         {
             this.components = new System.ComponentModel.Container();
             this.tabControl = new System.Windows.Forms.TabControl();
-            this.tabPageShow = new System.Windows.Forms.TabPage();
+            this.tabPageWindow = new System.Windows.Forms.TabPage();
             this.label15 = new System.Windows.Forms.Label();
             this.comboBoxZoom = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -127,8 +127,9 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
+            this.checkBoxExitSilently = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
-            this.tabPageShow.SuspendLayout();
+            this.tabPageWindow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginEquips)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).BeginInit();
@@ -153,7 +154,7 @@ namespace KancolleSniffer
             // 
             this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.tabControl.Controls.Add(this.tabPageShow);
+            this.tabControl.Controls.Add(this.tabPageWindow);
             this.tabControl.Controls.Add(this.tabPageNotification);
             this.tabControl.Controls.Add(this.tabPageAchievement);
             this.tabControl.Controls.Add(this.tabPageSound);
@@ -169,25 +170,26 @@ namespace KancolleSniffer
             this.tabControl.Size = new System.Drawing.Size(264, 202);
             this.tabControl.TabIndex = 0;
             // 
-            // tabPageShow
+            // tabPageWindow
             // 
-            this.tabPageShow.Controls.Add(this.label15);
-            this.tabPageShow.Controls.Add(this.comboBoxZoom);
-            this.tabPageShow.Controls.Add(this.label14);
-            this.tabPageShow.Controls.Add(this.checkBoxHideOnMinimized);
-            this.tabPageShow.Controls.Add(this.checkBoxTopMost);
-            this.tabPageShow.Location = new System.Drawing.Point(4, 40);
-            this.tabPageShow.Name = "tabPageShow";
-            this.tabPageShow.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageShow.Size = new System.Drawing.Size(256, 158);
-            this.tabPageShow.TabIndex = 0;
-            this.tabPageShow.Text = "表示";
-            this.tabPageShow.UseVisualStyleBackColor = true;
+            this.tabPageWindow.Controls.Add(this.checkBoxExitSilently);
+            this.tabPageWindow.Controls.Add(this.label15);
+            this.tabPageWindow.Controls.Add(this.comboBoxZoom);
+            this.tabPageWindow.Controls.Add(this.label14);
+            this.tabPageWindow.Controls.Add(this.checkBoxHideOnMinimized);
+            this.tabPageWindow.Controls.Add(this.checkBoxTopMost);
+            this.tabPageWindow.Location = new System.Drawing.Point(4, 40);
+            this.tabPageWindow.Name = "tabPageWindow";
+            this.tabPageWindow.Padding = new System.Windows.Forms.Padding(8);
+            this.tabPageWindow.Size = new System.Drawing.Size(256, 158);
+            this.tabPageWindow.TabIndex = 0;
+            this.tabPageWindow.Text = "ウィンドウ";
+            this.tabPageWindow.UseVisualStyleBackColor = true;
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(97, 57);
+            this.label15.Location = new System.Drawing.Point(99, 79);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(61, 12);
             this.label15.TabIndex = 6;
@@ -201,7 +203,7 @@ namespace KancolleSniffer
             "100%",
             "125%",
             "150%"});
-            this.comboBoxZoom.Location = new System.Drawing.Point(47, 54);
+            this.comboBoxZoom.Location = new System.Drawing.Point(49, 76);
             this.comboBoxZoom.Name = "comboBoxZoom";
             this.comboBoxZoom.Size = new System.Drawing.Size(48, 20);
             this.comboBoxZoom.TabIndex = 5;
@@ -209,7 +211,7 @@ namespace KancolleSniffer
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(9, 57);
+            this.label14.Location = new System.Drawing.Point(11, 79);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(35, 12);
             this.label14.TabIndex = 4;
@@ -250,10 +252,10 @@ namespace KancolleSniffer
             this.tabPageNotification.Controls.Add(this.checkBoxSound);
             this.tabPageNotification.Controls.Add(this.checkBoxBalloon);
             this.tabPageNotification.Controls.Add(this.checkBoxFlash);
-            this.tabPageNotification.Location = new System.Drawing.Point(4, 40);
+            this.tabPageNotification.Location = new System.Drawing.Point(4, 22);
             this.tabPageNotification.Name = "tabPageNotification";
             this.tabPageNotification.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageNotification.Size = new System.Drawing.Size(256, 158);
+            this.tabPageNotification.Size = new System.Drawing.Size(256, 176);
             this.tabPageNotification.TabIndex = 1;
             this.tabPageNotification.Text = "通知";
             this.tabPageNotification.UseVisualStyleBackColor = true;
@@ -397,10 +399,10 @@ namespace KancolleSniffer
             this.tabPageAchievement.Controls.Add(this.checkBoxPresetAkashi);
             this.tabPageAchievement.Controls.Add(this.groupBox3);
             this.tabPageAchievement.Controls.Add(this.groupBox2);
-            this.tabPageAchievement.Location = new System.Drawing.Point(4, 40);
+            this.tabPageAchievement.Location = new System.Drawing.Point(4, 22);
             this.tabPageAchievement.Name = "tabPageAchievement";
             this.tabPageAchievement.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageAchievement.Size = new System.Drawing.Size(256, 158);
+            this.tabPageAchievement.Size = new System.Drawing.Size(256, 176);
             this.tabPageAchievement.TabIndex = 2;
             this.tabPageAchievement.Text = "機能";
             this.tabPageAchievement.UseVisualStyleBackColor = true;
@@ -500,10 +502,10 @@ namespace KancolleSniffer
             this.tabPageSound.Controls.Add(this.textBoxSoundFile);
             this.tabPageSound.Controls.Add(this.numericUpDownSoundVolume);
             this.tabPageSound.Controls.Add(this.label3);
-            this.tabPageSound.Location = new System.Drawing.Point(4, 40);
+            this.tabPageSound.Location = new System.Drawing.Point(4, 22);
             this.tabPageSound.Name = "tabPageSound";
             this.tabPageSound.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageSound.Size = new System.Drawing.Size(256, 158);
+            this.tabPageSound.Size = new System.Drawing.Size(256, 176);
             this.tabPageSound.TabIndex = 3;
             this.tabPageSound.Text = "サウンド";
             this.tabPageSound.UseVisualStyleBackColor = true;
@@ -571,12 +573,12 @@ namespace KancolleSniffer
             this.tabPageVersion.Controls.Add(this.linkLabelProductName);
             this.tabPageVersion.Controls.Add(this.labelVersion);
             this.tabPageVersion.Controls.Add(this.labelLatest);
-            this.tabPageVersion.Location = new System.Drawing.Point(4, 40);
+            this.tabPageVersion.Location = new System.Drawing.Point(4, 22);
             this.tabPageVersion.Name = "tabPageVersion";
             this.tabPageVersion.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageVersion.Size = new System.Drawing.Size(256, 158);
+            this.tabPageVersion.Size = new System.Drawing.Size(256, 176);
             this.tabPageVersion.TabIndex = 4;
-            this.tabPageVersion.Text = "バージョン情報";
+            this.tabPageVersion.Text = "バージョン";
             this.tabPageVersion.UseVisualStyleBackColor = true;
             // 
             // richTextBox1
@@ -1024,6 +1026,16 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
+            // checkBoxExitSilently
+            // 
+            this.checkBoxExitSilently.AutoSize = true;
+            this.checkBoxExitSilently.Location = new System.Drawing.Point(11, 54);
+            this.checkBoxExitSilently.Name = "checkBoxExitSilently";
+            this.checkBoxExitSilently.Size = new System.Drawing.Size(189, 16);
+            this.checkBoxExitSilently.TabIndex = 7;
+            this.checkBoxExitSilently.Text = "閉じるボタンで終了時に確認しない";
+            this.checkBoxExitSilently.UseVisualStyleBackColor = true;
+            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1041,8 +1053,8 @@ namespace KancolleSniffer
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigDialog_FormClosing);
             this.Load += new System.EventHandler(this.ConfigDialog_Load);
             this.tabControl.ResumeLayout(false);
-            this.tabPageShow.ResumeLayout(false);
-            this.tabPageShow.PerformLayout();
+            this.tabPageWindow.ResumeLayout(false);
+            this.tabPageWindow.PerformLayout();
             this.tabPageNotification.ResumeLayout(false);
             this.tabPageNotification.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginEquips)).EndInit();
@@ -1080,7 +1092,7 @@ namespace KancolleSniffer
         #endregion
 
         private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage tabPageShow;
+        private System.Windows.Forms.TabPage tabPageWindow;
         private System.Windows.Forms.TabPage tabPageNotification;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonOk;
@@ -1163,5 +1175,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBoxPushbulletOn;
         private System.Windows.Forms.Button buttonPushbulletTest;
+        private System.Windows.Forms.CheckBox checkBoxExitSilently;
     }
 }
