@@ -807,13 +807,14 @@ this.calcResult = function(data) {
             if (isNewYear) {
                 endOfYear = date.clone().endOf('year').hour(22).startOf('hour');
                 if (endOfYear.isSameOrBefore(date))
-                    endOfYear.add(1, 'year').endOf('year');
+                    endOfYear.add(1, 'year');
                 yearExp = lastExp === -1 ? exp : lastExp;
             }
             if (isNewMonth) {
-                endOfMonth = date.clone().endOf('month').hour(22).startOf('hour');
-                if (endOfMonth.isSameOrBefore(date))
-                    endOfMonth.add(1, 'month').endOf('month');
+                endOfMonth = date.clone().endOf('month');
+                if (date.date() == endOfMonth.date())
+                    endOfMonth.add(1, 'months').endOf('month');
+                endOfMonth.hour(22).startOf('hour');
                 monthExp = lastExp === -1 ? exp : lastExp;
                 carryOverEo = monthEo * expPerAch / 50000;
                 carryOverAch = (monthExp - yearExp) / 50000;
