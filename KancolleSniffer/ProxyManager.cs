@@ -97,7 +97,7 @@ namespace KancolleSniffer
                 return;
             Task.Run(() =>
             {
-                for (var i = 0; i < 3; i++, Thread.Sleep(10000))
+                for (var i = 0; i < 5; i++, Thread.Sleep(15000))
                     SystemProxy.Refresh();
             });
         }
