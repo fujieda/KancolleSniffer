@@ -670,11 +670,13 @@ namespace KancolleSniffer
             {
                 labelCondTimerTitle.Text = "cond40まで";
                 labelCondTimer.Text = (span - TimeSpan.FromMinutes(9)).ToString(@"mm\:ss");
+                labelCondTimer.ForeColor = DefaultForeColor;
             }
             else
             {
                 labelCondTimerTitle.Text = "cond49まで";
                 labelCondTimer.Text = (span >= TimeSpan.Zero ? span : TimeSpan.Zero).ToString(@"mm\:ss");
+                labelCondTimer.ForeColor = span <= TimeSpan.Zero ? CUDColor.Red : DefaultForeColor;
             }
             var notice = _sniffer.GetConditionNotice();
             if (notice == null)
