@@ -153,7 +153,7 @@ namespace KancolleSniffer
                 }
                 else if (path.EndsWith("海戦・ドロップ報告書.json"))
                 {
-                    records = 38;
+                    records = 39;
                     battle = true;
                 }
                 else if (path.EndsWith("開発報告書.json"))
@@ -196,7 +196,7 @@ namespace KancolleSniffer
                     if (material)
                         entries = data.Take(9);
                     if (battle)
-                        entries = data.Concat(Enumerable.Repeat("", 3)).Take(38);
+                        entries = ProcessBattleLog(data);
                     if (entries.Count() != records)
                         continue;
                     if (number)
@@ -219,6 +219,52 @@ namespace KancolleSniffer
             {
                 client.Send(encoding.GetBytes("]}\n"));
             }
+        }
+
+        private static IEnumerable<string> ProcessBattleLog(string[] data)
+        {
+            if (data.Length == 35)
+                data = data.Concat(Enumerable.Repeat("", 3)).ToArray();
+            if (data.Length != 38)
+                return data;
+            return AddDamagedShip(data);
+        }
+
+        private static IEnumerable<string> AddDamagedShip(string[] data)
+        {
+            var damaged = new List<string>();
+            for (var i = 11; i < 11 + 12; i += 2)
+            {
+                var ship = data[i];
+                if (ship == "")
+                    continue;
+                var hp = data[i + 1];
+                try
+                {
+                    if (ship.Contains("・"))
+                    {
+                        var ships = ship.Split('・');
+                        var hps = hp.Split('・');
+                        var nowMax = hps[0].Split('/').Select(int.Parse).ToArray();
+                        if (ShipStatus.CalcDamage(nowMax[0], nowMax[1]) == ShipStatus.Damage.Badly)
+                            damaged.Add(ships[0]);
+                        nowMax = hps[1].Split('/').Select(int.Parse).ToArray();
+                        if (ShipStatus.CalcDamage(nowMax[0], nowMax[1]) == ShipStatus.Damage.Badly)
+                            damaged.Add(ships[1]);
+                    }
+                    else
+                    {
+                        var nowMax = hp.Split('/').Select(int.Parse).ToArray();
+                        if (ShipStatus.CalcDamage(nowMax[0], nowMax[1]) == ShipStatus.Damage.Badly)
+                            damaged.Add(ship);
+                    }
+                }
+                catch (FormatException)
+                {
+                    return data;
+                }
+            }
+            return data.Take(23).Concat(new []{string.Join("・", damaged)}).Concat(data.Skip(23));
         }
 
         private static void SendFile(Socket client, string path, string mime)
