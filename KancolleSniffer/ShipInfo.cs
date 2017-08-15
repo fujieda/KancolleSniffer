@@ -450,6 +450,11 @@ namespace KancolleSniffer
             return bonus + 0.01 * bonus * levelAverage + tokudaiBonus[Min(tokudai, 4), Min(daihatsu, 4)];
         }
 
+        public double GetTransportPoint(int fleet)
+        {
+            return GetShipStatuses(fleet).Sum(ship => ship.TransportPoint);
+        }
+
         public string[] BadlyDamagedShips { get; private set; } = new string[0];
 
         public void SetBadlyDamagedShips()

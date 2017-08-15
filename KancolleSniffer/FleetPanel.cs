@@ -62,7 +62,6 @@ namespace KancolleSniffer
         {
             var list = new List<Record>();
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
-            var tp = 0.0;
             for (var f = 0; f < fn.Length; f++)
             {
                 var drumTotal = 0;
@@ -111,8 +110,6 @@ namespace KancolleSniffer
                         drumShips++;
                     drumTotal += drum;
                     levelTotal += s.Level;
-                    if (f < (sniffer.CombinedFleetType != 0 ? 2 : 1))
-                        tp += s.TransportPoint;
                     var fire = s.EffectiveFirepower;
                     var subm = s.EffectiveAntiSubmarine;
                     var torp = s.EffectiveTorpedo;
@@ -136,15 +133,18 @@ namespace KancolleSniffer
                     ships.AddRange(equips);
                 }
                 var daihatsu = sniffer.GetDaihatsuBonus(f);
+                var tp = sniffer.GetTransportPoint(f);
+                if (sniffer.CombinedFleetType != 0 && f == 0)
+                    tp += sniffer.GetTransportPoint(1);
                 list.Add(new Record
                 {
                     Fleet = fn[f] + (levelTotal == 0 ? "" : " 合計Lv" + levelTotal) +
                             (drumTotal == 0 ? "" : " 缶" + drumTotal + "(" + drumShips + "隻)") +
-                            (daihatsu > 0 ? $" 発{daihatsu * 100:f1}%" : "")
+                            (daihatsu > 0 ? $" 発{daihatsu * 100:f1}%" : ""),
+                    Fleet2 = sniffer.CombinedFleetType != 0 && f == 1 ? "" : $"TP: S{(int)tp} A{(int)(tp * 0.7)}"
                 });
                 list.AddRange(ships);
             }
-            list[0].Fleet2 = $"TP: S{(int)tp} A{(int)(tp * 0.7)}";
             if (sniffer.BaseAirCorps != null)
             {
                 var name = new[] {"第一", "第二", "第三"};

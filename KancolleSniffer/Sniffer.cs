@@ -525,6 +525,8 @@ namespace KancolleSniffer
 
         public double GetDaihatsuBonus(int fleet) => _shipInfo.GetDaihatsuBonus(fleet);
 
+        public double GetTransportPoint(int fleet) => _shipInfo.GetTransportPoint(fleet);
+
         public ItemStatus[] ItemList
         {
             get
