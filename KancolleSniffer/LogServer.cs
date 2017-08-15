@@ -227,7 +227,35 @@ namespace KancolleSniffer
                 data = data.Concat(Enumerable.Repeat("", 3)).ToArray();
             if (data.Length != 38)
                 return data;
+            if (data[5] == "Ｔ字戦(有利)")
+                data[5] = "Ｔ字有利";
+            if (data[5] == "Ｔ字戦(不利)")
+                data[5] = "Ｔ字不利";
+            if (data[6].EndsWith("航行序列"))
+                data[6] = data[6].Substring(0, 4);
+            if (data[7].EndsWith("航行序列"))
+                data[7] = data[7].Substring(0, 4);
+            data[37] = ShortenAirBattleResult(data[37]);
             return AddDamagedShip(data);
+        }
+
+        private static string ShortenAirBattleResult(string result)
+        {
+            switch (result)
+            {
+                case "制空均衡":
+                    return "均衡";
+                case "制空権確保":
+                    return "確保";
+                case "航空優勢":
+                    return "優勢";
+                case "航空劣勢":
+                    return "劣勢";
+                case "制空権喪失":
+                    return "喪失";
+                default:
+                    return "";
+            }
         }
 
         private static IEnumerable<string> AddDamagedShip(string[] data)
