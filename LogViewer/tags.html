@@ -1066,8 +1066,17 @@ this.loadData = function() {
             this.show([]);
             return;
         }
-        from = fromDate.valueOf();
-        to = toDate.valueOf() + this.oneDay;
+        from = moment(fromDate);
+        if (from.date() === 1)
+            from.subtract(2, 'hours');
+        from = from.valueOf();
+        to = moment(toDate);
+        if (to.date() === to.clone().endOf('month').date()) {
+            to.hour(22);
+        } else {
+            to.endOf('day');
+        }
+        to = to.valueOf();
     }
     $.ajax({
         url: "./海戦・ドロップ報告書.json?from=" + from + "&to=" + to,
