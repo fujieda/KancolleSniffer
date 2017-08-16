@@ -1,3 +1,6 @@
+<dummy>
+</dummy>
+
 <main-tab>
 <ul class="tab">
     <li each={name, i in mainTabs} class={select: mainTab === i} onclick={parent.changeTab}>{name}</li>
@@ -41,7 +44,7 @@ this.on("mount", function() {
     });
 });
 
-this.enabled = true;
+this.enabled = false;
 var self = this;
 
 opts.observable.on("mainTabChanged", function(idx) {

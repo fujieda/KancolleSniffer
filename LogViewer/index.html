@@ -107,6 +107,7 @@ var mixin = {
 var obs = riot.observable();
 var spec = new Object();
 riot.mixin(mixin);
+riot.mount("dummy");
 riot.mount("log-term", {observable: obs});
 riot.mount("log-tables", {observable: obs});
 riot.mount("chart-type", {observable: obs, chartSpec: spec});
