@@ -427,10 +427,9 @@ namespace KancolleSniffer
 
         private void CalcKoukuDamage(dynamic json)
         {
-            if (!json.api_stage3() || json.api_stage3 == null)
-                return;
-            CalcSimpleDamage(json.api_stage3, _friend, _enemyHp);
-            if (json.api_stage3_combined())
+            if (json.api_stage3() && json.api_stage3 != null)
+                CalcSimpleDamage(json.api_stage3, _friend, _enemyHp);
+            if (json.api_stage3_combined() && json.api_stage3_combined != null)
                 CalcSimpleDamage(json.api_stage3_combined, _guard, _enemyGuardHp);
         }
 

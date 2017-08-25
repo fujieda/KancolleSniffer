@@ -662,6 +662,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 基地航空隊噴式強襲でapi_stage3_combinedがnullの場合に対応する
+        /// </summary>
+        [TestMethod]
+        public void AirbaseInjection()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "airbase_injection_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.P);
+        }
+
+        /// <summary>
         /// 対空砲火のパラメータを計算する
         /// </summary>
         [TestMethod]
