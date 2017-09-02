@@ -604,6 +604,10 @@ namespace KancolleSniffer.Test
             var sniffer2 = new Sniffer();
             SniffLogFile(sniffer2, "transportpoint_002");
             PAssert.That(() => (int)sniffer2.GetShipStatuses(0).Sum(s => s.TransportPoint) == 19, "鬼怒改二+特大発+おにぎり");
+
+            var sniffer3 = new Sniffer();
+            SniffLogFile(sniffer3, "transportpoint_003");
+            PAssert.That(() => (int)sniffer3.GetShipStatuses(0).Sum(s => s.TransportPoint) == 13, "駆逐艦+士魂部隊");
         }
 
         /// <summary>
