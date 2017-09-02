@@ -125,7 +125,7 @@ namespace KancolleSniffer
                 }
                 catch (Exception e)
                 {
-                    File.AppendAllText("debug.log", $"[{DateTime.Now.ToString("g")}] " + e + "\r\n");
+                    File.AppendAllText("debug.log", $"[{DateTime.Now:g}] " + e + "\r\n");
                 }
                 finally
                 {
@@ -335,8 +335,7 @@ namespace KancolleSniffer
                 var s = GetField("content-length");
                 if (s != null)
                 {
-                    int len;
-                    ContentLength = int.TryParse(s, out len) ? len : -1;
+                    ContentLength = int.TryParse(s, out var len) ? len : -1;
                 }
                 TransferEncoding = GetField("transfer-encoding")?.ToLower(CultureInfo.InvariantCulture);
                 ContentType = GetField("content-type");
@@ -535,8 +534,7 @@ namespace KancolleSniffer
                         break;
                     var ext = size.IndexOf(';');
                     size = ext == -1 ? size.Substring(0, size.Length - 2) : size.Substring(0, ext);
-                    int val;
-                    if (!int.TryParse(size, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out val))
+                    if (!int.TryParse(size, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var val))
                         throw new HttpProxyAbort("Can't parse chunk size: " + size);
                     if (val == 0)
                         break;

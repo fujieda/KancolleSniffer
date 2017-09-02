@@ -289,8 +289,7 @@ namespace KancolleSniffer
             result = null;
             if (_type != JsonType.Object)
                 return false;
-            JsonObject dict;
-            if (!_dict.TryGetValue(binder.Name, out dict))
+            if (!_dict.TryGetValue(binder.Name, out var dict))
                 return false;
             result = dict?.Value;
             return true;
@@ -388,15 +387,13 @@ namespace KancolleSniffer
             {
                 if (type.IsArray)
                 {
-                    object one;
-                    if (!values[i].IsArray || !ConvertArray(type.GetElementType(), values[i]._array, out one))
+                    if (!values[i].IsArray || !ConvertArray(type.GetElementType(), values[i]._array, out var one))
                         return false;
                     array.SetValue((dynamic)one, i);
                 }
                 else
                 {
-                    object one;
-                    if (!values[i].ConvertPrivateType(type, out one))
+                    if (!values[i].ConvertPrivateType(type, out var one))
                         return false;
                     array.SetValue((dynamic)one, i);
                 }

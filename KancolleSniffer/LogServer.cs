@@ -61,14 +61,12 @@ namespace KancolleSniffer
                 var query = HttpUtility.ParseQueryString(tmp[1]);
                 if (query["from"] != null)
                 {
-                    double tick;
-                    double.TryParse(query["from"], out tick);
+                    double.TryParse(query["from"], out var tick);
                     from = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(tick / 1000);
                 }
                 if (query["to"] != null)
                 {
-                    double tick;
-                    double.TryParse(query["to"], out tick);
+                    double.TryParse(query["to"], out var tick);
                     to = new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(tick / 1000);
                 }
                 if (query["number"] != null)

@@ -201,8 +201,7 @@ namespace KancolleSniffer
                 WithdrowShip(fleet, idx);
                 return;
             }
-            int oi;
-            var of = FindFleet(ship, out oi);
+            var of = FindFleet(ship, out var oi);
             var orig = _decks[fleet][idx];
             _decks[fleet][idx] = ship;
             if (of == -1)
@@ -270,8 +269,7 @@ namespace KancolleSniffer
             var ship = int.Parse(values["api_ship_id"]);
             _itemInfo.NowShips--;
             _itemInfo.DeleteItems(_shipInfo[ship].Slot);
-            int oi;
-            var of = FindFleet(ship, out oi);
+            var of = FindFleet(ship, out var oi);
             if (of != -1)
                 WithdrowShip(of, oi);
             _shipInfo.Remove(ship);
@@ -314,14 +312,12 @@ namespace KancolleSniffer
 
         public ShipStatus GetStatus(int id)
         {
-            ShipStatus s;
-            if (!_shipInfo.TryGetValue(id, out s))
+            if (!_shipInfo.TryGetValue(id, out var s))
                 return new ShipStatus();
             s.Slot = s.Slot.Select(item => _itemInfo.GetStatus(item.Id)).ToArray();
             s.SlotEx = _itemInfo.GetStatus(s.SlotEx.Id);
             s.Escaped = _escapedShips.Contains(id);
-            int idx;
-            s.Fleet = FindFleet(s.Id, out idx);
+            s.Fleet = FindFleet(s.Id, out _);
             s.CombinedFleetType = s.Fleet < 2 ? _combinedFleetType : 0;
             return s;
         }

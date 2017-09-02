@@ -326,6 +326,7 @@ namespace KancolleSniffer
             var lines = new List<string>();
             foreach (var s in new[] {"url: ", "request: ", "response: "})
             {
+                // ReSharper disable once PossibleNullReferenceException
                 if (!_playLog.MoveNext() || !_playLog.Current.StartsWith(s))
                 {
                     labelPlayLog.Visible = false;

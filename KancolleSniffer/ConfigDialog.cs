@@ -154,8 +154,7 @@ namespace KancolleSniffer
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            int listen, outbound, server;
-            if (!ValidatePorts(out listen, out outbound, out server))
+            if (!ValidatePorts(out var listen, out var outbound, out _))
                 return;
             DialogResult = DialogResult.OK;
             if (!ApplyProxySettings(listen, outbound))

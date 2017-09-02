@@ -52,8 +52,7 @@ namespace KancolleSniffer
                 var map = (int)entry.api_id;
                 if (map % 10 <= 4)
                     continue;
-                ClearStatus stat;
-                if (!_clearStatus.TryGetValue(map, out stat))
+                if (!_clearStatus.TryGetValue(map, out var stat))
                     continue;
                 var prev = stat.Cleared;
                 stat.Cleared = (int)entry.api_cleared == 1;
@@ -72,8 +71,7 @@ namespace KancolleSniffer
             _currentMap = (int)json.api_maparea_id * 10 + (int)json.api_mapinfo_no;
             if (!json.api_get_eo_rate() || json.api_get_eo_rate == 0)
                 return;
-            ClearStatus stat;
-            if (!_clearStatus.TryGetValue(_currentMap, out stat))
+            if (!_clearStatus.TryGetValue(_currentMap, out var stat))
                 _clearStatus.Add(_currentMap, stat = new ClearStatus {Map = _currentMap});
             stat.Cleared = true;
             stat.Rate = (int)json.api_get_eo_rate;
@@ -89,8 +87,7 @@ namespace KancolleSniffer
                 : (int)json.api_get_exmap_rate;
             if (rate == 0)
                 return;
-            ClearStatus stat;
-            if (!_clearStatus.TryGetValue(_currentMap, out stat))
+            if (!_clearStatus.TryGetValue(_currentMap, out var stat))
                 _clearStatus.Add(_currentMap, stat = new ClearStatus {Map = _currentMap});
             stat.Cleared = true;
             stat.Rate = rate;

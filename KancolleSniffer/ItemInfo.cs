@@ -595,13 +595,12 @@ namespace KancolleSniffer
             foreach (var entry in json.api_mst_slotitem)
             {
                 var type = (int)entry.api_type[2];
-                string typeName;
                 _itemSpecs[(int)entry.api_id] = new ItemSpec
                 {
                     Id = (int)entry.api_id,
                     Name = (string)entry.api_name,
                     Type = type,
-                    TypeName = dict.TryGetValue(type, out typeName) ? typeName : "不明",
+                    TypeName = dict.TryGetValue(type, out var typeName) ? typeName : "不明",
                     IconType = (int)entry.api_type[3],
                     AntiAir = (int)entry.api_tyku,
                     LoS = (int)entry.api_saku,
@@ -689,8 +688,7 @@ namespace KancolleSniffer
 
         public ItemStatus GetStatus(int id)
         {
-            ItemStatus item;
-            return _itemInfo.TryGetValue(id, out item) ? item : new ItemStatus(id);
+            return _itemInfo.TryGetValue(id, out var item) ? item : new ItemStatus(id);
         }
 
         public void ClearHolder()

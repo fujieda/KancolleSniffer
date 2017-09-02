@@ -90,8 +90,10 @@ namespace KancolleSniffer
         private class ItemStatusComparer : IEqualityComparer<ItemStatus>
         {
             public bool Equals(ItemStatus x, ItemStatus y)
+                // ReSharper disable PossibleNullReferenceException
                 => x.Level == y.Level && x.Spec == y.Spec && x.Holder.Id == y.Holder.Id &&
                    x.Holder.Fleet == y.Holder.Fleet;
+                // ReSharper restore PossibleNullReferenceException
 
             public int GetHashCode(ItemStatus obj) => obj.Level + obj.Spec.GetHashCode() + obj.Holder.GetHashCode();
         }

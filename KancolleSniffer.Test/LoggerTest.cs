@@ -355,6 +355,7 @@ namespace KancolleSniffer.Test
             logger.SetWriter((path, s, h) => { result += s + "|"; }, () =>
             {
                 dateEnum.MoveNext();
+                // ReSharper disable once PossibleNullReferenceException
                 return (DateTime)dateEnum.Current;
             });
             for (var i = 0; i < 6; i++)

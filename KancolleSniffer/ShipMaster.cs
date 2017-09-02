@@ -47,10 +47,9 @@ namespace KancolleSniffer
                     shipSpec.Remodel.Level = (int)entry.api_afterlv;
                     shipSpec.Remodel.After = int.Parse(entry.api_aftershipid);
                 }
-                int[] maxEq;
                 shipSpec.MaxEq = entry.api_maxeq()
                     ? entry.api_maxeq
-                    : MissingData.MaxEq.TryGetValue(shipSpec.Id + (UseOldEnemyId ? 1000 : 0), out maxEq) ? maxEq : null;
+                    : MissingData.MaxEq.TryGetValue(shipSpec.Id + (UseOldEnemyId ? 1000 : 0), out var maxEq) ? maxEq : null;
             }
             _shipSpecs[-1] = new ShipSpec();
             SetRemodelBaseAndStep();

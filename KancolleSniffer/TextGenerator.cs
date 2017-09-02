@@ -117,14 +117,7 @@ namespace KancolleSniffer
                 }
             }
 
-            public string this[string name]
-            {
-                get
-                {
-                    string shortName;
-                    return _dict.TryGetValue(name, out shortName) ? shortName : name;
-                }
-            }
+            public string this[string name] => _dict.TryGetValue(name, out var shortName) ? shortName : name;
         }
 
         public static string GenerateDeckBuilderData(Sniffer sniffer)

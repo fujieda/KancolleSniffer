@@ -63,8 +63,7 @@ namespace KancolleSniffer
                 }
                 if (!entry.api_defeat_count())
                     continue;
-                int req;
-                var reqStr = _required.TryGetValue(map, out req) ? req.ToString() : "?";
+                var reqStr = _required.TryGetValue(map, out var req) ? req.ToString() : "?";
                 Text += $"{map / 10}-{map % 10} : 撃破 {(int)entry.api_defeat_count}/{reqStr}\r\n";
             }
         }

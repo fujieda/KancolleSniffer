@@ -103,10 +103,12 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void String()
         {
+            // ReSharper disable SuspiciousTypeConversion.Global
             Assert.AreEqual("api_result", (string)(dynamic)JsonParser.Parse(@"""api_result"""));
             Assert.AreEqual("/\"\\\b\f\n\r\t", (string)(dynamic)JsonParser.Parse(@"""\/\""\\\b\f\n\r\t"""));
             Assert.AreEqual("大和改二", (string)(dynamic)JsonParser.Parse(@"""\u5927\u548c\u6539\u4e8c"""));
             Assert.AreEqual(@"\", (string)(dynamic)JsonParser.Parse(@"""\\"""));
+            // ReSharper restore SuspiciousTypeConversion.Global
         }
 
         [TestMethod]
@@ -257,6 +259,7 @@ namespace KancolleSniffer.Test
         public void CastArrayOfArrayToArrayOfIntArray()
         {
             var iary = (double[][])(dynamic)JsonParser.Parse("[[1,2],[3,4],[5,6]]");
+            // ReSharper disable once PossibleNullReferenceException
             Assert.IsTrue(iary.GetType().GetElementType().IsArray);
         }
 
