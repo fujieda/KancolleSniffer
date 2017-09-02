@@ -119,6 +119,8 @@ namespace KancolleSniffer
                     ReceiveRequestBody();
                     SendRequestBody();
                     ReceiveResponse();
+                    if (_session.Response.StatusCode == null)
+                        return;
                     SendResponse();
                     Close();
                     AfterSessionComplete?.Invoke(_session);
@@ -162,7 +164,10 @@ namespace KancolleSniffer
 
             private void ReceiveResponse()
             {
-                _session.Response.StatusLine = _serverStream.ReadLine();
+                var statusLine = _serverStream.ReadLine();
+                if (statusLine == "")
+                    return;
+                _session.Response.StatusLine = statusLine;
                 _session.Response.Headers = _serverStream.ReadHeaders();
                 if (HasBody)
                     _session.Response.ReadBody(_serverStream);
