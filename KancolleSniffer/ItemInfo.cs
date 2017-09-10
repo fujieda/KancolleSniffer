@@ -98,8 +98,6 @@ namespace KancolleSniffer
                     case 26: // 対潜哨戒機
                     case 41: // 大艇
                     case 45:
-                    case 47: // 陸上攻撃機
-                    case 48: // 局地戦闘機
                     case 56:
                     case 57:
                     case 58:
