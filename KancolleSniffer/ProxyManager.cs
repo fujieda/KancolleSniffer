@@ -66,8 +66,11 @@ namespace KancolleSniffer
             }
             catch (SocketException e)
             {
-                if (e.SocketErrorCode != SocketError.AddressAlreadyInUse)
+                if (e.SocketErrorCode != SocketError.AddressAlreadyInUse &&
+                    e.SocketErrorCode != SocketError.AccessDenied)
+                {
                     throw;
+                }
                 if (WarnConflictPortNumber("プロキシサーバー", _config.Proxy.Listen, _config.Proxy.Auto) == DialogResult.No ||
                     !_config.Proxy.Auto)
                 {
@@ -108,7 +111,6 @@ namespace KancolleSniffer
             if (_config.Proxy.Auto)
                 _systemProxy.RestoreSettings();
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
-
         }
 
         private void ShutdownProxy()
