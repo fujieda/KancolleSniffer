@@ -32,6 +32,8 @@ namespace KancolleSniffer
             set => _outputDir = value;
         }
 
+        public static MaterialCount[] MaterialHistory { private get; set; }
+
         public static void Process(Socket client, string requestLine)
         {
             var from = DateTime.MinValue;
@@ -212,11 +214,22 @@ namespace KancolleSniffer
                     }
                     delimiter = ",\n";
                 }
+                if (material && !number)
+                {
+                    client.Send(encoding.GetBytes(delimiter + "[\"" +
+                                                  string.Join("\",\"", GetCurrentMaterialRecord()) + "\"]"));
+                }
             }
             finally
             {
                 client.Send(encoding.GetBytes("]}\n"));
             }
+        }
+
+        private static IEnumerable<string> GetCurrentMaterialRecord()
+        {
+            return new[] {DateTime.Now.ToString(Logger.DateTimeFormat)}.
+                Concat(MaterialHistory.Select(c => c.Now.ToString()));
         }
 
         private static IEnumerable<string> ProcessBattleLog(string[] data)
@@ -290,7 +303,7 @@ namespace KancolleSniffer
                     return data;
                 }
             }
-            return data.Take(23).Concat(new []{string.Join("・", damaged)}).Concat(data.Skip(23));
+            return data.Take(23).Concat(new[] {string.Join("・", damaged)}).Concat(data.Skip(23));
         }
 
         private static void SendFile(Socket client, string path, string mime)

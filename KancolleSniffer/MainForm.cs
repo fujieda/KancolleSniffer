@@ -284,6 +284,7 @@ namespace KancolleSniffer
         public void ApplyLogSetting()
         {
             LogServer.OutputDir = _config.Log.OutputDir;
+            LogServer.MaterialHistory = _sniffer.Material.MaterialHistory;
             _sniffer.EnableLog(_config.Log.On ? LogType.All : LogType.None);
             _sniffer.MaterialLogInterval = _config.Log.MaterialLogInterval;
             _sniffer.LogOutputDir = _config.Log.OutputDir;
