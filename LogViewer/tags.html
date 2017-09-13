@@ -874,7 +874,7 @@ this.calcChartData = function() {
 };
 
 this.chartSize = function() {
-    var width = Math.max($(document).width() - 6 * this.pxPerEm, 800);
+    var width = Math.max($(window).width() - 6 * this.pxPerEm, 800);
     return {
         height: width * 0.4,
         width: width

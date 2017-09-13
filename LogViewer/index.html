@@ -73,8 +73,8 @@ var mixin = {
     pxPerEm: Number(getComputedStyle(document.body, null).fontSize.replace(/[^\d]/g, '')),
     chartSize: function() {
         return {
-            height: Math.max($(document).height() - 15 * this.pxPerEm, 400),
-            width: Math.max($(document).width() - 6 * this.pxPerEm, 800)
+            height: Math.max($(window).height() - 15 * this.pxPerEm, 400),
+            width: Math.max($(window).width() - 6 * this.pxPerEm, 800)
         };
     }
 };
