@@ -196,7 +196,7 @@ namespace KancolleSniffer
                     if (material)
                         entries = data.Take(9);
                     if (battle)
-                        entries = ProcessBattleLog(data);
+                        entries = BattleLogProcessor.Process(data);
                     if (entries.Count() != records)
                         continue;
                     if (number)
@@ -232,7 +232,70 @@ namespace KancolleSniffer
                 Concat(MaterialHistory.Select(c => c.Now.ToString()));
         }
 
-        private static IEnumerable<string> ProcessBattleLog(string[] data)
+        private static void SendFile(Socket client, string path, string mime)
+        {
+            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
+            {
+                header.Write("HTTP/1.1 200 OK\r\n");
+                header.Write("Server: KancolleSniffer\r\n");
+                header.Write("Date: {0:R}\r\n", DateTime.Now);
+                header.Write("Content-Length: {0}\r\n", new FileInfo(path).Length);
+                header.Write("Content-Type: {0}\r\n", mime);
+                header.Write("Connection: close\r\n\r\n");
+                header.Flush();
+                client.SendFile(path, ((MemoryStream)header.BaseStream).ToArray(), null,
+                    TransmitFileOptions.UseDefaultWorkerThread);
+            }
+        }
+
+        private static void SendProxyPac(Socket client, int port)
+        {
+            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
+            {
+                header.Write("HTTP/1.1 200 OK\r\n");
+                header.Write("Server: KancolleSniffer\r\n");
+                header.Write("Date: {0:R}\r\n", DateTime.Now);
+                header.Write("Content-Type: application/x-ns-proxy-autoconfig\r\n");
+                header.Write("Connection: close\r\n\r\n");
+                header.Flush();
+                client.Send(((MemoryStream)header.BaseStream).ToArray());
+            }
+            var pacFile = @"
+function FindProxyForURL(url, host) {
+  if(isInNet(host, ""203.104.209.71"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.184.15"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.184.16"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.187.205"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.187.229"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.187.253"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.188.25"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.248.135"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.7"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.39"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.71"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.103"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.135"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.167"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.215"", ""255.255.255.255"") ||
+     isInNet(host, ""125.6.189.247"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.209.23"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.209.39"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.209.55"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.209.102"", ""255.255.255.255"") ||
+     isInNet(host, ""203.104.209.87"", ""255.255.255.255"")) {
+       return ""PROXY 127.0.0.1:8080"";
+    }
+  else {
+    return ""DIRECT"";
+  }
+}".Replace("8080", port.ToString());
+            client.Send(Encoding.ASCII.GetBytes(pacFile));
+        }
+    }
+
+    public static class BattleLogProcessor
+    {
+        public static IEnumerable<string> Process(string[] data)
         {
             if (data.Length == 35)
                 data = data.Concat(Enumerable.Repeat("", 3)).ToArray();
@@ -303,67 +366,7 @@ namespace KancolleSniffer
                     return data;
                 }
             }
-            return data.Take(23).Concat(new[] {string.Join("・", damaged)}).Concat(data.Skip(23));
-        }
-
-        private static void SendFile(Socket client, string path, string mime)
-        {
-            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
-            {
-                header.Write("HTTP/1.1 200 OK\r\n");
-                header.Write("Server: KancolleSniffer\r\n");
-                header.Write("Date: {0:R}\r\n", DateTime.Now);
-                header.Write("Content-Length: {0}\r\n", new FileInfo(path).Length);
-                header.Write("Content-Type: {0}\r\n", mime);
-                header.Write("Connection: close\r\n\r\n");
-                header.Flush();
-                client.SendFile(path, ((MemoryStream)header.BaseStream).ToArray(), null,
-                    TransmitFileOptions.UseDefaultWorkerThread);
-            }
-        }
-
-        private static void SendProxyPac(Socket client, int port)
-        {
-            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
-            {
-                header.Write("HTTP/1.1 200 OK\r\n");
-                header.Write("Server: KancolleSniffer\r\n");
-                header.Write("Date: {0:R}\r\n", DateTime.Now);
-                header.Write("Content-Type: application/x-ns-proxy-autoconfig\r\n");
-                header.Write("Connection: close\r\n\r\n");
-                header.Flush();
-                client.Send(((MemoryStream)header.BaseStream).ToArray());
-            }
-            var pacFile = @"
-function FindProxyForURL(url, host) {
-  if(isInNet(host, ""203.104.209.71"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.184.15"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.184.16"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.187.205"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.187.229"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.187.253"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.188.25"", ""255.255.255.255"") ||
-     isInNet(host, ""203.104.248.135"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.189.7"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.189.39"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.189.71"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.189.103"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.189.135"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.189.167"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.189.215"", ""255.255.255.255"") ||
-     isInNet(host, ""125.6.189.247"", ""255.255.255.255"") ||
-     isInNet(host, ""203.104.209.23"", ""255.255.255.255"") ||
-     isInNet(host, ""203.104.209.39"", ""255.255.255.255"") ||
-     isInNet(host, ""203.104.209.55"", ""255.255.255.255"") ||
-     isInNet(host, ""203.104.209.102"", ""255.255.255.255"") ||
-     isInNet(host, ""203.104.209.87"", ""255.255.255.255"")) {
-       return ""PROXY 127.0.0.1:8080"";
-    }
-  else {
-    return ""DIRECT"";
-  }
-}".Replace("8080", port.ToString());
-            client.Send(Encoding.ASCII.GetBytes(pacFile));
+            return data.Take(23).Concat(new[] { string.Join("・", damaged) }).Concat(data.Skip(23));
         }
     }
 }
