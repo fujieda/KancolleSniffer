@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace KancolleSniffer
 {
@@ -337,9 +338,9 @@ function FindProxyForURL(url, host) {
             var damaged = new List<string>();
             for (var i = 11; i < 11 + 12; i += 2)
             {
-                var ship = data[i];
-                if (ship == "")
+                if (data[i] == "")
                     continue;
+                var ship = data[i] = StripKana(data[i]);
                 var hp = data[i + 1];
                 try
                 {
@@ -367,6 +368,13 @@ function FindProxyForURL(url, host) {
                 }
             }
             return data.Take(23).Concat(new[] { string.Join("・", damaged) }).Concat(data.Skip(23));
+        }
+
+        private static readonly Regex Kana = new Regex(@"\([^)]+\)\(", RegexOptions.Compiled);
+
+        private static string StripKana(string name)
+        {
+            return Kana.Replace(name, "(");
         }
     }
 }

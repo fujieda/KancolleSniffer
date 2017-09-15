@@ -38,7 +38,16 @@ namespace KancolleSniffer.Test
             PAssert.That(() => result[23] == "龍鳳改(Lv97)・夕立改(Lv148)");
             PAssert.That(() => result[38] == "劣勢");
         }
+
+        [TestMethod]
+        public void NormalLogWithKana()
+        {
+            var input = Enumerable.Repeat("", 38).ToArray();
+            input[11] = "Luigi Torelli(ルイージ・トレッリ)(Lv7)";
+            input[12] = "2/11";
+            var result = BattleLogProcessor.Process(input).ToArray();
+            PAssert.That(() => result[11] == "Luigi Torelli(Lv7)");
+            PAssert.That(() => result[23] == "Luigi Torelli(Lv7)");
+        }
     }
-
-
 }
