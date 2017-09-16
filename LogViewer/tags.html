@@ -279,6 +279,15 @@ opts.observable.on("chartSizeChanged", function() {
         self.resize();
 });
 
+this.header = ["日付", "燃料", "弾薬", "鋼材", "ボーキ", "高速建造材", "高速修復材", "開発資材", "改修資材"];
+
+opts.observable.on("offAllLegends", function() {
+    self.chart.hide();
+    self.header.slice(1).forEach(function(c) {
+        self.unselected[c] = true;
+    });
+});
+
 this.resize = function() {
     if (!self.chart)
         return;
@@ -298,10 +307,9 @@ this.drawChart = function(data) {
         });
         return;
     }
-    var picked, header;
+    var picked;
     picked = this.pickChartData(data.data, opts.chartSpec.seqRange);
-    header = ["日付", "燃料", "弾薬", "鋼材", "ボーキ", "高速建造材", "高速修復材", "開発資材", "改修資材"];
-    picked.data.unshift(header);
+    picked.data.unshift(self.header);
     this.drawSeqChart(picked);
 };
 
@@ -362,7 +370,10 @@ this.drawSeqChart = function(picked) {
                 }
             }
         },
-        onrendered: function() { $('#loading').hide(); }
+        onrendered: function() {
+            $('#loading').hide();
+            opts.observable.trigger("seqChartRendered");
+        }
     });
     self.chart.hide(Object.keys(self.unselected).filter(function(e) {
         return self.unselected[e];
@@ -684,6 +695,7 @@ this.pickMonthlyChartData = function(data) {
 
 <material-chart>
 <div show={mainTabs[mainTab] === "資材グラフ"}>
+<span class="c3-legend-item" id="off-all-legends" style="text-decoration: underline; cursor: pointer; z-index: 10; position: absolute; display: none;" onclick={offAllLegends} >全解除</span>
 <div id="chart" style="clear: both; margin: 1em;"></div>
 </div>
 
@@ -696,6 +708,21 @@ opts.observable.on("mainTabChanged", function(idx) {
     if (self.mainTabs[idx] === "資材グラフ")
         opts.observable.trigger("chartSpecChanged");
 });
+
+opts.observable.on("chartSpecChanged", function() {
+    if (opts.chartSpec.type === 1)
+        $("#off-all-legends").hide();
+});
+
+opts.observable.on("seqChartRendered", function() {
+    var legend = $(".c3-legend-item-改修資材>text").offset();
+    if (legend)
+        $("#off-all-legends").offset({top: legend.top, left: legend.left + 80}).show();
+});
+
+this.offAllLegends = function() {
+    opts.observable.trigger("offAllLegends");
+};
 
 this.timer = null;
 $(window).resize(function() {
