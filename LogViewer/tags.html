@@ -364,10 +364,9 @@ this.drawSeqChart = function(picked) {
         },
         onrendered: function() { $('#loading').hide(); }
     });
-    for (var id in self.unselected) {
-        if (self.unselected.hasOwnProperty(id) && self.unselected[id])
-            self.chart.toggle(id);
-    }
+    self.chart.hide(Object.keys(self.unselected).filter(function(e) {
+        return self.unselected[e];
+    }));
 };
 
 this.pickChartData = function(data, range) {
@@ -551,10 +550,9 @@ this.drawDiffChart = function(picked) {
         },
         onrendered: function() { $('#loading').hide(); }
     });
-    for (var id in self.unselected) {
-        if (self.unselected.hasOwnProperty(id) && self.unselected[id])
-            self.chart.toggle(id);
-    }
+    self.chart.hide(Object.keys(self.unselected).filter(function(e) {
+        return self.unselected[e];
+    }));
 };
 
 this.pickChartData = function(data, range) {
