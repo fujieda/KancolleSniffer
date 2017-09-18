@@ -107,7 +107,7 @@ namespace KancolleSniffer
             catch (RuntimeBinderException e)
             {
                 if (_errorDialog.ShowDialog(this,
-                    "このバージョンは現在の艦これに対応していません。\r\n新しいバージョンを利用してください。", e.ToString()) == DialogResult.Abort)
+                    "艦これに仕様変更があったか、受信内容が壊れています。", e.ToString()) == DialogResult.Abort)
                     Application.Exit();
             }
             catch (LogIOException e)
