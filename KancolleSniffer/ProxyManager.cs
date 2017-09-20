@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,7 +40,7 @@ namespace KancolleSniffer
         public bool ApplyConfig()
         {
             if (!_config.Proxy.Auto)
-                _systemProxy.RestoreSettings();
+                RestoreSystemProxy();
             if (_config.Proxy.UseUpstream)
             {
                 HttpProxy.UpstreamProxyHost = "127.0.0.1";
@@ -52,7 +55,7 @@ namespace KancolleSniffer
             }
             if (_config.Proxy.Auto && result)
             {
-                _systemProxy.SetAutoProxyUrl($"http://localhost:{_config.Proxy.Listen}/proxy.pac");
+                SetAutoProxyUrl();
             }
             _prevProxyPort = _config.Proxy.Listen;
             return result;
@@ -74,7 +77,7 @@ namespace KancolleSniffer
                 if (WarnConflictPortNumber("プロキシサーバー", _config.Proxy.Listen, _config.Proxy.Auto) == DialogResult.No ||
                     !_config.Proxy.Auto)
                 {
-                    _systemProxy.RestoreSettings();
+                    RestoreSystemProxy();
                     return false;
                 }
                 HttpProxy.Startup(0, false, false);
@@ -109,13 +112,48 @@ namespace KancolleSniffer
         {
             Task.Run(() => ShutdownProxy());
             if (_config.Proxy.Auto)
-                _systemProxy.RestoreSettings();
+                RestoreSystemProxy();
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
         }
 
         private void ShutdownProxy()
         {
             HttpProxy.Shutdown();
+        }
+
+        private readonly AutoResetEvent _stopEvent = new AutoResetEvent(false);
+        private Task _checkerTask;
+
+        private void SetAutoProxyUrl()
+        {
+            var url = $"http://localhost:{_config.Proxy.Listen}/proxy.pac";
+            _systemProxy.SetAutoProxyUrl(url);
+            if (_checkerTask != null && !_checkerTask.IsCompleted)
+                return;
+            _checkerTask = Task.Run(() =>
+            {
+                // Windows 10でプロキシ設定がいつの間にか消えるのに対応するために、
+                // 設定が消えていないか毎秒確認して、消えていたら再設定する。
+                do
+                {
+                    var proxy = WebRequest.GetSystemWebProxy().GetProxy(new Uri("http://125.6.184.16/"));
+                    if (!proxy.IsLoopback)
+                    {
+                        File.AppendAllText("proxy.log", $"[{DateTime.Now:g}] proxy setting vanished.\r\n");
+                        _systemProxy.SetAutoProxyUrl(url);
+                    }
+                } while (!_stopEvent.WaitOne(1000));
+            });
+        }
+
+        private void RestoreSystemProxy()
+        {
+            if (_checkerTask != null && !_checkerTask.IsCompleted)
+            {
+                _stopEvent.Set();
+                _checkerTask.Wait();
+            }
+            _systemProxy.RestoreSettings();
         }
     }
 }
