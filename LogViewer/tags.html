@@ -282,6 +282,8 @@ opts.observable.on("chartSizeChanged", function() {
 this.header = ["日付", "燃料", "弾薬", "鋼材", "ボーキ", "高速建造材", "高速修復材", "開発資材", "改修資材"];
 
 opts.observable.on("offAllLegends", function() {
+    if (opts.chartSpec.type !== 0)
+        return;
     self.chart.hide();
     self.header.slice(1).forEach(function(c) {
         self.unselected[c] = true;
@@ -372,7 +374,7 @@ this.drawSeqChart = function(picked) {
         },
         onrendered: function() {
             $('#loading').hide();
-            opts.observable.trigger("seqChartRendered");
+            opts.observable.trigger("chartRendered");
         }
     });
     self.chart.hide(Object.keys(self.unselected).filter(function(e) {
@@ -475,6 +477,17 @@ opts.observable.on("chartSizeChanged", function() {
         self.resize();
 });
 
+this.header = ["日付", "燃料", "弾薬", "鋼材", "ボーキ"];
+
+opts.observable.on("offAllLegends", function() {
+    if (opts.chartSpec.type !== 1)
+        return;
+    self.chart.hide();
+    self.header.slice(1).forEach(function(c) {
+        self.unselected[c] = true;
+    });
+});
+
 this.resize = function() {
     if (!self.chart)
         return;
@@ -494,10 +507,9 @@ this.drawChart = function(data) {
         });
         return;
     }
-    var picked, header;
+    var picked;
     picked = this.pickChartData(data.data, opts.chartSpec.diffRange);
-    header = ["日付", "燃料", "弾薬", "鋼材", "ボーキ"];
-    picked.data.unshift(header);
+    picked.data.unshift(self.header);
     this.drawDiffChart(picked);
 };
 
@@ -559,7 +571,10 @@ this.drawDiffChart = function(picked) {
                 }
             }
         },
-        onrendered: function() { $('#loading').hide(); }
+        onrendered: function() {
+            $('#loading').hide();
+            opts.observable.trigger("chartRendered");
+        }
     });
     self.chart.hide(Object.keys(self.unselected).filter(function(e) {
         return self.unselected[e];
@@ -709,15 +724,17 @@ opts.observable.on("mainTabChanged", function(idx) {
         opts.observable.trigger("chartSpecChanged");
 });
 
-opts.observable.on("chartSpecChanged", function() {
-    if (opts.chartSpec.type === 1)
-        $("#off-all-legends").hide();
-});
-
-opts.observable.on("seqChartRendered", function() {
-    var legend = $(".c3-legend-item-改修資材>text").offset();
+opts.observable.on("chartRendered", function() {
+    var legend, offset;
+    if (opts.chartSpec.type === 0) {
+        legend = $(".c3-legend-item-改修資材>text").offset();
+        offset = 80;
+    } else {
+        legend = $(".c3-legend-item-ボーキ>text").offset();
+        offset = 60;
+    }
     if (legend)
-        $("#off-all-legends").offset({top: legend.top, left: legend.left + 80}).show();
+        $("#off-all-legends").offset({top: legend.top, left: legend.left + offset}).show();
 });
 
 this.offAllLegends = function() {
