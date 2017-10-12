@@ -961,20 +961,20 @@ namespace KancolleSniffer
             this.NotifyIconOpenToolStripMenuItem,
             this.NotifyIconExitToolStripMenuItem});
             this.contextMenuStripNotifyIcon.Name = "contextMenuStripNotifyIcon";
-            this.contextMenuStripNotifyIcon.Size = new System.Drawing.Size(123, 48);
+            this.contextMenuStripNotifyIcon.Size = new System.Drawing.Size(122, 48);
             // 
             // NotifyIconOpenToolStripMenuItem
             // 
             this.NotifyIconOpenToolStripMenuItem.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.NotifyIconOpenToolStripMenuItem.Name = "NotifyIconOpenToolStripMenuItem";
-            this.NotifyIconOpenToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.NotifyIconOpenToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.NotifyIconOpenToolStripMenuItem.Text = "開く(&O)";
             this.NotifyIconOpenToolStripMenuItem.Click += new System.EventHandler(this.NotifyIconOpenToolStripMenuItem_Click);
             // 
             // NotifyIconExitToolStripMenuItem
             // 
             this.NotifyIconExitToolStripMenuItem.Name = "NotifyIconExitToolStripMenuItem";
-            this.NotifyIconExitToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.NotifyIconExitToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.NotifyIconExitToolStripMenuItem.Text = "終了(&X)";
             this.NotifyIconExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -987,40 +987,40 @@ namespace KancolleSniffer
             this.ConfigToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.contextMenuStripMain.Name = "contextMenuStripToolTip";
-            this.contextMenuStripMain.Size = new System.Drawing.Size(131, 114);
+            this.contextMenuStripMain.Size = new System.Drawing.Size(126, 114);
             // 
             // listToolStripMenuItem
             // 
             this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-            this.listToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.listToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.listToolStripMenuItem.Text = "一覧(&L)";
             this.listToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
             // 
             // LogToolStripMenuItem
             // 
             this.LogToolStripMenuItem.Name = "LogToolStripMenuItem";
-            this.LogToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.LogToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.LogToolStripMenuItem.Text = "報告書(&R)";
             this.LogToolStripMenuItem.Click += new System.EventHandler(this.LogToolStripMenuItem_Click);
             // 
             // CaptureToolStripMenuItem
             // 
             this.CaptureToolStripMenuItem.Name = "CaptureToolStripMenuItem";
-            this.CaptureToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.CaptureToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.CaptureToolStripMenuItem.Text = "撮影(&C)";
             this.CaptureToolStripMenuItem.Click += new System.EventHandler(this.CaptureToolStripMenuItem_Click);
             // 
             // ConfigToolStripMenuItem
             // 
             this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
-            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.ConfigToolStripMenuItem.Text = "設定(&O)";
             this.ConfigToolStripMenuItem.Click += new System.EventHandler(this.ConfigToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.ExitToolStripMenuItem.Text = "終了(&X)";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
