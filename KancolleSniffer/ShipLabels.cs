@@ -69,20 +69,20 @@ namespace KancolleSniffer
                     new ShipLabel {Location = new Point(129, y), AutoSize = true, AnchorRight = true},
                     new ShipLabel
                     {
-                        Location = new Point(132, y),
-                        Size = new Size(23, height),
+                        Location = new Point(131, y),
+                        Size = new Size(24, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new ShipLabel
                     {
-                        Location = new Point(157, y),
-                        Size = new Size(23, height),
+                        Location = new Point(156, y),
+                        Size = new Size(24, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new ShipLabel
                     {
-                        Location = new Point(177, y),
-                        Size = new Size(41, height),
+                        Location = new Point(176, y),
+                        Size = new Size(42, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new ShipLabel {Location = new Point(2, y), AutoSize = true}, // 名前のZ-orderを下に
@@ -150,8 +150,8 @@ namespace KancolleSniffer
                     new ShipLabel {Location = new Point(x + 88, y), AutoSize = true, AnchorRight = true},
                     new ShipLabel
                     {
-                        Location = new Point(x + 86, y),
-                        Size = new Size(23, height),
+                        Location = new Point(x + 85, y),
+                        Size = new Size(24, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new ShipLabel {Location = new Point(x + 2, y), AutoSize = true}, // 名前のZ-orderを下に
@@ -217,7 +217,7 @@ namespace KancolleSniffer
         public void AdjustAkashiTimers()
         {
             var scale = ShipLabel.ScaleFactor;
-            if (scale.Height < 1.2 || scale.Height > 1.3)
+            if (scale.Height < 1.2)
                 return;
             for (var i = 0; i < _akashiTimers.Length; i++)
             {

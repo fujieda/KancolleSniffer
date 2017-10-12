@@ -241,8 +241,8 @@ namespace KancolleSniffer
             {
                 new ShipLabel
                 {
-                    Location = new Point(91, 2),
-                    Size = new Size(23, LabelHeight),
+                    Location = new Point(90, 2),
+                    Size = new Size(24, LabelHeight),
                     TextAlign = ContentAlignment.MiddleRight
                 },
                 new ShipLabel {Location = new Point(10, 2), AutoSize = true},
@@ -310,8 +310,8 @@ namespace KancolleSniffer
                 new ShipLabel {Location = new Point(118, 2), AutoSize = true, AnchorRight = true},
                 new ShipLabel
                 {
-                    Location = new Point(117, 2),
-                    Size = new Size(23, height),
+                    Location = new Point(116, 2),
+                    Size = new Size(24, height),
                     TextAlign = ContentAlignment.MiddleRight
                 },
                 new ShipLabel {Location = new Point(141, 2), AutoSize = true},
@@ -348,20 +348,20 @@ namespace KancolleSniffer
                 new ShipLabel {Location = new Point(126, 2), AutoSize = true, AnchorRight = true},
                 new ShipLabel
                 {
-                    Location = new Point(129, 2),
-                    Size = new Size(23, height),
+                    Location = new Point(128, 2),
+                    Size = new Size(24, height),
                     TextAlign = ContentAlignment.MiddleRight
                 },
                 new ShipLabel
                 {
-                    Location = new Point(155, 2),
-                    Size = new Size(23, height),
+                    Location = new Point(154, 2),
+                    Size = new Size(24, height),
                     TextAlign = ContentAlignment.MiddleRight
                 },
                 new ShipLabel
                 {
-                    Location = new Point(176, 2),
-                    Size = new Size(41, height),
+                    Location = new Point(175, 2),
+                    Size = new Size(42, height),
                     TextAlign = ContentAlignment.MiddleRight
                 },
                 new ShipLabel {Location = new Point(10, 2), AutoSize = true},

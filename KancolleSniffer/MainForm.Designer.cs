@@ -228,9 +228,9 @@ namespace KancolleSniffer
             // 
             // labelAchievement
             // 
-            this.labelAchievement.Location = new System.Drawing.Point(167, 18);
+            this.labelAchievement.Location = new System.Drawing.Point(166, 18);
             this.labelAchievement.Name = "labelAchievement";
-            this.labelAchievement.Size = new System.Drawing.Size(32, 12);
+            this.labelAchievement.Size = new System.Drawing.Size(33, 12);
             this.labelAchievement.TabIndex = 7;
             this.labelAchievement.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -245,9 +245,9 @@ namespace KancolleSniffer
             // 
             // labelNumOfBuckets
             // 
-            this.labelNumOfBuckets.Location = new System.Drawing.Point(117, 18);
+            this.labelNumOfBuckets.Location = new System.Drawing.Point(116, 18);
             this.labelNumOfBuckets.Name = "labelNumOfBuckets";
-            this.labelNumOfBuckets.Size = new System.Drawing.Size(29, 12);
+            this.labelNumOfBuckets.Size = new System.Drawing.Size(30, 12);
             this.labelNumOfBuckets.TabIndex = 5;
             this.labelNumOfBuckets.Text = "0";
             this.labelNumOfBuckets.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -264,9 +264,9 @@ namespace KancolleSniffer
             // 
             // labelNumOfEquips
             // 
-            this.labelNumOfEquips.Location = new System.Drawing.Point(47, 18);
+            this.labelNumOfEquips.Location = new System.Drawing.Point(46, 18);
             this.labelNumOfEquips.Name = "labelNumOfEquips";
-            this.labelNumOfEquips.Size = new System.Drawing.Size(59, 12);
+            this.labelNumOfEquips.Size = new System.Drawing.Size(60, 12);
             this.labelNumOfEquips.TabIndex = 3;
             this.labelNumOfEquips.Text = "0/0";
             this.labelNumOfEquips.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -282,9 +282,9 @@ namespace KancolleSniffer
             // 
             // labelNumOfShips
             // 
-            this.labelNumOfShips.Location = new System.Drawing.Point(1, 18);
+            this.labelNumOfShips.Location = new System.Drawing.Point(0, 18);
             this.labelNumOfShips.Name = "labelNumOfShips";
-            this.labelNumOfShips.Size = new System.Drawing.Size(47, 12);
+            this.labelNumOfShips.Size = new System.Drawing.Size(48, 12);
             this.labelNumOfShips.TabIndex = 1;
             this.labelNumOfShips.Text = "0/0";
             this.labelNumOfShips.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -381,16 +381,16 @@ namespace KancolleSniffer
             // 
             this.labelResultRank.Location = new System.Drawing.Point(1, 1);
             this.labelResultRank.Name = "labelResultRank";
-            this.labelResultRank.Size = new System.Drawing.Size(41, 12);
+            this.labelResultRank.Size = new System.Drawing.Size(42, 12);
             this.labelResultRank.TabIndex = 0;
             this.labelResultRank.Text = "判定";
             this.labelResultRank.Click += new System.EventHandler(this.labelResultRank_Click);
             // 
             // labelLoS
             // 
-            this.labelLoS.Location = new System.Drawing.Point(86, 117);
+            this.labelLoS.Location = new System.Drawing.Point(85, 117);
             this.labelLoS.Name = "labelLoS";
-            this.labelLoS.Size = new System.Drawing.Size(37, 12);
+            this.labelLoS.Size = new System.Drawing.Size(38, 12);
             this.labelLoS.TabIndex = 42;
             this.labelLoS.Text = "0.0";
             this.labelLoS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -462,9 +462,9 @@ namespace KancolleSniffer
             // 
             // labelBouxiteHistory
             // 
-            this.labelBouxiteHistory.Location = new System.Drawing.Point(118, 2);
+            this.labelBouxiteHistory.Location = new System.Drawing.Point(117, 2);
             this.labelBouxiteHistory.Name = "labelBouxiteHistory";
-            this.labelBouxiteHistory.Size = new System.Drawing.Size(41, 48);
+            this.labelBouxiteHistory.Size = new System.Drawing.Size(42, 48);
             this.labelBouxiteHistory.TabIndex = 7;
             this.labelBouxiteHistory.Text = "ボーキ";
             this.labelBouxiteHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -472,9 +472,9 @@ namespace KancolleSniffer
             // 
             // labelSteelHistory
             // 
-            this.labelSteelHistory.Location = new System.Drawing.Point(79, 2);
+            this.labelSteelHistory.Location = new System.Drawing.Point(78, 2);
             this.labelSteelHistory.Name = "labelSteelHistory";
-            this.labelSteelHistory.Size = new System.Drawing.Size(41, 48);
+            this.labelSteelHistory.Size = new System.Drawing.Size(42, 48);
             this.labelSteelHistory.TabIndex = 6;
             this.labelSteelHistory.Text = "鋼材";
             this.labelSteelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -482,9 +482,9 @@ namespace KancolleSniffer
             // 
             // labelBulletHistory
             // 
-            this.labelBulletHistory.Location = new System.Drawing.Point(40, 2);
+            this.labelBulletHistory.Location = new System.Drawing.Point(39, 2);
             this.labelBulletHistory.Name = "labelBulletHistory";
-            this.labelBulletHistory.Size = new System.Drawing.Size(41, 48);
+            this.labelBulletHistory.Size = new System.Drawing.Size(42, 48);
             this.labelBulletHistory.TabIndex = 5;
             this.labelBulletHistory.Text = "弾薬";
             this.labelBulletHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -502,9 +502,9 @@ namespace KancolleSniffer
             // 
             // labelFuelHistory
             // 
-            this.labelFuelHistory.Location = new System.Drawing.Point(1, 2);
+            this.labelFuelHistory.Location = new System.Drawing.Point(0, 2);
             this.labelFuelHistory.Name = "labelFuelHistory";
-            this.labelFuelHistory.Size = new System.Drawing.Size(41, 48);
+            this.labelFuelHistory.Size = new System.Drawing.Size(42, 48);
             this.labelFuelHistory.TabIndex = 0;
             this.labelFuelHistory.Text = "燃料";
             this.labelFuelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;

@@ -71,7 +71,7 @@ namespace KancolleSniffer
                 new Label {Text = "敵軍", Location = new Point(124, 6), AutoSize = true}
             };
             Controls.AddRange(labels);
-            const int left = 54;
+            const int left = 53;
             for (var stage = 0; stage < 2; stage++)
             {
                 _resultLabels[stage] = new Label[2][];
@@ -81,19 +81,19 @@ namespace KancolleSniffer
                     Controls.Add(_resultLabels[stage][fe][1] = new Label
                     {
                         Location = new Point(left + 32 + 57 * fe, top + 14 * stage),
-                        Size = new Size(23, 12),
+                        Size = new Size(24, 12),
                         TextAlign = ContentAlignment.TopLeft
                     });
                     Controls.Add(new Label
                     {
-                        Location = new Point(left + 20 + 57 * fe, top + 14 * stage),
+                        Location = new Point(left + 21 + 57 * fe, top + 14 * stage),
                         Text = "→",
                         AutoSize = true
                     });
                     Controls.Add(_resultLabels[stage][fe][0] = new Label
                     {
                         Location = new Point(left + 57 * fe, top + 14 * stage),
-                        Size = new Size(23, 12),
+                        Size = new Size(24, 12),
                         TextAlign = ContentAlignment.TopRight
                     });
                 }
