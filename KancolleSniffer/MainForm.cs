@@ -253,9 +253,7 @@ namespace KancolleSniffer
         {
             if (_config.Location.X == int.MinValue)
                 return;
-            var newBounds = Bounds;
-            newBounds.Location = _config.Location;
-            if (IsVisibleOnAnyScreen(newBounds))
+            if (IsTitleBarOnAnyScreen(_config.Location))
                 Location = _config.Location;
         }
 
@@ -290,9 +288,12 @@ namespace KancolleSniffer
             _sniffer.LogOutputDir = _config.Log.OutputDir;
         }
 
-        public static bool IsVisibleOnAnyScreen(Rectangle rect)
+        public static bool IsTitleBarOnAnyScreen(Point location)
         {
-            return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
+            var rect = new Rectangle(
+                new Point(location.X + SystemInformation.IconSize.Width + SystemInformation.HorizontalFocusThickness,
+                    location.Y), new Size(60, SystemInformation.CaptionHeight));
+            return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect));
         }
 
         private void timerMain_Tick(object sender, EventArgs e)

@@ -153,7 +153,7 @@ namespace KancolleSniffer
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);
-            if (MainForm.IsVisibleOnAnyScreen(bounds))
+            if (MainForm.IsTitleBarOnAnyScreen(bounds.Location))
                 Location = bounds.Location;
             Height = bounds.Height;
         }
