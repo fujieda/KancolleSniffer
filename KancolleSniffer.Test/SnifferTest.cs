@@ -1052,6 +1052,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 修復時間が1分以内の艦娘が入渠する
+        /// </summary>
+        [TestMethod]
+        public void NyukyoLessThanOrEqualTo1Min()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "nyukyo_001");
+            PAssert.That(() => sniffer.RepairList.Length == 1);
+        }
+
+        /// <summary>
         /// 海域ゲージ情報を作成する
         /// </summary>
         [TestMethod]

@@ -53,13 +53,18 @@ namespace KancolleSniffer
         {
             var values = HttpUtility.ParseQueryString(request);
             var id = int.Parse(values["api_ship_id"]);
-            var m = _shipInfo.GetStatus(id).NdockItem;
+            var ship = _shipInfo.GetStatus(id);
+            var m = ship.NdockItem;
             _materialInfo.SubMaterial(Material.Fuel, m[0]);
             _materialInfo.SubMaterial(Material.Steal, m[1]);
-            if (int.Parse(values["api_highspeed"]) == 0)
+            if (int.Parse(values["api_highspeed"]) == 1)
+            {
+                _shipInfo.RepairShip(id);
+                _materialInfo.SubMaterial(Material.Bucket, 1);
                 return;
-            _shipInfo.RepairShip(id);
-            _materialInfo.SubMaterial(Material.Bucket, 1);
+            }
+            if (ship.RepairTime.CompareTo(TimeSpan.FromMinutes(1)) <= 0)
+                _shipInfo.RepairShip(id);
         }
 
         public void InspectSpeedChange(string request)
