@@ -129,7 +129,10 @@ namespace KancolleSniffer
             var url = $"http://localhost:{_config.Proxy.Listen}/proxy.pac";
             _systemProxy.SetAutoProxyUrl(url);
             if (_checkerTask != null && !_checkerTask.IsCompleted)
-                return;
+            {
+                _stopEvent.Set();
+                _checkerTask.Wait();
+            }
             _checkerTask = Task.Run(() =>
             {
                 // Windows 10でプロキシ設定がいつの間にか消えるのに対応するために、
