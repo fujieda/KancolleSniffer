@@ -86,6 +86,7 @@ namespace KancolleSniffer
             }
             _proxyManager = new ProxyManager(_config, this);
             _errorLog = new ErrorLog(_sniffer);
+            _proxyManager.UpdatePacFile();
             PerformZoom();
             _shipLabels.AdjustAkashiTimers();
             _sniffer.LoadState();

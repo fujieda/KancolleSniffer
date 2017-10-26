@@ -158,5 +158,26 @@ namespace KancolleSniffer
             }
             _systemProxy.RestoreSettings();
         }
+
+        public void UpdatePacFile()
+        {
+            var request = (HttpWebRequest)WebRequest.Create("https://kancollesniffer.osdn.jp/proxy.pac");
+            if (File.Exists("proxy.pac"))
+            {
+                var date = File.GetLastWriteTime("proxy.pac");
+                request.IfModifiedSince = date;
+            }
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                using (var stream = response.GetResponseStream())
+                using (var file = new FileStream("proxy.pac", FileMode.OpenOrCreate))
+                    stream?.CopyTo(file);
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch
+            {
+            }
+        }
     }
 }
