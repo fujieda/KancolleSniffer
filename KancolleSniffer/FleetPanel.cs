@@ -61,12 +61,15 @@ namespace KancolleSniffer
         private void CreateTable(Sniffer sniffer)
         {
             var list = new List<Record>();
-            var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
+            var fn = new[] {"第一", "第二", "第三", "第四"};
             for (var f = 0; f < fn.Length; f++)
             {
                 var drumTotal = 0;
                 var drumShips = 0;
                 var levelTotal = 0;
+                var aswTotal = 0;
+                var antiAirTotal = 0;
+                var losTotal = 0;
                 var ships = new List<Record>();
                 foreach (var s in sniffer.GetShipStatuses(f))
                 {
@@ -110,6 +113,9 @@ namespace KancolleSniffer
                         drumShips++;
                     drumTotal += drum;
                     levelTotal += s.Level;
+                    aswTotal += s.AntiSubmarine;
+                    antiAirTotal += s.AntiAir;
+                    losTotal += s.LoS;
                     var fire = s.EffectiveFirepower;
                     var subm = s.EffectiveAntiSubmarine;
                     var torp = s.EffectiveTorpedo;
@@ -138,10 +144,13 @@ namespace KancolleSniffer
                     tp += sniffer.GetTransportPoint(1);
                 list.Add(new Record
                 {
-                    Fleet = fn[f] + (levelTotal == 0 ? "" : " 合計Lv" + levelTotal) +
+                    Fleet = fn[f] + (levelTotal == 0 ? "" : " Lv" + levelTotal) +
                             (drumTotal == 0 ? "" : " 缶" + drumTotal + "(" + drumShips + "隻)") +
-                            (daihatsu > 0 ? $" 発{daihatsu * 100:f1}%" : ""),
-                    Fleet2 = sniffer.CombinedFleetType != 0 && f == 1 ? "" : $"TP: S{(int)tp} A{(int)(tp * 0.7)}"
+                            (aswTotal > 0 ? $" 潜{CutOverFlow(aswTotal)}" : "") +
+                            (antiAirTotal > 0 ? $" 空{CutOverFlow(antiAirTotal)}" : "") +
+                            (losTotal > 0 ? $" 索{CutOverFlow(losTotal)}" : ""),
+                    Fleet2 = (sniffer.CombinedFleetType != 0 && f == 1 ? "" : $"TP:S{(int)tp}A{(int)(tp * 0.7)}") +
+                             (daihatsu > 0 ? $" 発{daihatsu * 100:f1}%" : "")
                 });
                 list.AddRange(ships);
             }
@@ -174,6 +183,8 @@ namespace KancolleSniffer
             }
             _table = list.ToArray();
         }
+
+        private int CutOverFlow(int value) => value > 999 ? 999 : value;
 
         private string GenEquipString(ItemStatus item)
         {
