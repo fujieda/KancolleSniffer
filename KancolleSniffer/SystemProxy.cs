@@ -31,7 +31,19 @@ namespace KancolleSniffer
             if (_prevUrl != null)
                 return;
             using (var regkey = Registry.CurrentUser.OpenSubKey(_regPath))
-                _prevUrl = regkey?.GetValue(_regName) as string ?? "delete";
+            {
+                if (regkey == null)
+                    return;
+                _prevUrl = regkey.GetValue(_regName) as string ?? "delete";
+                using (var zones = regkey?.OpenSubKey(@"Zones\1", true))
+                {
+                    if (zones == null)
+                        return;
+                    if (!(zones.GetValue("Flags") is int flags))
+                        return;
+                    zones.SetValue("Flags", flags & (-1 ^ 0x108));
+                }
+            }
         }
 
         public void SetAutoProxyUrl(string url)
