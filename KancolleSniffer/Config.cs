@@ -217,7 +217,6 @@ namespace KancolleSniffer
             catch (FileNotFoundException)
             {
                 InitializeValues();
-                ReadOldConfig();
                 Save();
             }
             ConvertPath(PrependBaseDir);
@@ -264,59 +263,5 @@ namespace KancolleSniffer
         }
 
         private string PrependBaseDir(string path) => Path.IsPathRooted(path) ? path : Path.Combine(_baseDir, path);
-
-        private void ReadOldConfig()
-        {
-            var old = Path.Combine(_baseDir, "config.json");
-            dynamic json;
-            try
-            {
-                json = JsonParser.Parse(File.ReadAllText(old));
-            }
-            catch (FileNotFoundException)
-            {
-                return;
-            }
-            Location = new Point((int)json.Location.X, (int)json.Location.Y);
-            foreach (var property in (from prop in GetType().GetProperties()
-                let type = prop.PropertyType
-                where type == typeof(bool) || type == typeof(int) || type == typeof(string)
-                select prop))
-            {
-                if (!json.IsDefined(property.Name))
-                    continue;
-                var v = json[property.Name];
-                property.SetValue(this, property.PropertyType == typeof(int) ? (int)v : v);
-            }
-            NotifyConditions = new List<int>((int[])json.NotifyConditions);
-            ResetHours = new List<int>((int[])json.ResetHours);
-            Sounds.Volume = (int)json.SoundVolume;
-            var idx = 0;
-            foreach (var name in new[]
-            {
-                "Mission", "NDock", "KDock", "MaxShips", "MaxEquips",
-                "DamagedShip", "Akashi20Min", "AkashiProgress", "AkashiComplete", "Condition"
-            })
-            {
-                if (json.IsDefined(name + "SoundFile"))
-                    Sounds.Files[idx] = json[name + "SoundFile"];
-                idx++;
-            }
-            Proxy.Auto = json.Proxy.Auto;
-            Proxy.Listen = (int)json.Proxy.Listen;
-            Proxy.UseUpstream = json.Proxy.UseUpstream;
-            Proxy.UpstreamPort = (int)json.Proxy.UpstreamPort;
-            var sl = json.ShipList;
-            ShipList.Location = new Point((int)sl.Location.X, (int)sl.Location.Y);
-            ShipList.Size = new Size((int)sl.Size.Width, (int)sl.Size.Height);
-            ShipList.ShipType = sl.ShipType;
-            var sg = (int[][])sl.ShipGroup;
-            ShipList.ShipGroup = new List<List<int>>();
-            foreach (var g in sg)
-                ShipList.ShipGroup.Add(new List<int>(g));
-            Log.On = json.Log.On;
-            Log.OutputDir = json.Log.OutputDir;
-            Log.MaterialLogInterval = (int)json.Log.MaterialLogInterval;
-        }
     }
 }

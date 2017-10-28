@@ -56,7 +56,6 @@ namespace KancolleSniffer
             }
             catch (FileNotFoundException)
             {
-                ReadOldStatus();
             }
             finally
             {
@@ -69,55 +68,6 @@ namespace KancolleSniffer
             var serializer = new XmlSerializer(typeof(Status));
             using (var file = File.CreateText(_statusFileName))
                 serializer.Serialize(file, this);
-        }
-
-        public void ReadOldStatus()
-        {
-            var old = Path.Combine(_baseDir, "status.json");
-            dynamic json;
-            try
-            {
-                json = JsonParser.Parse(File.ReadAllText(old));
-            }
-            catch (FileNotFoundException)
-            {
-                return;
-            }
-            var ac = json.Achievement;
-            Achievement = new Achievement
-            {
-                Start = (int)ac.Start,
-                StartOfMonth = (int)ac.StartOfMonth,
-                LastReset = DateTime.Parse(ac.LastReset),
-                LastResetOfMonth = DateTime.Parse(ac.LastResetOfMonth),
-                ResetHours = new List<int>((int[])ac.ResetHours),
-            };
-            var history = new List<MaterialCount>();
-            foreach (var h in json.MatreialHistory)
-            {
-                history.Add(new MaterialCount
-                {
-                    BegOfDay = (int)h.BegOfDay,
-                    BegOfWeek = (int)h.BegOfWeek,
-                    Now = (int)h.Now,
-                    LastSet = DateTime.Parse(h.LastSet)
-                });
-            }
-            MaterialHistory = history;
-            CondRegenTime = json.CondRegenTime;
-            ExMapState = new ExMapInfo.ExMapState();
-            var clear = new List<ExMapInfo.ClearStatus>();
-            foreach (var cs in json.ExMapState.ClearStatusList)
-            {
-                clear.Add(new ExMapInfo.ClearStatus
-                {
-                    Map = (int)cs.Map,
-                    Cleared = cs.Cleared,
-                    Rate = (int)cs.Rate,
-                });
-            }
-            ExMapState.ClearStatusList = clear;
-            Save();
         }
     }
 }
