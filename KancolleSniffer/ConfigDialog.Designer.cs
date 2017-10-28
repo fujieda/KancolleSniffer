@@ -45,6 +45,7 @@ namespace KancolleSniffer
             this.components = new System.ComponentModel.Container();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageWindow = new System.Windows.Forms.TabPage();
+            this.checkBoxExitSilently = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
             this.comboBoxZoom = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -127,7 +128,6 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
-            this.checkBoxExitSilently = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tabPageWindow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -185,6 +185,16 @@ namespace KancolleSniffer
             this.tabPageWindow.TabIndex = 0;
             this.tabPageWindow.Text = "ウィンドウ";
             this.tabPageWindow.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxExitSilently
+            // 
+            this.checkBoxExitSilently.AutoSize = true;
+            this.checkBoxExitSilently.Location = new System.Drawing.Point(11, 54);
+            this.checkBoxExitSilently.Name = "checkBoxExitSilently";
+            this.checkBoxExitSilently.Size = new System.Drawing.Size(189, 16);
+            this.checkBoxExitSilently.TabIndex = 7;
+            this.checkBoxExitSilently.Text = "閉じるボタンで終了時に確認しない";
+            this.checkBoxExitSilently.UseVisualStyleBackColor = true;
             // 
             // label15
             // 
@@ -252,10 +262,10 @@ namespace KancolleSniffer
             this.tabPageNotification.Controls.Add(this.checkBoxSound);
             this.tabPageNotification.Controls.Add(this.checkBoxBalloon);
             this.tabPageNotification.Controls.Add(this.checkBoxFlash);
-            this.tabPageNotification.Location = new System.Drawing.Point(4, 22);
+            this.tabPageNotification.Location = new System.Drawing.Point(4, 40);
             this.tabPageNotification.Name = "tabPageNotification";
             this.tabPageNotification.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageNotification.Size = new System.Drawing.Size(256, 176);
+            this.tabPageNotification.Size = new System.Drawing.Size(256, 158);
             this.tabPageNotification.TabIndex = 1;
             this.tabPageNotification.Text = "通知";
             this.tabPageNotification.UseVisualStyleBackColor = true;
@@ -399,10 +409,10 @@ namespace KancolleSniffer
             this.tabPageAchievement.Controls.Add(this.checkBoxPresetAkashi);
             this.tabPageAchievement.Controls.Add(this.groupBox3);
             this.tabPageAchievement.Controls.Add(this.groupBox2);
-            this.tabPageAchievement.Location = new System.Drawing.Point(4, 22);
+            this.tabPageAchievement.Location = new System.Drawing.Point(4, 40);
             this.tabPageAchievement.Name = "tabPageAchievement";
             this.tabPageAchievement.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageAchievement.Size = new System.Drawing.Size(256, 176);
+            this.tabPageAchievement.Size = new System.Drawing.Size(256, 158);
             this.tabPageAchievement.TabIndex = 2;
             this.tabPageAchievement.Text = "機能";
             this.tabPageAchievement.UseVisualStyleBackColor = true;
@@ -502,10 +512,10 @@ namespace KancolleSniffer
             this.tabPageSound.Controls.Add(this.textBoxSoundFile);
             this.tabPageSound.Controls.Add(this.numericUpDownSoundVolume);
             this.tabPageSound.Controls.Add(this.label3);
-            this.tabPageSound.Location = new System.Drawing.Point(4, 22);
+            this.tabPageSound.Location = new System.Drawing.Point(4, 40);
             this.tabPageSound.Name = "tabPageSound";
             this.tabPageSound.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageSound.Size = new System.Drawing.Size(256, 176);
+            this.tabPageSound.Size = new System.Drawing.Size(256, 158);
             this.tabPageSound.TabIndex = 3;
             this.tabPageSound.Text = "サウンド";
             this.tabPageSound.UseVisualStyleBackColor = true;
@@ -573,10 +583,10 @@ namespace KancolleSniffer
             this.tabPageVersion.Controls.Add(this.linkLabelProductName);
             this.tabPageVersion.Controls.Add(this.labelVersion);
             this.tabPageVersion.Controls.Add(this.labelLatest);
-            this.tabPageVersion.Location = new System.Drawing.Point(4, 22);
+            this.tabPageVersion.Location = new System.Drawing.Point(4, 40);
             this.tabPageVersion.Name = "tabPageVersion";
             this.tabPageVersion.Padding = new System.Windows.Forms.Padding(8);
-            this.tabPageVersion.Size = new System.Drawing.Size(256, 176);
+            this.tabPageVersion.Size = new System.Drawing.Size(256, 158);
             this.tabPageVersion.TabIndex = 4;
             this.tabPageVersion.Text = "バージョン";
             this.tabPageVersion.UseVisualStyleBackColor = true;
@@ -1025,16 +1035,6 @@ namespace KancolleSniffer
             // 
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
-            // 
-            // checkBoxExitSilently
-            // 
-            this.checkBoxExitSilently.AutoSize = true;
-            this.checkBoxExitSilently.Location = new System.Drawing.Point(11, 54);
-            this.checkBoxExitSilently.Name = "checkBoxExitSilently";
-            this.checkBoxExitSilently.Size = new System.Drawing.Size(189, 16);
-            this.checkBoxExitSilently.TabIndex = 7;
-            this.checkBoxExitSilently.Text = "閉じるボタンで終了時に確認しない";
-            this.checkBoxExitSilently.UseVisualStyleBackColor = true;
             // 
             // ConfigDialog
             // 
