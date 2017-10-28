@@ -66,6 +66,7 @@ namespace KancolleSniffer
             checkBoxTopMost.Checked = _config.TopMost;
             checkBoxHideOnMinimized.Checked = _config.HideOnMinimized;
             checkBoxExitSilently.Checked = _config.ExitSilently;
+            checkBoxLocationPerMachine.Checked = _config.SaveLocationPerMachine;
             comboBoxZoom.SelectedItem = _config.Zoom + "%";
 
             checkBoxFlash.Checked = _config.FlashWindow;
@@ -170,6 +171,7 @@ namespace KancolleSniffer
             _config.TopMost = checkBoxTopMost.Checked;
             _config.HideOnMinimized = checkBoxHideOnMinimized.Checked;
             _config.ExitSilently = checkBoxExitSilently.Checked;
+            _config.SaveLocationPerMachine = checkBoxLocationPerMachine.Checked;
             _config.Zoom = int.Parse(comboBoxZoom.SelectedItem.ToString().Substring(0, 3));
             _config.FlashWindow = checkBoxFlash.Checked;
             _config.ShowBaloonTip = checkBoxBalloon.Checked;

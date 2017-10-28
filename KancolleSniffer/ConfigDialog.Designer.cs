@@ -128,6 +128,7 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
+            this.checkBoxLocationPerMachine = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tabPageWindow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -172,6 +173,7 @@ namespace KancolleSniffer
             // 
             // tabPageWindow
             // 
+            this.tabPageWindow.Controls.Add(this.checkBoxLocationPerMachine);
             this.tabPageWindow.Controls.Add(this.checkBoxExitSilently);
             this.tabPageWindow.Controls.Add(this.label15);
             this.tabPageWindow.Controls.Add(this.comboBoxZoom);
@@ -189,7 +191,7 @@ namespace KancolleSniffer
             // checkBoxExitSilently
             // 
             this.checkBoxExitSilently.AutoSize = true;
-            this.checkBoxExitSilently.Location = new System.Drawing.Point(11, 54);
+            this.checkBoxExitSilently.Location = new System.Drawing.Point(11, 53);
             this.checkBoxExitSilently.Name = "checkBoxExitSilently";
             this.checkBoxExitSilently.Size = new System.Drawing.Size(189, 16);
             this.checkBoxExitSilently.TabIndex = 7;
@@ -199,7 +201,7 @@ namespace KancolleSniffer
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(99, 79);
+            this.label15.Location = new System.Drawing.Point(99, 100);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(61, 12);
             this.label15.TabIndex = 6;
@@ -213,7 +215,7 @@ namespace KancolleSniffer
             "100%",
             "125%",
             "150%"});
-            this.comboBoxZoom.Location = new System.Drawing.Point(49, 76);
+            this.comboBoxZoom.Location = new System.Drawing.Point(49, 97);
             this.comboBoxZoom.Name = "comboBoxZoom";
             this.comboBoxZoom.Size = new System.Drawing.Size(48, 20);
             this.comboBoxZoom.TabIndex = 5;
@@ -221,7 +223,7 @@ namespace KancolleSniffer
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(11, 79);
+            this.label14.Location = new System.Drawing.Point(11, 100);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(35, 12);
             this.label14.TabIndex = 4;
@@ -1036,6 +1038,16 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
+            // checkBoxLocationPerMachine
+            // 
+            this.checkBoxLocationPerMachine.AutoSize = true;
+            this.checkBoxLocationPerMachine.Location = new System.Drawing.Point(11, 74);
+            this.checkBoxLocationPerMachine.Name = "checkBoxLocationPerMachine";
+            this.checkBoxLocationPerMachine.Size = new System.Drawing.Size(188, 16);
+            this.checkBoxLocationPerMachine.TabIndex = 8;
+            this.checkBoxLocationPerMachine.Text = "コンピューターごとに位置を保存する";
+            this.checkBoxLocationPerMachine.UseVisualStyleBackColor = true;
+            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1176,5 +1188,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.CheckBox checkBoxPushbulletOn;
         private System.Windows.Forms.Button buttonPushbulletTest;
         private System.Windows.Forms.CheckBox checkBoxExitSilently;
+        private System.Windows.Forms.CheckBox checkBoxLocationPerMachine;
     }
 }

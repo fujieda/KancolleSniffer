@@ -83,7 +83,8 @@ namespace KancolleSniffer
     {
         public int Volume { get; set; } = 100;
 
-        public string[] Files { get; set; } = {
+        public string[] Files { get; set; } =
+        {
             "ensei.mp3",
             "nyuukyo.mp3",
             "kenzou.mp3",
@@ -125,6 +126,15 @@ namespace KancolleSniffer
         }
     }
 
+    public class LocationPerMachine
+    {
+        public string MachineName { get; set; }
+        public Point Location { get; set; }
+        public int Zoom { get; set; } = 100;
+        public Point ListLocation { get; set; }
+        public Size ListSize { get; set; }
+    }
+
     public class Config
     {
         private readonly string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -135,6 +145,8 @@ namespace KancolleSniffer
         public bool HideOnMinimized { get; set; }
         public bool ExitSilently { get; set; }
         public int Zoom { get; set; } = 100;
+        public bool SaveLocationPerMachine { get; set; }
+        public List<LocationPerMachine> LocationList { get; set; }= new List<LocationPerMachine>();
         public bool FlashWindow { get; set; } = true;
         public bool ShowBaloonTip { get; set; }
         public bool PlaySound { get; set; } = true;
@@ -185,6 +197,18 @@ namespace KancolleSniffer
                     config = (Config)serializer.Deserialize(file);
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(config, null), null);
+                if (SaveLocationPerMachine)
+                {
+                    foreach (var l in LocationList)
+                    {
+                        if (l.MachineName != Environment.MachineName)
+                            continue;
+                        Location = l.Location;
+                        Zoom = l.Zoom;
+                        ShipList.Location = l.ListLocation;
+                        ShipList.Size = l.ListSize;
+                    }
+                }
             }
             catch (FileNotFoundException)
             {
@@ -197,6 +221,22 @@ namespace KancolleSniffer
 
         public void Save()
         {
+            if (SaveLocationPerMachine)
+            {
+                LocationList = LocationList.Where(l => l.MachineName != Environment.MachineName).ToList();
+                LocationList.Add(new LocationPerMachine
+                {
+                    MachineName = Environment.MachineName,
+                    Location = Location,
+                    Zoom = Zoom,
+                    ListLocation = ShipList.Location,
+                    ListSize = ShipList.Size
+                });
+            }
+            else
+            {
+                LocationList = new List<LocationPerMachine>();
+            }
             ConvertPath(StripBaseDir);
             var serializer = new XmlSerializer(typeof(Config));
             using (var file = File.CreateText(_configFileName))
