@@ -27,14 +27,16 @@ namespace KancolleSniffer
         private readonly Control _parent;
         private readonly SystemProxy _systemProxy = new SystemProxy();
         private int _prevProxyPort;
-        private readonly Timer _periodicTimer = new Timer { Interval = 1000 };
+        private int _autoConfigRetryCount;
+        private readonly Timer _timer = new Timer {Interval = 1000};
+        private bool _initiated;
 
         public ProxyManager(Config config, Control parent)
         {
             _config = config;
             _parent = parent;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
-            _periodicTimer.Tick += PeriodicalCheck;
+            _timer.Tick += CheckProxy;
         }
 
         public bool ApplyConfig()
@@ -120,28 +122,58 @@ namespace KancolleSniffer
         private void SetAndCheckAutoConfigUrl()
         {
             SetAutoConfigUrl();
-            _periodicTimer.Start();
+            _initiated = false;
+            _timer.Start();
         }
 
-        // Windows 10でプロキシ設定がいつの間にか消えるのに対応するために、
-        // 設定が消えていないか毎秒確認して、消えていたら再設定する。
-        private void PeriodicalCheck(object sender, EventArgs ev)
+        private void CheckProxy(object sender, EventArgs ev)
         {
-            if (IsProxyWorking)
+            if (_initiated)
+            {
+                // Windows 10でプロキシ設定がいつの間にか消えるのに対応するために、
+                // 設定が消えていないか毎秒確認して、消えていたら再設定する。
+                if (IsProxyWorking)
+                    return;
+                File.AppendAllText("proxy.log", $"[{DateTime.Now:G}] proxy setting vanished.\r\n");
+                SetAutoConfigUrl();
                 return;
-            File.AppendAllText("proxy.log", $"[{DateTime.Now:g}] proxy setting vanished.\r\n");
+            }
+            if (IsProxyWorking)
+            {
+                _initiated = true;
+                return;
+            }
+            if (_autoConfigRetryCount > 0 && _autoConfigRetryCount % 5 == 0)
+            {
+                _timer.Stop();
+                switch (MessageBox.Show(_parent, "プロキシの自動設定に失敗しました。", "エラー", MessageBoxButtons.AbortRetryIgnore,
+                    MessageBoxIcon.Error))
+                {
+                    case DialogResult.Abort:
+                        Application.Exit();
+                        break;
+                    case DialogResult.Ignore:
+                        return;
+                }
+                _timer.Start();
+            }
+            _autoConfigRetryCount++;
             SetAutoConfigUrl();
         }
 
         private bool IsProxyWorking =>
             WebRequest.GetSystemWebProxy().GetProxy(new Uri("http://125.6.184.16/")).IsLoopback;
 
-        private void SetAutoConfigUrl() =>
-            _systemProxy.SetAutoConfigUrl($"http://localhost:{_config.Proxy.Listen}/proxy.pac");
+        private void SetAutoConfigUrl()
+        {
+            var count = _autoConfigRetryCount == 0 ? "" : _autoConfigRetryCount.ToString();
+            _systemProxy.SetAutoConfigUrl(
+                $"http://localhost:{_config.Proxy.Listen}/proxy{count}.pac");
+        }
 
         private void RestoreSystemProxy()
         {
-            _periodicTimer.Stop();
+            _timer.Stop();
             _systemProxy.RestoreSettings();
         }
 

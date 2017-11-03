@@ -99,7 +99,7 @@ namespace KancolleSniffer
                 SendFile(client, full, "application/javascript");
                 return;
             }
-            if (path.EndsWith("proxy.pac"))
+            if (path.EndsWith(".pac"))
             {
                 SendProxyPac(client, HttpProxy.LocalPort);
                 return;

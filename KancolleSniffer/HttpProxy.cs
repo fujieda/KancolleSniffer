@@ -110,7 +110,7 @@ namespace KancolleSniffer
                         HandleConnect();
                         return;
                     }
-                    if (_session.Request.Host.StartsWith("localhost"))
+                    if (_session.Request.Host.StartsWith("localhost") || _session.Request.Host.StartsWith("127.0.0.1"))
                     {
                         LogServer.Process(_client, _session.Request.RequestLine);
                         return;
