@@ -74,7 +74,7 @@ namespace KancolleSniffer
                 {
                     throw;
                 }
-                if (WarnConflictPortNumber("プロキシサーバー", _config.Proxy.Listen, _config.Proxy.Auto) == DialogResult.No ||
+                if (WarnConflictPortNumber(_config.Proxy.Listen, _config.Proxy.Auto) == DialogResult.No ||
                     !_config.Proxy.Auto)
                 {
                     RestoreSystemProxy();
@@ -86,9 +86,9 @@ namespace KancolleSniffer
             return true;
         }
 
-        private DialogResult WarnConflictPortNumber(string name, int port, bool auto)
+        private DialogResult WarnConflictPortNumber(int port, bool auto)
         {
-            var msg = $"{name}のポート番号{port}は他のアプリケーションが使用中です。";
+            var msg = $"ポート番号{port}は他のアプリケーションが使用中です。";
             var cap = "ポート番号の衝突";
             return auto
                 ? MessageBox.Show(_parent, msg + "自動的に別の番号を割り当てますか？", cap,
