@@ -101,11 +101,7 @@ namespace KancolleSniffer
         {
             if (e.Mode != PowerModes.Resume || !_config.Proxy.Auto)
                 return;
-            Task.Run(() =>
-            {
-                for (var i = 0; i < 5; i++, Thread.Sleep(15000))
-                    SystemProxy.Refresh();
-            });
+            SystemProxy.Refresh();
         }
 
         public void Shutdown()
