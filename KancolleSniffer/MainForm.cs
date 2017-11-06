@@ -292,7 +292,7 @@ namespace KancolleSniffer
         {
             var rect = new Rectangle(
                 new Point(location.X + SystemInformation.IconSize.Width + SystemInformation.HorizontalFocusThickness,
-                    location.Y), new Size(60, SystemInformation.CaptionHeight));
+                    location.Y + SystemInformation.CaptionHeight) , new Size(60, 1));
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect));
         }
 
