@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
@@ -28,27 +29,34 @@ namespace KancolleSniffer
             public string Key { get; set; }
             public int Fleet { get; set; }
             public string Subject { get; set; }
+            public int Repeat { get; set; }
+            public DateTime Schedule { get; set; }
         }
 
         public NotificationManager(Action<string, string, string> ring, ITimer timer = null)
         {
-
             _notificationQueue = new NotificationQueue(ring, timer);
         }
 
-        public void Enqueue(string key, int fleet, string subject)
+        public void Enqueue(string key, int fleet, string subject, int repeat = 0)
         {
             _notificationQueue.Enqueue(new Notification
             {
                 Key = key,
                 Fleet = fleet,
-                Subject = subject
+                Subject = subject,
+                Repeat = repeat
             });
         }
 
-        public void Enqueue(string key, string subject)
+        public void Enqueue(string key, string subject, int repeat = 0)
         {
-            Enqueue(key, 0, subject);
+            Enqueue(key, 0, subject, repeat);
+        }
+
+        public void StopRepeat(string key)
+        {
+            _notificationQueue.StopRepeat(key);
         }
 
         private class NotificationConfig
@@ -235,6 +243,7 @@ namespace KancolleSniffer
             event EventHandler Tick;
             void Start();
             void Stop();
+            DateTime Now { get; }
         }
 
         public class TimerWrapper : ITimer
@@ -262,20 +271,23 @@ namespace KancolleSniffer
             public void Start() => _timer.Start();
 
             public void Stop() => _timer.Stop();
+
+            public DateTime Now => DateTime.Now;
         }
 
         private class NotificationQueue
         {
             private readonly Action<string, string, string> _ring;
-            private readonly Queue<Notification> _queue = new Queue<Notification>();
+            private readonly List<Notification> _queue = new List<Notification>();
             private readonly ITimer _timer;
             private readonly NotificationConfig _notificationConfig = new NotificationConfig();
+            private DateTime _lastRing;
 
-            public NotificationQueue(Action<string, string, string> ring, ITimer timer)
+            public NotificationQueue(Action<string, string, string> ring, ITimer timer = null)
             {
                 _ring = ring;
                 _timer = timer ?? new TimerWrapper();
-                _timer.Interval = 2000;
+                _timer.Interval = 1000;
                 _timer.Tick += TimerOnTick;
             }
 
@@ -286,28 +298,42 @@ namespace KancolleSniffer
                     _timer.Stop();
                     return;
                 }
-                var notification = _queue.Dequeue();
-                Ring(notification);
+                Ring();
             }
 
             public void Enqueue(Notification notification)
             {
-                if (_timer.Enabled)
+                _queue.Add(notification);
+                Ring();
+                if (_queue.Count > 0)
+                    _timer.Start();
+            }
+
+            public void StopRepeat(string key)
+            {
+                _queue.RemoveAll(n => n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Schedule != default);
+            }
+
+            private void Ring()
+            {
+                var now = _timer.Now;
+                if (now - _lastRing < TimeSpan.FromSeconds(2))
+                    return;
+                var notification = _queue.FirstOrDefault(n => n.Schedule.CompareTo(now) <= 0);
+                if (notification == null)
+                    return;
+                if (notification.Repeat == 0)
                 {
-                    _queue.Enqueue(notification);
+                    _queue.Remove(notification);
                 }
                 else
                 {
-                    Ring(notification);
-                    _timer.Start();
+                    notification.Schedule = _timer.Now + TimeSpan.FromSeconds(notification.Repeat);
                 }
-            }
-
-            private void Ring(Notification notification)
-            {
                 var message =
                     _notificationConfig.GenerateMessage(notification);
                 _ring(message.Title, message.Body, message.Name);
+                _lastRing = now;
             }
         }
     }
