@@ -59,6 +59,16 @@ namespace KancolleSniffer
             _notificationQueue.StopRepeat(key);
         }
 
+        public void SuspendRepeat()
+        {
+            _notificationQueue.SuspendRepeat();
+        }
+
+        public void ResumeRepeat()
+        {
+            _notificationQueue.ResumeRepeat();
+        }
+
         public string KeyToName(string key) => NotificationConfig.KeyToName(key);
 
         private class NotificationConfig
@@ -284,6 +294,7 @@ namespace KancolleSniffer
             private readonly ITimer _timer;
             private readonly NotificationConfig _notificationConfig = new NotificationConfig();
             private DateTime _lastRing;
+            private bool _suspend;
 
             public NotificationQueue(Action<string, string, string> ring, ITimer timer = null)
             {
@@ -316,12 +327,23 @@ namespace KancolleSniffer
                 _queue.RemoveAll(n => n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Schedule != default);
             }
 
+            public void SuspendRepeat()
+            {
+                _suspend = true;
+            }
+
+            public void ResumeRepeat()
+            {
+                _suspend = false;
+            }
+
             private void Ring()
             {
                 var now = _timer.Now;
                 if (now - _lastRing < TimeSpan.FromSeconds(2))
                     return;
-                var notification = _queue.FirstOrDefault(n => n.Schedule.CompareTo(now) <= 0);
+                var notification = _queue.FirstOrDefault(n => n.Schedule.CompareTo(now) <= 0 &&
+                                                              !(_suspend && n.Schedule != default));
                 if (notification == null)
                     return;
                 if (notification.Repeat == 0)
