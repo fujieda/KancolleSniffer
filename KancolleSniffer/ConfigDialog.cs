@@ -27,8 +27,8 @@ namespace KancolleSniffer
         private readonly MainForm _main;
         private readonly NotificationConfigDialog _notificationConfigDialog;
 
-        private readonly Dictionary<string, NotificationType> _notificationSettings =
-            new Dictionary<string, NotificationType>();
+        private readonly Dictionary<string, NotificationSpec> _notificationSettings =
+            new Dictionary<string, NotificationSpec>();
 
         private readonly Dictionary<string, string> _soundSettings = new Dictionary<string, string>();
         private const string Home = "http://kancollesniffer.osdn.jp/";

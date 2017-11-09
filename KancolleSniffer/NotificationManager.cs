@@ -59,6 +59,8 @@ namespace KancolleSniffer
             _notificationQueue.StopRepeat(key);
         }
 
+        public string KeyToName(string key) => NotificationConfig.KeyToName(key);
+
         private class NotificationConfig
         {
             public class Message

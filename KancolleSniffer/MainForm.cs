@@ -89,6 +89,7 @@ namespace KancolleSniffer
             PerformZoom();
             _shipLabels.AdjustAkashiTimers();
             _sniffer.LoadState();
+            _sniffer.StopRepeatingTimer = _notificationManager.StopRepeat;
         }
 
         public class ConfigFileException : Exception
@@ -304,7 +305,17 @@ namespace KancolleSniffer
         private void ConfigToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_configDialog.ShowDialog(this) == DialogResult.OK)
+            {
                 ApplyConfig();
+                StopAllRepeatingTimer();
+            }
+
+        }
+
+        private void StopAllRepeatingTimer()
+        {
+            foreach (var s in new[] {"遠征終了", "入渠終了", "疲労回復", "泊地修理"})
+                _notificationManager.StopRepeat(s);
         }
 
         private void PerformZoom()
@@ -545,21 +556,27 @@ namespace KancolleSniffer
             var akashi = _sniffer.AkashiTimer;
             var msgs = akashi.GetNotice();
             if (msgs.Length == 0)
+            {
+                _notificationManager.StopRepeat("泊地修理");
                 return;
+            }
             if (!akashi.CheckReparing() && !(akashi.CheckPresetReparing() && _config.UsePresetAkashi))
+            {
+                _notificationManager.StopRepeat("泊地修理");
                 return;
+            }
             if (msgs[0].Proceeded == "20分経過しました。")
             {
-                _notificationManager.Enqueue("泊地修理20分経過", msgs[0].Proceeded);
+                SetNotification("泊地修理20分経過", msgs[0].Proceeded);
                 msgs[0].Proceeded = "";
                 // 修理完了がいるかもしれないので続ける
             }
             for (var i = 0; i < ShipInfo.FleetCount; i++)
             {
                 if (msgs[i].Proceeded != "")
-                    _notificationManager.Enqueue("泊地修理進行", i, msgs[i].Proceeded);
+                    SetNotification("泊地修理進行", i, msgs[i].Proceeded);
                 if (msgs[i].Completed != "")
-                    _notificationManager.Enqueue("泊地修理完了", i, msgs[i].Completed);
+                    SetNotification("泊地修理完了", i, msgs[i].Completed);
             }
         }
 
@@ -694,7 +711,7 @@ namespace KancolleSniffer
                 entry.label.Text = entry.Timer.ToString(_missionFinishTimeMode);
                 if (!entry.Timer.NeedRing)
                     continue;
-                _notificationManager.Enqueue("遠征終了", entry.Name);
+                SetNotification("遠征終了", entry.Name);
                 entry.Timer.NeedRing = false;
             }
             for (var i = 0; i < _sniffer.NDock.Length; i++)
@@ -704,7 +721,7 @@ namespace KancolleSniffer
                 _shipLabels.SetNDockTimer(i, entry.Timer, _ndockFinishTimeMode);
                 if (!entry.Timer.NeedRing)
                     continue;
-                _notificationManager.Enqueue("入渠終了", entry.Name);
+                SetNotification("入渠終了", entry.Name);
                 entry.Timer.NeedRing = false;
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
@@ -717,7 +734,7 @@ namespace KancolleSniffer
                 kdock[i].Text = timer.EndTime == DateTime.MinValue ? "" : timer.Rest.ToString(@"hh\:mm\:ss");
                 if (!timer.NeedRing)
                     continue;
-                _notificationManager.Enqueue("建造完了", $"第{i + 1:D}ドック");
+                SetNotification("建造完了", $"第{i + 1:D}ドック");
                 timer.NeedRing = false;
             }
             UpdateCondTimers();
@@ -769,8 +786,20 @@ namespace KancolleSniffer
             {
                 if (!_config.NotifyConditions.Contains(notice[i]))
                     return;
-                _notificationManager.Enqueue("疲労回復" + notice[i], i, "cond" + notice[i]);
+                SetNotification("疲労回復" + notice[i], i, "cond" + notice[i]);
             }
+        }
+
+        private void SetNotification(string key, string subject)
+        {
+            SetNotification(key, 0, subject);
+        }
+
+        private void SetNotification(string key, int fleet, string subject)
+        {
+            var spec = _config.Notifications[_notificationManager.KeyToName(key)];
+            _notificationManager.Enqueue(key, fleet, subject,
+                (spec.Flags & NotificationType.Repeat) == 0 ? 0 : spec.RepeatInterval);
         }
 
         private void UpdateAkashiTimer()
@@ -837,18 +866,15 @@ namespace KancolleSniffer
 
         private void Ring(string balloonTitle, string balloonMessage, string name)
         {
-            if (_config.FlashWindow && (_config.Notifications[name] & NotificationType.FlashWindow) != 0)
+            if (_config.FlashWindow && (_config.Notifications[name].Flags & NotificationType.FlashWindow) != 0)
                 Win32API.FlashWindow(Handle);
-            if (_config.ShowBaloonTip && (_config.Notifications[name] & NotificationType.ShowBaloonTip) != 0)
+            if (_config.ShowBaloonTip && (_config.Notifications[name].Flags & NotificationType.ShowBaloonTip) != 0)
                 notifyIconMain.ShowBalloonTip(20000, balloonTitle, balloonMessage, ToolTipIcon.Info);
-            if (_config.PlaySound && (_config.Notifications[name] & NotificationType.PlaySound) != 0)
+            if (_config.PlaySound && (_config.Notifications[name].Flags & NotificationType.PlaySound) != 0)
                 PlaySound(_config.Sounds[name], _config.Sounds.Volume);
-            if (_config.Pushbullet.On && (_config.Notifications[name] & NotificationType.Pushbullet) != 0)
+            if (_config.Pushbullet.On && (_config.Notifications[name].Flags & NotificationType.Pushbullet) != 0)
             {
-                Task.Run(() =>
-                {
-                    PushBullet.PushNote(_config.Pushbullet.Token, balloonTitle, balloonMessage);
-                });
+                Task.Run(() => { PushBullet.PushNote(_config.Pushbullet.Token, balloonTitle, balloonMessage); });
             }
         }
 

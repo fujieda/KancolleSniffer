@@ -113,8 +113,17 @@ namespace KancolleSniffer
         FlashWindow = 1,
         ShowBaloonTip = 1 << 1,
         PlaySound = 1 << 2,
+        All = (1 << 3) - 1,
         Pushbullet = 1 << 3,
-        All = (1 << 3) - 1 // Pushbullet以外
+        Repeat = 1 << 4
+    }
+
+
+    public class NotificationSpec
+    {
+        public string Name { get; set; }
+        public NotificationType Flags { get; set; }
+        public int RepeatInterval { get; set; }
     }
 
     public class NotificationConfig
@@ -122,10 +131,22 @@ namespace KancolleSniffer
         public NotificationType[] Settings =
             Config.NotificationNames.Select(x => NotificationType.All).ToArray();
 
-        public NotificationType this[string name]
+        public int[] RepeatIntervals =
+            Config.NotificationNames.Select(x => 0).ToArray();
+
+        public NotificationSpec this[string name]
         {
-            get => Settings[Config.NotificationIndex[name]];
-            set => Settings[Config.NotificationIndex[name]] = value;
+            get => new NotificationSpec
+            {
+                Name = name,
+                Flags = Settings[Config.NotificationIndex[name]],
+                RepeatInterval = RepeatIntervals[Config.NotificationIndex[name]]
+            };
+            set
+            {
+                Settings[Config.NotificationIndex[name]] = value.Flags;
+                RepeatIntervals[Config.NotificationIndex[name]] = value.RepeatInterval;
+            }
         }
     }
 
