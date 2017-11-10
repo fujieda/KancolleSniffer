@@ -123,7 +123,7 @@ namespace KancolleSniffer
         private void SetAutoProxyUrl()
         {
             var url = $"http://localhost:{_config.Proxy.Listen}/proxy.pac";
-            _systemProxy.SetAutoProxyUrl(url);
+            _systemProxy.SetAutoConfigUrl(url);
             if (_checkerTask != null && !_checkerTask.IsCompleted)
             {
                 _stopEvent.Set();
@@ -139,7 +139,7 @@ namespace KancolleSniffer
                     if (!proxy.IsLoopback)
                     {
                         File.AppendAllText("proxy.log", $"[{DateTime.Now:g}] proxy setting vanished.\r\n");
-                        _systemProxy.SetAutoProxyUrl(url);
+                        _systemProxy.SetAutoConfigUrl(url);
                     }
                 } while (!_stopEvent.WaitOne(1000));
             });
