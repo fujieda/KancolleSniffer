@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace KancolleSniffer
@@ -652,6 +653,8 @@ namespace KancolleSniffer
         public string ToString(bool finish = false)
             => EndTime == DateTime.MinValue
                 ? ""
-                : finish ? EndTime.ToString(@"dd\ HH\:mm") : $@"{(int)Rest.TotalHours:d2}:{Rest:mm\:ss}";
+                : finish
+                    ? EndTime.ToString(@"dd\ HH\:mm", CultureInfo.InvariantCulture)
+                    : $"{(int)Rest.TotalHours:d2}:" + Rest.ToString(@"mm\:ss", CultureInfo.InvariantCulture);
     }
 }

@@ -181,10 +181,18 @@ namespace KancolleSniffer
                     if (!DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
                         DateTimeStyles.AssumeLocal, out DateTime date))
                     {
-                        if (DateTime.TryParse(data[0], CultureInfo.CurrentCulture,
+                        // システムが和暦に設定されていて和暦が出力されてしまったケースを救う
+                        var wareki = CultureInfo.CreateSpecificCulture("ja-JP");
+                        wareki.DateTimeFormat.Calendar = new JapaneseCalendar();
+                        if (DateTime.TryParseExact(data[0], Logger.DateTimeFormat, wareki,
                             DateTimeStyles.AssumeLocal, out date))
                         {
-                            data[0] = date.ToString(Logger.DateTimeFormat);
+                            data[0] = Logger.FormatDateTime(date);
+                        }
+                        else if (DateTime.TryParse(data[0], CultureInfo.CurrentCulture,
+                            DateTimeStyles.AssumeLocal, out date))
+                        {
+                            data[0] = Logger.FormatDateTime(date);
                         }
                         else
                         {
@@ -229,7 +237,7 @@ namespace KancolleSniffer
 
         private static IEnumerable<string> GetCurrentMaterialRecord()
         {
-            return new[] {DateTime.Now.ToString(Logger.DateTimeFormat)}.
+            return new[] {Logger.FormatDateTime(DateTime.Now)}.
                 Concat(MaterialHistory.Select(c => c.Now.ToString()));
         }
 
