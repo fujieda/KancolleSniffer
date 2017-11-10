@@ -89,7 +89,23 @@ namespace KancolleSniffer
             PerformZoom();
             _shipLabels.AdjustAkashiTimers();
             _sniffer.LoadState();
-            _sniffer.StopRepeatingTimer = _notificationManager.StopRepeat;
+            _sniffer.RepeatingTimerController = new RepeatingTimerController(_notificationManager);
+        }
+
+        private class RepeatingTimerController : Sniffer.IRepeatingTimerController
+        {
+            private readonly NotificationManager _manager;
+
+            public RepeatingTimerController(NotificationManager manager)
+            {
+                _manager = manager;
+            }
+
+            public void Stop(string key) => _manager.StopRepeat(key);
+
+            public void Suspend() => _manager.SuspendRepeat();
+
+            public void Resume() => _manager.ResumeRepeat();
         }
 
         public class ConfigFileException : Exception

@@ -41,7 +41,14 @@ namespace KancolleSniffer
         private bool _saveState;
         private readonly List<IHaveState> _haveState;
 
-        public Action<string> StopRepeatingTimer { get; set; } = s => { };
+        public interface IRepeatingTimerController
+        {
+            void Stop(string key);
+            void Suspend();
+            void Resume();
+        }
+
+        public IRepeatingTimerController RepeatingTimerController { get; set; }
 
         [Flags]
         public enum Update
@@ -151,8 +158,9 @@ namespace KancolleSniffer
             _shipInfo.ClearEscapedShips();
             _miscTextInfo.ClearIfNeeded();
             SaveState();
+            RepeatingTimerController?.Resume();
             foreach (var s in new[] {"遠征終了", "入渠終了", "疲労回復", "泊地修理"})
-                StopRepeatingTimer(s);
+                RepeatingTimerController?.Stop(s);
             return Update.All;
         }
 
@@ -188,7 +196,7 @@ namespace KancolleSniffer
                 _dockInfo.InspectNDock(data);
                 _conditionTimer.CheckCond();
                 _akashiTimer.CheckFleet();
-                StopRepeatingTimer("入渠終了");
+                RepeatingTimerController?.Stop("入渠終了");
                 return Update.NDock | Update.Timer | Update.Ship;
             }
             if (url.EndsWith("api_get_member/questlist"))
@@ -271,7 +279,7 @@ namespace KancolleSniffer
                 _shipInfo.InspectShip(data);
                 _dockInfo.InspectKDock(data.api_kdock);
                 _conditionTimer.CheckCond();
-                StopRepeatingTimer("建造完了");
+                RepeatingTimerController?.Stop("建造完了");
                 return Update.Item | Update.Timer;
             }
             if (url.EndsWith("api_req_kousyou/destroyship"))
@@ -324,6 +332,7 @@ namespace KancolleSniffer
                     _shipInfo.InspectMapStart(request); // 演習を出撃中とみなす
                     _conditionTimer.InvalidateCond();
                     _miscTextInfo.ClearFlag = true;
+                    RepeatingTimerController?.Suspend();
                 }
                 _battleInfo.InspectBattle(url, request, data);
                 return Update.Ship | Update.Battle | Update.Timer;
@@ -446,7 +455,7 @@ namespace KancolleSniffer
                 _battleInfo.InspectMapStart(data);
                 _logger.InspectMapStart(data);
                 _miscTextInfo.ClearFlag = true;
-                StopRepeatingTimer("疲労回復");
+                RepeatingTimerController?.Suspend();
                 return Update.Timer | Update.Ship;
             }
             if (url.EndsWith("api_req_map/next"))
