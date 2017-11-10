@@ -16,8 +16,6 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
@@ -29,12 +27,14 @@ namespace KancolleSniffer
         private readonly Control _parent;
         private readonly SystemProxy _systemProxy = new SystemProxy();
         private int _prevProxyPort;
+        private readonly Timer _periodicTimer = new Timer { Interval = 1000 };
 
         public ProxyManager(Config config, Control parent)
         {
             _config = config;
             _parent = parent;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+            _periodicTimer.Tick += PeriodicalCheck;
         }
 
         public bool ApplyConfig()
@@ -55,7 +55,7 @@ namespace KancolleSniffer
             }
             if (_config.Proxy.Auto && result)
             {
-                SetAutoProxyUrl();
+                SetAndCheckAutoConfigUrl();
             }
             _prevProxyPort = _config.Proxy.Listen;
             return result;
@@ -106,7 +106,7 @@ namespace KancolleSniffer
 
         public void Shutdown()
         {
-            Task.Run(() => ShutdownProxy());
+            ShutdownProxy();
             if (_config.Proxy.Auto)
                 RestoreSystemProxy();
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
@@ -117,41 +117,31 @@ namespace KancolleSniffer
             HttpProxy.Shutdown();
         }
 
-        private readonly AutoResetEvent _stopEvent = new AutoResetEvent(false);
-        private Task _checkerTask;
-
-        private void SetAutoProxyUrl()
+        private void SetAndCheckAutoConfigUrl()
         {
-            var url = $"http://localhost:{_config.Proxy.Listen}/proxy.pac";
-            _systemProxy.SetAutoConfigUrl(url);
-            if (_checkerTask != null && !_checkerTask.IsCompleted)
-            {
-                _stopEvent.Set();
-                _checkerTask.Wait();
-            }
-            _checkerTask = Task.Run(() =>
-            {
-                // Windows 10でプロキシ設定がいつの間にか消えるのに対応するために、
-                // 設定が消えていないか毎秒確認して、消えていたら再設定する。
-                do
-                {
-                    var proxy = WebRequest.GetSystemWebProxy().GetProxy(new Uri("http://125.6.184.16/"));
-                    if (!proxy.IsLoopback)
-                    {
-                        File.AppendAllText("proxy.log", $"[{DateTime.Now:g}] proxy setting vanished.\r\n");
-                        _systemProxy.SetAutoConfigUrl(url);
-                    }
-                } while (!_stopEvent.WaitOne(1000));
-            });
+            SetAutoConfigUrl();
+            _periodicTimer.Start();
         }
+
+        // Windows 10でプロキシ設定がいつの間にか消えるのに対応するために、
+        // 設定が消えていないか毎秒確認して、消えていたら再設定する。
+        private void PeriodicalCheck(object sender, EventArgs ev)
+        {
+            if (IsProxyWorking)
+                return;
+            File.AppendAllText("proxy.log", $"[{DateTime.Now:g}] proxy setting vanished.\r\n");
+            SetAutoConfigUrl();
+        }
+
+        private bool IsProxyWorking =>
+            WebRequest.GetSystemWebProxy().GetProxy(new Uri("http://125.6.184.16/")).IsLoopback;
+
+        private void SetAutoConfigUrl() =>
+            _systemProxy.SetAutoConfigUrl($"http://localhost:{_config.Proxy.Listen}/proxy.pac");
 
         private void RestoreSystemProxy()
         {
-            if (_checkerTask != null && !_checkerTask.IsCompleted)
-            {
-                _stopEvent.Set();
-                _checkerTask.Wait();
-            }
+            _periodicTimer.Stop();
             _systemProxy.RestoreSettings();
         }
 
