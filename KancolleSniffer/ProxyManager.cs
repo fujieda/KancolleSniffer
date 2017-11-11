@@ -25,7 +25,7 @@ namespace KancolleSniffer
     {
         private readonly Config _config;
         private readonly Control _parent;
-        private readonly SystemProxy _systemProxy = new SystemProxy();
+        private string _prevAutoConfigUrl;
         private int _prevProxyPort;
         private int _autoConfigRetryCount;
         private readonly Timer _timer = new Timer {Interval = 1000};
@@ -57,6 +57,11 @@ namespace KancolleSniffer
             }
             if (_config.Proxy.Auto && result)
             {
+                if (_prevAutoConfigUrl == null)
+                {
+                    SystemProxy.AdjustLocalIntranetZoneFlags();
+                    _prevAutoConfigUrl = SystemProxy.AutoConfigUrl;
+                }
                 SetAndCheckAutoConfigUrl();
             }
             _prevProxyPort = _config.Proxy.Listen;
@@ -167,14 +172,43 @@ namespace KancolleSniffer
         private void SetAutoConfigUrl()
         {
             var count = _autoConfigRetryCount == 0 ? "" : _autoConfigRetryCount.ToString();
-            _systemProxy.SetAutoConfigUrl(
-                $"http://localhost:{_config.Proxy.Listen}/proxy{count}.pac");
+            SystemProxy.AutoConfigUrl = $"http://localhost:{_config.Proxy.Listen}/proxy{count}.pac";
         }
 
         private void RestoreSystemProxy()
         {
             _timer.Stop();
-            _systemProxy.RestoreSettings();
+            if (_prevAutoConfigUrl == null)
+                return;
+            if (_prevAutoConfigUrl == "")
+            {
+                SystemProxy.AutoConfigUrl = "";
+                return;
+            }
+            HttpWebRequest request;
+            try
+            {
+                request = WebRequest.CreateHttp(_prevAutoConfigUrl);
+                if (!request.Address.IsLoopback)
+                    throw new Exception();
+            }
+            catch
+            {
+                // httpではなくloopbackでもない
+                SystemProxy.AutoConfigUrl = _prevAutoConfigUrl;
+                return;
+            }
+            try
+            {
+                request.GetResponse().Dispose();
+            }
+            catch
+            {
+                // httpサーバーが応答しない
+                SystemProxy.AutoConfigUrl = "";
+                return;
+            }
+            SystemProxy.AutoConfigUrl = _prevAutoConfigUrl;
         }
 
         public void UpdatePacFile()

@@ -20,58 +20,53 @@ using Microsoft.Win32;
 
 namespace KancolleSniffer
 {
-    public class SystemProxy
+    public static class SystemProxy
     {
-        private string _prevUrl;
         private const string _regPath = @"Software\Microsoft\Windows\CurrentVersion\Internet Settings";
         private const string _regName = "AutoConfigURL";
 
-        private void SaveSettings()
+        public static string AutoConfigUrl
         {
-            if (_prevUrl != null)
-                return;
-            using (var regkey = Registry.CurrentUser.OpenSubKey(_regPath))
+            get
             {
-                if (regkey == null)
-                    return;
-                _prevUrl = regkey.GetValue(_regName) as string ?? "delete";
-                using (var zones = regkey.OpenSubKey(@"Zones\1", true))
+                using (var regkey = Registry.CurrentUser.OpenSubKey(_regPath))
                 {
-                    if (zones == null)
-                        return;
-                    if (!(zones.GetValue("Flags") is int flags))
-                        return;
-                    zones.SetValue("Flags", flags & (-1 ^ 0x108));
+                    if (regkey == null)
+                        return "";
+                    return regkey.GetValue(_regName) as string ?? "";
                 }
+            }
+            set
+            {
+                using (var regkey = Registry.CurrentUser.OpenSubKey(_regPath, true))
+                {
+                    if (regkey == null)
+                        return;
+                    if (value == "")
+                    {
+                        regkey.DeleteValue(_regName, false);
+                    }
+                    else
+                    {
+                        regkey.SetValue(_regName, value);
+                    }
+                }
+                Refresh();
             }
         }
 
-        public void SetAutoConfigUrl(string url)
+        /// <summary>
+        /// PACファイルでDIRECTを指定すると、すべてのサイトがローカルイントラネットになり、
+        /// IEが互換表示になるなどの不具合があるので、イントラネットにならないようにする
+        /// </summary>
+        public static void AdjustLocalIntranetZoneFlags()
         {
-            SaveSettings();
-            using (var regkey = Registry.CurrentUser.OpenSubKey(_regPath, true))
-                regkey?.SetValue(_regName, url);
-            if (_prevUrl == url) // 同じURLの場合は終了時に設定を消す
-                _prevUrl = "delete";
-            Refresh();
-        }
-
-        public void RestoreSettings()
-        {
-            if (_prevUrl == null)
+            var zones = Registry.CurrentUser.OpenSubKey(_regPath + @"\Zones\1", true);
+            if (zones == null)
                 return;
-            using (var regkey = Registry.CurrentUser.OpenSubKey(_regPath, true))
-            {
-                if (_prevUrl == "delete")
-                {
-                    regkey?.DeleteValue(_regName, false);
-                }
-                else
-                {
-                    regkey?.SetValue(_regName, _prevUrl);
-                }
-            }
-            Refresh();
+            if (!(zones.GetValue("Flags") is int flags))
+                return;
+            zones.SetValue("Flags", flags & (-1 ^ 0x108));
         }
 
         public static void Refresh()
