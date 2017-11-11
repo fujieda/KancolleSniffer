@@ -323,15 +323,15 @@ namespace KancolleSniffer
             if (_configDialog.ShowDialog(this) == DialogResult.OK)
             {
                 ApplyConfig();
-                StopAllRepeatingTimer();
+                StopRepeatingTimer(_configDialog.RepeatSettingsChanged);
             }
 
         }
 
-        private void StopAllRepeatingTimer()
+        private void StopRepeatingTimer(IEnumerable<string> names)
         {
-            foreach (var s in new[] {"遠征終了", "入渠終了", "疲労回復", "泊地修理"})
-                _notificationManager.StopRepeat(s);
+            foreach (var name in names)
+                _notificationManager.StopRepeat(name);
         }
 
         private void PerformZoom()

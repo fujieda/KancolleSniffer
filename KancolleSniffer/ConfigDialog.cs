@@ -34,6 +34,8 @@ namespace KancolleSniffer
         private const string Home = "http://kancollesniffer.osdn.jp/";
         private Point _prevPosition = new Point(int.MinValue, int.MinValue);
 
+        public List<string> RepeatSettingsChanged { get; } = new List<string>();
+
         public ConfigDialog(Config config, MainForm main)
         {
             InitializeComponent();
@@ -150,10 +152,21 @@ namespace KancolleSniffer
             _config.FlashWindow = checkBoxFlash.Checked;
             _config.ShowBaloonTip = checkBoxBalloon.Checked;
             _config.PlaySound = checkBoxSound.Checked;
-            foreach (var name in Config.NotificationNames)
-                _config.Notifications[name] = _notificationSettings[name];
             _config.MarginShips = (int)numericUpDownMarginShips.Value;
             _config.MarginEquips = (int)numericUpDownMarginEquips.Value;
+
+            RepeatSettingsChanged.Clear();
+            foreach (var name in Config.NotificationNames)
+            {
+                var old = _config.Notifications[name];
+                var cur = _notificationSettings[name];
+                if (old.RepeatInterval != cur.RepeatInterval ||
+                    (old.Flags & NotificationType.Repeat) != (cur.Flags & NotificationType.Repeat))
+                {
+                    RepeatSettingsChanged.Add(name);
+                }
+                _config.Notifications[name] = cur;
+            }
 
             _config.NotifyConditions.Clear();
             if (checkBoxCond40.Checked)
