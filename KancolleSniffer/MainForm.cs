@@ -747,7 +747,7 @@ namespace KancolleSniffer
                 timer.Update();
                 SetTimerColor(kdock[i], timer);
 
-                kdock[i].Text = timer.EndTime == DateTime.MinValue ? "" : timer.Rest.ToString(@"hh\:mm\:ss");
+                kdock[i].Text = timer.ToString();
                 if (!timer.NeedRing)
                     continue;
                 SetNotification("建造完了", $"第{i + 1:D}ドック");

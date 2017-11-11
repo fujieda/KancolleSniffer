@@ -90,9 +90,13 @@ namespace KancolleSniffer
                 var timer = _kdocTimers[(int)entry.api_id - 1];
                 var complete = (double)entry.api_complete_time;
                 if ((int)complete == 0 && (int)entry.api_created_ship_id != 0)
-                    timer.SetEndTime(DateTime.Now.AddHours(-1)); // 過去の時刻を設定する
+                {
+                    timer.Finish();
+                }
                 else
+                {
                     timer.SetEndTime(complete);
+                }
             }
         }
 
@@ -100,7 +104,7 @@ namespace KancolleSniffer
         {
             var values = HttpUtility.ParseQueryString(request);
             var dock = int.Parse(values["api_kdock_id"]) - 1;
-            _kdocTimers[dock].SetEndTime(DateTime.Now.AddHours(-1));
+            _kdocTimers[dock].Finish();
         }
 
         public RingTimer[] KDock => _kdocTimers;

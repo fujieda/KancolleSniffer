@@ -626,10 +626,11 @@ namespace KancolleSniffer
     public class RingTimer
     {
         private readonly TimeSpan _spare;
+        private bool _finished;
 
         public TimeSpan Rest { get; private set; }
 
-        public bool IsFinished => EndTime != DateTime.MinValue && Rest <= _spare;
+        public bool IsFinished => _finished;
 
         public DateTime EndTime { get; private set; }
 
@@ -650,11 +651,17 @@ namespace KancolleSniffer
         public void SetEndTime(DateTime time)
         {
             EndTime = time;
+            _finished = false;
+        }
+
+        public void Finish()
+        {
+            _finished = true;
         }
 
         public void Update()
         {
-            if (EndTime == DateTime.MinValue)
+            if (EndTime == DateTime.MinValue || _finished)
             {
                 Rest = TimeSpan.Zero;
                 return;
@@ -663,14 +670,18 @@ namespace KancolleSniffer
             Rest = EndTime - DateTime.Now;
             if (Rest < TimeSpan.Zero)
                 Rest = TimeSpan.Zero;
-            if (prev > _spare && _spare >= Rest)
-                NeedRing = true;
+            if (_spare >= Rest)
+            {
+                _finished = true;
+                if (prev > _spare)
+                    NeedRing = true;
+            }
         }
 
-        public string ToString(bool finish = false)
-            => EndTime == DateTime.MinValue
+        public string ToString(bool endTime = false)
+            => EndTime == DateTime.MinValue && !_finished
                 ? ""
-                : finish
+                : endTime
                     ? EndTime.ToString(@"dd\ HH\:mm", CultureInfo.InvariantCulture)
                     : $"{(int)Rest.TotalHours:d2}:" + Rest.ToString(@"mm\:ss", CultureInfo.InvariantCulture);
     }
