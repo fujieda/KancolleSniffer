@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Specialized;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace KancolleSniffer
 {
-    public class PushBullet
+    public static class PushNotification
     {
-        public static void PushNote(string token, string title, string body)
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static void PushToPushbullet(string token, string title, string body)
         {
             using (var wc = new WebClient())
             {
@@ -28,6 +31,21 @@ namespace KancolleSniffer
                 wc.Encoding = Encoding.UTF8;
                 wc.UploadString("https://api.pushbullet.com/v2/pushes",
                     $"{{ \"type\": \"note\", \"title\": \"{title}\", \"body\": \"{body}\" }}");
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static void PushToPushover(string apiKey, string userKey, string title, string body)
+        {
+            using (var wc = new WebClient())
+            {
+                wc.UploadValues("https://api.pushover.net/1/messages.json", new NameValueCollection
+                {
+                    {"token", apiKey},
+                    {"user", userKey},
+                    {"message", body},
+                    {"title", title}
+                });
             }
         }
     }

@@ -325,7 +325,6 @@ namespace KancolleSniffer
                 ApplyConfig();
                 StopRepeatingTimer(_configDialog.RepeatSettingsChanged);
             }
-
         }
 
         private void StopRepeatingTimer(IEnumerable<string> names)
@@ -398,7 +397,7 @@ namespace KancolleSniffer
         {
             var rect = new Rectangle(
                 new Point(location.X + SystemInformation.IconSize.Width + SystemInformation.HorizontalFocusThickness,
-                    location.Y + SystemInformation.CaptionHeight) , new Size(60, 1));
+                    location.Y + SystemInformation.CaptionHeight), new Size(60, 1));
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect));
         }
 
@@ -890,7 +889,18 @@ namespace KancolleSniffer
                 PlaySound(_config.Sounds[name], _config.Sounds.Volume);
             if (_config.Pushbullet.On && (_config.Notifications[name].Flags & NotificationType.Pushbullet) != 0)
             {
-                Task.Run(() => { PushBullet.PushNote(_config.Pushbullet.Token, balloonTitle, balloonMessage); });
+                Task.Run(() =>
+                {
+                    PushNotification.PushToPushbullet(_config.Pushbullet.Token, balloonTitle, balloonMessage);
+                });
+            }
+            if (_config.Pushover.On && (_config.Notifications[name].Flags & NotificationType.Pushbullet) != 0)
+            {
+                Task.Run(() =>
+                {
+                    PushNotification.PushToPushover(_config.Pushover.ApiKey, _config.Pushover.UserKey,
+                        balloonTitle, balloonMessage);
+                });
             }
         }
 

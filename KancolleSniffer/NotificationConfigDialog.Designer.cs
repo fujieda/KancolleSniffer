@@ -98,9 +98,9 @@
             this.checkBoxPushbullet.AutoSize = true;
             this.checkBoxPushbullet.Location = new System.Drawing.Point(12, 128);
             this.checkBoxPushbullet.Name = "checkBoxPushbullet";
-            this.checkBoxPushbullet.Size = new System.Drawing.Size(77, 16);
+            this.checkBoxPushbullet.Size = new System.Drawing.Size(82, 16);
             this.checkBoxPushbullet.TabIndex = 7;
-            this.checkBoxPushbullet.Text = "Pushbullet";
+            this.checkBoxPushbullet.Text = "プッシュ通知";
             this.checkBoxPushbullet.UseVisualStyleBackColor = true;
             this.checkBoxPushbullet.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 

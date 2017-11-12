@@ -101,6 +101,9 @@ namespace KancolleSniffer
             textBoxKancolleDbToken.Text = _config.KancolleDb.Token;
             checkBoxPushbulletOn.Checked = _config.Pushbullet.On;
             textBoxPushbulletToken.Text = _config.Pushbullet.Token;
+            checkBoxPushoverOn.Checked = _config.Pushover.On;
+            textBoxPushoverApiKey.Text = _config.Pushover.ApiKey;
+            textBoxPushoverUserKey.Text = _config.Pushover.UserKey;
         }
 
         private void LoadProxySettings()
@@ -143,6 +146,9 @@ namespace KancolleSniffer
             _config.KancolleDb.Token = textBoxKancolleDbToken.Text;
             _config.Pushbullet.On = checkBoxPushbulletOn.Checked;
             _config.Pushbullet.Token = textBoxPushbulletToken.Text;
+            _config.Pushover.On = checkBoxPushoverOn.Checked;
+            _config.Pushover.ApiKey = textBoxPushoverApiKey.Text;
+            _config.Pushover.UserKey = textBoxPushoverUserKey.Text;
 
             _config.TopMost = checkBoxTopMost.Checked;
             _config.HideOnMinimized = checkBoxHideOnMinimized.Checked;
@@ -340,11 +346,24 @@ namespace KancolleSniffer
         {
             try
             {
-                PushBullet.PushNote(textBoxPushbulletToken.Text, "KancolleSniffer", "うまくいったかな？");
+                PushNotification.PushToPushbullet(textBoxPushbulletToken.Text, "KancolleSniffer", "うまくいったかな？");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.Message, "Pushbulletエラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buttonPushoverTest_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                PushNotification.PushToPushover(textBoxPushoverApiKey.Text, textBoxPushoverUserKey.Text,
+                    "KancolleSniffer", "うまくいったかな？");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Pushoverエラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

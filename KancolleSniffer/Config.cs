@@ -82,6 +82,13 @@ namespace KancolleSniffer
         public string Token { get; set; } = "";
     }
 
+    public class PushoverConfig
+    {
+        public bool On { get; set; }
+        public string ApiKey { get; set; } = "";
+        public string UserKey { get; set; } = "";
+    }
+
     public class SoundConfig
     {
         public int Volume { get; set; } = 100;
@@ -190,6 +197,7 @@ namespace KancolleSniffer
         public LogConfig Log { get; set; } = new LogConfig();
         public KancolleDbConfig KancolleDb { get; set; } = new KancolleDbConfig();
         public PushbulletConfig Pushbullet { get; set; } = new PushbulletConfig();
+        public PushoverConfig Pushover { get; set; } = new PushoverConfig();
 
         public static readonly string[] NotificationNames =
         {
