@@ -75,12 +75,27 @@ namespace KancolleSniffer
             labelPresetAkashiTimer.BackColor = ShipLabels.ColumnColors[1];
             _listForm = new ListForm(_sniffer, _config) {Owner = this};
             _notificationManager = new NotificationManager(Ring);
-            _config.Load();
+            try
+            {
+                _config.Load();
+            }
+            catch (Exception ex)
+            {
+                throw new ConfigFileException("設定ファイルが壊れています。", ex);
+
+            }
             _proxyManager = new ProxyManager(_config, this);
             _errorLog = new ErrorLog(_sniffer);
             PerformZoom();
             _shipLabels.AdjustAkashiTimers();
             _sniffer.LoadState();
+        }
+
+        public class ConfigFileException : Exception
+        {
+            public ConfigFileException(string message, Exception innerException) : base(message, innerException)
+            {
+            }
         }
 
         private void HttpProxy_AfterSessionComplete(HttpProxy.Session session)

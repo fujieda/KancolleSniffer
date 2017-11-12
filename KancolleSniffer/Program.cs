@@ -26,7 +26,17 @@ namespace KancolleSniffer
                 return;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            try
+            {
+                Application.Run(new MainForm());
+            }
+            catch (MainForm.ConfigFileException ex)
+            {
+                MessageBox.Show(ex.Message + "\r\n" +
+                                ex.InnerException?.Message + "\r\n" +
+                                ex.InnerException?.InnerException?.Message, "エラー",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
