@@ -49,20 +49,17 @@ namespace KancolleSniffer
             checkBoxShowBaloonTip.Checked = (notification.Flags & NotificationType.ShowBaloonTip) != 0;
             checkBoxPlaySound.Checked = (notification.Flags & NotificationType.PlaySound) != 0;
             checkBoxPushbullet.Checked = (notification.Flags & NotificationType.Pushbullet) != 0;
-            checkBoxRepeat.Checked = (notification.Flags & NotificationType.Repeat) != 0;
+            checkBoxRepeat.Checked = textBoxRepeat.Enabled = (notification.Flags & NotificationType.Repeat) != 0;
         }
 
         private void checkBox_CheckedChanged(object sender, EventArgs e)
         {
             var checkBox = (CheckBox)sender;
-            if (checkBox.Checked)
-            {
-                _notifications[(string)listBoxNotifications.SelectedItem].Flags |= (NotificationType)checkBox.Tag;
-            }
-            else
-            {
-                _notifications[(string)listBoxNotifications.SelectedItem].Flags &= ~(NotificationType)checkBox.Tag;
-            }
+            var type = (NotificationType)checkBox.Tag;
+            var spec = _notifications[(string)listBoxNotifications.SelectedItem];
+            spec.Flags = checkBox.Checked ? spec.Flags | type : spec.Flags & ~type;
+            if (type == NotificationType.Repeat)
+                textBoxRepeat.Enabled = checkBox.Checked;
         }
 
         private void textBoxRepeat_TextChanged(object sender, EventArgs e)
