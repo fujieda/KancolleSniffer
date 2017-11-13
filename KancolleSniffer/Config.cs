@@ -122,7 +122,8 @@ namespace KancolleSniffer
         PlaySound = 1 << 2,
         All = (1 << 3) - 1,
         Pushbullet = 1 << 3,
-        Repeat = 1 << 4
+        Push = 1 << 4,
+        Repeat = 1 << 5
     }
 
 
@@ -230,6 +231,12 @@ namespace KancolleSniffer
                     config = (Config)serializer.Deserialize(file);
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(config, null), null);
+                var ns = Notifications.Settings;
+                for (var i = 0; i < ns.Length; i++)
+                {
+                    if ((ns[i] & NotificationType.Pushbullet) != 0)
+                        ns[i] = ns[i] ^ NotificationType.Pushbullet | NotificationType.Push;
+                }
                 if (SaveLocationPerMachine)
                 {
                     foreach (var l in LocationList)

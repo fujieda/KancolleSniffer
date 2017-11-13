@@ -19,7 +19,7 @@ namespace KancolleSniffer
             checkBoxFlashWindow.Tag = NotificationType.FlashWindow;
             checkBoxShowBaloonTip.Tag = NotificationType.ShowBaloonTip;
             checkBoxPlaySound.Tag = NotificationType.PlaySound;
-            checkBoxPushbullet.Tag = NotificationType.Pushbullet;
+            checkBoxPush.Tag = NotificationType.Push;
             checkBoxRepeat.Tag = NotificationType.Repeat;
 
             // ReSharper disable once CoVariantArrayConversion
@@ -48,7 +48,7 @@ namespace KancolleSniffer
             checkBoxFlashWindow.Checked = (notification.Flags & NotificationType.FlashWindow) != 0;
             checkBoxShowBaloonTip.Checked = (notification.Flags & NotificationType.ShowBaloonTip) != 0;
             checkBoxPlaySound.Checked = (notification.Flags & NotificationType.PlaySound) != 0;
-            checkBoxPushbullet.Checked = (notification.Flags & NotificationType.Pushbullet) != 0;
+            checkBoxPush.Checked = (notification.Flags & NotificationType.Push) != 0;
             checkBoxRepeat.Checked = textBoxRepeat.Enabled = (notification.Flags & NotificationType.Repeat) != 0;
         }
 

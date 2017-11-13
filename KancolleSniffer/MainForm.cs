@@ -887,14 +887,14 @@ namespace KancolleSniffer
                 notifyIconMain.ShowBalloonTip(20000, balloonTitle, balloonMessage, ToolTipIcon.Info);
             if (_config.PlaySound && (_config.Notifications[name].Flags & NotificationType.PlaySound) != 0)
                 PlaySound(_config.Sounds[name], _config.Sounds.Volume);
-            if (_config.Pushbullet.On && (_config.Notifications[name].Flags & NotificationType.Pushbullet) != 0)
+            if (_config.Pushbullet.On && (_config.Notifications[name].Flags & NotificationType.Push) != 0)
             {
                 Task.Run(() =>
                 {
                     PushNotification.PushToPushbullet(_config.Pushbullet.Token, balloonTitle, balloonMessage);
                 });
             }
-            if (_config.Pushover.On && (_config.Notifications[name].Flags & NotificationType.Pushbullet) != 0)
+            if (_config.Pushover.On && (_config.Notifications[name].Flags & NotificationType.Push) != 0)
             {
                 Task.Run(() =>
                 {

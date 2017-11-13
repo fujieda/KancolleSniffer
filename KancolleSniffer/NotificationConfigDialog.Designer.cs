@@ -33,7 +33,7 @@
             this.checkBoxShowBaloonTip = new System.Windows.Forms.CheckBox();
             this.checkBoxPlaySound = new System.Windows.Forms.CheckBox();
             this.buttonClose = new System.Windows.Forms.Button();
-            this.checkBoxPushbullet = new System.Windows.Forms.CheckBox();
+            this.checkBoxPush = new System.Windows.Forms.CheckBox();
             this.checkBoxRepeat = new System.Windows.Forms.CheckBox();
             this.textBoxRepeat = new System.Windows.Forms.TextBox();
             this.labelRepeat = new System.Windows.Forms.Label();
@@ -93,16 +93,16 @@
             this.buttonClose.Text = "閉じる";
             this.buttonClose.UseVisualStyleBackColor = true;
             // 
-            // checkBoxPushbullet
+            // checkBoxPush
             // 
-            this.checkBoxPushbullet.AutoSize = true;
-            this.checkBoxPushbullet.Location = new System.Drawing.Point(12, 128);
-            this.checkBoxPushbullet.Name = "checkBoxPushbullet";
-            this.checkBoxPushbullet.Size = new System.Drawing.Size(82, 16);
-            this.checkBoxPushbullet.TabIndex = 7;
-            this.checkBoxPushbullet.Text = "プッシュ通知";
-            this.checkBoxPushbullet.UseVisualStyleBackColor = true;
-            this.checkBoxPushbullet.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            this.checkBoxPush.AutoSize = true;
+            this.checkBoxPush.Location = new System.Drawing.Point(12, 128);
+            this.checkBoxPush.Name = "checkBoxPush";
+            this.checkBoxPush.Size = new System.Drawing.Size(82, 16);
+            this.checkBoxPush.TabIndex = 7;
+            this.checkBoxPush.Text = "プッシュ通知";
+            this.checkBoxPush.UseVisualStyleBackColor = true;
+            this.checkBoxPush.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // checkBoxRepeat
             // 
@@ -142,7 +142,7 @@
             this.Controls.Add(this.labelRepeat);
             this.Controls.Add(this.textBoxRepeat);
             this.Controls.Add(this.checkBoxRepeat);
-            this.Controls.Add(this.checkBoxPushbullet);
+            this.Controls.Add(this.checkBoxPush);
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.checkBoxPlaySound);
             this.Controls.Add(this.checkBoxShowBaloonTip);
@@ -167,7 +167,7 @@
         private System.Windows.Forms.CheckBox checkBoxShowBaloonTip;
         private System.Windows.Forms.CheckBox checkBoxPlaySound;
         private System.Windows.Forms.Button buttonClose;
-        private System.Windows.Forms.CheckBox checkBoxPushbullet;
+        private System.Windows.Forms.CheckBox checkBoxPush;
         private System.Windows.Forms.CheckBox checkBoxRepeat;
         private System.Windows.Forms.TextBox textBoxRepeat;
         private System.Windows.Forms.Label labelRepeat;
