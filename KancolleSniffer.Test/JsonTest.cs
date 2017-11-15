@@ -303,5 +303,50 @@ namespace KancolleSniffer.Test
         }
 
         // ReSharper restore UnusedVariable
+
+        [TestMethod]
+        public void SetMember()
+        {
+            var obj = (dynamic)JsonParser.Parse("{}");
+            obj.is_a = "hoge";
+            Assert.AreEqual(obj.is_a, "hoge");
+        }
+
+        [TestMethod]
+        public void SetMemberArray()
+        {
+            var obj = (dynamic)JsonParser.Parse("{}");
+            var array = new[] {1, 2, 3, 4};
+            obj.is_a = array;
+            Assert.IsTrue(array.SequenceEqual((int[])obj.is_a));
+        }
+
+        [TestMethod]
+        public void SetIndex()
+        {
+            var array = (dynamic)JsonParser.Parse("[1,2,3,4]");
+            array[2] = 5;
+            Assert.IsTrue(array[2] == 5);
+
+            var obj = (dynamic)JsonParser.Parse("{}");
+            obj["is_a"] = "hoge";
+            Assert.AreEqual(obj.is_a, "hoge");
+        }
+
+        [TestMethod]
+        public void CreateObject()
+        {
+            var json = (dynamic)JsonObject.CreateJsonObject(new {aaa = 1, bbb = new[] {1, 2, 3}});
+            Assert.IsTrue(json.aaa == 1);
+            Assert.IsTrue(json.bbb[1] == 2);
+        }
+
+        [TestMethod]
+        public void CreateArray()
+        {
+            var json = (dynamic)JsonObject.CreateJsonObject(new[] {new {aaa = 1}, new {aaa = 2}});
+            Assert.IsTrue(json[0].aaa == 1);
+            Assert.IsTrue(json[1].aaa == 2);
+        }
     }
 }

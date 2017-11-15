@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace KancolleSniffer
@@ -400,6 +401,51 @@ namespace KancolleSniffer
             }
             result = array;
             return true;
+        }
+
+        public static JsonObject CreateJsonObject(object value)
+        {
+            switch (value)
+            {
+                case string s:
+                    return new JsonObject(s);
+                case int i:
+                    return new JsonObject(i);
+                case double d:
+                    return new JsonObject(d);
+                case JsonObject json:
+                    return json;
+                case IEnumerable arry:
+                    return new JsonObject(arry.Cast<object>().Select(CreateJsonObject).ToList());
+                case object obj:
+                    return new JsonObject(obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                        .ToDictionary(prop => prop.Name, prop => CreateJsonObject(prop.GetValue(obj))));
+            }
+            return null;
+
+        }
+
+        public override bool TrySetMember(SetMemberBinder binder, object value)
+        {
+            if (_type != JsonType.Object)
+                return false;
+            _dict[binder.Name] = CreateJsonObject(value);
+            return true;
+        }
+
+        public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
+        {
+            if (_type == JsonType.Array)
+            {
+                _array[(int)indexes[0]] = CreateJsonObject(value);
+                return true;
+            }
+            if (_type == JsonType.Object)
+            {
+                _dict[(string)indexes[0]] = CreateJsonObject(value);
+                return true;
+            }
+            return false;
         }
 
         private object Value
