@@ -141,6 +141,7 @@ namespace KancolleSniffer
             // labelHeaderCond
             // 
             this.labelHeaderCond.AutoSize = true;
+            this.labelHeaderCond.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelHeaderCond.Location = new System.Drawing.Point(132, 8);
             this.labelHeaderCond.Name = "labelHeaderCond";
             this.labelHeaderCond.Size = new System.Drawing.Size(29, 12);
@@ -151,6 +152,7 @@ namespace KancolleSniffer
             // labelHeaderExp
             // 
             this.labelHeaderExp.AutoSize = true;
+            this.labelHeaderExp.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelHeaderExp.Location = new System.Drawing.Point(200, 8);
             this.labelHeaderExp.Name = "labelHeaderExp";
             this.labelHeaderExp.Size = new System.Drawing.Size(24, 12);
