@@ -181,7 +181,7 @@ namespace KancolleSniffer
         public List<LocationPerMachine> LocationList { get; set; } = new List<LocationPerMachine>();
         public bool ShowHpInPercent { get; set; }
         public bool FlashWindow { get; set; } = true;
-        public bool ShowBaloonTip { get; set; }
+        public bool ShowBaloonTip { get; set; } = true;
         public bool PlaySound { get; set; } = true;
         public NotificationConfig Notifications { get; set; } = new NotificationConfig();
         public int MarginShips { get; set; } = 4;
