@@ -108,11 +108,21 @@ namespace KancolleSniffer
             this.label11 = new System.Windows.Forms.Label();
             this.buttonOutputDir = new System.Windows.Forms.Button();
             this.tabPageCollabo = new System.Windows.Forms.TabPage();
+            this.tabControlCollabo = new System.Windows.Forms.TabControl();
+            this.tabPagePushNotification = new System.Windows.Forms.TabPage();
+            this.groupBoxPushover = new System.Windows.Forms.GroupBox();
+            this.buttonPushoverTest = new System.Windows.Forms.Button();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBoxPushoverUserKey = new System.Windows.Forms.TextBox();
+            this.checkBoxPushoverOn = new System.Windows.Forms.CheckBox();
+            this.textBoxPushoverApiKey = new System.Windows.Forms.TextBox();
             this.groupBoxPushbullet = new System.Windows.Forms.GroupBox();
             this.buttonPushbulletTest = new System.Windows.Forms.Button();
             this.textBoxPushbulletToken = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.checkBoxPushbulletOn = new System.Windows.Forms.CheckBox();
+            this.tabPageExternalService = new System.Windows.Forms.TabPage();
             this.groupBoxKancolleDb = new System.Windows.Forms.GroupBox();
             this.textBoxKancolleDbToken = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -129,16 +139,6 @@ namespace KancolleSniffer
             this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
-            this.textBoxPushoverApiKey = new System.Windows.Forms.TextBox();
-            this.checkBoxPushoverOn = new System.Windows.Forms.CheckBox();
-            this.tabControlCollabo = new System.Windows.Forms.TabControl();
-            this.tabPagePushNotification = new System.Windows.Forms.TabPage();
-            this.tabPageExternalService = new System.Windows.Forms.TabPage();
-            this.groupBoxPushover = new System.Windows.Forms.GroupBox();
-            this.textBoxPushoverUserKey = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.buttonPushoverTest = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageWindow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -156,13 +156,13 @@ namespace KancolleSniffer
             this.tabPageLog.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).BeginInit();
             this.tabPageCollabo.SuspendLayout();
-            this.groupBoxPushbullet.SuspendLayout();
-            this.groupBoxKancolleDb.SuspendLayout();
-            this.tabPageDebug.SuspendLayout();
             this.tabControlCollabo.SuspendLayout();
             this.tabPagePushNotification.SuspendLayout();
-            this.tabPageExternalService.SuspendLayout();
             this.groupBoxPushover.SuspendLayout();
+            this.groupBoxPushbullet.SuspendLayout();
+            this.tabPageExternalService.SuspendLayout();
+            this.groupBoxKancolleDb.SuspendLayout();
+            this.tabPageDebug.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -298,7 +298,7 @@ namespace KancolleSniffer
             // 
             // buttonDetailedSettings
             // 
-            this.buttonDetailedSettings.Location = new System.Drawing.Point(170, 11);
+            this.buttonDetailedSettings.Location = new System.Drawing.Point(11, 122);
             this.buttonDetailedSettings.Name = "buttonDetailedSettings";
             this.buttonDetailedSettings.Size = new System.Drawing.Size(75, 23);
             this.buttonDetailedSettings.TabIndex = 26;
@@ -309,16 +309,16 @@ namespace KancolleSniffer
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(9, 119);
+            this.label6.Location = new System.Drawing.Point(159, 61);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(105, 12);
+            this.label6.Size = new System.Drawing.Size(86, 12);
             this.label6.TabIndex = 25;
-            this.label6.Text = "疲労回復を通知する";
+            this.label6.Text = "疲労回復を通知";
             // 
             // checkBoxCond49
             // 
             this.checkBoxCond49.AutoSize = true;
-            this.checkBoxCond49.Location = new System.Drawing.Point(180, 118);
+            this.checkBoxCond49.Location = new System.Drawing.Point(161, 97);
             this.checkBoxCond49.Name = "checkBoxCond49";
             this.checkBoxCond49.Size = new System.Drawing.Size(60, 16);
             this.checkBoxCond49.TabIndex = 24;
@@ -328,7 +328,7 @@ namespace KancolleSniffer
             // checkBoxCond40
             // 
             this.checkBoxCond40.AutoSize = true;
-            this.checkBoxCond40.Location = new System.Drawing.Point(118, 118);
+            this.checkBoxCond40.Location = new System.Drawing.Point(161, 78);
             this.checkBoxCond40.Name = "checkBoxCond40";
             this.checkBoxCond40.Size = new System.Drawing.Size(60, 16);
             this.checkBoxCond40.TabIndex = 23;
@@ -338,15 +338,15 @@ namespace KancolleSniffer
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(118, 96);
+            this.label5.Location = new System.Drawing.Point(95, 81);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(70, 12);
+            this.label5.Size = new System.Drawing.Size(51, 12);
             this.label5.TabIndex = 22;
-            this.label5.Text = "個で通知する";
+            this.label5.Text = "個で通知";
             // 
             // numericUpDownMarginEquips
             // 
-            this.numericUpDownMarginEquips.Location = new System.Drawing.Point(81, 94);
+            this.numericUpDownMarginEquips.Location = new System.Drawing.Point(58, 79);
             this.numericUpDownMarginEquips.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.numericUpDownMarginEquips.Maximum = new decimal(new int[] {
             99,
@@ -361,7 +361,7 @@ namespace KancolleSniffer
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(52, 96);
+            this.label4.Location = new System.Drawing.Point(29, 81);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(29, 12);
             this.label4.TabIndex = 20;
@@ -369,7 +369,7 @@ namespace KancolleSniffer
             // 
             // numericUpDownMarginShips
             // 
-            this.numericUpDownMarginShips.Location = new System.Drawing.Point(80, 74);
+            this.numericUpDownMarginShips.Location = new System.Drawing.Point(57, 59);
             this.numericUpDownMarginShips.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.numericUpDownMarginShips.Maximum = new decimal(new int[] {
             99,
@@ -384,7 +384,7 @@ namespace KancolleSniffer
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(118, 76);
+            this.label2.Location = new System.Drawing.Point(95, 61);
             this.label2.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(17, 12);
@@ -394,16 +394,16 @@ namespace KancolleSniffer
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 76);
+            this.label1.Location = new System.Drawing.Point(9, 61);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 12);
+            this.label1.Size = new System.Drawing.Size(49, 12);
             this.label1.TabIndex = 17;
-            this.label1.Text = "上限まで艦娘";
+            this.label1.Text = "残り艦娘";
             // 
             // checkBoxSound
             // 
             this.checkBoxSound.AutoSize = true;
-            this.checkBoxSound.Location = new System.Drawing.Point(11, 53);
+            this.checkBoxSound.Location = new System.Drawing.Point(122, 11);
             this.checkBoxSound.Name = "checkBoxSound";
             this.checkBoxSound.Size = new System.Drawing.Size(94, 16);
             this.checkBoxSound.TabIndex = 16;
@@ -415,9 +415,9 @@ namespace KancolleSniffer
             this.checkBoxBalloon.AutoSize = true;
             this.checkBoxBalloon.Location = new System.Drawing.Point(11, 32);
             this.checkBoxBalloon.Name = "checkBoxBalloon";
-            this.checkBoxBalloon.Size = new System.Drawing.Size(153, 16);
+            this.checkBoxBalloon.Size = new System.Drawing.Size(105, 16);
             this.checkBoxBalloon.TabIndex = 15;
-            this.checkBoxBalloon.Text = "通知領域にバルーンを表示";
+            this.checkBoxBalloon.Text = "通知領域に表示";
             this.checkBoxBalloon.UseVisualStyleBackColor = true;
             // 
             // checkBoxFlash
@@ -866,6 +866,97 @@ namespace KancolleSniffer
             this.tabPageCollabo.Text = "連携";
             this.tabPageCollabo.UseVisualStyleBackColor = true;
             // 
+            // tabControlCollabo
+            // 
+            this.tabControlCollabo.Controls.Add(this.tabPagePushNotification);
+            this.tabControlCollabo.Controls.Add(this.tabPageExternalService);
+            this.tabControlCollabo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlCollabo.Location = new System.Drawing.Point(0, 0);
+            this.tabControlCollabo.Name = "tabControlCollabo";
+            this.tabControlCollabo.SelectedIndex = 0;
+            this.tabControlCollabo.Size = new System.Drawing.Size(256, 158);
+            this.tabControlCollabo.TabIndex = 3;
+            // 
+            // tabPagePushNotification
+            // 
+            this.tabPagePushNotification.Controls.Add(this.groupBoxPushover);
+            this.tabPagePushNotification.Controls.Add(this.groupBoxPushbullet);
+            this.tabPagePushNotification.Location = new System.Drawing.Point(4, 22);
+            this.tabPagePushNotification.Name = "tabPagePushNotification";
+            this.tabPagePushNotification.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPagePushNotification.Size = new System.Drawing.Size(248, 132);
+            this.tabPagePushNotification.TabIndex = 0;
+            this.tabPagePushNotification.Text = "プッシュ通知";
+            this.tabPagePushNotification.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxPushover
+            // 
+            this.groupBoxPushover.Controls.Add(this.buttonPushoverTest);
+            this.groupBoxPushover.Controls.Add(this.label16);
+            this.groupBoxPushover.Controls.Add(this.label12);
+            this.groupBoxPushover.Controls.Add(this.textBoxPushoverUserKey);
+            this.groupBoxPushover.Controls.Add(this.checkBoxPushoverOn);
+            this.groupBoxPushover.Controls.Add(this.textBoxPushoverApiKey);
+            this.groupBoxPushover.Location = new System.Drawing.Point(6, 55);
+            this.groupBoxPushover.Name = "groupBoxPushover";
+            this.groupBoxPushover.Size = new System.Drawing.Size(236, 66);
+            this.groupBoxPushover.TabIndex = 2;
+            this.groupBoxPushover.TabStop = false;
+            this.groupBoxPushover.Text = "Pushover";
+            // 
+            // buttonPushoverTest
+            // 
+            this.buttonPushoverTest.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F);
+            this.buttonPushoverTest.Location = new System.Drawing.Point(6, 36);
+            this.buttonPushoverTest.Name = "buttonPushoverTest";
+            this.buttonPushoverTest.Size = new System.Drawing.Size(37, 23);
+            this.buttonPushoverTest.TabIndex = 12;
+            this.buttonPushoverTest.Text = "Test";
+            this.buttonPushoverTest.UseVisualStyleBackColor = true;
+            this.buttonPushoverTest.Click += new System.EventHandler(this.buttonPushoverTest_Click);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(58, 17);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(48, 12);
+            this.label16.TabIndex = 11;
+            this.label16.Text = "API Key:";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(52, 41);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(54, 12);
+            this.label12.TabIndex = 10;
+            this.label12.Text = "User Key:";
+            // 
+            // textBoxPushoverUserKey
+            // 
+            this.textBoxPushoverUserKey.Location = new System.Drawing.Point(106, 38);
+            this.textBoxPushoverUserKey.Name = "textBoxPushoverUserKey";
+            this.textBoxPushoverUserKey.Size = new System.Drawing.Size(122, 19);
+            this.textBoxPushoverUserKey.TabIndex = 9;
+            // 
+            // checkBoxPushoverOn
+            // 
+            this.checkBoxPushoverOn.AutoSize = true;
+            this.checkBoxPushoverOn.Location = new System.Drawing.Point(6, 16);
+            this.checkBoxPushoverOn.Name = "checkBoxPushoverOn";
+            this.checkBoxPushoverOn.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxPushoverOn.TabIndex = 5;
+            this.checkBoxPushoverOn.Text = "有効";
+            this.checkBoxPushoverOn.UseVisualStyleBackColor = true;
+            // 
+            // textBoxPushoverApiKey
+            // 
+            this.textBoxPushoverApiKey.Location = new System.Drawing.Point(106, 13);
+            this.textBoxPushoverApiKey.Name = "textBoxPushoverApiKey";
+            this.textBoxPushoverApiKey.Size = new System.Drawing.Size(122, 19);
+            this.textBoxPushoverApiKey.TabIndex = 7;
+            // 
             // groupBoxPushbullet
             // 
             this.groupBoxPushbullet.Controls.Add(this.buttonPushbulletTest);
@@ -915,6 +1006,17 @@ namespace KancolleSniffer
             this.checkBoxPushbulletOn.TabIndex = 0;
             this.checkBoxPushbulletOn.Text = "有効";
             this.checkBoxPushbulletOn.UseVisualStyleBackColor = true;
+            // 
+            // tabPageExternalService
+            // 
+            this.tabPageExternalService.Controls.Add(this.groupBoxKancolleDb);
+            this.tabPageExternalService.Location = new System.Drawing.Point(4, 22);
+            this.tabPageExternalService.Name = "tabPageExternalService";
+            this.tabPageExternalService.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageExternalService.Size = new System.Drawing.Size(248, 132);
+            this.tabPageExternalService.TabIndex = 1;
+            this.tabPageExternalService.Text = "外部サービス";
+            this.tabPageExternalService.UseVisualStyleBackColor = true;
             // 
             // groupBoxKancolleDb
             // 
@@ -1061,108 +1163,6 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
-            // textBoxPushoverApiKey
-            // 
-            this.textBoxPushoverApiKey.Location = new System.Drawing.Point(106, 13);
-            this.textBoxPushoverApiKey.Name = "textBoxPushoverApiKey";
-            this.textBoxPushoverApiKey.Size = new System.Drawing.Size(122, 19);
-            this.textBoxPushoverApiKey.TabIndex = 7;
-            // 
-            // checkBoxPushoverOn
-            // 
-            this.checkBoxPushoverOn.AutoSize = true;
-            this.checkBoxPushoverOn.Location = new System.Drawing.Point(6, 16);
-            this.checkBoxPushoverOn.Name = "checkBoxPushoverOn";
-            this.checkBoxPushoverOn.Size = new System.Drawing.Size(48, 16);
-            this.checkBoxPushoverOn.TabIndex = 5;
-            this.checkBoxPushoverOn.Text = "有効";
-            this.checkBoxPushoverOn.UseVisualStyleBackColor = true;
-            // 
-            // tabControlCollabo
-            // 
-            this.tabControlCollabo.Controls.Add(this.tabPagePushNotification);
-            this.tabControlCollabo.Controls.Add(this.tabPageExternalService);
-            this.tabControlCollabo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControlCollabo.Location = new System.Drawing.Point(0, 0);
-            this.tabControlCollabo.Name = "tabControlCollabo";
-            this.tabControlCollabo.SelectedIndex = 0;
-            this.tabControlCollabo.Size = new System.Drawing.Size(256, 158);
-            this.tabControlCollabo.TabIndex = 3;
-            // 
-            // tabPagePushNotification
-            // 
-            this.tabPagePushNotification.Controls.Add(this.groupBoxPushover);
-            this.tabPagePushNotification.Controls.Add(this.groupBoxPushbullet);
-            this.tabPagePushNotification.Location = new System.Drawing.Point(4, 22);
-            this.tabPagePushNotification.Name = "tabPagePushNotification";
-            this.tabPagePushNotification.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPagePushNotification.Size = new System.Drawing.Size(248, 132);
-            this.tabPagePushNotification.TabIndex = 0;
-            this.tabPagePushNotification.Text = "プッシュ通知";
-            this.tabPagePushNotification.UseVisualStyleBackColor = true;
-            // 
-            // tabPageExternalService
-            // 
-            this.tabPageExternalService.Controls.Add(this.groupBoxKancolleDb);
-            this.tabPageExternalService.Location = new System.Drawing.Point(4, 22);
-            this.tabPageExternalService.Name = "tabPageExternalService";
-            this.tabPageExternalService.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageExternalService.Size = new System.Drawing.Size(248, 132);
-            this.tabPageExternalService.TabIndex = 1;
-            this.tabPageExternalService.Text = "外部サービス";
-            this.tabPageExternalService.UseVisualStyleBackColor = true;
-            // 
-            // groupBoxPushover
-            // 
-            this.groupBoxPushover.Controls.Add(this.buttonPushoverTest);
-            this.groupBoxPushover.Controls.Add(this.label16);
-            this.groupBoxPushover.Controls.Add(this.label12);
-            this.groupBoxPushover.Controls.Add(this.textBoxPushoverUserKey);
-            this.groupBoxPushover.Controls.Add(this.checkBoxPushoverOn);
-            this.groupBoxPushover.Controls.Add(this.textBoxPushoverApiKey);
-            this.groupBoxPushover.Location = new System.Drawing.Point(6, 55);
-            this.groupBoxPushover.Name = "groupBoxPushover";
-            this.groupBoxPushover.Size = new System.Drawing.Size(236, 66);
-            this.groupBoxPushover.TabIndex = 2;
-            this.groupBoxPushover.TabStop = false;
-            this.groupBoxPushover.Text = "Pushover";
-            // 
-            // textBoxPushoverUserKey
-            // 
-            this.textBoxPushoverUserKey.Location = new System.Drawing.Point(106, 38);
-            this.textBoxPushoverUserKey.Name = "textBoxPushoverUserKey";
-            this.textBoxPushoverUserKey.Size = new System.Drawing.Size(122, 19);
-            this.textBoxPushoverUserKey.TabIndex = 9;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(52, 41);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(54, 12);
-            this.label12.TabIndex = 10;
-            this.label12.Text = "User Key:";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(58, 17);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(48, 12);
-            this.label16.TabIndex = 11;
-            this.label16.Text = "API Key:";
-            // 
-            // buttonPushoverTest
-            // 
-            this.buttonPushoverTest.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F);
-            this.buttonPushoverTest.Location = new System.Drawing.Point(6, 36);
-            this.buttonPushoverTest.Name = "buttonPushoverTest";
-            this.buttonPushoverTest.Size = new System.Drawing.Size(37, 23);
-            this.buttonPushoverTest.TabIndex = 12;
-            this.buttonPushoverTest.Text = "Test";
-            this.buttonPushoverTest.UseVisualStyleBackColor = true;
-            this.buttonPushoverTest.Click += new System.EventHandler(this.buttonPushoverTest_Click);
-            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1206,17 +1206,17 @@ namespace KancolleSniffer
             this.tabPageLog.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaterialLogInterval)).EndInit();
             this.tabPageCollabo.ResumeLayout(false);
+            this.tabControlCollabo.ResumeLayout(false);
+            this.tabPagePushNotification.ResumeLayout(false);
+            this.groupBoxPushover.ResumeLayout(false);
+            this.groupBoxPushover.PerformLayout();
             this.groupBoxPushbullet.ResumeLayout(false);
             this.groupBoxPushbullet.PerformLayout();
+            this.tabPageExternalService.ResumeLayout(false);
             this.groupBoxKancolleDb.ResumeLayout(false);
             this.groupBoxKancolleDb.PerformLayout();
             this.tabPageDebug.ResumeLayout(false);
             this.tabPageDebug.PerformLayout();
-            this.tabControlCollabo.ResumeLayout(false);
-            this.tabPagePushNotification.ResumeLayout(false);
-            this.tabPageExternalService.ResumeLayout(false);
-            this.groupBoxPushover.ResumeLayout(false);
-            this.groupBoxPushover.PerformLayout();
             this.ResumeLayout(false);
 
         }
