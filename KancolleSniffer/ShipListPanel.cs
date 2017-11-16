@@ -423,12 +423,12 @@ namespace KancolleSniffer
         {
             var s = _shipList[i + ScrollBar.Value];
             var labels = _labelList[i];
-            for (var c = 0; c < 4; c++)
-            {
-                labels[c].Text = "";
-                labels[c].BackColor = labels[c].PresetColor;
-            }
-            labels[4].SetName("");
+            labels[0].SetHp(null);
+            labels[1].SetCond(null);
+            labels[2].SetLevel(null);
+            labels[3].SetExpToNext(null);
+            labels[4].SetName(null);
+            labels[5].SetFleet(null);
             labels[5].Text = s.Name;
             _labelPanelList[i].Visible = true;
         }

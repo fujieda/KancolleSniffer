@@ -104,21 +104,12 @@ namespace KancolleSniffer
             for (var i = 0; i < _labels.Length; i++)
             {
                 var labels = _labels[i];
-                if (i < statuses.Length)
-                {
-                    var s = statuses[i];
-                    labels[0].SetHp(s);
-                    labels[1].SetCond(s);
-                    labels[2].SetLevel(s);
-                    labels[3].SetExpToNext(s);
-                    labels[4].SetName(s, ShipNameWidth.MainPanel);
-                }
-                else
-                {
-                    labels[0].Text = labels[1].Text = labels[2].Text = labels[3].Text = "";
-                    labels[4].SetName("");
-                    labels[0].BackColor = labels[1].BackColor = labels[0].PresetColor;
-                }
+                var s = i < statuses.Length ? statuses[i] : null;
+                labels[0].SetHp(s);
+                labels[1].SetCond(s);
+                labels[2].SetLevel(s);
+                labels[3].SetExpToNext(s);
+                labels[4].SetName(s, ShipNameWidth.MainPanel);
             }
         }
 
@@ -175,19 +166,10 @@ namespace KancolleSniffer
                 var idx = i % ShipInfo.MemberCount;
                 var statuses = i < ShipInfo.MemberCount ? first : second;
                 var labels = _combinedLabels[i];
-                if (idx < statuses.Length)
-                {
-                    var s = statuses[idx];
-                    labels[0].SetHp(s);
-                    labels[1].SetCond(s);
-                    labels[2].SetName(s, ShipNameWidth.Combined);
-                }
-                else
-                {
-                    labels[0].Text = labels[1].Text = "";
-                    labels[2].SetName("");
-                    labels[0].BackColor = labels[1].BackColor = labels[0].PresetColor;
-                }
+                var s = idx < statuses.Length ? statuses[idx] : null;
+                labels[0].SetHp(s);
+                labels[1].SetCond(s);
+                labels[2].SetName(s, ShipNameWidth.Combined);
             }
         }
 
@@ -337,7 +319,12 @@ namespace KancolleSniffer
 
         public void SetName(ShipStatus status, ShipNameWidth width = ShipNameWidth.Max)
         {
-            SlotStatus empty = SlotStatus.Equipped;
+            if (status == null)
+            {
+                SetName("");
+                return;
+            }
+            var empty = SlotStatus.Equipped;
             if (status.Id != -1)
             {
                 if (status.Slot.All(item => item.Id == -1))
@@ -347,7 +334,7 @@ namespace KancolleSniffer
             }
             var dc = status.PreparedDamageControl;
             var dcname = dc == 42 ? "[ダ]" : dc == 43 ? "[メ]" : "";
-            SetName((status.Escaped ? "[避]" : dcname), status.Name, empty, width);
+            SetName(status.Escaped ? "[避]" : dcname, status.Name, empty, width);
         }
 
         public void SetName(string name)
@@ -363,7 +350,7 @@ namespace KancolleSniffer
         private void SetName(string prefix, string name, SlotStatus slotStatus, ShipNameWidth width = ShipNameWidth.Max)
         {
             if (name == null)
-                return;
+                name = "";
             _slotStatus = slotStatus;
             var lu = new Regex(@"^\p{Lu}").IsMatch(name);
             var shift = (int)Round(ScaleFactor.Height);
@@ -399,6 +386,12 @@ namespace KancolleSniffer
 
         public void SetHp(ShipStatus status)
         {
+            if (status == null)
+            {
+                Text = "";
+                BackColor = PresetColor;
+                return;
+            }
             Text = $"{status.NowHp:D}/{status.MaxHp:D}";
             BackColor = DamageColor(status, PresetColor);
         }
@@ -427,6 +420,12 @@ namespace KancolleSniffer
 
         public void SetCond(ShipStatus status)
         {
+            if (status == null)
+            {
+                Text = "";
+                BackColor = PresetColor;
+                return;
+            }
             var cond = status.Cond;
             Text = cond.ToString("D");
             BackColor = cond >= 50
@@ -440,16 +439,21 @@ namespace KancolleSniffer
 
         public void SetLevel(ShipStatus status)
         {
-            Text = status.Level.ToString("D");
+            Text = status?.Level.ToString("D");
         }
 
         public void SetExpToNext(ShipStatus status)
         {
-            Text = status.ExpToNext.ToString("D");
+            Text = status?.ExpToNext.ToString("D");
         }
 
         public void SetRepairTime(ShipStatus status)
         {
+            if (status == null)
+            {
+                Text = "";
+                return;
+            }
             SetRepairTime(status.RepairTime);
         }
 
@@ -460,7 +464,7 @@ namespace KancolleSniffer
 
         public void SetFleet(ShipStatus status)
         {
-            Text = new[] {"", "1", "2", "3", "4"}[status.Fleet + 1];
+            Text = status == null ? "" : new[] {"", "1", "2", "3", "4"}[status.Fleet + 1];
         }
 
         protected override void OnLayout(LayoutEventArgs levent)
