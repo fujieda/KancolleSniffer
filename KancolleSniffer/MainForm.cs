@@ -881,20 +881,22 @@ namespace KancolleSniffer
 
         private void Ring(string balloonTitle, string balloonMessage, string name)
         {
-            if (_config.FlashWindow && (_config.Notifications[name].Flags & NotificationType.FlashWindow) != 0)
+            var flags = _config.Notifications[name].Flags;
+            var effective = _config.NotificationFlags & _config.Notifications[name].Flags;
+            if ((effective & NotificationType.FlashWindow) != 0)
                 Win32API.FlashWindow(Handle);
-            if (_config.ShowBaloonTip && (_config.Notifications[name].Flags & NotificationType.ShowBaloonTip) != 0)
+            if ((effective & NotificationType.ShowBaloonTip) != 0)
                 notifyIconMain.ShowBalloonTip(20000, balloonTitle, balloonMessage, ToolTipIcon.Info);
-            if (_config.PlaySound && (_config.Notifications[name].Flags & NotificationType.PlaySound) != 0)
+            if ((effective & NotificationType.PlaySound) != 0)
                 PlaySound(_config.Sounds[name], _config.Sounds.Volume);
-            if (_config.Pushbullet.On && (_config.Notifications[name].Flags & NotificationType.Push) != 0)
+            if (_config.Pushbullet.On && (flags & NotificationType.Push) != 0)
             {
                 Task.Run(() =>
                 {
                     PushNotification.PushToPushbullet(_config.Pushbullet.Token, balloonTitle, balloonMessage);
                 });
             }
-            if (_config.Pushover.On && (_config.Notifications[name].Flags & NotificationType.Push) != 0)
+            if (_config.Pushover.On && (flags & NotificationType.Push) != 0)
             {
                 Task.Run(() =>
                 {

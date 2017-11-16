@@ -71,9 +71,9 @@ namespace KancolleSniffer
             checkBoxLocationPerMachine.Checked = _config.SaveLocationPerMachine;
             comboBoxZoom.SelectedItem = _config.Zoom + "%";
 
-            checkBoxFlash.Checked = _config.FlashWindow;
-            checkBoxBalloon.Checked = _config.ShowBaloonTip;
-            checkBoxSound.Checked = _config.PlaySound;
+            checkBoxFlash.Checked = (_config.NotificationFlags & NotificationType.FlashWindow) != 0;
+            checkBoxBalloon.Checked = (_config.NotificationFlags & NotificationType.ShowBaloonTip) != 0;
+            checkBoxSound.Checked = (_config.NotificationFlags & NotificationType.PlaySound) != 0;
             foreach (var name in Config.NotificationNames)
                 _notificationSettings[name] = _config.Notifications[name];
             numericUpDownMarginShips.Value = _config.MarginShips;
@@ -155,9 +155,9 @@ namespace KancolleSniffer
             _config.ExitSilently = checkBoxExitSilently.Checked;
             _config.SaveLocationPerMachine = checkBoxLocationPerMachine.Checked;
             _config.Zoom = int.Parse(comboBoxZoom.SelectedItem.ToString().Substring(0, 3));
-            _config.FlashWindow = checkBoxFlash.Checked;
-            _config.ShowBaloonTip = checkBoxBalloon.Checked;
-            _config.PlaySound = checkBoxSound.Checked;
+            _config.NotificationFlags = (checkBoxFlash.Checked ? NotificationType.FlashWindow : 0) |
+                                        (checkBoxBalloon.Checked ? NotificationType.ShowBaloonTip : 0) |
+                                        (checkBoxSound.Checked ? NotificationType.PlaySound : 0);
             _config.MarginShips = (int)numericUpDownMarginShips.Value;
             _config.MarginEquips = (int)numericUpDownMarginEquips.Value;
 

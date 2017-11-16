@@ -183,6 +183,7 @@ namespace KancolleSniffer
         public bool FlashWindow { get; set; } = true;
         public bool ShowBaloonTip { get; set; } = true;
         public bool PlaySound { get; set; } = true;
+        public NotificationType NotificationFlags { get; set; } = NotificationType.All;
         public NotificationConfig Notifications { get; set; } = new NotificationConfig();
         public int MarginShips { get; set; } = 4;
         public int MarginEquips { get; set; } = 10;
@@ -237,6 +238,7 @@ namespace KancolleSniffer
                     if ((ns[i] & NotificationType.Pushbullet) != 0)
                         ns[i] = ns[i] ^ NotificationType.Pushbullet | NotificationType.Push;
                 }
+                ComposeNotificationFlags();
                 if (SaveLocationPerMachine)
                 {
                     foreach (var l in LocationList)
@@ -258,6 +260,14 @@ namespace KancolleSniffer
             ConvertPath(PrependBaseDir);
         }
 
+        private void ComposeNotificationFlags()
+        {
+            NotificationFlags = (NotificationFlags & ~NotificationType.All) |
+                                (FlashWindow ? NotificationType.FlashWindow : 0) |
+                                (ShowBaloonTip ? NotificationType.ShowBaloonTip : 0) |
+                                (PlaySound ? NotificationType.PlaySound : 0);
+        }
+
         public void Save()
         {
             if (SaveLocationPerMachine)
@@ -276,10 +286,18 @@ namespace KancolleSniffer
             {
                 LocationList = new List<LocationPerMachine>();
             }
+            DecomposeNotificationFlags();
             ConvertPath(StripBaseDir);
             var serializer = new XmlSerializer(typeof(Config));
             using (var file = File.CreateText(_configFileName))
                 serializer.Serialize(file, this);
+        }
+
+        private void DecomposeNotificationFlags()
+        {
+            FlashWindow = (NotificationFlags & NotificationType.FlashWindow) != 0;
+            ShowBaloonTip = (NotificationFlags & NotificationType.ShowBaloonTip) != 0;
+            PlaySound = (NotificationFlags & NotificationType.PlaySound) != 0;
         }
 
         private void ConvertPath(Func<string, string> func)
