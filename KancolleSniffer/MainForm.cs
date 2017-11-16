@@ -814,7 +814,7 @@ namespace KancolleSniffer
         {
             var spec = _config.Notifications[_notificationManager.KeyToName(key)];
             _notificationManager.Enqueue(key, fleet, subject,
-                (spec.Flags & NotificationType.Repeat) == 0 ? 0 : spec.RepeatInterval);
+                (spec.Flags & _config.NotificationFlags & NotificationType.Repeat) == 0 ? 0 : spec.RepeatInterval);
         }
 
         private void UpdateAkashiTimer()

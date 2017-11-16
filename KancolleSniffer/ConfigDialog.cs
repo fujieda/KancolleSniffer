@@ -50,7 +50,8 @@ namespace KancolleSniffer
                 {
                     {NotificationType.FlashWindow, checkBoxFlash},
                     {NotificationType.ShowBaloonTip, checkBoxBalloon},
-                    {NotificationType.PlaySound, checkBoxSound}
+                    {NotificationType.PlaySound, checkBoxSound},
+                    {NotificationType.Repeat, checkBoxRepeat}
                 });
         }
 
@@ -74,6 +75,7 @@ namespace KancolleSniffer
             checkBoxFlash.Checked = (_config.NotificationFlags & NotificationType.FlashWindow) != 0;
             checkBoxBalloon.Checked = (_config.NotificationFlags & NotificationType.ShowBaloonTip) != 0;
             checkBoxSound.Checked = (_config.NotificationFlags & NotificationType.PlaySound) != 0;
+            checkBoxRepeat.Checked = (_config.NotificationFlags & NotificationType.Repeat) != 0;
             foreach (var name in Config.NotificationNames)
                 _notificationSettings[name] = _config.Notifications[name];
             numericUpDownMarginShips.Value = _config.MarginShips;
@@ -157,17 +159,19 @@ namespace KancolleSniffer
             _config.Zoom = int.Parse(comboBoxZoom.SelectedItem.ToString().Substring(0, 3));
             _config.NotificationFlags = (checkBoxFlash.Checked ? NotificationType.FlashWindow : 0) |
                                         (checkBoxBalloon.Checked ? NotificationType.ShowBaloonTip : 0) |
-                                        (checkBoxSound.Checked ? NotificationType.PlaySound : 0);
+                                        (checkBoxSound.Checked ? NotificationType.PlaySound : 0) |
+                                        (checkBoxRepeat.Checked ? NotificationType.Repeat : 0);
             _config.MarginShips = (int)numericUpDownMarginShips.Value;
             _config.MarginEquips = (int)numericUpDownMarginEquips.Value;
 
             RepeatSettingsChanged.Clear();
+            var repeatOff = (_config.NotificationFlags & NotificationType.Repeat) == 0;
             foreach (var name in Config.NotificationNames)
             {
                 var old = _config.Notifications[name];
                 var cur = _notificationSettings[name];
-                if (old.RepeatInterval != cur.RepeatInterval ||
-                    (old.Flags & NotificationType.Repeat) != (cur.Flags & NotificationType.Repeat))
+                if (repeatOff || old.RepeatInterval != cur.RepeatInterval ||
+                    (cur.Flags & NotificationType.Repeat) == 0)
                 {
                     RepeatSettingsChanged.Add(name);
                 }

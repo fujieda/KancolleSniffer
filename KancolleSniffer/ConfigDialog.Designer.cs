@@ -53,6 +53,7 @@ namespace KancolleSniffer
             this.checkBoxHideOnMinimized = new System.Windows.Forms.CheckBox();
             this.checkBoxTopMost = new System.Windows.Forms.CheckBox();
             this.tabPageNotification = new System.Windows.Forms.TabPage();
+            this.checkBoxRepeat = new System.Windows.Forms.CheckBox();
             this.buttonDetailedSettings = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.checkBoxCond49 = new System.Windows.Forms.CheckBox();
@@ -275,6 +276,7 @@ namespace KancolleSniffer
             // 
             // tabPageNotification
             // 
+            this.tabPageNotification.Controls.Add(this.checkBoxRepeat);
             this.tabPageNotification.Controls.Add(this.buttonDetailedSettings);
             this.tabPageNotification.Controls.Add(this.label6);
             this.tabPageNotification.Controls.Add(this.checkBoxCond49);
@@ -295,6 +297,16 @@ namespace KancolleSniffer
             this.tabPageNotification.TabIndex = 1;
             this.tabPageNotification.Text = "通知";
             this.tabPageNotification.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxRepeat
+            // 
+            this.checkBoxRepeat.AutoSize = true;
+            this.checkBoxRepeat.Location = new System.Drawing.Point(122, 32);
+            this.checkBoxRepeat.Name = "checkBoxRepeat";
+            this.checkBoxRepeat.Size = new System.Drawing.Size(58, 16);
+            this.checkBoxRepeat.TabIndex = 27;
+            this.checkBoxRepeat.Text = "リピート";
+            this.checkBoxRepeat.UseVisualStyleBackColor = true;
             // 
             // buttonDetailedSettings
             // 
@@ -1319,5 +1331,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox textBoxPushoverUserKey;
         private System.Windows.Forms.TabPage tabPageExternalService;
+        private System.Windows.Forms.CheckBox checkBoxRepeat;
     }
 }

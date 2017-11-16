@@ -36,12 +36,11 @@ namespace KancolleSniffer
                 case "艦娘数超過":
                 case "装備数超過":
                 case "大破警告":
-                    checkBoxRepeat.Checked =
-                        checkBoxRepeat.Enabled = textBoxRepeat.Enabled = labelRepeat.Enabled = false;
+                    checkBoxRepeat.Enabled = checkBoxRepeat.Checked = false;
                     textBoxRepeat.Text = "";
                     break;
                 default:
-                    checkBoxRepeat.Enabled = textBoxRepeat.Enabled = labelRepeat.Enabled = true;
+                    checkBoxRepeat.Enabled = _configCheckBoxs[NotificationType.Repeat].Checked;
                     textBoxRepeat.Text = notification.RepeatInterval.ToString();
                     break;
             }
@@ -49,7 +48,7 @@ namespace KancolleSniffer
             checkBoxShowBaloonTip.Checked = (notification.Flags & NotificationType.ShowBaloonTip) != 0;
             checkBoxPlaySound.Checked = (notification.Flags & NotificationType.PlaySound) != 0;
             checkBoxPush.Checked = (notification.Flags & NotificationType.Push) != 0;
-            checkBoxRepeat.Checked = textBoxRepeat.Enabled = (notification.Flags & NotificationType.Repeat) != 0;
+            checkBoxRepeat.Checked = (notification.Flags & NotificationType.Repeat) != 0;
         }
 
         private void checkBox_CheckedChanged(object sender, EventArgs e)
@@ -59,7 +58,10 @@ namespace KancolleSniffer
             var spec = _notifications[(string)listBoxNotifications.SelectedItem];
             spec.Flags = checkBox.Checked ? spec.Flags | type : spec.Flags & ~type;
             if (type == NotificationType.Repeat)
-                textBoxRepeat.Enabled = checkBox.Checked;
+            {
+                textBoxRepeat.Enabled = labelRepeat.Enabled =
+                    _configCheckBoxs[NotificationType.Repeat].Checked && checkBox.Checked;
+            }
         }
 
         private void textBoxRepeat_TextChanged(object sender, EventArgs e)
@@ -73,6 +75,8 @@ namespace KancolleSniffer
             checkBoxFlashWindow.Enabled = _configCheckBoxs[NotificationType.FlashWindow].Checked;
             checkBoxShowBaloonTip.Enabled = _configCheckBoxs[NotificationType.ShowBaloonTip].Checked;
             checkBoxPlaySound.Enabled = _configCheckBoxs[NotificationType.PlaySound].Checked;
+            checkBoxRepeat.Enabled = _configCheckBoxs[NotificationType.Repeat].Checked;
+            textBoxRepeat.Enabled = labelRepeat.Enabled = checkBoxRepeat.Enabled && checkBoxRepeat.Checked;
 
             if (listBoxNotifications.SelectedIndex == -1)
                 listBoxNotifications.SelectedIndex = 0;
