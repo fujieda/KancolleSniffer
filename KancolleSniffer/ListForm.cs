@@ -310,5 +310,10 @@ namespace KancolleSniffer
         {
             fleetPanel.ShowFleet(((Label)sender).Text);
         }
+
+        private void labelHeaderHp_Click(object sender, EventArgs e)
+        {
+            shipListPanel.ToggleHpPercent();
+        }
     }
 }

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -42,6 +43,7 @@ namespace KancolleSniffer
         private readonly ShipLabel[] _akashiTimers = new ShipLabel[ShipInfo.MemberCount];
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         public static Color[] ColumnColors = {SystemColors.Control, Color.FromArgb(255, 250, 250, 250)};
+        private readonly List<ShipLabel> _hpLables = new List<ShipLabel>();
 
         public void CreateShipLabels(Control parent, EventHandler onClick)
         {
@@ -96,6 +98,13 @@ namespace KancolleSniffer
                     label.Click += onClick;
                 }
             }
+            _hpLables.AddRange(_labels.Select(record => record[0]));
+            headings[0].Cursor = Cursors.Hand;
+            headings[0].Click += (sender, ev) =>
+            {
+                foreach (var label in _hpLables)
+                    label.ToggleHpPercent();
+            };
             parent.ResumeLayout();
         }
 
@@ -156,6 +165,15 @@ namespace KancolleSniffer
                     label.Click += onClick;
                 }
             }
+            _hpLables.AddRange(_combinedLabels.Select(record => record[0]).ToArray());
+            headings[0].Cursor = headings[2].Cursor = Cursors.Hand;
+            void HpToggle(object sender, EventArgs ev)
+            {
+                foreach (var label in _hpLables)
+                    label.ToggleHpPercent();
+            }
+            headings[0].Click += HpToggle;
+            headings[2].Click += HpToggle;
             parent.ResumeLayout();
         }
 
@@ -297,6 +315,8 @@ namespace KancolleSniffer
         private int _right = int.MinValue;
         private int _left;
         private SlotStatus _slotStatus;
+        private ShipStatus _status;
+        private bool _hpPercent;
 
         public override Color BackColor
         {
@@ -386,14 +406,23 @@ namespace KancolleSniffer
 
         public void SetHp(ShipStatus status)
         {
+            _status = status;
             if (status == null)
             {
                 Text = "";
                 BackColor = PresetColor;
                 return;
             }
-            Text = $"{status.NowHp:D}/{status.MaxHp:D}";
+            Text = _hpPercent
+                ? $"{(int)Ceiling(status.NowHp * 100.0 / status.MaxHp):D}%"
+                : $"{status.NowHp:D}/{status.MaxHp:D}";
             BackColor = DamageColor(status, PresetColor);
+        }
+
+        public void ToggleHpPercent()
+        {
+            _hpPercent = !_hpPercent;
+            SetHp(_status);
         }
 
         public void SetHp(int now, int max)

@@ -34,6 +34,7 @@ namespace KancolleSniffer
         private readonly List<Panel> _groupingPanelList = new List<Panel>();
         private readonly List<ShipLabel[]> _repairLabelList = new List<ShipLabel[]>();
         private readonly List<Panel> _repairPanelList = new List<Panel>();
+        private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private string _mode;
 
         public const int GroupCount = 4;
@@ -100,7 +101,7 @@ namespace KancolleSniffer
             Refresh();
         }
 
-        void CreateShipList(Sniffer sniffer, ListForm.SortOrder sortOrder, bool byShipType)
+        private void CreateShipList(Sniffer sniffer, ListForm.SortOrder sortOrder, bool byShipType)
         {
             var ships = _mode == "修復" ? sniffer.RepairList : FilterByGroup(sniffer.ShipList, _mode).ToArray();
             var order = _mode == "修復" ? ListForm.SortOrder.Repair : sortOrder;
@@ -330,6 +331,7 @@ namespace KancolleSniffer
                 label.PresetColor =
                     label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
             }
+            _hpLabels.Add(rpl[0]);
         }
 
         private void CreateShipLabels(int i)
@@ -378,6 +380,7 @@ namespace KancolleSniffer
                 label.PresetColor =
                     label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
             }
+            _hpLabels.Add(labels[0]);
         }
 
         private void SetShipLabels()
@@ -483,6 +486,12 @@ namespace KancolleSniffer
             rpl[4].SetName(s, ShipNameWidth.RepairListFull);
             rpl[5].SetFleet(s);
             panel.Visible = true;
+        }
+
+        public void ToggleHpPercent()
+        {
+            foreach (var label in _hpLabels)
+                label.ToggleHpPercent();
         }
 
         public void ShowShip(int id)

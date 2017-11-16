@@ -49,7 +49,7 @@ namespace KancolleSniffer
             this.kantaiSarashiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelHeaderHp = new System.Windows.Forms.Label();
             this.labelHeaderCond = new System.Windows.Forms.Label();
             this.labelHeaderExp = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -65,7 +65,7 @@ namespace KancolleSniffer
             this.label13 = new System.Windows.Forms.Label();
             this.panelRepairHeader = new System.Windows.Forms.Panel();
             this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
+            this.label1RepairHp = new System.Windows.Forms.Label();
             this.panelItemHeader = new System.Windows.Forms.Panel();
             this.richTextBoxMiscText = new System.Windows.Forms.RichTextBox();
             this.contextMenuStripFleetData = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -95,19 +95,19 @@ namespace KancolleSniffer
             this.csvToolStripMenuItem,
             this.kantaiSarashiToolStripMenuItem});
             this.contextMenuStripShipList.Name = "contextMenuStripShipList";
-            this.contextMenuStripShipList.Size = new System.Drawing.Size(215, 48);
+            this.contextMenuStripShipList.Size = new System.Drawing.Size(193, 48);
             // 
             // csvToolStripMenuItem
             // 
             this.csvToolStripMenuItem.Name = "csvToolStripMenuItem";
-            this.csvToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.csvToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.csvToolStripMenuItem.Text = "CSV形式でコピー(&C)";
             this.csvToolStripMenuItem.Click += new System.EventHandler(this.csvToolStripMenuItem_Click);
             // 
             // kantaiSarashiToolStripMenuItem
             // 
             this.kantaiSarashiToolStripMenuItem.Name = "kantaiSarashiToolStripMenuItem";
-            this.kantaiSarashiToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.kantaiSarashiToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.kantaiSarashiToolStripMenuItem.Text = "艦隊晒し形式でコピー(&K)";
             this.kantaiSarashiToolStripMenuItem.Click += new System.EventHandler(this.kantaiSarashiToolStripMenuItem_Click);
             // 
@@ -116,25 +116,27 @@ namespace KancolleSniffer
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(123, 26);
+            this.contextMenuStrip.Size = new System.Drawing.Size(108, 26);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
             this.copyToolStripMenuItem.ShowShortcutKeys = false;
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.copyToolStripMenuItem.Text = "コピー(&C)";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
-            // label1
+            // labelHeaderHp
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(113, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(20, 12);
-            this.label1.TabIndex = 13;
-            this.label1.Text = "HP";
+            this.labelHeaderHp.AutoSize = true;
+            this.labelHeaderHp.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelHeaderHp.Location = new System.Drawing.Point(113, 8);
+            this.labelHeaderHp.Name = "labelHeaderHp";
+            this.labelHeaderHp.Size = new System.Drawing.Size(20, 12);
+            this.labelHeaderHp.TabIndex = 13;
+            this.labelHeaderHp.Text = "HP";
+            this.labelHeaderHp.Click += new System.EventHandler(this.labelHeaderHp_Click);
             // 
             // labelHeaderCond
             // 
@@ -280,7 +282,7 @@ namespace KancolleSniffer
             this.panelRepairHeader.Controls.Add(this.label10);
             this.panelRepairHeader.Controls.Add(this.label12);
             this.panelRepairHeader.Controls.Add(this.label13);
-            this.panelRepairHeader.Controls.Add(this.label11);
+            this.panelRepairHeader.Controls.Add(this.label1RepairHp);
             this.panelRepairHeader.Location = new System.Drawing.Point(104, 3);
             this.panelRepairHeader.Name = "panelRepairHeader";
             this.panelRepairHeader.Size = new System.Drawing.Size(126, 19);
@@ -295,14 +297,16 @@ namespace KancolleSniffer
             this.label10.TabIndex = 19;
             this.label10.Text = "/HP";
             // 
-            // label11
+            // label1RepairHp
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(1, 5);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(20, 12);
-            this.label11.TabIndex = 17;
-            this.label11.Text = "HP";
+            this.label1RepairHp.AutoSize = true;
+            this.label1RepairHp.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label1RepairHp.Location = new System.Drawing.Point(1, 5);
+            this.label1RepairHp.Name = "label1RepairHp";
+            this.label1RepairHp.Size = new System.Drawing.Size(20, 12);
+            this.label1RepairHp.TabIndex = 17;
+            this.label1RepairHp.Text = "HP";
+            this.label1RepairHp.Click += new System.EventHandler(this.labelHeaderHp_Click);
             // 
             // panelItemHeader
             // 
@@ -329,19 +333,19 @@ namespace KancolleSniffer
             this.textToolStripMenuItem,
             this.deckBuilderToolStripMenuItem});
             this.contextMenuStripFleetData.Name = "contextMenuStripFleetData";
-            this.contextMenuStripFleetData.Size = new System.Drawing.Size(252, 48);
+            this.contextMenuStripFleetData.Size = new System.Drawing.Size(211, 48);
             // 
             // textToolStripMenuItem
             // 
             this.textToolStripMenuItem.Name = "textToolStripMenuItem";
-            this.textToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
+            this.textToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.textToolStripMenuItem.Text = "テキスト形式でコピー(&C)";
             this.textToolStripMenuItem.Click += new System.EventHandler(this.textToolStripMenuItem_Click);
             // 
             // deckBuilderToolStripMenuItem
             // 
             this.deckBuilderToolStripMenuItem.Name = "deckBuilderToolStripMenuItem";
-            this.deckBuilderToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
+            this.deckBuilderToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.deckBuilderToolStripMenuItem.Text = "デッキビルダー形式でコピー(&D)";
             this.deckBuilderToolStripMenuItem.Click += new System.EventHandler(this.deckBuilderToolStripMenuItem_Click);
             // 
@@ -464,7 +468,7 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelHeaderExp);
             this.Controls.Add(this.labelHeaderCond);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelHeaderHp);
             this.Controls.Add(this.richTextBoxMiscText);
             this.Controls.Add(this.fleetPanel);
             this.Controls.Add(this.itemTreeView);
@@ -494,7 +498,7 @@ namespace KancolleSniffer
         #endregion
 
         private ShipListPanel shipListPanel;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelHeaderHp;
         private System.Windows.Forms.Label labelHeaderCond;
         private System.Windows.Forms.Label labelHeaderExp;
         private System.Windows.Forms.Label label3;
@@ -510,7 +514,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label1RepairHp;
         private System.Windows.Forms.Panel panelItemHeader;
         private FleetPanel fleetPanel;
         private ItemTreeView itemTreeView;
