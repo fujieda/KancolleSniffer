@@ -66,6 +66,7 @@ namespace KancolleSniffer
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
+        public ShipStatus[] EnemyGuardResultStatus { get; private set; }
         public bool EnemyIsCombined => EnemyResultStatus.Length > 6;
         public List<AirBattleResult> AirBattleResults { get; } = new List<AirBattleResult>();
 
@@ -85,14 +86,12 @@ namespace KancolleSniffer
             if (IsNightBattle(json))
             {
                 BattleState = BattleState.Night;
-                CalcHougekiDamage(json.api_hougeki,
-                    _guard.Length > 0 ? _guard : _friend,
-                    json.api_active_deck() && json.api_active_deck[1] != 1 ? _enemyGuardHp : _enemyHp);
+                CalcCombinedHougekiDamage(json.api_hougeki, _friend, _guard, _enemyHp, _enemyGuardHp);
             }
             else
             {
                 BattleState = BattleState.Day;
-                CalcDamage(json, url.EndsWith("battle_water"));
+                CalcDamage(json);
             }
             ClearEnemyOverKill();
             ResultRank = url.EndsWith("ld_airbattle") ? CalcLdAirBattleRank() : CalcResultRank();
@@ -145,31 +144,28 @@ namespace KancolleSniffer
         {
             if (_friend != null)
                 return;
-            var nowhps = (int[])json.api_nowhps;
             _fleet = DeckId(json);
             var fstats = _shipInfo.GetShipStatuses(_fleet);
             FlagshipRecovery(fstats[0]);
             _friend = Record.Setup(fstats);
-            _enemyHp = nowhps.Skip(7).TakeWhile(hp => hp != -1).ToArray();
+            _enemyHp = (int[])json.api_e_nowhps;
             _enemyStartHp = (int[])_enemyHp.Clone();
-            EnemyResultStatus =
-            (from id in
-                json.api_ship_ke_combined()
-                    ? ((int[])json.api_ship_ke).Skip(1).Concat(((int[])json.api_ship_ke_combined).Skip(1))
-                    : ((int[])json.api_ship_ke).Skip(1)
-                select new ShipStatus {Id = id, Spec = _shipInfo.GetSpec(id)}).ToArray();
+            EnemyResultStatus = ((int[])json.api_ship_ke)
+                .Select(id => new ShipStatus {Id = id, Spec = _shipInfo.GetSpec(id)}).ToArray();
+            EnemyGuardResultStatus = new ShipStatus[0];
+            if (json.api_ship_ke_combined())
+            {
+                EnemyGuardResultStatus = ((int[])json.api_ship_ke_combined)
+                    .Select(id => new ShipStatus {Id = id, Spec = _shipInfo.GetSpec(id)}).ToArray();
+            }
             _guard = new Record[0];
             _enemyGuardHp = new int[0];
             _enemyGuardStartHp = new int[0];
-            if (!json.api_nowhps_combined())
-                return;
-            var combined = (int[])json.api_nowhps_combined;
-            if (combined[1] != -1) // 味方が連合艦隊
+            if (json.api_f_nowhps_combined())
                 _guard = Record.Setup(_shipInfo.GetShipStatuses(1));
-            if (combined.Length > 7) // 敵が連合艦隊
+            if (json.api_e_nowhps_combined()) // 敵が連合艦隊
             {
-                _enemyGuardHp =
-                    ((int[])json.api_nowhps_combined).Skip(7).TakeWhile(hp => hp != -1).ToArray();
+                _enemyGuardHp = (int[])json.api_nowhps;
                 _enemyGuardStartHp = (int[])_enemyGuardHp.Clone();
             }
         }
@@ -232,9 +228,9 @@ namespace KancolleSniffer
         private EnemyFighterPower CalcEnemyFighterPower(dynamic json)
         {
             var result = new EnemyFighterPower();
-            var ships = ((int[])json.api_ship_ke).Skip(1);
+            var ships = (int[])json.api_ship_ke;
             if (json.api_ship_ke_combined() && _guard.Length > 0)
-                ships = ships.Concat(((int[])json.api_ship_ke_combined).Skip(1));
+                ships = ships.Concat((int[])json.api_ship_ke_combined).ToArray();
             var maxEq = ships.SelectMany(id =>
             {
                 var r = _shipInfo.GetSpec(id).MaxEq;
@@ -246,10 +242,10 @@ namespace KancolleSniffer
             var equips = ((int[][])json.api_eSlot).SelectMany(x => x);
             if (json.api_eSlot_combined() && _guard.Length > 0)
                 equips = equips.Concat(((int[][])json.api_eSlot_combined).SelectMany(x => x));
-            foreach (var entry in from slot in equips.Zip(maxEq, (id, max) => new { id, max })
+            foreach (var entry in from slot in equips.Zip(maxEq, (id, max) => new {id, max})
                 let spec = _itemInfo.GetSpecByItemId(slot.id)
                 let perSlot = (int)Floor(spec.AntiAir * Sqrt(slot.max))
-                select new { spec, perSlot })
+                select new {spec, perSlot})
             {
                 if (entry.spec.CanAirCombat)
                     result.AirCombat += entry.perSlot;
@@ -259,7 +255,7 @@ namespace KancolleSniffer
             return result;
         }
 
-        private void CalcDamage(dynamic json, bool surfaceFleet = false)
+        private void CalcDamage(dynamic json)
         {
             AirBattleResults.Clear();
             var fc = _guard.Length > 0;
@@ -292,18 +288,7 @@ namespace KancolleSniffer
             if (json.api_support_info() && json.api_support_info != null)
                 CalcSupportDamage(json.api_support_info);
             if (json.api_opening_taisen() && json.api_opening_taisen != null)
-            {
-                if (json.api_opening_taisen.api_at_eflag())
-                {
-                    CalcCombinedHougekiDamage(json.api_opening_taisen, _friend, _guard, _enemyHp, _enemyGuardHp);
-                }
-                else
-                {
-                    CalcHougekiDamage(json.api_opening_taisen,
-                        fc ? _guard : _friend, // 先制対潜攻撃の対象は護衛
-                        _enemyHp);
-                }
-            }
+                CalcCombinedHougekiDamage(json.api_opening_taisen, _friend, _guard, _enemyHp, _enemyGuardHp);
             if (json.api_opening_atack != null)
             {
                 if (both)
@@ -318,42 +303,11 @@ namespace KancolleSniffer
                 }
             }
             if (json.api_hougeki1() && json.api_hougeki1 != null)
-            {
-                if (json.api_hougeki1.api_at_eflag())
-                {
-                    CalcCombinedHougekiDamage(json.api_hougeki1, _friend, _guard, _enemyHp, _enemyGuardHp);
-                }
-                else
-                {
-                    CalcHougekiDamage(json.api_hougeki1,
-                        fc && !surfaceFleet ? _guard : _friend, // 空母機動部隊は一巡目が護衛
-                        ec ? _enemyGuardHp : _enemyHp); // 敵連合艦隊は一巡目が護衛
-                }
-            }
+                CalcCombinedHougekiDamage(json.api_hougeki1, _friend, _guard, _enemyHp, _enemyGuardHp);
             if (json.api_hougeki2() && json.api_hougeki2 != null)
-            {
-                if (json.api_hougeki2.api_at_eflag())
-                {
-                    CalcCombinedHougekiDamage(json.api_hougeki2, _friend, _guard, _enemyHp, _enemyGuardHp);
-                }
-                else
-                {
-                    CalcHougekiDamage(json.api_hougeki2, _friend, _enemyHp);
-                }
-            }
+                CalcCombinedHougekiDamage(json.api_hougeki2, _friend, _guard, _enemyHp, _enemyGuardHp);
             if (json.api_hougeki3() && json.api_hougeki3 != null)
-            {
-                if (json.api_hougeki3.api_at_eflag())
-                {
-                    CalcCombinedHougekiDamage(json.api_hougeki3, _friend, _guard, _enemyHp, _enemyGuardHp);
-                }
-                else
-                {
-                    CalcHougekiDamage(json.api_hougeki3,
-                        fc && surfaceFleet ? _guard : _friend, // 水上打撃部隊は三順目が護衛
-                        _enemyHp);
-                }
-            }
+                CalcCombinedHougekiDamage(json.api_hougeki3, _friend, _guard, _enemyHp, _enemyGuardHp);
             if (json.api_raigeki() && json.api_raigeki != null)
             {
                 if (both)
@@ -457,55 +411,40 @@ namespace KancolleSniffer
         {
             var damage = (int[])rawDamage;
             for (var i = 0; i < friend.Length; i++)
-                friend[i].ApplyDamage(damage[i + 1]);
+                friend[i].ApplyDamage(damage[i]);
             for (var i = 0; i < guard.Length; i++)
-                guard[i].ApplyDamage(damage[i + 6 + 1]);
+                guard[i].ApplyDamage(damage[i + 6]);
         }
 
         private void CalcSimpleDamage(dynamic rawDamage, Record[] friend)
         {
             var damage = (int[])rawDamage;
             for (var i = 0; i < friend.Length; i++)
-                friend[i].ApplyDamage(damage[i + 1]);
+                friend[i].ApplyDamage(damage[i]);
         }
 
         private void CalcSimpleDamage(dynamic rawDamage, int[] enemy, int[] enemyGuard)
         {
             var damage = (int[])rawDamage;
             for (var i = 0; i < enemy.Length; i++)
-                enemy[i] -= damage[i + 1];
+                enemy[i] -= damage[i];
             for (var i = 0; i < enemyGuard.Length; i++)
-                enemyGuard[i] -= damage[i + 6 + 1];
+                enemyGuard[i] -= damage[i + 6];
         }
 
         private void CalcSimpleDamage(dynamic rawDamage, int[] result)
         {
             var damage = (int[])rawDamage;
             for (var i = 0; i < result.Length; i++)
-                result[i] -= damage[i + 1];
-        }
-
-        private void CalcHougekiDamage(dynamic hougeki, Record[] friend, int[] enemy)
-        {
-            var targets = ((dynamic[])hougeki.api_df_list).Skip(1).SelectMany(x => (int[])x);
-            var damages = ((dynamic[])hougeki.api_damage).Skip(1).SelectMany(x => (int[])x);
-            foreach (var hit in targets.Zip(damages, (t, d) => new {t, d}))
-            {
-                if (hit.t == -1)
-                    continue;
-                if (hit.t <= 6)
-                    friend[hit.t - 1].ApplyDamage(hit.d);
-                else
-                    enemy[(hit.t - 1) % 6] -= hit.d;
-            }
+                result[i] -= damage[i];
         }
 
         private void CalcCombinedHougekiDamage(dynamic hougeki, Record[] friend, Record[] guard,
             int[] enemy, int[] enemyGuard)
         {
-            var targets = ((dynamic[])hougeki.api_df_list).Skip(1).Select(x => (int[])x);
-            var damages = ((dynamic[])hougeki.api_damage).Skip(1).Select(x => (int[])x);
-            var eflags = ((int[])hougeki.api_at_eflag).Skip(1);
+            var targets = ((dynamic[])hougeki.api_df_list).Select(x => (int[])x);
+            var damages = ((dynamic[])hougeki.api_damage).Select(x => (int[])x);
+            var eflags = (int[])hougeki.api_at_eflag;
             foreach (var turn in
                 targets.Zip(damages, (t, d) => new {t, d}).Zip(eflags, (td, e) => new {e, td.t, td.d}))
             {
@@ -513,17 +452,25 @@ namespace KancolleSniffer
                 {
                     if (turn.e == 1)
                     {
-                        if (hit.t <= 6)
-                            friend[hit.t - 1].ApplyDamage(hit.d);
+                        if (hit.t < 6)
+                        {
+                            friend[hit.t].ApplyDamage(hit.d);
+                        }
                         else
-                            guard[(hit.t - 1) % 6].ApplyDamage(hit.d);
+                        {
+                            guard[hit.t % 6].ApplyDamage(hit.d);
+                        }
                     }
                     else
                     {
-                        if (hit.t <= 6)
-                            enemy[hit.t - 1] -= hit.d;
+                        if (hit.t < 6)
+                        {
+                            enemy[hit.t] -= hit.d;
+                        }
                         else
-                            enemyGuard[(hit.t - 1) % 6] -= hit.d;
+                        {
+                            enemyGuard[hit.t % 6] -= hit.d;
+                        }
                     }
                 }
             }
@@ -579,8 +526,8 @@ namespace KancolleSniffer
             }
             for (var i = 0; i < _enemyGuardHp.Length; i++)
             {
-                EnemyResultStatus[i + 6].MaxHp = _enemyGuardStartHp[i];
-                EnemyResultStatus[i + 6].NowHp = _enemyGuardHp[i];
+                EnemyGuardResultStatus[i].MaxHp = _enemyGuardStartHp[i];
+                EnemyGuardResultStatus[i].NowHp = _enemyGuardHp[i];
             }
         }
 

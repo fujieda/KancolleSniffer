@@ -236,7 +236,7 @@ namespace KancolleSniffer
         private IEnumerable<string> GenerateFirendShipList()
         {
             int deckId = BattleInfo.DeckId(_battle);
-            if (_battle.api_nowhps_combined() && (int)_battle.api_nowhps_combined[1] != -1)
+            if (_battle.api_f_nowhps_combined())
             {
                 var main = _shipInfo.GetDeck(0);
                 var guard = _shipInfo.GetDeck(1);
@@ -275,11 +275,13 @@ namespace KancolleSniffer
 
         private IEnumerable<string> GenerateEnemyShipList()
         {
-            var result = _battleInfo.EnemyResultStatus;
-            if (result.Length <= 6)
+            var result = _battleInfo.EnemyResultStatus.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
+            if (_battleInfo.EnemyGuardResultStatus.Length == 0)
+            {
                 return result.Select(s => s.Id == -1 ? "," : $"{s.Name},{s.NowHp}/{s.MaxHp}").ToList();
-            var main = result.Take(6);
-            var guard = result.Skip(6);
+            }
+            var main = result;
+            var guard = _battleInfo.EnemyGuardResultStatus.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
             return main.Zip(guard, (m, g) =>
             {
                 if (m.Id == -1 && g.Id == -1)
@@ -318,6 +320,8 @@ namespace KancolleSniffer
                     return "梯形陣";
                 case 5:
                     return "単横陣";
+                case 6:
+                    return "警戒陣";
                 case 11:
                     return "第一警戒航行序列";
                 case 12:
