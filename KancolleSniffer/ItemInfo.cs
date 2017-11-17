@@ -139,6 +139,8 @@ namespace KancolleSniffer
 
         public bool IsRepairFacility => Type == 31;
 
+        public bool IsAntiAirGun => Type == 21;
+
         public double ContactTriggerRate
         {
             get
@@ -728,7 +730,13 @@ namespace KancolleSniffer
 
         public string GetUseItemName(int id) => _useItemName[id];
 
-        public IEnumerable<ItemStatus> InjectItems(IEnumerable<int> itemIds)
+        public void InjectItemSpec(IEnumerable<ItemSpec> specs)
+        {
+            foreach (var spec in specs)
+                _itemSpecs.Add(spec.Id, spec);
+        }
+
+        public ItemStatus[] InjectItems(IEnumerable<int> itemIds)
         {
             var id = _itemInfo.Keys.Count + 1;
             return itemIds.Select(itemId =>
@@ -741,7 +749,7 @@ namespace KancolleSniffer
                 var item = new ItemStatus {Id = id++, Spec = spec};
                 _itemInfo.Add(item.Id, item);
                 return item;
-            });
+            }).ToArray();
         }
     }
 }

@@ -79,6 +79,7 @@
     <Compile Include="ErrorLogTest.cs" />
     <Compile Include="JsonTest.cs" />
     <Compile Include="NotificationManagerTest.cs" />
+    <Compile Include="QuestInfoTest.cs" />
     <Compile Include="ShipLabelTest.cs" />
     <Compile Include="SnifferTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

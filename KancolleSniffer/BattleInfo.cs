@@ -681,5 +681,14 @@ namespace KancolleSniffer
                 return BattleResultRank.E;
             return BattleResultRank.D;
         }
+
+        /// <summary>
+        /// テスト専用
+        /// </summary>
+        public void InjectEnemyResultStatus(ShipStatus[] enemy, ShipStatus[] guard)
+        {
+            EnemyResultStatus = enemy;
+            EnemyGuardResultStatus = guard;
+        }
     }
 }

@@ -35,6 +35,9 @@ namespace KancolleSniffer
         public List<MaterialCount> MaterialHistory { get; set; }
         public double CondRegenTime { get; set; }
         public ExMapInfo.ExMapState ExMapState { get; set; }
+        public QuestCount[] QuestCountList { get; set; }
+        public DateTime QuestLastReset { get; set; }
+
 
         public Status()
         {

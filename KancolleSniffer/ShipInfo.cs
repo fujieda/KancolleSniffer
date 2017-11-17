@@ -540,7 +540,7 @@ namespace KancolleSniffer
                 _shipInfo[ship.Id] = ship;
             foreach (var entry in ships.Zip(slots, (ship, slot) =>new {ship, slot}))
             {
-                entry.ship.Slot = _itemInfo.InjectItems(entry.slot.Take(5)).ToArray();
+                entry.ship.Slot = _itemInfo.InjectItems(entry.slot.Take(5));
                 if (entry.slot.Length >= 6)
                     entry.ship.SlotEx = _itemInfo.InjectItems(entry.slot.Skip(5)).First();
             }

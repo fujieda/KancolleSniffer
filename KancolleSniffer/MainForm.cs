@@ -897,6 +897,11 @@ namespace KancolleSniffer
                 labelQuestColor6
             };
             var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5, labelQuest6};
+            var count = new[]
+            {
+                labelQuestCount1, labelQuestCount2, labelQuestCount3, labelQuestCount4, labelQuestCount5,
+                labelQuestCount6
+            };
             var progress = new[]
                 {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5, labelProgress6};
             var quests = _sniffer.Quests;
@@ -907,11 +912,23 @@ namespace KancolleSniffer
                     category[i].BackColor = quests[i].Color;
                     name[i].Text = quests[i].Name;
                     progress[i].Text = $"{quests[i].Progress:D}%";
+                    var c = quests[i].Count;
+                    if (c.Id == 0)
+                    {
+                        count[i].Text = "";
+                        count[i].ForeColor = Color.Black;
+                        continue;
+                    }
+                    count[i].Text = c.NowArray != null ? $"{string.Join("|", c.NowArray)}" : $"{c.Now}/{c.Max}";
+                    count[i].ForeColor =
+                        (c.NowArray?.Zip(c.Spec.MaxArray, (n, m) => n >= m).All(x => x) ?? c.Now >= c.Spec.Max)
+                            ? CUDColor.Green
+                            : Color.Black;
                 }
                 else
                 {
                     category[i].BackColor = DefaultBackColor;
-                    name[i].Text = progress[i].Text = "";
+                    name[i].Text = count[i].Text = progress[i].Text = "";
                 }
             }
         }

@@ -1,0 +1,13 @@
+BattleResult_201_214
+  api_get_member/questlist: {"api_list":[{"api_no":201,"api_category":2,"api_state":2,"api_title":"","api_progress_flag":0},{"api_no":214,"api_category":2,"api_state":2,"api_title":"","api_progress_flag":0}]}
+  api_req_map/start: {"api_maparea_id":1,"api_mapinfo_no":1,"api_no":1,"api_bosscell_no":3}
+  api_req_sortie/battleresult1: {"api_win_rank":"S"}
+  api_req_map/next: {"api_maparea_id":1,"api_mapinfo_no":1,"api_no":3,"api_bosscell_no":3}
+  api_req_sortie/battleresult2: {"api_win_rank":"B"}
+
+DestroyItem_613_638
+  api_start2.api_mst_slotitem: {"api_mst_slotitem_equiptype":[{"api_id":21,"api_name":"対空機銃","api_show_flg":1}],"api_mst_slotitem":[{"api_id":37,"api_sortno":37,"api_name":"7.7mm機銃","api_type":[4,6,21,15,0],"api_taik":0,"api_souk":0,"api_houg":0,"api_raig":0,"api_soku":0,"api_baku":0,"api_tyku":2,"api_tais":0,"api_atap":0,"api_houm":0,"api_raim":0,"api_houk":1,"api_raik":0,"api_bakk":0,"api_saku":0,"api_sakb":0,"api_luck":0,"api_leng":0,"api_rare":0,"api_broken":[0,1,1,0],"api_usebull":"0"}],"api_mst_useitem":[]}
+  api_get_member/questlist: {"api_list":[{"api_no":613,"api_category":6,"api_type":2,"api_state":2,"api_title":"","api_progress_flag":0},{"api_no":638,"api_category":6,"api_type":2,"api_state":2,"api_title":"","api_progress_flag":0}]}
+  api_get_member/slot_item: [{"api_id":156730,"api_slotitem_id":37,"api_locked":0,"api_level":0},{"api_id":156775,"api_slotitem_id":37,"api_locked":0,"api_level":0}]
+  api_req_kousyou/destroyitem2.request: api%5Fslotitem%5Fids=156730%2C156775&api%5Fverno=1
+  api_req_kousyou/destroyitem2: {"api_result":1,"api_result_msg":"成功","api_data":{"api_get_material":[0,2,2,0]}}

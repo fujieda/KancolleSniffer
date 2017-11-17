@@ -24,7 +24,7 @@ namespace KancolleSniffer
         private bool _start;
         private readonly ItemInfo _itemInfo = new ItemInfo();
         private readonly MaterialInfo _materialInfo = new MaterialInfo();
-        private readonly QuestInfo _questInfo = new QuestInfo();
+        private readonly QuestInfo _questInfo;
         private readonly MissionInfo _missionInfo = new MissionInfo();
         private readonly ShipInfo _shipInfo;
         private readonly ConditionTimer _conditionTimer;
@@ -76,8 +76,9 @@ namespace KancolleSniffer
             _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo, _presetDeck);
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
+            _questInfo = new QuestInfo(_itemInfo, _battleInfo);
             _baseAirCoprs = new BaseAirCoprs(_itemInfo);
-            _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo};
+            _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo, _questInfo};
         }
 
         private void SaveState()
@@ -145,11 +146,12 @@ namespace KancolleSniffer
             _shipInfo.ClearBadlyDamagedShips();
             _conditionTimer.CalcRegenTime();
             _missionInfo.InspectDeck(data.api_deck_port);
+            _questInfo.InspectDeck(data.api_deck_port);
             _dockInfo.InspectNDock(data.api_ndock);
             _akashiTimer.Port();
             _achievement.InspectBasic(data.api_basic);
             if (data.api_parallel_quest_count()) // 昔のログにはないので
-                _questInfo.QuestCount = (int)data.api_parallel_quest_count;
+                _questInfo.AcceptMax = (int)data.api_parallel_quest_count;
             if (data.api_event_object())
                 _baseAirCoprs.InspectEventObject(data.api_event_object);
             if (data.api_plane_info())
@@ -210,6 +212,7 @@ namespace KancolleSniffer
                 _shipInfo.InspectDeck(data);
                 _missionInfo.InspectDeck(data);
                 _akashiTimer.CheckFleet();
+                _questInfo.InspectDeck(data);
                 return Update.Mission | Update.Timer;
             }
             if (url.EndsWith("api_get_member/ship2"))
@@ -272,7 +275,8 @@ namespace KancolleSniffer
                 _itemInfo.InspectCreateItem(data);
                 _materialInfo.InspectCreateIem(data);
                 _logger.InspectCreateItem(request, data);
-                return Update.Item;
+                _questInfo.CountCreateItem();
+                return Update.Item | Update.QuestList;
             }
             if (url.EndsWith("api_req_kousyou/getship"))
             {
@@ -289,13 +293,15 @@ namespace KancolleSniffer
                 _materialInfo.InspectDestroyShip(data);
                 _conditionTimer.CheckCond();
                 _akashiTimer.CheckFleet();
-                return Update.Item | Update.Ship;
+                _questInfo.InspectDestroyShip(request);
+                return Update.Item | Update.Ship | Update.QuestList;
             }
             if (url.EndsWith("api_req_kousyou/destroyitem2"))
             {
+                _questInfo.InspectDestroyItem(request, data); // 本当に削除される前
                 _itemInfo.InspectDestroyItem(request, data);
                 _materialInfo.InspectDestroyItem(data);
-                return Update.Item;
+                return Update.Item | Update.QuestList;
             }
             if (url.EndsWith("api_req_kousyou/remodel_slot"))
             {
@@ -303,12 +309,14 @@ namespace KancolleSniffer
                 _logger.InspectRemodelSlot(request, data); // 資材の差が必要なので_materialInfoより前
                 _itemInfo.InspectRemodelSlot(data);
                 _materialInfo.InspectRemodelSlot(data);
-                return Update.Item;
+                _questInfo.CountRemodelSlot();
+                return Update.Item | Update.QuestList;
             }
             if (url.EndsWith("api_req_kousyou/createship"))
             {
                 _logger.InspectCreateShip(request);
-                return Update.None;
+                _questInfo.CountCreateShip();
+                return Update.QuestList;
             }
             if (url.EndsWith("api_req_kousyou/createship_speedchange"))
             {
@@ -343,12 +351,14 @@ namespace KancolleSniffer
                 _battleInfo.InspectBattleResult(data);
                 _exMapInfo.InspectBattleResult(data);
                 _logger.InspectBattleResult(data);
-                return Update.Ship;
+                _questInfo.InspectBattleResult(data);
+                return Update.Ship | Update.QuestList;
             }
             if (url.EndsWith("api_req_practice/battle_result"))
             {
                 _battleInfo.InspectPracticeResult(data);
-                return Update.Ship;
+                _questInfo.InspectPracticeResult(data);
+                return Update.Ship | Update.QuestList;
             }
             if (url.EndsWith("/goback_port"))
             {
@@ -416,14 +426,16 @@ namespace KancolleSniffer
             {
                 _shipInfo.InspectCharge(data);
                 _materialInfo.InspectCharge(data);
-                return Update.Item | Update.Ship;
+                _questInfo.CountCharge();
+                return Update.Item | Update.Ship | Update.QuestList;
             }
             if (url.EndsWith("api_req_kaisou/powerup"))
             {
                 _shipInfo.InspectPowerup(request, data);
                 _conditionTimer.CheckCond();
                 _akashiTimer.CheckFleet();
-                return Update.Item | Update.Ship;
+                _questInfo.InspectPowerup(data);
+                return Update.Item | Update.Ship | Update.QuestList;
             }
             if (url.EndsWith("api_req_kaisou/slot_exchange_index"))
             {
@@ -440,10 +452,11 @@ namespace KancolleSniffer
                 _dockInfo.InspectNyukyo(request);
                 _conditionTimer.CheckCond();
                 _akashiTimer.CheckFleet();
+                _questInfo.CountNyukyo();
                 var ndock = HttpUtility.ParseQueryString(request)["api_ndock_id"];
                 if (ndock != null && int.TryParse(ndock, out int id))
                     RepeatingTimerController?.Stop("入渠終了", id - 1);
-                return Update.Item | Update.Ship;
+                return Update.Item | Update.Ship | Update.QuestList;
             }
             if (url.EndsWith("api_req_nyukyo/speedchange"))
             {
@@ -459,6 +472,7 @@ namespace KancolleSniffer
                 _battleInfo.InspectMapStart(data);
                 _logger.InspectMapStart(data);
                 _miscTextInfo.ClearFlag = true;
+                _questInfo.InspectMapStart(data);
                 RepeatingTimerController?.Suspend();
                 return Update.Timer | Update.Ship;
             }
@@ -467,6 +481,7 @@ namespace KancolleSniffer
                 _exMapInfo.InspectMapNext(data);
                 _battleInfo.InspectMapNext(data);
                 _logger.InspectMapNext(data);
+                _questInfo.InspectMapNext(data);
                 return Update.None;
             }
             if (url.EndsWith("api_req_mission/start"))
@@ -480,6 +495,7 @@ namespace KancolleSniffer
             {
                 _materialInfo.InspectMissionResult(data);
                 _logger.InspectMissionResult(data);
+                _questInfo.InspectMissionResult(request, data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_quest/stop"))
