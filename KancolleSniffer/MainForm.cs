@@ -128,7 +128,7 @@ namespace KancolleSniffer
             if (_debugLogFile != null)
             {
                 File.AppendAllText(_debugLogFile,
-                    $"url: {url}\nrequest: {request}\nresponse: {response ?? "(null)"}\n");
+                    $"date: {DateTime.Now:g}\nurl: {url}\nrequest: {request}\nresponse: {response ?? "(null)"}\n");
             }
         }
 
@@ -328,12 +328,14 @@ namespace KancolleSniffer
             var lines = new List<string>();
             foreach (var s in new[] {"url: ", "request: ", "response: "})
             {
-                // ReSharper disable once PossibleNullReferenceException
-                if (!_playLog.MoveNext() || !_playLog.Current.StartsWith(s))
+                do
                 {
-                    labelPlayLog.Visible = false;
-                    return;
-                }
+                    if (!_playLog.MoveNext() || _playLog.Current == null)
+                    {
+                        labelPlayLog.Visible = false;
+                        return;
+                    }
+                } while (!_playLog.Current.StartsWith(s));
                 lines.Add(_playLog.Current.Substring(s.Length));
             }
             labelPlayLog.Visible = !labelPlayLog.Visible;

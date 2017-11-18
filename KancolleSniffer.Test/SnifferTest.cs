@@ -43,12 +43,14 @@ namespace KancolleSniffer.Test
                     var triple = new List<string>();
                     foreach (var s in new[] {"url: ", "request: ", "response: "})
                     {
-                        var line = stream.ReadLine();
-                        ln++;
-                        if (line == null)
-                            throw new Exception($"ログのurl, request, responseがそろっていません: {ln:d}行目");
-                        if (!line.StartsWith(s))
-                            throw new Exception($"ログに不正な行が含まれています: {ln:d}行目");
+                        string line;
+                        do
+                        {
+                            line = stream.ReadLine();
+                            ln++;
+                            if (line == null)
+                                throw new Exception($"ログの内容がそろっていません: {ln:d}行目");
+                        } while (!line.StartsWith(s));
                         triple.Add(line.Substring(s.Length));
                     }
                     var json = JsonParser.Parse(triple[2]);
