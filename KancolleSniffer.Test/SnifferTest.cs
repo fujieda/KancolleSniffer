@@ -60,6 +60,28 @@ namespace KancolleSniffer.Test
             }
         }
 
+
+        /// <summary>
+        /// 4-2-1で開幕対潜雷撃を含む戦闘を行う
+        /// </summary>
+        [TestMethod]
+        public void NormalBattleWithVriousTypesOfAttack()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "battle_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.A);
+            AssertEqualBattleResult(sniffer,
+                new []{57, 66, 50, 65, 40, 42}, new []{34, 5, 0, 0, 0, 0});
+        }
+
+        private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected, IEnumerable<int> enemy, string msg = null)
+        {
+            var result = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
+            PAssert.That(() => expected.SequenceEqual(result), msg);
+            var enemyResult = sniffer.Battle.EnemyResultStatus.Select(s => s.NowHp);
+            PAssert.That(() => enemy.SequenceEqual(enemyResult), msg);
+        }
+
         /// <summary>
         /// 開幕夜戦で潜水艦同士がお見合いする
         /// </summary>

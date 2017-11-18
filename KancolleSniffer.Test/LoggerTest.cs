@@ -113,6 +113,21 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void InspectBattleResult()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2017, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "battle_001");
+            PAssert.That(() =>
+                "2017-01-01 00:00:00,カレー洋制圧戦,1,出撃,A,Ｔ字戦(有利),警戒陣,梯形陣,敵潜水教導艦隊,,," +
+                "隼鷹改二(Lv157),57/62,利根改二(Lv151),66/66,千代田航改二(Lv159),50/65,千歳航改二(Lv159),65/65,大井改二(Lv57),40/43,秋月改(Lv142),42/42," +
+                "潜水ヨ級(elite),34/34,潜水ヨ級,5/24,潜水ヨ級,0/24,潜水カ級(elite),0/27,潜水カ級,0/19,潜水カ級,0/19,248～249,0,制空権確保|"
+                == result);
+        }
+
+        [TestMethod]
         public void InspectMaterial()
         {
             var sniffer = new Sniffer();
