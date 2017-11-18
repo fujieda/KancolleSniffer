@@ -61,6 +61,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 開幕夜戦で潜水艦同士がお見合いする
+        /// </summary>
+        [TestMethod]
+        public void SpMidnightWithoutBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "sp_midnight_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.D);
+        }
+
+        /// <summary>
         /// 出撃時に大破している艦娘がいたら警告する
         /// </summary>
         [TestMethod]

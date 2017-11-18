@@ -442,6 +442,11 @@ namespace KancolleSniffer
         private void CalcCombinedHougekiDamage(dynamic hougeki, Record[] friend, Record[] guard,
             int[] enemy, int[] enemyGuard)
         {
+            if (!(hougeki.api_df_list() && hougeki.api_df_list != null &&
+                  hougeki.api_damage() && hougeki.api_damage != null &&
+                  hougeki.api_at_eflag() && hougeki.api_at_eflag != null))
+                return;
+
             var targets = ((dynamic[])hougeki.api_df_list).Select(x => (int[])x);
             var damages = ((dynamic[])hougeki.api_damage).Select(x => (int[])x);
             var eflags = (int[])hougeki.api_at_eflag;
