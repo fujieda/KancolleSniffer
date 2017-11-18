@@ -106,6 +106,7 @@ namespace KancolleSniffer
             }
             catch (RuntimeBinderException e)
             {
+                WriteErrorLog(url, request, response, e.ToString());
                 if (_errorDialog.ShowDialog(this,
                     "艦これに仕様変更があったか、受信内容が壊れています。", e.ToString()) == DialogResult.Abort)
                     Application.Exit();
@@ -118,9 +119,26 @@ namespace KancolleSniffer
             }
             catch (Exception e)
             {
+                WriteErrorLog(url, request, response, e.ToString());
                 if (_errorDialog.ShowDialog(this, "エラーが発生しました。", e.ToString()) == DialogResult.Abort)
                     Application.Exit();
             }
+        }
+
+        private void WriteErrorLog(string url, string request, string response, string exception)
+        {
+            RemoveSensitiveInformation(ref request, ref response);
+            var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
+            File.AppendAllText("error.log",
+                $"{DateTime.Now:g} {version}\r\n{exception}\r\n{url}\r\n{request}\r\n{response}\r\n\r\n");
+        }
+
+        private void RemoveSensitiveInformation(ref string request, ref string response)
+        {
+            var token = new Regex("&api%5Ftoken=[^&]*|api%5Ftoken=[^&]*&?");
+            request = token.Replace(request, "");
+            var id = new Regex(@"""api_member_id"":\d+,?|""api_nickname"":[^,]+,""api_nickname_id"":""d+"",?");
+            response = id.Replace(response, "");
         }
 
         private void WriteDebugLog(string url, string request, string response)
@@ -131,6 +149,7 @@ namespace KancolleSniffer
                     $"date: {DateTime.Now:g}\nurl: {url}\nrequest: {request}\nresponse: {response ?? "(null)"}\n");
             }
         }
+
 
         private string UnescapeString(string s)
         {
