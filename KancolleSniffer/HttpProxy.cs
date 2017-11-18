@@ -125,10 +125,16 @@ namespace KancolleSniffer
                     Close();
                     AfterSessionComplete?.Invoke(_session);
                 }
+#if DEBUG
                 catch (Exception e)
                 {
                     File.AppendAllText("debug.log", $"[{DateTime.Now:g}] " + e + "\r\n");
                 }
+#else // ReSharper disable once EmptyGeneralCatchClause
+                catch
+                {
+                }
+#endif
                 finally
                 {
                     Close();
