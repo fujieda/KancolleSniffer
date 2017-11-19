@@ -457,7 +457,7 @@ namespace KancolleSniffer
                 {
                     if (turn.e == 1)
                     {
-                        if (hit.t < 6)
+                        if (0 <= hit.t && hit.t < 6)
                         {
                             friend[hit.t].ApplyDamage(hit.d);
                         }
@@ -468,7 +468,7 @@ namespace KancolleSniffer
                     }
                     else
                     {
-                        if (hit.t < 6)
+                        if (0 <= hit.t && hit.t < 6)
                         {
                             enemy[hit.t] -= hit.d;
                         }
