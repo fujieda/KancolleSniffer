@@ -69,6 +69,8 @@ namespace KancolleSniffer
         public ShipInfo(ItemInfo itemInfo)
         {
             _itemInfo = itemInfo;
+            for (var fleet = 0; fleet < _decks.Length; fleet++)
+                _decks[fleet] = new int[0];
             ClearShipInfo();
         }
 
