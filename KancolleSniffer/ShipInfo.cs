@@ -69,14 +69,6 @@ namespace KancolleSniffer
         public ShipInfo(ItemInfo itemInfo)
         {
             _itemInfo = itemInfo;
-
-            for (var fleet = 0; fleet < FleetCount; fleet++)
-            {
-                var deck = new int[MemberCount];
-                for (var i = 0; i < deck.Length; i++)
-                    deck[i] = -1;
-                _decks[fleet] = deck;
-            }
             ClearShipInfo();
         }
 
@@ -129,9 +121,7 @@ namespace KancolleSniffer
             foreach (var entry in json)
             {
                 var fleet = (int)entry.api_id - 1;
-                var deck = _decks[fleet];
-                for (var i = 0; i < deck.Length; i++)
-                    deck[i] = (int)entry.api_ship[i];
+                _decks[fleet] = (int[])entry.api_ship;
                 _inMission[fleet] = (int)entry.api_mission[0] != 0;
             }
         }
