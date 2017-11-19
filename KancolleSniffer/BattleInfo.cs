@@ -165,7 +165,7 @@ namespace KancolleSniffer
                 _guard = Record.Setup(_shipInfo.GetShipStatuses(1));
             if (json.api_e_nowhps_combined()) // 敵が連合艦隊
             {
-                _enemyGuardHp = (int[])json.api_nowhps;
+                _enemyGuardHp = (int[])json.api_e_nowhps_combined;
                 _enemyGuardStartHp = (int[])_enemyGuardHp.Clone();
             }
         }
