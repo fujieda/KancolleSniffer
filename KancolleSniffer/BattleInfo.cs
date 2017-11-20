@@ -459,24 +459,24 @@ namespace KancolleSniffer
                         continue;
                     if (turn.e == 1)
                     {
-                        if (hit.t < 6)
+                        if (hit.t < friend.Length)
                         {
                             friend[hit.t].ApplyDamage(hit.d);
                         }
                         else
                         {
-                            guard[hit.t % 6].ApplyDamage(hit.d);
+                            guard[hit.t - friend.Length].ApplyDamage(hit.d);
                         }
                     }
                     else
                     {
-                        if (hit.t < 6)
+                        if (hit.t < enemy.Length)
                         {
                             enemy[hit.t] -= hit.d;
                         }
                         else
                         {
-                            enemyGuard[hit.t % 6] -= hit.d;
+                            enemyGuard[hit.t - enemy.Length] -= hit.d;
                         }
                     }
                 }

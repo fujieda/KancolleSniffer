@@ -106,6 +106,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 7隻編成の戦闘で7隻目が攻撃される
+        /// </summary>
+        [TestMethod]
+        public void Ship7Battle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "ship7battle_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.P);
+        }
+
+        /// <summary>
         /// 出撃時に大破している艦娘がいたら警告する
         /// </summary>
         [TestMethod]
