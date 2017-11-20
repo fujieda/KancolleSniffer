@@ -94,6 +94,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 夜戦で戦艦が攻撃すると一回で三発分のデータが来る
+        /// そのうち存在しない攻撃はターゲット、ダメージともに-1になる
+        /// </summary>
+        [TestMethod]
+        public void BattleShipAttackInMidnight()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "midnight_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.S);
+        }
+
+        /// <summary>
         /// 出撃時に大破している艦娘がいたら警告する
         /// </summary>
         [TestMethod]

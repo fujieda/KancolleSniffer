@@ -455,9 +455,11 @@ namespace KancolleSniffer
             {
                 foreach (var hit in turn.t.Zip(turn.d, (t, d) => new {t, d}))
                 {
+                    if (hit.t == -1)
+                        continue;
                     if (turn.e == 1)
                     {
-                        if (0 <= hit.t && hit.t < 6)
+                        if (hit.t < 6)
                         {
                             friend[hit.t].ApplyDamage(hit.d);
                         }
@@ -468,7 +470,7 @@ namespace KancolleSniffer
                     }
                     else
                     {
-                        if (0 <= hit.t && hit.t < 6)
+                        if (hit.t < 6)
                         {
                             enemy[hit.t] -= hit.d;
                         }
