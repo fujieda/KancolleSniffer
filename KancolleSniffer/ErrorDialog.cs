@@ -32,7 +32,7 @@ namespace KancolleSniffer
             if (Visible)
                 return DialogResult.Ignore;
             labelMessage.Text = message;
-            textBoxDetails.Text = details.Length < 1500 ? details : details.Substring(0, 1500) + "...";
+            textBoxDetails.Text = details;
             return ShowDialog(owner);
         }
     }

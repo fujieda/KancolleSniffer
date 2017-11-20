@@ -106,9 +106,9 @@ namespace KancolleSniffer
             }
             catch (RuntimeBinderException e)
             {
-                WriteErrorLog(url, request, response, e.ToString());
                 if (_errorDialog.ShowDialog(this,
-                    "艦これに仕様変更があったか、受信内容が壊れています。", e.ToString()) == DialogResult.Abort)
+                        "艦これに仕様変更があったか、受信内容が壊れています。",
+                        GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
                     Application.Exit();
             }
             catch (LogIOException e)
@@ -119,18 +119,17 @@ namespace KancolleSniffer
             }
             catch (Exception e)
             {
-                WriteErrorLog(url, request, response, e.ToString());
-                if (_errorDialog.ShowDialog(this, "エラーが発生しました。", e.ToString()) == DialogResult.Abort)
+                if (_errorDialog.ShowDialog(this, "エラーが発生しました。",
+                        GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
                     Application.Exit();
             }
         }
 
-        private void WriteErrorLog(string url, string request, string response, string exception)
+        private string GenerateErrorLog(string url, string request, string response, string exception)
         {
             RemoveSensitiveInformation(ref request, ref response);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
-            File.AppendAllText("error.log",
-                $"{DateTime.Now:g} {version}\r\n{exception}\r\n{url}\r\n{request}\r\n{response}\r\n\r\n");
+            return $"{DateTime.Now:g} {version}\r\n{exception}\r\n{url}\r\n{request}\r\n{response}\r\n";
         }
 
         private void RemoveSensitiveInformation(ref string request, ref string response)
