@@ -24,6 +24,13 @@ namespace KancolleSniffer.Test
     [TestClass]
     public class LoggerTest
     {
+        [TestInitialize]
+        public void Intialize()
+        {
+            ExpressionToCodeConfiguration.GlobalAssertionConfiguration = ExpressionToCodeConfiguration
+                .GlobalAssertionConfiguration.WithPrintedListLengthLimit(200).WithMaximumValueLength(1000);
+        }
+
         [TestMethod]
         public void InspectMissionResult()
         {

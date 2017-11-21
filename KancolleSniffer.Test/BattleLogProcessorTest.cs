@@ -7,6 +7,13 @@ namespace KancolleSniffer.Test
     [TestClass]
     public class BattleLogProcessorTest
     {
+        [TestInitialize]
+        public void Initialize()
+        {
+            ExpressionToCodeConfiguration.GlobalAssertionConfiguration = ExpressionToCodeConfiguration
+                .GlobalAssertionConfiguration.WithPrintedListLengthLimit(200).WithMaximumValueLength(1000);
+        }
+
         [TestMethod]
         public void NormalLog()
         {
