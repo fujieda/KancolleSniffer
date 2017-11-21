@@ -127,6 +127,24 @@ namespace KancolleSniffer.Test
                 == result);
         }
 
+        /// <summary>
+        /// 7隻編成の場合は7隻目を6隻目に重ねる
+        /// </summary>
+        [TestMethod]
+        public void InspectShip7BattleResult()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2017, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "ship7battle_001");
+            PAssert.That(() =>
+                "2017-01-01 00:00:00,台湾沖/ルソン島沖,5,出撃,S,同航戦,単縦陣,単縦陣,深海通商破部隊 前衛水雷戦隊,,," +
+                "あきつ丸改(Lv81),40/40,那智改二(Lv151),63/63,Roma改(Lv99),83/92,阿武隈改二(Lv98),40/45,霞改二(Lv96),13/31,潮改二(Lv94)・不知火改(Lv85),31/33・32/32," +
+                "軽巡ホ級(flagship),0/53,駆逐ロ級後期型,0/37,駆逐ロ級後期型,0/37,駆逐ロ級後期型,0/37,駆逐イ級,0/20,駆逐イ級,0/20,317～318,0,制空権確保|"
+                == result);
+        }
+
         [TestMethod]
         public void InspectMaterial()
         {

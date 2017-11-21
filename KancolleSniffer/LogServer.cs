@@ -299,8 +299,15 @@ function FindProxyForURL(url, host) {
         {
             if (data.Length == 35)
                 data = data.Concat(Enumerable.Repeat("", 3)).ToArray();
-            if (data.Length != 38)
+            if (data.Length == 40)
+            {
+                data = data.Take(21).Concat(new[] {data[21] + "・" + data[23], data[22] + "・" + data[24]})
+                    .Concat(data.Skip(25)).ToArray();
+            }
+            else if (data.Length != 38)
+            {
                 return data;
+            }
             if (data[5] == "Ｔ字戦(有利)")
                 data[5] = "Ｔ字有利";
             if (data[5] == "Ｔ字戦(不利)")

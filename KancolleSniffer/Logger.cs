@@ -264,6 +264,24 @@ namespace KancolleSniffer
                 }).ToList();
             }
             var deck = _shipInfo.GetDeck(deckId);
+            if (deck.Length > 6)
+            {
+                var result = new List<string>();
+                for (var i = 0; i < 12 - deck.Length; i++)
+                {
+                    var s = _shipInfo.GetStatus(deck[i]);
+                    result.Add($"{s.Name}(Lv{s.Level}),{s.NowHp}/{s.MaxHp}");
+                }
+                for (var i = 0; i < deck.Length - 6; i++)
+                {
+                    var s1 = _shipInfo.GetStatus(deck[12 - deck.Length + i]);
+                    var s2 = _shipInfo.GetStatus(deck[6 + i]);
+                    result.Add(
+                        $"{s1.Name}(Lv{s1.Level})・{s2.Name}(Lv{s2.Level})," +
+                        $"{s1.NowHp}/{s1.MaxHp}・{s2.NowHp}/{s2.MaxHp}");
+                }
+                return result;
+            }
             return deck.Select(id =>
             {
                 if (id == -1)
