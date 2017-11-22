@@ -67,7 +67,7 @@ namespace KancolleSniffer
         public BattleResultRank ResultRank { get; private set; }
         public ShipStatus[] EnemyResultStatus { get; private set; }
         public ShipStatus[] EnemyGuardResultStatus { get; private set; }
-        public bool EnemyIsCombined => EnemyResultStatus.Length > 6;
+        public bool EnemyIsCombined => EnemyGuardResultStatus.Length > 0;
         public List<AirBattleResult> AirBattleResults { get; } = new List<AirBattleResult>();
 
         public BattleInfo(ShipInfo shipInfo, ItemInfo itemInfo)
