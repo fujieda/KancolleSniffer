@@ -100,6 +100,11 @@ namespace KancolleSniffer
                 _kancolleDb.Send(url, request, response);
             response = UnescapeString(response.Remove(0, "svdata=".Length));
             WriteDebugLog(url, request, response);
+            ProcessRequestMain(url, request, response);
+        }
+
+        private void ProcessRequestMain(string url, string request, string response)
+        {
             try
             {
                 UpdateInfo(_sniffer.Sniff(url, request, JsonParser.Parse(response)));
@@ -357,8 +362,7 @@ namespace KancolleSniffer
                 lines.Add(_playLog.Current.Substring(s.Length));
             }
             labelPlayLog.Visible = !labelPlayLog.Visible;
-            var json = JsonParser.Parse(lines[2]);
-            UpdateInfo(_sniffer.Sniff(lines[0], lines[1], json));
+            ProcessRequestMain(lines[0], lines[1], lines[2]);
         }
 
         private void ShowShipOnShipList(object sender, EventArgs ev)
