@@ -128,6 +128,28 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 連合艦隊が開幕雷撃で被弾する
+        /// </summary>
+        [TestMethod]
+        public void OpeningTorpedoInCombinedBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_battle_001");
+            PAssert.That(() => sniffer.WrongBattleResult.Length == 0);
+        }
+
+        /// <summary>
+        /// 連合艦隊が閉幕雷撃で被弾する
+        /// </summary>
+        [TestMethod]
+        public void ClosingTorpedoInCombinedBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_battle_002");
+            PAssert.That(() => sniffer.WrongBattleResult.Length == 0);
+        }
+
+        /// <summary>
         /// 出撃時に大破している艦娘がいたら警告する
         /// </summary>
         [TestMethod]

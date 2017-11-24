@@ -258,9 +258,6 @@ namespace KancolleSniffer
         private void CalcDamage(dynamic json)
         {
             AirBattleResults.Clear();
-            var fc = _guard.Length > 0;
-            var ec = _enemyGuardHp.Length > 0;
-            var both = fc && ec;
             if (json.api_air_base_injection())
             {
                 AddAirBattleResult(json.api_air_base_injection, "AB噴式");
@@ -290,18 +287,7 @@ namespace KancolleSniffer
             if (json.api_opening_taisen() && json.api_opening_taisen != null)
                 CalcCombinedHougekiDamage(json.api_opening_taisen, _friend, _guard, _enemyHp, _enemyGuardHp);
             if (json.api_opening_atack != null)
-            {
-                if (both)
-                {
-                    CalcSimpleDamage(json.api_opening_atack, _friend, _guard, _enemyHp, _enemyGuardHp);
-                }
-                else
-                {
-                    CalcSimpleDamage(json.api_opening_atack,
-                        fc ? _guard : _friend, // 雷撃の対象は護衛
-                        _enemyHp, _enemyGuardHp);
-                }
-            }
+                CalcSimpleDamage(json.api_opening_atack, _friend, _guard, _enemyHp, _enemyGuardHp);
             if (json.api_hougeki1() && json.api_hougeki1 != null)
                 CalcCombinedHougekiDamage(json.api_hougeki1, _friend, _guard, _enemyHp, _enemyGuardHp);
             if (json.api_hougeki2() && json.api_hougeki2 != null)
@@ -309,18 +295,7 @@ namespace KancolleSniffer
             if (json.api_hougeki3() && json.api_hougeki3 != null)
                 CalcCombinedHougekiDamage(json.api_hougeki3, _friend, _guard, _enemyHp, _enemyGuardHp);
             if (json.api_raigeki() && json.api_raigeki != null)
-            {
-                if (both)
-                {
-                    CalcSimpleDamage(json.api_raigeki, _friend, _guard, _enemyHp, _enemyGuardHp);
-                }
-                else
-                {
-                    CalcSimpleDamage(json.api_raigeki,
-                        fc ? _guard : _friend, // 雷撃の対象は護衛
-                        _enemyHp, _enemyGuardHp);
-                }
-            }
+                CalcSimpleDamage(json.api_raigeki, _friend, _guard, _enemyHp, _enemyGuardHp);
         }
 
         private void CalcSupportDamage(dynamic json)
@@ -395,12 +370,6 @@ namespace KancolleSniffer
                 CalcSimpleDamage(json.api_edam, enemy);
         }
 
-        private void CalcSimpleDamage(dynamic json, Record[] friend, int[] enemy, int[] enemyGuard)
-        {
-            CalcSimpleDamage(json.api_fdam, friend);
-            CalcSimpleDamage(json.api_edam, enemy, enemyGuard);
-        }
-
         private void CalcSimpleDamage(dynamic json, Record[] friend, Record[] guard, int[] enemy, int[] enemyGuard)
         {
             CalcSimpleDamage(json.api_fdam, friend, guard);
@@ -413,7 +382,7 @@ namespace KancolleSniffer
             for (var i = 0; i < friend.Length; i++)
                 friend[i].ApplyDamage(damage[i]);
             for (var i = 0; i < guard.Length; i++)
-                guard[i].ApplyDamage(damage[i + 6]);
+                guard[i].ApplyDamage(damage[i + friend.Length]);
         }
 
         private void CalcSimpleDamage(dynamic rawDamage, Record[] friend)
@@ -429,7 +398,7 @@ namespace KancolleSniffer
             for (var i = 0; i < enemy.Length; i++)
                 enemy[i] -= damage[i];
             for (var i = 0; i < enemyGuard.Length; i++)
-                enemyGuard[i] -= damage[i + 6];
+                enemyGuard[i] -= damage[i + enemy.Length];
         }
 
         private void CalcSimpleDamage(dynamic rawDamage, int[] result)
