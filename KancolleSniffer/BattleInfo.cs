@@ -513,9 +513,16 @@ namespace KancolleSniffer
             if (!json.api_escape_flag() || (int)json.api_escape_flag == 0)
                 return;
             var damaged = (int)json.api_escape.api_escape_idx[0] - 1;
-            _escapingShips.Add(_shipInfo.GetDeck(damaged / 6)[damaged % 6]);
-            var escort = (int)json.api_escape.api_tow_idx[0] - 1;
-            _escapingShips.Add(_shipInfo.GetDeck(escort / 6)[escort % 6]);
+            if (json.api_escape.api_tow_idx())
+            {
+                _escapingShips.Add(_shipInfo.GetDeck(damaged / 6)[damaged % 6]);
+                var escort = (int)json.api_escape.api_tow_idx[0] - 1;
+                _escapingShips.Add(_shipInfo.GetDeck(escort / 6)[escort % 6]);
+            }
+            else
+            {
+                _escapingShips.Add(_shipInfo.GetDeck(2)[damaged]);
+            }
         }
 
         public void CauseCombinedBattleEscape()

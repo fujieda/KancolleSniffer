@@ -161,6 +161,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 護衛退避する
+        /// </summary>
+        [TestMethod]
+        public void EscapeWithEscort()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "escape_001");
+            PAssert.That(() => sniffer.GetShipStatuses(0)[5].Escaped &&
+            sniffer.GetShipStatuses(1)[2].Escaped);
+        }
+
+        /// <summary>
         /// 出撃時に大破している艦娘がいたら警告する
         /// </summary>
         [TestMethod]
@@ -553,7 +565,7 @@ namespace KancolleSniffer.Test
                 new[] {0, 0, 0, 0, 0, 0, 0, 0},
                 new[] {288194, 282623, 299496, 295958, 3000, 2968, 2997, 7},
                 new[] {288185, 282623, 299496, 295943, 3000, 2968, 2997, 7},
-                new[] {288161, 282623, 299496, 295903, 3000, 2968, 2997, 7},
+                new[] {288161, 282623, 299496, 295903, 3000, 2968, 2997, 7}
             };
             PAssert.That(() => SequenceOfSequenceEqual(expected3, result3), "航空機の補充");
 
@@ -577,7 +589,7 @@ namespace KancolleSniffer.Test
                 new[] {0, 0, 0, 0, 0, 0, 0, 0},
                 new[] {261012, 252252, 298492, 279622, 3000, 2842, 3000, 22},
                 new[] {261012, 252252, 298492, 279538, 3000, 2842, 3000, 22},
-                new[] {261012, 252252, 298492, 279454, 3000, 2842, 3000, 22},
+                new[] {261012, 252252, 298492, 279454, 3000, 2842, 3000, 22}
             };
             PAssert.That(() => SequenceOfSequenceEqual(expected4, result4), "航空機の配備");
         }
