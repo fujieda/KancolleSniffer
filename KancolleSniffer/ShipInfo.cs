@@ -65,6 +65,21 @@ namespace KancolleSniffer
         private int _hqLevel;
         private readonly List<int> _escapedShips = new List<int>();
         private int _combinedFleetType;
+        private ShipStatus[] _battleResult = new ShipStatus[0];
+
+        public class ShipStatusPair
+        {
+            public ShipStatus Assumed { get; set; }
+            public ShipStatus Actual { get; set; }
+
+            public ShipStatusPair(ShipStatus assumed, ShipStatus actual)
+            {
+                Assumed = assumed;
+                Actual = actual;
+            }
+        }
+
+        public ShipStatusPair[] WrongBattleResult { get; private set; } = new ShipStatusPair[0];
 
         public ShipInfo(ItemInfo itemInfo)
         {
@@ -92,6 +107,7 @@ namespace KancolleSniffer
                 if (json.api_combined_flag())
                     _combinedFleetType = (int)json.api_combined_flag;
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
+                VerifyBattleResult();
             }
             else if (json.api_data()) // ship2
             {
@@ -105,11 +121,27 @@ namespace KancolleSniffer
                 // 一隻分のデータしか来ないことがあるので艦娘数を数えない
                 InspectDeck(json.api_deck_data);
                 InspectShipData(json.api_ship_data);
+                VerifyBattleResult();
             }
             else if (json.api_ship()) // getshipとpowerup
             {
                 InspectShipData(new[] {json.api_ship});
             }
+        }
+
+        public void SaveBattleResult()
+        {
+            _battleResult = _decks.Where((deck, i) =>
+                    _inSortie[i] && !GetStatus(deck[0]).Spec.IsRepairShip)
+                .SelectMany(deck => deck.Select(GetStatus)).ToArray();
+        }
+
+        private void VerifyBattleResult()
+        {
+            WrongBattleResult = (from assumed in _battleResult
+                let actual = GetStatus(assumed.Id)
+                where assumed.NowHp != actual.NowHp select new ShipStatusPair(assumed, actual)).ToArray();
+            _battleResult = new ShipStatus[0];
         }
 
         private void ClearShipInfo()
@@ -309,7 +341,8 @@ namespace KancolleSniffer
             s.Slot = s.Slot.Select(item => _itemInfo.GetStatus(item.Id)).ToArray();
             s.SlotEx = _itemInfo.GetStatus(s.SlotEx.Id);
             s.Escaped = _escapedShips.Contains(id);
-            s.Fleet = FindFleet(s.Id, out _);
+            s.Fleet = FindFleet(s.Id, out var idx);
+            s.DeckIndex = idx;
             s.CombinedFleetType = s.Fleet < 2 ? _combinedFleetType : 0;
             return s;
         }
@@ -341,7 +374,7 @@ namespace KancolleSniffer
                         select new ChargeStatus(_shipInfo[id]))
                     .Aggregate(
                         (result, next) =>
-                                new ChargeStatus(Max(result.Fuel, next.Fuel), Max(result.Bull, next.Bull)))
+                            new ChargeStatus(Max(result.Fuel, next.Fuel), Max(result.Bull, next.Bull)))
                 select new ChargeStatus(flag.Fuel != 0 ? flag.Fuel : others.Fuel + 5,
                     flag.Bull != 0 ? flag.Bull : others.Bull + 5)).ToArray();
 
@@ -359,7 +392,7 @@ namespace KancolleSniffer
         public double GetContactTriggerRate(int fleet)
             => GetShipStatuses(fleet).Where(ship => !ship.Escaped).SelectMany(ship =>
                 ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
-                        slot.Spec.ContactTriggerRate * slot.Spec.LoS * Sqrt(onslot))).Sum();
+                    slot.Spec.ContactTriggerRate * slot.Spec.LoS * Sqrt(onslot))).Sum();
 
         public ShipStatus[] GetRepairList(DockInfo dockInfo)
             => (from s in ShipList

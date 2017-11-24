@@ -103,11 +103,21 @@ namespace KancolleSniffer
             ProcessRequestMain(url, request, response);
         }
 
+        private List<string[]> _battleApiLog = new List<string[]>();
+
         private void ProcessRequestMain(string url, string request, string response)
         {
             try
             {
                 UpdateInfo(_sniffer.Sniff(url, request, JsonParser.Parse(response)));
+                SaveBattleApi(url, request, response);
+                if (_sniffer.WrongBattleResult.Length > 0)
+                {
+                    if (_errorDialog.ShowDialog(this,
+                            "戦闘結果の計算に誤りがあります。",
+                            GenerateBattleErrorLog()) == DialogResult.Abort)
+                        Application.Exit();
+                }
             }
             catch (RuntimeBinderException e)
             {
@@ -128,6 +138,28 @@ namespace KancolleSniffer
                         GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
                     Application.Exit();
             }
+        }
+
+        private void SaveBattleApi(string url, string request, string response)
+        {
+            if (_sniffer.Battle.BattleState == BattleState.Day)
+                _battleApiLog = new List<string[]> {new[] {url, request, response}};
+            if (_sniffer.Battle.BattleState == BattleState.Night || _sniffer.Battle.BattleState == BattleState.Result)
+                _battleApiLog.Add(new[] {url, request, response});
+        }
+
+        private string GenerateBattleErrorLog()
+        {
+            foreach (var logs in _battleApiLog)
+                RemoveSensitiveInformation(ref logs[1], ref logs[2]);
+            var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
+            var api = string.Join("\r\n", _battleApiLog.Select(logs => string.Join("\r\n", logs)));
+            var status = string.Join(" ",
+                from pair in _sniffer.WrongBattleResult
+                let assumed = pair.Assumed
+                let actual = pair.Actual
+                select $"[{assumed.Fleet}-{assumed.DeckIndex}] {assumed.Id}: {assumed.NowHp}->{actual.NowHp}");
+            return $"{DateTime.Now:g} {version}\r\n{api}\r\n{status}";
         }
 
         private string GenerateErrorLog(string url, string request, string response, string exception)

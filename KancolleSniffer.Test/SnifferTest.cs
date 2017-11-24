@@ -117,6 +117,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 演習のあとのportで戦闘結果の検証を行わない
+        /// </summary>
+        [TestMethod]
+        public void NotVerifyBattleResultAfterPractice()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "practice_001");
+            PAssert.That(() => sniffer.WrongBattleResult.Length == 0);
+        }
+
+        /// <summary>
         /// 出撃時に大破している艦娘がいたら警告する
         /// </summary>
         [TestMethod]

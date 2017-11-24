@@ -23,6 +23,7 @@ namespace KancolleSniffer
     {
         public int Id { get; set; }
         public int Fleet { get; set; }
+        public int DeckIndex { get; set; }
         public ShipSpec Spec { get; set; }
 
         public string Name => Spec.Name;
