@@ -150,6 +150,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 第一が6隻未満の連合艦隊で戦闘する
+        /// </summary>
+        [TestMethod]
+        public void SmallCombinedFleetBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_battle_003");
+            PAssert.That(() => sniffer.WrongBattleResult.Length == 0);
+        }
+
+        /// <summary>
         /// 出撃時に大破している艦娘がいたら警告する
         /// </summary>
         [TestMethod]

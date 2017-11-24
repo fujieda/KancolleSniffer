@@ -382,7 +382,7 @@ namespace KancolleSniffer
             for (var i = 0; i < friend.Length; i++)
                 friend[i].ApplyDamage(damage[i]);
             for (var i = 0; i < guard.Length; i++)
-                guard[i].ApplyDamage(damage[i + friend.Length]);
+                guard[i].ApplyDamage(damage[i + 6]);
         }
 
         private void CalcSimpleDamage(dynamic rawDamage, Record[] friend)
@@ -398,7 +398,7 @@ namespace KancolleSniffer
             for (var i = 0; i < enemy.Length; i++)
                 enemy[i] -= damage[i];
             for (var i = 0; i < enemyGuard.Length; i++)
-                enemyGuard[i] -= damage[i + enemy.Length];
+                enemyGuard[i] -= damage[i + 6];
         }
 
         private void CalcSimpleDamage(dynamic rawDamage, int[] result)
@@ -434,7 +434,7 @@ namespace KancolleSniffer
                         }
                         else
                         {
-                            guard[hit.t - friend.Length].ApplyDamage(hit.d);
+                            guard[hit.t - 6].ApplyDamage(hit.d);
                         }
                     }
                     else
@@ -445,7 +445,7 @@ namespace KancolleSniffer
                         }
                         else
                         {
-                            enemyGuard[hit.t - enemy.Length] -= hit.d;
+                            enemyGuard[hit.t - 6] -= hit.d;
                         }
                     }
                 }
