@@ -124,7 +124,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "practice_001");
-            PAssert.That(() => sniffer.WrongBattleResult.Length == 0);
+            PAssert.That(() => sniffer.WrongBattleResult.Count == 0);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_battle_001");
-            PAssert.That(() => sniffer.WrongBattleResult.Length == 0);
+            PAssert.That(() => sniffer.WrongBattleResult.Count == 0);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_battle_002");
-            PAssert.That(() => sniffer.WrongBattleResult.Length == 0);
+            PAssert.That(() => sniffer.WrongBattleResult.Count == 0);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_battle_003");
-            PAssert.That(() => sniffer.WrongBattleResult.Length == 0);
+            PAssert.That(() => sniffer.WrongBattleResult.Count == 0);
         }
 
         /// <summary>

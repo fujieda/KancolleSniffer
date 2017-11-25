@@ -508,7 +508,7 @@ namespace KancolleSniffer
 
         public int[] GetDeck(int fleet) => _shipInfo.GetDeck(fleet);
 
-        public ShipInfo.ShipStatusPair[] WrongBattleResult => _shipInfo.WrongBattleResult;
+        public List<ShipInfo.ShipStatusPair> WrongBattleResult => _shipInfo.WrongBattleResult;
 
         public int CombinedFleetType => _shipInfo.CombinedFleetType;
 

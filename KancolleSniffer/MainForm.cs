@@ -103,21 +103,15 @@ namespace KancolleSniffer
             ProcessRequestMain(url, request, response);
         }
 
-        private List<string[]> _battleApiLog = new List<string[]>();
+        private readonly List<string[]> _battleApiLog = new List<string[]>();
 
         private void ProcessRequestMain(string url, string request, string response)
         {
             try
             {
                 UpdateInfo(_sniffer.Sniff(url, request, JsonParser.Parse(response)));
+                CheckBattleResult();
                 SaveBattleApi(url, request, response);
-                if (_sniffer.WrongBattleResult.Length > 0)
-                {
-                    if (_errorDialog.ShowDialog(this,
-                            "戦闘結果の計算に誤りがあります。",
-                            GenerateBattleErrorLog()) == DialogResult.Abort)
-                        Application.Exit();
-                }
             }
             catch (RuntimeBinderException e)
             {
@@ -140,12 +134,26 @@ namespace KancolleSniffer
             }
         }
 
+        private void CheckBattleResult()
+        {
+            if (_sniffer.WrongBattleResult.Count > 0)
+            {
+                if (_errorDialog.ShowDialog(this,
+                        "戦闘結果の計算に誤りがあります。",
+                        GenerateBattleErrorLog()) == DialogResult.Abort)
+                    Application.Exit();
+                _sniffer.WrongBattleResult.Clear();
+            }
+        }
+
         private void SaveBattleApi(string url, string request, string response)
         {
-            if (_sniffer.Battle.BattleState == BattleState.Day)
-                _battleApiLog = new List<string[]> {new[] {url, request, response}};
-            if (_sniffer.Battle.BattleState == BattleState.Night || _sniffer.Battle.BattleState == BattleState.Result)
+            if (_sniffer.Battle.BattleState != BattleState.None)
+            {
                 _battleApiLog.Add(new[] {url, request, response});
+                return;
+            }
+            _battleApiLog.Clear();
         }
 
         private string GenerateBattleErrorLog()
