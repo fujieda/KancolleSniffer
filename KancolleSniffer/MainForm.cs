@@ -110,9 +110,10 @@ namespace KancolleSniffer
             try
             {
                 UpdateInfo(_sniffer.Sniff(url, request, JsonParser.Parse(response)));
-                CheckBattleResult();
                 SaveBattleApi(url, request, response);
+                CheckBattleResult();
             }
+
             catch (RuntimeBinderException e)
             {
                 if (_errorDialog.ShowDialog(this,
@@ -136,24 +137,25 @@ namespace KancolleSniffer
 
         private void CheckBattleResult()
         {
-            if (_sniffer.WrongBattleResult.Count > 0)
-            {
-                if (_errorDialog.ShowDialog(this,
-                        "戦闘結果の計算に誤りがあります。",
-                        GenerateBattleErrorLog()) == DialogResult.Abort)
-                    Application.Exit();
-                _sniffer.WrongBattleResult.Clear();
-            }
+            if (_sniffer.Battle.WrongResultRank.Count == 0 && _sniffer.WrongBattleResult.Count == 0)
+                return;
+            if (_errorDialog.ShowDialog(this,
+                    "戦闘結果の計算に誤りがあります。",
+                    GenerateBattleErrorLog()) == DialogResult.Abort)
+                Application.Exit();
+            _sniffer.Battle.WrongResultRank.Clear();
+            _sniffer.WrongBattleResult.Clear();
         }
+
+        private BattleState _prevBattleState = BattleState.None;
 
         private void SaveBattleApi(string url, string request, string response)
         {
+            if (_prevBattleState == BattleState.None)
+                _battleApiLog.Clear();
             if (_sniffer.Battle.BattleState != BattleState.None)
-            {
                 _battleApiLog.Add(new[] {url, request, response});
-                return;
-            }
-            _battleApiLog.Clear();
+            _prevBattleState = _sniffer.Battle.BattleState;
         }
 
         private string GenerateBattleErrorLog()
@@ -162,11 +164,14 @@ namespace KancolleSniffer
                 RemoveSensitiveInformation(ref logs[1], ref logs[2]);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
             var api = string.Join("\r\n", _battleApiLog.Select(logs => string.Join("\r\n", logs)));
-            var status = string.Join(" ",
-                from pair in _sniffer.WrongBattleResult
-                let assumed = pair.Assumed
-                let actual = pair.Actual
-                select $"[{assumed.Fleet}-{assumed.DeckIndex}] {assumed.Id}: {assumed.NowHp}->{actual.NowHp}");
+            var ranks = _sniffer.Battle.WrongResultRank;
+            var status = ranks.Count > 0
+                ? $"{ranks[0]}->{ranks[1]}"
+                : string.Join(" ",
+                    from pair in _sniffer.WrongBattleResult
+                    let assumed = pair.Assumed
+                    let actual = pair.Actual
+                    select $"[{assumed.Fleet}-{assumed.DeckIndex}] {assumed.Id}: {assumed.NowHp}->{actual.NowHp}");
             return $"{DateTime.Now:g} {version}\r\n{api}\r\n{status}";
         }
 
@@ -193,7 +198,6 @@ namespace KancolleSniffer
                     $"date: {DateTime.Now:g}\nurl: {url}\nrequest: {request}\nresponse: {response ?? "(null)"}\n");
             }
         }
-
 
         private string UnescapeString(string s)
         {
