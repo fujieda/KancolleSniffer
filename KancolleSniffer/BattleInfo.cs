@@ -84,16 +84,8 @@ namespace KancolleSniffer
             ShowResult(false); // 昼戦の結果を夜戦のときに表示する
             SetupResult(json);
             EnemyFighterPower = CalcEnemyFighterPower(json);
-            if (IsNightBattle(json))
-            {
-                BattleState = BattleState.Night;
-                CalcCombinedHougekiDamage(json.api_hougeki, _friend, _guard, _enemyHp, _enemyGuardHp);
-            }
-            else
-            {
-                BattleState = BattleState.Day;
-                CalcDamage(json);
-            }
+            BattleState = IsNightBattle(json) ? BattleState.Night : BattleState.Day;
+            CalcDamage(json);
             ClearEnemyOverKill();
             ResultRank = url.EndsWith("ld_airbattle") ? CalcLdAirBattleRank() : CalcResultRank();
         }
@@ -281,33 +273,72 @@ namespace KancolleSniffer
                 AddAirBattleResult(json.api_kouku2, "航空戦2");
                 CalcKoukuDamage(json.api_kouku2);
             }
-            if (!json.api_opening_atack()) // 航空戦のみ
+            CalcSurfaceBattleDamage(json);
+        }
+
+        private enum CombatType
+        {
+            AtOnce,
+            ByTurn,
+            Support
+        }
+
+        private class Phase
+        {
+            public string Api { get; }
+            public CombatType Type { get; }
+
+            public Phase(string api, CombatType type)
+            {
+                Api = api;
+                Type = type;
+            }
+        }
+
+        private void CalcSurfaceBattleDamage(dynamic json)
+        {
+            var phases = new[]
+            {
+                new Phase("support_info", CombatType.Support),
+                new Phase("opening_taisen", CombatType.ByTurn),
+                new Phase("opening_atack", CombatType.AtOnce),
+                new Phase("hougeki", CombatType.ByTurn),
+                new Phase("hougeki1", CombatType.ByTurn),
+                new Phase("hougeki2", CombatType.ByTurn),
+                new Phase("hougeki3", CombatType.ByTurn),
+                new Phase("raigeki", CombatType.AtOnce)
+            };
+            foreach (var phase in phases)
+                CalcDamageByType(json, "api_" + phase.Api, phase.Type);
+        }
+
+        private void CalcDamageByType(dynamic json, string api, CombatType type)
+        {
+            if (!json.IsDefined(api) || json[api] == null)
                 return;
-            if (json.api_support_info() && json.api_support_info != null)
-                CalcSupportDamage(json.api_support_info);
-            if (json.api_opening_taisen() && json.api_opening_taisen != null)
-                CalcCombinedHougekiDamage(json.api_opening_taisen, _friend, _guard, _enemyHp, _enemyGuardHp);
-            if (json.api_opening_atack != null)
-                CalcSimpleDamage(json.api_opening_atack, _friend, _guard, _enemyHp, _enemyGuardHp);
-            if (json.api_hougeki1() && json.api_hougeki1 != null)
-                CalcCombinedHougekiDamage(json.api_hougeki1, _friend, _guard, _enemyHp, _enemyGuardHp);
-            if (json.api_hougeki2() && json.api_hougeki2 != null)
-                CalcCombinedHougekiDamage(json.api_hougeki2, _friend, _guard, _enemyHp, _enemyGuardHp);
-            if (json.api_hougeki3() && json.api_hougeki3 != null)
-                CalcCombinedHougekiDamage(json.api_hougeki3, _friend, _guard, _enemyHp, _enemyGuardHp);
-            if (json.api_raigeki() && json.api_raigeki != null)
-                CalcSimpleDamage(json.api_raigeki, _friend, _guard, _enemyHp, _enemyGuardHp);
+            switch (type)
+            {
+                case CombatType.AtOnce:
+                    CalcDamageAtOnce(json[api]);
+                    break;
+                case CombatType.ByTurn:
+                    CalcDamageByTurn(json[api]);
+                    break;
+                case CombatType.Support:
+                    CalcSupportDamage(json[api]);
+                    break;
+            }
         }
 
         private void CalcSupportDamage(dynamic json)
         {
             if (json.api_support_hourai != null)
             {
-                CalcSimpleDamage(json.api_support_hourai.api_damage, _enemyHp, _enemyGuardHp);
+                CalcDamageAtOnce(json.api_support_hourai.api_damage, _enemyHp, _enemyGuardHp);
             }
             else if (json.api_support_airatack != null)
             {
-                CalcSimpleDamage(json.api_support_airatack.api_stage3.api_edam, _enemyHp, _enemyGuardHp);
+                CalcDamageAtOnce(json.api_support_airatack.api_stage3.api_edam, _enemyHp, _enemyGuardHp);
             }
         }
 
@@ -358,68 +389,61 @@ namespace KancolleSniffer
         private void CalcKoukuDamage(dynamic json)
         {
             if (json.api_stage3() && json.api_stage3 != null)
-                CalcSimpleDamage(json.api_stage3, _friend, _enemyHp);
+                CalcDamageAtOnce(json.api_stage3, _friend, _enemyHp);
             if (json.api_stage3_combined() && json.api_stage3_combined != null)
-                CalcSimpleDamage(json.api_stage3_combined, _guard, _enemyGuardHp);
+                CalcDamageAtOnce(json.api_stage3_combined, _guard, _enemyGuardHp);
         }
 
-        private void CalcSimpleDamage(dynamic json, Record[] friend, int[] enemy)
+        private void CalcDamageAtOnce(dynamic json)
         {
-            if (json.api_fdam())
-                CalcSimpleDamage(json.api_fdam, friend);
-            if (json.api_edam())
-                CalcSimpleDamage(json.api_edam, enemy);
+            CalcDamageAtOnce(json, _friend, _guard, _enemyHp, _enemyGuardHp);
         }
 
-        private void CalcSimpleDamage(dynamic json, Record[] friend, Record[] guard, int[] enemy, int[] enemyGuard)
+        private void CalcDamageAtOnce(dynamic json, Record[] friend, int[] enemy)
         {
-            CalcSimpleDamage(json.api_fdam, friend, guard);
-            CalcSimpleDamage(json.api_edam, enemy, enemyGuard);
+            CalcDamageAtOnce(json, friend, null, enemy, null);
         }
 
-        private void CalcSimpleDamage(dynamic rawDamage, Record[] friend, Record[] guard)
+        private void CalcDamageAtOnce(dynamic json, Record[] friend, Record[] guard, int[] enemy, int[] enemyGuard)
+        {
+            if (json.api_fdam() && json.api_fdam != null)
+                CalcDamageAtOnce(json.api_fdam, friend, guard);
+            if (json.api_edam() && json.api_edam != null)
+                CalcDamageAtOnce(json.api_edam, enemy, enemyGuard);
+        }
+
+        private void CalcDamageAtOnce(dynamic rawDamage, Record[] friend, Record[] guard = null)
         {
             var damage = (int[])rawDamage;
             for (var i = 0; i < friend.Length; i++)
                 friend[i].ApplyDamage(damage[i]);
+            if (guard == null)
+                return;
             for (var i = 0; i < guard.Length; i++)
                 guard[i].ApplyDamage(damage[i + 6]);
         }
 
-        private void CalcSimpleDamage(dynamic rawDamage, Record[] friend)
-        {
-            var damage = (int[])rawDamage;
-            for (var i = 0; i < friend.Length; i++)
-                friend[i].ApplyDamage(damage[i]);
-        }
-
-        private void CalcSimpleDamage(dynamic rawDamage, int[] enemy, int[] enemyGuard)
+        private void CalcDamageAtOnce(dynamic rawDamage, int[] enemy, int[] enemyGuard = null)
         {
             var damage = (int[])rawDamage;
             for (var i = 0; i < enemy.Length; i++)
                 enemy[i] -= damage[i];
+            if (enemyGuard == null)
+                return;
             for (var i = 0; i < enemyGuard.Length; i++)
                 enemyGuard[i] -= damage[i + 6];
         }
 
-        private void CalcSimpleDamage(dynamic rawDamage, int[] result)
+        private void CalcDamageByTurn(dynamic json)
         {
-            var damage = (int[])rawDamage;
-            for (var i = 0; i < result.Length; i++)
-                result[i] -= damage[i];
-        }
-
-        private void CalcCombinedHougekiDamage(dynamic hougeki, Record[] friend, Record[] guard,
-            int[] enemy, int[] enemyGuard)
-        {
-            if (!(hougeki.api_df_list() && hougeki.api_df_list != null &&
-                  hougeki.api_damage() && hougeki.api_damage != null &&
-                  hougeki.api_at_eflag() && hougeki.api_at_eflag != null))
+            if (!(json.api_df_list() && json.api_df_list != null &&
+                  json.api_damage() && json.api_damage != null &&
+                  json.api_at_eflag() && json.api_at_eflag != null))
                 return;
 
-            var targets = ((dynamic[])hougeki.api_df_list).Select(x => (int[])x);
-            var damages = ((dynamic[])hougeki.api_damage).Select(x => (int[])x);
-            var eflags = (int[])hougeki.api_at_eflag;
+            var targets = ((dynamic[])json.api_df_list).Select(x => (int[])x);
+            var damages = ((dynamic[])json.api_damage).Select(x => (int[])x);
+            var eflags = (int[])json.api_at_eflag;
             foreach (var turn in
                 targets.Zip(damages, (t, d) => new {t, d}).Zip(eflags, (td, e) => new {e, td.t, td.d}))
             {
@@ -429,24 +453,24 @@ namespace KancolleSniffer
                         continue;
                     if (turn.e == 1)
                     {
-                        if (hit.t < friend.Length)
+                        if (hit.t < _friend.Length)
                         {
-                            friend[hit.t].ApplyDamage(hit.d);
+                            _friend[hit.t].ApplyDamage(hit.d);
                         }
                         else
                         {
-                            guard[hit.t - 6].ApplyDamage(hit.d);
+                            _guard[hit.t - 6].ApplyDamage(hit.d);
                         }
                     }
                     else
                     {
-                        if (hit.t < enemy.Length)
+                        if (hit.t < _enemyHp.Length)
                         {
-                            enemy[hit.t] -= hit.d;
+                            _enemyHp[hit.t] -= hit.d;
                         }
                         else
                         {
-                            enemyGuard[hit.t - 6] -= hit.d;
+                            _enemyGuardHp[hit.t - 6] -= hit.d;
                         }
                     }
                 }
@@ -470,7 +494,6 @@ namespace KancolleSniffer
             VerifyResultRank(json);
             CleanupResult();
             SetEscapeShips(json);
-
         }
 
         private void VerifyResultRank(dynamic json)
