@@ -173,6 +173,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 開幕夜戦に支援が来る
+        /// </summary>
+        [TestMethod]
+        public void SpMidnightSupportAttack()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "sp_midnight_002");
+            PAssert.That(() => sniffer.Battle.WrongResultRank.Count == 0);
+        }
+
+        /// <summary>
         /// 出撃時に大破している艦娘がいたら警告する
         /// </summary>
         [TestMethod]

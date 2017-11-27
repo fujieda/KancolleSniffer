@@ -300,6 +300,7 @@ namespace KancolleSniffer
             var phases = new[]
             {
                 new Phase("support_info", CombatType.Support),
+                new Phase("n_support_info", CombatType.Support),
                 new Phase("opening_taisen", CombatType.ByTurn),
                 new Phase("opening_atack", CombatType.AtOnce),
                 new Phase("hougeki", CombatType.ByTurn),
