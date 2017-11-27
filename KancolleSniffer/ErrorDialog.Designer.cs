@@ -52,19 +52,20 @@ namespace KancolleSniffer
             // 
             // textBoxDetails
             // 
-            this.textBoxDetails.Location = new System.Drawing.Point(14, 73);
+            this.textBoxDetails.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.textBoxDetails.Location = new System.Drawing.Point(9, 73);
             this.textBoxDetails.Multiline = true;
             this.textBoxDetails.Name = "textBoxDetails";
             this.textBoxDetails.ReadOnly = true;
             this.textBoxDetails.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxDetails.Size = new System.Drawing.Size(298, 121);
+            this.textBoxDetails.Size = new System.Drawing.Size(305, 144);
             this.textBoxDetails.TabIndex = 5;
             this.textBoxDetails.WordWrap = false;
             // 
             // buttonContinue
             // 
             this.buttonContinue.DialogResult = System.Windows.Forms.DialogResult.Ignore;
-            this.buttonContinue.Location = new System.Drawing.Point(156, 207);
+            this.buttonContinue.Location = new System.Drawing.Point(156, 230);
             this.buttonContinue.Name = "buttonContinue";
             this.buttonContinue.Size = new System.Drawing.Size(75, 23);
             this.buttonContinue.TabIndex = 3;
@@ -74,7 +75,7 @@ namespace KancolleSniffer
             // buttonExit
             // 
             this.buttonExit.DialogResult = System.Windows.Forms.DialogResult.Abort;
-            this.buttonExit.Location = new System.Drawing.Point(237, 207);
+            this.buttonExit.Location = new System.Drawing.Point(237, 230);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(75, 23);
             this.buttonExit.TabIndex = 4;
@@ -110,7 +111,7 @@ namespace KancolleSniffer
             this.AcceptButton = this.buttonContinue;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(324, 242);
+            this.ClientSize = new System.Drawing.Size(334, 265);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.labelMessage);
             this.Controls.Add(this.labelSystemIcon);

@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -161,9 +162,9 @@ namespace KancolleSniffer
         private string GenerateBattleErrorLog()
         {
             foreach (var logs in _battleApiLog)
-                RemoveSensitiveInformation(ref logs[1], ref logs[2]);
+                RemoveUnwantedInformation(ref logs[1], ref logs[2]);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
-            var api = string.Join("\r\n", _battleApiLog.Select(logs => string.Join("\r\n", logs)));
+            var api = CompressApi(string.Join("\r\n", _battleApiLog.Select(logs => string.Join("\r\n", logs))));
             var ranks = _sniffer.Battle.WrongResultRank;
             var status = ranks.Count > 0
                 ? $"{ranks[0]}->{ranks[1]}"
@@ -171,23 +172,40 @@ namespace KancolleSniffer
                     from pair in _sniffer.WrongBattleResult
                     let assumed = pair.Assumed
                     let actual = pair.Actual
-                    select $"[{assumed.Fleet}-{assumed.DeckIndex}] {assumed.Id}: {assumed.NowHp}->{actual.NowHp}");
-            return $"{DateTime.Now:g} {version}\r\n{api}\r\n{status}";
+                    select $"({assumed.Fleet}-{assumed.DeckIndex}) {assumed.Id}: {assumed.NowHp}->{actual.NowHp}");
+            return $"{DateTime.Now:g} {version}\r\n{status}\r\n{api}";
         }
 
         private string GenerateErrorLog(string url, string request, string response, string exception)
         {
-            RemoveSensitiveInformation(ref request, ref response);
+            RemoveUnwantedInformation(ref request, ref response);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
-            return $"{DateTime.Now:g} {version}\r\n{exception}\r\n{url}\r\n{request}\r\n{response}\r\n";
+            var api = CompressApi($"{url}\r\n{request}\r\n{response}");
+            return $"{DateTime.Now:g} {version}\r\n{exception}\r\n{api}";
         }
 
-        private void RemoveSensitiveInformation(ref string request, ref string response)
+        private void RemoveUnwantedInformation(ref string request, ref string response)
         {
             var token = new Regex("&api%5Ftoken=[^&]*|api%5Ftoken=[^&]*&?");
             request = token.Replace(request, "");
             var id = new Regex(@"""api_member_id"":\d+,?|""api_nickname"":[^,]+,""api_nickname_id"":""d+"",?");
             response = id.Replace(response, "");
+        }
+
+        private string CompressApi(string api)
+        {
+            var output = new MemoryStream();
+            var gzip = new GZipStream(output, CompressionLevel.Optimal);
+            var bytes = Encoding.UTF8.GetBytes(api);
+            gzip.Write(bytes, 0, bytes.Length);
+            gzip.Close();
+            var ascii85 = Ascii85.Encode(output.ToArray());
+            var result = new List<string>();
+            var rest = ascii85.Length;
+            const int lineLength = 46;
+            for (var i = 0; i < ascii85.Length; i += lineLength, rest -= lineLength)
+                result.Add(ascii85.Substring(i, Min(rest, lineLength)));
+            return string.Join("\r\n", result);
         }
 
         private void WriteDebugLog(string url, string request, string response)

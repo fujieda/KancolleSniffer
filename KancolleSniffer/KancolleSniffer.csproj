@@ -58,6 +58,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="AirBattleResultPanel.cs" />
+    <Compile Include="Ascii85.cs" />
     <Compile Include="BaseAirCoprs.cs" />
     <Compile Include="BattleInfo.cs" />
     <Compile Include="Config.cs" />
