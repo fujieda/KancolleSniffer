@@ -139,7 +139,7 @@ namespace KancolleSniffer
         {
             WrongBattleResult = (from assumed in _battleResult
                 let actual = GetStatus(assumed.Id)
-                where assumed.NowHp != actual.NowHp
+                where !assumed.Escaped && assumed.NowHp != actual.NowHp
                 select new ShipStatusPair(assumed, actual)).ToList();
             _battleResult = new ShipStatus[0];
         }

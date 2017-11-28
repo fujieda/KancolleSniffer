@@ -107,7 +107,7 @@ namespace KancolleSniffer
                 return ApiMember(url, json);
             if (url.Contains("kousyou"))
                 return ApiKousyou(url, request, data);
-            if (url.Contains("battle"))
+            if (url.Contains("battle") || url.Contains("sortie"))
                 return ApiBattle(url, request, data);
             return ApiOthers(url, request, data);
         }
@@ -332,9 +332,9 @@ namespace KancolleSniffer
                 _battleInfo.InspectPracticeResult(data);
                 return Update.Ship;
             }
-            if (url.EndsWith("api_req_combined_battle/goback_port"))
+            if (url.EndsWith("/goback_port"))
             {
-                _battleInfo.CauseCombinedBattleEscape();
+                _battleInfo.CauseEscape();
                 return Update.Ship;
             }
             _battleInfo.BattleState = BattleState.Unknown;

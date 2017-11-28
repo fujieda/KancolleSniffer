@@ -561,7 +561,7 @@ namespace KancolleSniffer
             }
         }
 
-        public void CauseCombinedBattleEscape()
+        public void CauseEscape()
         {
             _shipInfo.SetEscapedShips(_escapingShips);
             _shipInfo.SetBadlyDamagedShips();

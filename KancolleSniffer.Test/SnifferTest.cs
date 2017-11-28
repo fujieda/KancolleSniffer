@@ -196,6 +196,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 単艦退避する
+        /// </summary>
+        [TestMethod]
+        public void EscapeWithoutEscort()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "escape_002");
+            PAssert.That(() => sniffer.GetShipStatuses(2)[1].Escaped);
+            PAssert.That(() => sniffer.WrongBattleResult.Count == 0);
+        }
+
+        /// <summary>
         /// 出撃時に大破している艦娘がいたら警告する
         /// </summary>
         [TestMethod]
