@@ -34,7 +34,8 @@ namespace KancolleSniffer
         None,
         Day,
         Night,
-        Result
+        Result,
+        Unknown
     }
 
     public class EnemyFighterPower

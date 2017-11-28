@@ -337,6 +337,7 @@ namespace KancolleSniffer
                 _battleInfo.CauseCombinedBattleEscape();
                 return Update.Ship;
             }
+            _battleInfo.BattleState = BattleState.Unknown;
             return Update.None;
         }
 
