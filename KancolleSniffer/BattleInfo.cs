@@ -281,6 +281,8 @@ namespace KancolleSniffer
                 new Phase("injection_kouku", CombatType.Aircraft, "噴式"),
                 new Phase("air_base_attack", CombatType.AirBase),
                 new Phase("n_support_info", CombatType.Support),
+                new Phase("n_hougeki1", CombatType.ByTurn),
+                new Phase("n_hougeki2", CombatType.ByTurn),
                 new Phase("kouku", CombatType.Aircraft, "航空戦"),
                 new Phase("kouku2", CombatType.Aircraft, "航空戦2"),
                 new Phase("support_info", CombatType.Support),

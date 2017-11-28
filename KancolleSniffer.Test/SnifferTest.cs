@@ -71,10 +71,11 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "battle_001");
             PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.A);
             AssertEqualBattleResult(sniffer,
-                new []{57, 66, 50, 65, 40, 42}, new []{34, 5, 0, 0, 0, 0});
+                new[] {57, 66, 50, 65, 40, 42}, new[] {34, 5, 0, 0, 0, 0});
         }
 
-        private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected, IEnumerable<int> enemy, string msg = null)
+        private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected, IEnumerable<int> enemy,
+            string msg = null)
         {
             var result = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
             PAssert.That(() => expected.SequenceEqual(result), msg);
@@ -169,7 +170,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "escape_001");
             PAssert.That(() => sniffer.GetShipStatuses(0)[5].Escaped &&
-            sniffer.GetShipStatuses(1)[2].Escaped);
+                               sniffer.GetShipStatuses(1)[2].Escaped);
         }
 
         /// <summary>
@@ -181,6 +182,17 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "sp_midnight_002");
             PAssert.That(() => sniffer.Battle.WrongResultRank.Count == 0);
+        }
+
+        /// <summary>
+        /// 払暁戦を行う
+        /// </summary>
+        [TestMethod]
+        public void NightToDay()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "nighttoday_001");
+            PAssert.That(() => sniffer.Battle.WrongResultRank.Count == 0 && sniffer.WrongBattleResult.Count == 0);
         }
 
         /// <summary>
