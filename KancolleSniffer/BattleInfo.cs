@@ -249,59 +249,41 @@ namespace KancolleSniffer
             return result;
         }
 
-        private void CalcDamage(dynamic json)
-        {
-            AirBattleResults.Clear();
-            if (json.api_air_base_injection())
-            {
-                AddAirBattleResult(json.api_air_base_injection, "AB噴式");
-                CalcKoukuDamage(json.api_air_base_injection);
-            }
-            if (json.api_injection_kouku())
-            {
-                AddAirBattleResult(json.api_injection_kouku, "噴式");
-                CalcKoukuDamage(json.api_injection_kouku);
-            }
-            if (json.api_air_base_attack())
-                CalcAirBaseAttackDamage(json.api_air_base_attack);
-            if (json.api_kouku())
-            {
-                AddAirBattleResult(json.api_kouku, "航空戦");
-                CalcKoukuDamage(json.api_kouku);
-            }
-            if (json.api_kouku2()) // 航空戦2回目
-            {
-                AddAirBattleResult(json.api_kouku2, "航空戦2");
-                CalcKoukuDamage(json.api_kouku2);
-            }
-            CalcSurfaceBattleDamage(json);
-        }
-
         private enum CombatType
         {
             AtOnce,
             ByTurn,
-            Support
+            Support,
+            Aircraft,
+            AirBase
         }
 
         private class Phase
         {
             public string Api { get; }
             public CombatType Type { get; }
+            public string Name { get; }
 
-            public Phase(string api, CombatType type)
+            public Phase(string api, CombatType type, string name = "")
             {
                 Api = api;
                 Type = type;
+                Name = name;
             }
         }
 
-        private void CalcSurfaceBattleDamage(dynamic json)
+        private void CalcDamage(dynamic json)
         {
+            AirBattleResults.Clear();
             var phases = new[]
             {
-                new Phase("support_info", CombatType.Support),
+                new Phase("air_base_injection", CombatType.Aircraft, "AB噴式"),
+                new Phase("injection_kouku", CombatType.Aircraft, "噴式"),
+                new Phase("air_base_attack", CombatType.AirBase),
                 new Phase("n_support_info", CombatType.Support),
+                new Phase("kouku", CombatType.Aircraft, "航空戦"),
+                new Phase("kouku2", CombatType.Aircraft, "航空戦2"),
+                new Phase("support_info", CombatType.Support),
                 new Phase("opening_taisen", CombatType.ByTurn),
                 new Phase("opening_atack", CombatType.AtOnce),
                 new Phase("hougeki", CombatType.ByTurn),
@@ -311,14 +293,15 @@ namespace KancolleSniffer
                 new Phase("raigeki", CombatType.AtOnce)
             };
             foreach (var phase in phases)
-                CalcDamageByType(json, "api_" + phase.Api, phase.Type);
+                CalcDamageByType(json, phase);
         }
 
-        private void CalcDamageByType(dynamic json, string api, CombatType type)
+        private void CalcDamageByType(dynamic json, Phase phase)
         {
+            var api = "api_" + phase.Api;
             if (!json.IsDefined(api) || json[api] == null)
                 return;
-            switch (type)
+            switch (phase.Type)
             {
                 case CombatType.AtOnce:
                     CalcDamageAtOnce(json[api]);
@@ -328,6 +311,13 @@ namespace KancolleSniffer
                     break;
                 case CombatType.Support:
                     CalcSupportDamage(json[api]);
+                    break;
+                case CombatType.Aircraft:
+                    AddAirBattleResult(json[api], phase.Name);
+                    CalcKoukuDamage(json[api]);
+                    break;
+                case CombatType.AirBase:
+                    CalcAirBaseAttackDamage(json[api]);
                     break;
             }
         }
