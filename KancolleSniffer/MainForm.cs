@@ -174,6 +174,7 @@ namespace KancolleSniffer
                     let actual = pair.Actual
                     select $"({assumed.Fleet}-{assumed.DeckIndex}) {assumed.Id}: {assumed.NowHp}->{actual.NowHp}");
             var result = $"{{{{{{\r\n{DateTime.Now:g} {version}\r\n{status}\r\n{api}\r\n}}}}}}";
+            File.WriteAllText("error.log", result);
             return result;
         }
 
@@ -183,6 +184,7 @@ namespace KancolleSniffer
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
             var api = CompressApi($"{url}\r\n{request}\r\n{response}");
             var result = $"{{{{{{\r\n{DateTime.Now:g} {version}\r\n{exception}\r\n{api}\r\n}}}}}}";
+            File.WriteAllText("error.log", result);
             return result;
         }
 
