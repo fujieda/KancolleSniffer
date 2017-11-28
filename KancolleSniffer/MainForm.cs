@@ -173,7 +173,8 @@ namespace KancolleSniffer
                     let assumed = pair.Assumed
                     let actual = pair.Actual
                     select $"({assumed.Fleet}-{assumed.DeckIndex}) {assumed.Id}: {assumed.NowHp}->{actual.NowHp}");
-            return $"{DateTime.Now:g} {version}\r\n{status}\r\n{api}";
+            var result = $"{{{{{{\r\n{DateTime.Now:g} {version}\r\n{status}\r\n{api}\r\n}}}}}}";
+            return result;
         }
 
         private string GenerateErrorLog(string url, string request, string response, string exception)
@@ -181,7 +182,8 @@ namespace KancolleSniffer
             RemoveUnwantedInformation(ref request, ref response);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
             var api = CompressApi($"{url}\r\n{request}\r\n{response}");
-            return $"{DateTime.Now:g} {version}\r\n{exception}\r\n{api}";
+            var result = $"{{{{{{\r\n{DateTime.Now:g} {version}\r\n{exception}\r\n{api}\r\n}}}}}}";
+            return result;
         }
 
         private void RemoveUnwantedInformation(ref string request, ref string response)
