@@ -704,5 +704,21 @@ namespace KancolleSniffer
         public ItemStatus[] ItemList => (from e in _itemInfo where e.Key != -1 select e.Value).ToArray();
 
         public string GetUseItemName(int id) => _useItemName[id];
+
+        public ItemStatus[] InjectItems(int[] itemIds)
+        {
+            var id = _itemInfo.Keys.Count + 1;
+            return itemIds.Select(itemId =>
+            {
+                if (!_itemSpecs.TryGetValue(itemId, out var spec))
+                {
+                    spec = new ItemSpec {Id = itemId};
+                    _itemSpecs.Add(itemId, spec);
+                }
+                var item = new ItemStatus {Id = id++, Spec = spec};
+                _itemInfo.Add(item.Id, item);
+                return item;
+            }).ToArray();
+        }
     }
 }

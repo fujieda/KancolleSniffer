@@ -65,7 +65,11 @@ namespace KancolleSniffer
             return name + "(" + flagship + ")";
         }
 
-        public ShipSpec this[int id] => _shipSpecs[id];
+        public ShipSpec this[int id]
+        {
+            get => _shipSpecs[id];
+            set => _shipSpecs[id] = value;
+        }
 
         private void SetRemodelBaseAndStep()
         {

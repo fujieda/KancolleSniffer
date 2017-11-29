@@ -510,5 +510,31 @@ namespace KancolleSniffer
         {
             set => _shipMaster.UseOldEnemyId = value;
         }
+
+        public void InjectShips(dynamic battle)
+        {
+            var deck = (int)battle.api_deck_id;
+            var id = 1;
+            var ships = ((int[])battle.api_f_nowhps).Zip((int[])battle.api_f_maxhps,
+                (now, max) => new ShipStatus {Id = id++, NowHp = now, MaxHp = max}).ToArray();
+            _decks[deck - 1] = (from ship in ships select ship.Id).ToArray();
+            foreach (var ship in ships)
+                _shipInfo[ship.Id] = ship;
+            if (battle.api_f_nowhps_combined())
+            {
+                var guards = ((int[])battle.api_f_nowhps_combined).Zip((int[])battle.api_f_maxhps_combined,
+                    (now, max) => new ShipStatus {Id = id++, NowHp = now, MaxHp = max}).ToArray();
+                _decks[1] = (from ship in guards select ship.Id).ToArray();
+                foreach (var ship in guards)
+                    _shipInfo[ship.Id] = ship;
+            }
+            foreach (var enemy in (int[])battle.api_ship_ke)
+                _shipMaster[enemy] = new ShipSpec {Id = enemy};
+            if (battle.api_ship_ke_combined())
+            {
+                foreach (var enemy in (int[])battle.api_ship_ke_combined)
+                    _shipMaster[enemy] = new ShipSpec {Id = enemy};
+            }
+        }
     }
 }
