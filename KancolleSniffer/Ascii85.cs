@@ -34,7 +34,8 @@ namespace KancolleSniffer
                 tuple = 0;
                 count = 0;
             }
-            output.Append(Encode85(tuple, count));
+            if (count > 0)
+                output.Append(Encode85(tuple, count));
             output.Append("~>");
             return output.ToString();
         }
