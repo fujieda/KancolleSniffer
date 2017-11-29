@@ -435,37 +435,36 @@ namespace KancolleSniffer
                   json.api_at_eflag() && json.api_at_eflag != null))
                 return;
 
-            var targets = ((dynamic[])json.api_df_list).Select(x => (int[])x);
-            var damages = ((dynamic[])json.api_damage).Select(x => (int[])x);
+            var targets = (int[][])json.api_df_list;
+            var damages = (int[][])json.api_damage;
             var eflags = (int[])json.api_at_eflag;
-            foreach (var turn in
-                targets.Zip(damages, (t, d) => new {t, d}).Zip(eflags, (td, e) => new {e, td.t, td.d}))
+
+            for (var i = 0; i < eflags.Length; i++)
             {
-                foreach (var hit in turn.t.Zip(turn.d, (t, d) => new {t, d}))
+                // 一度に複数の目標を狙う攻撃はないものと仮定する
+                var hit = new {t = targets[i][0], d = damages[i].Sum()};
+                if (hit.t == -1)
+                    continue;
+                if (eflags[i] == 1)
                 {
-                    if (hit.t == -1)
-                        continue;
-                    if (turn.e == 1)
+                    if (hit.t < _friend.Length)
                     {
-                        if (hit.t < _friend.Length)
-                        {
-                            _friend[hit.t].ApplyDamage(hit.d);
-                        }
-                        else
-                        {
-                            _guard[hit.t - 6].ApplyDamage(hit.d);
-                        }
+                        _friend[hit.t].ApplyDamage(hit.d);
                     }
                     else
                     {
-                        if (hit.t < _enemyHp.Length)
-                        {
-                            _enemyHp[hit.t] -= hit.d;
-                        }
-                        else
-                        {
-                            _enemyGuardHp[hit.t - 6] -= hit.d;
-                        }
+                        _guard[hit.t - 6].ApplyDamage(hit.d);
+                    }
+                }
+                else
+                {
+                    if (hit.t < _enemyHp.Length)
+                    {
+                        _enemyHp[hit.t] -= hit.d;
+                    }
+                    else
+                    {
+                        _enemyGuardHp[hit.t - 6] -= hit.d;
                     }
                 }
             }
