@@ -18,7 +18,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -50,6 +49,7 @@ namespace KancolleSniffer
         private bool _missionFinishTimeMode;
         private bool _ndockFinishTimeMode;
         private readonly KancolleDb _kancolleDb = new KancolleDb();
+        private readonly ErrorLog _errorLog;
 
         public MainForm()
         {
@@ -75,6 +75,7 @@ namespace KancolleSniffer
             _notificationManager = new NotificationManager(Ring);
             _config.Load();
             _proxyManager = new ProxyManager(_config, this);
+            _errorLog = new ErrorLog(_sniffer);
             PerformZoom();
             _shipLabels.AdjustAkashiTimers();
             _sniffer.LoadState();
@@ -104,22 +105,19 @@ namespace KancolleSniffer
             ProcessRequestMain(url, request, response);
         }
 
-        private readonly List<string[]> _battleApiLog = new List<string[]>();
-
         private void ProcessRequestMain(string url, string request, string response)
         {
             try
             {
                 UpdateInfo(_sniffer.Sniff(url, request, JsonParser.Parse(response)));
-                SaveBattleApi(url, request, response);
-                CheckBattleResult();
+                _errorLog.CheckBattleApi(url, request, response);
             }
 
             catch (RuntimeBinderException e)
             {
                 if (_errorDialog.ShowDialog(this,
                         "艦これに仕様変更があったか、受信内容が壊れています。",
-                        GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
+                        _errorLog.GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
                     Application.Exit();
             }
             catch (LogIOException e)
@@ -128,88 +126,18 @@ namespace KancolleSniffer
                 if (_errorDialog.ShowDialog(this, e.Message, e.InnerException.ToString()) == DialogResult.Abort)
                     Application.Exit();
             }
+            catch (BattleResultError)
+            {
+                if (_errorDialog.ShowDialog(this, "戦闘結果の計算に誤りがあります。",
+                        _errorLog.GenerateBattleErrorLog()) == DialogResult.Abort)
+                    Application.Exit();
+            }
             catch (Exception e)
             {
                 if (_errorDialog.ShowDialog(this, "エラーが発生しました。",
-                        GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
+                        _errorLog.GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
                     Application.Exit();
             }
-        }
-
-        private void CheckBattleResult()
-        {
-            if (_sniffer.Battle.WrongResultRank.Count == 0 && _sniffer.WrongBattleResult.Count == 0)
-                return;
-            if (_errorDialog.ShowDialog(this,
-                    "戦闘結果の計算に誤りがあります。",
-                    GenerateBattleErrorLog()) == DialogResult.Abort)
-                Application.Exit();
-            _sniffer.Battle.WrongResultRank.Clear();
-            _sniffer.WrongBattleResult.Clear();
-        }
-
-        private BattleState _prevBattleState = BattleState.None;
-
-        private void SaveBattleApi(string url, string request, string response)
-        {
-            if (_prevBattleState == BattleState.None)
-                _battleApiLog.Clear();
-            if (_sniffer.Battle.BattleState != BattleState.None)
-                _battleApiLog.Add(new[] {url, request, response});
-            _prevBattleState = _sniffer.Battle.BattleState;
-        }
-
-        private string GenerateBattleErrorLog()
-        {
-            foreach (var logs in _battleApiLog)
-                RemoveUnwantedInformation(ref logs[1], ref logs[2]);
-            var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
-            var api = CompressApi(string.Join("\r\n", _battleApiLog.Select(logs => string.Join("\r\n", logs))));
-            var ranks = _sniffer.Battle.WrongResultRank;
-            var status = ranks.Count > 0
-                ? $"{ranks[0]}->{ranks[1]}"
-                : string.Join(" ",
-                    from pair in _sniffer.WrongBattleResult
-                    let assumed = pair.Assumed
-                    let actual = pair.Actual
-                    select $"({assumed.Fleet}-{assumed.DeckIndex}) {assumed.Id}: {assumed.NowHp}->{actual.NowHp}");
-            var result = $"{{{{{{\r\n{DateTime.Now:g} {version}\r\n{status}\r\n{api}\r\n}}}}}}";
-            File.WriteAllText("error.log", result);
-            return result;
-        }
-
-        private string GenerateErrorLog(string url, string request, string response, string exception)
-        {
-            RemoveUnwantedInformation(ref request, ref response);
-            var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
-            var api = CompressApi($"{url}\r\n{request}\r\n{response}");
-            var result = $"{{{{{{\r\n{DateTime.Now:g} {version}\r\n{exception}\r\n{api}\r\n}}}}}}";
-            File.WriteAllText("error.log", result);
-            return result;
-        }
-
-        private void RemoveUnwantedInformation(ref string request, ref string response)
-        {
-            var token = new Regex("&api%5Ftoken=[^&]*|api%5Ftoken=[^&]*&?");
-            request = token.Replace(request, "");
-            var id = new Regex(@"""api_member_id"":\d+,?|""api_nickname"":[^,]+,""api_nickname_id"":""d+"",?");
-            response = id.Replace(response, "");
-        }
-
-        private string CompressApi(string api)
-        {
-            var output = new MemoryStream();
-            var gzip = new GZipStream(output, CompressionLevel.Optimal);
-            var bytes = Encoding.UTF8.GetBytes(api);
-            gzip.Write(bytes, 0, bytes.Length);
-            gzip.Close();
-            var ascii85 = Ascii85.Encode(output.ToArray());
-            var result = new List<string>();
-            var rest = ascii85.Length;
-            const int lineLength = 46;
-            for (var i = 0; i < ascii85.Length; i += lineLength, rest -= lineLength)
-                result.Add(ascii85.Substring(i, Min(rest, lineLength)));
-            return string.Join("\r\n", result);
         }
 
         private void WriteDebugLog(string url, string request, string response)

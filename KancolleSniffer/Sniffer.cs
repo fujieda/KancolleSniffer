@@ -321,7 +321,6 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_combined_battle/battleresult"))
             {
-                _shipInfo.SaveBattleResult();
                 _battleInfo.InspectBattleResult(data);
                 _exMapInfo.InspectBattleResult(data);
                 _logger.InspectBattleResult(data);
@@ -510,7 +509,9 @@ namespace KancolleSniffer
 
         public int[] GetDeck(int fleet) => _shipInfo.GetDeck(fleet);
 
-        public List<ShipInfo.ShipStatusPair> WrongBattleResult => _shipInfo.WrongBattleResult;
+        public ShipInfo.ShipStatusPair[] BattleResultStatusDiff => _shipInfo.BattleResultDiff;
+
+        public bool IsBattleResultStatusError => _shipInfo.IsBattleResultError;
 
         public int CombinedFleetType => _shipInfo.CombinedFleetType;
 

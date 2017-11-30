@@ -66,7 +66,8 @@ namespace KancolleSniffer
         private readonly List<int> _escapedShips = new List<int>();
         private int _combinedFleetType;
         private ShipStatus[] _battleResult = new ShipStatus[0];
-        public List<ShipStatusPair> WrongBattleResult { get; private set; } = new List<ShipStatusPair>();
+        public ShipStatusPair[] BattleResultDiff { get; private set; } = new ShipStatusPair[0];
+        public bool IsBattleResultError => BattleResultDiff.Length > 0;
 
         public class ShipStatusPair
         {
@@ -137,10 +138,10 @@ namespace KancolleSniffer
 
         private void VerifyBattleResult()
         {
-            WrongBattleResult = (from assumed in _battleResult
+            BattleResultDiff = (from assumed in _battleResult
                 let actual = GetStatus(assumed.Id)
                 where !assumed.Escaped && assumed.NowHp != actual.NowHp
-                select new ShipStatusPair(assumed, actual)).ToList();
+                select new ShipStatusPair(assumed, actual)).ToArray();
             _battleResult = new ShipStatus[0];
         }
 

@@ -60,7 +60,6 @@ namespace KancolleSniffer.Test
             }
         }
 
-
         /// <summary>
         /// 4-2-1で開幕対潜雷撃を含む戦闘を行う
         /// </summary>
@@ -125,7 +124,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "practice_001");
-            PAssert.That(() => sniffer.WrongBattleResult.Count == 0);
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
         }
 
         /// <summary>
@@ -136,7 +135,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_battle_001");
-            PAssert.That(() => sniffer.WrongBattleResult.Count == 0);
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
         }
 
         /// <summary>
@@ -147,7 +146,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_battle_002");
-            PAssert.That(() => sniffer.WrongBattleResult.Count == 0);
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
         }
 
         /// <summary>
@@ -158,7 +157,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_battle_003");
-            PAssert.That(() => sniffer.WrongBattleResult.Count == 0);
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
         }
 
         /// <summary>
@@ -181,7 +180,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "sp_midnight_002");
-            PAssert.That(() => sniffer.Battle.WrongResultRank.Count == 0);
+            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
         }
 
         /// <summary>
@@ -192,7 +191,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "nighttoday_001");
-            PAssert.That(() => sniffer.Battle.WrongResultRank.Count == 0 && sniffer.WrongBattleResult.Count == 0);
+            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError && !sniffer.IsBattleResultStatusError);
         }
 
         /// <summary>
@@ -204,7 +203,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "escape_002");
             PAssert.That(() => sniffer.GetShipStatuses(2)[1].Escaped);
-            PAssert.That(() => sniffer.WrongBattleResult.Count == 0);
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
         }
 
         /// <summary>

@@ -66,11 +66,18 @@ namespace KancolleSniffer
         public EnemyFighterPower EnemyFighterPower { get; private set; }
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
-        public List<char> WrongResultRank { get; set; } = new List<char>(2);
+        public RankPair DisplayedResultRank { get; } = new RankPair();
         public ShipStatus[] EnemyResultStatus { get; private set; }
         public ShipStatus[] EnemyGuardResultStatus { get; private set; }
         public bool EnemyIsCombined => EnemyGuardResultStatus.Length > 0;
         public List<AirBattleResult> AirBattleResults { get; } = new List<AirBattleResult>();
+
+        public class RankPair
+        {
+            public char Assumed { get; set; }
+            public char Actual { get; set; }
+            public bool IsError => Assumed != Actual;
+        }
 
         public BattleInfo(ShipInfo shipInfo, ItemInfo itemInfo)
         {
@@ -484,25 +491,26 @@ namespace KancolleSniffer
         {
             BattleState = BattleState.Result;
             ShowResult(!_lastCell);
+            _shipInfo.SaveBattleResult();
             VerifyResultRank(json);
             CleanupResult();
             SetEscapeShips(json);
         }
 
+
+
         private void VerifyResultRank(dynamic json)
         {
             if (_friend == null)
                 return;
-            WrongResultRank.Clear();
             if (!json.api_win_rank())
                 return;
             var assumed = "PSABCDE"[(int)ResultRank];
             if (assumed == 'P')
                 assumed = 'S';
             var actual = ((string)json.api_win_rank)[0];
-            if (assumed == actual)
-                return;
-            WrongResultRank.AddRange(new[] {assumed, actual});
+            DisplayedResultRank.Assumed = assumed;
+            DisplayedResultRank.Actual = actual;
         }
 
         public void InspectPracticeResult(dynamic json)
