@@ -348,5 +348,15 @@ namespace KancolleSniffer.Test
             Assert.IsTrue(json[0].aaa == 1);
             Assert.IsTrue(json[1].aaa == 2);
         }
+
+        [TestMethod]
+        public void Serialize()
+        {
+            var input =
+                "[{\"api_id\":1,\"api_name\":\"睦月\",\"api_maxeq\":[[0,1],0,0,0,0],\"api_test\":true,\"api_null\":null}," +
+                "{\"api_id\":2,\"api_name\":\"如月\",\"api_maxeq\":[0,0,0,0,null],\"api_test\":false}]";
+            var json = JsonParser.Parse(input);
+            Assert.AreEqual(json.ToString(), input);
+        }
     }
 }

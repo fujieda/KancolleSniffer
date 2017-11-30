@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace KancolleSniffer
@@ -422,7 +423,6 @@ namespace KancolleSniffer
                         .ToDictionary(prop => prop.Name, prop => CreateJsonObject(prop.GetValue(obj))));
             }
             return null;
-
         }
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
@@ -446,6 +446,70 @@ namespace KancolleSniffer
                 return true;
             }
             return false;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            ConvertToString(sb);
+            return sb.ToString();
+        }
+
+        private void ConvertToString(StringBuilder sb)
+        {
+            switch (_type)
+            {
+                case JsonType.Bool:
+                    sb.Append(_bool ? "true" : "false");
+                    break;
+                case JsonType.Number:
+                    sb.Append(_number.ToString("G"));
+                    break;
+                case JsonType.String:
+                    sb.Append("\"");
+                    sb.Append(HttpUtility.JavascriptStringEncode(_string));
+                    sb.Append("\"");
+                    break;
+                case JsonType.Array:
+                    sb.Append("[");
+                    var delimiter = "";
+                    foreach (var val in _array)
+                    {
+                        sb.Append(delimiter);
+                        if (val == null)
+                        {
+                            sb.Append("null");
+                        }
+                        else
+                        {
+                            val.ConvertToString(sb);
+                        }
+                        delimiter = ",";
+                    }
+                    sb.Append("]");
+                    break;
+                case JsonType.Object:
+                    sb.Append("{");
+                    delimiter = "";
+                    foreach (var entry in _dict)
+                    {
+                        sb.Append(delimiter);
+                        sb.Append("\"");
+                        sb.Append(entry.Key);
+                        sb.Append("\":");
+                        if (entry.Value == null)
+                        {
+                            sb.Append("null");
+                        }
+                        else
+                        {
+                            entry.Value.ConvertToString(sb);
+                        }
+                        delimiter = ",";
+                    }
+                    sb.Append("}");
+                    break;
+            }
         }
 
         private object Value
