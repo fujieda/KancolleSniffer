@@ -69,7 +69,8 @@ namespace KancolleSniffer
             foreach (var logs in _battleApiLog)
                 RemoveUnwantedInformation(ref logs[1], ref logs[2]);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
-            var api = CompressApi(string.Join("\r\n", _battleApiLog.Select(logs => string.Join("\r\n", logs))));
+            var api = CompressApi(string.Join("\r\n",
+                new[] {BattleStartSlots()}.Concat(_battleApiLog.SelectMany(logs => logs))));
             var rank = _sniffer.Battle.DisplayedResultRank;
             var status = string.Join("\r\n", new[]
             {
@@ -79,6 +80,18 @@ namespace KancolleSniffer
             var result = $"{{{{{{\r\n{DateTime.Now:g} {version}\r\n{status}\r\n{api}\r\n}}}}}}";
             File.WriteAllText("error.log", result);
             return result;
+        }
+
+        private string BattleStartSlots()
+        {
+            return JsonObject.CreateJsonObject((from ship in _sniffer.BattleStartStatus
+                group ship by ship.Fleet
+                into fleet
+                select
+                (from s in fleet
+                    select (from item in s.AllSlot select item.Spec.Id).ToArray()
+                ).ToArray()
+            ).ToArray()).ToString();
         }
 
         private string HpDiffLog() => string.Join(" ",

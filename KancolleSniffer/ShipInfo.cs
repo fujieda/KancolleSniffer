@@ -68,6 +68,7 @@ namespace KancolleSniffer
         private ShipStatus[] _battleResult = new ShipStatus[0];
         public ShipStatusPair[] BattleResultDiff { get; private set; } = new ShipStatusPair[0];
         public bool IsBattleResultError => BattleResultDiff.Length > 0;
+        public ShipStatus[] BattleStartStatus { get; private set; } = new ShipStatus[0];
 
         public class ShipStatusPair
         {
@@ -143,6 +144,12 @@ namespace KancolleSniffer
                 where !assumed.Escaped && assumed.NowHp != actual.NowHp
                 select new ShipStatusPair(assumed, actual)).ToArray();
             _battleResult = new ShipStatus[0];
+        }
+
+        public void SaveBattleStartStatus()
+        {
+            BattleStartStatus = _decks.Where((deck, i) => _inSortie[i])
+                .SelectMany(deck => deck.Select(id => (ShipStatus)GetStatus(id).Clone())).ToArray();
         }
 
         private void ClearShipInfo()
@@ -512,29 +519,34 @@ namespace KancolleSniffer
             set => _shipMaster.UseOldEnemyId = value;
         }
 
-        public void InjectShips(dynamic battle)
+        public void InjectShips(dynamic battle, dynamic item)
         {
-            var deck = (int)battle.api_deck_id;
-            var id = 1;
-            var ships = ((int[])battle.api_f_nowhps).Zip((int[])battle.api_f_maxhps,
-                (now, max) => new ShipStatus {Id = id++, NowHp = now, MaxHp = max}).ToArray();
-            _decks[deck - 1] = (from ship in ships select ship.Id).ToArray();
-            foreach (var ship in ships)
-                _shipInfo[ship.Id] = ship;
+            var deck = (int)battle.api_deck_id - 1;
+            InjectShips(deck, (int[])battle.api_f_nowhps, (int[])battle.api_f_maxhps, (int[][])item[0]);
             if (battle.api_f_nowhps_combined())
-            {
-                var guards = ((int[])battle.api_f_nowhps_combined).Zip((int[])battle.api_f_maxhps_combined,
-                    (now, max) => new ShipStatus {Id = id++, NowHp = now, MaxHp = max}).ToArray();
-                _decks[1] = (from ship in guards select ship.Id).ToArray();
-                foreach (var ship in guards)
-                    _shipInfo[ship.Id] = ship;
-            }
+                InjectShips(1, (int[])battle.api_f_nowhps_combined, (int[])battle.api_f_maxhps_combined, (int[][])item[1]);
             foreach (var enemy in (int[])battle.api_ship_ke)
                 _shipMaster[enemy] = new ShipSpec {Id = enemy};
             if (battle.api_ship_ke_combined())
             {
                 foreach (var enemy in (int[])battle.api_ship_ke_combined)
                     _shipMaster[enemy] = new ShipSpec {Id = enemy};
+            }
+        }
+
+        private void InjectShips(int deck, int[] nowhps, int[] maxhps, int[][] slots)
+        {
+            var id = _shipInfo.Keys.Count + 1;
+            var ships = nowhps.Zip(maxhps,
+                (now, max) => new ShipStatus {Id = id++, NowHp = now, MaxHp = max}).ToArray();
+            _decks[deck] = (from ship in ships select ship.Id).ToArray();
+            foreach (var ship in ships)
+                _shipInfo[ship.Id] = ship;
+            foreach (var entry in ships.Zip(slots, (ship, slot) =>new {ship, slot}))
+            {
+                entry.ship.Slot = _itemInfo.InjectItems(entry.slot.Take(5)).ToArray();
+                if (entry.slot.Length >= 6)
+                    entry.ship.SlotEx = _itemInfo.InjectItems(entry.slot.Skip(5)).First();
             }
         }
     }

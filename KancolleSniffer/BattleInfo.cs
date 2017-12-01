@@ -145,6 +145,7 @@ namespace KancolleSniffer
         {
             if (_friend != null)
                 return;
+            _shipInfo.SaveBattleStartStatus();
             _fleet = DeckId(json);
             var fstats = _shipInfo.GetShipStatuses(_fleet);
             FlagshipRecovery(fstats[0]);

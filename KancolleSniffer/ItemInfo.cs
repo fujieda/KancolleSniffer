@@ -705,7 +705,7 @@ namespace KancolleSniffer
 
         public string GetUseItemName(int id) => _useItemName[id];
 
-        public ItemStatus[] InjectItems(int[] itemIds)
+        public IEnumerable<ItemStatus> InjectItems(IEnumerable<int> itemIds)
         {
             var id = _itemInfo.Keys.Count + 1;
             return itemIds.Select(itemId =>
@@ -718,7 +718,7 @@ namespace KancolleSniffer
                 var item = new ItemStatus {Id = id++, Spec = spec};
                 _itemInfo.Add(item.Id, item);
                 return item;
-            }).ToArray();
+            });
         }
     }
 }

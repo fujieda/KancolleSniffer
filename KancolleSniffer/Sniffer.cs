@@ -513,6 +513,8 @@ namespace KancolleSniffer
 
         public bool IsBattleResultStatusError => _shipInfo.IsBattleResultError;
 
+        public ShipStatus[] BattleStartStatus => _shipInfo.BattleStartStatus;
+
         public int CombinedFleetType => _shipInfo.CombinedFleetType;
 
         public ChargeStatus[] ChargeStatuses => _shipInfo.ChargeStatuses;

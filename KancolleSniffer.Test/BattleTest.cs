@@ -43,14 +43,13 @@ namespace KancolleSniffer.Test
         public void Damecon()
         {
             var logs = ReadAllLines("damecon_001");
-            var items = _itemInfo.InjectItems(new[]{43});
+            var items = JsonParser.Parse("[[[],[],[],[],[43]]]");
             dynamic battle = JsonParser.Parse(logs[2]);
-            _shipInfo.InjectShips(battle);
-            _shipInfo.GetStatus(5).Slot = new []{items[0]};
+            _shipInfo.InjectShips(battle, items);
             _battleInfo.InspectBattle(battle, logs[0]);
             dynamic result = JsonParser.Parse(logs[5]);
             _battleInfo.InspectBattleResult(result);
-            PAssert.That(() => _shipInfo.GetStatus(5).NowHp == 31);
+            PAssert.That(() => _shipInfo.GetShipStatuses(2)[4].NowHp == 31);
         }
     }
 }
