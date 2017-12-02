@@ -57,8 +57,9 @@ namespace KancolleSniffer
             All = (1 << 9) - 1
         }
 
-        public Sniffer()
+        public Sniffer(bool start = false)
         {
+            _start = start;
             _shipInfo = new ShipInfo(_itemInfo);
             _conditionTimer = new ConditionTimer(_shipInfo);
             _dockInfo = new DockInfo(_shipInfo, _materialInfo);

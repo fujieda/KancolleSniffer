@@ -248,5 +248,24 @@ namespace KancolleSniffer.Test
             PAssert.That(() =>
                 "2017-05-01 00:00:00,45417045,0|2017-05-01 00:00:00,45417045,350|" == result);
         }
+
+        /// <summary>
+        /// 晴嵐(六三一空)任務の場合はapi_bounus_countがない
+        /// </summary>
+        [TestMethod]
+        public void InspectClearItemGetSeiran631Ku()
+        {
+            var sniffer = new Sniffer(true);
+            sniffer.SetLogWriter((path, s, h) => { }, () => new DateTime(2017, 5, 1));
+            sniffer.EnableLog(LogType.Achivement);
+            sniffer.Sniff("/kcsapi/api_req_quest/clearitemget",
+                "api%5Fquest%5Fid=656&api%5Fverno=1",
+                JsonParser.Parse(
+                    @"{""api_result"":1,""api_result_msg"":""成功"",""api_data"":
+                    {""api_material"":[0,0,0,0],""api_bounus"":[
+                    {""api_type"":15,""api_count"":1,""api_item"":{""api_id_from"":9999,""api_id_to"":9999,
+                    ""api_message"":""第一潜水隊運用航空隊：「晴嵐(六三一空)」の新編成を<br>完了しました！""}}
+                    ]}}"));
+        }
     }
 }

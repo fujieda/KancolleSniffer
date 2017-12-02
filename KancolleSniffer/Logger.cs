@@ -151,7 +151,7 @@ namespace KancolleSniffer
         {
             if ((_logType & LogType.Achivement) == 0)
                 return;
-            if (json.api_bounus_count == 0)
+            if (!json.api_bounus())
                 return;
             foreach (var entry in json.api_bounus)
             {
