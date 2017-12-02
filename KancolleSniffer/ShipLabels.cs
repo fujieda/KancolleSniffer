@@ -38,17 +38,29 @@ namespace KancolleSniffer
 
     public class ShipLabels
     {
-        private readonly ShipLabel[][] _labels = new ShipLabel[ShipInfo.MemberCount][];
+        private readonly ShipLabel[][] _shiplabels = new ShipLabel[ShipInfo.MemberCount][];
+        private readonly ShipLabel[][] _shipLabels7 = new ShipLabel[7][];
         private readonly ShipLabel[][] _combinedLabels = new ShipLabel[ShipInfo.MemberCount * 2][];
         private readonly ShipLabel[] _akashiTimers = new ShipLabel[ShipInfo.MemberCount];
+        private readonly ShipLabel[] _akashiTimers7 = new ShipLabel[ShipInfo.MemberCount];
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         public static Color[] ColumnColors = {SystemColors.Control, Color.FromArgb(255, 250, 250, 250)};
         private readonly List<ShipLabel> _hpLables = new List<ShipLabel>();
 
         public void CreateShipLabels(Control parent, EventHandler onClick)
         {
+            CreateShipLabels(parent, onClick, _shiplabels, 16);
+        }
+
+        public void CreateShipLabels7(Control parent, EventHandler onClick)
+        {
+            CreateShipLabels(parent, onClick, _shipLabels7, 14);
+        }
+
+        public void CreateShipLabels(Control parent, EventHandler onClick, ShipLabel[][] shipLabels, int lineHeight)
+        {
             parent.SuspendLayout();
-            const int top = 3, height = 12, lh = 16;
+            const int top = 3, height = 12;
             ShipLabel[] headings;
             parent.Controls.AddRange(headings = new[]
             {
@@ -56,17 +68,17 @@ namespace KancolleSniffer
                 new ShipLabel {Location = new Point(128, top), Text = "cond", AutoSize = true},
                 new ShipLabel {Location = new Point(163, top), Text = "Lv", AutoSize = true},
                 new ShipLabel {Location = new Point(194, top), Text = "Exp", AutoSize = true},
-                new ShipLabel {Location = new Point(0, 1), Size = new Size(parent.Width, lh - 1)}
+                new ShipLabel {Location = new Point(0, 1), Size = new Size(parent.Width, lineHeight - 1)}
             });
             foreach (var label in headings)
             {
                 label.Scale();
                 label.BackColor = ColumnColors[1];
             }
-            for (var i = 0; i < _labels.Length; i++)
+            for (var i = 0; i < shipLabels.Length; i++)
             {
-                var y = top + lh * (i + 1);
-                parent.Controls.AddRange(_labels[i] = new[]
+                var y = top + lineHeight * (i + 1);
+                parent.Controls.AddRange(shipLabels[i] = new[]
                 {
                     new ShipLabel {Location = new Point(129, y), AutoSize = true, AnchorRight = true},
                     new ShipLabel
@@ -88,9 +100,9 @@ namespace KancolleSniffer
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new ShipLabel {Location = new Point(2, y), AutoSize = true}, // 名前のZ-orderを下に
-                    new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, lh - 1)}
+                    new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, lineHeight - 1)}
                 });
-                foreach (var label in _labels[i])
+                foreach (var label in shipLabels[i])
                 {
                     label.Scale();
                     label.PresetColor = label.BackColor = ColumnColors[i % 2];
@@ -98,7 +110,7 @@ namespace KancolleSniffer
                     label.Click += onClick;
                 }
             }
-            _hpLables.AddRange(_labels.Select(record => record[0]));
+            _hpLables.AddRange(shipLabels.Select(labels => labels[0]));
             headings[0].Cursor = Cursors.Hand;
             headings[0].Click += (sender, ev) =>
             {
@@ -110,9 +122,14 @@ namespace KancolleSniffer
 
         public void SetShipLabels(ShipStatus[] statuses)
         {
-            for (var i = 0; i < _labels.Length; i++)
+            SetShipLabels(statuses, statuses.Length == 7 ? _shipLabels7 : _shiplabels);
+        }
+
+        public void SetShipLabels(ShipStatus[] statuses, ShipLabel[][] shipLabels)
+        {
+            for (var i = 0; i < shipLabels.Length; i++)
             {
-                var labels = _labels[i];
+                var labels = shipLabels[i];
                 var s = i < statuses.Length ? statuses[i] : null;
                 labels[0].SetHp(s);
                 labels[1].SetCond(s);
@@ -193,14 +210,24 @@ namespace KancolleSniffer
 
         public void CreateAkashiTimers(Control parent)
         {
+            CreateAkashiTimers(parent, _akashiTimers, 16);
+        }
+
+        public void CreateAkashiTimers7(Control parent)
+        {
+            CreateAkashiTimers(parent, _akashiTimers7, 14);
+        }
+
+        public void CreateAkashiTimers(Control parent, ShipLabel[] timerLabels, int lineHeight)
+        {
             parent.SuspendLayout();
-            for (var i = 0; i < _akashiTimers.Length; i++)
+            for (var i = 0; i < timerLabels.Length; i++)
             {
                 const int x = 55;
-                var y = 3 + 16 * (i + 1);
+                var y = 3 + lineHeight * (i + 1);
                 ShipLabel label;
                 parent.Controls.Add(
-                    label = _akashiTimers[i] =
+                    label = timerLabels[i] =
                         new ShipLabel
                         {
                             Location = new Point(x, y),
@@ -209,26 +236,45 @@ namespace KancolleSniffer
                         });
                 label.BackColor = ColumnColors[i % 2];
             }
-            foreach (var label in _akashiTimers)
+            foreach (var label in timerLabels)
                 label.Scale();
             parent.ResumeLayout();
         }
 
         public void AdjustAkashiTimers()
         {
+            AdjustAkashiTimers(_akashiTimers, 16);
+            AdjustAkashiTimers(_akashiTimers7, 14);
+        }
+
+        public void AdjustAkashiTimers(ShipLabel[] timers, int lineHeight)
+        {
             var scale = ShipLabel.ScaleFactor;
             if (scale.Height < 1.2)
                 return;
-            for (var i = 0; i < _akashiTimers.Length; i++)
+            for (var i = 0; i < timers.Length; i++)
             {
                 const int x = 55;
-                var y = 3 + 16 * (i + 1);
-                _akashiTimers[i].Location = new Point((int)Round(x * scale.Width) - 3, (int)Round(y * scale.Height));
-                _akashiTimers[i].Size = new Size((int)Round(31 * scale.Width) + 1, (int)Round(12 * scale.Height));
+                var y = 3 + lineHeight * (i + 1);
+                timers[i].Location = new Point((int)Round(x * scale.Width) - 3, (int)Round(y * scale.Height));
+                timers[i].Size = new Size((int)Round(31 * scale.Width) + 1, (int)Round(12 * scale.Height));
             }
         }
 
         public void SetAkashiTimer(ShipStatus[] statuses, AkashiTimer.RepairSpan[] timers)
+        {
+            if (statuses.Length == 7)
+            {
+                SetAkashiTimer(statuses, timers, _akashiTimers7, _shipLabels7);
+            }
+            else
+            {
+
+                SetAkashiTimer(statuses, timers, _akashiTimers, _shiplabels);
+            }
+        }
+
+        public void SetAkashiTimer(ShipStatus[] statuses, AkashiTimer.RepairSpan[] timers, ShipLabel[] timerLabels, ShipLabel[][] shipLabels)
         {
             var shortest = -1;
             for (var i = 0; i < timers.Length; i++)
@@ -238,11 +284,11 @@ namespace KancolleSniffer
                 if (shortest == -1 || timers[i].Span < timers[shortest].Span)
                     shortest = i;
             }
-            for (var i = 0; i < _akashiTimers.Length; i++)
+            for (var i = 0; i < timerLabels.Length; i++)
             {
-                var label = _akashiTimers[i];
-                var labelHp = _labels[i][0];
-                var labelName = _labels[i][4];
+                var label = timerLabels[i];
+                var labelHp = shipLabels[i][0];
+                var labelName = shipLabels[i][4];
                 if (i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
                 {
                     label.Visible = false;

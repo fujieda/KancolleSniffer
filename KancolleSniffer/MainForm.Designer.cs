@@ -165,6 +165,7 @@ namespace KancolleSniffer
             this.toolTipFighterPower = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipLoS = new System.Windows.Forms.ToolTip(this.components);
             this.panelRepairList = new KancolleSniffer.RepairListForMain();
+            this.panel7Ships = new System.Windows.Forms.Panel();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -304,6 +305,7 @@ namespace KancolleSniffer
             this.panelShipInfo.Controls.Add(this.labelPresetAkashiTimer);
             this.panelShipInfo.Controls.Add(this.labelGuide);
             this.panelShipInfo.Controls.Add(this.panelCombinedFleet);
+            this.panelShipInfo.Controls.Add(this.panel7Ships);
             this.panelShipInfo.Controls.Add(this.panelBattleInfo);
             this.panelShipInfo.Controls.Add(this.labelLoS);
             this.panelShipInfo.Controls.Add(this.labelLoSCaption);
@@ -1288,6 +1290,14 @@ namespace KancolleSniffer
             this.panelRepairList.Visible = false;
             this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
             // 
+            // panel7Ships
+            // 
+            this.panel7Ships.Location = new System.Drawing.Point(0, 0);
+            this.panel7Ships.Name = "panel7Ships";
+            this.panel7Ships.Size = new System.Drawing.Size(220, 115);
+            this.panel7Ships.TabIndex = 0;
+            this.panel7Ships.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1482,6 +1492,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolTip toolTipFighterPower;
         private System.Windows.Forms.ToolTip toolTipLoS;
         private RepairListForMain panelRepairList;
+        private System.Windows.Forms.Panel panel7Ships;
     }
 }
 
