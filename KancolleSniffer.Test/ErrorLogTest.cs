@@ -38,5 +38,19 @@ namespace KancolleSniffer.Test
             ErrorLog.RemoveUnwantedInformation(ref request4, ref response);
             PAssert.That(() => request4 == "", "トークン単独");
         }
+
+        [TestMethod]
+        public void RemoveUnwantedInformationFromResponse()
+        {
+            var request = "";
+            var response = @"{""api_result"":1,""api_result_msg"":""成功"",""api_data"":"+
+                            @"{""api_basic"":{""api_member_id"":""123456""," +
+                            @"""api_nickname"":""ぱんなこった"",""api_nickname_id"":""12345678"",""api_active_flag"":1}}}";
+            ErrorLog.RemoveUnwantedInformation(ref request, ref response);
+            PAssert.That(() => response == @"{""api_basic"":{""api_active_flag"":1}}");
+            var response2 = @"{""api_result"":1,""api_result_msg"":""成功""}";
+            ErrorLog.RemoveUnwantedInformation(ref request, ref response2);
+            PAssert.That(() => response2 == @"");
+        }
     }
 }

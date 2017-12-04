@@ -114,8 +114,10 @@ namespace KancolleSniffer
         {
             var token = new Regex("&api%5Ftoken=.+?(?=&|$)|api%5Ftoken=.+?(?:&|$)");
             request = token.Replace(request, "");
-            var id = new Regex(@"""api_member_id"":\d+,?|""api_nickname"":[^,]+,""api_nickname_id"":""d+"",?");
+            var id = new Regex(@"""api_member_id"":""\d+?"",?|""api_nickname"":"".+?"",?|""api_nickname_id"":""\d+"",?");
             response = id.Replace(response, "");
+            var preamble = new Regex(@"^{""api_result"":.+?({.*})?}$");
+            response = preamble.Replace(response, match => match.Groups[1].Value);
         }
 
         private string CompressApi(string api)
