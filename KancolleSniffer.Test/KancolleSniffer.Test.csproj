@@ -64,6 +64,7 @@
     <Compile Include="Ascii85Test.cs" />
     <Compile Include="BattleLogProcessorTest.cs" />
     <Compile Include="BattleTest.cs" />
+    <Compile Include="ErrorLogTest.cs" />
     <Compile Include="JsonTest.cs" />
     <Compile Include="ShipLabelTest.cs" />
     <Compile Include="SnifferTest.cs" />

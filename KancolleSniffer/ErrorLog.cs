@@ -110,9 +110,9 @@ namespace KancolleSniffer
             return result;
         }
 
-        private void RemoveUnwantedInformation(ref string request, ref string response)
+        public static void RemoveUnwantedInformation(ref string request, ref string response)
         {
-            var token = new Regex("&api%5Ftoken=[^&]*|api%5Ftoken=[^&]*&?");
+            var token = new Regex("&api%5Ftoken=.+?(?=&|$)|api%5Ftoken=.+?(?:&|$)");
             request = token.Replace(request, "");
             var id = new Regex(@"""api_member_id"":\d+,?|""api_nickname"":[^,]+,""api_nickname_id"":""d+"",?");
             response = id.Replace(response, "");
