@@ -282,6 +282,8 @@ namespace KancolleSniffer
                     case 45: // 夜間戦闘機
                     case 46: // 夜間攻撃機
                         return Color.FromArgb(128, 121, 161);
+                    case 47: // 陸上対潜哨戒機
+                        return Color.FromArgb(91, 113, 209);
                     default:
                         return SystemColors.Control;
                 }
