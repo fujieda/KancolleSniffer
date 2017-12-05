@@ -39,8 +39,11 @@ namespace KancolleSniffer.Test
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
         }
 
+        /// <summary>
+        /// 連撃を受けて女神が発動する
+        /// </summary>
         [TestMethod]
-        public void Damecon()
+        public void CauseRepairGoddessByDoubleAttack()
         {
             var logs = ReadAllLines("damecon_001");
             var items = JsonParser.Parse("[[[],[],[],[],[43]]]");
@@ -50,6 +53,20 @@ namespace KancolleSniffer.Test
             dynamic result = JsonParser.Parse(logs[5]);
             _battleInfo.InspectBattleResult(result);
             PAssert.That(() => _shipInfo.GetShipStatuses(2)[4].NowHp == 31);
+        }
+
+        /// <summary>
+        /// 夜戦で戦艦の攻撃を受ける
+        /// </summary>
+        [TestMethod]
+        public void AttackedByBattleShipInMidnight()
+        {
+            var logs = ReadAllLines("midnight_002");
+            var battle = JsonParser.Parse(logs[3]);
+            _shipInfo.InjectShips(battle, JsonParser.Parse(logs[0]));
+            _battleInfo.InspectBattle(battle, logs[1]);
+            _battleInfo.InspectBattleResult(JsonParser.Parse(logs[6]));
+            PAssert.That(() => _shipInfo.GetShipStatuses(0)[3].NowHp == 12);
         }
     }
 }

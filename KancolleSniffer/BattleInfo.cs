@@ -450,7 +450,7 @@ namespace KancolleSniffer
             for (var i = 0; i < eflags.Length; i++)
             {
                 // 一度に複数の目標を狙う攻撃はないものと仮定する
-                var hit = new {t = targets[i][0], d = damages[i].Sum()};
+                var hit = new {t = targets[i][0], d = damages[i].Sum(d => d >= 0 ? d : 0)};
                 if (hit.t == -1)
                     continue;
                 if (eflags[i] == 1)
@@ -497,7 +497,6 @@ namespace KancolleSniffer
             CleanupResult();
             SetEscapeShips(json);
         }
-
 
 
         private void VerifyResultRank(dynamic json)
