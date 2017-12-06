@@ -388,14 +388,8 @@ namespace KancolleSniffer
 
         public int[] GetFighterPower(int fleet)
             => GetShipStatuses(fleet).Where(ship => !ship.Escaped).SelectMany(ship =>
-                    ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
-                    {
-                        if (!slot.Spec.CanAirCombat || onslot == 0)
-                            return new[] {0, 0};
-                        var unskilled = (slot.Spec.AntiAir + slot.FighterPowerLevelBonus) * Sqrt(onslot);
-                        return new[] {(int)(unskilled + slot.AlvBonus[0]), (int)(unskilled + slot.AlvBonus[1])};
-                    }))
-                .Aggregate(new[] {0, 0}, (prev, fp) => new[] {prev[0] + fp[0], prev[1] + fp[1]});
+                    ship.Slot.Zip(ship.OnSlot, (slot, onslot) => slot.CalcFighterPower(onslot)))
+                .Aggregate(new[] {0, 0}, (prev, cur) => new[] {prev[0] + cur[0], prev[1] + cur[1]});
 
         public double GetContactTriggerRate(int fleet)
             => GetShipStatuses(fleet).Where(ship => !ship.Escaped).SelectMany(ship =>

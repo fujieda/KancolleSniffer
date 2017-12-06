@@ -182,7 +182,7 @@ namespace KancolleSniffer
             }
         }
 
-        public double AirDefenceBonus
+        public double ReconPlaneInterceptionBonus
         {
             get
             {
@@ -309,6 +309,23 @@ namespace KancolleSniffer
             Id = id;
         }
 
+        public int[] CalcFighterPower(int slot)
+        {
+            if (!Spec.CanAirCombat || slot == 0)
+                return new[] {0, 0};
+            var unskilled = (Spec.AntiAir + FighterPowerLevelBonus) * Sqrt(slot);
+            return AlvBonus.Select(bonus => (int)(unskilled + bonus)).ToArray();
+        }
+
+        public int[] CalcFighterPowerInBase(int slot, bool airDefence)
+        {
+            if (!Spec.IsAircraft || slot == 0)
+                return new[] {0, 0};
+            var airDefenceBonus = airDefence ? Spec.AntiBomber * 2 + Spec.Interception : Spec.Interception * 1.5;
+            var unskilled = (Spec.AntiAir + airDefenceBonus + FighterPowerLevelBonus) * Sqrt(slot);
+            return AlvBonusInBase.Select(bonus => (int)(unskilled + bonus)).ToArray();
+        }
+
         private readonly double[] _alvBonusMin =
         {
             Sqrt(0.0), Sqrt(1.0), Sqrt(2.5), Sqrt(4.0), Sqrt(5.5), Sqrt(7.0),
@@ -346,7 +363,7 @@ namespace KancolleSniffer
             }
         }
 
-        public double[] AlvBonus
+        private double[] AlvBonus
         {
             get
             {
@@ -357,7 +374,7 @@ namespace KancolleSniffer
             }
         }
 
-        public double[] AlvBonusInBase
+        private double[] AlvBonusInBase
         {
             get
             {
@@ -373,7 +390,7 @@ namespace KancolleSniffer
             }
         }
 
-        public double FighterPowerLevelBonus
+        private double FighterPowerLevelBonus
         {
             get
             {

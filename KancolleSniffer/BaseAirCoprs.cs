@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -71,30 +70,16 @@ namespace KancolleSniffer
             {
                 get
                 {
-                    var airDefenceBonus = Action == 2
-                            ? Planes.Select(plane => plane.Slot.Spec.AirDefenceBonus).Max()
-                            : 1.0;
-                    var fighterPower = Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
+                    var reconPlaneBonus = Action == 2
+                        ? Planes.Max(plane => plane.Slot.Spec.ReconPlaneInterceptionBonus)
+                        : 1.0;
+                    return Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
                     {
                         if (plane.State != 1)
                             return prev;
-                        var slot = plane.Slot;
-                        var intercepterBonus = Action == 2
-                            ? slot.Spec.AntiBomber * 2 + slot.Spec.Interception
-                            : slot.Spec.Interception * 1.5;
-                        var unskilled = (slot.Spec.AntiAir + intercepterBonus + slot.FighterPowerLevelBonus) *
-                                        Sqrt(plane.Count);
-                        return new[]
-                        {
-                            prev[0] + (int)(unskilled + slot.AlvBonusInBase[0]),
-                            prev[1] + (int)(unskilled + slot.AlvBonusInBase[1])
-                        };
-                    });
-                    return new[]
-                    {
-                        (int)(fighterPower[0] * airDefenceBonus),
-                        (int)(fighterPower[1] * airDefenceBonus)
-                    };
+                        var cur = plane.Slot.CalcFighterPowerInBase(plane.Count, Action == 2);
+                        return new[] {prev[0] + cur[0], prev[1] + cur[1]};
+                    }).Select(fp => (int)(fp * reconPlaneBonus)).ToArray();
                 }
             }
         }
@@ -165,7 +150,7 @@ namespace KancolleSniffer
                     Slot = _itemInfo.GetStatus((int)planeInfo.api_slotid),
                     State = (int)planeInfo.api_state,
                     Count = planeInfo.api_count() ? (int)planeInfo.api_count : 0,
-                    MaxCount = planeInfo.api_max_count() ? (int)planeInfo.api_max_count : 0,
+                    MaxCount = planeInfo.api_max_count() ? (int)planeInfo.api_max_count : 0
                 };
             }
         }
