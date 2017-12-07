@@ -60,6 +60,7 @@ namespace KancolleSniffer
             this.labelPresetAkashiTimer = new System.Windows.Forms.Label();
             this.labelGuide = new System.Windows.Forms.Label();
             this.panelCombinedFleet = new System.Windows.Forms.Panel();
+            this.panel7Ships = new System.Windows.Forms.Panel();
             this.panelBattleInfo = new System.Windows.Forms.Panel();
             this.labelEnemyFighterPower = new System.Windows.Forms.Label();
             this.labelEnemyFighterPowerCaption = new System.Windows.Forms.Label();
@@ -165,7 +166,6 @@ namespace KancolleSniffer
             this.toolTipFighterPower = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipLoS = new System.Windows.Forms.ToolTip(this.components);
             this.panelRepairList = new KancolleSniffer.RepairListForMain();
-            this.panel7Ships = new System.Windows.Forms.Panel();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -343,6 +343,14 @@ namespace KancolleSniffer
             this.panelCombinedFleet.TabIndex = 43;
             this.panelCombinedFleet.Visible = false;
             // 
+            // panel7Ships
+            // 
+            this.panel7Ships.Location = new System.Drawing.Point(0, 0);
+            this.panel7Ships.Name = "panel7Ships";
+            this.panel7Ships.Size = new System.Drawing.Size(220, 115);
+            this.panel7Ships.TabIndex = 0;
+            this.panel7Ships.Visible = false;
+            // 
             // panelBattleInfo
             // 
             this.panelBattleInfo.Controls.Add(this.labelEnemyFighterPower);
@@ -433,12 +441,10 @@ namespace KancolleSniffer
             // 
             // labelCondTimer
             // 
-            this.labelCondTimer.AutoSize = true;
             this.labelCondTimer.Location = new System.Drawing.Point(186, 117);
             this.labelCondTimer.Name = "labelCondTimer";
             this.labelCondTimer.Size = new System.Drawing.Size(31, 12);
             this.labelCondTimer.TabIndex = 38;
-            this.labelCondTimer.Text = "00:00";
             // 
             // labelAkashiRepairTimer
             // 
@@ -1112,7 +1118,7 @@ namespace KancolleSniffer
             this.labelBucketHistory.Name = "labelBucketHistory";
             this.labelBucketHistory.Size = new System.Drawing.Size(61, 28);
             this.labelBucketHistory.TabIndex = 42;
-            this.labelBucketHistory.Text = "+100 今日\r\n+100 今週";
+            this.labelBucketHistory.Text = "今日\r\n今週";
             this.labelBucketHistory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.labelBucketHistory.Visible = false;
             this.labelBucketHistory.Click += new System.EventHandler(this.labelBucketHistory_Click);
@@ -1289,14 +1295,6 @@ namespace KancolleSniffer
             this.panelRepairList.TabIndex = 4;
             this.panelRepairList.Visible = false;
             this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
-            // 
-            // panel7Ships
-            // 
-            this.panel7Ships.Location = new System.Drawing.Point(0, 0);
-            this.panel7Ships.Name = "panel7Ships";
-            this.panel7Ships.Size = new System.Drawing.Size(220, 115);
-            this.panel7Ships.TabIndex = 0;
-            this.panel7Ships.Visible = false;
             // 
             // MainForm
             // 
