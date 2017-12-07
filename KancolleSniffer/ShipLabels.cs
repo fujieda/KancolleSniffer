@@ -46,6 +46,7 @@ namespace KancolleSniffer
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         public static Color[] ColumnColors = {SystemColors.Control, Color.FromArgb(255, 250, 250, 250)};
         private readonly List<ShipLabel> _hpLables = new List<ShipLabel>();
+        public bool ShowHpInPercent { get; private set; }
 
         public void CreateShipLabels(Control parent, EventHandler onClick)
         {
@@ -112,12 +113,15 @@ namespace KancolleSniffer
             }
             _hpLables.AddRange(shipLabels.Select(labels => labels[0]));
             headings[0].Cursor = Cursors.Hand;
-            headings[0].Click += (sender, ev) =>
-            {
-                foreach (var label in _hpLables)
-                    label.ToggleHpPercent();
-            };
+            headings[0].Click += (sender, ev) => ToggleHpPercent();
             parent.ResumeLayout();
+        }
+
+        public void ToggleHpPercent()
+        {
+            ShowHpInPercent = !ShowHpInPercent;
+            foreach (var label in _hpLables)
+                label.ToggleHpPercent();
         }
 
         public void SetShipLabels(ShipStatus[] statuses)

@@ -142,6 +142,8 @@ namespace KancolleSniffer
             MaximumSize = new Size(Width, int.MaxValue);
             var config = _config.ShipList;
             checkBoxShipType.Checked = config.ShipType;
+            if (config.ShowHpInPercent)
+                shipListPanel.ToggleHpPercent();
             ActiveControl = shipListPanel;
             for (var i = 0; i < ShipListPanel.GroupCount; i++)
             {
@@ -164,6 +166,7 @@ namespace KancolleSniffer
             if (!Visible)
                 return;
             var config = _config.ShipList;
+            config.ShowHpInPercent = shipListPanel.ShowHpInPercent;
             var all = _sniffer.ShipList.Select(s => s.Id).ToArray();
             config.ShipGroup.Clear();
             for (var i = 0; i < ShipListPanel.GroupCount; i++)

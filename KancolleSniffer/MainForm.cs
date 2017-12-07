@@ -212,6 +212,8 @@ namespace KancolleSniffer
             RestoreLocation();
             if (_config.HideOnMinimized && WindowState == FormWindowState.Minimized)
                 ShowInTaskbar = false;
+            if (_config.ShowHpInPercent)
+                _shipLabels.ToggleHpPercent();
             ApplyConfig();
             ApplyDebugLogSetting();
             ApplyLogSetting();
@@ -236,6 +238,7 @@ namespace KancolleSniffer
             e.Cancel = false;
             _sniffer.FlashLog();
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
+            _config.ShowHpInPercent = _shipLabels.ShowHpInPercent;
             _config.Save();
             _proxyManager.Shutdown();
             _kancolleDb.Stop();

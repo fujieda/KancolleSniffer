@@ -43,6 +43,7 @@ namespace KancolleSniffer
         public Point Location { get; set; }
         public Size Size { get; set; }
         public bool ShipType { get; set; }
+        public bool ShowHpInPercent { get; set; }
         public ListForm.SortOrder SortOrder { get; set; } = ListForm.SortOrder.ExpToNext;
         public List<List<int>> ShipGroup { get; set; }
 
@@ -146,7 +147,8 @@ namespace KancolleSniffer
         public bool ExitSilently { get; set; }
         public int Zoom { get; set; } = 100;
         public bool SaveLocationPerMachine { get; set; }
-        public List<LocationPerMachine> LocationList { get; set; }= new List<LocationPerMachine>();
+        public List<LocationPerMachine> LocationList { get; set; } = new List<LocationPerMachine>();
+        public bool ShowHpInPercent { get; set; }
         public bool FlashWindow { get; set; } = true;
         public bool ShowBaloonTip { get; set; }
         public bool PlaySound { get; set; } = true;

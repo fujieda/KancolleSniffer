@@ -36,6 +36,7 @@ namespace KancolleSniffer
         private readonly List<Panel> _repairPanelList = new List<Panel>();
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private string _mode;
+        public bool ShowHpInPercent { get; private set; }
 
         public const int GroupCount = 4;
         public HashSet<int>[] GroupSettings { get; } = new HashSet<int>[GroupCount];
@@ -490,6 +491,7 @@ namespace KancolleSniffer
 
         public void ToggleHpPercent()
         {
+            ShowHpInPercent = !ShowHpInPercent;
             foreach (var label in _hpLabels)
                 label.ToggleHpPercent();
         }
