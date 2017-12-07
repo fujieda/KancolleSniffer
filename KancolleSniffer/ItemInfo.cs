@@ -34,6 +34,7 @@ namespace KancolleSniffer
         public int Bomber;
         public int Interception;
         public int AntiBomber;
+        public int Distance;
 
         public ItemSpec()
         {
@@ -633,7 +634,8 @@ namespace KancolleSniffer
                     Torpedo = (int)entry.api_raig,
                     Bomber = (int)entry.api_baku,
                     Interception = type == 48 ? (int)entry.api_houk : 0, // 局地戦闘機は回避の値が迎撃
-                    AntiBomber = type == 48 ? (int)entry.api_houm : 0 // 〃命中の値が対爆
+                    AntiBomber = type == 48 ? (int)entry.api_houm : 0, // 〃命中の値が対爆
+                    Distance = entry.api_distance() ? (int)entry.api_distance : 0
                 };
             }
             _itemSpecs[-1] = _itemSpecs[0] = new ItemSpec();

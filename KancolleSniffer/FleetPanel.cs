@@ -165,24 +165,45 @@ namespace KancolleSniffer
                     {
                         if (i >= name.Length)
                             break;
-                        var fp = airCorps.FighterPower;
+                        var corpsFp = airCorps.FighterPower;
+                        string spec;
+                        string spec2;
+                        if (airCorps.Action == 2)
+                        {
+                            spec = "制空:" + RangeString(corpsFp.Interception);
+                            spec2 = corpsFp.IsInterceptor ? "制空(出撃):" + RangeString(corpsFp.AirCombat) : "";
+                        }
+                        else
+                        {
+                            spec = "制空:" + RangeString(corpsFp.AirCombat);
+                            spec2 = corpsFp.IsInterceptor ? "制空(防空):" + RangeString(corpsFp.Interception) : "";
+                        }
                         list.Add(new Record
                         {
                             Ship = name[i++] + " " + airCorps.ActionName,
-                            Spec = "制空" + (fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1]) +
-                                   " 距離" + airCorps.Distance
+                            Spec = spec + " 距離:" + airCorps.Distance,
+                            Spec2 = spec2
                         });
-                        list.AddRange(airCorps.Planes.Select(plane => new Record
+                        list.AddRange(airCorps.Planes.Select(plane =>
                         {
-                            Equip = plane.State != 1 ? plane.StateName : GenEquipString(plane.Slot),
-                            Spec = plane.State != 1 ? "" : $"+{plane.Slot.Alv} {plane.Count}/{plane.MaxCount}",
-                            Color = plane.Slot.Spec.Color
+                            var planeFp = plane.FighterPower;
+                            return new Record
+                            {
+                                Equip = plane.State != 1 ? plane.StateName : GenEquipString(plane.Slot),
+                                Spec = plane.State != 1 ? "" : $"+{plane.Slot.Alv} {plane.Count}/{plane.MaxCount}",
+                                AircraftSpec =
+                                    $"距離:{plane.Slot.Spec.Distance} 制空:{RangeString(planeFp.AirCombat)}" +
+                                    (planeFp.IsInterceptor ? $" 防空:{RangeString(planeFp.Interception)}" : ""),
+                                Color = plane.Slot.Spec.Color
+                            };
                         }));
                     }
                 }
             }
             _table = list.ToArray();
         }
+
+        private string RangeString(int[] fp) => fp[0] == fp[1] ? fp[0].ToString() : $"{fp[0]}～{fp[1]}";
 
         private int CutOverFlow(int value) => value > 999 ? 999 : value;
 

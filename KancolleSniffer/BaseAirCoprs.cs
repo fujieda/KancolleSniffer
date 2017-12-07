@@ -38,6 +38,13 @@ namespace KancolleSniffer
             public AirCorpsInfo[] AirCorps { get; set; }
         }
 
+        public class FighterPower
+        {
+            public int[] AirCombat { get; set; }
+            public int[] Interception { get; set; }
+            public bool IsInterceptor => AirCombat[0] != Interception[0];
+        }
+
         public class AirCorpsInfo
         {
             public int Distance { get; set; }
@@ -66,21 +73,21 @@ namespace KancolleSniffer
                 }
             }
 
-            public int[] FighterPower
+            public FighterPower FighterPower =>
+                new FighterPower {AirCombat = CalcFighterPower(false), Interception = CalcFighterPower(true)};
+
+            private int[] CalcFighterPower(bool interception)
             {
-                get
+                var reconPlaneBonus = interception
+                    ? Planes.Max(plane => plane.Slot.Spec.ReconPlaneInterceptionBonus)
+                    : 1.0;
+                return Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
                 {
-                    var reconPlaneBonus = Action == 2
-                        ? Planes.Max(plane => plane.Slot.Spec.ReconPlaneInterceptionBonus)
-                        : 1.0;
-                    return Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
-                    {
-                        if (plane.State != 1)
-                            return prev;
-                        var cur = plane.Slot.CalcFighterPowerInBase(plane.Count, Action == 2);
-                        return new[] {prev[0] + cur[0], prev[1] + cur[1]};
-                    }).Select(fp => (int)(fp * reconPlaneBonus)).ToArray();
-                }
+                    if (plane.State != 1)
+                        return prev;
+                    var cur = plane.Slot.CalcFighterPowerInBase(plane.Count, interception);
+                    return new[] {prev[0] + cur[0], prev[1] + cur[1]};
+                }).Select(fp => (int)(fp * reconPlaneBonus)).ToArray();
             }
         }
 
@@ -108,6 +115,11 @@ namespace KancolleSniffer
                     }
                 }
             }
+
+            public FighterPower FighterPower
+                => new FighterPower{AirCombat = CalcFighterPower(false), Interception = CalcFighterPower(true)};
+
+            private int[] CalcFighterPower(bool interception) => Slot.CalcFighterPowerInBase(Count, interception);
         }
 
         public void Inspect(dynamic json)
