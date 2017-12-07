@@ -884,6 +884,8 @@ namespace KancolleSniffer
             labelFleet1.Text = _combinedFleet ? "連合" : "第一";
         }
 
+        private readonly Color _activeButtonColor = Color.FromArgb(152, 179, 208);
+
         private void labelBucketHistoryButton_Click(object sender, EventArgs e)
         {
             if (labelBucketHistory.Visible)
@@ -895,7 +897,7 @@ namespace KancolleSniffer
             {
                 labelBucketHistory.Visible = true;
                 labelBucketHistory.BringToFront();
-                labelBucketHistoryButton.BackColor = SystemColors.ActiveCaption;
+                labelBucketHistoryButton.BackColor = _activeButtonColor;
             }
         }
 
@@ -916,7 +918,7 @@ namespace KancolleSniffer
             {
                 panelMaterialHistory.Visible = true;
                 panelMaterialHistory.BringToFront();
-                labelMaterialHistoryButton.BackColor = SystemColors.ActiveCaption;
+                labelMaterialHistoryButton.BackColor = _activeButtonColor;
             }
         }
 
@@ -943,7 +945,7 @@ namespace KancolleSniffer
             {
                 panelRepairList.Visible = true;
                 panelRepairList.BringToFront();
-                labelRepairListButton.BackColor = SystemColors.ActiveCaption;
+                labelRepairListButton.BackColor = _activeButtonColor;
             }
         }
 
