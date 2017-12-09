@@ -627,14 +627,14 @@ namespace KancolleSniffer
             this.labelVersion.AutoSize = true;
             this.labelVersion.Location = new System.Drawing.Point(92, 11);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(70, 12);
+            this.labelVersion.Size = new System.Drawing.Size(50, 12);
             this.labelVersion.TabIndex = 10;
-            this.labelVersion.Text = "バージョン4.10";
+            this.labelVersion.Text = "バージョン";
             // 
             // labelLatest
             // 
             this.labelLatest.AutoSize = true;
-            this.labelLatest.Location = new System.Drawing.Point(161, 11);
+            this.labelLatest.Location = new System.Drawing.Point(167, 11);
             this.labelLatest.Name = "labelLatest";
             this.labelLatest.Size = new System.Drawing.Size(49, 12);
             this.labelLatest.TabIndex = 11;
