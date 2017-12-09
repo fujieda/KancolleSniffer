@@ -441,9 +441,10 @@ namespace KancolleSniffer
             // 
             // labelCondTimer
             // 
+            this.labelCondTimer.AutoSize = true;
             this.labelCondTimer.Location = new System.Drawing.Point(186, 117);
             this.labelCondTimer.Name = "labelCondTimer";
-            this.labelCondTimer.Size = new System.Drawing.Size(31, 12);
+            this.labelCondTimer.Size = new System.Drawing.Size(0, 12);
             this.labelCondTimer.TabIndex = 38;
             // 
             // labelAkashiRepairTimer
