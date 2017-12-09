@@ -19,6 +19,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -82,7 +83,6 @@ namespace KancolleSniffer
             catch (Exception ex)
             {
                 throw new ConfigFileException("設定ファイルが壊れています。", ex);
-
             }
             _proxyManager = new ProxyManager(_config, this);
             _errorLog = new ErrorLog(_sniffer);
@@ -185,7 +185,7 @@ namespace KancolleSniffer
             if (update == Sniffer.Update.Start)
             {
                 labelLogin.Visible = false;
-                labelGuide.Visible = false;
+                linkLabelGuide.Visible = false;
                 _started = true;
                 return;
             }
@@ -220,6 +220,37 @@ namespace KancolleSniffer
             ApplyProxySetting();
             if (_config.KancolleDb.On)
                 _kancolleDb.Start(_config.KancolleDb.Token);
+            CheckVersionUp((current, latest) =>
+            {
+                if (latest == current)
+                    return;
+                linkLabelGuide.Text = $"バージョン{latest}があります。";
+                linkLabelGuide.LinkArea = new LinkArea(0, linkLabelGuide.Text.Length);
+                linkLabelGuide.Click += (obj, ev) =>
+                {
+                    Process.Start("https://ja.osdn.net/rel/kancollesniffer/" + latest);
+                };
+            });
+        }
+
+        public async void CheckVersionUp(Action<string,string> action)
+        {
+            var current = string.Join(".", Application.ProductVersion.Split('.').Take(2));
+            try
+            {
+                var latest = (await new WebClient().DownloadStringTaskAsync("http://kancollesniffer.osdn.jp/version"))
+                    .TrimEnd();
+                try
+                {
+                    action(current, latest);
+                }
+                catch (InvalidOperationException)
+                {
+                }
+            }
+            catch (WebException)
+            {
+            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -278,7 +309,7 @@ namespace KancolleSniffer
             if (_config.Zoom == 100)
                 return;
             var prev = CurrentAutoScaleDimensions;
-            foreach (var control in new Control[] {this, _listForm, labelLogin, labelGuide})
+            foreach (var control in new Control[] {this, _listForm, labelLogin, linkLabelGuide})
                 control.Font = new Font(control.Font.FontFamily, control.Font.Size * _config.Zoom / 100);
             ShipLabel.LatinFont = new Font("Tahoma", 8f * _config.Zoom / 100);
             var cur = CurrentAutoScaleDimensions;

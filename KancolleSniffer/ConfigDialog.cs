@@ -17,8 +17,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
@@ -58,9 +56,11 @@ namespace KancolleSniffer
         {
             if (_prevPosition.X != int.MinValue)
                 Location = _prevPosition;
-            var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
-            labelVersion.Text = "バージョン" + version;
-            SetLatestVersion(version);
+            _main.CheckVersionUp((current, latest) =>
+            {
+                labelVersion.Text = "バージョン" + current;
+                labelLatest.Text = current == latest ? "最新です" : "最新は" + latest + "です";
+            });
             labelCopyright.Text = FileVersionInfo.GetVersionInfo(Application.ExecutablePath).LegalCopyright;
 
             checkBoxTopMost.Checked = _config.TopMost;
@@ -125,32 +125,6 @@ namespace KancolleSniffer
         {
             checkBoxDebugLog.Checked = _config.DebugLogging;
             textBoxDebugLog.Text = _config.DebugLogFile;
-        }
-
-        private async void SetLatestVersion(string version)
-        {
-            try
-            {
-                var req = WebRequest.Create(Home + "version");
-                var response = await req.GetResponseAsync();
-                var stream = response.GetResponseStream();
-                if (stream == null)
-                    return;
-                using (var reader = new StreamReader(stream))
-                {
-                    var str = await reader.ReadLineAsync();
-                    try
-                    {
-                        Invoke(new Action(() => { labelLatest.Text = version == str ? "最新です" : "最新は" + str + "です"; }));
-                    }
-                    catch (InvalidOperationException)
-                    {
-                    }
-                }
-            }
-            catch (WebException)
-            {
-            }
         }
 
         private void buttonOk_Click(object sender, EventArgs e)

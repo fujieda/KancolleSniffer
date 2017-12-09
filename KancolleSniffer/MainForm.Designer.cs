@@ -58,7 +58,7 @@ namespace KancolleSniffer
             this.label1 = new System.Windows.Forms.Label();
             this.panelShipInfo = new System.Windows.Forms.Panel();
             this.labelPresetAkashiTimer = new System.Windows.Forms.Label();
-            this.labelGuide = new System.Windows.Forms.Label();
+            this.linkLabelGuide = new System.Windows.Forms.LinkLabel();
             this.panelCombinedFleet = new System.Windows.Forms.Panel();
             this.panel7Ships = new System.Windows.Forms.Panel();
             this.panelBattleInfo = new System.Windows.Forms.Panel();
@@ -303,7 +303,7 @@ namespace KancolleSniffer
             // 
             this.panelShipInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelShipInfo.Controls.Add(this.labelPresetAkashiTimer);
-            this.panelShipInfo.Controls.Add(this.labelGuide);
+            this.panelShipInfo.Controls.Add(this.linkLabelGuide);
             this.panelShipInfo.Controls.Add(this.panelCombinedFleet);
             this.panelShipInfo.Controls.Add(this.panel7Ships);
             this.panelShipInfo.Controls.Add(this.panelBattleInfo);
@@ -325,15 +325,16 @@ namespace KancolleSniffer
             this.labelPresetAkashiTimer.Size = new System.Drawing.Size(32, 12);
             this.labelPresetAkashiTimer.TabIndex = 55;
             // 
-            // labelGuide
+            // linkLabelGuide
             // 
-            this.labelGuide.AutoSize = true;
-            this.labelGuide.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelGuide.Location = new System.Drawing.Point(31, 51);
-            this.labelGuide.Name = "labelGuide";
-            this.labelGuide.Size = new System.Drawing.Size(158, 13);
-            this.labelGuide.TabIndex = 44;
-            this.labelGuide.Text = "右クリックでメニューが出ます。";
+            this.linkLabelGuide.AutoSize = true;
+            this.linkLabelGuide.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.linkLabelGuide.LinkArea = new System.Windows.Forms.LinkArea(0, 0);
+            this.linkLabelGuide.Location = new System.Drawing.Point(31, 51);
+            this.linkLabelGuide.Name = "linkLabelGuide";
+            this.linkLabelGuide.Size = new System.Drawing.Size(158, 13);
+            this.linkLabelGuide.TabIndex = 44;
+            this.linkLabelGuide.Text = "右クリックでメニューが出ます。";
             // 
             // panelCombinedFleet
             // 
@@ -1484,7 +1485,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelQuestColor2;
         private System.Windows.Forms.ToolStripMenuItem CaptureToolStripMenuItem;
         private System.Windows.Forms.Label labelAkashiRepairTimer;
-        private System.Windows.Forms.Label labelGuide;
         private System.Windows.Forms.Panel panelCombinedFleet;
         private System.Windows.Forms.Label labelAkashiRepair;
         private System.Windows.Forms.Label labelPresetAkashiTimer;
@@ -1492,6 +1492,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolTip toolTipLoS;
         private RepairListForMain panelRepairList;
         private System.Windows.Forms.Panel panel7Ships;
+        private System.Windows.Forms.LinkLabel linkLabelGuide;
     }
 }
 
