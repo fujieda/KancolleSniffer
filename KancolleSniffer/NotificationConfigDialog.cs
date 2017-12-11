@@ -8,6 +8,7 @@ namespace KancolleSniffer
     {
         private readonly Dictionary<string, NotificationSpec> _notifications;
         private readonly Dictionary<NotificationType, CheckBox> _configCheckBoxs;
+        private readonly ToolTip _tooltip = new ToolTip();
 
         public NotificationConfigDialog(Dictionary<string, NotificationSpec> notifications,
             Dictionary<NotificationType, CheckBox> checkBoxs)
@@ -21,6 +22,7 @@ namespace KancolleSniffer
             checkBoxPlaySound.Tag = NotificationType.PlaySound;
             checkBoxPush.Tag = NotificationType.Push;
             checkBoxRepeat.Tag = NotificationType.Repeat;
+            checkBoxCont.Tag = NotificationType.Cont;
 
             // ReSharper disable once CoVariantArrayConversion
             listBoxNotifications.Items.AddRange(Config.NotificationNames);
@@ -36,12 +38,13 @@ namespace KancolleSniffer
                 case "艦娘数超過":
                 case "装備数超過":
                 case "大破警告":
-                    checkBoxRepeat.Enabled = checkBoxRepeat.Checked = false;
-                    textBoxRepeat.Text = "";
+                    textBoxRepeat.Visible = labelRepeat.Visible = checkBoxRepeat.Visible = checkBoxCont.Visible = false;
                     break;
                 default:
+                    textBoxRepeat.Visible = labelRepeat.Visible = checkBoxRepeat.Visible = true;
                     checkBoxRepeat.Enabled = _configCheckBoxs[NotificationType.Repeat].Checked;
                     textBoxRepeat.Text = notification.RepeatInterval.ToString();
+                    checkBoxCont.Visible = IsContAvailable;
                     break;
             }
             checkBoxFlashWindow.Checked = (notification.Flags & NotificationType.FlashWindow) != 0;
@@ -49,6 +52,9 @@ namespace KancolleSniffer
             checkBoxPlaySound.Checked = (notification.Flags & NotificationType.PlaySound) != 0;
             checkBoxPush.Checked = (notification.Flags & NotificationType.Push) != 0;
             checkBoxRepeat.Checked = (notification.Flags & NotificationType.Repeat) != 0;
+            _tooltip.SetToolTip(checkBoxCont,
+                !IsContAvailable ? "" : notification.Name == "遠征終了" ? "再度遠征に出すまでリピートする。" : "再度入渠させるまでリピートする。");
+            checkBoxCont.Checked = (notification.Flags & NotificationType.Cont) != 0;
         }
 
         private void checkBox_CheckedChanged(object sender, EventArgs e)
@@ -59,8 +65,17 @@ namespace KancolleSniffer
             spec.Flags = checkBox.Checked ? spec.Flags | type : spec.Flags & ~type;
             if (type == NotificationType.Repeat)
             {
-                textBoxRepeat.Enabled = labelRepeat.Enabled =
+                textBoxRepeat.Enabled = labelRepeat.Enabled = checkBoxCont.Enabled =
                     _configCheckBoxs[NotificationType.Repeat].Checked && checkBox.Checked;
+            }
+        }
+
+        private bool IsContAvailable
+        {
+            get
+            {
+                var notification = _notifications[(string)listBoxNotifications.SelectedItem];
+                return notification.Name == "遠征終了" || notification.Name == "入渠終了";
             }
         }
 
@@ -76,7 +91,8 @@ namespace KancolleSniffer
             checkBoxShowBaloonTip.Enabled = _configCheckBoxs[NotificationType.ShowBaloonTip].Checked;
             checkBoxPlaySound.Enabled = _configCheckBoxs[NotificationType.PlaySound].Checked;
             checkBoxRepeat.Enabled = _configCheckBoxs[NotificationType.Repeat].Checked;
-            textBoxRepeat.Enabled = labelRepeat.Enabled = checkBoxRepeat.Enabled && checkBoxRepeat.Checked;
+            textBoxRepeat.Enabled = labelRepeat.Enabled = checkBoxCont.Enabled =
+                checkBoxRepeat.Enabled && checkBoxRepeat.Checked;
 
             if (listBoxNotifications.SelectedIndex == -1)
                 listBoxNotifications.SelectedIndex = 0;

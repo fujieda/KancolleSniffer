@@ -123,7 +123,8 @@ namespace KancolleSniffer
         All = (1 << 3) - 1,
         Pushbullet = 1 << 3,
         Push = 1 << 4,
-        Repeat = 1 << 5
+        Repeat = 1 << 5,
+        Cont = 1 << 6
     }
 
 

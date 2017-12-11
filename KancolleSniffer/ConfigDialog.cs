@@ -171,7 +171,8 @@ namespace KancolleSniffer
                 var old = _config.Notifications[name];
                 var cur = _notificationSettings[name];
                 if (repeatOff || old.RepeatInterval != cur.RepeatInterval ||
-                    (cur.Flags & NotificationType.Repeat) == 0)
+                    (cur.Flags & NotificationType.Repeat) == 0 ||
+                    (cur.Flags & NotificationType.Cont) == 0)
                 {
                     RepeatSettingsChanged.Add(name);
                 }

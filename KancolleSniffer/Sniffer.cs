@@ -44,6 +44,7 @@ namespace KancolleSniffer
         public interface IRepeatingTimerController
         {
             void Stop(string key);
+            void Stop(string key, int fleet);
             void Suspend();
             void Resume();
         }
@@ -439,6 +440,9 @@ namespace KancolleSniffer
                 _dockInfo.InspectNyukyo(request);
                 _conditionTimer.CheckCond();
                 _akashiTimer.CheckFleet();
+                var ndock = HttpUtility.ParseQueryString(request)["api_ndock_id"];
+                if (ndock != null && int.TryParse(ndock, out int id))
+                    RepeatingTimerController?.Stop("入渠終了", id - 1);
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_nyukyo/speedchange"))
@@ -463,6 +467,13 @@ namespace KancolleSniffer
                 _exMapInfo.InspectMapNext(data);
                 _battleInfo.InspectMapNext(data);
                 _logger.InspectMapNext(data);
+                return Update.None;
+            }
+            if (url.EndsWith("api_req_mission/start"))
+            {
+                var deck = HttpUtility.ParseQueryString(request)["api_deck_id"];
+                if (deck != null && int.TryParse(deck, out int id))
+                    RepeatingTimerController?.Stop("遠征終了", id - 1);
                 return Update.None;
             }
             if (url.EndsWith("api_req_mission/result"))

@@ -37,15 +37,18 @@
             this.checkBoxRepeat = new System.Windows.Forms.CheckBox();
             this.textBoxRepeat = new System.Windows.Forms.TextBox();
             this.labelRepeat = new System.Windows.Forms.Label();
+            this.checkBoxCont = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // listBoxNotifications
             // 
+            this.listBoxNotifications.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxNotifications.FormattingEnabled = true;
             this.listBoxNotifications.ItemHeight = 12;
             this.listBoxNotifications.Location = new System.Drawing.Point(12, 12);
             this.listBoxNotifications.Name = "listBoxNotifications";
-            this.listBoxNotifications.Size = new System.Drawing.Size(204, 88);
+            this.listBoxNotifications.Size = new System.Drawing.Size(264, 88);
             this.listBoxNotifications.TabIndex = 0;
             this.listBoxNotifications.SelectedIndexChanged += new System.EventHandler(this.listBoxNotifications_SelectedIndexChanged);
             // 
@@ -84,9 +87,9 @@
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonClose.Location = new System.Drawing.Point(141, 157);
+            this.buttonClose.Location = new System.Drawing.Point(201, 151);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 6;
@@ -96,18 +99,18 @@
             // checkBoxPush
             // 
             this.checkBoxPush.AutoSize = true;
-            this.checkBoxPush.Location = new System.Drawing.Point(12, 128);
+            this.checkBoxPush.Location = new System.Drawing.Point(218, 106);
             this.checkBoxPush.Name = "checkBoxPush";
-            this.checkBoxPush.Size = new System.Drawing.Size(82, 16);
+            this.checkBoxPush.Size = new System.Drawing.Size(58, 16);
             this.checkBoxPush.TabIndex = 7;
-            this.checkBoxPush.Text = "プッシュ通知";
+            this.checkBoxPush.Text = "プッシュ";
             this.checkBoxPush.UseVisualStyleBackColor = true;
             this.checkBoxPush.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // checkBoxRepeat
             // 
             this.checkBoxRepeat.AutoSize = true;
-            this.checkBoxRepeat.Location = new System.Drawing.Point(100, 128);
+            this.checkBoxRepeat.Location = new System.Drawing.Point(12, 134);
             this.checkBoxRepeat.Name = "checkBoxRepeat";
             this.checkBoxRepeat.Size = new System.Drawing.Size(58, 16);
             this.checkBoxRepeat.TabIndex = 8;
@@ -117,7 +120,7 @@
             // 
             // textBoxRepeat
             // 
-            this.textBoxRepeat.Location = new System.Drawing.Point(155, 126);
+            this.textBoxRepeat.Location = new System.Drawing.Point(67, 132);
             this.textBoxRepeat.Name = "textBoxRepeat";
             this.textBoxRepeat.Size = new System.Drawing.Size(26, 19);
             this.textBoxRepeat.TabIndex = 9;
@@ -126,11 +129,22 @@
             // labelRepeat
             // 
             this.labelRepeat.AutoSize = true;
-            this.labelRepeat.Location = new System.Drawing.Point(183, 129);
+            this.labelRepeat.Location = new System.Drawing.Point(95, 135);
             this.labelRepeat.Name = "labelRepeat";
             this.labelRepeat.Size = new System.Drawing.Size(17, 12);
             this.labelRepeat.TabIndex = 10;
             this.labelRepeat.Text = "秒";
+            // 
+            // checkBoxCont
+            // 
+            this.checkBoxCont.AutoSize = true;
+            this.checkBoxCont.Location = new System.Drawing.Point(112, 134);
+            this.checkBoxCont.Name = "checkBoxCont";
+            this.checkBoxCont.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxCont.TabIndex = 11;
+            this.checkBoxCont.Text = "継続";
+            this.checkBoxCont.UseVisualStyleBackColor = true;
+            this.checkBoxCont.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // NotificationConfigDialog
             // 
@@ -138,7 +152,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size(228, 188);
+            this.ClientSize = new System.Drawing.Size(288, 185);
+            this.Controls.Add(this.checkBoxCont);
             this.Controls.Add(this.labelRepeat);
             this.Controls.Add(this.textBoxRepeat);
             this.Controls.Add(this.checkBoxRepeat);
@@ -148,6 +163,7 @@
             this.Controls.Add(this.checkBoxShowBaloonTip);
             this.Controls.Add(this.checkBoxFlashWindow);
             this.Controls.Add(this.listBoxNotifications);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "NotificationConfigDialog";
@@ -171,5 +187,6 @@
         private System.Windows.Forms.CheckBox checkBoxRepeat;
         private System.Windows.Forms.TextBox textBoxRepeat;
         private System.Windows.Forms.Label labelRepeat;
+        private System.Windows.Forms.CheckBox checkBoxCont;
     }
 }

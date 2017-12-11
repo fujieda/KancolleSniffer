@@ -90,19 +90,27 @@ namespace KancolleSniffer
             PerformZoom();
             _shipLabels.AdjustAkashiTimers();
             _sniffer.LoadState();
-            _sniffer.RepeatingTimerController = new RepeatingTimerController(_notificationManager);
+            _sniffer.RepeatingTimerController = new RepeatingTimerController(_notificationManager, _config);
         }
 
         private class RepeatingTimerController : Sniffer.IRepeatingTimerController
         {
             private readonly NotificationManager _manager;
+            private readonly Config _config;
 
-            public RepeatingTimerController(NotificationManager manager)
+            public RepeatingTimerController(NotificationManager manager, Config config)
             {
                 _manager = manager;
+                _config = config;
             }
 
-            public void Stop(string key) => _manager.StopRepeat(key);
+            public void Stop(string key)
+            {
+                if ((_config.Notifications[key].Flags & NotificationType.Cont) == 0)
+                    _manager.StopRepeat(key);
+            }
+
+            public void Stop(string key, int fleet) => _manager.StopRepeat(key, fleet);
 
             public void Suspend() => _manager.SuspendRepeat();
 
@@ -718,16 +726,16 @@ namespace KancolleSniffer
 
         private void UpdateTimers()
         {
-            foreach (var entry in
-                new[] {labelMission1, labelMission2, labelMission3}.Zip(_sniffer.Missions,
-                    (label, mission) => new {label, mission.Name, mission.Timer}))
+            var mission = new[] {labelMission1, labelMission2, labelMission3};
+            for (var i = 0; i < mission.Length; i++)
             {
+                var entry = _sniffer.Missions[i];
                 entry.Timer.Update();
-                SetTimerColor(entry.label, entry.Timer);
-                entry.label.Text = entry.Timer.ToString(_missionFinishTimeMode);
+                SetTimerColor(mission[i], entry.Timer);
+                mission[i].Text = entry.Timer.ToString(_missionFinishTimeMode);
                 if (!entry.Timer.NeedRing)
                     continue;
-                SetNotification("遠征終了", entry.Name);
+                SetNotification("遠征終了", i + 1, entry.Name);
                 entry.Timer.NeedRing = false;
             }
             for (var i = 0; i < _sniffer.NDock.Length; i++)
@@ -737,7 +745,7 @@ namespace KancolleSniffer
                 _shipLabels.SetNDockTimer(i, entry.Timer, _ndockFinishTimeMode);
                 if (!entry.Timer.NeedRing)
                     continue;
-                SetNotification("入渠終了", entry.Name);
+                SetNotification("入渠終了", i, entry.Name);
                 entry.Timer.NeedRing = false;
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};

@@ -59,6 +59,11 @@ namespace KancolleSniffer
             _notificationQueue.StopRepeat(key);
         }
 
+        public void StopRepeat(string key, int fleet)
+        {
+            _notificationQueue.StopRepeat(key, fleet);
+        }
+
         public void SuspendRepeat()
         {
             _notificationQueue.SuspendRepeat();
@@ -325,6 +330,12 @@ namespace KancolleSniffer
             public void StopRepeat(string key)
             {
                 _queue.RemoveAll(n => n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Schedule != default);
+            }
+
+            public void StopRepeat(string key, int fleet)
+            {
+                _queue.RemoveAll(n =>
+                    n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Fleet == fleet && n.Schedule != default);
             }
 
             public void SuspendRepeat()
