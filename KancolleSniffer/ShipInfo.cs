@@ -298,13 +298,17 @@ namespace KancolleSniffer
         public void InspectDestroyShip(string request, dynamic json)
         {
             var values = HttpUtility.ParseQueryString(request);
-            var ship = int.Parse(values["api_ship_id"]);
-            _itemInfo.NowShips--;
-            _itemInfo.DeleteItems(_shipInfo[ship].Slot);
-            var of = FindFleet(ship, out var oi);
-            if (of != -1)
-                WithdrowShip(of, oi);
-            _shipInfo.Remove(ship);
+            var delitem = int.Parse(values["api_slot_dest_flag"] ?? "0") == 1;
+            foreach (var ship in values["api_ship_id"].Split(',').Select(int.Parse))
+            {
+                _itemInfo.NowShips--;
+                if (delitem)
+                    _itemInfo.DeleteItems(_shipInfo[ship].Slot);
+                var of = FindFleet(ship, out var oi);
+                if (of != -1)
+                    WithdrowShip(of, oi);
+                _shipInfo.Remove(ship);
+            }
         }
 
         public void InspectCombined(string request)

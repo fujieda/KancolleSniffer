@@ -647,5 +647,18 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "nyukyo_001");
             PAssert.That(() => sniffer.RepairList.Length == 1);
         }
+
+        /// <summary>
+        /// 一括解体する(装備保管なしとあり)
+        /// </summary>
+        [TestMethod]
+        public void DestroyShip()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "destroyship_001");
+            PAssert.That(() => sniffer.Item.NowShips == 250);
+            PAssert.That(() => sniffer.Item.NowEquips == 1118);
+            PAssert.That(() => sniffer.Material.Current.Take(4).SequenceEqual(new[] {285615, 286250, 291010, 284744}));
+        }
     }
 }
