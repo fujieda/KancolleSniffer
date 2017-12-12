@@ -695,7 +695,7 @@ namespace KancolleSniffer
             DeleteItems((int[])json.api_use_slot_id);
         }
 
-        public void DeleteItems(ItemStatus[] items)
+        public void DeleteItems(IEnumerable<ItemStatus> items)
         {
             DeleteItems(items.Select(item => item.Id));
         }

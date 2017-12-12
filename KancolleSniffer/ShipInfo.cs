@@ -303,7 +303,7 @@ namespace KancolleSniffer
             {
                 _itemInfo.NowShips--;
                 if (delitem)
-                    _itemInfo.DeleteItems(_shipInfo[ship].Slot);
+                    _itemInfo.DeleteItems(_shipInfo[ship].AllSlot);
                 var of = FindFleet(ship, out var oi);
                 if (of != -1)
                     WithdrowShip(of, oi);
