@@ -335,7 +335,9 @@ namespace KancolleSniffer
         {
             _listForm.TopMost = TopMost = _config.TopMost;
             _sniffer.Item.MarginShips = _config.MarginShips;
+            UpdateNumOfShips();
             _sniffer.Item.MarginEquips = _config.MarginEquips;
+            UpdateNumOfEquips();
             _sniffer.Achievement.ResetHours = _config.ResetHours;
             labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible =
                 labelPresetAkashiTimer.Visible = _config.UsePresetAkashi;
