@@ -59,7 +59,7 @@ namespace KancolleSniffer
             _main.CheckVersionUp((current, latest) =>
             {
                 labelVersion.Text = "バージョン" + current;
-                labelLatest.Text = current == latest ? "最新です" : "最新は" + latest + "です";
+                labelLatest.Text = double.Parse(current) >= double.Parse(latest) ? "最新です" : "最新は" + latest + "です";
             });
             labelCopyright.Text = FileVersionInfo.GetVersionInfo(Application.ExecutablePath).LegalCopyright;
 

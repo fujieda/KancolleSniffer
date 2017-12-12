@@ -222,7 +222,7 @@ namespace KancolleSniffer
                 _kancolleDb.Start(_config.KancolleDb.Token);
             CheckVersionUp((current, latest) =>
             {
-                if (latest == current)
+                if (double.Parse(latest) <= double.Parse(current))
                     return;
                 linkLabelGuide.Text = $"バージョン{latest}があります。";
                 linkLabelGuide.LinkArea = new LinkArea(0, linkLabelGuide.Text.Length);
@@ -233,7 +233,7 @@ namespace KancolleSniffer
             });
         }
 
-        public async void CheckVersionUp(Action<string,string> action)
+        public async void CheckVersionUp(Action<string, string> action)
         {
             var current = string.Join(".", Application.ProductVersion.Split('.').Take(2));
             try
