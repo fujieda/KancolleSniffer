@@ -53,20 +53,24 @@ namespace KancolleSniffer
             // 
             // textBoxDetails
             // 
+            this.textBoxDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxDetails.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.textBoxDetails.Location = new System.Drawing.Point(9, 73);
             this.textBoxDetails.Multiline = true;
             this.textBoxDetails.Name = "textBoxDetails";
             this.textBoxDetails.ReadOnly = true;
             this.textBoxDetails.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxDetails.Size = new System.Drawing.Size(305, 144);
+            this.textBoxDetails.Size = new System.Drawing.Size(315, 144);
             this.textBoxDetails.TabIndex = 5;
             this.textBoxDetails.WordWrap = false;
             // 
             // buttonContinue
             // 
+            this.buttonContinue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonContinue.DialogResult = System.Windows.Forms.DialogResult.Ignore;
-            this.buttonContinue.Location = new System.Drawing.Point(156, 230);
+            this.buttonContinue.Location = new System.Drawing.Point(160, 230);
             this.buttonContinue.Name = "buttonContinue";
             this.buttonContinue.Size = new System.Drawing.Size(75, 23);
             this.buttonContinue.TabIndex = 3;
@@ -75,8 +79,9 @@ namespace KancolleSniffer
             // 
             // buttonExit
             // 
+            this.buttonExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonExit.DialogResult = System.Windows.Forms.DialogResult.Abort;
-            this.buttonExit.Location = new System.Drawing.Point(237, 230);
+            this.buttonExit.Location = new System.Drawing.Point(241, 230);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(75, 23);
             this.buttonExit.TabIndex = 4;
@@ -109,6 +114,7 @@ namespace KancolleSniffer
             // 
             // checkBoxDisable
             // 
+            this.checkBoxDisable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBoxDisable.AutoSize = true;
             this.checkBoxDisable.Location = new System.Drawing.Point(9, 234);
             this.checkBoxDisable.Name = "checkBoxDisable";
