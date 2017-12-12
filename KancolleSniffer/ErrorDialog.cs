@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -34,6 +35,12 @@ namespace KancolleSniffer
             labelMessage.Text = message;
             textBoxDetails.Text = details;
             return ShowDialog(owner);
+        }
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            base.OnFontChanged(e);
+            textBoxDetails.Font = new Font(new FontFamily("MS Gothic"), Font.Size);
         }
     }
 }

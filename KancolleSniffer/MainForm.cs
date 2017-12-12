@@ -309,8 +309,14 @@ namespace KancolleSniffer
             if (_config.Zoom == 100)
                 return;
             var prev = CurrentAutoScaleDimensions;
-            foreach (var control in new Control[] {this, _listForm, labelLogin, linkLabelGuide})
+            foreach (var control in new Control[]
+            {
+                this, _listForm, labelLogin, linkLabelGuide,
+                _configDialog, contextMenuStripMain, _errorDialog
+            })
+            {
                 control.Font = new Font(control.Font.FontFamily, control.Font.Size * _config.Zoom / 100);
+            }
             ShipLabel.LatinFont = new Font("Tahoma", 8f * _config.Zoom / 100);
             var cur = CurrentAutoScaleDimensions;
             ShipLabel.ScaleFactor = new SizeF(ShipLabel.ScaleFactor.Width * cur.Width / prev.Width,
