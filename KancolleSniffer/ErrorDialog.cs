@@ -30,7 +30,7 @@ namespace KancolleSniffer
 
         public DialogResult ShowDialog(IWin32Window owner, string message, string details)
         {
-            if (Visible)
+            if (Visible || checkBoxDisable.Checked)
                 return DialogResult.Ignore;
             labelMessage.Text = message;
             textBoxDetails.Text = details;

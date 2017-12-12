@@ -48,6 +48,7 @@ namespace KancolleSniffer
             this.labelSystemIcon = new System.Windows.Forms.Label();
             this.labelMessage = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.checkBoxDisable = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // textBoxDetails
@@ -106,12 +107,23 @@ namespace KancolleSniffer
             this.label1.TabIndex = 2;
             this.label1.Text = "エラーの詳細";
             // 
+            // checkBoxDisable
+            // 
+            this.checkBoxDisable.AutoSize = true;
+            this.checkBoxDisable.Location = new System.Drawing.Point(9, 234);
+            this.checkBoxDisable.Name = "checkBoxDisable";
+            this.checkBoxDisable.Size = new System.Drawing.Size(133, 16);
+            this.checkBoxDisable.TabIndex = 6;
+            this.checkBoxDisable.Text = "一時的に表示を止める";
+            this.checkBoxDisable.UseVisualStyleBackColor = true;
+            // 
             // ErrorDialog
             // 
             this.AcceptButton = this.buttonContinue;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(334, 265);
+            this.Controls.Add(this.checkBoxDisable);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.labelMessage);
             this.Controls.Add(this.labelSystemIcon);
@@ -137,5 +149,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelSystemIcon;
         private System.Windows.Forms.Label labelMessage;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBoxDisable;
     }
 }
