@@ -130,7 +130,7 @@ namespace KancolleSniffer
             var ascii85 = Ascii85.Encode(output.ToArray());
             var result = new List<string>();
             var rest = ascii85.Length;
-            const int lineLength = 46;
+            const int lineLength = 80;
             for (var i = 0; i < ascii85.Length; i += lineLength, rest -= lineLength)
                 result.Add(ascii85.Substring(i, Math.Min(rest, lineLength)));
             return string.Join("\r\n", result);
