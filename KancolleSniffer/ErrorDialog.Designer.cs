@@ -49,6 +49,7 @@ namespace KancolleSniffer
             this.labelMessage = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBoxDisable = new System.Windows.Forms.CheckBox();
+            this.buttonCopyToClipboard = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBoxDetails
@@ -123,12 +124,24 @@ namespace KancolleSniffer
             this.checkBoxDisable.Text = "一時的に表示を止める";
             this.checkBoxDisable.UseVisualStyleBackColor = true;
             // 
+            // buttonCopyToClipboard
+            // 
+            this.buttonCopyToClipboard.AutoSize = true;
+            this.buttonCopyToClipboard.Location = new System.Drawing.Point(228, 77);
+            this.buttonCopyToClipboard.Name = "buttonCopyToClipboard";
+            this.buttonCopyToClipboard.Size = new System.Drawing.Size(75, 23);
+            this.buttonCopyToClipboard.TabIndex = 7;
+            this.buttonCopyToClipboard.Text = "すべてコピー";
+            this.buttonCopyToClipboard.UseVisualStyleBackColor = true;
+            this.buttonCopyToClipboard.Click += new System.EventHandler(this.buttonCopyToClipboard_Click);
+            // 
             // ErrorDialog
             // 
             this.AcceptButton = this.buttonContinue;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(334, 265);
+            this.Controls.Add(this.buttonCopyToClipboard);
             this.Controls.Add(this.checkBoxDisable);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.labelMessage);
@@ -156,5 +169,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelMessage;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkBoxDisable;
+        private System.Windows.Forms.Button buttonCopyToClipboard;
     }
 }

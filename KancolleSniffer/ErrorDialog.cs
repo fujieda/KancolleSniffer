@@ -42,5 +42,10 @@ namespace KancolleSniffer
             base.OnFontChanged(e);
             textBoxDetails.Font = new Font(new FontFamily("MS Gothic"), Font.Size);
         }
+
+        private void buttonCopyToClipboard_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(textBoxDetails.Text);
+        }
     }
 }
