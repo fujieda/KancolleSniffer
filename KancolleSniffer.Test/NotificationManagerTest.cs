@@ -102,7 +102,7 @@ namespace KancolleSniffer.Test
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
             manager.Enqueue("遠征終了", "防空射撃演習");
-            PAssert.That(() => new Message {Title = "遠征が終わりました", Body = "防空射撃演習", Name = "遠征終了"}.Equals(result));
+            PAssert.That(() => new Message {Title = "遠征が終わりました", Body = "第一艦隊 防空射撃演習", Name = "遠征終了"}.Equals(result));
         }
 
         /// <summary>
@@ -137,10 +137,10 @@ namespace KancolleSniffer.Test
             Message result = null;
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
-            manager.Enqueue("建造完了", "第一ドック");
+            manager.Enqueue("建造完了", 0, "");
             PAssert.That(() => new Message {Title = "建造が終わりました", Body = "第一ドック", Name = "建造完了"}.Equals(result));
             timer.ElapseTime(1000);
-            manager.Enqueue("建造完了", "第二ドック");
+            manager.Enqueue("建造完了", 1, "");
             timer.ElapseTime(1000);
             PAssert.That(() => new Message {Title = "建造が終わりました", Body = "第二ドック", Name = "建造完了"}.Equals(result));
         }
@@ -155,13 +155,13 @@ namespace KancolleSniffer.Test
             Message result = null;
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
-            var expected = new Message {Title = "遠征が終わりました", Body = "防空射撃演習", Name = "遠征終了"};
+            var expected = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             while (true)
             {
                 switch (timer.Elapsed)
                 {
                     case 0:
-                        manager.Enqueue("遠征終了", "防空射撃演習", 2);
+                        manager.Enqueue("遠征終了", 1, "防空射撃演習", 2);
                         PAssert.That(() => expected.Equals(result));
                         break;
                     case 2000:
@@ -189,14 +189,14 @@ namespace KancolleSniffer.Test
             Message result = null;
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
-            var ensei = new Message {Title = "遠征が終わりました", Body = "防空射撃演習", Name = "遠征終了"};
+            var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var hakuchi = new Message {Title = "泊地修理 第一艦隊", Body = "20分経過しました。", Name = "泊地修理20分経過"};
             while (true)
             {
                 switch (timer.Elapsed)
                 {
                     case 0:
-                        manager.Enqueue("遠征終了", "防空射撃演習", 10);
+                        manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
                         PAssert.That(() => ensei.Equals(result));
                         break;
                     case 2000:
@@ -228,14 +228,14 @@ namespace KancolleSniffer.Test
             Message result = null;
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
-            var ensei = new Message {Title = "遠征が終わりました", Body = "防空射撃演習", Name = "遠征終了"};
+            var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var hakuchi = new Message {Title = "泊地修理 第一艦隊", Body = "20分経過しました。", Name = "泊地修理20分経過"};
             while (true)
             {
                 switch (timer.Elapsed)
                 {
                     case 0:
-                        manager.Enqueue("遠征終了", "防空射撃演習", 3);
+                        manager.Enqueue("遠征終了", 1, "防空射撃演習", 3);
                         PAssert.That(() => ensei.Equals(result));
                         break;
                     case 1000:
@@ -269,19 +269,19 @@ namespace KancolleSniffer.Test
             Message result = null;
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
-            var ensei = new Message {Title = "遠征が終わりました", Body = "防空射撃演習", Name = "遠征終了"};
-            var hakuchi = new Message {Title = "入渠が終わりました", Body = "綾波改二", Name = "入渠終了"};
+            var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
+            var nyukyo = new Message {Title = "入渠が終わりました", Body = "第一ドック 綾波改二", Name = "入渠終了"};
             while (true)
             {
                 switch (timer.Elapsed)
                 {
                     case 0:
-                        manager.Enqueue("遠征終了", "防空射撃演習", 10);
+                        manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
                         PAssert.That(() => ensei.Equals(result));
                         break;
                     case 2000:
-                        manager.Enqueue("入渠終了", "綾波改二", 5);
-                        PAssert.That(() => hakuchi.Equals(result));
+                        manager.Enqueue("入渠終了", 0, "綾波改二", 5);
+                        PAssert.That(() => nyukyo.Equals(result));
                         break;
                     case 3000:
                         manager.StopRepeat("入渠終了");
@@ -311,13 +311,13 @@ namespace KancolleSniffer.Test
             Message result = null;
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
-            var expected = new Message {Title = "遠征が終わりました", Body = "防空射撃演習", Name = "遠征終了"};
+            var expected = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             while (true)
             {
                 switch (timer.Elapsed)
                 {
                     case 0:
-                        manager.Enqueue("遠征終了", "防空射撃演習", 10);
+                        manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
                         PAssert.That(() => expected.Equals(result));
                         break;
                     case 1000:
@@ -348,8 +348,8 @@ namespace KancolleSniffer.Test
             Message result = null;
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
-            var expected1 = new Message {Title = "遠征が終わりました", Body = "防空射撃演習", Name = "遠征終了"};
-            var expected2 = new Message {Title = "遠征が終わりました", Body = "海上護衛任務", Name = "遠征終了"};
+            var expected1 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
+            var expected2 = new Message {Title = "遠征が終わりました", Body = "第三艦隊 海上護衛任務", Name = "遠征終了"};
             while (true)
             {
                 switch (timer.Elapsed)

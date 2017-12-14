@@ -93,21 +93,21 @@ namespace KancolleSniffer
                     "遠征終了", new Message
                     {
                         Title = "遠征が終わりました",
-                        Body = "%s"
+                        Body = "%f艦隊 %s"
                     }
                 },
                 {
                     "入渠終了", new Message
                     {
                         Title = "入渠が終わりました",
-                        Body = "%s"
+                        Body = "%fドック %s"
                     }
                 },
                 {
                     "建造完了", new Message
                     {
                         Title = "建造が終わりました",
-                        Body = "%s"
+                        Body = "%fドック"
                     }
                 },
                 {
@@ -134,21 +134,21 @@ namespace KancolleSniffer
                 {
                     "泊地修理20分経過", new Message
                     {
-                        Title = "泊地修理 %f",
+                        Title = "泊地修理 %f艦隊",
                         Body = "20分経過しました。"
                     }
                 },
                 {
                     "泊地修理進行", new Message
                     {
-                        Title = "泊地修理 %f",
+                        Title = "泊地修理 %f艦隊",
                         Body = "修理進行：%s"
                     }
                 },
                 {
                     "泊地修理完了", new Message
                     {
-                        Title = "泊地修理 %f",
+                        Title = "泊地修理 %f艦隊",
                         Body = "修理完了：%s"
                     }
                 },
@@ -156,14 +156,14 @@ namespace KancolleSniffer
                     "疲労回復40", new Message
                     {
                         Title = "疲労が回復しました",
-                        Body = "%f 残り9分"
+                        Body = "%f艦隊 残り9分"
                     }
                 },
                 {
                     "疲労回復49", new Message
                     {
                         Title = "疲労が回復しました",
-                        Body = "%f"
+                        Body = "%f艦隊"
                     }
                 }
             };
@@ -211,7 +211,7 @@ namespace KancolleSniffer
 
             private string ProcessFormatString(string format, int fleet, string subject)
             {
-                var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
+                var fn = new[] {"第一", "第二", "第三", "第四"};
                 var result = "";
                 var percent = false;
                 foreach (var ch in format)
