@@ -54,9 +54,9 @@ namespace KancolleSniffer
             Enqueue(key, 0, subject, repeat);
         }
 
-        public void StopRepeat(string key)
+        public void StopRepeat(string key, bool cont = false)
         {
-            _notificationQueue.StopRepeat(key);
+            _notificationQueue.StopRepeat(key, cont);
         }
 
         public void StopRepeat(string key, int fleet)
@@ -263,7 +263,7 @@ namespace KancolleSniffer
             DateTime Now { get; }
         }
 
-        public class TimerWrapper : ITimer
+        private class TimerWrapper : ITimer
         {
             private readonly Timer _timer = new Timer();
 
@@ -327,16 +327,26 @@ namespace KancolleSniffer
                     _timer.Start();
             }
 
-            public void StopRepeat(string key)
+            public void StopRepeat(string key, bool cont = false)
             {
-                _queue.RemoveAll(n => n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Schedule != default);
+                if (!cont)
+                {
+                    _queue.RemoveAll(n => IsMatch(n, key));
+                }
+                else
+                {
+                    foreach (var n in _queue.Where(n => IsMatch(n, key)))
+                        n.Subject = "";
+                }
             }
 
             public void StopRepeat(string key, int fleet)
             {
-                _queue.RemoveAll(n =>
-                    n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Fleet == fleet && n.Schedule != default);
+                _queue.RemoveAll(n => IsMatch(n, key) && n.Fleet == fleet);
             }
+
+            private bool IsMatch(Notification n, string key) =>
+                n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Schedule != default;
 
             public void SuspendRepeat()
             {

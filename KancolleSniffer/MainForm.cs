@@ -106,8 +106,9 @@ namespace KancolleSniffer
 
             public void Stop(string key)
             {
-                if ((_config.Notifications[key].Flags & NotificationType.Cont) == 0)
-                    _manager.StopRepeat(key);
+                _manager.StopRepeat(key,
+                    (key == "入渠終了" || key == "遠征終了") &&
+                    (_config.Notifications[key].Flags & NotificationType.Cont) != 0);
             }
 
             public void Stop(string key, int fleet) => _manager.StopRepeat(key, fleet);

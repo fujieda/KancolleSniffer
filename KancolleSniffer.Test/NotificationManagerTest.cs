@@ -377,5 +377,46 @@ namespace KancolleSniffer.Test
                 timer.ElapseTime(1000);
             }
         }
+
+        /// <summary>
+        /// 継続中のリピートは艦隊やドックの番号だけ通知する
+        /// </summary>
+        [TestMethod]
+        public void ContinueRepeatWithoutSubject()
+        {
+            var timer = new MockTimer();
+            Message result = null;
+            var manager =
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+            var expected1 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
+            var expected2 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 ", Name = "遠征終了"};
+            while (true)
+            {
+                switch (timer.Elapsed)
+                {
+                    case 0:
+                        manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
+                        PAssert.That(() => expected1.Equals(result));
+                        break;
+                    case 2000:
+                        manager.StopRepeat("遠征終了", true);
+                        break;
+                    case 10000:
+                        PAssert.That(() => expected2.Equals(result));
+                        break;
+                    case 11000:
+                        manager.StopRepeat("遠征終了", 1);
+                        break;
+                    case 21000:
+                        return;
+                    default:
+                        PAssert.That(() => result == null, timer.Elapsed.ToString());
+                        break;
+
+                }
+                result = null;
+                timer.ElapseTime(1000);
+            }
+        }
     }
 }
