@@ -24,7 +24,6 @@ namespace KancolleSniffer
         private int _lastCond = int.MinValue;
         private DateTime _lastUpdate;
         private double _regenTime;
-        private DateTime _prevNotice;
 
         public bool NeedSave { get; private set; }
 
@@ -90,12 +89,9 @@ namespace KancolleSniffer
             return cond >= 46 ? nextRegen : nextRegen.AddSeconds((46 - cond + 2) / 3 * Interval);
         }
 
-        public int[] GetNotice()
+        public int[] GetNotice(DateTime prev, DateTime now)
         {
             var result = new int[ShipInfo.FleetCount];
-            var now = DateTime.Now;
-            var prev = _prevNotice;
-            _prevNotice = now;
             if (prev == DateTime.MinValue)
                 return result;
             for (var f = 0; f < result.Length; f++)

@@ -25,7 +25,6 @@ namespace KancolleSniffer
         private readonly PresetDeck _presetDeck;
         private readonly RepairStatus[] _repairStatuses = new RepairStatus[ShipInfo.FleetCount];
         private DateTime _start;
-        private DateTime _prev;
 
         public class RepairSpan
         {
@@ -244,11 +243,8 @@ namespace KancolleSniffer
             => _presetDeck.Decks.Where(deck => deck != null)
                 .Any(deck => RepairTarget(deck).Any(s => s.NowHp < s.MaxHp));
 
-        public Notice[] GetNotice()
+        public Notice[] GetNotice(DateTime prev, DateTime now)
         {
-            var now = DateTime.Now;
-            var prev = _prev;
-            _prev = now;
             if (prev == DateTime.MinValue || _start == DateTime.MinValue)
                 return new Notice[0];
             var r = _repairStatuses.Select(repair => repair.GetNotice(_start, prev, now)).ToArray();

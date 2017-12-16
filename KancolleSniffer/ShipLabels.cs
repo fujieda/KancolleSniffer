@@ -347,11 +347,11 @@ namespace KancolleSniffer
                 _ndockLabels[i][1].SetName(ndock[i].Name, ShipNameWidth.NDock);
         }
 
-        public void SetNDockTimer(int dock, RingTimer timer, bool finishTime)
+        public void SetNDockTimer(int dock, RingTimer timer, DateTime now, bool finishTime)
         {
             var label = _ndockLabels[dock][0];
-            label.ForeColor = timer.IsFinished ? CUDColor.Red : Color.Black;
-            label.Text = timer.ToString(finishTime);
+            label.ForeColor = timer.IsFinished(now) ? CUDColor.Red : Color.Black;
+            label.Text = timer.ToString(now, finishTime);
         }
     }
 

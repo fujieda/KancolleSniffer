@@ -532,7 +532,7 @@ namespace KancolleSniffer
 
         public DateTime GetConditionTimer(int fleet) => _conditionTimer.GetTimer(fleet);
 
-        public int[] GetConditionNotice() => _conditionTimer.GetNotice();
+        public int[] GetConditionNotice(DateTime prev, DateTime now) => _conditionTimer.GetNotice(prev, now);
 
         public ShipStatus[] GetShipStatuses(int fleet) => _shipInfo.GetShipStatuses(fleet);
 
@@ -639,13 +639,9 @@ namespace KancolleSniffer
         private readonly TimeSpan _spare;
         private bool _finished;
 
-        public TimeSpan Rest { get; private set; }
-
-        public bool IsFinished => _finished;
+        public bool IsFinished(DateTime now) => EndTime != DateTime.MinValue && EndTime - now < _spare || _finished;
 
         public DateTime EndTime { get; private set; }
-
-        public bool NeedRing { get; set; }
 
         public RingTimer(int spare = 60)
         {
@@ -670,30 +666,20 @@ namespace KancolleSniffer
             _finished = true;
         }
 
-        public void Update()
+        public bool CheckRing(DateTime prev, DateTime now)
         {
-            if (EndTime == DateTime.MinValue || _finished)
-            {
-                Rest = TimeSpan.Zero;
-                return;
-            }
-            var prev = Rest;
-            Rest = EndTime - DateTime.Now;
-            if (Rest < TimeSpan.Zero)
-                Rest = TimeSpan.Zero;
-            if (_spare >= Rest)
-            {
-                _finished = true;
-                if (prev > _spare)
-                    NeedRing = true;
-            }
+            return EndTime != DateTime.MinValue && prev != DateTime.MinValue &&
+                       prev < EndTime -_spare && EndTime - _spare <= now;
         }
 
-        public string ToString(bool endTime = false)
-            => EndTime == DateTime.MinValue && !_finished
-                ? ""
-                : endTime
-                    ? EndTime.ToString(@"dd\ HH\:mm", CultureInfo.InvariantCulture)
-                    : $"{(int)Rest.TotalHours:d2}:" + Rest.ToString(@"mm\:ss", CultureInfo.InvariantCulture);
+        public string ToString(DateTime now, bool endTime = false)
+        {
+            if (EndTime == DateTime.MinValue && !_finished)
+                return "";
+            if (endTime)
+                return EndTime.ToString(@"dd\ HH\:mm", CultureInfo.InvariantCulture);
+            var rest = _finished || EndTime - now < TimeSpan.Zero ? TimeSpan.Zero : EndTime - now;
+            return $"{(int)rest.TotalHours:d2}:" + rest.ToString(@"mm\:ss", CultureInfo.InvariantCulture);
+        }
     }
 }

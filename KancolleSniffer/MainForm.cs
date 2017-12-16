@@ -576,35 +576,6 @@ namespace KancolleSniffer
                 _notificationManager.Enqueue("大破警告", string.Join(" ", _sniffer.BadlyDamagedShips));
         }
 
-        private void NotifyAkashiTimer()
-        {
-            var akashi = _sniffer.AkashiTimer;
-            var msgs = akashi.GetNotice();
-            if (msgs.Length == 0)
-            {
-                _notificationManager.StopRepeat("泊地修理");
-                return;
-            }
-            if (!akashi.CheckReparing() && !(akashi.CheckPresetReparing() && _config.UsePresetAkashi))
-            {
-                _notificationManager.StopRepeat("泊地修理");
-                return;
-            }
-            if (msgs[0].Proceeded == "20分経過しました。")
-            {
-                SetNotification("泊地修理20分経過", msgs[0].Proceeded);
-                msgs[0].Proceeded = "";
-                // 修理完了がいるかもしれないので続ける
-            }
-            for (var i = 0; i < ShipInfo.FleetCount; i++)
-            {
-                if (msgs[i].Proceeded != "")
-                    SetNotification("泊地修理進行", i, msgs[i].Proceeded);
-                if (msgs[i].Completed != "")
-                    SetNotification("泊地修理完了", i, msgs[i].Completed);
-            }
-        }
-
         public void UpdateFighterPower(bool combined)
         {
             var fp = combined
@@ -725,50 +696,44 @@ namespace KancolleSniffer
             UpdateTimers();
         }
 
+        private DateTime _prev, _now;
+
         private void UpdateTimers()
         {
+            _prev = _now;
+            _now = DateTime.Now;
             var mission = new[] {labelMission1, labelMission2, labelMission3};
             for (var i = 0; i < mission.Length; i++)
             {
                 var entry = _sniffer.Missions[i];
-                entry.Timer.Update();
-                SetTimerColor(mission[i], entry.Timer);
-                mission[i].Text = entry.Timer.ToString(_missionFinishTimeMode);
-                if (!entry.Timer.NeedRing)
-                    continue;
-                SetNotification("遠征終了", i + 1, entry.Name);
-                entry.Timer.NeedRing = false;
+                SetTimerColor(mission[i], entry.Timer, _now);
+                mission[i].Text = entry.Timer.ToString(_now, _missionFinishTimeMode);
+                if (entry.Timer.CheckRing(_prev, _now))
+                    SetNotification("遠征終了", i + 1, entry.Name);
             }
             for (var i = 0; i < _sniffer.NDock.Length; i++)
             {
                 var entry = _sniffer.NDock[i];
-                entry.Timer.Update();
-                _shipLabels.SetNDockTimer(i, entry.Timer, _ndockFinishTimeMode);
-                if (!entry.Timer.NeedRing)
-                    continue;
-                SetNotification("入渠終了", i, entry.Name);
-                entry.Timer.NeedRing = false;
+                _shipLabels.SetNDockTimer(i, entry.Timer, _now, _ndockFinishTimeMode);
+                if (entry.Timer.CheckRing(_prev, _now))
+                    SetNotification("入渠終了", i, entry.Name);
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
             for (var i = 0; i < kdock.Length; i++)
             {
                 var timer = _sniffer.KDock[i];
-                timer.Update();
-                SetTimerColor(kdock[i], timer);
-
-                kdock[i].Text = timer.ToString();
-                if (!timer.NeedRing)
-                    continue;
-                SetNotification("建造完了", $"第{i + 1:D}ドック");
-                timer.NeedRing = false;
+                SetTimerColor(kdock[i], timer, _now);
+                kdock[i].Text = timer.ToString(_now);
+                if (timer.CheckRing(_prev, _now))
+                    SetNotification("建造完了", $"第{i + 1:D}ドック");
             }
             UpdateCondTimers();
             UpdateAkashiTimer();
         }
 
-        private void SetTimerColor(Label label, RingTimer timer)
+        private void SetTimerColor(Label label, RingTimer timer, DateTime now)
         {
-            label.ForeColor = timer.IsFinished ? CUDColor.Red : Color.Black;
+            label.ForeColor = timer.IsFinished(now) ? CUDColor.Red : Color.Black;
         }
 
         private void UpdateCondTimers()
@@ -784,14 +749,13 @@ namespace KancolleSniffer
             {
                 timer = _sniffer.GetConditionTimer(_currentFleet);
             }
-            var now = DateTime.Now;
             if (timer == DateTime.MinValue)
             {
                 labelCondTimerTitle.Text = "";
                 labelCondTimer.Text = "";
                 return;
             }
-            var span = TimeSpan.FromSeconds(Ceiling((timer - now).TotalSeconds));
+            var span = TimeSpan.FromSeconds(Ceiling((timer - _now).TotalSeconds));
             if (span >= TimeSpan.FromMinutes(9))
             {
                 labelCondTimerTitle.Text = "cond40まで";
@@ -804,7 +768,7 @@ namespace KancolleSniffer
                 labelCondTimer.Text = (span >= TimeSpan.Zero ? span : TimeSpan.Zero).ToString(@"mm\:ss");
                 labelCondTimer.ForeColor = span <= TimeSpan.Zero ? CUDColor.Red : DefaultForeColor;
             }
-            var notice = _sniffer.GetConditionNotice();
+            var notice = _sniffer.GetConditionNotice(_prev, _now);
             if (notice == null)
                 return;
             for (var i = 0; i < ShipInfo.FleetCount; i++)
@@ -854,6 +818,35 @@ namespace KancolleSniffer
             {
                 labelPresetAkashiTimer.ForeColor = DefaultForeColor;
                 labelPresetAkashiTimer.Text = "";
+            }
+        }
+
+        private void NotifyAkashiTimer()
+        {
+            var akashi = _sniffer.AkashiTimer;
+            var msgs = akashi.GetNotice(_prev, _now);
+            if (msgs.Length == 0)
+            {
+                _notificationManager.StopRepeat("泊地修理");
+                return;
+            }
+            if (!akashi.CheckReparing() && !(akashi.CheckPresetReparing() && _config.UsePresetAkashi))
+            {
+                _notificationManager.StopRepeat("泊地修理");
+                return;
+            }
+            if (msgs[0].Proceeded == "20分経過しました。")
+            {
+                SetNotification("泊地修理20分経過", msgs[0].Proceeded);
+                msgs[0].Proceeded = "";
+                // 修理完了がいるかもしれないので続ける
+            }
+            for (var i = 0; i < ShipInfo.FleetCount; i++)
+            {
+                if (msgs[i].Proceeded != "")
+                    SetNotification("泊地修理進行", i, msgs[i].Proceeded);
+                if (msgs[i].Completed != "")
+                    SetNotification("泊地修理完了", i, msgs[i].Completed);
             }
         }
 
