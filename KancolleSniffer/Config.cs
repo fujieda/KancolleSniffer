@@ -40,8 +40,10 @@ namespace KancolleSniffer
 
     public class ShipListConfig
     {
+        public bool Visible { get; set; }
         public Point Location { get; set; }
         public Size Size { get; set; }
+        public string Mode { get; set; }
         public bool ShipType { get; set; }
         public bool ShowHpInPercent { get; set; }
         public ListForm.SortOrder SortOrder { get; set; } = ListForm.SortOrder.ExpToNext;

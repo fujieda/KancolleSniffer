@@ -214,6 +214,8 @@ namespace KancolleSniffer
                 ShowInTaskbar = false;
             if (_config.ShowHpInPercent)
                 _shipLabels.ToggleHpPercent();
+            if (_config.ShipList.Visible)
+                _listForm.Show();
             ApplyConfig();
             ApplyDebugLogSetting();
             ApplyLogSetting();
@@ -270,6 +272,7 @@ namespace KancolleSniffer
             _sniffer.FlashLog();
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.ShowHpInPercent = _shipLabels.ShowHpInPercent;
+            _config.ShipList.Visible = _listForm.Visible && _listForm.WindowState == FormWindowState.Normal;
             _config.Save();
             _proxyManager.Shutdown();
             _kancolleDb.Stop();

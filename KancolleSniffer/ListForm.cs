@@ -144,14 +144,13 @@ namespace KancolleSniffer
             checkBoxShipType.Checked = config.ShipType;
             if (config.ShowHpInPercent)
                 shipListPanel.ToggleHpPercent();
-            ActiveControl = shipListPanel;
             for (var i = 0; i < ShipListPanel.GroupCount; i++)
             {
                 shipListPanel.GroupSettings[i] = i < config.ShipGroup.Count
                     ? new HashSet<int>(config.ShipGroup[i])
                     : new HashSet<int>();
             }
-            comboBoxGroup.SelectedIndex = 0;
+            comboBoxGroup.SelectedItem = config.Mode ?? "全員";
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);
@@ -178,6 +177,7 @@ namespace KancolleSniffer
             var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
             config.Location = bounds.Location;
             config.Size = bounds.Size;
+            config.Mode = (string)comboBoxGroup.SelectedItem;
             if (e.CloseReason != CloseReason.FormOwnerClosing)
                 Hide();
         }
