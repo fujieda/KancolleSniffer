@@ -793,12 +793,14 @@ opts.observable.on("mainTabChanged", function(idx) {
 });
 
 this.months = [];
+this.selectedIndex = 0;
 
 this.monthChange = function(event) {
     if (event.target.selectedIndex === 0) {
         self.show();
         return;
     }
+    this.selectedIndex = event.target.selectedIndex;
     var dt = $('#achivement_table').DataTable();
     dt.clear();
     dt.rows.add(this.result[event.target.value]).draw();
@@ -974,8 +976,8 @@ this.show = function(data) {
     this.update();
     var dt = $('#achivement_table').DataTable();
     dt.clear();
-    dt.rows.add(this.result[this.months[0]]).draw();
-    this.showChart(this.months[0]);
+    dt.rows.add(this.result[this.months[this.selectedIndex]]).draw();
+    this.showChart(this.months[this.selectedIndex]);
 };
 </script>
 </achivement-table>
