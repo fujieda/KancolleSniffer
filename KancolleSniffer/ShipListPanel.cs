@@ -332,6 +332,8 @@ namespace KancolleSniffer
                 label.PresetColor =
                     label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
             }
+            if (ShowHpInPercent)
+                rpl[0].ToggleHpPercent();
             _hpLabels.Add(rpl[0]);
         }
 
@@ -381,6 +383,8 @@ namespace KancolleSniffer
                 label.PresetColor =
                     label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
             }
+            if (ShowHpInPercent)
+                labels[0].ToggleHpPercent();
             _hpLabels.Add(labels[0]);
         }
 
