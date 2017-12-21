@@ -38,6 +38,8 @@
             this.textBoxRepeat = new System.Windows.Forms.TextBox();
             this.labelRepeat = new System.Windows.Forms.Label();
             this.checkBoxCont = new System.Windows.Forms.CheckBox();
+            this.textBoxPreliminary = new System.Windows.Forms.TextBox();
+            this.labelPreliminary = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // listBoxNotifications
@@ -87,9 +89,9 @@
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonClose.Location = new System.Drawing.Point(201, 151);
+            this.buttonClose.Location = new System.Drawing.Point(201, 161);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 6;
@@ -110,7 +112,7 @@
             // checkBoxRepeat
             // 
             this.checkBoxRepeat.AutoSize = true;
-            this.checkBoxRepeat.Location = new System.Drawing.Point(12, 134);
+            this.checkBoxRepeat.Location = new System.Drawing.Point(117, 133);
             this.checkBoxRepeat.Name = "checkBoxRepeat";
             this.checkBoxRepeat.Size = new System.Drawing.Size(58, 16);
             this.checkBoxRepeat.TabIndex = 8;
@@ -120,7 +122,7 @@
             // 
             // textBoxRepeat
             // 
-            this.textBoxRepeat.Location = new System.Drawing.Point(67, 132);
+            this.textBoxRepeat.Location = new System.Drawing.Point(172, 131);
             this.textBoxRepeat.Name = "textBoxRepeat";
             this.textBoxRepeat.Size = new System.Drawing.Size(26, 19);
             this.textBoxRepeat.TabIndex = 9;
@@ -129,16 +131,16 @@
             // labelRepeat
             // 
             this.labelRepeat.AutoSize = true;
-            this.labelRepeat.Location = new System.Drawing.Point(95, 135);
+            this.labelRepeat.Location = new System.Drawing.Point(199, 134);
             this.labelRepeat.Name = "labelRepeat";
-            this.labelRepeat.Size = new System.Drawing.Size(17, 12);
+            this.labelRepeat.Size = new System.Drawing.Size(29, 12);
             this.labelRepeat.TabIndex = 10;
-            this.labelRepeat.Text = "秒";
+            this.labelRepeat.Text = "秒毎";
             // 
             // checkBoxCont
             // 
             this.checkBoxCont.AutoSize = true;
-            this.checkBoxCont.Location = new System.Drawing.Point(112, 134);
+            this.checkBoxCont.Location = new System.Drawing.Point(228, 133);
             this.checkBoxCont.Name = "checkBoxCont";
             this.checkBoxCont.Size = new System.Drawing.Size(48, 16);
             this.checkBoxCont.TabIndex = 11;
@@ -146,13 +148,32 @@
             this.checkBoxCont.UseVisualStyleBackColor = true;
             this.checkBoxCont.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
+            // textBoxPreliminary
+            // 
+            this.textBoxPreliminary.Location = new System.Drawing.Point(21, 131);
+            this.textBoxPreliminary.Name = "textBoxPreliminary";
+            this.textBoxPreliminary.Size = new System.Drawing.Size(26, 19);
+            this.textBoxPreliminary.TabIndex = 12;
+            this.textBoxPreliminary.TextChanged += new System.EventHandler(this.textBoxpreliminary_TextChanged);
+            // 
+            // labelPreliminary
+            // 
+            this.labelPreliminary.AutoSize = true;
+            this.labelPreliminary.Location = new System.Drawing.Point(49, 134);
+            this.labelPreliminary.Name = "labelPreliminary";
+            this.labelPreliminary.Size = new System.Drawing.Size(62, 12);
+            this.labelPreliminary.TabIndex = 13;
+            this.labelPreliminary.Text = "秒前に予告";
+            // 
             // NotificationConfigDialog
             // 
             this.AcceptButton = this.buttonClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size(288, 185);
+            this.ClientSize = new System.Drawing.Size(288, 195);
+            this.Controls.Add(this.labelPreliminary);
+            this.Controls.Add(this.textBoxPreliminary);
             this.Controls.Add(this.checkBoxCont);
             this.Controls.Add(this.labelRepeat);
             this.Controls.Add(this.textBoxRepeat);
@@ -188,5 +209,7 @@
         private System.Windows.Forms.TextBox textBoxRepeat;
         private System.Windows.Forms.Label labelRepeat;
         private System.Windows.Forms.CheckBox checkBoxCont;
+        private System.Windows.Forms.TextBox textBoxPreliminary;
+        private System.Windows.Forms.Label labelPreliminary;
     }
 }

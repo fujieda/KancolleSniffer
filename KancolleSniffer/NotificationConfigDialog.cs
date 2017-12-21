@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace KancolleSniffer
@@ -38,13 +39,16 @@ namespace KancolleSniffer
                 case "艦娘数超過":
                 case "装備数超過":
                 case "大破警告":
-                    textBoxRepeat.Visible = labelRepeat.Visible = checkBoxRepeat.Visible = checkBoxCont.Visible = false;
+                    textBoxPreliminary.Visible = labelPreliminary.Visible = textBoxRepeat.Visible =
+                        labelRepeat.Visible = checkBoxRepeat.Visible = checkBoxCont.Visible = false;
                     break;
                 default:
                     textBoxRepeat.Visible = labelRepeat.Visible = checkBoxRepeat.Visible = true;
                     checkBoxRepeat.Enabled = _configCheckBoxs[NotificationType.Repeat].Checked;
                     textBoxRepeat.Text = notification.RepeatInterval.ToString();
                     checkBoxCont.Visible = IsContAvailable;
+                    textBoxPreliminary.Visible = labelPreliminary.Visible = IspreliminaryAvailable;
+                    textBoxPreliminary.Text = notification.PreliminaryPeriod.ToString();
                     break;
             }
             checkBoxFlashWindow.Checked = (notification.Flags & NotificationType.FlashWindow) != 0;
@@ -70,14 +74,11 @@ namespace KancolleSniffer
             }
         }
 
-        private bool IsContAvailable
-        {
-            get
-            {
-                var notification = _notifications[(string)listBoxNotifications.SelectedItem];
-                return notification.Name == "遠征終了" || notification.Name == "入渠終了";
-            }
-        }
+        private bool IsContAvailable =>
+            new[] {"遠征終了", "入渠終了"}.Contains((string)listBoxNotifications.SelectedItem);
+
+        private bool IspreliminaryAvailable =>
+            new[] {"遠征終了", "入渠終了", "建造完了", "泊地修理20分経過", "疲労回復"}.Contains((string)listBoxNotifications.SelectedItem);
 
         private void textBoxRepeat_TextChanged(object sender, EventArgs e)
         {
@@ -96,6 +97,12 @@ namespace KancolleSniffer
 
             if (listBoxNotifications.SelectedIndex == -1)
                 listBoxNotifications.SelectedIndex = 0;
+        }
+
+        private void textBoxpreliminary_TextChanged(object sender, EventArgs e)
+        {
+            _notifications[(string)listBoxNotifications.SelectedItem].PreliminaryPeriod =
+                int.TryParse(textBoxPreliminary.Text, out int preliminary) ? preliminary : 0;
         }
     }
 }

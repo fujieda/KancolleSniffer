@@ -708,15 +708,13 @@ namespace KancolleSniffer
                 var entry = _sniffer.Missions[i];
                 SetTimerColor(mission[i], entry.Timer, _now);
                 mission[i].Text = entry.Timer.ToString(_now, _missionFinishTimeMode);
-                if (entry.Timer.CheckRing(_prev, _now))
-                    SetNotification("遠征終了", i + 1, entry.Name);
+                CheckRing("遠征終了", entry.Timer, i + 1, entry.Name);
             }
             for (var i = 0; i < _sniffer.NDock.Length; i++)
             {
                 var entry = _sniffer.NDock[i];
                 _shipLabels.SetNDockTimer(i, entry.Timer, _now, _ndockFinishTimeMode);
-                if (entry.Timer.CheckRing(_prev, _now))
-                    SetNotification("入渠終了", i, entry.Name);
+                CheckRing("入渠終了", entry.Timer, i, entry.Name);
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
             for (var i = 0; i < kdock.Length; i++)
@@ -724,11 +722,24 @@ namespace KancolleSniffer
                 var timer = _sniffer.KDock[i];
                 SetTimerColor(kdock[i], timer, _now);
                 kdock[i].Text = timer.ToString(_now);
-                if (timer.CheckRing(_prev, _now))
-                    SetNotification("建造完了", $"第{i + 1:D}ドック");
+                CheckRing("建造完了", timer, 0, $"第{i + 1:D}ドック");
             }
             UpdateCondTimers();
             UpdateAkashiTimer();
+        }
+
+        private void CheckRing(string key, RingTimer timer, int fleet, string subject)
+        {
+            if (timer.CheckRing(_prev, _now))
+            {
+                SetNotification(key, fleet, subject);
+                return;
+            }
+            var pre = TimeSpan.FromSeconds(_config.Notifications[key].PreliminaryPeriod);
+            if (pre == TimeSpan.Zero)
+                return;
+            if (timer.CheckRing(_prev + pre, _now + pre))
+                _notificationManager.Enqueue(key, fleet, subject);
         }
 
         private void SetTimerColor(Label label, RingTimer timer, DateTime now)
@@ -769,13 +780,20 @@ namespace KancolleSniffer
                 labelCondTimer.ForeColor = span <= TimeSpan.Zero ? CUDColor.Red : DefaultForeColor;
             }
             var notice = _sniffer.GetConditionNotice(_prev, _now);
-            if (notice == null)
-                return;
+            var pre = TimeSpan.FromSeconds(_config.Notifications["疲労回復"].PreliminaryPeriod);
+            var preNotice = pre == TimeSpan.Zero
+                ? new int[ShipInfo.FleetCount]
+                : _sniffer.GetConditionNotice(_prev + pre, _now + pre);
             for (var i = 0; i < ShipInfo.FleetCount; i++)
             {
-                if (!_config.NotifyConditions.Contains(notice[i]))
-                    return;
-                SetNotification("疲労回復" + notice[i], i, "cond" + notice[i]);
+                if (_config.NotifyConditions.Contains(notice[i]))
+                {
+                    SetNotification("疲労回復" + notice[i], i, "cond" + notice[i]);
+                }
+                else if (_config.NotifyConditions.Contains(preNotice[i]))
+                {
+                    _notificationManager.Enqueue("疲労回復" + notice[i], i, "cond" + notice[i]);
+                }
             }
         }
 
@@ -835,10 +853,12 @@ namespace KancolleSniffer
                 _notificationManager.StopRepeat("泊地修理");
                 return;
             }
+            var skipPreliminary = false;
             if (msgs[0].Proceeded == "20分経過しました。")
             {
                 SetNotification("泊地修理20分経過", msgs[0].Proceeded);
                 msgs[0].Proceeded = "";
+                skipPreliminary = true;
                 // 修理完了がいるかもしれないので続ける
             }
             for (var i = 0; i < ShipInfo.FleetCount; i++)
@@ -848,6 +868,11 @@ namespace KancolleSniffer
                 if (msgs[i].Completed != "")
                     SetNotification("泊地修理完了", i, msgs[i].Completed);
             }
+            var pre = TimeSpan.FromSeconds(_config.Notifications["泊地修理20分経過"].PreliminaryPeriod);
+            if (skipPreliminary || pre == TimeSpan.Zero)
+                return;
+            if ((msgs = akashi.GetNotice(_prev + pre, _now + pre))[0].Proceeded == "20分経過しました。")
+                _notificationManager.Enqueue("泊地修理20分経過", 0, msgs[0].Proceeded);
         }
 
         private void UpdateRepairList()

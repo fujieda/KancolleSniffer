@@ -133,6 +133,7 @@ namespace KancolleSniffer
         public string Name { get; set; }
         public NotificationType Flags { get; set; }
         public int RepeatInterval { get; set; }
+        public int PreliminaryPeriod { get; set; }
     }
 
     public class NotificationConfig
@@ -143,18 +144,23 @@ namespace KancolleSniffer
         public int[] RepeatIntervals =
             Config.NotificationNames.Select(x => 0).ToArray();
 
+        public int[] PreliminaryPeriods =
+            Config.NotificationNames.Select(x => 0).ToArray();
+
         public NotificationSpec this[string name]
         {
             get => new NotificationSpec
             {
                 Name = name,
                 Flags = Settings[Config.NotificationIndex[name]],
-                RepeatInterval = RepeatIntervals[Config.NotificationIndex[name]]
+                RepeatInterval = RepeatIntervals[Config.NotificationIndex[name]],
+                PreliminaryPeriod = PreliminaryPeriods[Config.NotificationIndex[name]]
             };
             set
             {
                 Settings[Config.NotificationIndex[name]] = value.Flags;
                 RepeatIntervals[Config.NotificationIndex[name]] = value.RepeatInterval;
+                PreliminaryPeriods[Config.NotificationIndex[name]] = value.PreliminaryPeriod;
             }
         }
     }
