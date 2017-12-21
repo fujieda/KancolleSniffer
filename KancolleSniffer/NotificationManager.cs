@@ -24,12 +24,21 @@ namespace KancolleSniffer
     {
         private readonly NotificationQueue _notificationQueue;
 
+        private enum Mode
+        {
+            Normal,
+            Repeat,
+            Cont,
+            Preliminary
+        }
+
         private class Notification
         {
             public string Key { get; set; }
             public int Fleet { get; set; }
             public string Subject { get; set; }
             public int Repeat { get; set; }
+            public Mode Mode { get; set; }
             public DateTime Schedule { get; set; }
         }
 
@@ -38,14 +47,15 @@ namespace KancolleSniffer
             _notificationQueue = new NotificationQueue(ring, timer);
         }
 
-        public void Enqueue(string key, int fleet, string subject, int repeat = 0)
+        public void Enqueue(string key, int fleet, string subject, int repeat = 0, bool preliminary = false)
         {
             _notificationQueue.Enqueue(new Notification
             {
                 Key = key,
                 Fleet = fleet,
                 Subject = subject,
-                Repeat = repeat
+                Repeat = repeat,
+                Mode = preliminary ? Mode.Preliminary : Mode.Normal
             });
         }
 
@@ -201,9 +211,10 @@ namespace KancolleSniffer
             {
                 LoadConfig();
                 var format = _config.TryGetValue(notification.Key, out Message value) ? value : _default[notification.Key];
+                var prefix = new[] {"", "[リピート] ", "[継続] ", "[予告] "}[(int)notification.Mode];
                 return new Message
                 {
-                    Title = ProcessFormatString(format.Title, notification.Fleet, notification.Subject),
+                    Title = prefix + ProcessFormatString(format.Title, notification.Fleet, notification.Subject),
                     Body = ProcessFormatString(format.Body, notification.Fleet, notification.Subject),
                     Name = KeyToName(notification.Key)
                 };
@@ -336,7 +347,10 @@ namespace KancolleSniffer
                 else
                 {
                     foreach (var n in _queue.Where(n => IsMatch(n, key)))
+                    {
                         n.Subject = "";
+                        n.Mode = Mode.Cont;
+                    }
                 }
             }
 
@@ -367,6 +381,7 @@ namespace KancolleSniffer
                                                               !(_suspend && n.Schedule != default));
                 if (notification == null)
                     return;
+                var message = _notificationConfig.GenerateMessage(notification);
                 if (notification.Repeat == 0)
                 {
                     _queue.Remove(notification);
@@ -374,9 +389,9 @@ namespace KancolleSniffer
                 else
                 {
                     notification.Schedule = _timer.Now + TimeSpan.FromSeconds(notification.Repeat);
+                    if (notification.Mode == Mode.Normal)
+                        notification.Mode = Mode.Repeat;
                 }
-                var message =
-                    _notificationConfig.GenerateMessage(notification);
                 _ring(message.Title, message.Body, message.Name);
                 _lastRing = now;
             }

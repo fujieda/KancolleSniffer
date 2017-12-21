@@ -739,7 +739,7 @@ namespace KancolleSniffer
             if (pre == TimeSpan.Zero)
                 return;
             if (timer.CheckRing(_prev + pre, _now + pre))
-                _notificationManager.Enqueue(key, fleet, subject);
+                SetPreNotification(key, fleet, subject);
         }
 
         private void SetTimerColor(Label label, RingTimer timer, DateTime now)
@@ -792,21 +792,9 @@ namespace KancolleSniffer
                 }
                 else if (_config.NotifyConditions.Contains(preNotice[i]))
                 {
-                    _notificationManager.Enqueue("疲労回復" + notice[i], i, "cond" + notice[i]);
+                    SetPreNotification("疲労回復" + preNotice[i], i, "cond" + notice[i]);
                 }
             }
-        }
-
-        private void SetNotification(string key, string subject)
-        {
-            SetNotification(key, 0, subject);
-        }
-
-        private void SetNotification(string key, int fleet, string subject)
-        {
-            var spec = _config.Notifications[_notificationManager.KeyToName(key)];
-            _notificationManager.Enqueue(key, fleet, subject,
-                (spec.Flags & _config.NotificationFlags & NotificationType.Repeat) == 0 ? 0 : spec.RepeatInterval);
         }
 
         private void UpdateAkashiTimer()
@@ -872,7 +860,24 @@ namespace KancolleSniffer
             if (skipPreliminary || pre == TimeSpan.Zero)
                 return;
             if ((msgs = akashi.GetNotice(_prev + pre, _now + pre))[0].Proceeded == "20分経過しました。")
-                _notificationManager.Enqueue("泊地修理20分経過", 0, msgs[0].Proceeded);
+                SetPreNotification("泊地修理20分経過", 0, msgs[0].Proceeded);
+        }
+
+        private void SetNotification(string key, string subject)
+        {
+            SetNotification(key, 0, subject);
+        }
+
+        private void SetNotification(string key, int fleet, string subject)
+        {
+            var spec = _config.Notifications[_notificationManager.KeyToName(key)];
+            _notificationManager.Enqueue(key, fleet, subject,
+                (spec.Flags & _config.NotificationFlags & NotificationType.Repeat) == 0 ? 0 : spec.RepeatInterval);
+        }
+
+        private void SetPreNotification(string key, int fleet, string subject)
+        {
+            _notificationManager.Enqueue(key, fleet, subject, 0, true);
         }
 
         private void UpdateRepairList()

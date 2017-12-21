@@ -89,6 +89,9 @@ namespace KancolleSniffer.Test
 
             public bool Equals(Message other) =>
                 other != null && Title == other.Title && Body == other.Body && Name == other.Name;
+
+            public Message Repeat => new Message {Title = "[リピート] " + Title, Body = Body, Name = Name};
+            public Message Cont => new Message {Title = "[継続] " + Title, Body = Body, Name = Name};
         }
 
         /// <summary>
@@ -165,10 +168,10 @@ namespace KancolleSniffer.Test
                         PAssert.That(() => expected.Equals(result));
                         break;
                     case 2000:
-                        PAssert.That(() => expected.Equals(result));
+                        PAssert.That(() => expected.Repeat.Equals(result));
                         break;
                     case 4000:
-                        PAssert.That(() => expected.Equals(result));
+                        PAssert.That(() => expected.Repeat.Equals(result));
                         return;
                     default:
                         PAssert.That(() => result == null, timer.Elapsed.ToString());
@@ -204,10 +207,10 @@ namespace KancolleSniffer.Test
                         PAssert.That(() => hakuchi.Equals(result));
                         break;
                     case 7000:
-                        PAssert.That(() => hakuchi.Equals(result), "泊地修理2回目");
+                        PAssert.That(() => hakuchi.Repeat.Equals(result), "泊地修理2回目");
                         break;
                     case 10000:
-                        PAssert.That(() => ensei.Equals(result), "遠征終了2回目");
+                        PAssert.That(() => ensei.Repeat.Equals(result), "遠征終了2回目");
                         return;
                     default:
                         PAssert.That(() => result == null, timer.Elapsed.ToString());
@@ -245,10 +248,10 @@ namespace KancolleSniffer.Test
                         PAssert.That(() => hakuchi.Equals(result));
                         break;
                     case 4000:
-                        PAssert.That(() => ensei.Equals(result), "遠征終了2回目");
+                        PAssert.That(() => ensei.Repeat.Equals(result), "遠征終了2回目");
                         break;
                     case 6000:
-                        PAssert.That(() => hakuchi.Equals(result), "泊地修理2回目");
+                        PAssert.That(() => hakuchi.Repeat.Equals(result), "泊地修理2回目");
                         return;
                     default:
                         PAssert.That(() => result == null, timer.Elapsed.ToString());
@@ -290,7 +293,7 @@ namespace KancolleSniffer.Test
                         PAssert.That(() => result == null, "入渠終了2回目はない");
                         break;
                     case 10000:
-                        PAssert.That(() => ensei.Equals(result), "遠征終了2回目");
+                        PAssert.That(() => ensei.Repeat.Equals(result), "遠征終了2回目");
                         return;
                     default:
                         PAssert.That(() => result == null, timer.Elapsed.ToString());
@@ -327,7 +330,7 @@ namespace KancolleSniffer.Test
                         manager.ResumeRepeat();
                         break;
                     case 12000:
-                        PAssert.That(() => expected.Equals(result));
+                        PAssert.That(() => expected.Repeat.Equals(result));
                         return;
                     default:
                         PAssert.That(() => result == null, timer.Elapsed.ToString());
@@ -366,7 +369,7 @@ namespace KancolleSniffer.Test
                         manager.StopRepeat("遠征終了", 1);
                         break;
                     case 12000:
-                        PAssert.That(() => expected2.Equals(result));
+                        PAssert.That(() => expected2.Repeat.Equals(result));
                         return;
                     default:
                         PAssert.That(() => result == null, timer.Elapsed.ToString());
@@ -402,7 +405,7 @@ namespace KancolleSniffer.Test
                         manager.StopRepeat("遠征終了", true);
                         break;
                     case 10000:
-                        PAssert.That(() => expected2.Equals(result));
+                        PAssert.That(() => expected2.Cont.Equals(result));
                         break;
                     case 11000:
                         manager.StopRepeat("遠征終了", 1);
@@ -417,6 +420,21 @@ namespace KancolleSniffer.Test
                 result = null;
                 timer.ElapseTime(1000);
             }
+        }
+
+        /// <summary>
+        /// 予告する
+        /// </summary>
+        [TestMethod]
+        public void PreliminaryNotification()
+        {
+            var timer = new MockTimer();
+            Message result = null;
+            var manager =
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+            var expected = new Message {Title = "[予告] 遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
+            manager.Enqueue("遠征終了", 1, "防空射撃演習", 0, true);
+            PAssert.That(() => expected.Equals(result));
         }
     }
 }
