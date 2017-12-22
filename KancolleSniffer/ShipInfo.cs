@@ -56,7 +56,7 @@ namespace KancolleSniffer
         public const int FleetCount = 4;
         public const int MemberCount = 6;
 
-        private readonly int[][] _decks = new int[FleetCount][];
+        private readonly int[][] _decks;
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
         private readonly ShipMaster _shipMaster = new ShipMaster();
         private readonly ItemInfo _itemInfo;
@@ -85,8 +85,7 @@ namespace KancolleSniffer
         public ShipInfo(ItemInfo itemInfo)
         {
             _itemInfo = itemInfo;
-            for (var fleet = 0; fleet < _decks.Length; fleet++)
-                _decks[fleet] = new int[0];
+            _decks = Enumerable.Repeat(Enumerable.Repeat(-1, MemberCount).ToArray(), FleetCount).ToArray();
             ClearShipInfo();
         }
 

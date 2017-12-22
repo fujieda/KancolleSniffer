@@ -660,5 +660,17 @@ namespace KancolleSniffer.Test
             PAssert.That(() => sniffer.Item.NowEquips == 1118);
             PAssert.That(() => sniffer.Material.Current.Take(4).SequenceEqual(new[] {285615, 286250, 291010, 284744}));
         }
+
+        /// <summary>
+        /// 第2艦隊までしか解放していなくてもエラーにならないようにする
+        /// </summary>
+        [TestMethod]
+        public void TwoFleets()
+        {
+            var sniffer = new Sniffer(true);
+            SniffLogFile(sniffer, "twofleets_001");
+            var expected = Enumerable.Repeat(new ChargeStatus(5, 5), ShipInfo.FleetCount);
+            PAssert.That(() => expected.SequenceEqual(sniffer.ChargeStatuses));
+        }
     }
 }
