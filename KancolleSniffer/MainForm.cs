@@ -472,6 +472,7 @@ namespace KancolleSniffer
         {
             UpdateNumOfShips();
             UpdateNumOfEquips();
+            _notificationManager.Flash();
             labelNumOfBuckets.Text = _sniffer.Material.MaterialHistory[(int)Material.Bucket].Now.ToString("D");
             UpdateBucketHistory();
             var ac = _sniffer.Achievement.Value;
@@ -572,8 +573,10 @@ namespace KancolleSniffer
 
         private void NotifyDamagedShip()
         {
-            if (_sniffer.BadlyDamagedShips.Any())
-                _notificationManager.Enqueue("大破警告", string.Join(" ", _sniffer.BadlyDamagedShips));
+            if (!_sniffer.BadlyDamagedShips.Any())
+                return;
+            _notificationManager.Enqueue("大破警告", string.Join(" ", _sniffer.BadlyDamagedShips));
+            _notificationManager.Flash();
         }
 
         public void UpdateFighterPower(bool combined)
@@ -726,6 +729,7 @@ namespace KancolleSniffer
             }
             UpdateCondTimers();
             UpdateAkashiTimer();
+            _notificationManager.Flash();
         }
 
         private void CheckRing(string key, RingTimer timer, int fleet, string subject)

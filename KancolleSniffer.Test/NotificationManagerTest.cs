@@ -104,8 +104,9 @@ namespace KancolleSniffer.Test
             Message result = null;
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
-            manager.Enqueue("遠征終了", "防空射撃演習");
-            PAssert.That(() => new Message {Title = "遠征が終わりました", Body = "第一艦隊 防空射撃演習", Name = "遠征終了"}.Equals(result));
+            manager.Enqueue("遠征終了", 1, "防空射撃演習");
+            manager.Flash();
+            PAssert.That(() => new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"}.Equals(result));
         }
 
         /// <summary>
@@ -118,9 +119,10 @@ namespace KancolleSniffer.Test
             Message result = null;
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
-            manager.Enqueue("疲労回復40", 0, "cond40");
+            manager.Enqueue("遠征終了", 1, "防空射撃演習");
             manager.Enqueue("疲労回復49", 1, "cond49");
-            PAssert.That(() => new Message {Title = "疲労が回復しました", Body = "第一艦隊 残り9分", Name = "疲労回復"}.Equals(result));
+            manager.Flash();
+            PAssert.That(() => new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"}.Equals(result));
             result = null;
             timer.ElapseTime(1000);
             PAssert.That(() => result == null);
@@ -141,9 +143,11 @@ namespace KancolleSniffer.Test
             var manager =
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
             manager.Enqueue("建造完了", 0, "");
+            manager.Flash();
             PAssert.That(() => new Message {Title = "建造が終わりました", Body = "第一ドック", Name = "建造完了"}.Equals(result));
             timer.ElapseTime(1000);
             manager.Enqueue("建造完了", 1, "");
+            manager.Flash();
             timer.ElapseTime(1000);
             PAssert.That(() => new Message {Title = "建造が終わりました", Body = "第二ドック", Name = "建造完了"}.Equals(result));
         }
@@ -165,6 +169,7 @@ namespace KancolleSniffer.Test
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 2);
+                        manager.Flash();
                         PAssert.That(() => expected.Equals(result));
                         break;
                     case 2000:
@@ -200,10 +205,12 @@ namespace KancolleSniffer.Test
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
+                        manager.Flash();
                         PAssert.That(() => ensei.Equals(result));
                         break;
                     case 2000:
                         manager.Enqueue("泊地修理20分経過", 0, "", 5);
+                        manager.Flash();
                         PAssert.That(() => hakuchi.Equals(result));
                         break;
                     case 7000:
@@ -239,10 +246,12 @@ namespace KancolleSniffer.Test
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 3);
+                        manager.Flash();
                         PAssert.That(() => ensei.Equals(result));
                         break;
                     case 1000:
                         manager.Enqueue("泊地修理20分経過", 0, "", 2);
+                        manager.Flash();
                         break;
                     case 2000:
                         PAssert.That(() => hakuchi.Equals(result));
@@ -280,10 +289,12 @@ namespace KancolleSniffer.Test
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
+                        manager.Flash();
                         PAssert.That(() => ensei.Equals(result));
                         break;
                     case 2000:
                         manager.Enqueue("入渠終了", 0, "綾波改二", 5);
+                        manager.Flash();
                         PAssert.That(() => nyukyo.Equals(result));
                         break;
                     case 3000:
@@ -321,6 +332,7 @@ namespace KancolleSniffer.Test
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
+                        manager.Flash();
                         PAssert.That(() => expected.Equals(result));
                         break;
                     case 1000:
@@ -359,8 +371,12 @@ namespace KancolleSniffer.Test
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
-                        manager.Enqueue("遠征終了", 2, "海上護衛任務", 10);
+                        manager.Flash();
                         PAssert.That(() => expected1.Equals(result));
+                        break;
+                    case 1000:
+                        manager.Enqueue("遠征終了", 2, "海上護衛任務", 10);
+                        manager.Flash();
                         break;
                     case 2000:
                         PAssert.That(() => expected2.Equals(result));
@@ -374,7 +390,6 @@ namespace KancolleSniffer.Test
                     default:
                         PAssert.That(() => result == null, timer.Elapsed.ToString());
                         break;
-
                 }
                 result = null;
                 timer.ElapseTime(1000);
@@ -399,6 +414,7 @@ namespace KancolleSniffer.Test
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
+                        manager.Flash();
                         PAssert.That(() => expected1.Equals(result));
                         break;
                     case 2000:
@@ -415,7 +431,6 @@ namespace KancolleSniffer.Test
                     default:
                         PAssert.That(() => result == null, timer.Elapsed.ToString());
                         break;
-
                 }
                 result = null;
                 timer.ElapseTime(1000);
@@ -434,7 +449,62 @@ namespace KancolleSniffer.Test
                 new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
             var expected = new Message {Title = "[予告] 遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             manager.Enqueue("遠征終了", 1, "防空射撃演習", 0, true);
+            manager.Flash();
             PAssert.That(() => expected.Equals(result));
+        }
+
+        /// <summary>
+        /// 同時に通知されるタイトルが同じ通知をマージする
+        /// </summary>
+        [TestMethod]
+        public void MergeTwoNotificationsWithSameTitle()
+        {
+            var timer = new MockTimer();
+            Message result = null;
+            var manager =
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+            manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
+            manager.Enqueue("遠征終了", 2, "海上護衛任務", 10);
+            manager.Flash();
+            PAssert.That(() =>
+                new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習\r\n第三艦隊 海上護衛任務", Name = "遠征終了"}.Equals(result));
+        }
+
+        /// <summary>
+        /// マージされた二つの通知の一方を止める
+        /// </summary>
+        [TestMethod]
+        public void StopOneOfMergedNotifications()
+        {
+            var timer = new MockTimer();
+            Message result = null;
+            var manager =
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+            var expected1 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習\r\n第三艦隊 海上護衛任務", Name = "遠征終了"};
+            var expected2 = new Message {Title = "遠征が終わりました", Body = "第三艦隊 海上護衛任務", Name = "遠征終了"};
+            while (true)
+            {
+                switch (timer.Elapsed)
+                {
+                    case 0:
+                        manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
+                        manager.Enqueue("遠征終了", 2, "海上護衛任務", 10);
+                        manager.Flash();
+                        PAssert.That(() => expected1.Equals(result));
+                        break;
+                    case 5000:
+                        manager.StopRepeat("遠征終了", 1);
+                        break;
+                    case 10000:
+                        PAssert.That(() => expected2.Repeat.Equals(result));
+                        return;
+                    default:
+                        PAssert.That(() => result == null, timer.Elapsed.ToString());
+                        break;
+                }
+                result = null;
+                timer.ElapseTime(1000);
+            }
         }
     }
 }

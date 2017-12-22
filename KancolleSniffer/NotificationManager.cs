@@ -64,6 +64,11 @@ namespace KancolleSniffer
             Enqueue(key, 0, subject, repeat);
         }
 
+        public void Flash()
+        {
+            _notificationQueue.Flash();
+        }
+
         public void StopRepeat(string key, bool cont = false)
         {
             _notificationQueue.StopRepeat(key, cont);
@@ -210,7 +215,9 @@ namespace KancolleSniffer
             public Message GenerateMessage(Notification notification)
             {
                 LoadConfig();
-                var format = _config.TryGetValue(notification.Key, out Message value) ? value : _default[notification.Key];
+                var format = _config.TryGetValue(notification.Key, out Message value)
+                    ? value
+                    : _default[notification.Key];
                 var prefix = new[] {"", "[リピート] ", "[継続] ", "[予告] "}[(int)notification.Mode];
                 return new Message
                 {
@@ -333,6 +340,10 @@ namespace KancolleSniffer
             public void Enqueue(Notification notification)
             {
                 _queue.Add(notification);
+            }
+
+            public void Flash()
+            {
                 Ring();
                 if (_queue.Count > 0)
                     _timer.Start();
@@ -377,22 +388,29 @@ namespace KancolleSniffer
                 var now = _timer.Now;
                 if (now - _lastRing < TimeSpan.FromSeconds(2))
                     return;
-                var notification = _queue.FirstOrDefault(n => n.Schedule.CompareTo(now) <= 0 &&
-                                                              !(_suspend && n.Schedule != default));
-                if (notification == null)
+                var first = _queue.FirstOrDefault(n => n.Schedule.CompareTo(now) <= 0 &&
+                                                       !(_suspend && n.Schedule != default));
+                if (first == null)
                     return;
-                var message = _notificationConfig.GenerateMessage(notification);
-                if (notification.Repeat == 0)
+                var message = _notificationConfig.GenerateMessage(first);
+                var similar = _queue.Where(n =>
+                        _notificationConfig.GenerateMessage(n).Name == message.Name && n.Schedule.CompareTo(now) <= 0)
+                    .ToArray();
+                var body = string.Join("\r\n", similar.Select(n => _notificationConfig.GenerateMessage(n).Body));
+                foreach (var n in similar)
                 {
-                    _queue.Remove(notification);
+                    if (n.Repeat == 0)
+                    {
+                        _queue.Remove(n);
+                    }
+                    else
+                    {
+                        n.Schedule = _timer.Now + TimeSpan.FromSeconds(n.Repeat);
+                        if (n.Mode == Mode.Normal)
+                            n.Mode = Mode.Repeat;
+                    }
                 }
-                else
-                {
-                    notification.Schedule = _timer.Now + TimeSpan.FromSeconds(notification.Repeat);
-                    if (notification.Mode == Mode.Normal)
-                        notification.Mode = Mode.Repeat;
-                }
-                _ring(message.Title, message.Body, message.Name);
+                _ring(message.Title, body, message.Name);
                 _lastRing = now;
             }
         }
