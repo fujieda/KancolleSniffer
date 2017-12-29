@@ -53,7 +53,7 @@ namespace KancolleSniffer
 
         public int CombinedFleetType { get; set; }
 
-        public IEnumerable<ItemStatus> AllSlot => SlotEx.Id == 0 ? Slot : Slot.Concat(new[] {SlotEx});
+        public IEnumerable<ItemStatus> AllSlot => SlotEx.Id == 0 ? Slot : new[] {SlotEx}.Concat(Slot);
 
         public ShipStatus()
         {

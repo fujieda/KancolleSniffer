@@ -528,6 +528,9 @@ namespace KancolleSniffer
                 foreach (var enemy in (int[])battle.api_ship_ke_combined)
                     _shipMaster[enemy] = new ShipSpec {Id = enemy};
             }
+            _itemInfo.InjectItems(((int[][])battle.api_eSlot).SelectMany(x => x));
+            if (battle.api_eSlot_combined())
+                _itemInfo.InjectItems(((int[][])battle.api_eSlot_combined).SelectMany(x => x));
         }
 
         private void InjectShips(int deck, int[] nowhps, int[] maxhps, int[][] slots)

@@ -420,7 +420,7 @@ namespace KancolleSniffer
                         break;
                     case QuestEnemyType enemyType:
                         var num = enemyType.CountResult(
-                            _battleInfo.EnemyResultStatus.Concat(_battleInfo.EnemyGuardResultStatus));
+                            _battleInfo.Result.Enemy.Main.Concat(_battleInfo.Result.Enemy.Guard));
                         if (num > 0)
                             AddCount(count, num);
                         break;

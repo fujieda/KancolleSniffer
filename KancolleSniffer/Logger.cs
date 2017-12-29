@@ -298,13 +298,13 @@ namespace KancolleSniffer
 
         private IEnumerable<string> GenerateEnemyShipList()
         {
-            var result = _battleInfo.EnemyResultStatus.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
-            if (_battleInfo.EnemyGuardResultStatus.Length == 0)
+            var result = _battleInfo.Result.Enemy.Main.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
+            if (_battleInfo.Result.Enemy.Guard.Length == 0)
             {
                 return result.Select(s => s.Id == -1 ? "," : $"{s.Name},{s.NowHp}/{s.MaxHp}").ToList();
             }
             var main = result;
-            var guard = _battleInfo.EnemyGuardResultStatus.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
+            var guard = _battleInfo.Result.Enemy.Guard.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
             return main.Zip(guard, (m, g) =>
             {
                 if (m.Id == -1 && g.Id == -1)

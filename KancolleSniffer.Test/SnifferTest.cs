@@ -78,7 +78,7 @@ namespace KancolleSniffer.Test
         {
             var result = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
             PAssert.That(() => expected.SequenceEqual(result), msg);
-            var enemyResult = sniffer.Battle.EnemyResultStatus.Select(s => s.NowHp);
+            var enemyResult = sniffer.Battle.Result.Enemy.Main.Select(s => s.NowHp);
             PAssert.That(() => enemy.SequenceEqual(enemyResult), msg);
         }
 
