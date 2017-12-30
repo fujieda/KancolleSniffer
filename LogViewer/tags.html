@@ -789,22 +789,19 @@ var self = this;
 opts.observable.on("mainTabChanged", function(idx) {
     self.update({mainTab: idx});
     if (self.mainTabs[self.mainTab] === "戦果")
-        self.show();
+        self.updateData();
 });
 
 this.months = [];
 this.selectedIndex = 0;
 
 this.monthChange = function(event) {
-    if (event.target.selectedIndex === 0) {
-        self.show();
+    this.selectedIndex = event.target.selectedIndex;
+    if (this.selectedIndex === 0) {
+        this.updateData();
         return;
     }
-    this.selectedIndex = event.target.selectedIndex;
-    var dt = $('#achivement_table').DataTable();
-    dt.clear();
-    dt.rows.add(this.result[event.target.value]).draw();
-    this.showChart(event.target.value);
+    this.show();
 };
 
 this.calcResult = function(data) {
@@ -951,13 +948,13 @@ this.showChart = function(month) {
     });
 };
 
-this.show = function(data) {
+this.updateData = function(data) {
     if (!data) {
         $('#loading').show();
         $.ajax({
             url: "./戦果.json",
             success: function(data) {
-                self.show(data.data);
+                self.updateData(data.data);
             },
             dataType: 'json',
             cache: false
@@ -974,6 +971,14 @@ this.show = function(data) {
         return -1;
     });
     this.update();
+    this.show();
+};
+
+this.show = function() {
+    if (this.result === undefined){
+        this.updateData();
+        return;
+    }
     var dt = $('#achivement_table').DataTable();
     dt.clear();
     dt.rows.add(this.result[this.months[this.selectedIndex]]).draw();
