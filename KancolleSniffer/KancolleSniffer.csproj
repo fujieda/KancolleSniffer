@@ -64,6 +64,9 @@
     <Compile Include="Ascii85.cs" />
     <Compile Include="BaseAirCoprs.cs" />
     <Compile Include="BattleInfo.cs" />
+    <Compile Include="BattleResultPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ErrorLog.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigDialog.cs">

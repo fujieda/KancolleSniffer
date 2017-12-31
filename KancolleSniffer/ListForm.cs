@@ -52,7 +52,7 @@ namespace KancolleSniffer
 
         public void UpdateList()
         {
-            panelItemHeader.Visible = InItemList || InAntiAir || InMiscText;
+            panelItemHeader.Visible = InItemList || InAntiAir || InBattleResult || InMiscText;
             panelGroupHeader.Visible = InGroupConfig;
             panelRepairHeader.Visible = InRepairList;
             panelFleetHeader.Visible = InFleetInfo;
@@ -66,7 +66,8 @@ namespace KancolleSniffer
             itemTreeView.Visible = itemTreeView.Enabled = InItemList;
             fleetPanel.Visible = fleetPanel.Enabled = InFleetInfo;
             antiAirPanel.Visible = antiAirPanel.Enabled = InAntiAir;
-            airBattleResultPanel.Visible = airBattleResultPanel.Enabled = InAntiAir;
+            airBattleResultPanel.Visible = airBattleResultPanel.Enabled =
+                battleResultPanel.Visible = battleResultPanel.Enabled = InBattleResult;
             richTextBoxMiscText.Visible = InMiscText;
             if (InItemList)
             {
@@ -93,8 +94,13 @@ namespace KancolleSniffer
 
         public void UpdateAirBattleResult()
         {
-            airBattleResultPanel.ShowResultAutomatic = _config.AlwaysShowResultRank;
+            airBattleResultPanel.ShowResultAutomatic = true;
             airBattleResultPanel.SetResult(_sniffer.Battle.AirBattleResults);
+        }
+
+        public void UpdateBattleResult()
+        {
+            battleResultPanel.Update(_sniffer);
         }
 
         private void SetHeaderSortOrder()
@@ -135,6 +141,8 @@ namespace KancolleSniffer
         private bool InFleetInfo => comboBoxGroup.Text == "艦隊";
 
         private bool InAntiAir => comboBoxGroup.Text == "対空";
+
+        private bool InBattleResult => comboBoxGroup.Text == "戦況";
 
         private bool InMiscText => comboBoxGroup.Text == "情報";
 
@@ -224,7 +232,7 @@ namespace KancolleSniffer
 
         private void ShipListForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'X', 'Y', 'I'},
+            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'X', 'Y', 'S', 'I'},
                 x => x == char.ToUpper(e.KeyChar));
             if (g == -1)
                 return;

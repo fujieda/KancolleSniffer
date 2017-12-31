@@ -622,6 +622,7 @@ namespace KancolleSniffer
                 ShowResultRank();
             if (_sniffer.Battle.BattleState == BattleState.Day)
                 _listForm.UpdateAirBattleResult();
+            _listForm.UpdateBattleResult();
         }
 
         private void ResetBattleInfo()

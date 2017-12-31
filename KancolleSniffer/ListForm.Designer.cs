@@ -77,6 +77,7 @@ namespace KancolleSniffer
             this.labelFleet2 = new System.Windows.Forms.Label();
             this.labelFleet1 = new System.Windows.Forms.Label();
             this.airBattleResultPanel = new KancolleSniffer.AirBattleResultPanel();
+            this.battleResultPanel = new KancolleSniffer.BattleResultPanel();
             this.antiAirPanel = new KancolleSniffer.AntiAirPanel();
             this.fleetPanel = new KancolleSniffer.FleetPanel();
             this.itemTreeView = new KancolleSniffer.ItemTreeView();
@@ -253,6 +254,7 @@ namespace KancolleSniffer
             "装備",
             "艦隊",
             "対空",
+            "戦況",
             "情報"});
             this.comboBoxGroup.Location = new System.Drawing.Point(6, 4);
             this.comboBoxGroup.Name = "comboBoxGroup";
@@ -411,15 +413,26 @@ namespace KancolleSniffer
             this.airBattleResultPanel.Size = new System.Drawing.Size(238, 51);
             this.airBattleResultPanel.TabIndex = 18;
             // 
+            // battleResultPanel
+            // 
+            this.battleResultPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.battleResultPanel.AutoScroll = true;
+            this.battleResultPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.battleResultPanel.Location = new System.Drawing.Point(6, 73);
+            this.battleResultPanel.Name = "battleResultPanel";
+            this.battleResultPanel.Size = new System.Drawing.Size(238, 213);
+            this.battleResultPanel.TabIndex = 0;
+            // 
             // antiAirPanel
             // 
             this.antiAirPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.antiAirPanel.AutoScroll = true;
             this.antiAirPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.antiAirPanel.Location = new System.Drawing.Point(6, 73);
+            this.antiAirPanel.Location = new System.Drawing.Point(6, 23);
             this.antiAirPanel.Name = "antiAirPanel";
-            this.antiAirPanel.Size = new System.Drawing.Size(238, 213);
+            this.antiAirPanel.Size = new System.Drawing.Size(238, 263);
             this.antiAirPanel.TabIndex = 17;
             // 
             // fleetPanel
@@ -462,6 +475,7 @@ namespace KancolleSniffer
             this.ClientSize = new System.Drawing.Size(250, 292);
             this.Controls.Add(this.panelFleetHeader);
             this.Controls.Add(this.airBattleResultPanel);
+            this.Controls.Add(this.battleResultPanel);
             this.Controls.Add(this.antiAirPanel);
             this.Controls.Add(this.panelItemHeader);
             this.Controls.Add(this.panelRepairHeader);
@@ -536,5 +550,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFleet1;
         private AntiAirPanel antiAirPanel;
         private AirBattleResultPanel airBattleResultPanel;
+        private BattleResultPanel battleResultPanel;
     }
 }
