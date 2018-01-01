@@ -853,6 +853,7 @@ this.calcResult = function(data) {
                 if (endOfYear.isSameOrBefore(date))
                     endOfYear.add(1, 'year');
                 yearExp = lastExp === -1 ? exp : lastExp;
+                monthEo = 0;
             }
             if (isNewMonth) {
                 endOfMonth = date.clone().endOf('month');
