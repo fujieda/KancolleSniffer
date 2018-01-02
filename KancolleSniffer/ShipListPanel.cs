@@ -222,9 +222,9 @@ namespace KancolleSniffer
             ScrollBar.Minimum = 0;
             var lines = Max(1, Height / (int)Round(LineHeight * ShipLabel.ScaleFactor.Height));
             var max = _shipList.Length - lines;
-            ScrollBar.LargeChange = Min(lines, max);
-            ScrollBar.Maximum =
-                Max(0, max + ScrollBar.LargeChange - 1); // ScrollBarを最大まで動かしてもmaxには届かない
+            var largeChange = Min(lines, max);
+            ScrollBar.LargeChange = largeChange;
+            ScrollBar.Maximum = Max(0, max + largeChange - 1); // ScrollBarを最大まで動かしてもmaxには届かない
             ScrollBar.Value = Min(ScrollBar.Value, max);
         }
 
