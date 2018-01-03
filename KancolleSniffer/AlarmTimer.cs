@@ -62,8 +62,7 @@ namespace KancolleSniffer
 
         public bool CheckAlarm(DateTime prev, DateTime now)
         {
-            return EndTime != DateTime.MinValue && prev != DateTime.MinValue &&
-                   prev < EndTime -_spare && EndTime - _spare <= now;
+            return EndTime != DateTime.MinValue && prev < EndTime - _spare && EndTime - _spare <= now;
         }
 
         public string ToString(DateTime now, bool endTime = false)
@@ -76,5 +75,4 @@ namespace KancolleSniffer
             return $"{(int)rest.TotalHours:d2}:" + rest.ToString(@"mm\:ss", CultureInfo.InvariantCulture);
         }
     }
-
 }

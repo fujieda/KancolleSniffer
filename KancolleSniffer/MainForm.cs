@@ -43,6 +43,7 @@ namespace KancolleSniffer
         private readonly ListForm _listForm;
         private readonly NotificationManager _notificationManager;
         private bool _started;
+        private bool _timerEnabled;
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
 
@@ -413,7 +414,7 @@ namespace KancolleSniffer
 
         private void timerMain_Tick(object sender, EventArgs e)
         {
-            if (_started)
+            if (_timerEnabled)
             {
                 try
                 {
@@ -730,6 +731,7 @@ namespace KancolleSniffer
             UpdateCondTimers();
             UpdateAkashiTimer();
             _notificationManager.Flash();
+            _timerEnabled = true;
         }
 
         private void CheckAlarm(string key, AlarmTimer timer, int fleet, string subject)

@@ -174,7 +174,7 @@ namespace KancolleSniffer
             {
                 _itemInfo.InspectSlotItem(data.api_slot_item, true);
                 _dockInfo.InspectKDock(data.api_kdock);
-                return Update.Timer;
+                return Update.None;
             }
             if (url.EndsWith("api_get_member/basic"))
             {
