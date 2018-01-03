@@ -815,11 +815,11 @@ namespace KancolleSniffer
         {
             var akashi = _sniffer.AkashiTimer;
             var span = akashi.PresetDeckTimer;
-            var color = span == TimeSpan.Zero && akashi.CheckPresetReparing() ? CUDColor.Red : DefaultForeColor;
+            var color = span == TimeSpan.Zero && akashi.CheckPresetRepairing() ? CUDColor.Red : DefaultForeColor;
             var text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
             labelAkashiRepairTimer.ForeColor = color;
             labelAkashiRepairTimer.Text = text;
-            if (akashi.CheckPresetReparing() && !akashi.CheckReparing(_currentFleet))
+            if (akashi.CheckPresetRepairing() && !akashi.CheckRepairing(_currentFleet))
             {
                 labelPresetAkashiTimer.ForeColor = color;
                 labelPresetAkashiTimer.Text = text;
@@ -840,7 +840,7 @@ namespace KancolleSniffer
                 _notificationManager.StopRepeat("泊地修理");
                 return;
             }
-            if (!akashi.CheckReparing() && !(akashi.CheckPresetReparing() && _config.UsePresetAkashi))
+            if (!akashi.CheckRepairing() && !(akashi.CheckPresetRepairing() && _config.UsePresetAkashi))
             {
                 _notificationManager.StopRepeat("泊地修理");
                 return;

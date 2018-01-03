@@ -235,11 +235,11 @@ namespace KancolleSniffer
             }
         }
 
-        public bool CheckReparing(int fleet) => GetTimers(fleet).Any(r => r.Span != TimeSpan.MinValue);
+        public bool CheckRepairing(int fleet) => GetTimers(fleet).Any(r => r.Span != TimeSpan.MinValue);
 
-        public bool CheckReparing() => Enumerable.Range(0, ShipInfo.FleetCount).Any(CheckReparing);
+        public bool CheckRepairing() => Enumerable.Range(0, ShipInfo.FleetCount).Any(CheckRepairing);
 
-        public bool CheckPresetReparing()
+        public bool CheckPresetRepairing()
             => _presetDeck.Decks.Where(deck => deck != null)
                 .Any(deck => RepairTarget(deck).Any(s => s.NowHp < s.MaxHp));
 
