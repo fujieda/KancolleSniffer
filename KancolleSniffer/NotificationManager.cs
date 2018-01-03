@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace KancolleSniffer
 {
@@ -42,9 +41,9 @@ namespace KancolleSniffer
             public DateTime Schedule { get; set; }
         }
 
-        public NotificationManager(Action<string, string, string> alarm, ITimer timer = null)
+        public NotificationManager(Action<string, string, string> alarm, Func<DateTime> nowFunc = null)
         {
-            _notificationQueue = new NotificationQueue(alarm, timer);
+            _notificationQueue = new NotificationQueue(alarm, nowFunc);
         }
 
         public void Enqueue(string key, int fleet, string subject, int repeat = 0, bool preliminary = false)
@@ -271,70 +270,20 @@ namespace KancolleSniffer
             }
         }
 
-        public interface ITimer
-        {
-            int Interval { get; set; }
-            bool Enabled { get; set; }
-            event EventHandler Tick;
-            void Start();
-            void Stop();
-            DateTime Now { get; }
-        }
-
-        private class TimerWrapper : ITimer
-        {
-            private readonly Timer _timer = new Timer();
-
-            public int Interval
-            {
-                get => _timer.Interval;
-                set => _timer.Interval = value;
-            }
-
-            public bool Enabled
-            {
-                get => _timer.Enabled;
-                set => _timer.Enabled = value;
-            }
-
-            public event EventHandler Tick
-            {
-                add => _timer.Tick += value;
-                remove => _timer.Tick -= value;
-            }
-
-            public void Start() => _timer.Start();
-
-            public void Stop() => _timer.Stop();
-
-            public DateTime Now => DateTime.Now;
-        }
-
         private class NotificationQueue
         {
             private readonly Action<string, string, string> _alarm;
             private readonly List<Notification> _queue = new List<Notification>();
-            private readonly ITimer _timer;
+            private readonly Func<DateTime> _nowFunc = () => DateTime.Now;
             private readonly NotificationConfig _notificationConfig = new NotificationConfig();
             private DateTime _lastAlarm;
             private bool _suspend;
 
-            public NotificationQueue(Action<string, string, string> alarm, ITimer timer = null)
+            public NotificationQueue(Action<string, string, string> alarm, Func<DateTime> nowFunc = null)
             {
                 _alarm = alarm;
-                _timer = timer ?? new TimerWrapper();
-                _timer.Interval = 1000;
-                _timer.Tick += TimerOnTick;
-            }
-
-            private void TimerOnTick(object obj, EventArgs e)
-            {
-                if (_queue.Count == 0)
-                {
-                    _timer.Stop();
-                    return;
-                }
-                Alarm();
+                if (nowFunc != null)
+                    _nowFunc = nowFunc;
             }
 
             public void Enqueue(Notification notification)
@@ -345,8 +294,6 @@ namespace KancolleSniffer
             public void Flash()
             {
                 Alarm();
-                if (_queue.Count > 0)
-                    _timer.Start();
             }
 
             public void StopRepeat(string key, bool cont = false)
@@ -385,7 +332,7 @@ namespace KancolleSniffer
 
             private void Alarm()
             {
-                var now = _timer.Now;
+                var now = _nowFunc();
                 if (now - _lastAlarm < TimeSpan.FromSeconds(2))
                     return;
                 var first = _queue.FirstOrDefault(n => n.Schedule.CompareTo(now) <= 0 &&
@@ -405,7 +352,7 @@ namespace KancolleSniffer
                     }
                     else
                     {
-                        n.Schedule = _timer.Now + TimeSpan.FromSeconds(n.Repeat);
+                        n.Schedule = now + TimeSpan.FromSeconds(n.Repeat);
                         if (n.Mode == Mode.Normal)
                             n.Mode = Mode.Repeat;
                     }

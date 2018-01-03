@@ -21,63 +21,15 @@ namespace KancolleSniffer.Test
     [TestClass]
     public class NotificationManagerTest
     {
-        private class MockTimer : NotificationManager.ITimer
+        private class TimeProvider
         {
-            private int _elapsed, _totalElapsed;
-            private bool _enabled;
-            private DateTime _start = new DateTime(2017, 11, 1);
-            private DateTime _now;
+            private DateTime _now = new DateTime(2017, 11, 1);
 
-            public MockTimer()
+            public DateTime GetNow()
             {
-                _now = _start;
-            }
-
-            public int Interval { get; set; }
-
-            public bool Enabled
-            {
-                get => _enabled;
-                set
-                {
-                    _enabled = value;
-                    _start += TimeSpan.FromMilliseconds(_elapsed);
-                    _elapsed = 0;
-                }
-            }
-
-            public event EventHandler Tick;
-
-            public void Start()
-            {
-                Enabled = true;
-            }
-
-            public void Stop()
-            {
-                Enabled = false;
-            }
-
-            public DateTime Now => _now;
-
-            public int Elapsed => _totalElapsed;
-
-            public void ElapseTime(int millis)
-            {
-                _totalElapsed += millis;
-                if (!Enabled)
-                {
-                    _now = _start += TimeSpan.FromMilliseconds(millis);
-                    return;
-                }
-                var after = _elapsed + millis;
-                for (var n = _elapsed / Interval; n < after / Interval; n++)
-                {
-                    _now = _start + TimeSpan.FromMilliseconds((n + 1) * Interval);
-                    Tick?.Invoke(this, EventArgs.Empty);
-                }
-                _elapsed = after;
-                _now = _start + TimeSpan.FromMilliseconds(_elapsed);
+                    var now = _now;
+                    _now += TimeSpan.FromSeconds(1);
+                    return now;
             }
         }
 
@@ -100,10 +52,10 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void SingleNotification()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             manager.Enqueue("遠征終了", 1, "防空射撃演習");
             manager.Flash();
             PAssert.That(() => new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"}.Equals(result));
@@ -115,21 +67,19 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void TwoNotificationAtSameTime()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             manager.Enqueue("遠征終了", 1, "防空射撃演習");
             manager.Enqueue("疲労回復49", 1, "cond49");
             manager.Flash();
             PAssert.That(() => new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"}.Equals(result));
             result = null;
-            timer.ElapseTime(1000);
+            manager.Flash();
             PAssert.That(() => result == null);
-            timer.ElapseTime(1000);
+            manager.Flash();
             PAssert.That(() => new Message {Title = "疲労が回復しました", Body = "第二艦隊", Name = "疲労回復"}.Equals(result));
-            timer.ElapseTime(2000);
-            PAssert.That(() => !timer.Enabled);
         }
 
         /// <summary>
@@ -138,17 +88,16 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void TwoNotification1SecDelay()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             manager.Enqueue("建造完了", 0, "");
             manager.Flash();
             PAssert.That(() => new Message {Title = "建造が終わりました", Body = "第一ドック", Name = "建造完了"}.Equals(result));
-            timer.ElapseTime(1000);
+            manager.Flash();
             manager.Enqueue("建造完了", 1, "");
             manager.Flash();
-            timer.ElapseTime(1000);
             PAssert.That(() => new Message {Title = "建造が終わりました", Body = "第二ドック", Name = "建造完了"}.Equals(result));
         }
 
@@ -158,14 +107,15 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void SingleRepeatableNotification()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
+            var elapsed = 0;
             while (true)
             {
-                switch (timer.Elapsed)
+                switch (elapsed)
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 2);
@@ -173,17 +123,20 @@ namespace KancolleSniffer.Test
                         PAssert.That(() => expected.Equals(result));
                         break;
                     case 2000:
+                        manager.Flash();
                         PAssert.That(() => expected.Repeat.Equals(result));
                         break;
                     case 4000:
+                        manager.Flash();
                         PAssert.That(() => expected.Repeat.Equals(result));
                         return;
                     default:
-                        PAssert.That(() => result == null, timer.Elapsed.ToString());
+                        manager.Flash();
+                        PAssert.That(() => result == null, elapsed.ToString());
                         break;
                 }
                 result = null;
-                timer.ElapseTime(1000);
+                elapsed += 1000;
             }
         }
 
@@ -193,15 +146,16 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void TwoRepeatableNotofication()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var hakuchi = new Message {Title = "泊地修理 第一艦隊", Body = "20分経過しました。", Name = "泊地修理20分経過"};
+            var elapsed = 0;
             while (true)
             {
-                switch (timer.Elapsed)
+                switch (elapsed)
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
@@ -214,17 +168,20 @@ namespace KancolleSniffer.Test
                         PAssert.That(() => hakuchi.Equals(result));
                         break;
                     case 7000:
+                        manager.Flash();
                         PAssert.That(() => hakuchi.Repeat.Equals(result), "泊地修理2回目");
                         break;
                     case 10000:
+                        manager.Flash();
                         PAssert.That(() => ensei.Repeat.Equals(result), "遠征終了2回目");
                         return;
                     default:
-                        PAssert.That(() => result == null, timer.Elapsed.ToString());
+                        manager.Flash();
+                        PAssert.That(() => result == null, elapsed.ToString());
                         break;
                 }
                 result = null;
-                timer.ElapseTime(1000);
+                elapsed += 1000;
             }
         }
 
@@ -234,15 +191,16 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void TwoRepeatableNotification1SecDelay()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var hakuchi = new Message {Title = "泊地修理 第一艦隊", Body = "20分経過しました。", Name = "泊地修理20分経過"};
+            var elapsed = 0;
             while (true)
             {
-                switch (timer.Elapsed)
+                switch (elapsed)
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 3);
@@ -254,20 +212,24 @@ namespace KancolleSniffer.Test
                         manager.Flash();
                         break;
                     case 2000:
+                        manager.Flash();
                         PAssert.That(() => hakuchi.Equals(result));
                         break;
                     case 4000:
+                        manager.Flash();
                         PAssert.That(() => ensei.Repeat.Equals(result), "遠征終了2回目");
                         break;
                     case 6000:
+                        manager.Flash();
                         PAssert.That(() => hakuchi.Repeat.Equals(result), "泊地修理2回目");
                         return;
                     default:
-                        PAssert.That(() => result == null, timer.Elapsed.ToString());
+                        manager.Flash();
+                        PAssert.That(() => result == null, elapsed.ToString());
                         break;
                 }
                 result = null;
-                timer.ElapseTime(1000);
+                elapsed += 1000;
             }
         }
 
@@ -277,15 +239,16 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void RemoveRepeatableNotification()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var nyukyo = new Message {Title = "入渠が終わりました", Body = "第一ドック 綾波改二", Name = "入渠終了"};
+            var elapsed = 0;
             while (true)
             {
-                switch (timer.Elapsed)
+                switch (elapsed)
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
@@ -299,19 +262,23 @@ namespace KancolleSniffer.Test
                         break;
                     case 3000:
                         manager.StopRepeat("入渠終了");
+                        manager.Flash();
                         break;
                     case 7000:
+                        manager.Flash();
                         PAssert.That(() => result == null, "入渠終了2回目はない");
                         break;
                     case 10000:
+                        manager.Flash();
                         PAssert.That(() => ensei.Repeat.Equals(result), "遠征終了2回目");
                         return;
                     default:
-                        PAssert.That(() => result == null, timer.Elapsed.ToString());
+                        manager.Flash();
+                        PAssert.That(() => result == null, elapsed.ToString());
                         break;
                 }
                 result = null;
-                timer.ElapseTime(1000);
+                elapsed += 1000;
             }
         }
 
@@ -321,14 +288,15 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void SuspendRepeat()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
+            var elapsed = 0;
             while (true)
             {
-                switch (timer.Elapsed)
+                switch (elapsed)
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
@@ -336,20 +304,24 @@ namespace KancolleSniffer.Test
                         PAssert.That(() => expected.Equals(result));
                         break;
                     case 1000:
+                        manager.Flash();
                         manager.SuspendRepeat();
                         break;
                     case 11000:
+                        manager.Flash();
                         manager.ResumeRepeat();
                         break;
                     case 12000:
+                        manager.Flash();
                         PAssert.That(() => expected.Repeat.Equals(result));
                         return;
                     default:
-                        PAssert.That(() => result == null, timer.Elapsed.ToString());
+                        manager.Flash();
+                        PAssert.That(() => result == null, elapsed.ToString());
                         break;
                 }
                 result = null;
-                timer.ElapseTime(1000);
+                elapsed += 1000;
             }
         }
 
@@ -359,15 +331,16 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void StopSpecificRepeatingNotification()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected1 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var expected2 = new Message {Title = "遠征が終わりました", Body = "第三艦隊 海上護衛任務", Name = "遠征終了"};
+            var elapsed = 0;
             while (true)
             {
-                switch (timer.Elapsed)
+                switch (elapsed)
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
@@ -379,20 +352,24 @@ namespace KancolleSniffer.Test
                         manager.Flash();
                         break;
                     case 2000:
+                        manager.Flash();
                         PAssert.That(() => expected2.Equals(result));
                         break;
                     case 5000:
+                        manager.Flash();
                         manager.StopRepeat("遠征終了", 1);
                         break;
                     case 12000:
+                        manager.Flash();
                         PAssert.That(() => expected2.Repeat.Equals(result));
                         return;
                     default:
-                        PAssert.That(() => result == null, timer.Elapsed.ToString());
+                        manager.Flash();
+                        PAssert.That(() => result == null, elapsed.ToString());
                         break;
                 }
                 result = null;
-                timer.ElapseTime(1000);
+                elapsed += 1000;
             }
         }
 
@@ -402,15 +379,16 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void ContinueRepeatWithoutSubject()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected1 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var expected2 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 ", Name = "遠征終了"};
+            var elapsed = 0;
             while (true)
             {
-                switch (timer.Elapsed)
+                switch (elapsed)
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
@@ -418,22 +396,27 @@ namespace KancolleSniffer.Test
                         PAssert.That(() => expected1.Equals(result));
                         break;
                     case 2000:
+                        manager.Flash();
                         manager.StopRepeat("遠征終了", true);
                         break;
                     case 10000:
+                        manager.Flash();
                         PAssert.That(() => expected2.Cont.Equals(result));
                         break;
                     case 11000:
+                        manager.Flash();
                         manager.StopRepeat("遠征終了", 1);
                         break;
                     case 21000:
+                        manager.Flash();
                         return;
                     default:
-                        PAssert.That(() => result == null, timer.Elapsed.ToString());
+                        manager.Flash();
+                        PAssert.That(() => result == null, elapsed.ToString());
                         break;
                 }
                 result = null;
-                timer.ElapseTime(1000);
+                elapsed += 1000;
             }
         }
 
@@ -443,10 +426,10 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void PreliminaryNotification()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected = new Message {Title = "[予告] 遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             manager.Enqueue("遠征終了", 1, "防空射撃演習", 0, true);
             manager.Flash();
@@ -459,10 +442,10 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void MergeTwoNotificationsWithSameTitle()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
             manager.Enqueue("遠征終了", 2, "海上護衛任務", 10);
             manager.Flash();
@@ -476,15 +459,16 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void StopOneOfMergedNotifications()
         {
-            var timer = new MockTimer();
+            var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, timer);
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected1 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習\r\n第三艦隊 海上護衛任務", Name = "遠征終了"};
             var expected2 = new Message {Title = "遠征が終わりました", Body = "第三艦隊 海上護衛任務", Name = "遠征終了"};
+            var elapsed = 0;
             while (true)
             {
-                switch (timer.Elapsed)
+                switch (elapsed)
                 {
                     case 0:
                         manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
@@ -493,17 +477,20 @@ namespace KancolleSniffer.Test
                         PAssert.That(() => expected1.Equals(result));
                         break;
                     case 5000:
+                        manager.Flash();
                         manager.StopRepeat("遠征終了", 1);
                         break;
                     case 10000:
+                        manager.Flash();
                         PAssert.That(() => expected2.Repeat.Equals(result));
                         return;
                     default:
-                        PAssert.That(() => result == null, timer.Elapsed.ToString());
+                        manager.Flash();
+                        PAssert.That(() => result == null, elapsed.ToString());
                         break;
                 }
                 result = null;
-                timer.ElapseTime(1000);
+                elapsed += 1000;
             }
         }
     }
