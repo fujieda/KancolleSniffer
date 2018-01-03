@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -37,6 +38,7 @@ namespace KancolleSniffer
         public StageResult Stage2 { get; set; } = new StageResult();
     }
 
+    [DesignerCategory("Code")]
     public class AirBattleResultPanel : Panel
     {
         private readonly Label _phaseName;
@@ -80,7 +82,7 @@ namespace KancolleSniffer
                     _resultLabels[stage][fe] = new Label[2];
                     Controls.Add(_resultLabels[stage][fe][1] = new Label
                     {
-                        Location = new Point(left + 32 + 57 * fe, top + 14 * stage),
+                        Location = new Point(left + 34 + 57 * fe, top + 14 * stage),
                         Size = new Size(24, 12),
                         TextAlign = ContentAlignment.TopLeft
                     });
