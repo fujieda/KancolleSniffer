@@ -75,7 +75,7 @@ namespace KancolleSniffer
             panelRepairList.CreateLabels(panelRepairList_Click);
             labelPresetAkashiTimer.BackColor = ShipLabels.ColumnColors[1];
             _listForm = new ListForm(_sniffer, _config) {Owner = this};
-            _notificationManager = new NotificationManager(Ring);
+            _notificationManager = new NotificationManager(Alarm);
             try
             {
                 _config.Load();
@@ -492,11 +492,11 @@ namespace KancolleSniffer
             var item = _sniffer.Item;
             labelNumOfShips.Text = $"{item.NowShips:D}/{item.MaxShips:D}";
             labelNumOfShips.ForeColor = item.TooManyShips ? CUDColor.Red : Color.Black;
-            if (item.RingShips)
+            if (item.AlarmShips)
             {
                 var message = $"残り{_sniffer.Item.MaxShips - _sniffer.Item.NowShips:D}隻";
                 _notificationManager.Enqueue("艦娘数超過", message);
-                item.RingShips = false;
+                item.AlarmShips = false;
             }
         }
 
@@ -505,11 +505,11 @@ namespace KancolleSniffer
             var item = _sniffer.Item;
             labelNumOfEquips.Text = $"{item.NowEquips:D}/{item.MaxEquips:D}";
             labelNumOfEquips.ForeColor = item.TooManyEquips ? CUDColor.Red : Color.Black;
-            if (item.RingEquips)
+            if (item.AlarmEquips)
             {
                 var message = $"残り{_sniffer.Item.MaxEquips - _sniffer.Item.NowEquips:D}個";
                 _notificationManager.Enqueue("装備数超過", message);
-                item.RingEquips = false;
+                item.AlarmEquips = false;
             }
         }
 
@@ -711,13 +711,13 @@ namespace KancolleSniffer
                 var entry = _sniffer.Missions[i];
                 SetTimerColor(mission[i], entry.Timer, _now);
                 mission[i].Text = entry.Timer.ToString(_now, _missionFinishTimeMode);
-                CheckRing("遠征終了", entry.Timer, i + 1, entry.Name);
+                CheckAlarm("遠征終了", entry.Timer, i + 1, entry.Name);
             }
             for (var i = 0; i < _sniffer.NDock.Length; i++)
             {
                 var entry = _sniffer.NDock[i];
                 _shipLabels.SetNDockTimer(i, entry.Timer, _now, _ndockFinishTimeMode);
-                CheckRing("入渠終了", entry.Timer, i, entry.Name);
+                CheckAlarm("入渠終了", entry.Timer, i, entry.Name);
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
             for (var i = 0; i < kdock.Length; i++)
@@ -725,16 +725,16 @@ namespace KancolleSniffer
                 var timer = _sniffer.KDock[i];
                 SetTimerColor(kdock[i], timer, _now);
                 kdock[i].Text = timer.ToString(_now);
-                CheckRing("建造完了", timer, 0, $"第{i + 1:D}ドック");
+                CheckAlarm("建造完了", timer, 0, $"第{i + 1:D}ドック");
             }
             UpdateCondTimers();
             UpdateAkashiTimer();
             _notificationManager.Flash();
         }
 
-        private void CheckRing(string key, RingTimer timer, int fleet, string subject)
+        private void CheckAlarm(string key, AlarmTimer timer, int fleet, string subject)
         {
-            if (timer.CheckRing(_prev, _now))
+            if (timer.CheckAlarm(_prev, _now))
             {
                 SetNotification(key, fleet, subject);
                 return;
@@ -742,11 +742,11 @@ namespace KancolleSniffer
             var pre = TimeSpan.FromSeconds(_config.Notifications[key].PreliminaryPeriod);
             if (pre == TimeSpan.Zero)
                 return;
-            if (timer.CheckRing(_prev + pre, _now + pre))
+            if (timer.CheckAlarm(_prev + pre, _now + pre))
                 SetPreNotification(key, fleet, subject);
         }
 
-        private void SetTimerColor(Label label, RingTimer timer, DateTime now)
+        private void SetTimerColor(Label label, AlarmTimer timer, DateTime now)
         {
             label.ForeColor = timer.IsFinished(now) ? CUDColor.Red : Color.Black;
         }
@@ -933,7 +933,7 @@ namespace KancolleSniffer
             }
         }
 
-        private void Ring(string balloonTitle, string balloonMessage, string name)
+        private void Alarm(string balloonTitle, string balloonMessage, string name)
         {
             var flags = _config.Notifications[name].Flags;
             var effective = _config.NotificationFlags & _config.Notifications[name].Flags;

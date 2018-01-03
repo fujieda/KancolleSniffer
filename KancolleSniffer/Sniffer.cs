@@ -14,7 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace KancolleSniffer
@@ -536,7 +535,7 @@ namespace KancolleSniffer
 
         public NameAndTimer[] NDock => _dockInfo.NDock;
 
-        public RingTimer[] KDock => _dockInfo.KDock;
+        public AlarmTimer[] KDock => _dockInfo.KDock;
 
         public ItemInfo Item => _itemInfo;
 
@@ -636,66 +635,6 @@ namespace KancolleSniffer
         public void FlashLog()
         {
             _logger.FlashLog();
-        }
-    }
-
-    public class NameAndTimer
-    {
-        public string Name { get; set; }
-        public RingTimer Timer { get; set; }
-
-        public NameAndTimer()
-        {
-            Timer = new RingTimer();
-        }
-    }
-
-    public class RingTimer
-    {
-        private readonly TimeSpan _spare;
-        private bool _finished;
-
-        public bool IsFinished(DateTime now) => EndTime != DateTime.MinValue && EndTime - now < _spare || _finished;
-
-        public DateTime EndTime { get; private set; }
-
-        public RingTimer(int spare = 60)
-        {
-            _spare = TimeSpan.FromSeconds(spare);
-        }
-
-        public void SetEndTime(double time)
-        {
-            SetEndTime((int)time == 0
-                ? DateTime.MinValue
-                : new DateTime(1970, 1, 1).ToLocalTime().AddSeconds(time / 1000));
-        }
-
-        public void SetEndTime(DateTime time)
-        {
-            EndTime = time;
-            _finished = false;
-        }
-
-        public void Finish()
-        {
-            _finished = true;
-        }
-
-        public bool CheckRing(DateTime prev, DateTime now)
-        {
-            return EndTime != DateTime.MinValue && prev != DateTime.MinValue &&
-                       prev < EndTime -_spare && EndTime - _spare <= now;
-        }
-
-        public string ToString(DateTime now, bool endTime = false)
-        {
-            if (EndTime == DateTime.MinValue && !_finished)
-                return "";
-            if (endTime)
-                return EndTime.ToString(@"dd\ HH\:mm", CultureInfo.InvariantCulture);
-            var rest = _finished || EndTime - now < TimeSpan.Zero ? TimeSpan.Zero : EndTime - now;
-            return $"{(int)rest.TotalHours:d2}:" + rest.ToString(@"mm\:ss", CultureInfo.InvariantCulture);
         }
     }
 }

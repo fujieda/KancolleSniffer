@@ -347,7 +347,7 @@ namespace KancolleSniffer
                 _ndockLabels[i][1].SetName(ndock[i].Name, ShipNameWidth.NDock);
         }
 
-        public void SetNDockTimer(int dock, RingTimer timer, DateTime now, bool finishTime)
+        public void SetNDockTimer(int dock, AlarmTimer timer, DateTime now, bool finishTime)
         {
             var label = _ndockLabels[dock][0];
             label.ForeColor = timer.IsFinished(now) ? CUDColor.Red : Color.Black;

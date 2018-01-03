@@ -42,9 +42,9 @@ namespace KancolleSniffer
             public DateTime Schedule { get; set; }
         }
 
-        public NotificationManager(Action<string, string, string> ring, ITimer timer = null)
+        public NotificationManager(Action<string, string, string> alarm, ITimer timer = null)
         {
-            _notificationQueue = new NotificationQueue(ring, timer);
+            _notificationQueue = new NotificationQueue(alarm, timer);
         }
 
         public void Enqueue(string key, int fleet, string subject, int repeat = 0, bool preliminary = false)
@@ -312,16 +312,16 @@ namespace KancolleSniffer
 
         private class NotificationQueue
         {
-            private readonly Action<string, string, string> _ring;
+            private readonly Action<string, string, string> _alarm;
             private readonly List<Notification> _queue = new List<Notification>();
             private readonly ITimer _timer;
             private readonly NotificationConfig _notificationConfig = new NotificationConfig();
-            private DateTime _lastRing;
+            private DateTime _lastAlarm;
             private bool _suspend;
 
-            public NotificationQueue(Action<string, string, string> ring, ITimer timer = null)
+            public NotificationQueue(Action<string, string, string> alarm, ITimer timer = null)
             {
-                _ring = ring;
+                _alarm = alarm;
                 _timer = timer ?? new TimerWrapper();
                 _timer.Interval = 1000;
                 _timer.Tick += TimerOnTick;
@@ -334,7 +334,7 @@ namespace KancolleSniffer
                     _timer.Stop();
                     return;
                 }
-                Ring();
+                Alarm();
             }
 
             public void Enqueue(Notification notification)
@@ -344,7 +344,7 @@ namespace KancolleSniffer
 
             public void Flash()
             {
-                Ring();
+                Alarm();
                 if (_queue.Count > 0)
                     _timer.Start();
             }
@@ -383,10 +383,10 @@ namespace KancolleSniffer
                 _suspend = false;
             }
 
-            private void Ring()
+            private void Alarm()
             {
                 var now = _timer.Now;
-                if (now - _lastRing < TimeSpan.FromSeconds(2))
+                if (now - _lastAlarm < TimeSpan.FromSeconds(2))
                     return;
                 var first = _queue.FirstOrDefault(n => n.Schedule.CompareTo(now) <= 0 &&
                                                        !(_suspend && n.Schedule != default));
@@ -410,8 +410,8 @@ namespace KancolleSniffer
                             n.Mode = Mode.Repeat;
                     }
                 }
-                _ring(message.Title, body, message.Name);
-                _lastRing = now;
+                _alarm(message.Title, body, message.Name);
+                _lastAlarm = now;
             }
         }
     }

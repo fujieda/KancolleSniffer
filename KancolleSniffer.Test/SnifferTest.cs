@@ -491,10 +491,10 @@ namespace KancolleSniffer.Test
         {
             var sniffer1 = new Sniffer();
             SniffLogFile(sniffer1, "item_count_001");
-            PAssert.That(() => sniffer1.Item.RingEquips, "出撃から母港に戻ったとき");
+            PAssert.That(() => sniffer1.Item.AlarmEquips, "出撃から母港に戻ったとき");
             var sniffer2 = new Sniffer();
             SniffLogFile(sniffer2, "item_count_002");
-            PAssert.That(() => sniffer2.Item.RingEquips, "ログインしたとき");
+            PAssert.That(() => sniffer2.Item.AlarmEquips, "ログインしたとき");
         }
 
         /// <summary>

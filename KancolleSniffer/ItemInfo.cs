@@ -563,10 +563,10 @@ namespace KancolleSniffer
 
         public int MaxShips { get; private set; }
         public int MarginShips { get; set; }
-        public bool RingShips { get; set; }
+        public bool AlarmShips { get; set; }
         public int MaxEquips { get; private set; }
         public int MarginEquips { get; set; }
-        public bool RingEquips { get; set; }
+        public bool AlarmEquips { get; set; }
 
         public int NowShips
         {
@@ -576,7 +576,7 @@ namespace KancolleSniffer
                 if (MaxShips != 0)
                 {
                     var limit = MaxShips - MarginShips;
-                    RingShips = RingShips || _nowShips < limit && value >= limit;
+                    AlarmShips = AlarmShips || _nowShips < limit && value >= limit;
                 }
                 _nowShips = value;
             }
@@ -592,7 +592,7 @@ namespace KancolleSniffer
                 if (MaxEquips != 0)
                 {
                     var limit = MaxEquips - MarginEquips;
-                    RingEquips = RingEquips || _nowEquips < limit && value >= limit;
+                    AlarmEquips = AlarmEquips || _nowEquips < limit && value >= limit;
                 }
                 _nowEquips = value;
             }
@@ -612,7 +612,7 @@ namespace KancolleSniffer
             var check = MaxEquips == 0;
             MaxEquips = (int)json.api_max_slotitem;
             if (check)
-                RingEquips = NowEquips >= MaxEquips - MarginEquips;
+                AlarmEquips = NowEquips >= MaxEquips - MarginEquips;
         }
 
         public void InspectMaster(dynamic json)

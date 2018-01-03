@@ -23,17 +23,17 @@ namespace KancolleSniffer
         private readonly ShipInfo _shipInfo;
         private readonly MaterialInfo _materialInfo;
         private readonly int[] _ndoc = new int[DockCount];
-        private readonly RingTimer[] _ndocTimers = new RingTimer[DockCount];
-        private readonly RingTimer[] _kdocTimers = new RingTimer[DockCount];
+        private readonly AlarmTimer[] _ndocTimers = new AlarmTimer[DockCount];
+        private readonly AlarmTimer[] _kdocTimers = new AlarmTimer[DockCount];
 
         public DockInfo(ShipInfo ship, MaterialInfo material)
         {
             _shipInfo = ship;
             _materialInfo = material;
             for (var i = 0; i < _ndocTimers.Length; i++)
-                _ndocTimers[i] = new RingTimer();
+                _ndocTimers[i] = new AlarmTimer();
             for (var i = 0; i < _kdocTimers.Length; i++)
-                _kdocTimers[i] = new RingTimer(0);
+                _kdocTimers[i] = new AlarmTimer(0);
         }
 
         public void InspectNDock(dynamic json)
@@ -107,6 +107,6 @@ namespace KancolleSniffer
             _kdocTimers[dock].Finish();
         }
 
-        public RingTimer[] KDock => _kdocTimers;
+        public AlarmTimer[] KDock => _kdocTimers;
     }
 }
