@@ -29,6 +29,7 @@ namespace KancolleSniffer
         private readonly List<Panel> _panelList = new List<Panel>();
         private bool _hpPercent;
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
+        private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
 
         public BattleResultPanel()
         {
@@ -77,8 +78,10 @@ namespace KancolleSniffer
             _enemyLabels[0][1].Text = "本隊";
             for (var i = 0; i < enemy.Main.Length; i++)
             {
-                _enemyLabels[i + 1][0].SetHp(enemy.Main[i]);
-                _enemyLabels[i + 1][1].SetName(ShortenName(enemy.Main[i].Name));
+                var labels = _enemyLabels[i + 1];
+                labels[0].SetHp(enemy.Main[i]);
+                labels[1].SetName(ShortenName(enemy.Main[i].Name));
+                _toolTip.SetToolTip(labels[1], string.Join("\r\n", enemy.Main[i].Slot.Select(item => item.Spec.Name)));
             }
             if (enemy.Guard.Length > 0)
             {
@@ -89,6 +92,8 @@ namespace KancolleSniffer
                     var labels = _enemyLabels[enemy.Main.Length + 2 + i];
                     labels[0].SetHp(enemy.Guard[i]);
                     labels[1].SetName(ShortenName(enemy.Guard[i].Name));
+                    _toolTip.SetToolTip(labels[1],
+                        string.Join("\r\n", enemy.Guard[i].Slot.Select(item => item.Spec.Name)));
                 }
             }
             var enemyLines = 1 + enemy.Main.Length + (enemy.Guard.Length > 0 ? enemy.Guard.Length + 1 : 0);
