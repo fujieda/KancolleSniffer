@@ -157,6 +157,23 @@ namespace KancolleSniffer
                 : new Record[0];
         }
 
+        private void SetResult()
+        {
+            Result = new BattleResult
+            {
+                Friend = new BattleResult.Combined
+                {
+                    Main = _friend.Select(r => r.SnapShot).ToArray(),
+                    Guard = _guard.Select(r => r.SnapShot).ToArray()
+                },
+                Enemy = new BattleResult.Combined
+                {
+                    Main = _enemy.Select(r => r.SnapShot).ToArray(),
+                    Guard = _enemyGuard.Select(r => r.SnapShot).ToArray()
+                }
+            };
+        }
+
         private void FlagshipRecovery(string request, ShipStatus flagship)
         {
             var type = int.Parse(HttpUtility.ParseQueryString(request)["api_recovery_type"] ?? "0");
@@ -490,23 +507,6 @@ namespace KancolleSniffer
                 _shipInfo.SetBadlyDamagedShips();
             else
                 _shipInfo.ClearBadlyDamagedShips();
-        }
-
-        private void SetResult()
-        {
-            Result = new BattleResult
-            {
-                Friend = new BattleResult.Combined
-                {
-                    Main = _friend.Select(r => r.SnapShot).ToArray(),
-                    Guard = _guard.Select(r => r.SnapShot).ToArray()
-                },
-                Enemy = new BattleResult.Combined
-                {
-                    Main = _enemy.Select(r => r.SnapShot).ToArray(),
-                    Guard = _enemyGuard.Select(r => r.SnapShot).ToArray()
-                }
-            };
         }
 
         public void SetEscapeShips(dynamic json)

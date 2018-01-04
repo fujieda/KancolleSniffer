@@ -94,13 +94,14 @@ namespace KancolleSniffer
 
         public void UpdateAirBattleResult()
         {
-            airBattleResultPanel.ShowResultAutomatic = true;
+            airBattleResultPanel.ShowResultAutomatic = (_config.Spoilers & Spoiler.AirBattleResult) != 0;
             airBattleResultPanel.SetResult(_sniffer.Battle.AirBattleResults);
         }
 
         public void UpdateBattleResult()
         {
             battleResultPanel.SetShowHpPercent(shipListPanel.ShowHpInPercent);
+            battleResultPanel.Spoiler = (_config.Spoilers & Spoiler.BattleResult) != 0;
             battleResultPanel.Update(_sniffer);
         }
 

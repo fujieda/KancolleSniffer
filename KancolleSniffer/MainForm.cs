@@ -612,17 +612,17 @@ namespace KancolleSniffer
         private void UpdateBattleInfo()
         {
             ResetBattleInfo();
+            _listForm.UpdateBattleResult();
             if (_sniffer.Battle.BattleState == BattleState.None)
                 return;
             panelBattleInfo.BringToFront();
             var battle = _sniffer.Battle;
             labelFormation.Text = battle.Formation;
             UpdateBattleFighterPower();
-            if (_config.AlwaysShowResultRank)
+            if ((_config.Spoilers & Spoiler.ResultRank) != 0)
                 ShowResultRank();
             if (_sniffer.Battle.BattleState == BattleState.Day)
                 _listForm.UpdateAirBattleResult();
-            _listForm.UpdateBattleResult();
         }
 
         private void ResetBattleInfo()

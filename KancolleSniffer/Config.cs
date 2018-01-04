@@ -174,6 +174,15 @@ namespace KancolleSniffer
         public Size ListSize { get; set; }
     }
 
+    [Flags]
+    public enum Spoiler
+    {
+        ResultRank = 1,
+        AirBattleResult = 1 << 1,
+        BattleResult = 1 << 2,
+        All = (1 << 3) - 1
+    }
+
     public class Config
     {
         private readonly string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -197,6 +206,7 @@ namespace KancolleSniffer
         public List<int> NotifyConditions { get; set; }
         public List<int> ResetHours { get; set; }
         public bool AlwaysShowResultRank { get; set; }
+        public Spoiler Spoilers { get; set; }
         public bool UsePresetAkashi { get; set; }
         public SoundConfig Sounds { get; set; } = new SoundConfig();
         public bool DebugLogging { get; set; }
@@ -246,6 +256,11 @@ namespace KancolleSniffer
                         ns[i] = ns[i] ^ NotificationType.Pushbullet | NotificationType.Push;
                 }
                 ComposeNotificationFlags();
+                if (AlwaysShowResultRank)
+                {
+                    Spoilers = Spoiler.All;
+                    AlwaysShowResultRank = false;
+                }
                 if (SaveLocationPerMachine)
                 {
                     foreach (var l in LocationList)

@@ -85,8 +85,9 @@ namespace KancolleSniffer
 
             checkBoxReset02.Checked = _config.ResetHours.Contains(2);
             checkBoxReset14.Checked = _config.ResetHours.Contains(14);
-            radioButtonResultRankAlways.Checked = _config.AlwaysShowResultRank;
-            radioButtonResultRankWhenClick.Checked = !_config.AlwaysShowResultRank;
+            checkBoxResultRank.Checked = (_config.Spoilers & Spoiler.ResultRank) != 0;
+            checkBoxAirBattleResult.Checked = (_config.Spoilers & Spoiler.AirBattleResult) != 0;
+            checkBoxBattleResult.Checked = (_config.Spoilers & Spoiler.BattleResult) != 0;
             checkBoxPresetAkashi.Checked = _config.UsePresetAkashi;
 
             numericUpDownSoundVolume.Value = _config.Sounds.Volume;
@@ -191,7 +192,9 @@ namespace KancolleSniffer
             if (checkBoxReset14.Checked)
                 _config.ResetHours.Add(14);
 
-            _config.AlwaysShowResultRank = radioButtonResultRankAlways.Checked;
+            _config.Spoilers = (checkBoxResultRank.Checked ? Spoiler.ResultRank : 0) |
+                               (checkBoxAirBattleResult.Checked ? Spoiler.AirBattleResult : 0) |
+                               (checkBoxBattleResult.Checked ? Spoiler.BattleResult : 0);
             _config.UsePresetAkashi = checkBoxPresetAkashi.Checked;
 
             _config.Sounds.Volume = (int)numericUpDownSoundVolume.Value;

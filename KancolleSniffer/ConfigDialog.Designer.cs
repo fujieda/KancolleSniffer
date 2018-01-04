@@ -70,8 +70,9 @@ namespace KancolleSniffer
             this.tabPageAchievement = new System.Windows.Forms.TabPage();
             this.checkBoxPresetAkashi = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.radioButtonResultRankWhenClick = new System.Windows.Forms.RadioButton();
-            this.radioButtonResultRankAlways = new System.Windows.Forms.RadioButton();
+            this.checkBoxBattleResult = new System.Windows.Forms.CheckBox();
+            this.checkBoxAirBattleResult = new System.Windows.Forms.CheckBox();
+            this.checkBoxResultRank = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.checkBoxReset02 = new System.Windows.Forms.CheckBox();
             this.buttonResetAchievement = new System.Windows.Forms.Button();
@@ -467,37 +468,46 @@ namespace KancolleSniffer
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.radioButtonResultRankWhenClick);
-            this.groupBox3.Controls.Add(this.radioButtonResultRankAlways);
+            this.groupBox3.Controls.Add(this.checkBoxBattleResult);
+            this.groupBox3.Controls.Add(this.checkBoxAirBattleResult);
+            this.groupBox3.Controls.Add(this.checkBoxResultRank);
             this.groupBox3.Location = new System.Drawing.Point(11, 65);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox3.Size = new System.Drawing.Size(234, 48);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "勝利判定と航空戦の結果の表示";
+            this.groupBox3.Text = "ネタバレ";
             // 
-            // radioButtonResultRankWhenClick
+            // checkBoxBattleResult
             // 
-            this.radioButtonResultRankWhenClick.AutoSize = true;
-            this.radioButtonResultRankWhenClick.Location = new System.Drawing.Point(65, 21);
-            this.radioButtonResultRankWhenClick.Name = "radioButtonResultRankWhenClick";
-            this.radioButtonResultRankWhenClick.Size = new System.Drawing.Size(88, 16);
-            this.radioButtonResultRankWhenClick.TabIndex = 1;
-            this.radioButtonResultRankWhenClick.TabStop = true;
-            this.radioButtonResultRankWhenClick.Text = "クリックしたとき";
-            this.radioButtonResultRankWhenClick.UseVisualStyleBackColor = true;
+            this.checkBoxBattleResult.AutoSize = true;
+            this.checkBoxBattleResult.Location = new System.Drawing.Point(147, 21);
+            this.checkBoxBattleResult.Name = "checkBoxBattleResult";
+            this.checkBoxBattleResult.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxBattleResult.TabIndex = 2;
+            this.checkBoxBattleResult.Text = "戦況";
+            this.checkBoxBattleResult.UseVisualStyleBackColor = true;
             // 
-            // radioButtonResultRankAlways
+            // checkBoxAirBattleResult
             // 
-            this.radioButtonResultRankAlways.AutoSize = true;
-            this.radioButtonResultRankAlways.Location = new System.Drawing.Point(9, 21);
-            this.radioButtonResultRankAlways.Name = "radioButtonResultRankAlways";
-            this.radioButtonResultRankAlways.Size = new System.Drawing.Size(50, 16);
-            this.radioButtonResultRankAlways.TabIndex = 0;
-            this.radioButtonResultRankAlways.TabStop = true;
-            this.radioButtonResultRankAlways.Text = "すぐに";
-            this.radioButtonResultRankAlways.UseVisualStyleBackColor = true;
+            this.checkBoxAirBattleResult.AutoSize = true;
+            this.checkBoxAirBattleResult.Location = new System.Drawing.Point(84, 21);
+            this.checkBoxAirBattleResult.Name = "checkBoxAirBattleResult";
+            this.checkBoxAirBattleResult.Size = new System.Drawing.Size(60, 16);
+            this.checkBoxAirBattleResult.TabIndex = 1;
+            this.checkBoxAirBattleResult.Text = "航空戦";
+            this.checkBoxAirBattleResult.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxResultRank
+            // 
+            this.checkBoxResultRank.AutoSize = true;
+            this.checkBoxResultRank.Location = new System.Drawing.Point(9, 21);
+            this.checkBoxResultRank.Name = "checkBoxResultRank";
+            this.checkBoxResultRank.Size = new System.Drawing.Size(72, 16);
+            this.checkBoxResultRank.TabIndex = 0;
+            this.checkBoxResultRank.Text = "勝利判定";
+            this.checkBoxResultRank.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -1302,8 +1312,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.OpenFileDialog openDebugLogDialog;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.RadioButton radioButtonResultRankWhenClick;
-        private System.Windows.Forms.RadioButton radioButtonResultRankAlways;
         private System.Windows.Forms.CheckBox checkBoxPresetAkashi;
         private System.Windows.Forms.TabPage tabPageCollabo;
         private System.Windows.Forms.GroupBox groupBoxKancolleDb;
@@ -1332,5 +1340,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.TextBox textBoxPushoverUserKey;
         private System.Windows.Forms.TabPage tabPageExternalService;
         private System.Windows.Forms.CheckBox checkBoxRepeat;
+        private System.Windows.Forms.CheckBox checkBoxBattleResult;
+        private System.Windows.Forms.CheckBox checkBoxAirBattleResult;
+        private System.Windows.Forms.CheckBox checkBoxResultRank;
     }
 }

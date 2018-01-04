@@ -422,6 +422,7 @@ namespace KancolleSniffer
             this.battleResultPanel.Location = new System.Drawing.Point(6, 73);
             this.battleResultPanel.Name = "battleResultPanel";
             this.battleResultPanel.Size = new System.Drawing.Size(238, 213);
+            this.battleResultPanel.Spoiler = false;
             this.battleResultPanel.TabIndex = 0;
             // 
             // antiAirPanel

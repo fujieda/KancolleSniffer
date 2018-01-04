@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -30,6 +31,11 @@ namespace KancolleSniffer
         private bool _hpPercent;
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
+        private readonly BattleInfo.BattleResult[] _result = new BattleInfo.BattleResult[2];
+        private Label _phaseLabel;
+        private BattleState _prevBattleState;
+
+        public bool Spoiler { get; set; }
 
         public BattleResultPanel()
         {
@@ -47,9 +53,102 @@ namespace KancolleSniffer
 
         public void Update(Sniffer sniffer)
         {
+
+            if (_prevBattleState == BattleState.None)
+                _result[0] = _result[1] = null;
+            var state = _prevBattleState = sniffer.Battle.BattleState;
+            if (state != BattleState.Day && state != BattleState.Night)
+                return;
+            if (Spoiler)
+            {
+                ShowResult(sniffer.Battle.Result);
+                if (state == BattleState.Day)
+                {
+                    _result[0] = sniffer.Battle.Result;
+                    SetPhase("昼戦");
+                }
+                else if (state == BattleState.Night)
+                {
+                    _result[1] = sniffer.Battle.Result;
+                    SetPhase("夜戦");
+                }
+            }
+            else
+            {
+                ClearResult();
+                _phaseLabel.Text = "結果";
+                _phaseLabel.BorderStyle = BorderStyle.FixedSingle;
+                _phaseLabel.Cursor = Cursors.Hand;
+                if (state == BattleState.Day)
+                {
+                    _result[0] = sniffer.Battle.Result;
+                }
+                else if (state == BattleState.Night)
+                {
+                    _result[1] = sniffer.Battle.Result;
+                }
+            }
+        }
+
+        private void PhaseLabelClick(object sender, EventArgs ev)
+        {
+            switch (_phaseLabel.Text)
+            {
+                case "結果":
+                    if (_result[0] != null)
+                    {
+                        ShowResult(_result[0]);
+                        SetPhase("昼戦");
+                    }
+                    else if (_result[1] != null)
+                    {
+                        ShowResult(_result[1]);
+                        SetPhase("夜戦");
+                    }
+                    break;
+                case "昼戦":
+                    if (_result[1] != null)
+                    {
+                        ShowResult(_result[1]);
+                        SetPhase("夜戦");
+                    }
+                    break;
+                case "夜戦":
+                    if (_result[0] != null)
+                    {
+                        ShowResult(_result[0]);
+                        SetPhase("昼戦");
+                    }
+                    break;
+            }
+        }
+
+        private void SetPhase(string phase)
+        {
+            _phaseLabel.Text = phase;
+            if (_result[0] != null && _result[1] != null)
+            {
+                _phaseLabel.BorderStyle = BorderStyle.FixedSingle;
+                _phaseLabel.Cursor = Cursors.Hand;
+            }
+            else
+            {
+                _phaseLabel.BorderStyle = BorderStyle.None;
+                _phaseLabel.Cursor = Cursors.Default;
+            }
+        }
+
+        private void ClearResult()
+        {
+            foreach (var panel in _panelList)
+                panel.Visible = false;
+        }
+
+        private void ShowResult(BattleInfo.BattleResult result)
+        {
             SuspendLayout();
-            var friend = sniffer.Battle.Result.Friend;
-            var enemy = sniffer.Battle.Result.Enemy;
+            var friend = result.Friend;
+            var enemy = result.Enemy;
 
             var fleet = new[] {"第一", "第二", "第三", "第四"};
             _friendLabels[0][1].Text = fleet[friend.Main[0].Fleet];
@@ -128,6 +227,13 @@ namespace KancolleSniffer
         private void CreateLabels()
         {
             SuspendLayout();
+            _phaseLabel = new Label
+            {
+                Location = new Point(93, 2),
+                Size = new Size(31, 14)
+            };
+            _phaseLabel.Click += PhaseLabelClick;
+            Controls.Add(_phaseLabel);
             for (var i = 0; i < 14; i++)
             {
                 var y = 1 + LineHeight * i;
