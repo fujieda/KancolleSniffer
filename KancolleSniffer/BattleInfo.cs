@@ -58,7 +58,6 @@ namespace KancolleSniffer
         private int[] _enemyStartHp;
         private int[] _enemyGuardStartHp;
         private readonly List<int> _escapingShips = new List<int>();
-        private int _flagshipRecoveryType;
         private bool _lastCell;
 
         public BattleState BattleState { get; set; }
@@ -85,12 +84,12 @@ namespace KancolleSniffer
             _itemInfo = itemInfo;
         }
 
-        public void InspectBattle(dynamic json, string url)
+        public void InspectBattle(string url, string request, dynamic json)
         {
             Formation = FormationName(json);
             AirControlLevel = CheckAirControlLevel(json);
             ShowResult(false); // 昼戦の結果を夜戦のときに表示する
-            SetupResult(json);
+            SetupResult(request, json);
             EnemyFighterPower = CalcEnemyFighterPower(json);
             BattleState = IsNightBattle(json) ? BattleState.Night : BattleState.Day;
             CalcDamage(json);
@@ -102,14 +101,6 @@ namespace KancolleSniffer
         {
             _enemyHp = _enemyHp.Select(hp => hp < 0 ? 0 : hp).ToArray();
             _enemyGuardHp = _enemyGuardHp.Select(hp => hp < 0 ? 0 : hp).ToArray();
-        }
-
-        public void InspectMapNext(string request)
-        {
-            var type = HttpUtility.ParseQueryString(request)["api_recovery_type"];
-            if (type == null)
-                return;
-            _flagshipRecoveryType = int.Parse(type);
         }
 
         private bool IsNightBattle(dynamic json) => json.api_hougeki();
@@ -141,14 +132,14 @@ namespace KancolleSniffer
             return "";
         }
 
-        private void SetupResult(dynamic json)
+        private void SetupResult(string request, dynamic json)
         {
             if (_friend != null)
                 return;
             _shipInfo.SaveBattleStartStatus();
             _fleet = DeckId(json);
             var fstats = _shipInfo.GetShipStatuses(_fleet);
-            FlagshipRecovery(fstats[0]);
+            FlagshipRecovery(request, fstats[0]);
             _friend = Record.Setup(fstats);
             _enemyHp = (int[])json.api_e_nowhps;
             _enemyStartHp = (int[])_enemyHp.Clone();
@@ -172,9 +163,10 @@ namespace KancolleSniffer
             }
         }
 
-        private void FlagshipRecovery(ShipStatus flagship)
+        private void FlagshipRecovery(string request, ShipStatus flagship)
         {
-            switch (_flagshipRecoveryType)
+            var type = int.Parse(HttpUtility.ParseQueryString(request)["api_recovery_type"] ?? "0");
+            switch (type)
             {
                 case 0:
                     return;
@@ -187,9 +179,8 @@ namespace KancolleSniffer
                     ConsumeSlotItem(flagship, 43); // 女神
                     break;
             }
-            if (_flagshipRecoveryType != 0)
+            if (type != 0)
                 _shipInfo.SetBadlyDamagedShips();
-            _flagshipRecoveryType = 0;
         }
 
         private static void ConsumeSlotItem(ShipStatus ship, int id)

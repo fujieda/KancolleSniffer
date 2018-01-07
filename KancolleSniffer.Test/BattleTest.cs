@@ -49,7 +49,7 @@ namespace KancolleSniffer.Test
             var items = JsonParser.Parse("[[[],[],[],[],[43]]]");
             dynamic battle = JsonParser.Parse(logs[2]);
             _shipInfo.InjectShips(battle, items);
-            _battleInfo.InspectBattle(battle, logs[0]);
+            _battleInfo.InspectBattle(logs[0], logs[1], battle);
             dynamic result = JsonParser.Parse(logs[5]);
             _battleInfo.InspectBattleResult(result);
             PAssert.That(() => _shipInfo.GetShipStatuses(2)[4].NowHp == 31);
@@ -64,7 +64,7 @@ namespace KancolleSniffer.Test
             var logs = ReadAllLines("midnight_002");
             var battle = JsonParser.Parse(logs[3]);
             _shipInfo.InjectShips(battle, JsonParser.Parse(logs[0]));
-            _battleInfo.InspectBattle(battle, logs[1]);
+            _battleInfo.InspectBattle(logs[1], logs[2], battle);
             _battleInfo.InspectBattleResult(JsonParser.Parse(logs[6]));
             PAssert.That(() => _shipInfo.GetShipStatuses(0)[3].NowHp == 12);
         }

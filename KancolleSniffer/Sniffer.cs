@@ -306,7 +306,7 @@ namespace KancolleSniffer
         {
             if (IsNormalBattleAPI(url) || IsCombinedBattleAPI(url))
             {
-                _battleInfo.InspectBattle(data, url);
+                _battleInfo.InspectBattle(url, request, data);
                 _logger.InspectBattle(data);
                 return Update.Ship | Update.Battle;
             }
@@ -318,7 +318,7 @@ namespace KancolleSniffer
                     _conditionTimer.InvalidateCond();
                     _miscTextInfo.ClearFlag = true;
                 }
-                _battleInfo.InspectBattle(data, url);
+                _battleInfo.InspectBattle(url, request, data);
                 return Update.Ship | Update.Battle | Update.Timer;
             }
             if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_combined_battle/battleresult"))
@@ -443,7 +443,6 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_map/next"))
             {
-                _battleInfo.InspectMapNext(request);
                 _exMapInfo.InspectMapNext(data);
                 _battleInfo.InspectMapNext(data);
                 _logger.InspectMapNext(data);
