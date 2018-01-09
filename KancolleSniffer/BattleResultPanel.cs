@@ -15,6 +15,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using static System.Math;
 
@@ -38,7 +39,7 @@ namespace KancolleSniffer
             var friend = sniffer.Battle.Result.Friend;
             var enemy = sniffer.Battle.Result.Enemy;
 
-            var fleet = new[] {"第一", "第二", "第三", "第四" };
+            var fleet = new[] {"第一", "第二", "第三", "第四"};
             _friendLabels[0][1].Text = fleet[friend.Main[0].Fleet];
             for (var i = 0; i < friend.Main.Length; i++)
             {
@@ -66,7 +67,7 @@ namespace KancolleSniffer
             for (var i = 0; i < enemy.Main.Length; i++)
             {
                 _enemyLabels[i + 1][0].SetHp(enemy.Main[i]);
-                _enemyLabels[i + 1][1].SetName(enemy.Main[i]);
+                _enemyLabels[i + 1][1].SetName(ShortenName(enemy.Main[i].Name));
             }
             if (enemy.Guard.Length > 0)
             {
@@ -76,7 +77,7 @@ namespace KancolleSniffer
                 {
                     var labels = _enemyLabels[enemy.Main.Length + 2 + i];
                     labels[0].SetHp(enemy.Guard[i]);
-                    labels[1].SetName(enemy.Guard[i]);
+                    labels[1].SetName(ShortenName(enemy.Guard[i].Name));
                 }
             }
             var enemyLines = 1 + enemy.Main.Length + (enemy.Guard.Length > 0 ? enemy.Guard.Length + 1 : 0);
@@ -100,6 +101,12 @@ namespace KancolleSniffer
             for (var i = lines; i < _panelList.Count; i++)
                 _panelList[i].Visible = false;
             ResumeLayout();
+        }
+
+        private string ShortenName(string name)
+        {
+            return new Regex(@"\(elite\)|\(flagship\)").Replace(name,
+                match => match.Value == "(elite)" ? "(e)" : "(f)");
         }
 
         private void CreateLabels()
