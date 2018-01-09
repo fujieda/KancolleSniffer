@@ -32,8 +32,10 @@ namespace KancolleSniffer
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
         private readonly BattleInfo.BattleResult[] _result = new BattleInfo.BattleResult[2];
-        private Label _phaseLabel;
+        private Label _phaseLabel, _rankLabel;
         private BattleState _prevBattleState;
+        private readonly BattleResultRank[] _rank = new BattleResultRank[2];
+        private readonly InformationPanel _infomationPanel = new InformationPanel();
 
         public bool Spoiler { get; set; }
 
@@ -53,7 +55,6 @@ namespace KancolleSniffer
 
         public void Update(Sniffer sniffer)
         {
-
             if (_prevBattleState == BattleState.None)
                 _result[0] = _result[1] = null;
             var state = _prevBattleState = sniffer.Battle.BattleState;
@@ -62,32 +63,37 @@ namespace KancolleSniffer
             if (Spoiler)
             {
                 ShowResult(sniffer.Battle.Result);
+                ShowResultRank(sniffer.Battle.ResultRank);
                 if (state == BattleState.Day)
                 {
                     _result[0] = sniffer.Battle.Result;
+                    _rank[0] = sniffer.Battle.ResultRank;
                     SetPhase("昼戦");
                 }
                 else if (state == BattleState.Night)
                 {
                     _result[1] = sniffer.Battle.Result;
+                    _rank[1] = sniffer.Battle.ResultRank;
                     SetPhase("夜戦");
                 }
+                _infomationPanel.Visible = true;
             }
             else
             {
                 ClearResult();
-                _phaseLabel.Text = "結果";
-                _phaseLabel.BorderStyle = BorderStyle.FixedSingle;
-                _phaseLabel.Cursor = Cursors.Hand;
+                SetPhase("結果");
                 if (state == BattleState.Day)
                 {
                     _result[0] = sniffer.Battle.Result;
+                    _rank[0] = sniffer.Battle.ResultRank;
                 }
                 else if (state == BattleState.Night)
                 {
                     _result[1] = sniffer.Battle.Result;
+                    _rank[1] = sniffer.Battle.ResultRank;
                 }
             }
+            _infomationPanel.SetInformation(sniffer.Battle);
         }
 
         private void PhaseLabelClick(object sender, EventArgs ev)
@@ -98,11 +104,13 @@ namespace KancolleSniffer
                     if (_result[0] != null)
                     {
                         ShowResult(_result[0]);
+                        ShowResultRank(_rank[0]);
                         SetPhase("昼戦");
                     }
                     else if (_result[1] != null)
                     {
                         ShowResult(_result[1]);
+                        ShowResultRank(_rank[1]);
                         SetPhase("夜戦");
                     }
                     break;
@@ -110,6 +118,7 @@ namespace KancolleSniffer
                     if (_result[1] != null)
                     {
                         ShowResult(_result[1]);
+                        ShowResultRank(_rank[1]);
                         SetPhase("夜戦");
                     }
                     break;
@@ -117,6 +126,7 @@ namespace KancolleSniffer
                     if (_result[0] != null)
                     {
                         ShowResult(_result[0]);
+                        ShowResultRank(_rank[0]);
                         SetPhase("昼戦");
                     }
                     break;
@@ -126,7 +136,7 @@ namespace KancolleSniffer
         private void SetPhase(string phase)
         {
             _phaseLabel.Text = phase;
-            if (_result[0] != null && _result[1] != null)
+            if (phase == "結果" || _result[0] != null && _result[1] != null)
             {
                 _phaseLabel.BorderStyle = BorderStyle.FixedSingle;
                 _phaseLabel.Cursor = Cursors.Hand;
@@ -142,6 +152,7 @@ namespace KancolleSniffer
         {
             foreach (var panel in _panelList)
                 panel.Visible = false;
+            _rankLabel.Visible = _infomationPanel.Visible = false;
         }
 
         private void ShowResult(BattleInfo.BattleResult result)
@@ -149,7 +160,6 @@ namespace KancolleSniffer
             SuspendLayout();
             var friend = result.Friend;
             var enemy = result.Enemy;
-
             var fleet = new[] {"第一", "第二", "第三", "第四"};
             _friendLabels[0][1].Text = fleet[friend.Main[0].Fleet];
             for (var i = 0; i < friend.Main.Length; i++)
@@ -215,6 +225,9 @@ namespace KancolleSniffer
             }
             for (var i = lines; i < _panelList.Count; i++)
                 _panelList[i].Visible = false;
+            _infomationPanel.Location =
+                new Point(35 + AutoScrollPosition.X, lines * LineHeight + 1 + 3 + AutoScrollPosition.Y);
+            _infomationPanel.Visible = true;
             ResumeLayout();
         }
 
@@ -224,16 +237,30 @@ namespace KancolleSniffer
                 match => match.Value == "(elite)" ? "(e)" : "(f)");
         }
 
+        private void ShowResultRank(BattleResultRank rank)
+        {
+            _rankLabel.Visible = true;
+            var result = new[] {"完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E"};
+            _rankLabel.Text = result[(int)rank];
+        }
+
         private void CreateLabels()
         {
             SuspendLayout();
             _phaseLabel = new Label
             {
-                Location = new Point(93, 2),
+                Location = new Point(78, 2),
                 Size = new Size(31, 14)
             };
             _phaseLabel.Click += PhaseLabelClick;
             Controls.Add(_phaseLabel);
+            _rankLabel = new Label
+            {
+                Location = new Point(110, 2),
+                Size = new Size(42, 12)
+            };
+            Controls.Add(_rankLabel);
+            Controls.Add(_infomationPanel);
             for (var i = 0; i < 14; i++)
             {
                 var y = 1 + LineHeight * i;
@@ -268,6 +295,117 @@ namespace KancolleSniffer
                 Controls.Add(panel);
             }
             ResumeLayout();
+        }
+
+        private class InformationPanel : Panel
+        {
+            private readonly Label[] _formation;
+            private readonly Label[] _fighterPower;
+            private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
+
+            public InformationPanel()
+            {
+                Visible = false;
+                Size = new Size(152, 32);
+                Controls.AddRange(_formation = new[]
+                {
+                    new Label
+                    {
+                        Location = new Point(1, 2),
+                        Size = new Size(53, 12),
+                        TextAlign = ContentAlignment.MiddleRight
+                    },
+                    new Label
+                    {
+                        Location = new Point(98, 2),
+                        Size = new Size(53, 12),
+                        TextAlign = ContentAlignment.MiddleLeft
+                    },
+                    new Label
+                    {
+                        Location = new Point(52, 2),
+                        Size = new Size(48, 12),
+                        TextAlign = ContentAlignment.MiddleCenter
+                    }
+                });
+                Controls.AddRange(_fighterPower = new[]
+                {
+                    new Label
+                    {
+                        Location = new Point(28, 17),
+                        Size = new Size(23, 12),
+                        TextAlign = ContentAlignment.MiddleRight
+                    },
+                    new Label
+                    {
+                        Location = new Point(102, 17),
+                        Size = new Size(23, 12),
+                        TextAlign = ContentAlignment.MiddleLeft
+                    },
+                    new Label
+                    {
+                        Location = new Point(50, 17),
+                        Size = new Size(53, 12),
+                        TextAlign = ContentAlignment.MiddleCenter
+                    }
+                });
+            }
+
+            public void SetInformation(BattleInfo battleInfo)
+            {
+                _formation[0].Text = FormationName(battleInfo.Formation[0]);
+                _formation[1].Text = FormationName(battleInfo.Formation[1]);
+                _formation[2].Text = new[] {"同航戦", "反航戦", "T字有利", "T字不利"}[battleInfo.Formation[2] - 1];
+
+                if (battleInfo.AirControlLevel == -1)
+                {
+                    if (battleInfo.BattleState == BattleState.Night)
+                        return;
+                    foreach (var label in _fighterPower)
+                        label.Visible = false;
+                    return;
+                }
+                var fp = battleInfo.FighterPower;
+                _fighterPower[0].Text = fp[0].ToString("D");
+                _toolTip.SetToolTip(_fighterPower[0], fp[0] == fp[1] ? "" : $"{fp[0]}～{fp[1]}");
+                var efp = battleInfo.EnemyFighterPower;
+                _fighterPower[1].Text = efp.AirCombat + efp.UnknownMark;
+                _toolTip.SetToolTip(_fighterPower[1],
+                    efp.AirCombat == efp.Interception ? "" : "防空:" + efp.Interception + efp.UnknownMark);
+                _fighterPower[2].Text =
+                    new[] {"", "制空均衡", "制空確保", "航空優勢", "航空劣勢", "制空喪失"}[battleInfo.AirControlLevel + 1];
+                foreach (var label in _fighterPower)
+                    label.Visible = true;
+            }
+
+            private string FormationName(int formation)
+            {
+                switch (formation)
+                {
+                    case 1:
+                        return "単縦陣";
+                    case 2:
+                        return "複縦陣";
+                    case 3:
+                        return "輪形陣";
+                    case 4:
+                        return "梯形陣";
+                    case 5:
+                        return "単横陣";
+                    case 6:
+                        return "警戒陣";
+                    case 11:
+                        return "第一警戒";
+                    case 12:
+                        return "第二警戒";
+                    case 13:
+                        return "第三警戒";
+                    case 14:
+                        return "第四警戒";
+                    default:
+                        return "単縦陣";
+                }
+            }
         }
     }
 }

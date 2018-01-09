@@ -617,7 +617,7 @@ namespace KancolleSniffer
                 return;
             panelBattleInfo.BringToFront();
             var battle = _sniffer.Battle;
-            labelFormation.Text = battle.Formation;
+            labelFormation.Text = new[] {"同航戦", "反航戦", "T字有利", "T字不利"}[battle.Formation[2] - 1];
             UpdateBattleFighterPower();
             if ((_config.Spoilers & Spoiler.ResultRank) != 0)
                 ShowResultRank();

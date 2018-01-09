@@ -60,7 +60,8 @@ namespace KancolleSniffer
         private bool _lastCell;
 
         public BattleState BattleState { get; set; }
-        public string Formation { get; private set; }
+        public int[] Formation { get; private set; }
+        public int[] FighterPower { get; private set; }
         public EnemyFighterPower EnemyFighterPower { get; private set; }
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
@@ -96,10 +97,12 @@ namespace KancolleSniffer
 
         public void InspectBattle(string url, string request, dynamic json)
         {
-            Formation = FormationName(json);
+            if (json.api_formation())
+                Formation = ((dynamic[])json.api_formation).Select(f => f is string ? (int)int.Parse(f) : (int)f).ToArray();
             AirControlLevel = CheckAirControlLevel(json);
             ShowResult(false); // 昼戦の結果を夜戦のときに表示する
             SetupResult(request, json);
+            FighterPower = CalcFighterPower();
             EnemyFighterPower = CalcEnemyFighterPower(json);
             BattleState = IsNightBattle(json) ? BattleState.Night : BattleState.Day;
             CalcDamage(json);
@@ -116,24 +119,6 @@ namespace KancolleSniffer
             if (json.api_deck_id is string) // 通常の夜戦と連合艦隊(味方のみ)では文字列
                 return int.Parse(json.api_deck_id) - 1;
             return (int)json.api_deck_id - 1;
-        }
-
-        private string FormationName(dynamic json)
-        {
-            if (!json.api_formation()) // 演習の夜戦
-                return "";
-            switch ((int)json.api_formation[2])
-            {
-                case 1:
-                    return "同航戦";
-                case 2:
-                    return "反航戦";
-                case 3:
-                    return "T字有利";
-                case 4:
-                    return "T字不利";
-            }
-            return "";
         }
 
         private void SetupResult(string request, dynamic json)
@@ -227,6 +212,13 @@ namespace KancolleSniffer
             if (stage1.api_f_count == 0 && stage1.api_e_count == 0)
                 return -1;
             return (int)stage1.api_disp_seiku;
+        }
+
+        private int[] CalcFighterPower()
+        {
+            if (_guard.Length > 0 && _enemyGuard.Length > 0)
+                return _shipInfo.GetFighterPower(0).Zip(_shipInfo.GetFighterPower(1), (a, b) => a + b).ToArray();
+            return _shipInfo.GetFighterPower(_fleet);
         }
 
         private EnemyFighterPower CalcEnemyFighterPower(dynamic json)
