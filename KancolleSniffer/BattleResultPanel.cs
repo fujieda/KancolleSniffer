@@ -27,10 +27,21 @@ namespace KancolleSniffer
         private readonly List<ShipLabel[]> _friendLabels = new List<ShipLabel[]>();
         private readonly List<ShipLabel[]> _enemyLabels = new List<ShipLabel[]>();
         private readonly List<Panel> _panelList = new List<Panel>();
+        private bool _hpPercent;
+        private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
 
         public BattleResultPanel()
         {
             CreateLabels();
+        }
+
+        public void SetShowHpPercent(bool hpPercent)
+        {
+            if (hpPercent == _hpPercent)
+                return;
+            foreach (var label in _hpLabels)
+                label.ToggleHpPercent();
+            _hpPercent = hpPercent;
         }
 
         public void Update(Sniffer sniffer)
@@ -131,6 +142,7 @@ namespace KancolleSniffer
                     new ShipLabel {Location = new Point(1, 2), AutoSize = true}
                 };
                 _friendLabels.Add(friend);
+                _hpLabels.Add(friend[0]);
                 var enemy = new[]
                 {
                     new ShipLabel {Location = new Point(119, 2), AutoSize = true},

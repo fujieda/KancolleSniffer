@@ -100,6 +100,7 @@ namespace KancolleSniffer
 
         public void UpdateBattleResult()
         {
+            battleResultPanel.SetShowHpPercent(shipListPanel.ShowHpInPercent);
             battleResultPanel.Update(_sniffer);
         }
 
