@@ -46,6 +46,7 @@ namespace KancolleSniffer
         private bool _timerEnabled;
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
+        private DateTime _prev, _now;
 
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
         private bool _missionFinishTimeMode;
@@ -219,6 +220,8 @@ namespace KancolleSniffer
             }
             if (!_started)
                 return;
+            if (_now == DateTime.MinValue)
+                _now = DateTime.Now;
             if ((update & Sniffer.Update.Item) != 0)
                 UpdateItemInfo();
             if ((update & Sniffer.Update.Timer) != 0)
@@ -418,7 +421,10 @@ namespace KancolleSniffer
             {
                 try
                 {
+                    _now = DateTime.Now;
                     UpdateTimers();
+                    NotifyTimers();
+                    _prev = _now;
                 }
                 catch (Exception ex)
                 {
@@ -701,25 +707,19 @@ namespace KancolleSniffer
             UpdateTimers();
         }
 
-        private DateTime _prev, _now;
-
         private void UpdateTimers()
         {
-            _prev = _now;
-            _now = DateTime.Now;
             var mission = new[] {labelMission1, labelMission2, labelMission3};
             for (var i = 0; i < mission.Length; i++)
             {
                 var entry = _sniffer.Missions[i];
                 SetTimerColor(mission[i], entry.Timer, _now);
                 mission[i].Text = entry.Timer.ToString(_now, _missionFinishTimeMode);
-                CheckAlarm("遠征終了", entry.Timer, i + 1, entry.Name);
             }
             for (var i = 0; i < _sniffer.NDock.Length; i++)
             {
                 var entry = _sniffer.NDock[i];
                 _shipLabels.SetNDockTimer(i, entry.Timer, _now, _ndockFinishTimeMode);
-                CheckAlarm("入渠終了", entry.Timer, i, entry.Name);
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
             for (var i = 0; i < kdock.Length; i++)
@@ -727,12 +727,32 @@ namespace KancolleSniffer
                 var timer = _sniffer.KDock[i];
                 SetTimerColor(kdock[i], timer, _now);
                 kdock[i].Text = timer.ToString(_now);
-                CheckAlarm("建造完了", timer, 0, $"第{i + 1:D}ドック");
             }
             UpdateCondTimers();
             UpdateAkashiTimer();
-            _notificationManager.Flash();
             _timerEnabled = true;
+        }
+
+        private void NotifyTimers()
+        {
+            for (var i = 0; i < _sniffer.Missions.Length; i++)
+            {
+                var entry = _sniffer.Missions[i];
+                CheckAlarm("遠征終了", entry.Timer, i + 1, entry.Name);
+            }
+            for (var i = 0; i < _sniffer.NDock.Length; i++)
+            {
+                var entry = _sniffer.NDock[i];
+                CheckAlarm("入渠終了", entry.Timer, i, entry.Name);
+            }
+            for (var i = 0; i < _sniffer.KDock.Length; i++)
+            {
+                var timer = _sniffer.KDock[i];
+                CheckAlarm("建造完了", timer, 0, $"第{i + 1:D}ドック");
+            }
+            NotifyCondTimers();
+            NotifyAkashiTimer();
+            _notificationManager.Flash();
         }
 
         private void CheckAlarm(string key, AlarmTimer timer, int fleet, string subject)
@@ -786,6 +806,10 @@ namespace KancolleSniffer
                 labelCondTimer.Text = (span >= TimeSpan.Zero ? span : TimeSpan.Zero).ToString(@"mm\:ss");
                 labelCondTimer.ForeColor = span <= TimeSpan.Zero ? CUDColor.Red : DefaultForeColor;
             }
+        }
+
+        private void NotifyCondTimers()
+        {
             var notice = _sniffer.GetConditionNotice(_prev, _now);
             var pre = TimeSpan.FromSeconds(_config.Notifications["疲労回復"].PreliminaryPeriod);
             var preNotice = pre == TimeSpan.Zero
@@ -811,7 +835,6 @@ namespace KancolleSniffer
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             _shipLabels.SetAkashiTimer(statuses,
                 _sniffer.AkashiTimer.GetTimers(_currentFleet));
-            NotifyAkashiTimer();
         }
 
         private void UpdatePresetAkashiTimer()
