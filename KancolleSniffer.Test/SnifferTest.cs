@@ -25,6 +25,13 @@ namespace KancolleSniffer.Test
     [TestClass]
     public class SnifferTest
     {
+        [TestInitialize]
+        public void Intialize()
+        {
+            ExpressionToCodeConfiguration.GlobalAssertionConfiguration = ExpressionToCodeConfiguration
+                .GlobalAssertionConfiguration.WithPrintedListLengthLimit(200).WithMaximumValueLength(1000);
+        }
+
         public static StreamReader OpenLogFile(string name)
         {
             var dir = Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory));
@@ -692,6 +699,33 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "ship2_001");
             PAssert.That(() => sniffer.Item.NowShips == 243);
+        }
+
+        /// <summary>
+        /// 出撃中にアイテムを取得する
+        /// </summary>
+        [TestMethod]
+        public void ItemGetInSortie()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "itemget_001");
+            PAssert.That(() => sniffer.MiscText ==
+                               "[獲得アイテム]\r\n" +
+                               "燃料: 1115\r\n" +
+                               "弾薬: 25\r\n" +
+                               "鋼材: 70\r\n" +
+                               "家具箱（大）: 1\r\n" +
+                               "給糧艦「間宮」: 1\r\n" +
+                               "勲章: 1\r\n" +
+                               "給糧艦「伊良湖」: 3\r\n" +
+                               "プレゼント箱: 1\r\n" +
+                               "補強増設: 2\r\n" +
+                               "戦闘詳報: 1\r\n" +
+                               "瑞雲(六三一空): 1\r\n" +
+                               "夜間作戦航空要員: 1\r\n" +
+                               "130mm B-13連装砲: 1\r\n" +
+                               "潜水空母な桐箪笥: 1\r\n" +
+                               "Gambier Bay: 1");
         }
     }
 }

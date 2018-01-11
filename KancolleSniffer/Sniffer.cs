@@ -33,7 +33,7 @@ namespace KancolleSniffer
         private readonly BattleInfo _battleInfo;
         private readonly Logger _logger;
         private readonly ExMapInfo _exMapInfo = new ExMapInfo();
-        private readonly MiscTextInfo _miscTextInfo = new MiscTextInfo();
+        private readonly MiscTextInfo _miscTextInfo;
         private readonly BaseAirCoprs _baseAirCoprs;
         private readonly PresetDeck _presetDeck = new PresetDeck();
         private readonly Status _status = new Status();
@@ -77,6 +77,7 @@ namespace KancolleSniffer
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
             _questInfo = new QuestInfo(_itemInfo, _battleInfo);
             _baseAirCoprs = new BaseAirCoprs(_itemInfo);
+            _miscTextInfo = new MiscTextInfo(_shipInfo, _itemInfo);
             _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo, _questInfo};
         }
 
@@ -131,6 +132,7 @@ namespace KancolleSniffer
             _missionInfo.InspectMaster(data.api_mst_mission);
             _itemInfo.InspectMaster(data);
             _exMapInfo.ResetIfNeeded();
+            _miscTextInfo.InspectMaster(data);
             _start = true;
             return Update.Start;
         }
@@ -158,7 +160,7 @@ namespace KancolleSniffer
             _battleInfo.CleanupResult();
             _battleInfo.BattleState = BattleState.None;
             _shipInfo.ClearEscapedShips();
-            _miscTextInfo.ClearIfNeeded();
+            _miscTextInfo.Port();
             SaveState();
             RepeatingTimerController?.Resume();
             foreach (var s in new[] {"遠征終了", "入渠終了", "疲労回復", "泊地修理"})
@@ -339,7 +341,6 @@ namespace KancolleSniffer
                 {
                     _shipInfo.InspectMapStart(request); // 演習を出撃中とみなす
                     _conditionTimer.InvalidateCond();
-                    _miscTextInfo.ClearFlag = true;
                     RepeatingTimerController?.Suspend();
                 }
                 _battleInfo.InspectBattle(url, request, data);
@@ -351,6 +352,7 @@ namespace KancolleSniffer
                 _exMapInfo.InspectBattleResult(data);
                 _logger.InspectBattleResult(data);
                 _questInfo.InspectBattleResult(data);
+                _miscTextInfo.InspectBattleResult(data);
                 return Update.Ship | Update.QuestList;
             }
             if (url.EndsWith("api_req_practice/battle_result"))
@@ -470,7 +472,7 @@ namespace KancolleSniffer
                 _exMapInfo.InspectMapStart(data);
                 _battleInfo.InspectMapStart(data);
                 _logger.InspectMapStart(data);
-                _miscTextInfo.ClearFlag = true;
+                _miscTextInfo.SortieStarted = true;
                 _questInfo.InspectMapStart(data);
                 RepeatingTimerController?.Suspend();
                 return Update.Timer | Update.Ship;
@@ -481,6 +483,7 @@ namespace KancolleSniffer
                 _battleInfo.InspectMapNext(data);
                 _logger.InspectMapNext(data);
                 _questInfo.InspectMapNext(data);
+                _miscTextInfo.InspectMapNext(data);
                 return Update.None;
             }
             if (url.EndsWith("api_req_mission/start"))
