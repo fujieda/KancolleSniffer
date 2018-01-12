@@ -56,6 +56,11 @@ namespace KancolleSniffer
             panelGroupHeader.Visible = InGroupConfig;
             panelRepairHeader.Visible = InRepairList;
             panelFleetHeader.Visible = InFleetInfo;
+            foreach (var panel in new[]{panelItemHeader, panelGroupHeader, panelRepairHeader, panelFleetHeader})
+            {
+                if (panel.Visible)
+                    panel.BringToFront();
+            }
             // SwipeScrollifyが誤作動するのでEnabledも切り替える
             shipListPanel.Visible = shipListPanel.Enabled = InShipStatus || InGroupConfig || InRepairList;
             itemTreeView.Visible = itemTreeView.Enabled = InItemList;
