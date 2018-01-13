@@ -183,6 +183,13 @@ namespace KancolleSniffer
         All = (1 << 3) - 1
     }
 
+    [Flags]
+    public enum TimerKind
+    {
+        Mission = 1,
+        NDock = 1 << 1
+    }
+
     public class Config
     {
         private readonly string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -196,6 +203,7 @@ namespace KancolleSniffer
         public bool SaveLocationPerMachine { get; set; }
         public List<LocationPerMachine> LocationList { get; set; } = new List<LocationPerMachine>();
         public bool ShowHpInPercent { get; set; }
+        public TimerKind ShowEndTime { get; set; }
         public bool FlashWindow { get; set; } = true;
         public bool ShowBaloonTip { get; set; } = true;
         public bool PlaySound { get; set; } = true;

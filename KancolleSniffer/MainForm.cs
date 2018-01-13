@@ -49,8 +49,6 @@ namespace KancolleSniffer
         private DateTime _prev, _now;
 
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
-        private bool _missionFinishTimeMode;
-        private bool _ndockFinishTimeMode;
         private readonly KancolleDb _kancolleDb = new KancolleDb();
         private readonly ErrorLog _errorLog;
 
@@ -689,7 +687,7 @@ namespace KancolleSniffer
 
         private void labelNDock_Click(object sender, EventArgs e)
         {
-            _ndockFinishTimeMode = !_ndockFinishTimeMode;
+            _config.ShowEndTime ^= TimerKind.NDock;
             UpdateTimers();
         }
 
@@ -703,7 +701,7 @@ namespace KancolleSniffer
 
         private void labelMission_Click(object sender, EventArgs e)
         {
-            _missionFinishTimeMode = !_missionFinishTimeMode;
+            _config.ShowEndTime ^= TimerKind.Mission;
             UpdateTimers();
         }
 
@@ -714,12 +712,12 @@ namespace KancolleSniffer
             {
                 var entry = _sniffer.Missions[i];
                 SetTimerColor(mission[i], entry.Timer, _now);
-                mission[i].Text = entry.Timer.ToString(_now, _missionFinishTimeMode);
+                mission[i].Text = entry.Timer.ToString(_now, (_config.ShowEndTime & TimerKind.Mission) != 0);
             }
             for (var i = 0; i < _sniffer.NDock.Length; i++)
             {
                 var entry = _sniffer.NDock[i];
-                _shipLabels.SetNDockTimer(i, entry.Timer, _now, _ndockFinishTimeMode);
+                _shipLabels.SetNDockTimer(i, entry.Timer, _now, (_config.ShowEndTime & TimerKind.NDock) != 0);
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
             for (var i = 0; i < kdock.Length; i++)
