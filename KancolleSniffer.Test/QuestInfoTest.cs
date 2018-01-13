@@ -263,7 +263,7 @@ namespace KancolleSniffer.Test
                 api_list = new[]
                 {
                     new {api_no = 228, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 230, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
+                    new {api_no = 230, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0}
                 }
             }));
             // 潜水艦3
@@ -271,7 +271,7 @@ namespace KancolleSniffer.Test
             {
                 new ShipStatus {NowHp = 0, MaxHp = 27, Spec = new ShipSpec {Id = 1532, ShipType = 13}},
                 new ShipStatus {NowHp = 0, MaxHp = 19, Spec = new ShipSpec {Id = 1530, ShipType = 13}},
-                new ShipStatus {NowHp = 0, MaxHp = 19, Spec = new ShipSpec {Id = 1530, ShipType = 13}},
+                new ShipStatus {NowHp = 0, MaxHp = 19, Spec = new ShipSpec {Id = 1530, ShipType = 13}}
             }, new ShipStatus[0]);
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() =>
@@ -593,6 +593,32 @@ namespace KancolleSniffer.Test
             PAssert.That(() =>
                 questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
                     .SequenceEqual(new[] {new {Id = 702, Now = 1}, new {Id = 703, Now = 1}}));
+        }
+
+        /// <summary>
+        /// 文字列表記にする
+        /// </summary>
+        [TestMethod]
+        public void ToStringTest()
+        {
+            var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
+            var status = new Status
+            {
+                QuestCountList = new[]
+                {
+                    new QuestCount {Id = 211, Now = 2},
+                    new QuestCount {Id = 214, NowArray = new[] {20, 7, 10, 8}},
+                    new QuestCount {Id = 854, NowArray = new[] {1, 1, 1, 1}}
+                }
+            };
+            questInfo.LoadState(status);
+            PAssert.That(() => status.QuestCountList[0].ToString() == "2/3");
+            PAssert.That(() => status.QuestCountList[1].ToString() == "20/36 7/6 10/24 8/12");
+            var z = status.QuestCountList[2];
+            PAssert.That(() => z.ToString() == "4/4");
+            PAssert.That(() => z.ToToolTip() == "2-4 6-1 6-3 6-4");
+            z.NowArray = new[] {0, 0, 0, 0};
+            PAssert.That(() => z.ToToolTip() == "");
         }
     }
 }

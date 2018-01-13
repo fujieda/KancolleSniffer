@@ -36,6 +36,7 @@ namespace KancolleSniffer
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
         private readonly ProxyManager _proxyManager;
+        private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
         private int _currentFleet;
         private bool _combinedFleet;
         private readonly Label[] _labelCheckFleets;
@@ -941,18 +942,18 @@ namespace KancolleSniffer
                     {
                         count[i].Text = "";
                         count[i].ForeColor = Color.Black;
+                        _toolTip.SetToolTip(count[i], "");
                         continue;
                     }
-                    count[i].Text = c.NowArray != null ? $"{string.Join("|", c.NowArray)}" : $"{c.Now}/{c.Max}";
-                    count[i].ForeColor =
-                        (c.NowArray?.Zip(c.Spec.MaxArray, (n, m) => n >= m).All(x => x) ?? c.Now >= c.Spec.Max)
-                            ? CUDColor.Green
-                            : Color.Black;
+                    count[i].Text = c.ToString();
+                    count[i].ForeColor = c.Cleared ? CUDColor.Green : Color.Black;
+                    _toolTip.SetToolTip(count[i], c.ToToolTip());
                 }
                 else
                 {
                     category[i].BackColor = DefaultBackColor;
                     name[i].Text = count[i].Text = progress[i].Text = "";
+                    _toolTip.SetToolTip(count[i], "");
                 }
             }
         }

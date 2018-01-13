@@ -105,7 +105,6 @@ namespace KancolleSniffer
         public int Id { get; set; }
         public int Now { get; set; }
         public int[] NowArray { get; set; }
-        public int Max => Spec.Max;
 
         [XmlIgnore]
         public QuestSpec Spec { get; set; }
@@ -138,7 +137,7 @@ namespace KancolleSniffer
                     break;
             }
             var now = Now + Spec.Shift;
-            var max = Max + Spec.Shift;
+            var max = Spec.Max + Spec.Shift;
             var low = (int)Ceiling(max * progress / 100.0);
             var high = (int)Ceiling(max * next / 100.0);
             if (now < low)
@@ -153,6 +152,26 @@ namespace KancolleSniffer
             }
             return false;
         }
+
+        public override string ToString()
+        {
+            if (Id == 854)
+                return $"{NowArray.Count(n => n == 1)}/{Spec.MaxArray.Length}";
+            return NowArray != null
+                ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
+                : $"{Now}/{Spec.Max}";
+        }
+
+        public string ToToolTip()
+        {
+            return Id != 854
+                ? ""
+                : string.Join(" ",
+                    new[] {"2-4", "6-1", "6-3", "6-4"}.Zip(NowArray, (map, flag) => flag == 1 ? map : "")
+                        .Where(s => !string.IsNullOrEmpty(s)));
+        }
+
+        public bool Cleared => NowArray?.Zip(Spec.MaxArray, (n, m) => n >= m).All(x => x) ?? Now >= Spec.Max;
     }
 
     // @formatter:off
