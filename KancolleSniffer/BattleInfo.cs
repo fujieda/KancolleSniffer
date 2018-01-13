@@ -483,6 +483,7 @@ namespace KancolleSniffer
         {
             BattleState = BattleState.Result;
             ShowResult(false);
+            VerifyResultRank(json);
             CleanupResult();
         }
 
