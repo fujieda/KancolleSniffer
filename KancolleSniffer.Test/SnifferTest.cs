@@ -128,6 +128,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 演習でダメコンを発動させない
+        /// </summary>
+        [TestMethod]
+        public void NotTriggerDameconInPractice()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "practice_002");
+            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
+        }
+
+        /// <summary>
         /// 連合艦隊が開幕雷撃で被弾する
         /// </summary>
         [TestMethod]

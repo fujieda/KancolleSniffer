@@ -98,10 +98,11 @@ namespace KancolleSniffer
         public void InspectBattle(string url, string request, dynamic json)
         {
             if (json.api_formation())
-                Formation = ((dynamic[])json.api_formation).Select(f => f is string ? (int)int.Parse(f) : (int)f).ToArray();
+                Formation = ((dynamic[])json.api_formation).Select(f => f is string ? (int)int.Parse(f) : (int)f)
+                    .ToArray();
             AirControlLevel = CheckAirControlLevel(json);
             ShowResult(false); // 昼戦の結果を夜戦のときに表示する
-            SetupResult(request, json);
+            SetupResult(request, json, url.Contains("practice"));
             FighterPower = CalcFighterPower();
             EnemyFighterPower = CalcEnemyFighterPower(json);
             BattleState = IsNightBattle(json) ? BattleState.Night : BattleState.Day;
@@ -121,7 +122,7 @@ namespace KancolleSniffer
             return (int)json.api_deck_id - 1;
         }
 
-        private void SetupResult(string request, dynamic json)
+        private void SetupResult(string request, dynamic json, bool practice)
         {
             if (_friend != null)
                 return;
@@ -129,16 +130,19 @@ namespace KancolleSniffer
             _fleet = DeckId(json);
             var fstats = _shipInfo.GetShipStatuses(_fleet);
             FlagshipRecovery(request, fstats[0]);
-            _friend = Record.Setup(fstats);
-            _guard = json.api_f_nowhps_combined() ? Record.Setup(_shipInfo.GetShipStatuses(1)) : new Record[0];
+            _friend = Record.Setup(fstats, practice);
+            _guard = json.api_f_nowhps_combined()
+                ? Record.Setup(_shipInfo.GetShipStatuses(1), practice)
+                : new Record[0];
             _enemy = Record.Setup((int[])json.api_e_nowhps,
                 ((int[])json.api_ship_ke).Select(_shipInfo.GetSpec).ToArray(),
-                ((int[][])json.api_eSlot).Select(slot => slot.Select(_itemInfo.GetSpecByItemId).ToArray()).ToArray());
+                ((int[][])json.api_eSlot).Select(slot => slot.Select(_itemInfo.GetSpecByItemId).ToArray()).ToArray(),
+                practice);
             _enemyGuard = json.api_ship_ke_combined()
                 ? Record.Setup((int[])json.api_e_nowhps_combined,
                     ((int[])json.api_ship_ke_combined).Select(_shipInfo.GetSpec).ToArray(),
                     ((int[][])json.api_eSlot).Select(slot => slot.Select(_itemInfo.GetSpecByItemId).ToArray())
-                    .ToArray())
+                    .ToArray(), practice)
                 : new Record[0];
         }
 
@@ -400,7 +404,8 @@ namespace KancolleSniffer
             CalcDamageAtOnce(json, friend, null, enemy, null);
         }
 
-        private void CalcDamageAtOnce(dynamic json, Record[] friend, Record[] guard, Record[] enemy, Record[] enemyGuard)
+        private void CalcDamageAtOnce(dynamic json,
+            Record[] friend, Record[] guard, Record[] enemy, Record[] enemyGuard)
         {
             if (json.api_fdam() && json.api_fdam != null)
                 CalcRawDamageAtOnce(json.api_fdam, friend, guard);
@@ -463,7 +468,6 @@ namespace KancolleSniffer
             CleanupResult();
             SetEscapeShips(json);
         }
-
 
         private void VerifyResultRank(dynamic json)
         {
@@ -529,16 +533,18 @@ namespace KancolleSniffer
         private class Record
         {
             private ShipStatus _status;
+            private bool _practice;
             public ShipStatus SnapShot => (ShipStatus)_status.Clone();
             public int NowHp => _status.NowHp;
             public bool Escaped => _status.Escaped;
             public ShipStatus.Damage DamageLevel => _status.DamageLevel;
             public int StartHp;
 
-            public static Record[] Setup(ShipStatus[] ships) =>
-                (from s in ships select new Record {_status = (ShipStatus)s.Clone(), StartHp = s.NowHp}).ToArray();
+            public static Record[] Setup(ShipStatus[] ships, bool practice) =>
+            (from s in ships
+                select new Record {_status = (ShipStatus)s.Clone(), _practice = practice, StartHp = s.NowHp}).ToArray();
 
-            public static Record[] Setup(int[] nowhps,  ShipSpec[] ships, ItemSpec[][] slots)
+            public static Record[] Setup(int[] nowhps, ShipSpec[] ships, ItemSpec[][] slots, bool practice)
             {
                 return Enumerable.Range(0, nowhps.Length).Select(i =>
                     new Record
@@ -550,9 +556,10 @@ namespace KancolleSniffer
                             NowHp = nowhps[i],
                             MaxHp = nowhps[i],
                             Spec = ships[i],
-                            Slot = slots[i].Select(spec => new ItemStatus{Id = spec.Id, Spec = spec}).ToArray(),
+                            Slot = slots[i].Select(spec => new ItemStatus {Id = spec.Id, Spec = spec}).ToArray(),
                             SlotEx = new ItemStatus(0)
-                        }
+                        },
+                        _practice = practice
                     }).ToArray();
             }
 
@@ -564,6 +571,8 @@ namespace KancolleSniffer
                     return;
                 }
                 _status.NowHp = 0;
+                if (_practice)
+                    return;
                 foreach (var item in _status.AllSlot)
                 {
                     if (item.Spec.Id == 42)
