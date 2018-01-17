@@ -111,10 +111,9 @@ namespace KancolleSniffer
             }
             else if (json.api_data()) // ship2
             {
-                ClearShipInfo();
+                // 一隻分のデータしか来ないことがあるので艦娘数を数えない
                 InspectDeck(json.api_data_deck);
                 InspectShipData(json.api_data);
-                _itemInfo.NowShips = ((object[])json.api_data).Length;
             }
             else if (json.api_ship_data()) // ship3とship_deck
             {

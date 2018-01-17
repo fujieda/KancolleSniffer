@@ -672,5 +672,16 @@ namespace KancolleSniffer.Test
             var expected = Enumerable.Repeat(new ChargeStatus(5, 5), ShipInfo.FleetCount);
             PAssert.That(() => expected.SequenceEqual(sniffer.ChargeStatuses));
         }
+
+        /// <summary>
+        /// ship2がリクエストで指定した艦娘のデータしか返さない
+        /// </summary>
+        [TestMethod]
+        public void Ship2ReturnShipSpecifiedByRequest()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "ship2_001");
+            PAssert.That(() => sniffer.Item.NowShips == 243);
+        }
     }
 }
