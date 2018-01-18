@@ -945,7 +945,7 @@ namespace KancolleSniffer
                         _toolTip.SetToolTip(count[i], "");
                         continue;
                     }
-                    count[i].Text = c.ToString();
+                    count[i].Text = " " + c;
                     count[i].ForeColor = c.Cleared ? CUDColor.Green : Color.Black;
                     _toolTip.SetToolTip(count[i], c.ToToolTip());
                 }
