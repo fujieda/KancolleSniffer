@@ -530,12 +530,13 @@ namespace KancolleSniffer.Test
         /// 674: 工廠環境の整備
         /// 675: 運用装備の統合整備
         /// 676: 装備開発力の集中整備
+        /// 677: 継戦支援能力の整備
         /// </summary>
         [TestMethod]
-        public void DestroyItem_613_638_673_674_675_676()
+        public void DestroyItem_613_638_673_674_675_676_677()
         {
             var itemInfo = new ItemInfo();
-            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 6};
+            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 7};
 
             itemInfo.InjectItemSpec(new[]
             {
@@ -544,9 +545,12 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 19, Name = "九六式艦戦", Type = 6},
                 new ItemSpec {Id = 4, Name = "14cm単装砲", Type = 2},
                 new ItemSpec {Id = 11, Name = "15.2cm単装砲", Type = 4},
-                new ItemSpec {Id = 75, Name = "ドラム缶(輸送用)", Type = 30}
+                new ItemSpec {Id = 75, Name = "ドラム缶(輸送用)", Type = 30},
+                new ItemSpec {Id = 7, Name = "35.6cm連装砲", Type = 3},
+                new ItemSpec {Id = 25, Name = "零式水上偵察機", Type = 10},
+                new ItemSpec {Id = 13, Name = "61cm三連装魚雷", Type = 5}
             });
-            itemInfo.InjectItems(new[] {1, 37, 19, 4, 11, 75});
+            itemInfo.InjectItems(new[] {1, 37, 19, 4, 11, 75, 7, 25, 13});
             questInfo.InspectQuestList(Js(new
             {
                 api_list = new[]
@@ -556,10 +560,11 @@ namespace KancolleSniffer.Test
                     new {api_no = 673, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
                     new {api_no = 674, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
                     new {api_no = 675, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 676, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 676, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
+                    new {api_no = 677, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0}
                 }
             }));
-            questInfo.InspectDestroyItem("api%5Fslotitem%5Fids=1%2C2%2C3%2C4%2C5%2C6&api%5Fverno=1", null);
+            questInfo.InspectDestroyItem("api%5Fslotitem%5Fids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9&api%5Fverno=1", null);
             PAssert.That(() =>
                 questInfo.Quests.Select(q => new {q.Id, q.Count.Now}).Take(4).SequenceEqual(new[]
                 {
@@ -570,6 +575,8 @@ namespace KancolleSniffer.Test
             PAssert.That(() => q675.Id == 675 && q675.Count.NowArray.SequenceEqual(new[] {1, 1}));
             var q676 = questInfo.Quests[5];
             PAssert.That(() => q676.Id == 676 && q676.Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
+            var q677 = questInfo.Quests[6];
+            PAssert.That(() => q677.Id == 677 && q677.Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
         }
 
         /// <summary>

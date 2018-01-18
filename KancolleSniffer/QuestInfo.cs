@@ -117,7 +117,7 @@ namespace KancolleSniffer
             {
                 if (progress != 100)
                     return false;
-                NowArray = NowArray.Zip(Spec.MaxArray, (n, m) => Max(n, m)).ToArray();
+                NowArray = NowArray.Zip(Spec.MaxArray, Max).ToArray();
                 return true;
             }
             var next = 0;
@@ -241,6 +241,7 @@ namespace KancolleSniffer
             {674, new QuestDestroyItem {Interval = Daily, Max = 3, Items = new[] {21}, Shift = 2}}, // 674: 工廠環境の整備
             {675, new QuestSpec {Interval = Quarterly, MaxArray = new[] {6, 4}}}, // 675: 運用装備の統合整備
             {676, new QuestSpec {Interval = Weekly, MaxArray = new[] {3, 3, 1}}}, // 676: 装備開発力の集中整備
+            {677, new QuestSpec {Interval = Weekly, MaxArray = new[] {4, 2, 3}}}, // 677: 継戦支援能力の整備
 
             {702, new QuestPowerup {Interval = Daily, Max = 2}}, // 702: 艦の「近代化改修」を実施せよ！
             {703, new QuestPowerup {Interval = Weekly, Max = 15}} // 703: 「近代化改修」を進め、戦備を整えよ！
@@ -595,6 +596,13 @@ namespace KancolleSniffer
                 q676.Count.NowArray[0] += items.Count(id => id == 2);
                 q676.Count.NowArray[1] += items.Count(id => id == 4);
                 q676.Count.NowArray[2] += items.Count(id => id == 30);
+                NeedSave = true;
+            }
+            if (_quests.TryGetValue(677, out var q677))
+            {
+                q677.Count.NowArray[0] += items.Count(id => id == 3);
+                q677.Count.NowArray[1] += items.Count(id => id == 10);
+                q677.Count.NowArray[2] += items.Count(id => id == 5);
                 NeedSave = true;
             }
         }
