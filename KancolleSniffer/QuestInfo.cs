@@ -27,8 +27,13 @@ namespace KancolleSniffer
         public int Id { get; set; }
         public int Category { get; set; }
         public string Name { get; set; }
+
+        [XmlIgnore]
         public QuestCount Count { get; set; }
+
         public int Progress { get; set; }
+
+        [XmlIgnore]
         public Color Color { get; set; }
     }
 
@@ -358,24 +363,14 @@ namespace KancolleSniffer
                     switch (state)
                     {
                         case 1:
-                            _quests.Remove(id);
+                            if (_quests.Remove(id))
+                                NeedSave = true;
                             break;
                         case 3:
                             progress = 100;
                             goto case 2;
                         case 2:
-                            var count = _countList.GetCount(id);
-                            if (count.AdjustCount(progress))
-                                NeedSave = true;
-                            _quests[id] = new QuestStatus
-                            {
-                                Id = id,
-                                Category = cat,
-                                Name = name,
-                                Count = count,
-                                Progress = progress,
-                                Color = cat <= _color.Length ? _color[cat - 1] : Control.DefaultBackColor
-                            };
+                            AddQuest(id, cat, name, progress, true);
                             break;
                     }
                 }
@@ -387,6 +382,23 @@ namespace KancolleSniffer
                  */
                 _quests.Clear();
             }
+        }
+
+        private void AddQuest(int id, int category, string name, int progress, bool adjustCount)
+        {
+            var count = _countList.GetCount(id);
+            if (adjustCount)
+                count.AdjustCount(progress);
+            _quests[id] = new QuestStatus
+            {
+                Id = id,
+                Category = category,
+                Name = name,
+                Count = count,
+                Progress = progress,
+                Color = category <= _color.Length ? _color[category - 1] : Control.DefaultBackColor
+            };
+            NeedSave = true;
         }
 
         private void ResetQuests()
@@ -408,6 +420,7 @@ namespace KancolleSniffer
             if (_lastReset < quarterly && quarterly <= now)
                 _countList.Remove(QuestInterval.Quarterly);
             _lastReset = now;
+            NeedSave = true;
         }
 
         private bool _boss;
@@ -624,6 +637,7 @@ namespace KancolleSniffer
         {
             var values = HttpUtility.ParseQueryString(request);
             _quests.Remove(int.Parse(values["api_quest_id"]));
+            NeedSave = true;
         }
 
         public void InspectClearItemGet(string request)
@@ -640,15 +654,23 @@ namespace KancolleSniffer
         public void SaveState(Status status)
         {
             status.QuestLastReset = _lastReset;
-            if (_countList == null)
-                return;
-            status.QuestCountList = _countList.CountList.ToArray();
+            if (_quests != null)
+                status.QuestList = _quests.Values.ToArray();
+            if (_countList != null)
+                status.QuestCountList = _countList.CountList.ToArray();
         }
 
         public void LoadState(Status status)
         {
-            _countList.CountList = status.QuestCountList;
             _lastReset = status.QuestLastReset;
+            if (status.QuestCountList != null)
+                _countList.CountList = status.QuestCountList;
+            if (status.QuestList != null)
+            {
+                _quests.Clear();
+                foreach (var q in status.QuestList)
+                    AddQuest(q.Id, q.Category, q.Name, q.Progress, false);
+            }
         }
     }
 }
