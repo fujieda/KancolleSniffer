@@ -35,13 +35,17 @@ namespace KancolleSniffer
         private Label _phaseLabel, _rankLabel;
         private BattleState _prevBattleState;
         private readonly BattleResultRank[] _rank = new BattleResultRank[2];
-        private readonly InformationPanel _infomationPanel = new InformationPanel();
+        private readonly InformationPanel _infomationPanel;
 
         public bool Spoiler { get; set; }
 
         public BattleResultPanel()
         {
+            SuspendLayout();
             CreateLabels();
+            _infomationPanel = new InformationPanel();
+            Controls.Add(_infomationPanel);
+            ResumeLayout();
         }
 
         public void SetShowHpPercent(bool hpPercent)
@@ -225,8 +229,7 @@ namespace KancolleSniffer
             }
             for (var i = lines; i < _panelList.Count; i++)
                 _panelList[i].Visible = false;
-            _infomationPanel.Location =
-                new Point(35 + AutoScrollPosition.X, lines * LineHeight + 1 + 3 + AutoScrollPosition.Y);
+            _infomationPanel.Location = new Point(AutoScrollPosition.X, 2 + AutoScrollPosition.Y);
             _infomationPanel.Visible = true;
             ResumeLayout();
         }
@@ -246,24 +249,22 @@ namespace KancolleSniffer
 
         private void CreateLabels()
         {
-            SuspendLayout();
             _phaseLabel = new Label
             {
-                Location = new Point(78, 2),
+                Location = new Point(78, 18),
                 Size = new Size(31, 14)
             };
             _phaseLabel.Click += PhaseLabelClick;
             Controls.Add(_phaseLabel);
             _rankLabel = new Label
             {
-                Location = new Point(110, 2),
+                Location = new Point(110, 18),
                 Size = new Size(42, 12)
             };
             Controls.Add(_rankLabel);
-            Controls.Add(_infomationPanel);
             for (var i = 0; i < 14; i++)
             {
-                var y = 1 + LineHeight * i;
+                var y = LineHeight * (i + 1);
                 var panel = new Panel
                 {
                     Location = new Point(0, y),
@@ -294,7 +295,6 @@ namespace KancolleSniffer
                 }
                 Controls.Add(panel);
             }
-            ResumeLayout();
         }
 
         private class InformationPanel : Panel
@@ -306,47 +306,44 @@ namespace KancolleSniffer
             public InformationPanel()
             {
                 Visible = false;
-                Size = new Size(152, 32);
+                Size = new Size(213, 12);
                 Controls.AddRange(_formation = new[]
                 {
                     new Label
                     {
-                        Location = new Point(1, 2),
-                        Size = new Size(53, 12),
-                        TextAlign = ContentAlignment.MiddleRight
+                        Location = new Point(47, 0),
+                        Size = new Size(29, 12)
                     },
                     new Label
                     {
-                        Location = new Point(98, 2),
-                        Size = new Size(53, 12),
-                        TextAlign = ContentAlignment.MiddleLeft
+                        Location = new Point(75, 0),
+                        Size = new Size(29, 12)
                     },
                     new Label
                     {
-                        Location = new Point(52, 2),
+                        Location = new Point(0, 0),
                         Size = new Size(48, 12),
-                        TextAlign = ContentAlignment.MiddleCenter
+                        TextAlign = ContentAlignment.MiddleRight
                     }
                 });
                 Controls.AddRange(_fighterPower = new[]
                 {
                     new Label
                     {
-                        Location = new Point(28, 17),
+                        Location = new Point(168, 0),
                         Size = new Size(23, 12),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new Label
                     {
-                        Location = new Point(102, 17),
+                        Location = new Point(190, 0),
                         Size = new Size(23, 12),
-                        TextAlign = ContentAlignment.MiddleLeft
+                        TextAlign = ContentAlignment.MiddleRight
                     },
                     new Label
                     {
-                        Location = new Point(50, 17),
-                        Size = new Size(53, 12),
-                        TextAlign = ContentAlignment.MiddleCenter
+                        Location = new Point(116, 0),
+                        Size = new Size(53, 12)
                     }
                 });
             }
@@ -383,27 +380,27 @@ namespace KancolleSniffer
                 switch (formation)
                 {
                     case 1:
-                        return "単縦陣";
+                        return "単縦";
                     case 2:
-                        return "複縦陣";
+                        return "複縦";
                     case 3:
-                        return "輪形陣";
+                        return "輪形";
                     case 4:
-                        return "梯形陣";
+                        return "梯形";
                     case 5:
-                        return "単横陣";
+                        return "単横";
                     case 6:
-                        return "警戒陣";
+                        return "警戒";
                     case 11:
-                        return "第一警戒";
+                        return "第一";
                     case 12:
-                        return "第二警戒";
+                        return "第二";
                     case 13:
-                        return "第三警戒";
+                        return "第三";
                     case 14:
-                        return "第四警戒";
+                        return "第四";
                     default:
-                        return "単縦陣";
+                        return "";
                 }
             }
         }
