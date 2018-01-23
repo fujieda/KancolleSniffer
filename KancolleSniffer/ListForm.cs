@@ -150,9 +150,10 @@ namespace KancolleSniffer
 
         private void ShipListForm_Load(object sender, EventArgs e)
         {
-            shipListPanel.Width = itemTreeView.Width = fleetPanel.Width =
-                (int)Round(PanelWidth * ShipLabel.ScaleFactor.Width) + 3 + SystemInformation.VerticalScrollBarWidth;
-            Width = shipListPanel.Width + 12 + (Width - ClientSize.Width);
+            /* DPIではなくズームしたときにパネルは大きくなるがScrollBarはそのままなので隙間ができる。
+               そこでScrollBarの幅に合わせて全体の横幅を設定し直す。*/
+            Width = (int)Round((PanelWidth + 12 /* PanelとFrameの内側 */) * ShipLabel.ScaleFactor.Width) +
+                    SystemInformation.VerticalScrollBarWidth + 2 /* 縁の幅 */ + Width - ClientSize.Width;
             MinimumSize = new Size(Width, 0);
             MaximumSize = new Size(Width, int.MaxValue);
             var config = _config.ShipList;

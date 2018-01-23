@@ -327,7 +327,7 @@ namespace KancolleSniffer
             this.richTextBoxMiscText.Location = new System.Drawing.Point(6, 23);
             this.richTextBoxMiscText.Name = "richTextBoxMiscText";
             this.richTextBoxMiscText.ReadOnly = true;
-            this.richTextBoxMiscText.Size = new System.Drawing.Size(236, 263);
+            this.richTextBoxMiscText.Size = new System.Drawing.Size(238, 263);
             this.richTextBoxMiscText.TabIndex = 0;
             this.richTextBoxMiscText.Text = "";
             // 
@@ -406,6 +406,8 @@ namespace KancolleSniffer
             // 
             // airBattleResultPanel
             // 
+            this.airBattleResultPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.airBattleResultPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.airBattleResultPanel.Location = new System.Drawing.Point(6, 23);
             this.airBattleResultPanel.Name = "airBattleResultPanel";
@@ -415,8 +417,9 @@ namespace KancolleSniffer
             // 
             // battleResultPanel
             // 
-            this.battleResultPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.battleResultPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.battleResultPanel.AutoScroll = true;
             this.battleResultPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.battleResultPanel.Location = new System.Drawing.Point(6, 73);
@@ -427,8 +430,9 @@ namespace KancolleSniffer
             // 
             // antiAirPanel
             // 
-            this.antiAirPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.antiAirPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.antiAirPanel.AutoScroll = true;
             this.antiAirPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.antiAirPanel.Location = new System.Drawing.Point(6, 23);
@@ -438,8 +442,9 @@ namespace KancolleSniffer
             // 
             // fleetPanel
             // 
-            this.fleetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.fleetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.fleetPanel.AutoScroll = true;
             this.fleetPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.fleetPanel.ContextMenuStrip = this.contextMenuStripFleetData;
@@ -450,8 +455,9 @@ namespace KancolleSniffer
             // 
             // itemTreeView
             // 
-            this.itemTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.itemTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.itemTreeView.ContextMenuStrip = this.contextMenuStrip;
             this.itemTreeView.Location = new System.Drawing.Point(6, 23);
             this.itemTreeView.Name = "itemTreeView";
@@ -460,8 +466,9 @@ namespace KancolleSniffer
             // 
             // shipListPanel
             // 
-            this.shipListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.shipListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.shipListPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.shipListPanel.ContextMenuStrip = this.contextMenuStripShipList;
             this.shipListPanel.Location = new System.Drawing.Point(6, 23);
