@@ -401,6 +401,11 @@ namespace KancolleSniffer
             NeedSave = true;
         }
 
+        public void ClearQuests()
+        {
+            _quests.Clear();
+        }
+
         private void ResetQuests()
         {
             var now = _nowFunc();

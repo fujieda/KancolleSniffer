@@ -172,6 +172,7 @@ namespace KancolleSniffer
             this.toolTipFighterPower = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipLoS = new System.Windows.Forms.ToolTip(this.components);
             this.panelRepairList = new KancolleSniffer.RepairListForMain();
+            this.labelClearQuest = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -1376,12 +1377,24 @@ namespace KancolleSniffer
             this.panelRepairList.Visible = false;
             this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
             // 
+            // labelClearQuest
+            // 
+            this.labelClearQuest.AutoSize = true;
+            this.labelClearQuest.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelClearQuest.Location = new System.Drawing.Point(37, 340);
+            this.labelClearQuest.Name = "labelClearQuest";
+            this.labelClearQuest.Size = new System.Drawing.Size(15, 14);
+            this.labelClearQuest.TabIndex = 55;
+            this.labelClearQuest.Text = "↺";
+            this.labelClearQuest.Click += new System.EventHandler(this.labelClearQuest_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.labelClearQuest);
             this.Controls.Add(this.labelAkashiRepair);
             this.Controls.Add(this.labelAkashiRepairTimer);
             this.Controls.Add(this.panelMaterialHistory);
@@ -1578,6 +1591,7 @@ namespace KancolleSniffer
         private ShipLabel labelQuestCount4;
         private ShipLabel labelQuestCount5;
         private ShipLabel labelQuestCount6;
+        private System.Windows.Forms.Label labelClearQuest;
     }
 }
 

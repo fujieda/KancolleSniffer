@@ -543,6 +543,8 @@ namespace KancolleSniffer
 
         public QuestStatus[] Quests => _questInfo.Quests;
 
+        public void ClearQuests() => _questInfo.ClearQuests();
+
         public NameAndTimer[] Missions => _missionInfo.Missions;
 
         public DateTime GetConditionTimer(int fleet) => _conditionTimer.GetTimer(fleet);

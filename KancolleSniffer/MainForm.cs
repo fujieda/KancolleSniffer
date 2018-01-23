@@ -1147,6 +1147,12 @@ namespace KancolleSniffer
             Process.Start("http://localhost:" + _config.Proxy.Listen + "/");
         }
 
+        private void labelClearQuest_Click(object sender, EventArgs e)
+        {
+            _sniffer.ClearQuests();
+            UpdateQuestList();
+        }
+
         private void CaptureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
