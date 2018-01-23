@@ -224,7 +224,8 @@ namespace KancolleSniffer
                     (int)Round(164 * ShipLabel.ScaleFactor.Width) + labelWidth - 1);
                 if (panel.Visible)
                     continue;
-                panel.Location = new Point(AutoScrollPosition.X, (int)panel.Tag + AutoScrollPosition.Y);
+                panel.Location = new Point(AutoScrollPosition.X,
+                    (int)Round((int)panel.Tag * ShipLabel.ScaleFactor.Height) + AutoScrollPosition.Y);
                 panel.Visible = true;
             }
             for (var i = lines; i < _panelList.Count; i++)
