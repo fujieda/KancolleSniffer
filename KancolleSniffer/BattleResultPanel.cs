@@ -216,12 +216,9 @@ namespace KancolleSniffer
                 _enemyLabels[i][1].SetName("");
             }
             var lines = Max(friendLines, enemyLines);
-            var labelWidth = _enemyLabels.Max(labels => labels[1].Size.Width);
             for (var i = 0; i < lines; i++)
             {
                 var panel = _panelList[i];
-                _panelList[i].Width = Max(ClientSize.Width,
-                    (int)Round(164 * ShipLabel.ScaleFactor.Width) + labelWidth - 1);
                 if (panel.Visible)
                     continue;
                 panel.Location = new Point(AutoScrollPosition.X,
@@ -230,9 +227,13 @@ namespace KancolleSniffer
             }
             for (var i = lines; i < _panelList.Count; i++)
                 _panelList[i].Visible = false;
+            ResumeLayout(); // スクロールバーの有無を決定する
+            var panelWidth = Max(ClientSize.Width, // スクロールバーの有無を反映した横幅
+                _enemyLabels[0][1].Location.X + _enemyLabels.Max(labels => labels[1].Size.Width) - 1); // 敵の名前の右端
+            for (var i = 0; i < lines; i++)
+                _panelList[i].Width = panelWidth;
             _infomationPanel.Location = new Point(AutoScrollPosition.X, 2 + AutoScrollPosition.Y);
             _infomationPanel.Visible = true;
-            ResumeLayout();
         }
 
         private string ShortenName(string name)
