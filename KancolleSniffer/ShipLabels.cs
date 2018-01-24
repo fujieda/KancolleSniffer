@@ -34,6 +34,7 @@ namespace KancolleSniffer
         GroupConfig = 82,
         Combined = 54,
         BattleResult = 65,
+        CiShipName = 65,
         Max = int.MaxValue
     }
 

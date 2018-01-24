@@ -357,7 +357,7 @@ namespace KancolleSniffer
             var stage1 = json.api_stage1;
             if (stage1 == null || (stage1.api_f_count == 0 && stage1.api_e_count == 0))
                 return;
-            AirBattleResults.Add(new AirBattleResult
+            var result = new AirBattleResult
             {
                 PhaseName = phaseName,
                 AirControlLevel = json.api_stage1.api_disp_seiku() ? (int)json.api_stage1.api_disp_seiku : 0,
@@ -383,7 +383,19 @@ namespace KancolleSniffer
                         EnemyCount = (int)json.api_stage2.api_e_count,
                         EnemyLost = (int)json.api_stage2.api_e_lostcount
                     }
-            });
+            };
+            if (json.api_stage2 != null && json.api_stage2.api_air_fire())
+            {
+                var airfire = json.api_stage2.api_air_fire;
+                var idx = (int)airfire.api_idx;
+                result.AirFire = new AirBattleResult.AirFireResult
+                {
+                    ShipName = idx < _friend.Length ? _friend[idx].Name : _guard[idx - 6].Name,
+                    Kind = (int)airfire.api_kind,
+                    Items = ((int[])airfire.api_use_items).Select(id => _itemInfo.GetSpecByItemId(id).Name).ToArray()
+                };
+            }
+            AirBattleResults.Add(result);
         }
 
         private void CalcKoukuDamage(dynamic json)
@@ -538,7 +550,8 @@ namespace KancolleSniffer
             public int NowHp => _status.NowHp;
             public bool Escaped => _status.Escaped;
             public ShipStatus.Damage DamageLevel => _status.DamageLevel;
-            public int StartHp;
+            public string Name => _status.Name;
+            public int StartHp { get; private set; }
 
             public static Record[] Setup(ShipStatus[] ships, bool practice) =>
             (from s in ships

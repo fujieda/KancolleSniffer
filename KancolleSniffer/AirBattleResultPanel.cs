@@ -32,10 +32,18 @@ namespace KancolleSniffer
             public int EnemyLost { get; set; }
         }
 
+        public class AirFireResult
+        {
+            public string ShipName { get; set; }
+            public int Kind { get; set; }
+            public string[] Items { get; set; }
+        }
+
         public string PhaseName { get; set; }
         public int AirControlLevel { get; set; }
-        public StageResult Stage1 { get; set; } = new StageResult();
-        public StageResult Stage2 { get; set; } = new StageResult();
+        public StageResult Stage1 { get; set;  }
+        public StageResult Stage2 { get; set;  }
+        public AirFireResult AirFire { get; set; }
     }
 
     [DesignerCategory("Code")]
@@ -46,6 +54,9 @@ namespace KancolleSniffer
         private readonly Label[][][] _resultLabels = new Label[2][][];
         private AirBattleResult[] _resultList;
         private int _resultIndex;
+        private readonly ShipLabel _ciShipName;
+        private readonly Label _ciKind;
+        private readonly ToolTip _toolTip = new ToolTip{ShowAlways = true};
 
         public bool ShowResultAutomatic { get; set; }
 
@@ -57,6 +68,7 @@ namespace KancolleSniffer
         public AirBattleResultPanel()
         {
             const int top = 20;
+            const int ci = 168;
             var labels = new[]
             {
                 _phaseName =
@@ -70,7 +82,8 @@ namespace KancolleSniffer
                 _stage1 = new Label {Text = "stage1", Location = new Point(8, top), AutoSize = true},
                 new Label {Text = "stage2", Location = new Point(8, top + 14), AutoSize = true},
                 new Label {Text = "自軍", Location = new Point(67, 6), AutoSize = true},
-                new Label {Text = "敵軍", Location = new Point(122, 6), AutoSize = true}
+                new Label {Text = "敵軍", Location = new Point(122, 6), AutoSize = true},
+                new Label {Text = "CI", Location = new Point(ci, 4), AutoSize = true}
             };
             Controls.AddRange(labels);
             const int left = 53;
@@ -101,6 +114,16 @@ namespace KancolleSniffer
                     });
                 }
             }
+            Controls.Add(_ciShipName = new ShipLabel
+            {
+                Location = new Point(ci, top),
+                Size = new Size((int)ShipNameWidth.CiShipName, 12)
+            });
+            Controls.Add(_ciKind = new Label
+            {
+                Location = new Point(ci, top + 14),
+                Size = new Size(24, 12)
+            });
             _phaseName.Click += PhaseNameOnClick;
         }
 
@@ -153,6 +176,24 @@ namespace KancolleSniffer
                 labels[1][0].Text = $"{stage.EnemyCount}";
                 labels[1][1].Text = $"{stage.EnemyCount - stage.EnemyLost}";
             }
+            ShowAirFireResult();
+        }
+
+        private void ShowAirFireResult()
+        {
+            var result = _resultList[_resultIndex];
+            if (result.AirFire == null)
+            {
+                _ciShipName.SetName(null);
+                _ciKind.Text = "";
+                _toolTip.SetToolTip(_ciKind, "");
+            }
+            else
+            {
+                _ciShipName.SetName(result.AirFire.ShipName, ShipNameWidth.CiShipName);
+                _ciKind.Text = result.AirFire.Kind.ToString();
+                _toolTip.SetToolTip(_ciKind, string.Join("\r\n", result.AirFire.Items));
+            }
         }
 
         private void ClearResult()
@@ -169,6 +210,9 @@ namespace KancolleSniffer
                     }
                 }
             }
+            _ciShipName.SetName(null);
+            _ciKind.Text = "";
+            _toolTip.SetToolTip(_ciKind, "");
         }
     }
 }
