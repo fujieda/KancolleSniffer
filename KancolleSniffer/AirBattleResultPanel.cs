@@ -44,7 +44,7 @@ namespace KancolleSniffer
         private readonly Label _phaseName;
         private readonly Label _stage1;
         private readonly Label[][][] _resultLabels = new Label[2][][];
-        private List<AirBattleResult> _resultList;
+        private AirBattleResult[] _resultList;
         private int _resultIndex;
 
         public bool ShowResultAutomatic { get; set; }
@@ -106,14 +106,14 @@ namespace KancolleSniffer
 
         public void SetResult(List<AirBattleResult> resultList)
         {
-            _resultList = resultList;
-            if (_resultList.Count == 0)
+            _resultList = resultList.ToArray();
+            if (_resultList.Length == 0)
             {
                 ResultRemained = false;
                 ClearResult();
                 return;
             }
-            _resultIndex = _resultList.Count - 1;
+            _resultIndex = _resultList.Length - 1;
             if (!ShowResultAutomatic)
             {
                 ResultRemained = true;
@@ -121,23 +121,23 @@ namespace KancolleSniffer
                 return;
             }
             ShowResult();
-            ResultRemained = _resultList.Count > 1;
+            ResultRemained = _resultList.Length > 1;
             _resultIndex = 0;
         }
 
         private void PhaseNameOnClick(object sender, EventArgs eventArgs)
         {
-            if (_resultList == null || _resultList.Count == 0)
+            if (_resultList == null || _resultList.Length == 0)
                 return;
             ShowResult();
-            if (_resultList.Count == 1)
+            if (_resultList.Length == 1)
                 ResultRemained = false;
-            _resultIndex = (_resultIndex + 1) % _resultList.Count;
+            _resultIndex = (_resultIndex + 1) % _resultList.Length;
         }
 
         private void ShowResult()
         {
-            if (_resultIndex >= _resultList.Count)
+            if (_resultIndex >= _resultList.Length)
                 return;
             var result = _resultList[_resultIndex];
             _phaseName.Text = result.PhaseName;
