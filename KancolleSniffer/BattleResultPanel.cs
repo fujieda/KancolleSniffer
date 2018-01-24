@@ -168,8 +168,11 @@ namespace KancolleSniffer
             _friendLabels[0][1].Text = fleet[friend.Main[0].Fleet];
             for (var i = 0; i < friend.Main.Length; i++)
             {
-                _friendLabels[i + 1][0].SetHp(friend.Main[i]);
-                _friendLabels[i + 1][1].SetName(friend.Main[i], ShipNameWidth.BattleResult);
+                var labels = _friendLabels[i + 1];
+                var ship = friend.Main[i];
+                labels[0].SetHp(ship);
+                labels[1].SetName(ship, ShipNameWidth.BattleResult);
+                _toolTip.SetToolTip(labels[1], GetEqipString(ship));
             }
             if (friend.Guard.Length > 0)
             {
@@ -178,8 +181,10 @@ namespace KancolleSniffer
                 for (var i = 0; i < friend.Guard.Length; i++)
                 {
                     var labels = _friendLabels[friend.Main.Length + 2 + i];
-                    labels[0].SetHp(friend.Guard[i]);
-                    labels[1].SetName(friend.Guard[i], ShipNameWidth.BattleResult);
+                    var ship = friend.Guard[i];
+                    labels[0].SetHp(ship);
+                    labels[1].SetName(ship, ShipNameWidth.BattleResult);
+                    _toolTip.SetToolTip(labels[1], GetEqipString(ship));
                 }
             }
             var friendLines = 1 + friend.Main.Length + (friend.Guard.Length > 0 ? friend.Guard.Length + 1 : 0);
@@ -192,9 +197,10 @@ namespace KancolleSniffer
             for (var i = 0; i < enemy.Main.Length; i++)
             {
                 var labels = _enemyLabels[i + 1];
-                labels[0].SetHp(enemy.Main[i]);
-                labels[1].SetName(ShortenName(enemy.Main[i].Name));
-                _toolTip.SetToolTip(labels[1], string.Join("\r\n", enemy.Main[i].Slot.Select(item => item.Spec.Name)));
+                var ship = enemy.Main[i];
+                labels[0].SetHp(ship);
+                labels[1].SetName(ShortenName(ship.Name));
+                _toolTip.SetToolTip(labels[1], string.Join("\r\n", ship.Slot.Select(item => item.Spec.Name)));
             }
             if (enemy.Guard.Length > 0)
             {
@@ -203,10 +209,11 @@ namespace KancolleSniffer
                 for (var i = 0; i < enemy.Guard.Length; i++)
                 {
                     var labels = _enemyLabels[enemy.Main.Length + 2 + i];
-                    labels[0].SetHp(enemy.Guard[i]);
-                    labels[1].SetName(ShortenName(enemy.Guard[i].Name));
+                    var ship = enemy.Guard[i];
+                    labels[0].SetHp(ship);
+                    labels[1].SetName(ShortenName(ship.Name));
                     _toolTip.SetToolTip(labels[1],
-                        string.Join("\r\n", enemy.Guard[i].Slot.Select(item => item.Spec.Name)));
+                        string.Join("\r\n", ship.Slot.Select(item => item.Spec.Name)));
                 }
             }
             var enemyLines = 1 + enemy.Main.Length + (enemy.Guard.Length > 0 ? enemy.Guard.Length + 1 : 0);
@@ -234,6 +241,21 @@ namespace KancolleSniffer
                 _panelList[i].Width = panelWidth;
             _infomationPanel.Location = new Point(AutoScrollPosition.X, 2 + AutoScrollPosition.Y);
             _infomationPanel.Visible = true;
+        }
+
+        private string GetEqipString(ShipStatus ship)
+        {
+            var result = new List<string>();
+            for (var i = 0; i < ship.Slot.Length; i++)
+            {
+                var item = ship.Slot[i];
+                var onslot = ship.OnSlot[i];
+                var max = ship.Spec.MaxEq[i];
+                if (item.Id == -1)
+                    continue;
+                result.Add(item.Spec.Name + (item.Spec.IsAircraft ? $" {onslot}/{max}" : ""));
+            }
+            return string.Join("\r\n", result);
         }
 
         private string ShortenName(string name)
