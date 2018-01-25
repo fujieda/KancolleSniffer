@@ -40,6 +40,7 @@
             this.checkBoxCont = new System.Windows.Forms.CheckBox();
             this.textBoxPreliminary = new System.Windows.Forms.TextBox();
             this.labelPreliminary = new System.Windows.Forms.Label();
+            this.checkBoxPreliminary = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // listBoxNotifications
@@ -112,7 +113,7 @@
             // checkBoxRepeat
             // 
             this.checkBoxRepeat.AutoSize = true;
-            this.checkBoxRepeat.Location = new System.Drawing.Point(117, 133);
+            this.checkBoxRepeat.Location = new System.Drawing.Point(12, 133);
             this.checkBoxRepeat.Name = "checkBoxRepeat";
             this.checkBoxRepeat.Size = new System.Drawing.Size(58, 16);
             this.checkBoxRepeat.TabIndex = 8;
@@ -122,7 +123,7 @@
             // 
             // textBoxRepeat
             // 
-            this.textBoxRepeat.Location = new System.Drawing.Point(172, 131);
+            this.textBoxRepeat.Location = new System.Drawing.Point(67, 131);
             this.textBoxRepeat.Name = "textBoxRepeat";
             this.textBoxRepeat.Size = new System.Drawing.Size(26, 19);
             this.textBoxRepeat.TabIndex = 9;
@@ -131,7 +132,7 @@
             // labelRepeat
             // 
             this.labelRepeat.AutoSize = true;
-            this.labelRepeat.Location = new System.Drawing.Point(199, 134);
+            this.labelRepeat.Location = new System.Drawing.Point(96, 134);
             this.labelRepeat.Name = "labelRepeat";
             this.labelRepeat.Size = new System.Drawing.Size(29, 12);
             this.labelRepeat.TabIndex = 10;
@@ -140,7 +141,7 @@
             // checkBoxCont
             // 
             this.checkBoxCont.AutoSize = true;
-            this.checkBoxCont.Location = new System.Drawing.Point(228, 133);
+            this.checkBoxCont.Location = new System.Drawing.Point(67, 155);
             this.checkBoxCont.Name = "checkBoxCont";
             this.checkBoxCont.Size = new System.Drawing.Size(48, 16);
             this.checkBoxCont.TabIndex = 11;
@@ -150,7 +151,7 @@
             // 
             // textBoxPreliminary
             // 
-            this.textBoxPreliminary.Location = new System.Drawing.Point(21, 131);
+            this.textBoxPreliminary.Location = new System.Drawing.Point(180, 131);
             this.textBoxPreliminary.Name = "textBoxPreliminary";
             this.textBoxPreliminary.Size = new System.Drawing.Size(26, 19);
             this.textBoxPreliminary.TabIndex = 12;
@@ -159,11 +160,22 @@
             // labelPreliminary
             // 
             this.labelPreliminary.AutoSize = true;
-            this.labelPreliminary.Location = new System.Drawing.Point(49, 134);
+            this.labelPreliminary.Location = new System.Drawing.Point(208, 134);
             this.labelPreliminary.Name = "labelPreliminary";
-            this.labelPreliminary.Size = new System.Drawing.Size(62, 12);
+            this.labelPreliminary.Size = new System.Drawing.Size(29, 12);
             this.labelPreliminary.TabIndex = 13;
-            this.labelPreliminary.Text = "秒前に予告";
+            this.labelPreliminary.Text = "秒前";
+            // 
+            // checkBoxPreliminary
+            // 
+            this.checkBoxPreliminary.AutoSize = true;
+            this.checkBoxPreliminary.Location = new System.Drawing.Point(134, 133);
+            this.checkBoxPreliminary.Name = "checkBoxPreliminary";
+            this.checkBoxPreliminary.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxPreliminary.TabIndex = 14;
+            this.checkBoxPreliminary.Text = "予告";
+            this.checkBoxPreliminary.UseVisualStyleBackColor = true;
+            this.checkBoxPreliminary.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // NotificationConfigDialog
             // 
@@ -172,8 +184,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonClose;
             this.ClientSize = new System.Drawing.Size(288, 195);
-            this.Controls.Add(this.labelPreliminary);
             this.Controls.Add(this.textBoxPreliminary);
+            this.Controls.Add(this.checkBoxPreliminary);
+            this.Controls.Add(this.labelPreliminary);
             this.Controls.Add(this.checkBoxCont);
             this.Controls.Add(this.labelRepeat);
             this.Controls.Add(this.textBoxRepeat);
@@ -211,5 +224,6 @@
         private System.Windows.Forms.CheckBox checkBoxCont;
         private System.Windows.Forms.TextBox textBoxPreliminary;
         private System.Windows.Forms.Label labelPreliminary;
+        private System.Windows.Forms.CheckBox checkBoxPreliminary;
     }
 }

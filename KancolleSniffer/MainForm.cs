@@ -906,7 +906,9 @@ namespace KancolleSniffer
 
         private void SetPreNotification(string key, int fleet, string subject)
         {
-            _notificationManager.Enqueue(key, fleet, subject, 0, true);
+            var spec = _config.Notifications[_notificationManager.KeyToName(key)];
+            if ((spec.Flags & NotificationType.Preliminary) != 0)
+                _notificationManager.Enqueue(key, fleet, subject, 0, true);
         }
 
         private void UpdateRepairList()
