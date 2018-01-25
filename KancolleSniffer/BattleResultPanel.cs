@@ -156,7 +156,8 @@ namespace KancolleSniffer
         {
             foreach (var panel in _panelList)
                 panel.Visible = false;
-            _rankLabel.Visible = _infomationPanel.Visible = false;
+            _infomationPanel.Visible = false;
+            _rankLabel.Text = "";
         }
 
         private void ShowResult(BattleInfo.BattleResult result)
@@ -239,7 +240,7 @@ namespace KancolleSniffer
                 _enemyLabels[0][1].Location.X + _enemyLabels.Max(labels => labels[1].Size.Width) - 1); // 敵の名前の右端
             for (var i = 0; i < lines; i++)
                 _panelList[i].Width = panelWidth;
-            _infomationPanel.Location = new Point(AutoScrollPosition.X, 2 + AutoScrollPosition.Y);
+            _infomationPanel.Location = new Point(AutoScrollPosition.X, AutoScrollPosition.Y);
             _infomationPanel.Visible = true;
         }
 
@@ -266,7 +267,6 @@ namespace KancolleSniffer
 
         private void ShowResultRank(BattleResultRank rank)
         {
-            _rankLabel.Visible = true;
             var result = new[] {"完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E"};
             _rankLabel.Text = result[(int)rank];
         }
@@ -275,20 +275,20 @@ namespace KancolleSniffer
         {
             _phaseLabel = new Label
             {
-                Location = new Point(78, 18),
+                Location = new Point(72, 21),
                 Size = new Size(31, 14)
             };
             _phaseLabel.Click += PhaseLabelClick;
             Controls.Add(_phaseLabel);
             _rankLabel = new Label
             {
-                Location = new Point(110, 18),
+                Location = new Point(111, 22),
                 Size = new Size(42, 12)
             };
             Controls.Add(_rankLabel);
             for (var i = 0; i < 14; i++)
             {
-                var y = LineHeight * (i + 1);
+                var y = LineHeight * i + 21;
                 var panel = new Panel
                 {
                     Location = new Point(0, y),
@@ -329,47 +329,53 @@ namespace KancolleSniffer
 
             public InformationPanel()
             {
+                const int top = 4;
+                const int left = 1;
                 Visible = false;
-                Size = new Size(213, 12);
+                Size = new Size(left + 206, top + 15);
                 Controls.AddRange(_formation = new[]
                 {
                     new Label
                     {
-                        Location = new Point(47, 0),
+                        Location = new Point(46, 0),
                         Size = new Size(29, 12)
                     },
                     new Label
                     {
-                        Location = new Point(75, 0),
+                        Location = new Point(74, 0),
                         Size = new Size(29, 12)
                     },
                     new Label
                     {
                         Location = new Point(0, 0),
                         Size = new Size(48, 12),
-                        TextAlign = ContentAlignment.MiddleRight
+                        TextAlign = ContentAlignment.MiddleCenter
                     }
                 });
                 Controls.AddRange(_fighterPower = new[]
                 {
                     new Label
                     {
-                        Location = new Point(168, 0),
+                        Location = new Point(162, 0),
                         Size = new Size(23, 12),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new Label
                     {
-                        Location = new Point(190, 0),
+                        Location = new Point(183, 0),
                         Size = new Size(23, 12),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new Label
                     {
-                        Location = new Point(116, 0),
+                        Location = new Point(110, 0),
                         Size = new Size(53, 12)
                     }
                 });
+                foreach (Control control in Controls)
+                    control.Location = new Point(control.Location.X + left, control.Location.Y + top);
+                // ReSharper disable once VirtualMemberCallInConstructor
+                BackColor = ShipLabels.ColumnColors[1];
             }
 
             public void SetInformation(BattleInfo battleInfo)
