@@ -354,7 +354,8 @@ namespace KancolleSniffer
             foreach (var control in new Control[]
             {
                 this, _listForm, labelLogin, linkLabelGuide,
-                _configDialog, contextMenuStripMain, _errorDialog
+                _configDialog, _configDialog.NotificationConfigDialog,
+                contextMenuStripMain, _errorDialog
             })
             {
                 control.Font = new Font(control.Font.FontFamily, control.Font.Size * _config.Zoom / 100);

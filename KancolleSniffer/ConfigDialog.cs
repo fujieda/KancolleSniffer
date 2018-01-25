@@ -25,7 +25,6 @@ namespace KancolleSniffer
     {
         private readonly Config _config;
         private readonly MainForm _main;
-        private readonly NotificationConfigDialog _notificationConfigDialog;
 
         private readonly Dictionary<string, NotificationSpec> _notificationSettings =
             new Dictionary<string, NotificationSpec>();
@@ -35,6 +34,7 @@ namespace KancolleSniffer
         private Point _prevPosition = new Point(int.MinValue, int.MinValue);
 
         public List<string> RepeatSettingsChanged { get; } = new List<string>();
+        public NotificationConfigDialog NotificationConfigDialog { get; }
 
         public ConfigDialog(Config config, MainForm main)
         {
@@ -45,7 +45,7 @@ namespace KancolleSniffer
             listBoxSoundFile.Items.AddRange(Config.NotificationNames);
             numericUpDownMaterialLogInterval.Maximum = 1440;
 
-            _notificationConfigDialog = new NotificationConfigDialog(_notificationSettings,
+            NotificationConfigDialog = new NotificationConfigDialog(_notificationSettings,
                 new Dictionary<NotificationType, CheckBox>
                 {
                     {NotificationType.FlashWindow, checkBoxFlash},
@@ -342,7 +342,7 @@ namespace KancolleSniffer
 
         private void buttonDetailedSettings_Click(object sender, EventArgs e)
         {
-            _notificationConfigDialog.ShowDialog(this);
+            NotificationConfigDialog.ShowDialog(this);
         }
 
         private void ConfigDialog_FormClosing(object sender, FormClosingEventArgs e)
