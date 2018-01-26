@@ -165,11 +165,9 @@ namespace KancolleSniffer
             SuspendLayout();
             var friend = result.Friend;
             var enemy = result.Enemy;
-            var fleet = new[] {"第一", "第二", "第三", "第四"};
-            _friendLabels[0][1].Text = fleet[friend.Main[0].Fleet];
             for (var i = 0; i < friend.Main.Length; i++)
             {
-                var labels = _friendLabels[i + 1];
+                var labels = _friendLabels[i];
                 var ship = friend.Main[i];
                 labels[0].SetHp(ship);
                 labels[1].SetName(ship, ShipNameWidth.BattleResult);
@@ -177,27 +175,26 @@ namespace KancolleSniffer
             }
             if (friend.Guard.Length > 0)
             {
-                _friendLabels[friend.Main.Length + 1][1].Text = fleet[friend.Guard[0].Fleet];
-                _friendLabels[friend.Main.Length + 1][0].SetHp(null);
+                _friendLabels[friend.Main.Length][1].Text = "護衛";
+                _friendLabels[friend.Main.Length][0].SetHp(null);
                 for (var i = 0; i < friend.Guard.Length; i++)
                 {
-                    var labels = _friendLabels[friend.Main.Length + 2 + i];
+                    var labels = _friendLabels[friend.Main.Length + 1 + i];
                     var ship = friend.Guard[i];
                     labels[0].SetHp(ship);
                     labels[1].SetName(ship, ShipNameWidth.BattleResult);
                     _toolTip.SetToolTip(labels[1], GetEqipString(ship));
                 }
             }
-            var friendLines = 1 + friend.Main.Length + (friend.Guard.Length > 0 ? friend.Guard.Length + 1 : 0);
+            var friendLines = friend.Main.Length + (friend.Guard.Length > 0 ? friend.Guard.Length + 1 : 0);
             for (var i = friendLines; i < _friendLabels.Count; i++)
             {
                 _friendLabels[i][0].SetHp(null);
                 _friendLabels[i][1].SetName("");
             }
-            _enemyLabels[0][1].Text = "本隊";
             for (var i = 0; i < enemy.Main.Length; i++)
             {
-                var labels = _enemyLabels[i + 1];
+                var labels = _enemyLabels[i];
                 var ship = enemy.Main[i];
                 labels[0].SetHp(ship);
                 labels[1].SetName(ShortenName(ship.Name));
@@ -205,11 +202,11 @@ namespace KancolleSniffer
             }
             if (enemy.Guard.Length > 0)
             {
-                _enemyLabels[enemy.Main.Length + 1][0].SetHp(null);
-                _enemyLabels[enemy.Main.Length + 1][1].Text = "護衛";
+                _enemyLabels[enemy.Main.Length][1].Text = "護衛";
+                _enemyLabels[enemy.Main.Length][0].SetHp(null);
                 for (var i = 0; i < enemy.Guard.Length; i++)
                 {
-                    var labels = _enemyLabels[enemy.Main.Length + 2 + i];
+                    var labels = _enemyLabels[enemy.Main.Length + 1 + i];
                     var ship = enemy.Guard[i];
                     labels[0].SetHp(ship);
                     labels[1].SetName(ShortenName(ship.Name));
@@ -217,7 +214,7 @@ namespace KancolleSniffer
                         string.Join("\r\n", ship.Slot.Select(item => item.Spec.Name)));
                 }
             }
-            var enemyLines = 1 + enemy.Main.Length + (enemy.Guard.Length > 0 ? enemy.Guard.Length + 1 : 0);
+            var enemyLines = enemy.Main.Length + (enemy.Guard.Length > 0 ? enemy.Guard.Length + 1 : 0);
             for (var i = enemyLines; i < _enemyLabels.Count; i++)
             {
                 _enemyLabels[i][0].SetHp(null);
@@ -240,7 +237,9 @@ namespace KancolleSniffer
                 _enemyLabels[0][1].Location.X + _enemyLabels.Max(labels => labels[1].Size.Width) - 1); // 敵の名前の右端
             for (var i = 0; i < lines; i++)
                 _panelList[i].Width = panelWidth;
-            _infomationPanel.Location = new Point(AutoScrollPosition.X, AutoScrollPosition.Y);
+            _infomationPanel.Location = new Point(
+                (int)Round(0 * ShipLabel.ScaleFactor.Width) + AutoScrollPosition.X,
+                (int)Round(20 * ShipLabel.ScaleFactor.Height) +AutoScrollPosition.Y);
             _infomationPanel.Visible = true;
         }
 
@@ -275,20 +274,20 @@ namespace KancolleSniffer
         {
             _phaseLabel = new Label
             {
-                Location = new Point(72, 21),
+                Location = new Point(4, 4),
                 Size = new Size(31, 14)
             };
             _phaseLabel.Click += PhaseLabelClick;
             Controls.Add(_phaseLabel);
             _rankLabel = new Label
             {
-                Location = new Point(111, 22),
+                Location = new Point(37, 4),
                 Size = new Size(42, 12)
             };
             Controls.Add(_rankLabel);
-            for (var i = 0; i < 14; i++)
+            for (var i = 0; i < 13; i++)
             {
-                var y = LineHeight * i + 21;
+                var y = LineHeight * i + 38;
                 var panel = new Panel
                 {
                     Location = new Point(0, y),
@@ -329,25 +328,23 @@ namespace KancolleSniffer
 
             public InformationPanel()
             {
-                const int top = 4;
-                const int left = 1;
                 Visible = false;
-                Size = new Size(left + 206, top + 15);
+                Size = new Size(206, 16);
                 Controls.AddRange(_formation = new[]
                 {
                     new Label
                     {
-                        Location = new Point(46, 0),
+                        Location = new Point(46, 2),
                         Size = new Size(29, 12)
                     },
                     new Label
                     {
-                        Location = new Point(74, 0),
+                        Location = new Point(74, 2),
                         Size = new Size(29, 12)
                     },
                     new Label
                     {
-                        Location = new Point(0, 0),
+                        Location = new Point(0, 2),
                         Size = new Size(48, 12),
                         TextAlign = ContentAlignment.MiddleCenter
                     }
@@ -356,24 +353,22 @@ namespace KancolleSniffer
                 {
                     new Label
                     {
-                        Location = new Point(162, 0),
+                        Location = new Point(162, 2),
                         Size = new Size(23, 12),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new Label
                     {
-                        Location = new Point(183, 0),
+                        Location = new Point(183, 2),
                         Size = new Size(23, 12),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new Label
                     {
-                        Location = new Point(110, 0),
+                        Location = new Point(110, 2),
                         Size = new Size(53, 12)
                     }
                 });
-                foreach (Control control in Controls)
-                    control.Location = new Point(control.Location.X + left, control.Location.Y + top);
                 // ReSharper disable once VirtualMemberCallInConstructor
                 BackColor = ShipLabels.ColumnColors[1];
             }
