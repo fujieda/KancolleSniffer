@@ -50,7 +50,6 @@ namespace KancolleSniffer
         private DateTime _prev, _now;
 
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
-        private readonly KancolleDb _kancolleDb = new KancolleDb();
         private readonly ErrorLog _errorLog;
 
         public MainForm()
@@ -143,8 +142,6 @@ namespace KancolleSniffer
                 WriteDebugLog(url, request, response);
                 return;
             }
-            if (_config.KancolleDb.On)
-                _kancolleDb.Send(url, request, response);
             response = UnescapeString(response.Remove(0, "svdata=".Length));
             WriteDebugLog(url, request, response);
             ProcessRequestMain(url, request, response);
@@ -250,8 +247,6 @@ namespace KancolleSniffer
             ApplyDebugLogSetting();
             ApplyLogSetting();
             ApplyProxySetting();
-            if (_config.KancolleDb.On)
-                _kancolleDb.Start(_config.KancolleDb.Token);
             CheckVersionUp((current, latest) =>
             {
                 if (double.Parse(latest) <= double.Parse(current))
@@ -305,7 +300,6 @@ namespace KancolleSniffer
             _config.ShipList.Visible = _listForm.Visible && _listForm.WindowState == FormWindowState.Normal;
             _config.Save();
             _proxyManager.Shutdown();
-            _kancolleDb.Stop();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -384,8 +378,6 @@ namespace KancolleSniffer
             _sniffer.Achievement.ResetHours = _config.ResetHours;
             labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible =
                 labelPresetAkashiTimer.Visible = _config.UsePresetAkashi;
-            if (_config.KancolleDb.On)
-                _kancolleDb.Start(_config.KancolleDb.Token);
         }
 
         public void ApplyDebugLogSetting()

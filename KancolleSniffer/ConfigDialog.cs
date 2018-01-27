@@ -100,8 +100,6 @@ namespace KancolleSniffer
             LoadLogSettings();
             LoadDebugSettings();
 
-            checkBoxKancolleDbOn.Checked = _config.KancolleDb.On;
-            textBoxKancolleDbToken.Text = _config.KancolleDb.Token;
             checkBoxPushbulletOn.Checked = _config.Pushbullet.On;
             textBoxPushbulletToken.Text = _config.Pushbullet.Token;
             checkBoxPushoverOn.Checked = _config.Pushover.On;
@@ -145,8 +143,6 @@ namespace KancolleSniffer
             ApplyLogSettings();
             ApplyDebugSettings();
 
-            _config.KancolleDb.On = checkBoxKancolleDbOn.Checked;
-            _config.KancolleDb.Token = textBoxKancolleDbToken.Text;
             _config.Pushbullet.On = checkBoxPushbulletOn.Checked;
             _config.Pushbullet.Token = textBoxPushbulletToken.Text;
             _config.Pushover.On = checkBoxPushoverOn.Checked;

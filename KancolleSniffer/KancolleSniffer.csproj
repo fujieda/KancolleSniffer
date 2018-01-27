@@ -98,7 +98,6 @@
     <Compile Include="ItemTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="KancolleDb.cs" />
     <Compile Include="JsonParser.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="LogServer.cs" />

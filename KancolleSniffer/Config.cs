@@ -70,12 +70,6 @@ namespace KancolleSniffer
         }
     }
 
-    public class KancolleDbConfig
-    {
-        public bool On { get; set; }
-        public string Token { get; set; } = "";
-    }
-
     public class PushbulletConfig
     {
         public bool On { get; set; }
@@ -223,7 +217,6 @@ namespace KancolleSniffer
         public ProxyConfig Proxy { get; set; } = new ProxyConfig();
         public ShipListConfig ShipList { get; set; } = new ShipListConfig();
         public LogConfig Log { get; set; } = new LogConfig();
-        public KancolleDbConfig KancolleDb { get; set; } = new KancolleDbConfig();
         public PushbulletConfig Pushbullet { get; set; } = new PushbulletConfig();
         public PushoverConfig Pushover { get; set; } = new PushoverConfig();
 
