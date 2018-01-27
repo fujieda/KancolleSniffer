@@ -155,7 +155,8 @@ namespace KancolleSniffer
                     MessageBoxIcon.Error))
                 {
                     case DialogResult.Abort:
-                        Application.Exit();
+                        Shutdown();
+                        Environment.Exit(1);
                         break;
                     case DialogResult.Ignore:
                         return;

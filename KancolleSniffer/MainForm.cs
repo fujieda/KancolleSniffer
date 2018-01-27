@@ -160,26 +160,32 @@ namespace KancolleSniffer
                 if (_errorDialog.ShowDialog(this,
                         "艦これに仕様変更があったか、受信内容が壊れています。",
                         _errorLog.GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
-                    Application.Exit();
+                    Exit();
             }
             catch (LogIOException e)
             {
                 // ReSharper disable once PossibleNullReferenceException
                 if (_errorDialog.ShowDialog(this, e.Message, e.InnerException.ToString()) == DialogResult.Abort)
-                    Application.Exit();
+                    Exit();
             }
             catch (BattleResultError)
             {
                 if (_errorDialog.ShowDialog(this, "戦闘結果の計算に誤りがあります。",
                         _errorLog.GenerateBattleErrorLog()) == DialogResult.Abort)
-                    Application.Exit();
+                    Exit();
             }
             catch (Exception e)
             {
                 if (_errorDialog.ShowDialog(this, "エラーが発生しました。",
                         _errorLog.GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
-                    Application.Exit();
+                    Exit();
             }
+        }
+
+        private void Exit()
+        {
+            _proxyManager.Shutdown();
+            Environment.Exit(1);
         }
 
         private void WriteDebugLog(string url, string request, string response)
