@@ -334,17 +334,17 @@ namespace KancolleSniffer
                 {
                     new Label
                     {
-                        Location = new Point(46, 2),
+                        Location = new Point(47, 2),
                         Size = new Size(29, 12)
                     },
                     new Label
                     {
-                        Location = new Point(74, 2),
+                        Location = new Point(75, 2),
                         Size = new Size(29, 12)
                     },
                     new Label
                     {
-                        Location = new Point(0, 2),
+                        Location = new Point(1, 2),
                         Size = new Size(48, 12),
                         TextAlign = ContentAlignment.MiddleCenter
                     }
