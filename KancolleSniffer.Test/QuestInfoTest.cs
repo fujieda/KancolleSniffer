@@ -615,7 +615,7 @@ namespace KancolleSniffer.Test
                 {
                     new QuestCount {Id = 211, Now = 2},
                     new QuestCount {Id = 214, NowArray = new[] {20, 7, 10, 8}},
-                    new QuestCount {Id = 854, NowArray = new[] {1, 1, 1, 1}}
+                    new QuestCount {Id = 854, NowArray = new[] {2, 1, 1, 1}}
                 }
             };
             questInfo.LoadState(status);

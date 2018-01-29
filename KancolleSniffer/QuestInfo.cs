@@ -161,7 +161,7 @@ namespace KancolleSniffer
         public override string ToString()
         {
             if (Id == 854)
-                return $"{NowArray.Count(n => n == 1)}/{Spec.MaxArray.Length}";
+                return $"{NowArray.Count(n => n >= 1)}/{Spec.MaxArray.Length}";
             return NowArray != null
                 ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
                 : $"{Now}/{Spec.Max}";
@@ -172,7 +172,7 @@ namespace KancolleSniffer
             return Id != 854
                 ? ""
                 : string.Join(" ",
-                    new[] {"2-4", "6-1", "6-3", "6-4"}.Zip(NowArray, (map, flag) => flag == 1 ? map : "")
+                    new[] {"2-4", "6-1", "6-3", "6-4"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
                         .Where(s => !string.IsNullOrEmpty(s)));
         }
 
