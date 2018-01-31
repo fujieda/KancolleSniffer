@@ -1154,6 +1154,16 @@ namespace KancolleSniffer
             UpdateQuestList();
         }
 
+        private void labelClearQuest_MouseDown(object sender, MouseEventArgs e)
+        {
+            labelClearQuest.BackColor = _activeButtonColor;
+        }
+
+        private void labelClearQuest_MouseUp(object sender, MouseEventArgs e)
+        {
+            labelClearQuest.BackColor = DefaultBackColor;
+        }
+
         private void CaptureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try

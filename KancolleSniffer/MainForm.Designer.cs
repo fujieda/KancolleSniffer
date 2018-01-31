@@ -1387,6 +1387,8 @@ namespace KancolleSniffer
             this.labelClearQuest.TabIndex = 55;
             this.labelClearQuest.Text = "↺";
             this.labelClearQuest.Click += new System.EventHandler(this.labelClearQuest_Click);
+            this.labelClearQuest.MouseDown += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseDown);
+            this.labelClearQuest.MouseUp += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseUp);
             // 
             // MainForm
             // 
