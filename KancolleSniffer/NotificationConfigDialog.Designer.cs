@@ -125,14 +125,15 @@
             // 
             this.textBoxRepeat.Location = new System.Drawing.Point(67, 131);
             this.textBoxRepeat.Name = "textBoxRepeat";
-            this.textBoxRepeat.Size = new System.Drawing.Size(26, 19);
+            this.textBoxRepeat.Size = new System.Drawing.Size(36, 19);
             this.textBoxRepeat.TabIndex = 9;
+            this.textBoxRepeat.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.textBoxRepeat.TextChanged += new System.EventHandler(this.textBoxRepeat_TextChanged);
             // 
             // labelRepeat
             // 
             this.labelRepeat.AutoSize = true;
-            this.labelRepeat.Location = new System.Drawing.Point(96, 134);
+            this.labelRepeat.Location = new System.Drawing.Point(104, 134);
             this.labelRepeat.Name = "labelRepeat";
             this.labelRepeat.Size = new System.Drawing.Size(29, 12);
             this.labelRepeat.TabIndex = 10;
@@ -141,7 +142,7 @@
             // checkBoxCont
             // 
             this.checkBoxCont.AutoSize = true;
-            this.checkBoxCont.Location = new System.Drawing.Point(67, 155);
+            this.checkBoxCont.Location = new System.Drawing.Point(66, 155);
             this.checkBoxCont.Name = "checkBoxCont";
             this.checkBoxCont.Size = new System.Drawing.Size(48, 16);
             this.checkBoxCont.TabIndex = 11;
@@ -151,16 +152,17 @@
             // 
             // textBoxPreliminary
             // 
-            this.textBoxPreliminary.Location = new System.Drawing.Point(180, 131);
+            this.textBoxPreliminary.Location = new System.Drawing.Point(187, 131);
             this.textBoxPreliminary.Name = "textBoxPreliminary";
-            this.textBoxPreliminary.Size = new System.Drawing.Size(26, 19);
+            this.textBoxPreliminary.Size = new System.Drawing.Size(36, 19);
             this.textBoxPreliminary.TabIndex = 12;
+            this.textBoxPreliminary.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.textBoxPreliminary.TextChanged += new System.EventHandler(this.textBoxpreliminary_TextChanged);
             // 
             // labelPreliminary
             // 
             this.labelPreliminary.AutoSize = true;
-            this.labelPreliminary.Location = new System.Drawing.Point(208, 134);
+            this.labelPreliminary.Location = new System.Drawing.Point(224, 134);
             this.labelPreliminary.Name = "labelPreliminary";
             this.labelPreliminary.Size = new System.Drawing.Size(29, 12);
             this.labelPreliminary.TabIndex = 13;
@@ -169,7 +171,7 @@
             // checkBoxPreliminary
             // 
             this.checkBoxPreliminary.AutoSize = true;
-            this.checkBoxPreliminary.Location = new System.Drawing.Point(134, 133);
+            this.checkBoxPreliminary.Location = new System.Drawing.Point(142, 133);
             this.checkBoxPreliminary.Name = "checkBoxPreliminary";
             this.checkBoxPreliminary.Size = new System.Drawing.Size(48, 16);
             this.checkBoxPreliminary.TabIndex = 14;
