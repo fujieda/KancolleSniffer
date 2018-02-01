@@ -69,7 +69,7 @@ namespace KancolleSniffer
             {
                 new ShipLabel {Location = new Point(109, top), Text = "HP", AutoSize = true},
                 new ShipLabel {Location = new Point(128, top), Text = "cond", AutoSize = true},
-                new ShipLabel {Location = new Point(163, top), Text = "Lv", AutoSize = true},
+                new ShipLabel {Location = new Point(162, top), Text = "Lv", AutoSize = true},
                 new ShipLabel {Location = new Point(194, top), Text = "Exp", AutoSize = true},
                 new ShipLabel {Location = new Point(0, 1), Size = new Size(parent.Width, lineHeight - 1)}
             });
@@ -92,7 +92,7 @@ namespace KancolleSniffer
                     },
                     new ShipLabel
                     {
-                        Location = new Point(156, y),
+                        Location = new Point(155, y),
                         Size = new Size(24, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
