@@ -586,7 +586,7 @@ namespace KancolleSniffer
                 _status.NowHp = 0;
                 if (_practice)
                     return;
-                foreach (var item in _status.AllSlot)
+                foreach (var item in new[] {_status.SlotEx}.Concat(_status.Slot))
                 {
                     if (item.Spec.Id == 42)
                     {

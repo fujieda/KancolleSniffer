@@ -53,7 +53,7 @@ namespace KancolleSniffer
 
         public int CombinedFleetType { get; set; }
 
-        public IEnumerable<ItemStatus> AllSlot => SlotEx.Id == 0 ? Slot : new[] {SlotEx}.Concat(Slot);
+        public IEnumerable<ItemStatus> AllSlot => SlotEx.Id == 0 ? Slot : Slot.Concat(new[] {SlotEx});
 
         public ShipStatus()
         {
@@ -79,7 +79,9 @@ namespace KancolleSniffer
             if (now == 0 && max > 0)
                 return Damage.Sunk;
             var ratio = max == 0 ? 1 : (double)now / max;
-            return ratio > 0.75 ? Damage.Minor : ratio > 0.5 ? Damage.Small : ratio > 0.25 ? Damage.Half : Damage.Badly;
+            return ratio > 0.75 ? Damage.Minor :
+                ratio > 0.5 ? Damage.Small :
+                ratio > 0.25 ? Damage.Half : Damage.Badly;
         }
 
         public TimeSpan RepairTime => TimeSpan.FromSeconds((int)(RepairTimePerHp.TotalSeconds * (MaxHp - NowHp)) + 30);
