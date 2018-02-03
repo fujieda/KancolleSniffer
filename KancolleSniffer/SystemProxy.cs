@@ -14,6 +14,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace KancolleSniffer
@@ -45,6 +46,7 @@ namespace KancolleSniffer
             {
                 _orgList = list;
             }
+            AdjustLocalIntranetZoneFlags();
         }
 
         public void SetAutoConfigUrl(string url)
@@ -119,6 +121,21 @@ namespace KancolleSniffer
         public static void Refresh()
         {
             InternetSetOption(IntPtr.Zero, InternetOption.INTERNET_OPTION_PROXY_SETTINGS_CHANGED, IntPtr.Zero, 0);
+        }
+
+        /// <summary>
+        /// PACファイルでDIRECTを指定すると、すべてのサイトがローカルイントラネットになり、
+        /// IEが互換表示になるなどの不具合があるので、イントラネットにならないようにする
+        /// </summary>
+        private void AdjustLocalIntranetZoneFlags()
+        {
+            var zones = Registry.CurrentUser.OpenSubKey(
+                @"Software\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\1", true);
+            if (zones == null)
+                return;
+            if (!(zones.GetValue("Flags") is int flags))
+                return;
+            zones.SetValue("Flags", flags & (-1 ^ 0x108));
         }
 
         [DllImport("WinInet.dll", CharSet = CharSet.Unicode)]
