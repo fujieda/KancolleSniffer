@@ -330,6 +330,44 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// // 243: 南方海域珊瑚諸島沖の制空権を握れ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_243()
+        {
+            var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(Js(new
+            {
+                api_list = new[]
+                {
+                    new {api_no = 243, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0}
+                }
+            }));
+
+            questInfo.InspectMapStart(Js(new
+            {
+                api_maparea_id = 5,
+                api_mapinfo_no = 2,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() =>
+                questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
+                    .SequenceEqual(new[] {new {Id = 243, Now = 0}}));
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 5,
+                api_mapinfo_no = 2,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() =>
+                questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
+                    .SequenceEqual(new[] {new {Id = 243, Now = 1}}));
+        }
+
+        /// <summary>
         /// 822: 沖ノ島海域迎撃戦
         /// 854: 戦果拡張任務！「Z作戦」前段作戦
         /// </summary>

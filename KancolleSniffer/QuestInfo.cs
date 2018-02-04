@@ -210,7 +210,7 @@ namespace KancolleSniffer
             {229, new QuestSortie {Interval = Weekly, Max = 12, Rank = "B", Maps = new[] {41, 42, 43, 44, 45}}}, // 229: 敵東方艦隊を撃滅せよ！
             {241, new QuestSortie {Interval = Weekly, Max = 5, Rank = "B", Maps = new[] {33, 34, 35}}}, // 241: 敵北方艦隊主力を撃滅せよ！
             {242, new QuestSortie {Interval = Weekly, Max = 1, Rank = "B", Maps = new[] {44}}}, // 242: 敵東方中枢艦隊を撃破せよ！
-            {243, new QuestSortie {Interval = Weekly, Max = 2, Rank = "B", Maps = new[] {52}}}, // 243: 南方海域珊瑚諸島沖の制空権を握れ！
+            {243, new QuestSortie {Interval = Weekly, Max = 2, Rank = "S", Maps = new[] {52}}}, // 243: 南方海域珊瑚諸島沖の制空権を握れ！
             {256, new QuestSortie {Interval = Monthly, Max = 3, Rank = "S", Maps = new[] {61}}}, // 256: 「潜水艦隊」出撃せよ！
             {261, new QuestSortie {Interval = Weekly, Max = 3, Rank = "A", Maps = new[] {15}}}, // 261: 海上輸送路の安全確保に努めよ！
             {265, new QuestSortie {Interval = Monthly, Max = 10, Rank = "A", Maps = new[] {15}}}, // 265: 海上護衛強化月間
