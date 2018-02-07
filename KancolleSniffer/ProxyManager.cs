@@ -189,9 +189,12 @@ namespace KancolleSniffer
             try
             {
                 var response = (HttpWebResponse)request.GetResponse();
+                var mem = new MemoryStream();
                 using (var stream = response.GetResponseStream())
-                using (var file = new FileStream("proxy.pac", FileMode.OpenOrCreate))
-                    stream?.CopyTo(file);
+                    stream?.CopyTo(mem);
+                mem.Position = 0;
+                using (var file = new FileStream("proxy.pac", FileMode.Create))
+                    mem.CopyTo(file);
             }
             // ReSharper disable once EmptyGeneralCatchClause
             catch
