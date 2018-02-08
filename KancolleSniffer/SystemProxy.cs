@@ -22,7 +22,7 @@ namespace KancolleSniffer
     public class SystemProxy
     {
         private InternetPerConnOptionList _orgList;
-        private string _currentUrl;
+        private Uri _initialUri;
 
         private void SaveSettings()
         {
@@ -54,7 +54,8 @@ namespace KancolleSniffer
             SaveSettings();
             var flagValue = new InternetPerConnOptionValue {dwValue = (int)PerConnFlags.PROXY_TYPE_AUTO_PROXY_URL};
             var urlValue = new InternetPerConnOptionValue {pszValue = Marshal.StringToHGlobalAuto(url)};
-            _currentUrl = url;
+            if (_initialUri == null)
+                Uri.TryCreate(url, UriKind.Absolute, out _initialUri);
             var opts = new[]
             {
                 new InternetPerConnOption {dwOption = PerConnOption.INTERNET_PER_CONN_FLAGS, Value = flagValue},
@@ -85,8 +86,8 @@ namespace KancolleSniffer
             var size = Marshal.SizeOf(typeof(InternetPerConnOption));
             var urlOpt = (InternetPerConnOption)
                 Marshal.PtrToStructure((IntPtr)((long)_orgList.pOptions + size), typeof(InternetPerConnOption));
-            var orgUrl = Marshal.PtrToStringUni(urlOpt.Value.pszValue);
-            if (orgUrl == _currentUrl) // The restoration was sikipped or failed at last time.
+            Uri.TryCreate(Marshal.PtrToStringUni(urlOpt.Value.pszValue) ?? "", UriKind.Absolute, out var orgUri);
+            if (orgUri?.Authority == _initialUri?.Authority) // The restoration was sikipped or failed at last time.
             {
                 // Unselect the Use automatic configration script check box.
                 var flagsOpt =
