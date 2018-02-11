@@ -30,6 +30,7 @@ namespace KancolleSniffer
         private int _autoConfigRetryCount;
         private readonly Timer _timer = new Timer {Interval = 1000};
         private bool _initiated;
+        private DateTime _pacFileTime;
 
         public ProxyManager(Config config, Control parent)
         {
@@ -167,9 +168,11 @@ namespace KancolleSniffer
 
         private void SetAutoConfigUrl()
         {
-            var count = _autoConfigRetryCount == 0 ? "" : _autoConfigRetryCount.ToString();
+            var suffix = (DateTime.Now - _pacFileTime < TimeSpan.FromHours(6)
+                ? (int)_pacFileTime.TimeOfDay.TotalSeconds
+                : 0) + _autoConfigRetryCount;
             _systemProxy.SetAutoConfigUrl(
-                $"http://localhost:{_config.Proxy.Listen}/proxy{count}.pac");
+                $"http://localhost:{_config.Proxy.Listen}/proxy{(suffix == 0 ? "" : suffix.ToString("x"))}.pac");
         }
 
         private void RestoreSystemProxy()
@@ -180,11 +183,12 @@ namespace KancolleSniffer
 
         public void UpdatePacFile()
         {
-            var request = (HttpWebRequest)WebRequest.Create("https://kancollesniffer.osdn.jp/proxy.pac");
-            if (File.Exists("proxy.pac"))
+            var pacFile = "proxy.pac";
+            var request = (HttpWebRequest)WebRequest.Create($"https://kancollesniffer.osdn.jp/{pacFile}");
+            if (File.Exists(pacFile))
             {
-                var date = File.GetLastWriteTime("proxy.pac");
-                request.IfModifiedSince = date;
+                _pacFileTime = File.GetLastWriteTime(pacFile);
+                request.IfModifiedSince = _pacFileTime;
             }
             try
             {
@@ -193,8 +197,9 @@ namespace KancolleSniffer
                 using (var stream = response.GetResponseStream())
                     stream?.CopyTo(mem);
                 mem.Position = 0;
-                using (var file = new FileStream("proxy.pac", FileMode.Create))
+                using (var file = new FileStream(pacFile, FileMode.Create))
                     mem.CopyTo(file);
+                _pacFileTime = File.GetLastWriteTime(pacFile);
             }
             // ReSharper disable once EmptyGeneralCatchClause
             catch
