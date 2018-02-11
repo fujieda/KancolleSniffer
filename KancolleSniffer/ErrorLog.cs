@@ -110,10 +110,12 @@ namespace KancolleSniffer
 
         public static void RemoveUnwantedInformation(ref string request, ref string response)
         {
-            var token = new Regex("&api%5Ftoken=.+?(?=&|$)|api%5Ftoken=.+?(?:&|$)");
+            var token = new Regex(@"&api%5Ftoken=.+?(?=&|$)|api%5Ftoken=.+?(?:&|$)|api%5Fbtime=\d+&?");
             request = token.Replace(request, "");
-            var id = new Regex(@"""api_member_id"":""\d+?"",?|""api_nickname"":"".+?"",?|""api_nickname_id"":""\d+"",?");
+            var id = new Regex(@"""api_member_id"":""?\d+""?,?|""api_nickname"":"".+?"",?|""api_nickname_id"":""\d+"",?|""api_name_id"":"".+?"",?|");
             response = id.Replace(response, "");
+            var name = new Regex(@"""api_name"":"".+?""");
+            response = name.Replace(response, @"""api_name"":""""");
         }
 
         private string CompressApi(string api)

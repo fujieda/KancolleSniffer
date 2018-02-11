@@ -37,19 +37,25 @@ namespace KancolleSniffer.Test
             var request4 = "api%5Ftoken=0123456abcdef";
             ErrorLog.RemoveUnwantedInformation(ref request4, ref response);
             PAssert.That(() => request4 == "", "トークン単独");
+            var request5 = "api%5Fbtime=83026279&api%5Ftoken=b936475084b75920aa646d2a609b23cf3838bbc1&api%5Fverno=1";
+            ErrorLog.RemoveUnwantedInformation(ref request5, ref response);
+            PAssert.That(() => request5 == "api%5Fverno=1", "戦闘APIの時刻印を削除");
         }
 
         [TestMethod]
         public void RemoveUnwantedInformationFromResponse()
         {
             var request = "";
-            var response = @"{""api_result"":1,""api_result_msg"":""成功"",""api_data"":" +
+            var response1 = @"{""api_result"":1,""api_result_msg"":""成功"",""api_data"":" +
                            @"{""api_basic"":{""api_member_id"":""123456""," +
                            @"""api_nickname"":""ぱんなこった"",""api_nickname_id"":""12345678"",""api_active_flag"":1}}}";
-            ErrorLog.RemoveUnwantedInformation(ref request, ref response);
-            PAssert.That(() => response ==
-                               @"{""api_result"":1,""api_result_msg"":""成功"",""api_data"":" +
-                               @"{""api_basic"":{""api_active_flag"":1}}}");
+            ErrorLog.RemoveUnwantedInformation(ref request, ref response1);
+            PAssert.That(() => response1 ==
+                               @"{""api_result"":1,""api_result_msg"":""成功"",""api_data"":{""api_basic"":{""api_active_flag"":1}}}");
+            var response2 =
+                @"{""api_deck_data"":[{""api_member_id"":123456,""api_id"":1,""api_name"":""第一艦隊"",""api_name_id"":""123456"",""api_mission"":[0,0,0,0],""api_flagship"":""0""}]}";
+            ErrorLog.RemoveUnwantedInformation(ref request, ref response2);
+            PAssert.That(() => response2 == @"{""api_deck_data"":[{""api_id"":1,""api_name"":"""",""api_mission"":[0,0,0,0],""api_flagship"":""0""}]}");
         }
     }
 }
