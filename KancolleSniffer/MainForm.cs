@@ -939,6 +939,7 @@ namespace KancolleSniffer
                     category[i].BackColor = quests[i].Color;
                     name[i].Text = quests[i].Name;
                     progress[i].Text = $"{quests[i].Progress:D}%";
+                    _toolTip.SetToolTip(name[i], quests[i].Detail);
                     var c = quests[i].Count;
                     if (c.Id == 0)
                     {

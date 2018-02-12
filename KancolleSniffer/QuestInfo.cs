@@ -27,11 +27,11 @@ namespace KancolleSniffer
         public int Id { get; set; }
         public int Category { get; set; }
         public string Name { get; set; }
+        public string Detail { get; set; }
+        public int Progress { get; set; }
 
         [XmlIgnore]
         public QuestCount Count { get; set; }
-
-        public int Progress { get; set; }
 
         [XmlIgnore]
         public Color Color { get; set; }
@@ -348,6 +348,7 @@ namespace KancolleSniffer
                     var progress = (int)entry.api_progress_flag;
                     var cat = (int)entry.api_category;
                     var name = (string)entry.api_title;
+                    var detail = ((string)entry.api_detail).Replace("<br>", "\r\n");
 
                     switch (progress)
                     {
@@ -370,7 +371,7 @@ namespace KancolleSniffer
                             progress = 100;
                             goto case 2;
                         case 2:
-                            AddQuest(id, cat, name, progress, true);
+                            AddQuest(id, cat, name, detail, progress, true);
                             break;
                     }
                 }
@@ -384,7 +385,7 @@ namespace KancolleSniffer
             }
         }
 
-        private void AddQuest(int id, int category, string name, int progress, bool adjustCount)
+        private void AddQuest(int id, int category, string name, string detail, int progress, bool adjustCount)
         {
             var count = _countList.GetCount(id);
             if (adjustCount)
@@ -394,6 +395,7 @@ namespace KancolleSniffer
                 Id = id,
                 Category = category,
                 Name = name,
+                Detail = detail,
                 Count = count,
                 Progress = progress,
                 Color = category <= _color.Length ? _color[category - 1] : Control.DefaultBackColor
@@ -674,7 +676,7 @@ namespace KancolleSniffer
             {
                 _quests.Clear();
                 foreach (var q in status.QuestList)
-                    AddQuest(q.Id, q.Category, q.Name, q.Progress, false);
+                    AddQuest(q.Id, q.Category, q.Name, q.Detail, q.Progress, false);
             }
         }
     }

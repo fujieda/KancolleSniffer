@@ -116,7 +116,7 @@ namespace KancolleSniffer.Test
             questInfo.InspectQuestList(Js(new
             {
                 api_list = new[]
-                    {new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0}}
+                    {new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}}
             }));
             questInfo.SaveState(status);
             PAssert.That(() =>
@@ -125,7 +125,7 @@ namespace KancolleSniffer.Test
             questInfo.InspectQuestList(Js(new
             {
                 api_list = new[]
-                    {new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0}}
+                    {new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}}
             }));
             questInfo.SaveState(status);
             PAssert.That(() =>
@@ -134,7 +134,7 @@ namespace KancolleSniffer.Test
             questInfo.InspectQuestList(Js(new
             {
                 api_list = new[]
-                    {new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0}}
+                    {new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}}
             }));
             questInfo.SaveState(status);
             PAssert.That(() => status.QuestCountList.Length == 0); // クォータリーが消える
@@ -156,10 +156,10 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 210, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 214, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 216, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 210, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 214, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 216, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
 
@@ -221,12 +221,12 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 211, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 212, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 213, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 218, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 220, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 221, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 211, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 212, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 213, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 218, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 220, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 221, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
             // 補給艦1隻と空母2隻
@@ -262,8 +262,8 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 228, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 230, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 228, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 230, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
             // 潜水艦3
@@ -293,7 +293,7 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 226, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 226, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
 
@@ -340,7 +340,7 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 243, api_category = 2, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 243, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
 
@@ -379,8 +379,8 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 822, api_category = 8, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 854, api_category = 8, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 822, api_category = 8, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 854, api_category = 8, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
 
@@ -439,10 +439,10 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 302, api_category = 3, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 303, api_category = 3, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 304, api_category = 3, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 311, api_category = 3, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 302, api_category = 3, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 303, api_category = 3, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 304, api_category = 3, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 311, api_category = 3, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
 
@@ -472,11 +472,11 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 402, api_category = 4, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 403, api_category = 4, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 404, api_category = 4, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 410, api_category = 4, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 411, api_category = 4, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 402, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 403, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 404, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 410, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 411, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
 
@@ -511,8 +511,8 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 503, api_category = 5, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 504, api_category = 5, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 503, api_category = 5, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 504, api_category = 5, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
 
@@ -539,12 +539,12 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 605, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 606, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 607, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 608, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 609, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 619, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 605, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 606, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 607, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 608, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 609, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 619, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
 
@@ -593,13 +593,13 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 613, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 638, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 673, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 674, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 675, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 676, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 677, api_category = 6, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 613, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 638, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 673, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 674, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 675, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 676, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 677, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
             questInfo.InspectDestroyItem("api%5Fslotitem%5Fids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9&api%5Fverno=1", null);
@@ -630,8 +630,8 @@ namespace KancolleSniffer.Test
             {
                 api_list = new[]
                 {
-                    new {api_no = 702, api_category = 7, api_state = 2, api_title = "", api_progress_flag = 0},
-                    new {api_no = 703, api_category = 7, api_state = 2, api_title = "", api_progress_flag = 0}
+                    new {api_no = 702, api_category = 7, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 703, api_category = 7, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
                 }
             }));
             questInfo.InspectPowerup(Js(new {api_powerup_flag = 1}));
