@@ -80,7 +80,7 @@ namespace KancolleSniffer
             _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo, _questInfo};
         }
 
-        private void SaveState()
+        public void SaveState()
         {
             if (!_saveState)
                 return;

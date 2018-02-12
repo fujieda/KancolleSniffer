@@ -305,6 +305,7 @@ namespace KancolleSniffer
             _config.ShowHpInPercent = _shipLabels.ShowHpInPercent;
             _config.ShipList.Visible = _listForm.Visible && _listForm.WindowState == FormWindowState.Normal;
             _config.Save();
+            _sniffer.SaveState();
             _proxyManager.Shutdown();
         }
 
