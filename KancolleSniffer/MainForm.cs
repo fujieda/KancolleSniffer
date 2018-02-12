@@ -128,7 +128,7 @@ namespace KancolleSniffer
 
         private void HttpProxy_AfterSessionComplete(HttpProxy.Session session)
         {
-            Invoke(new Action<HttpProxy.Session>(ProcessRequest), session);
+            BeginInvoke(new Action<HttpProxy.Session>(ProcessRequest), session);
         }
 
         private void ProcessRequest(HttpProxy.Session session)
