@@ -36,7 +36,8 @@ namespace KancolleSniffer
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
         private readonly ProxyManager _proxyManager;
-        private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
+        private readonly ToolTip _toolTipQuest = new ToolTip {ShowAlways = true};
+        private readonly ToolTip _tooltipCopy = new ToolTip {AutomaticDelay = 0};
         private int _currentFleet;
         private bool _combinedFleet;
         private readonly Label[] _labelCheckFleets;
@@ -939,24 +940,24 @@ namespace KancolleSniffer
                     category[i].BackColor = quests[i].Color;
                     name[i].Text = quests[i].Name;
                     progress[i].Text = $"{quests[i].Progress:D}%";
-                    _toolTip.SetToolTip(name[i], quests[i].Detail);
+                    _toolTipQuest.SetToolTip(name[i], quests[i].Detail);
                     var c = quests[i].Count;
                     if (c.Id == 0)
                     {
                         count[i].Text = "";
                         count[i].ForeColor = Color.Black;
-                        _toolTip.SetToolTip(count[i], "");
+                        _toolTipQuest.SetToolTip(count[i], "");
                         continue;
                     }
                     count[i].Text = " " + c;
                     count[i].ForeColor = c.Cleared ? CUDColor.Green : Color.Black;
-                    _toolTip.SetToolTip(count[i], c.ToToolTip());
+                    _toolTipQuest.SetToolTip(count[i], c.ToToolTip());
                 }
                 else
                 {
                     category[i].BackColor = DefaultBackColor;
                     name[i].Text = count[i].Text = progress[i].Text = "";
-                    _toolTip.SetToolTip(count[i], "");
+                    _toolTipQuest.SetToolTip(count[i], "");
                 }
             }
         }
@@ -1164,6 +1165,19 @@ namespace KancolleSniffer
         private void labelClearQuest_MouseUp(object sender, MouseEventArgs e)
         {
             labelClearQuest.BackColor = DefaultBackColor;
+        }
+
+        private void labelQuest_DoubleClick(object sender, EventArgs e)
+        {
+            var label = (Label)sender;
+            Clipboard.SetText(label.Text);
+            _tooltipCopy.Active = true;
+            _tooltipCopy.Show("コピーしました。", label);
+            Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                _tooltipCopy.Active = false;
+            });
         }
 
         private void CaptureToolStripMenuItem_Click(object sender, EventArgs e)

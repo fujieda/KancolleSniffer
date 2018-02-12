@@ -960,6 +960,7 @@ namespace KancolleSniffer
             this.labelQuest6.Name = "labelQuest6";
             this.labelQuest6.Size = new System.Drawing.Size(193, 12);
             this.labelQuest6.TabIndex = 10;
+            this.labelQuest6.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
             // 
             // labelProgress5
             // 
@@ -1007,6 +1008,7 @@ namespace KancolleSniffer
             this.labelQuest5.Name = "labelQuest5";
             this.labelQuest5.Size = new System.Drawing.Size(193, 12);
             this.labelQuest5.TabIndex = 4;
+            this.labelQuest5.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
             // 
             // labelQuest4
             // 
@@ -1014,6 +1016,7 @@ namespace KancolleSniffer
             this.labelQuest4.Name = "labelQuest4";
             this.labelQuest4.Size = new System.Drawing.Size(193, 12);
             this.labelQuest4.TabIndex = 3;
+            this.labelQuest4.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
             // 
             // labelQuest3
             // 
@@ -1021,6 +1024,7 @@ namespace KancolleSniffer
             this.labelQuest3.Name = "labelQuest3";
             this.labelQuest3.Size = new System.Drawing.Size(193, 12);
             this.labelQuest3.TabIndex = 2;
+            this.labelQuest3.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
             // 
             // labelQuest2
             // 
@@ -1028,6 +1032,7 @@ namespace KancolleSniffer
             this.labelQuest2.Name = "labelQuest2";
             this.labelQuest2.Size = new System.Drawing.Size(193, 12);
             this.labelQuest2.TabIndex = 1;
+            this.labelQuest2.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
             // 
             // labelQuest1
             // 
@@ -1035,6 +1040,7 @@ namespace KancolleSniffer
             this.labelQuest1.Name = "labelQuest1";
             this.labelQuest1.Size = new System.Drawing.Size(193, 12);
             this.labelQuest1.TabIndex = 0;
+            this.labelQuest1.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
             // 
             // notifyIconMain
             // 
