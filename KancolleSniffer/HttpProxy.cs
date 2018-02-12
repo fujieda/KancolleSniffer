@@ -121,9 +121,8 @@ namespace KancolleSniffer
                     ReceiveResponse();
                     if (_session.Response.StatusCode == null)
                         return;
-                    SendResponse();
-                    Close();
                     AfterSessionComplete?.Invoke(_session);
+                    SendResponse();
                 }
 #if DEBUG
                 catch (Exception e)
@@ -159,8 +158,8 @@ namespace KancolleSniffer
             private void SendRequest()
             {
                 _server = ConnectServer();
-                _serverStream = new HttpStream(_server).
-                    WriteLines(_session.Request.RequestLine + _session.Request.ModifiedHeaders);
+                _serverStream =
+                    new HttpStream(_server).WriteLines(_session.Request.RequestLine + _session.Request.ModifiedHeaders);
             }
 
             private void SendRequestBody()
@@ -279,10 +278,31 @@ namespace KancolleSniffer
 
             private void Close()
             {
-                _serverStream?.Close();
-                _clientStream?.Close();
-                _server?.Close();
-                _client.Close();
+                SocketClose(_server);
+                SocketClose(_client);
+            }
+
+            private void SocketClose(Socket socket)
+            {
+                if (socket == null)
+                    return;
+                try
+                {
+                    socket.Shutdown(SocketShutdown.Both);
+                }
+                // ReSharper disable EmptyGeneralCatchClause
+                catch
+
+                {
+                }
+                try
+                {
+                    socket.Close();
+                }
+                catch
+                    // ReSharper restore EmptyGeneralCatchClause
+                {
+                }
             }
         }
 
@@ -614,12 +634,6 @@ namespace KancolleSniffer
                     count -= n;
                     offset += n;
                 } while (count > 0);
-            }
-
-            public HttpStream Close()
-            {
-                _socket.Close();
-                return this;
             }
         }
     }
