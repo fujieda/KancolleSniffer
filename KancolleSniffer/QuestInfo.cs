@@ -389,7 +389,10 @@ namespace KancolleSniffer
         {
             var count = _countList.GetCount(id);
             if (adjustCount)
+            {
                 count.AdjustCount(progress);
+                NeedSave = true;
+            }
             _quests[id] = new QuestStatus
             {
                 Id = id,
@@ -400,7 +403,6 @@ namespace KancolleSniffer
                 Progress = progress,
                 Color = category <= _color.Length ? _color[category - 1] : Control.DefaultBackColor
             };
-            NeedSave = true;
         }
 
         public void ClearQuests()
@@ -660,6 +662,7 @@ namespace KancolleSniffer
 
         public void SaveState(Status status)
         {
+            NeedSave = false;
             status.QuestLastReset = _lastReset;
             if (_quests != null)
                 status.QuestList = _quests.Values.ToArray();
