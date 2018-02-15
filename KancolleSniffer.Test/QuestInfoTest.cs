@@ -500,6 +500,72 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 426: 海上通商航路の警戒を厳とせよ！
+        /// </summary>
+        [TestMethod]
+        public void MissionResult_426()
+        {
+            var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(Js(new
+            {
+                api_list = new[]
+                {
+                    new {api_no = 426, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                }
+            }));
+
+            questInfo.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 3}},
+                    new {api_id = 3, api_mission = new[] {2, 4}},
+                    new {api_id = 4, api_mission = new[] {2, 5}},
+                }));
+            questInfo.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            questInfo.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            questInfo.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
+            PAssert.That(() =>
+                questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1, 0}));
+            questInfo.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 10}},
+                }));
+            questInfo.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            PAssert.That(() =>
+                questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
+        }
+
+        /// <summary>
+        /// 428: 近海に侵入する敵潜を制圧せよ！
+        /// </summary>
+        [TestMethod]
+        public void MissionResult_428()
+        {
+            var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(Js(new
+            {
+                api_list = new[]
+                {
+                    new {api_no = 428, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                }
+            }));
+
+            questInfo.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 4}},
+                    new {api_id = 3, api_mission = new[] {2, 101}},
+                    new {api_id = 4, api_mission = new[] {2, 102}},
+                }));
+            questInfo.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            questInfo.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            questInfo.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
+            PAssert.That(() =>
+                questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
+        }
+
+        /// <summary>
         /// 503: 艦隊大整備！
         /// 504: 艦隊酒保祭り！
         /// </summary>
@@ -564,6 +630,7 @@ namespace KancolleSniffer.Test
         /// <summary>
         /// 613: 資源の再利用
         /// 638: 対空機銃量産
+        /// 663: 新型艤装の継続研究
         /// 673: 装備開発力の整備
         /// 674: 工廠環境の整備
         /// 675: 運用装備の統合整備
@@ -571,10 +638,10 @@ namespace KancolleSniffer.Test
         /// 677: 継戦支援能力の整備
         /// </summary>
         [TestMethod]
-        public void DestroyItem_613_638_673_674_675_676_677()
+        public void DestroyItem_613_638_663_673_674_675_676_677()
         {
             var itemInfo = new ItemInfo();
-            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 7};
+            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 8};
 
             itemInfo.InjectItemSpec(new[]
             {
@@ -595,6 +662,7 @@ namespace KancolleSniffer.Test
                 {
                     new {api_no = 613, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
                     new {api_no = 638, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
+                    new {api_no = 663, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
                     new {api_no = 673, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
                     new {api_no = 674, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
                     new {api_no = 675, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
@@ -604,16 +672,16 @@ namespace KancolleSniffer.Test
             }));
             questInfo.InspectDestroyItem("api%5Fslotitem%5Fids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9&api%5Fverno=1", null);
             PAssert.That(() =>
-                questInfo.Quests.Select(q => new {q.Id, q.Count.Now}).Take(4).SequenceEqual(new[]
+                questInfo.Quests.Select(q => new {q.Id, q.Count.Now}).Take(5).SequenceEqual(new[]
                 {
-                    new {Id = 613, Now = 1}, new {Id = 638, Now = 1},
+                    new {Id = 613, Now = 1}, new {Id = 638, Now = 1}, new {Id = 663, Now = 1},
                     new {Id = 673, Now = 1}, new {Id = 674, Now = 1}
                 }));
-            var q675 = questInfo.Quests[4];
+            var q675 = questInfo.Quests[5];
             PAssert.That(() => q675.Id == 675 && q675.Count.NowArray.SequenceEqual(new[] {1, 1}));
-            var q676 = questInfo.Quests[5];
+            var q676 = questInfo.Quests[6];
             PAssert.That(() => q676.Id == 676 && q676.Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
-            var q677 = questInfo.Quests[6];
+            var q677 = questInfo.Quests[7];
             PAssert.That(() => q677.Id == 677 && q677.Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
         }
 
@@ -653,7 +721,9 @@ namespace KancolleSniffer.Test
                 {
                     new QuestCount {Id = 211, Now = 2},
                     new QuestCount {Id = 214, NowArray = new[] {20, 7, 10, 8}},
-                    new QuestCount {Id = 854, NowArray = new[] {2, 1, 1, 1}}
+                    new QuestCount {Id = 854, NowArray = new[] {2, 1, 1, 1}},
+                    new QuestCount {Id = 426, NowArray = new[] {1, 1, 1, 1}},
+                    new QuestCount {Id = 428, NowArray = new[] {1, 1, 1}}
                 }
             };
             questInfo.LoadState(status);
@@ -664,6 +734,13 @@ namespace KancolleSniffer.Test
             PAssert.That(() => z.ToToolTip() == "2-4 6-1 6-3 6-4");
             z.NowArray = new[] {0, 0, 0, 0};
             PAssert.That(() => z.ToToolTip() == "");
+            var q426 = status.QuestCountList[3];
+            PAssert.That(() => q426.ToString() == "4/4");
+            PAssert.That(() => q426.ToToolTip() == "警備任務 対潜警戒任務 海上護衛任務 強硬偵察任務");
+            var q428 = status.QuestCountList[4];
+            PAssert.That(() => q428.ToToolTip() == "対潜警戒任務1 海峡警備行動1 長時間対潜警戒1");
+            q428.NowArray = new[] {0, 1, 0};
+            PAssert.That(() => q428.ToToolTip() == "海峡警備行動1");
         }
     }
 }

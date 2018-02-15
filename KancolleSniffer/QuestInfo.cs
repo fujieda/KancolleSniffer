@@ -160,7 +160,7 @@ namespace KancolleSniffer
 
         public override string ToString()
         {
-            if (Id == 854)
+            if (Id == 426 || Id == 854)
                 return $"{NowArray.Count(n => n >= 1)}/{Spec.MaxArray.Length}";
             return NowArray != null
                 ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
@@ -169,11 +169,22 @@ namespace KancolleSniffer
 
         public string ToToolTip()
         {
-            return Id != 854
-                ? ""
-                : string.Join(" ",
-                    new[] {"2-4", "6-1", "6-3", "6-4"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
-                        .Where(s => !string.IsNullOrEmpty(s)));
+            switch (Id)
+            {
+                case 426:
+                    return string.Join(" ",
+                        new[] {"警備任務", "対潜警戒任務", "海上護衛任務", "強硬偵察任務"}.Zip(NowArray, (mission, n) => n >= 1 ? mission : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
+                case 428:
+                    return string.Join(" ",
+                        new[] {"対潜警戒任務", "海峡警備行動", "長時間対潜警戒"}.Zip(NowArray, (mission, n) => n >= 1 ? mission + n : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
+                case 854:
+                    return string.Join(" ",
+                        new[] {"2-4", "6-1", "6-3", "6-4"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
+            }
+            return "";
         }
 
         public bool Cleared => NowArray?.Zip(Spec.MaxArray, (n, m) => n >= m).All(x => x) ?? Now >= Spec.Max;
@@ -229,6 +240,8 @@ namespace KancolleSniffer
             {410, new QuestMission {Interval = Weekly, Max = 1, Ids = new[] {37, 38}}}, // 410: 南方への輸送作戦を成功させよ！
             {411, new QuestMission {Interval = Weekly, Max = 6, Shift = 1, Ids = new[] {37, 38}}}, // 411: 南方への鼠輸送を継続実施せよ！
             {424, new QuestMission {Interval = Monthly, Max = 4, Shift = 1, Ids = new[] {5}}}, // 424: 輸送船団護衛を強化せよ！
+            {426, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}}}, // 426: 海上通商航路の警戒を厳とせよ！
+            {428, new QuestSpec {Interval = Quarterly, MaxArray = new[] {2, 2, 2}}}, // 428: 近海に侵入する敵潜を制圧せよ！
 
             {503, new QuestSpec {Interval = Daily, Max = 5}}, // 503: 艦隊大整備！
             {504, new QuestSpec {Interval = Daily, Max = 15}}, // 504: 艦隊酒保祭り！
@@ -242,6 +255,7 @@ namespace KancolleSniffer
 
             {613, new QuestSpec {Interval = Weekly, Max = 24}}, // 613: 資源の再利用
             {638, new QuestDestroyItem {Interval = Weekly, Max = 6, Items = new[] {21}}}, // 638: 対空機銃量産
+            {663, new QuestDestroyItem {Interval = Quarterly, Max = 10, Items = new[] {3}} }, // 663: 新型艤装の継続研究
             {673, new QuestDestroyItem {Interval = Daily, Max = 4, Items = new[] {1}, Shift = 1}}, // 673: 装備開発力の整備
             {674, new QuestDestroyItem {Interval = Daily, Max = 3, Items = new[] {21}, Shift = 2}}, // 674: 工廠環境の整備
             {675, new QuestSpec {Interval = Quarterly, MaxArray = new[] {6, 4}}}, // 675: 運用装備の統合整備
@@ -535,13 +549,49 @@ namespace KancolleSniffer
             var deck = int.Parse(values["api_deck_id"]);
             if ((int)json.api_clear_result == 0)
                 return;
+            var mid = _missionId[deck - 1];
             foreach (var quest in _quests.Values)
             {
                 var count = quest.Count;
                 if (!(count.Spec is QuestMission mission))
                     continue;
-                if (mission.Check(_missionId[deck - 1]))
+                if (mission.Check(mid))
                     IncrementCount(count);
+            }
+            if (_quests.TryGetValue(426, out var q426))
+            {
+                var count = q426.Count;
+                switch (mid)
+                {
+                    case 3:
+                        count.NowArray[0]++;
+                        break;
+                    case 4:
+                        count.NowArray[1]++;
+                        break;
+                    case 5:
+                        count.NowArray[2]++;
+                        break;
+                    case 10:
+                        count.NowArray[3]++;
+                        break;
+                }
+            }
+            if (_quests.TryGetValue(428, out var q428))
+            {
+                var count = q428.Count;
+                switch (mid)
+                {
+                    case 4:
+                        count.NowArray[0]++;
+                        break;
+                    case 101:
+                        count.NowArray[1]++;
+                        break;
+                    case 102:
+                        count.NowArray[2]++;
+                        break;
+                }
             }
         }
 
