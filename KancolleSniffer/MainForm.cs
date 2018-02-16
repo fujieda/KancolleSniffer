@@ -957,6 +957,7 @@ namespace KancolleSniffer
                 {
                     category[i].BackColor = DefaultBackColor;
                     name[i].Text = count[i].Text = progress[i].Text = "";
+                    _toolTipQuest.SetToolTip(name[i], "");
                     _toolTipQuest.SetToolTip(count[i], "");
                 }
             }
