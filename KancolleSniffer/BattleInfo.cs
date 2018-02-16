@@ -698,9 +698,13 @@ namespace KancolleSniffer
         /// <summary>
         /// テスト専用
         /// </summary>
-        public void InjectEnemyResultStatus(ShipStatus[] enemy, ShipStatus[] guard)
+        public void InjectResultStatus(ShipStatus[] main, ShipStatus[] guard, ShipStatus[] enemy, ShipStatus[] enemyGuard)
         {
-            Result = new BattleResult {Enemy = new BattleResult.Combined {Main = enemy, Guard = guard}};
+            Result = new BattleResult
+            {
+                Friend = new BattleResult.Combined { Main = main, Guard = guard},
+                Enemy = new BattleResult.Combined {Main = enemy, Guard = enemyGuard}
+            };
         }
     }
 }

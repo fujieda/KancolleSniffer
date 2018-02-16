@@ -213,7 +213,7 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1)) {AcceptMax = 6};
             questInfo.InspectQuestList(CreateQuestList(new[] {211, 212, 213, 218, 220, 221}));
             // 補給艦1隻と空母2隻
-            battleInfo.InjectEnemyResultStatus(new[]
+            battleInfo.InjectResultStatus(new ShipStatus[0], new ShipStatus[0], new[]
             {
                 new ShipStatus {NowHp = 0, MaxHp = 130, Spec = new ShipSpec {Id = 1558, ShipType = 15}},
                 new ShipStatus {NowHp = 0, MaxHp = 90, Spec = new ShipSpec {Id = 1543, ShipType = 8}},
@@ -243,7 +243,7 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {228, 230}));
             // 潜水艦3
-            battleInfo.InjectEnemyResultStatus(new[]
+            battleInfo.InjectResultStatus(new ShipStatus[0], new ShipStatus[0], new[]
             {
                 new ShipStatus {NowHp = 0, MaxHp = 27, Spec = new ShipSpec {Id = 1532, ShipType = 13}},
                 new ShipStatus {NowHp = 0, MaxHp = 19, Spec = new ShipSpec {Id = 1530, ShipType = 13}},
@@ -331,6 +331,204 @@ namespace KancolleSniffer.Test
                     .SequenceEqual(new[] {new {Id = 243, Now = 1}}));
         }
 
+        private ShipStatus ShipStatus(int shipType, int specId = 0) =>
+            new ShipStatus {NowHp = 1, Spec = new ShipSpec {Id = specId, ShipType = shipType}};
+
+
+        /// <summary>
+        /// 249: 「第五戦隊」出撃せよ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_249()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {249}));
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(5, 319), ShipStatus(5, 192), ShipStatus(5, 194),
+                ShipStatus(5, 193), ShipStatus(6, 189), ShipStatus(6, 188)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 2,
+                api_mapinfo_no = 5,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 2,
+                api_mapinfo_no = 5,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
+            questInfo.Quests[0].Count.Now = 0;
+
+            battleInfo.Result.Friend.Main[1].NowHp = 0;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "那智改二轟沈");
+        }
+
+        /// <summary>
+        /// 257: 「水雷戦隊」南西へ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_257()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {257}));
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(3), ShipStatus(2), ShipStatus(2),
+                ShipStatus(2), ShipStatus(2), ShipStatus(2)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 4,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 4,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
+            questInfo.Quests[0].Count.Now = 0;
+
+            battleInfo.Result.Friend.Main[0].NowHp = 0;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "軽巡轟沈");
+            battleInfo.Result.Friend.Main[0].NowHp = 1;
+
+            battleInfo.Result.Friend.Main[0].Spec.ShipType = 2;
+            battleInfo.Result.Friend.Main[1].Spec.ShipType = 3;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "旗艦が駆逐");
+            battleInfo.Result.Friend.Main[0].Spec.ShipType = 3;
+
+            battleInfo.Result.Friend.Main[2].Spec.ShipType = 3;
+            battleInfo.Result.Friend.Main[3].Spec.ShipType = 3;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "軽巡が4隻");
+
+            battleInfo.Result.Friend.Main[0].Spec.ShipType = 3;
+            battleInfo.Result.Friend.Main[3].Spec.ShipType = 4;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "駆逐軽巡以外");
+        }
+
+        /// <summary>
+        /// 257: 「水上打撃部隊」南方へ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_259()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {259}));
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(3, 183), ShipStatus(9, 276), ShipStatus(10, 411),
+                ShipStatus(10, 412), ShipStatus(5, 193), ShipStatus(5, 194)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 5,
+                api_mapinfo_no = 1,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 5,
+                api_mapinfo_no = 1,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
+            questInfo.Quests[0].Count.Now = 0;
+
+            battleInfo.Result.Friend.Main[0].NowHp = 0;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "軽巡轟沈");
+            battleInfo.Result.Friend.Main[0].NowHp = 1;
+
+            battleInfo.Result.Friend.Main[4].Spec = new ShipSpec {Id = 136, ShipType = 9};
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "戦艦4隻");
+            battleInfo.Result.Friend.Main[4].Spec = new ShipSpec {Id = 193, ShipType = 5};
+
+            battleInfo.Result.Friend.Main[0].Spec = new ShipSpec {Id = 58, ShipType = 4};
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "軽巡なし");
+        }
+
+        /// <summary>
+        /// 266: 「水上反撃部隊」突入せよ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_266()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {266}));
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(2), ShipStatus(5), ShipStatus(3),
+                ShipStatus(2), ShipStatus(2), ShipStatus(2)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 2,
+                api_mapinfo_no = 5,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 2,
+                api_mapinfo_no = 5,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
+
+            battleInfo.Result.Friend.Main[1].NowHp = 0;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "轟沈あり");
+            battleInfo.Result.Friend.Main[1].NowHp = 1;
+
+            battleInfo.Result.Friend.Main[0].Spec.ShipType = 3;
+            battleInfo.Result.Friend.Main[2].Spec.ShipType = 2;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "旗艦が軽巡");
+            battleInfo.Result.Friend.Main[0].Spec.ShipType = 2;
+            battleInfo.Result.Friend.Main[2].Spec.ShipType = 3;
+
+            battleInfo.Result.Friend.Main[3].Spec.ShipType = 3;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "軽巡が2隻");
+        }
+
         /// <summary>
         /// 822: 沖ノ島海域迎撃戦
         /// 854: 戦果拡張任務！「Z作戦」前段作戦
@@ -380,6 +578,201 @@ namespace KancolleSniffer.Test
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => questInfo.Quests[1].Count.NowArray.SequenceEqual(new[] {2, 1, 1, 1}));
             PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
+        }
+
+        public void MapNext_861()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {861}));
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(8), ShipStatus(4), ShipStatus(2),
+                ShipStatus(2), ShipStatus(2), ShipStatus(2)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 6,
+                api_event_id = 4
+            }));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 6,
+                api_event_id = 8
+            }));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
+
+            battleInfo.Result.Friend.Main[1].NowHp = 0;
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 6,
+                api_event_id = 8
+            }));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "轟沈あり");
+            battleInfo.Result.Friend.Main[1].NowHp = 1;
+
+            battleInfo.Result.Friend.Main[2].Spec.ShipType = 4;
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 6,
+                api_event_id = 8
+            }));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "補給・航戦が3隻");
+        }
+
+        /// <summary>
+        /// 862: 前線の航空偵察を実施せよ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_862()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {862}));
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(2), ShipStatus(3), ShipStatus(3),
+                ShipStatus(2), ShipStatus(2), ShipStatus(16)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 6,
+                api_mapinfo_no = 3,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 6,
+                api_mapinfo_no = 3,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "B"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
+
+            battleInfo.Result.Friend.Main[1].NowHp = 0;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "轟沈あり");
+            battleInfo.Result.Friend.Main[1].NowHp = 1;
+
+            battleInfo.Result.Friend.Main[4].Spec.ShipType = 16;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "水母2隻");
+        }
+
+        /// <summary>
+        /// 873: 北方海域警備を実施せよ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_873()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {873}));
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(3), ShipStatus(2), ShipStatus(2),
+                ShipStatus(2), ShipStatus(2), ShipStatus(2)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 3,
+                api_mapinfo_no = 1,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 3,
+                api_mapinfo_no = 1,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "B"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray[0] == 0);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray[0] == 1);
+
+            battleInfo.Result.Friend.Main[0].Spec.ShipType = 2;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray[0] == 1, "軽巡なし");
+            battleInfo.Result.Friend.Main[0].Spec.ShipType = 3;
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 3,
+                api_mapinfo_no = 2,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 3,
+                api_mapinfo_no = 3,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
+        }
+
+        /// <summary>
+        /// 875: 精鋭「三一駆」、鉄底海域に突入せよ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_875()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {875}));
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(2, 543), ShipStatus(8, 360), ShipStatus(11, 545),
+                ShipStatus(18, 467), ShipStatus(11, 261), ShipStatus(2, 344)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 5,
+                api_mapinfo_no = 4,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 5,
+                api_mapinfo_no = 4,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
+
+            battleInfo.Result.Friend.Main[5].NowHp = 0;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "朝霜改轟沈");
+            battleInfo.Result.Friend.Main[5].NowHp = 1;
+
+            battleInfo.Result.Friend.Main[0].Spec.Id = 345;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "長波改二なし");
+            battleInfo.Result.Friend.Main[0].Spec.Id = 543;
+
+            battleInfo.Result.Friend.Main[5].Spec.Id = 345;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 2, "高波改");
+            battleInfo.Result.Friend.Main[5].Spec.Id = 359;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 3, "沖波改");
         }
 
         /// <summary>
@@ -618,7 +1011,8 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 214, NowArray = new[] {20, 7, 10, 8}},
                     new QuestCount {Id = 854, NowArray = new[] {2, 1, 1, 1}},
                     new QuestCount {Id = 426, NowArray = new[] {1, 1, 1, 1}},
-                    new QuestCount {Id = 428, NowArray = new[] {1, 1, 1}}
+                    new QuestCount {Id = 428, NowArray = new[] {1, 1, 1}},
+                    new QuestCount {Id = 873, NowArray = new[] {1, 1, 1}}
                 }
             };
             questInfo.LoadState(status);
@@ -636,6 +1030,9 @@ namespace KancolleSniffer.Test
             PAssert.That(() => q428.ToToolTip() == "対潜警戒任務1 海峡警備行動1 長時間対潜警戒1");
             q428.NowArray = new[] {0, 1, 0};
             PAssert.That(() => q428.ToToolTip() == "海峡警備行動1");
+            var q873 = status.QuestCountList[5];
+            PAssert.That(() => q873.ToString() == "3/3");
+            PAssert.That(() => q873.ToToolTip() == "3-1 3-2 3-3");
         }
     }
 }
