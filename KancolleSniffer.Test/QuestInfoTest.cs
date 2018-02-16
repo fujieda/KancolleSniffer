@@ -113,34 +113,37 @@ namespace KancolleSniffer.Test
                 QuestLastReset = new DateTime(2017, 10, 31, 5, 0, 0)
             };
             questInfo.LoadState(status);
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                    {new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}}
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {201}));
             questInfo.SaveState(status);
             PAssert.That(() =>
                 status.QuestCountList.Select(qc => new {qc.Id, qc.Now}).SequenceEqual(new[]
                     {new {Id = 213, Now = 1}, new {Id = 822, Now = 1}})); // デイリーとマンスリーが消える
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                    {new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}}
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {201}));
             questInfo.SaveState(status);
             PAssert.That(() =>
                 status.QuestCountList.Select(qc => new {qc.Id, qc.Now}).SequenceEqual(new[]
                     {new {Id = 822, Now = 1}})); // ウィークリーが消える
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                    {new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}}
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {201}));
             questInfo.SaveState(status);
             PAssert.That(() => status.QuestCountList.Length == 0); // クォータリーが消える
         }
 
         private JsonObject Js(object obj) => JsonObject.CreateJsonObject(obj);
+
+        private object CreateQuestList(int[] ids) => Js(new
+        {
+            api_list =
+            ids.Select(id => new
+            {
+                api_no = id,
+                api_category = id / 100,
+                api_state = 2,
+                api_title = "",
+                api_detail = "",
+                api_get_material = new int[0],
+                api_progress_flag = 0
+            })
+        });
 
         /// <summary>
         /// 201: 敵艦隊を撃滅せよ！
@@ -152,16 +155,7 @@ namespace KancolleSniffer.Test
         public void BattleResult_201_216_210_214()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 201, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 210, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 214, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 216, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {201, 216, 210, 214}));
 
             questInfo.InspectMapStart(Js(new
             {
@@ -213,22 +207,11 @@ namespace KancolleSniffer.Test
         /// 218: 敵補給艦を3隻撃沈せよ！
         /// </summary>
         [TestMethod]
-        public void BattleResult_211_212_218_213_220_221()
+        public void BattleResult_211_212_213_218_220_221()
         {
             var battleInfo = new BattleInfo(null, null);
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1)) {AcceptMax = 6};
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 211, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 212, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 213, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 218, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 220, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 221, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {211, 212, 213, 218, 220, 221}));
             // 補給艦1隻と空母2隻
             battleInfo.InjectEnemyResultStatus(new[]
             {
@@ -258,14 +241,7 @@ namespace KancolleSniffer.Test
         {
             var battleInfo = new BattleInfo(null, null);
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 228, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 230, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {228, 230}));
             // 潜水艦3
             battleInfo.InjectEnemyResultStatus(new[]
             {
@@ -289,13 +265,7 @@ namespace KancolleSniffer.Test
         public void BattleResult_226()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 226, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {226}));
 
             questInfo.InspectMapStart(Js(new
             {
@@ -336,13 +306,7 @@ namespace KancolleSniffer.Test
         public void BattleResult_243()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 243, api_category = 2, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {243}));
 
             questInfo.InspectMapStart(Js(new
             {
@@ -375,14 +339,7 @@ namespace KancolleSniffer.Test
         public void BattleResult_822_854()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 822, api_category = 8, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 854, api_category = 8, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {822, 854}));
 
             questInfo.InspectMapNext(Js(new
             {
@@ -435,16 +392,7 @@ namespace KancolleSniffer.Test
         public void PracticeResult_303_304_302_311()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 302, api_category = 3, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 303, api_category = 3, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 304, api_category = 3, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 311, api_category = 3, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {302, 303, 304, 311}));
 
             questInfo.InspectPracticeResult(Js(new {api_win_rank = "C"}));
             questInfo.InspectPracticeResult(Js(new {api_win_rank = "A"}));
@@ -468,17 +416,7 @@ namespace KancolleSniffer.Test
         public void MissionResult_402_403_404_410_411()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 402, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 403, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 404, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 410, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 411, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {402, 403, 404, 410, 411}));
 
             questInfo.InspectDeck(Js(
                 new[]
@@ -506,20 +444,14 @@ namespace KancolleSniffer.Test
         public void MissionResult_426()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 426, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {426}));
 
             questInfo.InspectDeck(Js(
                 new[]
                 {
                     new {api_id = 2, api_mission = new[] {2, 3}},
                     new {api_id = 3, api_mission = new[] {2, 4}},
-                    new {api_id = 4, api_mission = new[] {2, 5}},
+                    new {api_id = 4, api_mission = new[] {2, 5}}
                 }));
             questInfo.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
             questInfo.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
@@ -529,7 +461,7 @@ namespace KancolleSniffer.Test
             questInfo.InspectDeck(Js(
                 new[]
                 {
-                    new {api_id = 2, api_mission = new[] {2, 10}},
+                    new {api_id = 2, api_mission = new[] {2, 10}}
                 }));
             questInfo.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
             PAssert.That(() =>
@@ -543,20 +475,14 @@ namespace KancolleSniffer.Test
         public void MissionResult_428()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 428, api_category = 4, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {428}));
 
             questInfo.InspectDeck(Js(
                 new[]
                 {
                     new {api_id = 2, api_mission = new[] {2, 4}},
                     new {api_id = 3, api_mission = new[] {2, 101}},
-                    new {api_id = 4, api_mission = new[] {2, 102}},
+                    new {api_id = 4, api_mission = new[] {2, 102}}
                 }));
             questInfo.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
             questInfo.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
@@ -573,14 +499,7 @@ namespace KancolleSniffer.Test
         public void Powerup_503_504()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 503, api_category = 5, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 504, api_category = 5, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {503, 504}));
 
             questInfo.CountNyukyo();
             questInfo.CountCharge();
@@ -601,18 +520,7 @@ namespace KancolleSniffer.Test
         public void Kousyou_605_606_607_608_609_619()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 6};
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 605, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 606, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 607, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 608, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 609, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 619, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {605, 606, 607, 608, 609, 619}));
 
             questInfo.CountCreateItem();
             questInfo.CountCreateShip();
@@ -656,20 +564,7 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 13, Name = "61cm三連装魚雷", Type = 5}
             });
             itemInfo.InjectItems(new[] {1, 37, 19, 4, 11, 75, 7, 25, 13});
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 613, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 638, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 663, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 673, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 674, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 675, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 676, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 677, api_category = 6, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {613, 638, 663, 673, 674, 675, 676, 677}));
             questInfo.InspectDestroyItem("api%5Fslotitem%5Fids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9&api%5Fverno=1", null);
             PAssert.That(() =>
                 questInfo.Quests.Select(q => new {q.Id, q.Count.Now}).Take(5).SequenceEqual(new[]
@@ -693,19 +588,19 @@ namespace KancolleSniffer.Test
         public void Powerup_702_703()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    new {api_no = 702, api_category = 7, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0},
-                    new {api_no = 703, api_category = 7, api_state = 2, api_title = "", api_detail = "", api_progress_flag = 0}
-                }
-            }));
+            questInfo.InspectQuestList(CreateQuestList(new[] {702, 703}));
             questInfo.InspectPowerup(Js(new {api_powerup_flag = 1}));
             PAssert.That(() =>
                 questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
                     .SequenceEqual(new[] {new {Id = 702, Now = 1}, new {Id = 703, Now = 1}}));
+        }
+
+        [TestMethod]
+        public void NotImplemented()
+        {
+            var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {318}));
+            PAssert.That(() => questInfo.Quests[0].Count.Spec.Material.Length == 0);
         }
 
         /// <summary>

@@ -28,6 +28,7 @@ namespace KancolleSniffer
         public int Category { get; set; }
         public string Name { get; set; }
         public string Detail { get; set; }
+        public int[] Material { get; set; }
         public int Progress { get; set; }
 
         [XmlIgnore]
@@ -35,6 +36,15 @@ namespace KancolleSniffer
 
         [XmlIgnore]
         public Color Color { get; set; }
+
+        public string ToToolTip() =>
+            Detail +
+            (Material == null || Material.All(x => x == 0)
+                ? ""
+                : "\r\n" + string.Join(" ",
+                      new[] {"燃", "弾", "鋼", "ボ", "建造", "修復", "開発", "改修"}
+                          .Zip(Material, (m, num) => num == 0 ? "" : m + num)
+                          .Where(s => !string.IsNullOrEmpty(s))));
     }
 
     public enum QuestInterval
@@ -53,6 +63,7 @@ namespace KancolleSniffer
         public int[] MaxArray { get; set; }
         public bool AdjustCount { get; set; } = true;
         public int Shift { get; set; }
+        public int[] Material { get; set; }
     }
 
     public class QuestSortie : QuestSpec
@@ -173,7 +184,8 @@ namespace KancolleSniffer
             {
                 case 426:
                     return string.Join(" ",
-                        new[] {"警備任務", "対潜警戒任務", "海上護衛任務", "強硬偵察任務"}.Zip(NowArray, (mission, n) => n >= 1 ? mission : "")
+                        new[] {"警備任務", "対潜警戒任務", "海上護衛任務", "強硬偵察任務"}
+                            .Zip(NowArray, (mission, n) => n >= 1 ? mission : "")
                             .Where(s => !string.IsNullOrEmpty(s)));
                 case 428:
                     return string.Join(" ",
@@ -204,66 +216,66 @@ namespace KancolleSniffer
         /// </summary>
         private static readonly Dictionary<int, QuestSpec> QuestSpecs = new Dictionary<int, QuestSpec>
         {
-            {201, new QuestSortie {Interval = Daily, Max = 1, Rank = "B"}}, // 201: 敵艦隊を撃滅せよ！
-            {216, new QuestSortie {Interval = Daily, Max = 1, Rank = "B"}}, // 216: 敵艦隊主力を撃滅せよ！
-            {210, new QuestSortie {Interval = Daily, Max = 10}}, // 210: 敵艦隊を10回邀撃せよ！
-            {211, new QuestEnemyType {Interval = Daily, Max = 3, EnemyType = new[] {7, 11}}}, // 211: 敵空母を3隻撃沈せよ！
-            {212, new QuestEnemyType {Interval = Daily, Max = 5, EnemyType = new[] {15}}}, // 212: 敵輸送船団を叩け！
-            {218, new QuestEnemyType {Interval = Daily, Max = 3, EnemyType = new[] {15}}}, // 218: 敵補給艦を3隻撃沈せよ！
-            {226, new QuestSortie {Interval = Daily, Max = 5, Rank = "B", Maps = new[] {21, 22, 23, 24, 25}}}, // 226: 南西諸島海域の制海権を握れ！
-            {230, new QuestEnemyType {Interval = Daily, Max = 6, EnemyType = new[] {13}}}, // 230: 敵潜水艦を制圧せよ！
+            {201, new QuestSortie {Interval = Daily, Max = 1, Rank = "B", Material = new[] {0, 0, 1, 0}}}, // 201: 敵艦隊を撃滅せよ！
+            {216, new QuestSortie {Interval = Daily, Max = 1, Rank = "B", Material = new[] {0, 1, 1, 0}}}, // 216: 敵艦隊主力を撃滅せよ！
+            {210, new QuestSortie {Interval = Daily, Max = 10, Material = new[] {0, 0, 1, 0}}}, // 210: 敵艦隊を10回邀撃せよ！
+            {211, new QuestEnemyType {Interval = Daily, Max = 3, EnemyType = new[] {7, 11}, Material = new[] {0, 2, 0, 0}}}, // 211: 敵空母を3隻撃沈せよ！
+            {212, new QuestEnemyType {Interval = Daily, Max = 5, EnemyType = new[] {15}, Material = new[] {0, 0, 2, 0}}}, // 212: 敵輸送船団を叩け！
+            {218, new QuestEnemyType {Interval = Daily, Max = 3, EnemyType = new[] {15}, Material = new[] {0, 1, 1, 0}}}, // 218: 敵補給艦を3隻撃沈せよ！
+            {226, new QuestSortie {Interval = Daily, Max = 5, Rank = "B", Maps = new[] {21, 22, 23, 24, 25}, Material = new[] {1, 1, 0, 0}}}, // 226: 南西諸島海域の制海権を握れ！
+            {230, new QuestEnemyType {Interval = Daily, Max = 6, EnemyType = new[] {13}, Material = new[] {0, 1, 0, 0}}}, // 230: 敵潜水艦を制圧せよ！
 
-            {213, new QuestEnemyType {Interval = Weekly, Max = 20, EnemyType = new[] {15}}}, // 213: 海上通商破壊作戦
-            {214, new QuestSpec {Interval = Weekly, MaxArray = new[] {36, 6, 24, 12}}}, // 214: あ号作戦
-            {220, new QuestEnemyType {Interval = Weekly, Max = 20, EnemyType = new[] {7, 11}}}, // 220: い号作戦
-            {221, new QuestEnemyType {Interval = Weekly, Max = 50, EnemyType = new[] {15}}}, // 221: ろ号作戦
-            {228, new QuestEnemyType {Interval = Weekly, Max = 15, EnemyType = new[] {13}}}, // 228: 海上護衛戦
-            {229, new QuestSortie {Interval = Weekly, Max = 12, Rank = "B", Maps = new[] {41, 42, 43, 44, 45}}}, // 229: 敵東方艦隊を撃滅せよ！
-            {241, new QuestSortie {Interval = Weekly, Max = 5, Rank = "B", Maps = new[] {33, 34, 35}}}, // 241: 敵北方艦隊主力を撃滅せよ！
-            {242, new QuestSortie {Interval = Weekly, Max = 1, Rank = "B", Maps = new[] {44}}}, // 242: 敵東方中枢艦隊を撃破せよ！
-            {243, new QuestSortie {Interval = Weekly, Max = 2, Rank = "S", Maps = new[] {52}}}, // 243: 南方海域珊瑚諸島沖の制空権を握れ！
-            {256, new QuestSortie {Interval = Monthly, Max = 3, Rank = "S", Maps = new[] {61}}}, // 256: 「潜水艦隊」出撃せよ！
-            {261, new QuestSortie {Interval = Weekly, Max = 3, Rank = "A", Maps = new[] {15}}}, // 261: 海上輸送路の安全確保に努めよ！
-            {265, new QuestSortie {Interval = Monthly, Max = 10, Rank = "A", Maps = new[] {15}}}, // 265: 海上護衛強化月間
+            {213, new QuestEnemyType {Interval = Weekly, Max = 20, EnemyType = new[] {15}, Material = new[] {0, 0, 3, 0}}}, // 213: 海上通商破壊作戦
+            {214, new QuestSpec {Interval = Weekly, MaxArray = new[] {36, 6, 24, 12}, Material = new[] {2, 0, 2, 0}}}, // 214: あ号作戦
+            {220, new QuestEnemyType {Interval = Weekly, Max = 20, EnemyType = new[] {7, 11}, Material = new[] {0, 2, 0, 0}}}, // 220: い号作戦
+            {221, new QuestEnemyType {Interval = Weekly, Max = 50, EnemyType = new[] {15}, Material = new[] {0, 3, 0, 0}}}, // 221: ろ号作戦
+            {228, new QuestEnemyType {Interval = Weekly, Max = 15, EnemyType = new[] {13}, Material = new[] {0, 2, 0, 1}}}, // 228: 海上護衛戦
+            {229, new QuestSortie {Interval = Weekly, Max = 12, Rank = "B", Maps = new[] {41, 42, 43, 44, 45}, Material = new[] {0, 0, 2, 0}}}, // 229: 敵東方艦隊を撃滅せよ！
+            {241, new QuestSortie {Interval = Weekly, Max = 5, Rank = "B", Maps = new[] {33, 34, 35}, Material = new[] {0, 0, 3, 3}}}, // 241: 敵北方艦隊主力を撃滅せよ！
+            {242, new QuestSortie {Interval = Weekly, Max = 1, Rank = "B", Maps = new[] {44}, Material = new[] {0, 1, 1, 0}}}, // 242: 敵東方中枢艦隊を撃破せよ！
+            {243, new QuestSortie {Interval = Weekly, Max = 2, Rank = "S", Maps = new[] {52}, Material = new[] {0, 0, 2, 2}}}, // 243: 南方海域珊瑚諸島沖の制空権を握れ！
+            {256, new QuestSortie {Interval = Monthly, Max = 3, Rank = "S", Maps = new[] {61}, Material = new[] {0, 0, 0, 0}}}, // 256: 「潜水艦隊」出撃せよ！
+            {261, new QuestSortie {Interval = Weekly, Max = 3, Rank = "A", Maps = new[] {15}, Material = new[] {0, 0, 0, 3}}}, // 261: 海上輸送路の安全確保に努めよ！
+            {265, new QuestSortie {Interval = Monthly, Max = 10, Rank = "A", Maps = new[] {15}, Material = new[] {0, 0, 5, 3}}}, // 265: 海上護衛強化月間
 
-            {822, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "S", Maps = new[] {24}}}, // 822: 沖ノ島海域迎撃戦
-            {854, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}}}, // 854: 戦果拡張任務！「Z作戦」前段作戦
+            {822, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "S", Maps = new[] {24}, Material = new[] {0, 0, 0, 5}}}, // 822: 沖ノ島海域迎撃戦
+            {854, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 0, 0, 4}}}, // 854: 戦果拡張任務！「Z作戦」前段作戦
 
-            {303, new QuestPractice {Interval = Daily, Max = 3, Win = false}}, // 303: 「演習」で練度向上！
-            {304, new QuestPractice {Interval = Daily, Max = 5, Win = true}}, // 304: 「演習」で他提督を圧倒せよ！
-            {302, new QuestPractice {Interval = Weekly, Max = 20, Win = true}}, // 302: 大規模演習
-            {311, new QuestPractice {Interval = Daily, Max = 7, Win = true}}, // 311: 精鋭艦隊演習
+            {303, new QuestPractice {Interval = Daily, Max = 3, Win = false, Material = new[] {1, 0, 0, 0}}}, // 303: 「演習」で練度向上！
+            {304, new QuestPractice {Interval = Daily, Max = 5, Win = true, Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
+            {302, new QuestPractice {Interval = Weekly, Max = 20, Win = true, Material = new[] {0, 0, 2, 1}}}, // 302: 大規模演習
+            {311, new QuestPractice {Interval = Daily, Max = 7, Win = true, Material = new[] {0, 2, 0, 0}}}, // 311: 精鋭艦隊演習
 
-            {402, new QuestMission {Interval = Daily, Max = 3}}, // 402: 「遠征」を3回成功させよう！
-            {403, new QuestMission {Interval = Daily, Max = 10}}, // 403: 「遠征」を10回成功させよう！
-            {404, new QuestMission {Interval = Weekly, Max = 30}}, // 404: 大規模遠征作戦、発令！
-            {410, new QuestMission {Interval = Weekly, Max = 1, Ids = new[] {37, 38}}}, // 410: 南方への輸送作戦を成功させよ！
-            {411, new QuestMission {Interval = Weekly, Max = 6, Shift = 1, Ids = new[] {37, 38}}}, // 411: 南方への鼠輸送を継続実施せよ！
-            {424, new QuestMission {Interval = Monthly, Max = 4, Shift = 1, Ids = new[] {5}}}, // 424: 輸送船団護衛を強化せよ！
-            {426, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}}}, // 426: 海上通商航路の警戒を厳とせよ！
-            {428, new QuestSpec {Interval = Quarterly, MaxArray = new[] {2, 2, 2}}}, // 428: 近海に侵入する敵潜を制圧せよ！
+            {402, new QuestMission {Interval = Daily, Max = 3, Material = new[] {0, 0, 1, 0}}}, // 402: 「遠征」を3回成功させよう！
+            {403, new QuestMission {Interval = Daily, Max = 10, Material = new[] {0, 0, 0, 0}}}, // 403: 「遠征」を10回成功させよう！
+            {404, new QuestMission {Interval = Weekly, Max = 30, Material = new[] {0, 0, 3, 0}}}, // 404: 大規模遠征作戦、発令！
+            {410, new QuestMission {Interval = Weekly, Max = 1, Ids = new[] {37, 38}, Material = new[] {0, 0, 0, 0}}}, // 410: 南方への輸送作戦を成功させよ！
+            {411, new QuestMission {Interval = Weekly, Max = 6, Shift = 1, Ids = new[] {37, 38}, Material = new[] {0, 0, 2, 1}}}, // 411: 南方への鼠輸送を継続実施せよ！
+            {424, new QuestMission {Interval = Monthly, Max = 4, Shift = 1, Ids = new[] {5}, Material = new[] {0, 0, 0, 0}}}, // 424: 輸送船団護衛を強化せよ！
+            {426, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 0, 4, 0}}}, // 426: 海上通商航路の警戒を厳とせよ！
+            {428, new QuestSpec {Interval = Quarterly, MaxArray = new[] {2, 2, 2}, Material = new[] {0, 0, 0, 3}}}, // 428: 近海に侵入する敵潜を制圧せよ！
 
-            {503, new QuestSpec {Interval = Daily, Max = 5}}, // 503: 艦隊大整備！
-            {504, new QuestSpec {Interval = Daily, Max = 15}}, // 504: 艦隊酒保祭り！
+            {503, new QuestSpec {Interval = Daily, Max = 5, Material = new[] {0, 2, 0, 0}}}, // 503: 艦隊大整備！
+            {504, new QuestSpec {Interval = Daily, Max = 15, Material = new[] {1, 0, 1, 0}}}, // 504: 艦隊酒保祭り！
 
-            {605, new QuestSpec {Interval = Daily, Max = 1}}, // 605: 新装備「開発」指令
-            {606, new QuestSpec {Interval = Daily, Max = 1}}, // 606: 新造艦「建造」指令
-            {607, new QuestSpec {Interval = Daily, Max = 3, Shift = 1}}, // 607: 装備「開発」集中強化！
-            {608, new QuestSpec {Interval = Daily, Max = 3, Shift = 1}}, // 608: 艦娘「建造」艦隊強化！
-            {609, new QuestSpec {Interval = Daily, Max = 2}}, // 609: 軍縮条約対応！
-            {619, new QuestSpec {Interval = Daily, Max = 1}}, // 619: 装備の改修強化
+            {605, new QuestSpec {Interval = Daily, Max = 1, Material = new[] {1, 0, 1, 0}}}, // 605: 新装備「開発」指令
+            {606, new QuestSpec {Interval = Daily, Max = 1, Material = new[] {0, 1, 1, 0}}}, // 606: 新造艦「建造」指令
+            {607, new QuestSpec {Interval = Daily, Max = 3, Shift = 1, Material = new[] {0, 0, 2, 0}}}, // 607: 装備「開発」集中強化！
+            {608, new QuestSpec {Interval = Daily, Max = 3, Shift = 1, Material = new[] {1, 0, 2, 0}}}, // 608: 艦娘「建造」艦隊強化！
+            {609, new QuestSpec {Interval = Daily, Max = 2, Material = new[] {0, 1, 0, 0}}}, // 609: 軍縮条約対応！
+            {619, new QuestSpec {Interval = Daily, Max = 1, Material = new[] {0, 0, 0, 1}}}, // 619: 装備の改修強化
 
-            {613, new QuestSpec {Interval = Weekly, Max = 24}}, // 613: 資源の再利用
-            {638, new QuestDestroyItem {Interval = Weekly, Max = 6, Items = new[] {21}}}, // 638: 対空機銃量産
-            {663, new QuestDestroyItem {Interval = Quarterly, Max = 10, Items = new[] {3}} }, // 663: 新型艤装の継続研究
-            {673, new QuestDestroyItem {Interval = Daily, Max = 4, Items = new[] {1}, Shift = 1}}, // 673: 装備開発力の整備
-            {674, new QuestDestroyItem {Interval = Daily, Max = 3, Items = new[] {21}, Shift = 2}}, // 674: 工廠環境の整備
-            {675, new QuestSpec {Interval = Quarterly, MaxArray = new[] {6, 4}}}, // 675: 運用装備の統合整備
-            {676, new QuestSpec {Interval = Weekly, MaxArray = new[] {3, 3, 1}}}, // 676: 装備開発力の集中整備
-            {677, new QuestSpec {Interval = Weekly, MaxArray = new[] {4, 2, 3}}}, // 677: 継戦支援能力の整備
+            {613, new QuestSpec {Interval = Weekly, Max = 24, Material = new[] {0, 0, 0, 0}}}, // 613: 資源の再利用
+            {638, new QuestDestroyItem {Interval = Weekly, Max = 6, Items = new[] {21}, Material = new[] {0, 0, 2, 1}}}, // 638: 対空機銃量産
+            {663, new QuestDestroyItem {Interval = Quarterly, Max = 10, Items = new[] {3}, Material = new[] {0, 0, 3, 0}}}, // 663: 新型艤装の継続研究
+            {673, new QuestDestroyItem {Interval = Daily, Max = 4, Items = new[] {1}, Shift = 1, Material = new[] {0, 0, 1, 0}}}, // 673: 装備開発力の整備
+            {674, new QuestDestroyItem {Interval = Daily, Max = 3, Items = new[] {21}, Shift = 2, Material = new[] {0, 1, 1, 0}}}, // 674: 工廠環境の整備
+            {675, new QuestSpec {Interval = Quarterly, MaxArray = new[] {6, 4}, Material = new[] {0, 0, 0, 0}}}, // 675: 運用装備の統合整備
+            {676, new QuestSpec {Interval = Weekly, MaxArray = new[] {3, 3, 1}, Material = new[] {0, 1, 7, 0}}}, // 676: 装備開発力の集中整備
+            {677, new QuestSpec {Interval = Weekly, MaxArray = new[] {4, 2, 3}, Material = new[] {0, 5, 0, 0}}}, // 677: 継戦支援能力の整備
 
-            {702, new QuestPowerup {Interval = Daily, Max = 2}}, // 702: 艦の「近代化改修」を実施せよ！
-            {703, new QuestPowerup {Interval = Weekly, Max = 15}} // 703: 「近代化改修」を進め、戦備を整えよ！
+            {702, new QuestPowerup {Interval = Daily, Max = 2, Material = new[] {0, 1, 0, 0}}}, // 702: 艦の「近代化改修」を実施せよ！
+            {703, new QuestPowerup {Interval = Weekly, Max = 15, Material = new[] {1, 0, 2, 0}}} // 703: 「近代化改修」を進め、戦備を整えよ！
         };
         // @formatter:on
 
@@ -284,7 +296,7 @@ namespace KancolleSniffer
                     Spec = spec
                 };
             }
-            return new QuestCount {Spec = new QuestSpec {AdjustCount = false}};
+            return new QuestCount {Spec = new QuestSpec {Material = new int[0], AdjustCount = false}};
         }
 
         public void Remove(int id)
@@ -363,6 +375,7 @@ namespace KancolleSniffer
                     var cat = (int)entry.api_category;
                     var name = (string)entry.api_title;
                     var detail = ((string)entry.api_detail).Replace("<br>", "\r\n");
+                    var material = (int[])entry.api_get_material;
 
                     switch (progress)
                     {
@@ -385,7 +398,7 @@ namespace KancolleSniffer
                             progress = 100;
                             goto case 2;
                         case 2:
-                            AddQuest(id, cat, name, detail, progress, true);
+                            AddQuest(id, cat, name, detail, material, progress, true);
                             break;
                     }
                 }
@@ -399,7 +412,8 @@ namespace KancolleSniffer
             }
         }
 
-        private void AddQuest(int id, int category, string name, string detail, int progress, bool adjustCount)
+        private void AddQuest(int id, int category, string name, string detail, int[] material, int progress,
+            bool adjustCount)
         {
             var count = _countList.GetCount(id);
             if (adjustCount)
@@ -413,6 +427,7 @@ namespace KancolleSniffer
                 Category = category,
                 Name = name,
                 Detail = detail,
+                Material = material?.Concat(count.Spec.Material).ToArray(),
                 Count = count,
                 Progress = progress,
                 Color = category <= _color.Length ? _color[category - 1] : Control.DefaultBackColor
@@ -729,7 +744,7 @@ namespace KancolleSniffer
             {
                 _quests.Clear();
                 foreach (var q in status.QuestList)
-                    AddQuest(q.Id, q.Category, q.Name, q.Detail, q.Progress, false);
+                    AddQuest(q.Id, q.Category, q.Name, q.Detail, q.Material, q.Progress, false);
             }
         }
     }
