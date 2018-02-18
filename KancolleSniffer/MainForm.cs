@@ -94,6 +94,19 @@ namespace KancolleSniffer
             _sniffer.RepeatingTimerController = new RepeatingTimerController(_notificationManager, _config);
         }
 
+        /// <summary>
+        /// パネルのz-orderがくるうのを避ける
+        /// https://stackoverflow.com/a/5777090/1429506
+        /// </summary>
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            // ReSharper disable once NotAccessedVariable
+            IntPtr handle;
+            foreach (var panel in new[] {panelShipInfo, panel7Ships, panelCombinedFleet})
+                // ReSharper disable once RedundantAssignment
+                handle = panel.Handle;
+        }
+
         private class RepeatingTimerController : Sniffer.IRepeatingTimerController
         {
             private readonly NotificationManager _manager;
