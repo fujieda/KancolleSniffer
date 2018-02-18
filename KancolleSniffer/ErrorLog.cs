@@ -40,11 +40,15 @@ namespace KancolleSniffer
 
         public void CheckBattleApi(string url, string request, string response)
         {
-            if (!url.EndsWith("api_port/port"))
-                _battleApiLog.Add(new[] {url, request, response});
+            if (_prevBattleState == BattleState.None)
+                _battleApiLog.Clear();
             try
             {
-                if (_prevBattleState == BattleState.Result &&
+                if (_sniffer.Battle.BattleState != BattleState.None)
+                {
+                    _battleApiLog.Add(new[] {url, request, response});
+                }
+                else if (_prevBattleState == BattleState.Result &&
                          // battleresultのあとのship_deckかportでのみエラー判定する
                          IsBattleResultError)
                 {
@@ -55,8 +59,6 @@ namespace KancolleSniffer
             {
                 _prevBattleState = _sniffer.Battle.BattleState;
             }
-            if (url.EndsWith("api_port/port"))
-                _battleApiLog.Clear();
         }
 
         private bool IsBattleResultError =>
