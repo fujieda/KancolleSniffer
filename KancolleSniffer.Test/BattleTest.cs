@@ -68,5 +68,19 @@ namespace KancolleSniffer.Test
             _battleInfo.InspectBattleResult(JsonParser.Parse(logs[6]));
             PAssert.That(() => _shipInfo.GetShipStatuses(0)[3].NowHp == 12);
         }
+
+        private dynamic Data(string json) => ((dynamic)JsonParser.Parse(json)).api_data;
+
+        [TestMethod]
+        public void NpcFriendFleetAttack()
+        {
+            var logs = ReadAllLines("friendfleet_001");
+            var battle = Data(logs[3]);
+            _shipInfo.InjectShips(battle, JsonParser.Parse(logs[0]));
+            _battleInfo.InspectBattle(logs[1], logs[2], battle);
+            _battleInfo.InspectBattle(logs[4], logs[5], Data(logs[6]));
+            _battleInfo.InspectBattleResult(Data(logs[9]));
+            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+        }
     }
 }

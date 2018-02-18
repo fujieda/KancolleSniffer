@@ -261,7 +261,8 @@ namespace KancolleSniffer
             ByTurn,
             Support,
             Aircraft,
-            AirBase
+            AirBase,
+            Friend
         }
 
         private class Phase
@@ -294,6 +295,7 @@ namespace KancolleSniffer
                 new Phase("support_info", CombatType.Support),
                 new Phase("opening_taisen", CombatType.ByTurn),
                 new Phase("opening_atack", CombatType.AtOnce),
+                new Phase("friendly_battle", CombatType.Friend),
                 new Phase("hougeki", CombatType.ByTurn),
                 new Phase("hougeki1", CombatType.ByTurn),
                 new Phase("hougeki2", CombatType.ByTurn),
@@ -327,6 +329,9 @@ namespace KancolleSniffer
                 case CombatType.AirBase:
                     CalcAirBaseAttackDamage(json[api]);
                     break;
+                case CombatType.Friend:
+                    CalcFriendAttackDamage(json[api]);
+                    break;
             }
         }
 
@@ -350,6 +355,11 @@ namespace KancolleSniffer
                 AddAirBattleResult(entry, "基地" + i++);
                 CalcKoukuDamage(entry);
             }
+        }
+
+        private void CalcFriendAttackDamage(dynamic json)
+        {
+            CalcDamageByTurn(json.api_hougeki, true);
         }
 
         private void AddAirBattleResult(dynamic json, string phaseName)
@@ -436,7 +446,7 @@ namespace KancolleSniffer
                 guard[i].ApplyDamage(damage[i + 6]);
         }
 
-        private void CalcDamageByTurn(dynamic json)
+        private void CalcDamageByTurn(dynamic json, bool ignoreFriendDamage = false)
         {
             if (!(json.api_df_list() && json.api_df_list != null &&
                   json.api_damage() && json.api_damage != null &&
@@ -456,6 +466,8 @@ namespace KancolleSniffer
                 // 一度に複数の目標を狙う攻撃はないものと仮定する
                 var hit = new {t = targets[i][0], d = damages[i].Sum(d => d >= 0 ? d : 0)};
                 if (hit.t == -1)
+                    continue;
+                if (ignoreFriendDamage && eflags[i] == 1)
                     continue;
                 records[eflags[i]][hit.t].ApplyDamage(hit.d);
             }
