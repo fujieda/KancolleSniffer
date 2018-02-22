@@ -442,7 +442,7 @@ namespace KancolleSniffer
                 catch (Exception ex)
                 {
                     if (_errorDialog.ShowDialog(this, "エラーが発生しました。", ex.ToString()) == DialogResult.Abort)
-                        Application.Exit();
+                        Exit();
                 }
             }
             if (_playLog == null || _configDialog.Visible)
