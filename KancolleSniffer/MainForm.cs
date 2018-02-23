@@ -90,7 +90,7 @@ namespace KancolleSniffer
             _proxyManager.UpdatePacFile();
             PerformZoom();
             _shipLabels.AdjustAkashiTimers();
-            _sniffer.LoadState();
+            LoadState();
             _sniffer.RepeatingTimerController = new RepeatingTimerController(_notificationManager, _config);
         }
 
@@ -105,6 +105,32 @@ namespace KancolleSniffer
             foreach (var panel in new[] {panelShipInfo, panel7Ships, panelCombinedFleet})
                 // ReSharper disable once RedundantAssignment
                 handle = panel.Handle;
+        }
+
+        private readonly FileSystemWatcher _watcher = new FileSystemWatcher
+        {
+            Path = AppDomain.CurrentDomain.BaseDirectory,
+            Filter = "status.xml",
+            NotifyFilter = NotifyFilters.LastWrite
+        };
+
+        private readonly Timer _watcherTimer = new Timer {Interval = 1000};
+
+        private void LoadState()
+        {
+            _sniffer.LoadState();
+            _watcher.SynchronizingObject = this;
+            _watcherTimer.Tick += (sender, ev) =>
+            {
+                _watcherTimer.Stop();
+                _sniffer.LoadState();
+            };
+            _watcher.Changed += (sender, ev) =>
+            {
+                _watcherTimer.Stop();
+                _watcherTimer.Start();
+            };
+            _watcher.EnableRaisingEvents = true;
         }
 
         private class RepeatingTimerController : Sniffer.IRepeatingTimerController
