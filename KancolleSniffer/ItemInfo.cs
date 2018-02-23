@@ -711,7 +711,7 @@ namespace KancolleSniffer
             }
         }
 
-        public ItemSpec GetSpecByItemId(int id) => _itemSpecs[id];
+        public ItemSpec GetSpecByItemId(int id) => _itemSpecs.TryGetValue(id, out var spec) ? spec : new ItemSpec();
 
         public string GetName(int id) => GetStatus(id).Spec.Name;
 

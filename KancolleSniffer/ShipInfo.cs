@@ -173,7 +173,7 @@ namespace KancolleSniffer
                 _shipInfo[(int)entry.api_id] = new ShipStatus
                 {
                     Id = (int)entry.api_id,
-                    Spec = _shipMaster[(int)entry.api_ship_id],
+                    Spec = _shipMaster.GetSpec((int)entry.api_ship_id),
                     Level = (int)entry.api_lv,
                     ExpToNext = (int)entry.api_exp[1],
                     MaxHp = (int)entry.api_maxhp,
@@ -367,7 +367,7 @@ namespace KancolleSniffer
             }
         }
 
-        public ShipSpec GetSpec(int id) => _shipMaster[id];
+        public ShipSpec GetSpec(int id) => _shipMaster.GetSpec(id);
 
         public bool InMission(int fleet) => _inMission[fleet];
 
@@ -522,11 +522,11 @@ namespace KancolleSniffer
             if (battle.api_f_nowhps_combined())
                 InjectShips(1, (int[])battle.api_f_nowhps_combined, (int[])battle.api_f_maxhps_combined, (int[][])item[1]);
             foreach (var enemy in (int[])battle.api_ship_ke)
-                _shipMaster[enemy] = new ShipSpec {Id = enemy};
+                _shipMaster.InjectSpec(enemy);
             if (battle.api_ship_ke_combined())
             {
                 foreach (var enemy in (int[])battle.api_ship_ke_combined)
-                    _shipMaster[enemy] = new ShipSpec {Id = enemy};
+                    _shipMaster.InjectSpec(enemy);
             }
             _itemInfo.InjectItems(((int[][])battle.api_eSlot).SelectMany(x => x));
             if (battle.api_eSlot_combined())

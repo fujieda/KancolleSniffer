@@ -49,7 +49,9 @@ namespace KancolleSniffer
                 }
                 shipSpec.MaxEq = entry.api_maxeq()
                     ? entry.api_maxeq
-                    : MissingData.MaxEq.TryGetValue(shipSpec.Id + (UseOldEnemyId ? 1000 : 0), out var maxEq) ? maxEq : null;
+                    : MissingData.MaxEq.TryGetValue(shipSpec.Id + (UseOldEnemyId ? 1000 : 0), out var maxEq)
+                        ? maxEq
+                        : null;
             }
             _shipSpecs[-1] = new ShipSpec();
             SetRemodelBaseAndStep();
@@ -65,11 +67,7 @@ namespace KancolleSniffer
             return name + "(" + flagship + ")";
         }
 
-        public ShipSpec this[int id]
-        {
-            get => _shipSpecs[id];
-            set => _shipSpecs[id] = value;
-        }
+        public ShipSpec GetSpec(int id) => _shipSpecs.TryGetValue(id, out var spec) ? spec : new ShipSpec();
 
         private void SetRemodelBaseAndStep()
         {
@@ -98,6 +96,12 @@ namespace KancolleSniffer
                 }
             }
         }
+
+        /// <summary>
+        /// テスト用
+        /// </summary>
+        /// <param name="id"></param>
+        public void InjectSpec(int id) => _shipSpecs[id] = new ShipSpec {Id = id};
     }
 
     public class ShipSpec
