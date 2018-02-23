@@ -407,7 +407,7 @@ namespace KancolleSniffer
         {
             var result = 0.0;
             var emptyBonus = 6;
-            foreach (var s in GetShipStatuses(fleet))
+            foreach (var s in GetShipStatuses(fleet).Where(s => !s.Escaped))
             {
                 emptyBonus--;
                 var itemLoS = 0;
@@ -477,7 +477,7 @@ namespace KancolleSniffer
 
         public double GetTransportPoint(int fleet)
         {
-            return GetShipStatuses(fleet).Sum(ship => ship.TransportPoint);
+            return GetShipStatuses(fleet).Where(ship => !ship.Escaped).Sum(ship => ship.TransportPoint);
         }
 
         public string[] BadlyDamagedShips { get; private set; } = new string[0];
