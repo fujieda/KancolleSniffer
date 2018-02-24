@@ -71,6 +71,9 @@ namespace KancolleSniffer.Test
 
         private dynamic Data(string json) => ((dynamic)JsonParser.Parse(json)).api_data;
 
+        /// <summary>
+        /// NPC友軍の支援攻撃がある
+        /// </summary>
         [TestMethod]
         public void NpcFriendFleetAttack()
         {
@@ -80,6 +83,20 @@ namespace KancolleSniffer.Test
             _battleInfo.InspectBattle(logs[1], logs[2], battle);
             _battleInfo.InspectBattle(logs[4], logs[5], Data(logs[6]));
             _battleInfo.InspectBattleResult(Data(logs[9]));
+            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+        }
+
+        /// <summary>
+        /// 空襲戦で轟沈する
+        /// </summary>
+        [TestMethod]
+        public void LdAirbattleHaveSunkenShip()
+        {
+            var logs = ReadAllLines("ld_airbattle_001");
+            var battle = Data(logs[3]);
+            _shipInfo.InjectShips(battle, JsonParser.Parse(logs[0]));
+            _battleInfo.InspectBattle(logs[1], logs[2], battle);
+            _battleInfo.InspectBattleResult(Data(logs[6]));
             PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
         }
     }

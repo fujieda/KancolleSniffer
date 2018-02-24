@@ -625,25 +625,19 @@ namespace KancolleSniffer
 
         private BattleResultRank CalcLdAirBattleRank()
         {
-            var combined = _friend.Concat(_guard).ToArray();
-            var friendNowShips = combined.Count(r => r.NowHp > 0);
+            var combined = _friend.Concat(_guard).Where(r => !r.Escaped).ToArray();
             var friendGauge = combined.Sum(r => r.StartHp - r.NowHp);
-            var friendSunk = combined.Count(r => r.NowHp == 0);
             var friendGaugeRate = Floor((double)friendGauge / combined.Sum(r => r.StartHp) * 100);
 
-            if (friendSunk == 0)
-            {
-                if (friendGauge == 0)
-                    return BattleResultRank.P;
-                if (friendGaugeRate < 10)
-                    return BattleResultRank.A;
-                if (friendGaugeRate < 20)
-                    return BattleResultRank.B;
-                if (friendGaugeRate < 50)
-                    return BattleResultRank.C;
-                return BattleResultRank.D;
-            }
-            if (friendSunk < friendNowShips)
+            if (friendGauge == 0)
+                return BattleResultRank.P;
+            if (friendGaugeRate < 10)
+                return BattleResultRank.A;
+            if (friendGaugeRate < 20)
+                return BattleResultRank.B;
+            if (friendGaugeRate < 50)
+                return BattleResultRank.C;
+            if (friendGaugeRate < 80)
                 return BattleResultRank.D;
             return BattleResultRank.E;
         }
