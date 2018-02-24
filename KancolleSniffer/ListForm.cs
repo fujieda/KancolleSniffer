@@ -50,17 +50,25 @@ namespace KancolleSniffer
             swipe.AddPanel(fleetPanel);
         }
 
+        /// <summary>
+        /// パネルのz-orderがくるうのを避ける
+        /// https://stackoverflow.com/a/5777090/1429506
+        /// </summary>
+        private void ListForm_Shown(object sender, EventArgs e)
+        {
+            // ReSharper disable once NotAccessedVariable
+            IntPtr handle;
+            foreach (Control panel in Controls)
+                // ReSharper disable once RedundantAssignment
+                handle = panel.Handle;
+        }
+
         public void UpdateList()
         {
             panelItemHeader.Visible = InItemList || InAntiAir || InBattleResult || InMiscText;
             panelGroupHeader.Visible = InGroupConfig;
             panelRepairHeader.Visible = InRepairList;
             panelFleetHeader.Visible = InFleetInfo;
-            foreach (var panel in new[]{panelItemHeader, panelGroupHeader, panelRepairHeader, panelFleetHeader})
-            {
-                if (panel.Visible)
-                    panel.BringToFront();
-            }
             // SwipeScrollifyが誤作動するのでEnabledも切り替える
             shipListPanel.Visible = shipListPanel.Enabled = InShipStatus || InGroupConfig || InRepairList;
             itemTreeView.Visible = itemTreeView.Enabled = InItemList;

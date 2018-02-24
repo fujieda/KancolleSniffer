@@ -505,6 +505,7 @@ namespace KancolleSniffer
             this.Text = "一覧";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ShipListForm_FormClosing);
             this.Load += new System.EventHandler(this.ShipListForm_Load);
+            this.Shown += new System.EventHandler(this.ListForm_Shown);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ShipListForm_KeyPress);
             this.contextMenuStripShipList.ResumeLayout(false);
             this.contextMenuStrip.ResumeLayout(false);
