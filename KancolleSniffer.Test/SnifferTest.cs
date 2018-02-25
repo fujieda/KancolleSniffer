@@ -334,7 +334,7 @@ namespace KancolleSniffer.Test
 
             var sniffer1 = new Sniffer();
             SniffLogFile(sniffer1, "transportpoint_001");
-            PAssert.That(() => (int)sniffer1.GetShipStatuses(0).Sum(s => s.TransportPoint) == 27);
+            PAssert.That(() => (int)sniffer1.GetShipStatuses(0).Sum(s => s.TransportPoint) == 47);
 
             var sniffer2 = new Sniffer();
             SniffLogFile(sniffer2, "transportpoint_002");
