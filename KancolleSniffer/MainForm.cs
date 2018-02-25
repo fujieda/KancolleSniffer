@@ -90,7 +90,7 @@ namespace KancolleSniffer
             _proxyManager.UpdatePacFile();
             PerformZoom();
             _shipLabels.AdjustAkashiTimers();
-            LoadState();
+            LoadData();
             _sniffer.RepeatingTimerController = new RepeatingTimerController(_notificationManager, _config);
         }
 
@@ -110,23 +110,33 @@ namespace KancolleSniffer
         private readonly FileSystemWatcher _watcher = new FileSystemWatcher
         {
             Path = AppDomain.CurrentDomain.BaseDirectory,
-            Filter = "status.xml",
             NotifyFilter = NotifyFilters.LastWrite
         };
 
         private readonly Timer _watcherTimer = new Timer {Interval = 1000};
 
-        private void LoadState()
+        private void LoadData()
         {
+            var target = "";
             _sniffer.LoadState();
+            ItemSpec.LoadTpSpec();
             _watcher.SynchronizingObject = this;
             _watcherTimer.Tick += (sender, ev) =>
             {
                 _watcherTimer.Stop();
-                _sniffer.LoadState();
+                switch (target)
+                {
+                    case "status.xml":
+                        _sniffer.LoadState();
+                        break;
+                    case "TP.csv":
+                        ItemSpec.LoadTpSpec();
+                        break;
+                }
             };
             _watcher.Changed += (sender, ev) =>
             {
+                target = ev.Name;
                 _watcherTimer.Stop();
                 _watcherTimer.Start();
             };

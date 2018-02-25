@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using static System.Math;
 
@@ -157,10 +159,27 @@ namespace KancolleSniffer
             }
         }
 
+        private static Dictionary<int, double> _tpSpec;
+
+        public static void LoadTpSpec()
+        {
+            try
+            {
+                _tpSpec = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TP.csv"))
+                    .Select(line => line.Split(','))
+                    .ToDictionary(f => int.Parse(f[0]), f => double.Parse(f[2]));
+            }
+            catch (IOException)
+            {
+            }
+        }
+
         public double TransportPoint
         {
             get
             {
+                if (_tpSpec != null && _tpSpec.TryGetValue(Id, out var tp))
+                    return tp;
                 switch (Id)
                 {
                     case 75: // ドラム缶(輸送用)
@@ -170,14 +189,16 @@ namespace KancolleSniffer
                     case 193: // 特大発動艇
                         return 8.0;
                     case 166: // 大発動艇(八九式中戦車&陸戦隊)
-                        return IncreaceLandPowerTp ? 13.0 : 8.0;
+                        return 8.0;
                     case 167: // 特二式内火艇
-                        return IncreaceLandPowerTp ? 7.0 : 2.0;
+                        return 2.0;
                     case 230: // 特大発動艇＋戦車第11連隊
                         return 8.0;
                     case 145: // 戦闘糧食
                         return 1.0;
                     case 150: // 秋刀魚の缶詰
+                        return 1.0;
+                    case 241: // 戦闘糧食(特別なおにぎり)
                         return 1.0;
                     default:
                         return 0;
@@ -195,7 +216,8 @@ namespace KancolleSniffer
                         return LoS <= 7 ? 1.2 : 1.3;
                     case 10:
                     case 41:
-                        return LoS <= 7 ? 1.1 : LoS <= 8 ? 1.13 : 1.16;
+                        return LoS <= 7 ? 1.1 :
+                            LoS <= 8 ? 1.13 : 1.16;
                 }
                 return 1;
             }
