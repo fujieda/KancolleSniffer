@@ -150,7 +150,7 @@ namespace KancolleSniffer
                     {
                         if (ship.Slot.Any(item => item.Id != -1))
                             sb.Append(",");
-                        var name = ship.Spec.SlotNum == 4 ? "ix" : $"i{ship.Spec.SlotNum + 1}";
+                        var name = ship.Spec.SlotNum == 5 ? "ix" : $"i{ship.Spec.SlotNum + 1}";
                         sb.Append($"\"{name}\":{{\"id\":{ship.SlotEx.Spec.Id},\"rf\":{ship.SlotEx.Level}}}");
                     }
                     sb.Append("}}");
