@@ -255,6 +255,8 @@ namespace KancolleSniffer
                     continue;
                 result.Add(item.Spec.Name + (item.Spec.IsAircraft ? $" {onslot}/{max}" : ""));
             }
+            if (ship.SlotEx.Id != 0 && ship.SlotEx.Id != -1)
+                result.Add(ship.SlotEx.Spec.Name);
             return string.Join("\r\n", result);
         }
 
