@@ -47,6 +47,18 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void CombinedUnbalanceLog()
+        {
+            var input = Enumerable.Repeat("", 38).ToArray();
+            input[11] = "龍鳳改(Lv97)・";
+            input[12] = "3/48・";
+            input[13] = "・夕立改(Lv148)";
+            input[14] = "・5/36";
+            var result = BattleLogProcessor.Process(input).ToArray();
+            PAssert.That(() => result[23] == "龍鳳改(Lv97)・夕立改(Lv148)");
+        }
+
+        [TestMethod]
         public void NormalLogWithKana()
         {
             var input = Enumerable.Repeat("", 38).ToArray();

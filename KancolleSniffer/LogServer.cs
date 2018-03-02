@@ -237,8 +237,7 @@ namespace KancolleSniffer
 
         private static IEnumerable<string> GetCurrentMaterialRecord()
         {
-            return new[] {Logger.FormatDateTime(DateTime.Now)}.
-                Concat(MaterialHistory.Select(c => c.Now.ToString()));
+            return new[] {Logger.FormatDateTime(DateTime.Now)}.Concat(MaterialHistory.Select(c => c.Now.ToString()));
         }
 
         private static void SendFile(Socket client, string path, string mime)
@@ -339,30 +338,18 @@ namespace KancolleSniffer
                 var hp = data[i + 1];
                 try
                 {
-                    if (ship.Contains("・"))
-                    {
-                        var ships = ship.Split('・');
-                        var hps = hp.Split('・');
-                        var nowMax = hps[0].Split('/').Select(int.Parse).ToArray();
-                        if (ShipStatus.CalcDamage(nowMax[0], nowMax[1]) == ShipStatus.Damage.Badly)
-                            damaged.Add(ships[0]);
-                        nowMax = hps[1].Split('/').Select(int.Parse).ToArray();
-                        if (ShipStatus.CalcDamage(nowMax[0], nowMax[1]) == ShipStatus.Damage.Badly)
-                            damaged.Add(ships[1]);
-                    }
-                    else
-                    {
-                        var nowMax = hp.Split('/').Select(int.Parse).ToArray();
-                        if (ShipStatus.CalcDamage(nowMax[0], nowMax[1]) == ShipStatus.Damage.Badly)
-                            damaged.Add(ship);
-                    }
+                    damaged.AddRange(from entry in ship.Split('・').Zip(hp.Split('・'), (s, h) => new {s, h})
+                        where entry.h.Contains("/")
+                        let nm = entry.h.Split('/').Select(int.Parse).ToArray()
+                        where ShipStatus.CalcDamage(nm[0], nm[1]) == ShipStatus.Damage.Badly
+                        select entry.s);
                 }
                 catch (FormatException)
                 {
                     return data;
                 }
             }
-            return data.Take(23).Concat(new[] { string.Join("・", damaged) }).Concat(data.Skip(23));
+            return data.Take(23).Concat(new[] {string.Join("・", damaged)}).Concat(data.Skip(23));
         }
 
         private static readonly Regex Kana = new Regex(@"\([^)]+\)\(", RegexOptions.Compiled);
