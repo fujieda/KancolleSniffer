@@ -294,7 +294,7 @@ namespace KancolleSniffer
                 {
                     Location = new Point(0, y),
                     Size = new Size(0, LineHeight),
-                    BackColor = ShipLabels.ColumnColors[i % 2],
+                    BackColor = ShipLabel.ColumnColors[i % 2],
                     Visible = false,
                     Tag = y
                 };
@@ -316,7 +316,7 @@ namespace KancolleSniffer
                 foreach (var label in friend.Concat(enemy))
                 {
                     panel.Controls.Add(label);
-                    label.BackColor = label.PresetColor = ShipLabels.ColumnColors[i % 2];
+                    label.BackColor = label.PresetColor = ShipLabel.ColumnColors[i % 2];
                 }
                 Controls.Add(panel);
             }
@@ -372,7 +372,7 @@ namespace KancolleSniffer
                     }
                 });
                 // ReSharper disable once VirtualMemberCallInConstructor
-                BackColor = ShipLabels.ColumnColors[1];
+                BackColor = ShipLabel.ColumnColors[1];
             }
 
             public void SetInformation(BattleInfo battleInfo)

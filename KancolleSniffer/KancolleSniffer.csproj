@@ -117,7 +117,7 @@
     <Compile Include="RepairListForMain.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ShipLabels.cs" />
+    <Compile Include="MainFormLabels.cs" />
     <Compile Include="ListForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -136,6 +136,7 @@
     <Compile Include="QuestInfo.cs" />
     <Compile Include="ConditionTimer.cs" />
     <Compile Include="ShipInfo.cs" />
+    <Compile Include="ShipLabel.cs" />
     <Compile Include="ShipListPanel.cs">
       <SubType>Component</SubType>
     </Compile>

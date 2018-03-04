@@ -235,7 +235,7 @@ namespace KancolleSniffer
             {
                 Location = new Point(0, y - 2),
                 Size = new Size(ListForm.PanelWidth, LineHeight - 1),
-                BackColor = ShipLabels.ColumnColors[(i + 1) % 2],
+                BackColor = ShipLabel.ColumnColors[(i + 1) % 2],
             };
             cfgp.Scale(ShipLabel.ScaleFactor);
             cfgp.Tag = cfgp.Location.Y;
@@ -276,7 +276,7 @@ namespace KancolleSniffer
             {
                 label.Scale();
                 label.PresetColor =
-                    label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
+                    label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
         }
 
@@ -303,7 +303,7 @@ namespace KancolleSniffer
             {
                 Location = new Point(0, y - 2),
                 Size = new Size(ListForm.PanelWidth, LineHeight - 1),
-                BackColor = ShipLabels.ColumnColors[(i + 1) % 2],
+                BackColor = ShipLabel.ColumnColors[(i + 1) % 2],
             };
             rpp.Scale(ShipLabel.ScaleFactor);
             rpp.Tag = rpp.Location.Y;
@@ -330,7 +330,7 @@ namespace KancolleSniffer
             {
                 label.Scale();
                 label.PresetColor =
-                    label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
+                    label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
             if (ShowHpInPercent)
                 rpl[0].ToggleHpPercent();
@@ -345,7 +345,7 @@ namespace KancolleSniffer
             {
                 Location = new Point(0, y - 2),
                 Size = new Size(ListForm.PanelWidth, LineHeight - 1),
-                BackColor = ShipLabels.ColumnColors[(i + 1) % 2]
+                BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
             };
             lbp.Scale(ShipLabel.ScaleFactor);
             var labels = new[]
@@ -381,7 +381,7 @@ namespace KancolleSniffer
             {
                 label.Scale();
                 label.PresetColor =
-                    label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
+                    label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
             if (ShowHpInPercent)
                 labels[0].ToggleHpPercent();

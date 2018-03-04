@@ -74,7 +74,7 @@ namespace KancolleSniffer
                 foreach (var label in _repairLabels[i])
                 {
                     label.Scale();
-                    label.PresetColor = label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
+                    label.PresetColor = label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
                     label.Click += onClick;
                 }
             }

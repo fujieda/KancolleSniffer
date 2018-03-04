@@ -92,7 +92,7 @@ namespace KancolleSniffer
             {
                 Location = new Point(0, y),
                 Size = new Size(ListForm.PanelWidth, LineHeight),
-                BackColor = ShipLabels.ColumnColors[(i + 1) % 2],
+                BackColor = ShipLabel.ColumnColors[(i + 1) % 2],
                 Visible = false
             };
             lbp.Scale(ShipLabel.ScaleFactor);
@@ -113,7 +113,7 @@ namespace KancolleSniffer
             {
                 label.Scale();
                 label.PresetColor =
-                    label.BackColor = ShipLabels.ColumnColors[(i + 1) % 2];
+                    label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
         }
 

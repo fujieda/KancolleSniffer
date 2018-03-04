@@ -41,7 +41,7 @@ namespace KancolleSniffer
         private int _currentFleet;
         private bool _combinedFleet;
         private readonly Label[] _labelCheckFleets;
-        private readonly ShipLabels _shipLabels;
+        private readonly MainFormLabels _mainLabels;
         private readonly ListForm _listForm;
         private readonly NotificationManager _notificationManager;
         private bool _started;
@@ -66,15 +66,15 @@ namespace KancolleSniffer
                 CurrentAutoScaleDimensions.Height / 12f);
 
             SetupFleetClick();
-            _shipLabels = new ShipLabels();
-            _shipLabels.CreateAkashiTimers(panelShipInfo);
-            _shipLabels.CreateShipLabels(panelShipInfo, ShowShipOnShipList);
-            _shipLabels.CreateAkashiTimers7(panel7Ships);
-            _shipLabels.CreateShipLabels7(panel7Ships, ShowShipOnShipList);
-            _shipLabels.CreateCombinedShipLabels(panelCombinedFleet, ShowShipOnShipList);
-            _shipLabels.CreateNDockLabels(panelDock, labelNDock_Click);
+            _mainLabels = new MainFormLabels();
+            _mainLabels.CreateAkashiTimers(panelShipInfo);
+            _mainLabels.CreateShipLabels(panelShipInfo, ShowShipOnShipList);
+            _mainLabels.CreateAkashiTimers7(panel7Ships);
+            _mainLabels.CreateShipLabels7(panel7Ships, ShowShipOnShipList);
+            _mainLabels.CreateCombinedShipLabels(panelCombinedFleet, ShowShipOnShipList);
+            _mainLabels.CreateNDockLabels(panelDock, labelNDock_Click);
             panelRepairList.CreateLabels(panelRepairList_Click);
-            labelPresetAkashiTimer.BackColor = ShipLabels.ColumnColors[1];
+            labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
             _listForm = new ListForm(_sniffer, _config) {Owner = this};
             _notificationManager = new NotificationManager(Alarm);
             try
@@ -89,7 +89,7 @@ namespace KancolleSniffer
             _errorLog = new ErrorLog(_sniffer);
             _proxyManager.UpdatePacFile();
             PerformZoom();
-            _shipLabels.AdjustAkashiTimers();
+            _mainLabels.AdjustAkashiTimers();
             LoadData();
             _sniffer.RepeatingTimerController = new RepeatingTimerController(_notificationManager, _config);
         }
@@ -296,7 +296,7 @@ namespace KancolleSniffer
             if (_config.HideOnMinimized && WindowState == FormWindowState.Minimized)
                 ShowInTaskbar = false;
             if (_config.ShowHpInPercent)
-                _shipLabels.ToggleHpPercent();
+                _mainLabels.ToggleHpPercent();
             if (_config.ShipList.Visible)
                 _listForm.Show();
             ApplyConfig();
@@ -352,7 +352,7 @@ namespace KancolleSniffer
             e.Cancel = false;
             _sniffer.FlashLog();
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
-            _config.ShowHpInPercent = _shipLabels.ShowHpInPercent;
+            _config.ShowHpInPercent = _mainLabels.ShowHpInPercent;
             _config.ShipList.Visible = _listForm.Visible && _listForm.WindowState == FormWindowState.Normal;
             _config.Save();
             _sniffer.SaveState();
@@ -614,13 +614,13 @@ namespace KancolleSniffer
         {
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
             panel7Ships.Visible = statuses.Length == 7;
-            _shipLabels.SetShipLabels(statuses);
+            _mainLabels.SetShipLabels(statuses);
             if (_sniffer.CombinedFleetType == 0)
                 _combinedFleet = false;
             labelFleet1.Text = _combinedFleet ? "連合" : "第一";
             panelCombinedFleet.Visible = _combinedFleet;
             if (_combinedFleet)
-                _shipLabels.SetCombinedShipLabels(_sniffer.GetShipStatuses(0), _sniffer.GetShipStatuses(1));
+                _mainLabels.SetCombinedShipLabels(_sniffer.GetShipStatuses(0), _sniffer.GetShipStatuses(1));
             UpdateAkashiTimer();
             UpdateFighterPower(_combinedFleet);
             UpdateLoS();
@@ -732,7 +732,7 @@ namespace KancolleSniffer
 
         private void UpdateNDocLabels()
         {
-            _shipLabels.SetNDockLabels(_sniffer.NDock);
+            _mainLabels.SetNDockLabels(_sniffer.NDock);
         }
 
 
@@ -768,7 +768,7 @@ namespace KancolleSniffer
             for (var i = 0; i < _sniffer.NDock.Length; i++)
             {
                 var entry = _sniffer.NDock[i];
-                _shipLabels.SetNDockTimer(i, entry.Timer, _now, (_config.ShowEndTime & TimerKind.NDock) != 0);
+                _mainLabels.SetNDockTimer(i, entry.Timer, _now, (_config.ShowEndTime & TimerKind.NDock) != 0);
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
             for (var i = 0; i < kdock.Length; i++)
@@ -882,7 +882,7 @@ namespace KancolleSniffer
             if (_config.UsePresetAkashi)
                 UpdatePresetAkashiTimer();
             var statuses = _sniffer.GetShipStatuses(_currentFleet);
-            _shipLabels.SetAkashiTimer(statuses,
+            _mainLabels.SetAkashiTimer(statuses,
                 _sniffer.AkashiTimer.GetTimers(_currentFleet));
         }
 
