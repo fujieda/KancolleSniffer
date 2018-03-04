@@ -135,5 +135,17 @@ namespace KancolleSniffer.Test
                 ShipNameWidth.AkashiTimer);
             PAssert.That(() => label.Text == "[避]朝潮改二");
         }
+
+        /// <summary>
+        /// %表示の小数部を切り捨てる
+        /// </summary>
+        [TestMethod]
+        public void RoundOffFractionOfPercent()
+        {
+            var label = new ShipLabel {Parent = new Panel()};
+            label.SetHp(104, 105);
+            label.ToggleHpPercent();
+            PAssert.That(() => label.Text == "99%");
+        }
     }
 }

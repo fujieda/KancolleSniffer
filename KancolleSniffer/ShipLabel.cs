@@ -132,7 +132,7 @@ namespace KancolleSniffer
                 return;
             }
             Text = _hpPercent
-                ? $"{(int)Ceiling(status.NowHp * 100.0 / status.MaxHp):D}%"
+                ? $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}%"
                 : $"{status.NowHp:D}/{status.MaxHp:D}";
             BackColor = DamageColor(status, PresetColor);
         }
