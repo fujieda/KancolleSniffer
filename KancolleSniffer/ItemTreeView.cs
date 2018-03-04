@@ -35,42 +35,61 @@ namespace KancolleSniffer
 
         private TreeNode CreateItemNodes(IEnumerable<ItemStatus> itemList)
         {
-            var grouped = from byItem in (from item in itemList
+            var grouped = from item in itemList
                 where item.Spec.Id != -1
-                orderby item.Spec.Type, item.Spec.Id, item.Alv, item.Level descending
-                group item by new {item.Spec.Id, item.Alv, item.Level}
-                into grp
-                from byShip in
-                    (from item in grp
-                        let ship = item.Holder
-                        orderby ship.Level descending, ship.Spec.SortNo
-                        group item by item.Holder.Id)
-                group byShip by grp.Key)
-                group byItem by byItem.First().First().Spec.Type;
+                orderby item.Spec.Type, item.Spec.Id, item.Alv, item.Level
+                group item by item.Spec.Type
+                into byTypeGroup
+                from bySpec in (from item in byTypeGroup
+                    group item by item.Spec.Id
+                    into bySpecGroup
+                    from byParam in (from item in bySpecGroup
+                        group item by new {item.Alv, item.Level}
+                        into byParamGroup
+                        from byHolder in (from item in byParamGroup group item by item.Holder.Id)
+                        group byHolder by byParamGroup.Key)
+                    group byParam by bySpecGroup.Key)
+                group bySpec by byTypeGroup.Key;
 
             var root = new TreeNode();
             foreach (var byType in grouped)
             {
-                var typeName = byType.First().First().First().Spec.TypeName;
+                var typeName = byType.First().First().First().First().Spec.TypeName;
                 var typeNode = new TreeNode();
                 typeNode.Name = typeNode.Text = typeName;
                 root.Nodes.Add(typeNode);
-                foreach (var byItem in byType)
+                foreach (var bySpec in byType)
                 {
-                    var item = byItem.First().First();
+                    var item = bySpec.First().First().First();
                     var itemNode = new TreeNode();
-                    itemNode.Name = itemNode.Text = item.Spec.Name +
-                                                    (item.Alv == 0 ? "" : "+" + item.Alv) +
-                                                    (item.Level == 0 ? "" : "★" + item.Level);
+                    itemNode.Name = itemNode.Text = item.Spec.Name + "x" +
+                                                    bySpec.SelectMany(spec => spec).SelectMany(param => param).Count();
                     typeNode.Nodes.Add(itemNode);
-                    foreach (var byShip in byItem)
+                    foreach (var byParam in bySpec)
                     {
-                        var ship = byShip.First().Holder;
-                        var name = byShip.Key == -1
-                            ? "未装備x" + byShip.Count()
-                            : (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") +
-                              ship.Name + (ship.Level > 0 ? "Lv" + ship.Level : "") + "×" + byShip.Count();
-                        itemNode.Nodes.Add(name, name);
+                        TreeNode paramNode;
+                        if (bySpec.Count() == 1 && byParam.Key.Alv == 0 && byParam.Key.Level == 0)
+                        {
+                            paramNode = itemNode;
+                        }
+                        else
+                        {
+                            paramNode = new TreeNode();
+                            item = byParam.First().First();
+                            paramNode.Name = paramNode.Text =
+                                (item.Spec.IsAircraft ? "+" + item.Alv : "") + "★" + item.Level + "x" +
+                                byParam.SelectMany(param => param).Count();
+                            itemNode.Nodes.Add(paramNode);
+                        }
+                        foreach (var byShip in byParam)
+                        {
+                            var ship = byShip.First().Holder;
+                            var name = byShip.Key == -1
+                                ? "未装備x" + byShip.Count()
+                                : (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") +
+                                  ship.Name + (ship.Level > 0 ? "Lv" + ship.Level : "") + "x" + byShip.Count();
+                            paramNode.Nodes.Add(name, name);
+                        }
                     }
                 }
             }
@@ -93,7 +112,7 @@ namespace KancolleSniffer
                 // ReSharper disable PossibleNullReferenceException
                 => x.Level == y.Level && x.Spec == y.Spec && x.Holder.Id == y.Holder.Id &&
                    x.Holder.Fleet == y.Holder.Fleet;
-                // ReSharper restore PossibleNullReferenceException
+            // ReSharper restore PossibleNullReferenceException
 
             public int GetHashCode(ItemStatus obj) => obj.Level + obj.Spec.GetHashCode() + obj.Holder.GetHashCode();
         }
