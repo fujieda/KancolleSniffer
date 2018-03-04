@@ -78,6 +78,26 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void AdjustCount80Percent()
+        {
+            var count = new QuestCount
+            {
+                Spec = new QuestSpec()
+            };
+            for (var shift = 0; shift <= 1; shift++)
+            {
+                for (var max = 2; max <= 6; max++)
+                {
+                    count.Spec.Max = max;
+                    count.Spec.Shift = shift;
+                    count.Now = 1;
+                    count.AdjustCount(80);
+                    PAssert.That(() => count.Now == count.Spec.Max - 1);
+                }
+            }
+        }
+
+        [TestMethod]
         public void AdjestCountNowArray()
         {
             var count = new QuestCount

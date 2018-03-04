@@ -155,6 +155,8 @@ namespace KancolleSniffer
             var now = Now + Spec.Shift;
             var max = Spec.Max + Spec.Shift;
             var low = (int)Ceiling(max * progress / 100.0);
+            if (low >= max && progress != 100)
+                low = max - 1;
             var high = (int)Ceiling(max * next / 100.0);
             if (now < low)
             {
