@@ -187,7 +187,7 @@ namespace KancolleSniffer
 
     public class Config
     {
-        private readonly string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        private readonly string _baseDir = AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
         private readonly string _configFileName;
 
         public Point Location { get; set; } = new Point(int.MinValue, int.MinValue);
@@ -337,7 +337,7 @@ namespace KancolleSniffer
             if (!path.StartsWith(_baseDir))
                 return path;
             path = path.Substring(_baseDir.Length);
-            return path.StartsWith(Path.DirectorySeparatorChar.ToString()) ? path.Substring(1) : path;
+            return path.TrimStart(Path.DirectorySeparatorChar);
         }
 
         private string PrependBaseDir(string path) => Path.IsPathRooted(path) ? path : Path.Combine(_baseDir, path);
