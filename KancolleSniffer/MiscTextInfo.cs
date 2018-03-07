@@ -43,6 +43,7 @@ namespace KancolleSniffer
                 var text = GenerateItemGetText();
                 Text = text == "" ? GuideText : "[獲得アイテム]\r\n" + text;
             }
+            _items.Clear();
         }
 
         private readonly Dictionary<int, int> _required = new Dictionary<int, int>
@@ -117,10 +118,15 @@ namespace KancolleSniffer
 
         public void InspectMapNext(dynamic json)
         {
+            if (json.api_airsearch() && (int)json.api_airsearch.api_result != 0)
+            {
+                var item = json.api_itemget;
+                AddItemCount((int)item.api_usemst + 100, (int)item.api_id, (int)item.api_getcount);
+                return;
+            }
             if (json.api_itemget())
             {
-                var items = json.api_itemget.IsArray ? json.api_itemget : new[] {json.api_itemget};
-                foreach (var item in items)
+                foreach (var item in json.api_itemget)
                     AddItemCount((int)item.api_usemst, (int)item.api_id, (int)item.api_getcount);
             }
             if (json.api_itemget_eo_result())
@@ -161,6 +167,14 @@ namespace KancolleSniffer
                         type == 5 ? 6 : type;
                     var id = (int)item.api_id;
                     AddItemCount(type, id, (int)item.api_value);
+                }
+            }
+            if (json.api_mapcell_incentive() && (int)json.api_mapcell_incentive == 1)
+            {
+                foreach (var type in _items.Keys.Where(type => type > 100).ToArray())
+                {
+                    foreach (var id in _items[type])
+                        AddItemCount(type - 100, id.Key, id.Value);
                 }
             }
         }
@@ -210,8 +224,8 @@ namespace KancolleSniffer
         private string GenerateItemGetText()
         {
             return string.Join("\r\n",
-                       new[] {4, 5, 3, 6, 2}.Where(_items.ContainsKey).SelectMany(type =>
-                           _items[type].Select(pair => GetName(type, pair.Key) + ": " + pair.Value)));
+                new[] {4, 5, 3, 6, 2}.Where(_items.ContainsKey).SelectMany(type =>
+                    _items[type].Select(pair => GetName(type, pair.Key) + ": " + pair.Value)));
         }
     }
 }

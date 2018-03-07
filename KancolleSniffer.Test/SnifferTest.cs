@@ -727,5 +727,28 @@ namespace KancolleSniffer.Test
                                "潜水空母な桐箪笥: 1\r\n" +
                                "Gambier Bay: 1");
         }
+
+        /// <summary>
+        /// 航空偵察でアイテムを取得する
+        /// </summary>
+        [TestMethod]
+        public void ItemGetInAirRecon()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "airrecon_001");
+            PAssert.That(() =>
+                sniffer.MiscText ==
+                "[海域ゲージ情報]\r\n 海域選択画面に進むと表示します。\r\n" +
+                "[演習情報]\r\n 演習相手を選ぶと表示します。\r\n" +
+                "[獲得アイテム]\r\n 帰投したときに表示します。", "失敗の場合");
+
+            SniffLogFile(sniffer, "airrecon_002");
+            PAssert.That(() =>
+                sniffer.MiscText == "[獲得アイテム]\r\n弾薬: 150\r\n開発資材: 1", "成功");
+
+            SniffLogFile(sniffer, "airrecon_003");
+            PAssert.That(() =>
+                sniffer.MiscText == "[獲得アイテム]\r\n弾薬: 150\r\n開発資材: 1", "途中でリロードして再出撃");
+        }
     }
 }
