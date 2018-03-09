@@ -40,6 +40,7 @@ namespace KancolleSniffer
 
         public const int GroupCount = 4;
         public HashSet<int>[] GroupSettings { get; } = new HashSet<int>[GroupCount];
+        public bool GroupUpdated { get; set; }
 
         public ScrollBar ScrollBar { get; }
 
@@ -293,6 +294,7 @@ namespace KancolleSniffer
             {
                 GroupSettings[group].Remove(_shipList[idx + ScrollBar.Value].Id);
             }
+            GroupUpdated = true;
         }
 
         private void CreateRepairLabels(int i)

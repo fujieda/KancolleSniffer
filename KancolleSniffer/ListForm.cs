@@ -96,7 +96,14 @@ namespace KancolleSniffer
             else
             {
                 SetHeaderSortOrder();
-                shipListPanel.Update(_sniffer, comboBoxGroup.Text, _config.ShipList.SortOrder, _config.ShipList.ShipType);
+                shipListPanel.Update(_sniffer, comboBoxGroup.Text, _config.ShipList.SortOrder,
+                    _config.ShipList.ShipType);
+            }
+            if (shipListPanel.GroupUpdated)
+            {
+                StoreShipGroupToConfig();
+                _config.Save();
+                shipListPanel.GroupUpdated = false;
             }
         }
 
@@ -168,12 +175,7 @@ namespace KancolleSniffer
             checkBoxShipType.Checked = config.ShipType;
             if (config.ShowHpInPercent)
                 shipListPanel.ToggleHpPercent();
-            for (var i = 0; i < ShipListPanel.GroupCount; i++)
-            {
-                shipListPanel.GroupSettings[i] = i < config.ShipGroup.Count
-                    ? new HashSet<int>(config.ShipGroup[i])
-                    : new HashSet<int>();
-            }
+            LoadShipGroupFromConfig();
             comboBoxGroup.SelectedItem = config.Mode ?? "全員";
             if (config.Location.X == int.MinValue)
                 return;
@@ -183,6 +185,13 @@ namespace KancolleSniffer
             Height = bounds.Height;
         }
 
+        private void LoadShipGroupFromConfig()
+        {
+            var group = _config.ShipList.ShipGroup;
+            for (var i = 0; i < ShipListPanel.GroupCount; i++)
+                shipListPanel.GroupSettings[i] = i < group.Count ? new HashSet<int>(group[i]) : new HashSet<int>();
+        }
+
         private void ShipListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
@@ -190,20 +199,29 @@ namespace KancolleSniffer
                 return;
             var config = _config.ShipList;
             config.ShowHpInPercent = shipListPanel.ShowHpInPercent;
-            var all = _sniffer.ShipList.Select(s => s.Id).ToArray();
-            config.ShipGroup.Clear();
-            for (var i = 0; i < ShipListPanel.GroupCount; i++)
-            {
-                if (all.Length > 0)
-                    shipListPanel.GroupSettings[i].IntersectWith(all);
-                config.ShipGroup.Add(shipListPanel.GroupSettings[i].ToList());
-            }
+            StoreShipGroupToConfig();
             var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
             config.Location = bounds.Location;
             config.Size = bounds.Size;
             config.Mode = (string)comboBoxGroup.SelectedItem;
             if (e.CloseReason != CloseReason.FormOwnerClosing)
+            {
                 Hide();
+                _config.Save();
+            }
+        }
+
+        private void StoreShipGroupToConfig()
+        {
+            var all = _sniffer.ShipList.Select(s => s.Id).ToArray();
+            var group = _config.ShipList.ShipGroup;
+            group.Clear();
+            for (var i = 0; i < ShipListPanel.GroupCount; i++)
+            {
+                if (all.Length > 0)
+                    shipListPanel.GroupSettings[i].IntersectWith(all);
+                group.Add(shipListPanel.GroupSettings[i].ToList());
+            }
         }
 
         public void ShowShip(int id)

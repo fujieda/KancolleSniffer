@@ -386,6 +386,7 @@ namespace KancolleSniffer
         {
             if (_configDialog.ShowDialog(this) == DialogResult.OK)
             {
+                _config.Save();
                 ApplyConfig();
                 StopRepeatingTimer(_configDialog.RepeatSettingsChanged);
             }
