@@ -648,7 +648,8 @@ namespace KancolleSniffer
             for (var i = 0; i < _labelCheckFleets.Length; i++)
                 _labelCheckFleets[i].Visible = _currentFleet == i;
             UpdateAkashiTimer();
-            UpdateFighterPower(_combinedFleet);
+            var battle = _sniffer.Battle;
+            UpdateFighterPower(_combinedFleet && (battle.BattleState == BattleState.None || battle.EnemyIsCombined));
             UpdateLoS();
             UpdateCondTimers();
         }
