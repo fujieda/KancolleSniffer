@@ -59,9 +59,16 @@ namespace KancolleSniffer
 
         public void Update(Sniffer sniffer)
         {
-            if (_prevBattleState == BattleState.None)
+            var state = sniffer.Battle.BattleState;
+            if (_prevBattleState == BattleState.None && state != BattleState.None)
                 _result[0] = _result[1] = null;
-            var state = _prevBattleState = sniffer.Battle.BattleState;
+            _prevBattleState = state;
+            if (state == BattleState.None && !(_result[0] == null && _result[1] == null))
+            {
+                ClearResult();
+                SetPhase("結果");
+                return;
+            }
             if (state != BattleState.Day && state != BattleState.Night)
                 return;
             if (Spoiler)
