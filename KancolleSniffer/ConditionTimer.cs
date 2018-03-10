@@ -80,7 +80,7 @@ namespace KancolleSniffer
 
         public DateTime GetTimer(int fleet)
         {
-            if (_shipInfo.InMission(fleet) || _shipInfo.InSortie(fleet))
+            if (_shipInfo.InMission[fleet] || _shipInfo.InSortie[fleet])
                 return DateTime.MinValue;
             var cond = _shipInfo.GetShipStatuses(fleet).Select(s => s.Cond).DefaultIfEmpty(49).Min();
             if (cond >= 49)
@@ -96,7 +96,7 @@ namespace KancolleSniffer
                 return result;
             for (var f = 0; f < result.Length; f++)
             {
-                if (_shipInfo.InMission(f) || _shipInfo.InSortie(f))
+                if (_shipInfo.InMission[f] || _shipInfo.InSortie[f])
                     continue;
                 var timer = GetTimer(f);
                 if (timer == DateTime.MinValue || prev < _lastUpdate)

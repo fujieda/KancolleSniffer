@@ -49,6 +49,7 @@ namespace KancolleSniffer
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
         private DateTime _prev, _now;
+        private bool _inSortie;
 
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
         private readonly ErrorLog _errorLog;
@@ -603,12 +604,34 @@ namespace KancolleSniffer
 
         private void UpdateShipInfo()
         {
+            SetCurrentFleet();
             UpdatePanelShipInfo();
             NotifyDamagedShip();
             UpdateChargeInfo();
             UpdateRepairList();
             if (_listForm.Visible)
                 _listForm.UpdateList();
+        }
+
+        private void SetCurrentFleet()
+        {
+            var inSortie = _sniffer.InSortie;
+            if (_inSortie || !inSortie.Any(x => x))
+            {
+                _inSortie = inSortie.Any(x => x);
+                return;
+            }
+            _inSortie = true;
+            if (inSortie[0] && inSortie[1])
+            {
+                _combinedFleet = true;
+                _currentFleet = 0;
+            }
+            else
+            {
+                _combinedFleet = false;
+                _currentFleet = Array.FindIndex(inSortie, x => x);
+            }
         }
 
         private void UpdatePanelShipInfo()
@@ -622,6 +645,8 @@ namespace KancolleSniffer
             panelCombinedFleet.Visible = _combinedFleet;
             if (_combinedFleet)
                 _mainLabels.SetCombinedShipLabels(_sniffer.GetShipStatuses(0), _sniffer.GetShipStatuses(1));
+            for (var i = 0; i < _labelCheckFleets.Length; i++)
+                _labelCheckFleets[i].Visible = _currentFleet == i;
             UpdateAkashiTimer();
             UpdateFighterPower(_combinedFleet);
             UpdateLoS();
@@ -1101,9 +1126,6 @@ namespace KancolleSniffer
             }
             _combinedFleet = false;
             _currentFleet = fleet;
-            foreach (var label in _labelCheckFleets)
-                label.Visible = false;
-            _labelCheckFleets[fleet].Visible = true;
             UpdatePanelShipInfo();
         }
 

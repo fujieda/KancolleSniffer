@@ -369,9 +369,9 @@ namespace KancolleSniffer
 
         public ShipSpec GetSpec(int id) => _shipMaster.GetSpec(id);
 
-        public bool InMission(int fleet) => _inMission[fleet];
+        public bool[] InMission => _inMission;
 
-        public bool InSortie(int fleet) => _inSortie[fleet];
+        public bool[] InSortie => _inSortie;
 
         public int CombinedFleetType => _combinedFleetType;
 
