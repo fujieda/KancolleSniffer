@@ -332,24 +332,21 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
-        /// TPを正しく計算する
+        /// TPを計算する
         /// </summary>
         [TestMethod]
         public void TransportPoint()
         {
             DataLoader.LoadTpSpec();
 
-            var sniffer1 = new Sniffer();
-            SniffLogFile(sniffer1, "transportpoint_001");
-            PAssert.That(() => (int)sniffer1.GetShipStatuses(0).Sum(s => s.TransportPoint) == 47);
-
-            var sniffer2 = new Sniffer();
-            SniffLogFile(sniffer2, "transportpoint_002");
-            PAssert.That(() => (int)sniffer2.GetShipStatuses(0).Sum(s => s.TransportPoint) == 19, "鬼怒改二+特大発+おにぎり");
-
-            var sniffer3 = new Sniffer();
-            SniffLogFile(sniffer3, "transportpoint_003");
-            PAssert.That(() => (int)sniffer3.GetShipStatuses(0).Sum(s => s.TransportPoint) == 13, "駆逐艦+士魂部隊");
+            var msgs = new[] {"", "鬼怒改二+特大発+おにぎり", "駆逐艦+士魂部隊", "補給艦"};
+            var results = new[] {47, 19, 13, 15};
+            for (int i = 0; i < msgs.Length; i++)
+            {
+                var sniffer = new Sniffer();
+                SniffLogFile(sniffer, "transportpoint_00" + (i + 1));
+                PAssert.That(() => (int)sniffer.GetShipStatuses(0).Sum(s => s.TransportPoint) == results[i], msgs[i]);
+            }
         }
 
         /// <summary>

@@ -145,6 +145,7 @@ namespace KancolleSniffer
                     case 16: // 水上機母艦
                     case 17: // 揚陸艦
                     case 21: // 練習巡洋艦
+                    case 22: // 補給艦
                         return 1.0;
                     case 5: // 重巡洋艦
                     case 6: // 航空巡洋艦
@@ -177,8 +178,6 @@ namespace KancolleSniffer
                         return 4.0;
                     case 10:
                         return 7.0;
-                    case 15:
-                        return 15.0;
                     case 16:
                         return 9.0;
                     case 17:
@@ -187,6 +186,8 @@ namespace KancolleSniffer
                         return 7.0;
                     case 21:
                         return 6.0;
+                    case 22:
+                        return 15.0;
                     default:
                         return 0;
                 }
