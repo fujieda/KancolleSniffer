@@ -609,11 +609,6 @@ namespace KancolleSniffer
 
         public BaseAirCoprs.BaseInfo[] BaseAirCorps => _baseAirCoprs.AllAirCorps;
 
-        public bool UseOldEnemyId
-        {
-            set => _shipInfo.UseOldEnemyId = value;
-        }
-
         public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)
         {
             _logger.SetWriter(writer, nowFunc);

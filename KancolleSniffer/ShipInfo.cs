@@ -510,11 +510,6 @@ namespace KancolleSniffer
             _escapedShips.Clear();
         }
 
-        public bool UseOldEnemyId
-        {
-            set => _shipMaster.UseOldEnemyId = value;
-        }
-
         public void InjectShips(dynamic battle, dynamic item)
         {
             var deck = (int)battle.api_deck_id - 1;
