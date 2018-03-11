@@ -337,7 +337,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void TransportPoint()
         {
-            ItemSpec.LoadTpSpec();
+            DataLoader.LoadTpSpec();
 
             var sniffer1 = new Sniffer();
             SniffLogFile(sniffer1, "transportpoint_001");

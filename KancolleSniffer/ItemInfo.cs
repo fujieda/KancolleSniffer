@@ -159,26 +159,12 @@ namespace KancolleSniffer
             }
         }
 
-        private static Dictionary<int, double> _tpSpec;
-
-        public static void LoadTpSpec()
-        {
-            try
-            {
-                _tpSpec = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TP.csv"))
-                    .Select(line => line.Split(','))
-                    .ToDictionary(f => int.Parse(f[0]), f => double.Parse(f[2]));
-            }
-            catch (IOException)
-            {
-            }
-        }
-
         public double TransportPoint
         {
             get
             {
-                if (_tpSpec != null && _tpSpec.TryGetValue(Id, out var tp))
+                var tp = DataLoader.ItemTp(Id);
+                if (tp >= 0)
                     return tp;
                 switch (Id)
                 {
