@@ -103,7 +103,7 @@
     <Compile Include="LogServer.cs" />
     <Compile Include="MaterialInfo.cs" />
     <Compile Include="MiscTextInfo.cs" />
-    <Compile Include="MissingData.cs" />
+    <Compile Include="DataLoader.cs" />
     <Compile Include="NotificationConfigDialog.cs">
       <SubType>Form</SubType>
     </Compile>

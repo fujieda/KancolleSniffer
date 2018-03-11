@@ -19,34 +19,27 @@ using System.Linq;
 
 namespace KancolleSniffer
 {
-    internal class MissingData
+    public static  class DataLoader
     {
         private static readonly string EnemySlotFile =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EnemySlot.csv");
 
         private static Dictionary<int, int[]> _maxEq;
 
-        public static Dictionary<int, int[]> MaxEq
+        public static void LoadEnemySlot()
         {
-            get
+            try
             {
-                if (_maxEq != null)
-                    return _maxEq;
-                _maxEq = new Dictionary<int, int[]>();
-                try
-                {
-                    foreach (var line in File.ReadLines(EnemySlotFile))
-                    {
-                        int num;
-                        var entry = line.Split(',').Select(e => int.TryParse(e, out num) ? num : 0).ToArray();
-                        _maxEq[entry[0]] = entry.Skip(1).ToArray();
-                    }
-                }
-                catch (FileNotFoundException)
-                {
-                }
-                return _maxEq;
+                _maxEq = File.ReadLines(EnemySlotFile)
+                    .Select(line => line.Split(',').Select(s => int.TryParse(s, out var num) ? num : 0))
+                    .ToDictionary(nums => nums.First(), nums => nums.Skip(1).ToArray());
+            }
+            catch (IOException)
+            {
             }
         }
+
+        public static int[] EnemySlot(int id) =>
+            _maxEq != null ? _maxEq.TryGetValue(id, out var slot) ? slot : null : null;
     }
 }

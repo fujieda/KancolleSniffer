@@ -27,6 +27,7 @@ namespace KancolleSniffer
             foreach (var entry in json.api_mst_stype)
                 dict[entry.api_id] = entry.api_name;
             dict[8] = "巡洋戦艦";
+            DataLoader.LoadEnemySlot();
             foreach (var entry in json.api_mst_ship)
             {
                 var shipSpec = _shipSpecs[(int)entry.api_id] = new ShipSpec
@@ -47,9 +48,7 @@ namespace KancolleSniffer
                 }
                 shipSpec.MaxEq = entry.api_maxeq()
                     ? entry.api_maxeq
-                    : MissingData.MaxEq.TryGetValue(shipSpec.Id, out var maxEq)
-                        ? maxEq
-                        : null;
+                    : DataLoader.EnemySlot(shipSpec.Id);
             }
             _shipSpecs[-1] = new ShipSpec();
             SetRemodelBaseAndStep();
