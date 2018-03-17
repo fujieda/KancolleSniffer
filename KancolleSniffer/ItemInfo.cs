@@ -12,10 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using static System.Math;
 
@@ -409,6 +407,7 @@ namespace KancolleSniffer
                 {
                     case 6: // 艦戦
                     case 45: // 水戦
+                    case 48: // 陸戦・局戦
                         return 0.2 * Level;
                     case 7: // 改修可能なのは爆戦のみ
                         return 0.25 * Level;

@@ -306,6 +306,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 陸上戦闘機の改修レベルを制空値に反映させる。
+        /// </summary>
+        [TestMethod]
+        public void FighterPowerOfLandBAseFighter()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "baseaircorps_004");
+            PAssert.That(() => sniffer.BaseAirCorps[1].AirCorps[0].FighterPower.AirCombat[0] == 328);
+        }
+
+        /// <summary>
         /// マップ索敵の判定式(33)を正しく計算する
         /// </summary>
         [TestMethod]
