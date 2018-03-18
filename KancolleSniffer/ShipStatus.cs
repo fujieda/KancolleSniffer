@@ -209,6 +209,13 @@ namespace KancolleSniffer
                     case "大鷹改":
                     case "大鷹改二":
                         return Slot.Any(item => item.Spec.IsAircraft && item.Spec.EffectiveAntiSubmarine > 0);
+                    case "Gambier Bay":
+                    case "Gambier Bay改":
+                    case "瑞鳳改二乙":
+                        return EffectiveFirepower > 0 &&
+                               (HaveSonar
+                                   ? AntiSubmarine >= 50
+                                   : Slot.Any(item => item.Spec.AntiSubmarine >= 7) && AntiSubmarine >= 65);
                     default:
                         return Spec.ShipType == 1
                             ? Slot.Sum(item => item.Spec.AntiSubmarine) >= 4 && AntiSubmarine >= 75 ||
