@@ -432,8 +432,8 @@ namespace KancolleSniffer
             var count = _countList.GetCount(id);
             if (adjustCount)
             {
-                count.AdjustCount(progress);
-                NeedSave = true;
+                if (count.AdjustCount(progress))
+                    NeedSave = true;
             }
             _quests[id] = new QuestStatus
             {
