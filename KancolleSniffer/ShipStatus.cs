@@ -100,7 +100,7 @@ namespace KancolleSniffer
                     return 0;
                 var isRyuseiAttack = Spec.Id == 352 && // 速吸改
                                      Slot.Any(item => item.Spec.Type == 8); // 艦攻装備
-                var levelBonus = AllSlot.Sum(item => item.FirePowerLevelBonus);
+                var levelBonus = AllSlot.Sum(item => item.FirepowerLevelBonus);
                 if (!Spec.IsAircraftCarrier && !isRyuseiAttack)
                     return Firepower + levelBonus + CombinedFleetFirepowerBonus + 5;
                 var specs = (from item in Slot where item.Spec.IsAircraft select item.Spec).ToArray();
@@ -224,8 +224,54 @@ namespace KancolleSniffer
         {
             get
             {
-                if (Spec.IsAircraftCarrier && Spec.Id != 353 && Spec.Id != 432) // Graf Zeppelin以外の空母
-                    return 0;
+                if (!Spec.IsAircraftCarrier)
+                    return Firepower + Torpedo + Slot.Sum(item => item.NightBattleLevelBonus);
+
+                if (Slot.Any(item => item.Spec.IconType == 45 || item.Spec.IconType == 46) && // 夜戦か夜攻
+                    (Spec.Id == 545 || // Saratoga Mk.II
+                     Slot.Any(item => item.Spec.Id == 258 || item.Spec.Id == 259))) // 夜間作戦航空要員
+                {
+                    return Firepower + Slot.Zip(OnSlot, (item, onslot) =>
+                    {
+                        double a, b;
+                        var spec = item.Spec;
+                        switch (spec.Id)
+                        {
+                            case 154: // 零戦62型(爆戦/岩井隊)
+                            case 242: // Swordfish
+                            case 243: // Swordfish Mk.II(熟練)
+                            case 244: // Swordfish Mk.III(熟練)
+                                a = 0.0;
+                                b = 0.3;
+                                break;
+                            case 254: // F6F-3N
+                            case 255: // F6F-5N
+                            case 257: // TBD-3D
+                                a = 3.0;
+                                b = 0.45;
+                                break;
+                            default:
+                                return -spec.Firepower;
+                        }
+                        return spec.Torpedo + a * onslot +
+                               b * (spec.Firepower + spec.Torpedo + spec.Bomber + spec.AntiSubmarine) *
+                               Sqrt(onslot) + Sqrt(item.Level);
+                    }).Sum();
+                }
+                switch (Spec.Id)
+                {
+                    case 353: // Graf Zeppelin改
+                    case 432: // Graf Zeppelin
+                    case 433: // Saratoga
+                        break;
+                    case 393: // Ark Royal改
+                    case 515: // Ark Royal
+                        if (Slot.Any(item => new[] {242, 243, 244}.Contains(item.Spec.Id)))
+                            break;
+                        return 0;
+                    default:
+                        return 0;
+                }
                 return Firepower + Torpedo + Slot.Sum(item => item.NightBattleLevelBonus);
             }
         }

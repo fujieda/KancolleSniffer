@@ -352,11 +352,12 @@ namespace KancolleSniffer.Test
 
             var msgs = new[] {"", "鬼怒改二+特大発+おにぎり", "駆逐艦+士魂部隊", "補給艦"};
             var results = new[] {47, 19, 13, 15};
-            for (int i = 0; i < msgs.Length; i++)
+            for (var i = 0; i < msgs.Length; i++)
             {
                 var sniffer = new Sniffer();
                 SniffLogFile(sniffer, "transportpoint_00" + (i + 1));
-                PAssert.That(() => (int)sniffer.GetShipStatuses(0).Sum(s => s.TransportPoint) == results[i], msgs[i]);
+                var j = i;
+                PAssert.That(() => (int)sniffer.GetShipStatuses(0).Sum(s => s.TransportPoint) == results[j], msgs[j]);
             }
         }
 
@@ -374,6 +375,28 @@ namespace KancolleSniffer.Test
                 () =>
                     ships.Select(ship => ship.EffectiveAntiAirForShip)
                         .SequenceEqual(new[] {92, 90, 88, 228, 146, 226}));
+        }
+
+        /// <summary>
+        /// 空母の夜戦火力を計算する
+        /// </summary>
+        [TestMethod]
+        public void CvNightBattlePower()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "nightbattlepower_001");
+            var ships = sniffer.GetShipStatuses(0);
+            PAssert.That(() =>
+                ships.Select(ship => (int)(ship.NightBattlePower * 100))
+                    .SequenceEqual(new[] {11202, 14985, 20092, 17354}));
+            // 夜間作戦航空要員を外す
+            ships[0].Slot[3] = ships[1].Slot[2] = ships[3].Slot[2] = new ItemStatus();
+            PAssert.That(() =>
+                ships.Select(ship => (int)(ship.NightBattlePower * 100))
+                    .SequenceEqual(new[] {6900, 7500, 20092, 0}));
+            // Ark RoyalからSwordfishを外す
+            ships[0].Slot[0] = new ItemStatus();
+            PAssert.That(() => (int)ships[0].NightBattlePower == 0);
         }
 
         /// <summary>

@@ -26,6 +26,7 @@ namespace KancolleSniffer
         public string Name;
         public int Type;
         public string TypeName;
+        public int Firepower;
         public int IconType;
         public int AntiAir;
         public int LoS;
@@ -433,7 +434,7 @@ namespace KancolleSniffer
             }
         }
 
-        public double FirePowerLevelBonus
+        public double FirepowerLevelBonus
         {
             get
             {
@@ -637,6 +638,7 @@ namespace KancolleSniffer
                     Type = type,
                     TypeName = dict.TryGetValue(type, out var typeName) ? typeName : "不明",
                     IconType = (int)entry.api_type[3],
+                    Firepower = (int)entry.api_houg,
                     AntiAir = (int)entry.api_tyku,
                     LoS = (int)entry.api_saku,
                     AntiSubmarine = (int)entry.api_tais,
