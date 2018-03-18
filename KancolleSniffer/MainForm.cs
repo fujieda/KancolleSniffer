@@ -36,7 +36,8 @@ namespace KancolleSniffer
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
         private readonly ProxyManager _proxyManager;
-        private readonly ToolTip _toolTipQuest = new ToolTip {ShowAlways = true};
+        private readonly ToolTip _toolTipQuest = new ToolTip {ShowAlways = true, AutoPopDelay = 10000};
+        private readonly ToolTip _toolTipCount = new ToolTip {ShowAlways = true};
         private readonly ToolTip _tooltipCopy = new ToolTip {AutomaticDelay = 0};
         private int _currentFleet;
         private bool _combinedFleet;
@@ -1022,19 +1023,19 @@ namespace KancolleSniffer
                     {
                         count[i].Text = "";
                         count[i].ForeColor = Color.Black;
-                        _toolTipQuest.SetToolTip(count[i], "");
+                        _toolTipCount.SetToolTip(count[i], "");
                         continue;
                     }
                     count[i].Text = " " + c;
                     count[i].ForeColor = c.Cleared ? CUDColor.Green : Color.Black;
-                    _toolTipQuest.SetToolTip(count[i], c.ToToolTip());
+                    _toolTipCount.SetToolTip(count[i], c.ToToolTip());
                 }
                 else
                 {
                     category[i].BackColor = DefaultBackColor;
                     name[i].Text = count[i].Text = progress[i].Text = "";
                     _toolTipQuest.SetToolTip(name[i], "");
-                    _toolTipQuest.SetToolTip(count[i], "");
+                    _toolTipCount.SetToolTip(count[i], "");
                 }
             }
         }
