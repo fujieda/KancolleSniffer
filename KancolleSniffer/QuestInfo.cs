@@ -441,7 +441,7 @@ namespace KancolleSniffer
                 Category = category,
                 Name = name,
                 Detail = detail,
-                Material = material?.Concat(count.Spec.Material).ToArray(),
+                Material = adjustCount ? material?.Concat(count.Spec.Material).ToArray() : material,
                 Count = count,
                 Progress = progress,
                 Color = category <= _color.Length ? _color[category - 1] : Control.DefaultBackColor

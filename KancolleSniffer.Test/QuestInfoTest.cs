@@ -1054,5 +1054,34 @@ namespace KancolleSniffer.Test
             PAssert.That(() => q873.ToString() == "3/3");
             PAssert.That(() => q873.ToToolTip() == "3-1 3-2 3-3");
         }
+
+        /// <summary>
+        /// 状態をロードするときに獲得資材に特殊資材のリストを追加しない
+        /// </summary>
+        [TestMethod]
+        public void LoadStateNotAppendMaterialList()
+        {
+            var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
+            var status = new Status
+            {
+                QuestList = new[]
+                {
+                    new QuestStatus
+                    {
+                        Id = 854,
+                        Category = 8,
+                        Name = "",
+                        Detail = "",
+                        Material = new[] {0, 2000, 0, 0, 0, 0, 0, 4}
+                    }
+                },
+                QuestCountList = new[]
+                {
+                    new QuestCount{Id = 854,NowArray = new []{1,0,1,0}}
+                }
+            };
+            questInfo.LoadState(status);
+            PAssert.That(() => questInfo.Quests[0].Material.Length == 8);
+        }
     }
 }
