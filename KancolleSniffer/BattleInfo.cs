@@ -629,7 +629,7 @@ namespace KancolleSniffer
             var friendGauge = combined.Sum(r => r.StartHp - r.NowHp);
             var friendGaugeRate = Floor((double)friendGauge / combined.Sum(r => r.StartHp) * 100);
 
-            if (friendGauge == 0)
+            if (friendGauge <= 0)
                 return BattleResultRank.P;
             if (friendGaugeRate < 10)
                 return BattleResultRank.A;

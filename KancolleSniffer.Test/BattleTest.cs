@@ -99,5 +99,19 @@ namespace KancolleSniffer.Test
             _battleInfo.InspectBattleResult(Data(logs[6]));
             PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
         }
+
+        /// <summary>
+        /// 空襲戦で女神が発動して復活する
+        /// </summary>
+        [TestMethod]
+        public void LdAirbattleHaveRevivedShip()
+        {
+            var logs = ReadAllLines("ld_airbattle_002");
+            var battle = Data(logs[3]);
+            _shipInfo.InjectShips(battle, JsonParser.Parse(logs[0]));
+            _battleInfo.InspectBattle(logs[1], logs[2], battle);
+            _battleInfo.InspectBattleResult(Data(logs[6]));
+            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+        }
     }
 }
