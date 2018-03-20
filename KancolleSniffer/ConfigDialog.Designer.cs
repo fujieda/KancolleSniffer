@@ -42,7 +42,6 @@ namespace KancolleSniffer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageWindow = new System.Windows.Forms.TabPage();
             this.checkBoxLocationPerMachine = new System.Windows.Forms.CheckBox();
@@ -131,7 +130,6 @@ namespace KancolleSniffer
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
             this.openSoundFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.toolTipError = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
             this.tabControl.SuspendLayout();
@@ -1088,12 +1086,6 @@ namespace KancolleSniffer
     ";*.wma;*.mp2;*.mp3";
             this.openSoundFileDialog.Title = "オーディオファイルを選択する";
             // 
-            // toolTipError
-            // 
-            this.toolTipError.AutomaticDelay = 0;
-            this.toolTipError.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Error;
-            this.toolTipError.ToolTipTitle = "入力エラー";
-            // 
             // folderBrowserDialogOutputDir
             // 
             this.folderBrowserDialogOutputDir.Description = "報告書の出力先を指定します。";
@@ -1206,7 +1198,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.RadioButton radioButtonAutoConfigOn;
         private System.Windows.Forms.TextBox textBoxListen;
         private System.Windows.Forms.Label labelListen;
-        private System.Windows.Forms.ToolTip toolTipError;
         private System.Windows.Forms.TabPage tabPageLog;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.CheckBox checkBoxOutput;

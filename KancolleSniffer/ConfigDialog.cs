@@ -310,15 +310,18 @@ namespace KancolleSniffer
             return true;
         }
 
+        private readonly ResizableToolTip _toolTip =
+            new ResizableToolTip {AutomaticDelay = 0, ToolTipIcon = ToolTipIcon.Error};
+
         private void ShowToolTip(string message, Control control)
         {
             tabControl.SelectedTab = (TabPage)control.Parent.Parent;
-            toolTipError.Show(message, control, 0, control.Height, 3000);
+            _toolTip.Show(message, control, 0, control.Height, 3000);
         }
 
         private void textBox_Enter(object sender, EventArgs e)
         {
-            toolTipError.Hide((Control)sender);
+            _toolTip.Hide((Control)sender);
         }
 
         private void buttonDebugLogOpenFile_Click(object sender, EventArgs e)
@@ -369,6 +372,13 @@ namespace KancolleSniffer
             {
                 MessageBox.Show(this, ex.Message, "Pushoverエラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            base.ScaleControl(factor, specified);
+            if (factor.Height > 1)
+                _toolTip.Font = new Font(_toolTip.Font.FontFamily, _toolTip.Font.Size * factor.Height);
         }
     }
 }

@@ -36,9 +36,9 @@ namespace KancolleSniffer
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
         private readonly ProxyManager _proxyManager;
-        private readonly ToolTip _toolTipQuest = new ToolTip {ShowAlways = true, AutoPopDelay = 10000};
-        private readonly ToolTip _toolTipCount = new ToolTip {ShowAlways = true};
-        private readonly ToolTip _tooltipCopy = new ToolTip {AutomaticDelay = 0};
+        private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
+        private readonly ResizableToolTip _toolTipQuest = new ResizableToolTip {ShowAlways = true, AutoPopDelay = 10000};
+        private readonly ResizableToolTip _tooltipCopy = new ResizableToolTip {AutomaticDelay = 0};
         private int _currentFleet;
         private bool _combinedFleet;
         private readonly Label[] _labelCheckFleets;
@@ -414,6 +414,10 @@ namespace KancolleSniffer
             {
                 control.Font = new Font(control.Font.FontFamily, control.Font.Size * _config.Zoom / 100);
             }
+            foreach (var toolTip in new[]{_toolTip, _toolTipQuest, _tooltipCopy})
+            {
+                toolTip.Font = new Font(toolTip.Font.FontFamily, toolTip.Font.Size * _config.Zoom / 100);
+            }
             ShipLabel.LatinFont = new Font("Tahoma", 8f * _config.Zoom / 100);
             var cur = CurrentAutoScaleDimensions;
             ShipLabel.ScaleFactor = new SizeF(ShipLabel.ScaleFactor.Width * cur.Width / prev.Width,
@@ -538,7 +542,7 @@ namespace KancolleSniffer
             if (ac >= 10000)
                 ac = 9999;
             labelAchievement.Text = ac >= 1000 ? ((int)ac).ToString("D") : ac.ToString("F1");
-            toolTipAchievement.SetToolTip(labelAchievement,
+            _toolTip.SetToolTip(labelAchievement,
                 "今月 " + _sniffer.Achievement.ValueOfMonth.ToString("F1") + "\n" +
                 "EO " + _sniffer.ExMap.Achievement);
             UpdateMaterialHistry();
@@ -674,8 +678,8 @@ namespace KancolleSniffer
                 : _sniffer.GetContactTriggerRate(_currentFleet);
             var text = "制空: " + (fp[0] == fp[1] ? $"{fp[0]}" : $"{fp[0]}～{fp[1]}") +
                        $" 触接: {cr * 100:f1}";
-            toolTipFighterPower.SetToolTip(labelFighterPower, text);
-            toolTipFighterPower.SetToolTip(labelFighterPowerCaption, text);
+            _toolTip.SetToolTip(labelFighterPower, text);
+            _toolTip.SetToolTip(labelFighterPowerCaption, text);
         }
 
         private void UpdateLoS()
@@ -683,8 +687,8 @@ namespace KancolleSniffer
             labelLoS.Text = RoundDown(_sniffer.GetFleetLineOfSights(_currentFleet, 1)).ToString("F1");
             var text = $"係数3: {RoundDown(_sniffer.GetFleetLineOfSights(_currentFleet, 3)):F1}\r\n" +
                        $"係数4: {RoundDown(_sniffer.GetFleetLineOfSights(_currentFleet, 4)):F1}";
-            toolTipLoS.SetToolTip(labelLoS, text);
-            toolTipLoS.SetToolTip(labelLoSCaption, text);
+            _toolTip.SetToolTip(labelLoS, text);
+            _toolTip.SetToolTip(labelLoSCaption, text);
         }
 
         private double RoundDown(double number)
@@ -725,8 +729,8 @@ namespace KancolleSniffer
             if (power.AirCombat != power.Interception)
             {
                 var text = "防空: " + power.Interception + power.UnknownMark;
-                toolTipFighterPower.SetToolTip(labelEnemyFighterPower, text);
-                toolTipFighterPower.SetToolTip(labelEnemyFighterPowerCaption, text);
+                _toolTip.SetToolTip(labelEnemyFighterPower, text);
+                _toolTip.SetToolTip(labelEnemyFighterPowerCaption, text);
             }
             UpdateFighterPower(_sniffer.CombinedFleetType > 0 && battle.EnemyIsCombined);
             labelFighterPower.ForeColor = new[]
@@ -1023,19 +1027,19 @@ namespace KancolleSniffer
                     {
                         count[i].Text = "";
                         count[i].ForeColor = Color.Black;
-                        _toolTipCount.SetToolTip(count[i], "");
+                        _toolTip.SetToolTip(count[i], "");
                         continue;
                     }
                     count[i].Text = " " + c;
                     count[i].ForeColor = c.Cleared ? CUDColor.Green : Color.Black;
-                    _toolTipCount.SetToolTip(count[i], c.ToToolTip());
+                    _toolTip.SetToolTip(count[i], c.ToToolTip());
                 }
                 else
                 {
                     category[i].BackColor = DefaultBackColor;
                     name[i].Text = count[i].Text = progress[i].Text = "";
                     _toolTipQuest.SetToolTip(name[i], "");
-                    _toolTipCount.SetToolTip(count[i], "");
+                    _toolTip.SetToolTip(count[i], "");
                 }
             }
         }

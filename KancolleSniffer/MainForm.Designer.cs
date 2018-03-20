@@ -167,12 +167,9 @@ namespace KancolleSniffer
             this.labelFuelSq3 = new System.Windows.Forms.Label();
             this.labelBullSq4 = new System.Windows.Forms.Label();
             this.labelFuelSq4 = new System.Windows.Forms.Label();
-            this.toolTipAchievement = new System.Windows.Forms.ToolTip(this.components);
             this.labelAkashiRepair = new System.Windows.Forms.Label();
-            this.toolTipFighterPower = new System.Windows.Forms.ToolTip(this.components);
-            this.toolTipLoS = new System.Windows.Forms.ToolTip(this.components);
-            this.panelRepairList = new KancolleSniffer.RepairListForMain();
             this.labelClearQuest = new System.Windows.Forms.Label();
+            this.panelRepairList = new KancolleSniffer.RepairListForMain();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -1352,10 +1349,6 @@ namespace KancolleSniffer
             this.labelFuelSq4.Size = new System.Drawing.Size(8, 13);
             this.labelFuelSq4.TabIndex = 52;
             // 
-            // toolTipAchievement
-            // 
-            this.toolTipAchievement.ShowAlways = true;
-            // 
             // labelAkashiRepair
             // 
             this.labelAkashiRepair.AutoSize = true;
@@ -1364,24 +1357,6 @@ namespace KancolleSniffer
             this.labelAkashiRepair.Size = new System.Drawing.Size(29, 12);
             this.labelAkashiRepair.TabIndex = 54;
             this.labelAkashiRepair.Text = "修理";
-            // 
-            // toolTipFighterPower
-            // 
-            this.toolTipFighterPower.ShowAlways = true;
-            // 
-            // toolTipLoS
-            // 
-            this.toolTipLoS.ShowAlways = true;
-            // 
-            // panelRepairList
-            // 
-            this.panelRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelRepairList.Location = new System.Drawing.Point(6, 207);
-            this.panelRepairList.Name = "panelRepairList";
-            this.panelRepairList.Size = new System.Drawing.Size(129, 21);
-            this.panelRepairList.TabIndex = 4;
-            this.panelRepairList.Visible = false;
-            this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
             // 
             // labelClearQuest
             // 
@@ -1395,6 +1370,16 @@ namespace KancolleSniffer
             this.labelClearQuest.Click += new System.EventHandler(this.labelClearQuest_Click);
             this.labelClearQuest.MouseDown += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseDown);
             this.labelClearQuest.MouseUp += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseUp);
+            // 
+            // panelRepairList
+            // 
+            this.panelRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelRepairList.Location = new System.Drawing.Point(6, 207);
+            this.panelRepairList.Name = "panelRepairList";
+            this.panelRepairList.Size = new System.Drawing.Size(129, 21);
+            this.panelRepairList.TabIndex = 4;
+            this.panelRepairList.Visible = false;
+            this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
             // 
             // MainForm
             // 
@@ -1575,7 +1560,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelBullSq4;
         private System.Windows.Forms.Label labelFuelSq4;
         private System.Windows.Forms.ToolStripMenuItem LogToolStripMenuItem;
-        private System.Windows.Forms.ToolTip toolTipAchievement;
         private System.Windows.Forms.Label labelProgress6;
         private System.Windows.Forms.Label labelQuest6;
         private System.Windows.Forms.Label labelQuestColor1;
@@ -1589,8 +1573,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Panel panelCombinedFleet;
         private System.Windows.Forms.Label labelAkashiRepair;
         private System.Windows.Forms.Label labelPresetAkashiTimer;
-        private System.Windows.Forms.ToolTip toolTipFighterPower;
-        private System.Windows.Forms.ToolTip toolTipLoS;
         private RepairListForMain panelRepairList;
         private System.Windows.Forms.Panel panel7Ships;
         private System.Windows.Forms.LinkLabel linkLabelGuide;

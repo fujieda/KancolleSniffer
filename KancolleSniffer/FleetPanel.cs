@@ -28,7 +28,7 @@ namespace KancolleSniffer
         private Record[] _table;
         private readonly List<FleetLabels> _labelList = new List<FleetLabels>();
         private readonly List<Panel> _panelList = new List<Panel>();
-        private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
+        private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
 
         private class Record
         {
@@ -323,6 +323,13 @@ namespace KancolleSniffer
                 return;
             var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
             AutoScrollPosition = new Point(0, y);
+        }
+
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            base.ScaleControl(factor, specified);
+            if (factor.Height > 1)
+                _toolTip.Font = new Font(_toolTip.Font.FontFamily, _toolTip.Font.Size * factor.Height);
         }
     }
 }

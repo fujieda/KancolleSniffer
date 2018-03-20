@@ -30,7 +30,7 @@ namespace KancolleSniffer
         private readonly List<Panel> _panelList = new List<Panel>();
         private bool _hpPercent;
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
-        private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
+        private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
         private readonly BattleInfo.BattleResult[] _result = new BattleInfo.BattleResult[2];
         private Label _phaseLabel, _rankLabel;
         private BattleState _prevBattleState;
@@ -329,11 +329,18 @@ namespace KancolleSniffer
             }
         }
 
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            base.ScaleControl(factor, specified);
+            if (factor.Height > 1)
+                _toolTip.Font = new Font(_toolTip.Font.FontFamily, _toolTip.Font.Size * factor.Height);
+        }
+
         private class InformationPanel : Panel
         {
             private readonly Label[] _formation;
             private readonly Label[] _fighterPower;
-            private readonly ToolTip _toolTip = new ToolTip {ShowAlways = true};
+            private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
 
             public InformationPanel()
             {
@@ -436,6 +443,13 @@ namespace KancolleSniffer
                     default:
                         return "";
                 }
+            }
+
+            protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+            {
+                base.ScaleControl(factor, specified);
+                if (factor.Height > 1)
+                    _toolTip.Font = new Font(_toolTip.Font.FontFamily, _toolTip.Font.Size * factor.Height);
             }
         }
     }

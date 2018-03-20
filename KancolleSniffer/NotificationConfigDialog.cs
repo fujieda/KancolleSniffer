@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -9,7 +10,7 @@ namespace KancolleSniffer
     {
         private readonly Dictionary<string, NotificationSpec> _notifications;
         private readonly Dictionary<NotificationType, CheckBox> _configCheckBoxs;
-        private readonly ToolTip _tooltip = new ToolTip();
+        private readonly ResizableToolTip _toolTip = new ResizableToolTip();
 
         public NotificationConfigDialog(Dictionary<string, NotificationSpec> notifications,
             Dictionary<NotificationType, CheckBox> checkBoxs)
@@ -59,7 +60,7 @@ namespace KancolleSniffer
             checkBoxPlaySound.Checked = (notification.Flags & NotificationType.PlaySound) != 0;
             checkBoxPush.Checked = (notification.Flags & NotificationType.Push) != 0;
             checkBoxRepeat.Checked = (notification.Flags & NotificationType.Repeat) != 0;
-            _tooltip.SetToolTip(checkBoxCont,
+            _toolTip.SetToolTip(checkBoxCont,
                 !IsContAvailable ? "" :
                 notification.Name == "遠征終了" ? "再度遠征に出すまでリピートする。" : "再度入渠させるまでリピートする。");
             checkBoxCont.Checked = (notification.Flags & NotificationType.Cont) != 0;
@@ -111,6 +112,13 @@ namespace KancolleSniffer
         {
             _notifications[(string)listBoxNotifications.SelectedItem].PreliminaryPeriod =
                 int.TryParse(textBoxPreliminary.Text, out int preliminary) ? preliminary : 0;
+        }
+
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            base.ScaleControl(factor, specified);
+            if (factor.Height > 1)
+                _toolTip.Font = new Font(_toolTip.Font.FontFamily, _toolTip.Font.Size * factor.Height);
         }
     }
 }

@@ -56,7 +56,7 @@ namespace KancolleSniffer
         private int _resultIndex;
         private readonly ShipLabel _ciShipName;
         private readonly Label _ciKind;
-        private readonly ToolTip _toolTip = new ToolTip{ShowAlways = true};
+        private readonly ResizableToolTip _toolTip = new ResizableToolTip{ShowAlways = true};
 
         public bool ShowResultAutomatic { get; set; }
 
@@ -213,6 +213,13 @@ namespace KancolleSniffer
             _ciShipName.SetName(null);
             _ciKind.Text = "";
             _toolTip.SetToolTip(_ciKind, "");
+        }
+
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            base.ScaleControl(factor, specified);
+            if (factor.Height > 1)
+                _toolTip.Font = new Font(_toolTip.Font.FontFamily, _toolTip.Font.Size * factor.Height);
         }
     }
 }
