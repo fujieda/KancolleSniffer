@@ -318,8 +318,11 @@ namespace KancolleSniffer
             DecomposeNotificationFlags();
             ConvertPath(StripBaseDir);
             var serializer = new XmlSerializer(typeof(Config));
-            using (var file = File.CreateText(ConfigFile))
+            using (var file = File.CreateText(ConfigFile + ".tmp"))
                 serializer.Serialize(file, this);
+            if (File.Exists(ConfigFile))
+                File.Delete(ConfigFile);
+            File.Move(ConfigFile + ".tmp", ConfigFile);
         }
 
         private void DecomposeNotificationFlags()
