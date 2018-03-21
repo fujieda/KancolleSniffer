@@ -804,13 +804,19 @@ namespace KancolleSniffer.Test
         /// 303: 「演習」で練度向上！
         /// 304: 「演習」で他提督を圧倒せよ！
         /// 311: 精鋭艦隊演習
+        /// 318: 給糧艦「伊良湖」の支援
         /// </summary>
         [TestMethod]
-        public void PracticeResult_303_304_302_311()
+        public void PracticeResult_303_304_302_311_318()
         {
-            var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(CreateQuestList(new[] {302, 303, 304, 311}));
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {302, 303, 304, 311, 318}));
 
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(2, 543), ShipStatus(3, 488)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
             questInfo.InspectPracticeResult(Js(new {api_win_rank = "C"}));
             questInfo.InspectPracticeResult(Js(new {api_win_rank = "A"}));
             PAssert.That(() =>
@@ -818,8 +824,15 @@ namespace KancolleSniffer.Test
                     .SequenceEqual(new[]
                     {
                         new {Id = 302, Now = 1}, new {Id = 303, Now = 2}, new {Id = 304, Now = 1},
-                        new {Id = 311, Now = 1}
+                        new {Id = 311, Now = 1}, new {Id = 318, Now = 0}
                     }));
+            // 318
+            battleInfo.Result.Friend.Main[0] = ShipStatus(3, 200);
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[4].Count.Now == 1);
+            questInfo.Quests[4].Count.Now = 3;
+            questInfo.InspectQuestList(CreateQuestList(new[] {318}));
+            PAssert.That(() => questInfo.Quests[4].Count.Now == 3, "進捗調節しない");
         }
 
         /// <summary>
@@ -961,12 +974,13 @@ namespace KancolleSniffer.Test
         /// 675: 運用装備の統合整備
         /// 676: 装備開発力の集中整備
         /// 677: 継戦支援能力の整備
+        /// 678: 主力艦上戦闘機の更新
         /// </summary>
         [TestMethod]
-        public void DestroyItem_613_638_663_673_674_675_676_677()
+        public void DestroyItem_613_638_663_673_674_675_676_677_678()
         {
             var itemInfo = new ItemInfo();
-            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 8};
+            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 9};
 
             itemInfo.InjectItemSpec(new[]
             {
@@ -978,11 +992,13 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 75, Name = "ドラム缶(輸送用)", Type = 30},
                 new ItemSpec {Id = 7, Name = "35.6cm連装砲", Type = 3},
                 new ItemSpec {Id = 25, Name = "零式水上偵察機", Type = 10},
-                new ItemSpec {Id = 13, Name = "61cm三連装魚雷", Type = 5}
+                new ItemSpec {Id = 13, Name = "61cm三連装魚雷", Type = 5},
+                new ItemSpec {Id = 20, Name = "零式艦戦21型", Type = 6}
             });
-            itemInfo.InjectItems(new[] {1, 37, 19, 4, 11, 75, 7, 25, 13});
-            questInfo.InspectQuestList(CreateQuestList(new[] {613, 638, 663, 673, 674, 675, 676, 677}));
-            questInfo.InspectDestroyItem("api%5Fslotitem%5Fids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9&api%5Fverno=1", null);
+            itemInfo.InjectItems(new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20});
+            questInfo.InspectQuestList(CreateQuestList(new[] {613, 638, 663, 673, 674, 675, 676, 677, 678}));
+            questInfo.InspectDestroyItem(
+                "api%5Fslotitem%5Fids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10&api%5Fverno=1", null);
             PAssert.That(() =>
                 questInfo.Quests.Select(q => new {q.Id, q.Count.Now}).Take(5).SequenceEqual(new[]
                 {
@@ -990,11 +1006,13 @@ namespace KancolleSniffer.Test
                     new {Id = 673, Now = 1}, new {Id = 674, Now = 1}
                 }));
             var q675 = questInfo.Quests[5];
-            PAssert.That(() => q675.Id == 675 && q675.Count.NowArray.SequenceEqual(new[] {1, 1}));
+            PAssert.That(() => q675.Id == 675 && q675.Count.NowArray.SequenceEqual(new[] {2, 1}));
             var q676 = questInfo.Quests[6];
             PAssert.That(() => q676.Id == 676 && q676.Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
             var q677 = questInfo.Quests[7];
             PAssert.That(() => q677.Id == 677 && q677.Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
+            var q678 = questInfo.Quests[8];
+            PAssert.That(() => q678.Id == 678 && q678.Count.NowArray.SequenceEqual(new[] {1, 1}));
         }
 
         /// <summary>
@@ -1016,7 +1034,7 @@ namespace KancolleSniffer.Test
         public void NotImplemented()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(CreateQuestList(new[] {318}));
+            questInfo.InspectQuestList(CreateQuestList(new[] {679}));
             PAssert.That(() => questInfo.Quests[0].Count.Spec.Material.Length == 0);
         }
 
@@ -1081,7 +1099,7 @@ namespace KancolleSniffer.Test
                 },
                 QuestCountList = new[]
                 {
-                    new QuestCount{Id = 854,NowArray = new []{1,0,1,0}}
+                    new QuestCount {Id = 854, NowArray = new[] {1, 0, 1, 0}}
                 }
             };
             questInfo.LoadState(status);

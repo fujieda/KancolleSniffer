@@ -259,6 +259,7 @@ namespace KancolleSniffer
             {304, new QuestPractice {Interval = Daily, Max = 5, Win = true, Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
             {302, new QuestPractice {Interval = Weekly, Max = 20, Win = true, Material = new[] {0, 0, 2, 1}}}, // 302: 大規模演習
             {311, new QuestPractice {Interval = Daily, Max = 7, Win = true, Material = new[] {0, 2, 0, 0}}}, // 311: 精鋭艦隊演習
+            {318, new QuestSpec {Interval = Daily, Max = 3, Material = new[] {0, 2, 2, 0}, AdjustCount = false}}, // 318: 給糧艦「伊良湖」の支援
 
             {402, new QuestMission {Interval = Daily, Max = 3, Material = new[] {0, 0, 1, 0}}}, // 402: 「遠征」を3回成功させよう！
             {403, new QuestMission {Interval = Daily, Max = 10, Material = new[] {0, 0, 0, 0}}}, // 403: 「遠征」を10回成功させよう！
@@ -287,6 +288,7 @@ namespace KancolleSniffer
             {675, new QuestSpec {Interval = Quarterly, MaxArray = new[] {6, 4}, Material = new[] {0, 0, 0, 0}}}, // 675: 運用装備の統合整備
             {676, new QuestSpec {Interval = Weekly, MaxArray = new[] {3, 3, 1}, Material = new[] {0, 1, 7, 0}}}, // 676: 装備開発力の集中整備
             {677, new QuestSpec {Interval = Weekly, MaxArray = new[] {4, 2, 3}, Material = new[] {0, 5, 0, 0}}}, // 677: 継戦支援能力の整備
+            {678, new QuestSpec {Interval = Quarterly, MaxArray = new[] {3, 5}, Material = new[] {0, 0, 8, 0}}}, // 678: 主力艦上戦闘機の更新
 
             {702, new QuestPowerup {Interval = Daily, Max = 2, Material = new[] {0, 1, 0, 0}}}, // 702: 艦の「近代化改修」を実施せよ！
             {703, new QuestPowerup {Interval = Weekly, Max = 15, Material = new[] {1, 0, 2, 0}}} // 703: 「近代化改修」を進め、戦備を整えよ！
@@ -668,6 +670,14 @@ namespace KancolleSniffer
                 if (practice.Check(json.api_win_rank))
                     IncrementCount(count);
             }
+            if (_quests.TryGetValue(318, out var q318))
+            {
+                if (QuestSortie.CompareRank(json.api_win_rank, "B") <= 0 &&
+                    _battleInfo.Result.Friend.Main.Count(s => s.Spec.ShipType == 3) >= 2)
+                {
+                    IncrementCount(q318.Count);
+                }
+            }
         }
 
         private readonly int[] _missionId = new int[ShipInfo.FleetCount];
@@ -783,33 +793,39 @@ namespace KancolleSniffer
         {
             var values = HttpUtility.ParseQueryString(request);
             var items = values["api_slotitem_ids"].Split(',')
-                .Select(id => _itemInfo.GetStatus(int.Parse(id)).Spec.Type).ToArray();
+                .Select(id => _itemInfo.GetStatus(int.Parse(id)).Spec).ToArray();
             IncrementCount(613); // 613: 資源の再利用
             foreach (var quest in _quests.Values)
             {
                 var count = quest.Count;
                 if (!(count.Spec is QuestDestroyItem destroy))
                     continue;
-                AddCount(count, items.Count(destroy.Check));
+                AddCount(count, items.Count(spec => destroy.Check(spec.Type)));
             }
             if (_quests.TryGetValue(675, out var q675))
             {
-                q675.Count.NowArray[0] += items.Count(id => id == 6);
-                q675.Count.NowArray[1] += items.Count(id => id == 21);
+                q675.Count.NowArray[0] += items.Count(spec => spec.Type == 6);
+                q675.Count.NowArray[1] += items.Count(spec => spec.Type == 21);
                 NeedSave = true;
             }
             if (_quests.TryGetValue(676, out var q676))
             {
-                q676.Count.NowArray[0] += items.Count(id => id == 2);
-                q676.Count.NowArray[1] += items.Count(id => id == 4);
-                q676.Count.NowArray[2] += items.Count(id => id == 30);
+                q676.Count.NowArray[0] += items.Count(spec => spec.Type == 2);
+                q676.Count.NowArray[1] += items.Count(spec => spec.Type == 4);
+                q676.Count.NowArray[2] += items.Count(spec => spec.Type == 30);
                 NeedSave = true;
             }
             if (_quests.TryGetValue(677, out var q677))
             {
-                q677.Count.NowArray[0] += items.Count(id => id == 3);
-                q677.Count.NowArray[1] += items.Count(id => id == 10);
-                q677.Count.NowArray[2] += items.Count(id => id == 5);
+                q677.Count.NowArray[0] += items.Count(spec => spec.Type == 3);
+                q677.Count.NowArray[1] += items.Count(spec => spec.Type == 10);
+                q677.Count.NowArray[2] += items.Count(spec => spec.Type == 5);
+                NeedSave = true;
+            }
+            if (_quests.TryGetValue(678, out var q678))
+            {
+                q678.Count.NowArray[0] += items.Count(spec => spec.Id == 19);
+                q678.Count.NowArray[1] += items.Count(spec => spec.Id == 20);
                 NeedSave = true;
             }
         }
