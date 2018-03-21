@@ -306,6 +306,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 基地航空隊の出撃コストを計算する
+        /// </summary>
+        [TestMethod]
+        public void CostForSortieOfBaseAirCorps()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "baseaircorps_003");
+            PAssert.That(() => sniffer.BaseAirCorps[1].AirCorps[0].CostForSortie.SequenceEqual(new[] {99, 47}));
+        }
+
+        /// <summary>
         /// 陸上戦闘機の改修レベルを制空値に反映させる。
         /// </summary>
         [TestMethod]

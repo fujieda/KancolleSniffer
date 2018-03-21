@@ -35,6 +35,7 @@ namespace KancolleSniffer
             public string Fleet { get; set; }
             public string Fleet2 { get; set; }
             public string Ship { get; set; }
+            public string Ship2 { get; set; }
             public int Id { get; set; }
             public string Equip { get; set; }
             public Color Color { get; set; }
@@ -124,6 +125,7 @@ namespace KancolleSniffer
                     var ship = new Record
                     {
                         Ship = (s.Escaped ? "[避]" : "") + s.Name + " Lv" + s.Level,
+                        Ship2 = "",
                         Id = s.Id,
                         // ReSharper disable CompareOfFloatsByEqualityOperator
                         Spec = (fire == 0 ? "" : $"砲{fire:f1}") + (subm == 0 ? "" : $" 潜{subm:f1}{oasa}"),
@@ -178,9 +180,11 @@ namespace KancolleSniffer
                             spec = "制空:" + RangeString(corpsFp.AirCombat);
                             spec2 = corpsFp.IsInterceptor ? "制空(防空):" + RangeString(corpsFp.Interception) : "";
                         }
+                        var cost = airCorps.CostForSortie;
                         list.Add(new Record
                         {
                             Ship = name[i++] + " " + airCorps.ActionName,
+                            Ship2 = $"出撃コスト:燃{cost[0]}弾{cost[1]}",
                             Spec = spec + " 距離:" + airCorps.Distance,
                             Spec2 = spec2
                         });
@@ -296,6 +300,8 @@ namespace KancolleSniffer
             var labels = _labelList[i];
             labels.Fleet.Text = e.Fleet;
             labels.Name.SetName(e.Ship);
+            if (e.Ship2 != "")
+                _toolTip.SetToolTip(labels.Name, e.Ship2);
             labels.Equip.Text = e.Equip;
             labels.EquipColor.Visible = e.Equip != "";
             labels.EquipColor.BackColor = e.Color;

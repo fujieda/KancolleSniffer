@@ -89,6 +89,24 @@ namespace KancolleSniffer
                     return new[] {prev[0] + cur[0], prev[1] + cur[1]};
                 }).Select(fp => (int)(fp * reconPlaneBonus)).ToArray();
             }
+
+            public int[] CostForSortie => Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
+            {
+                if (plane.State != 1)
+                    return prev;
+                int fuel, bull;
+                if (plane.Slot.Spec.Type == 47)
+                {
+                    fuel = (int)Math.Ceiling(plane.Count * 1.5);
+                    bull = (int)(plane.Count * 0.7);
+                }
+                else
+                {
+                    fuel = plane.Count;
+                    bull = (int)Math.Ceiling(plane.Count * 0.6);
+                }
+                return new[] {prev[0] + fuel, prev[1] + bull};
+            });
         }
 
         public class PlaneInfo
