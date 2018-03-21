@@ -30,12 +30,17 @@ namespace KancolleSniffer
             {
                 Application.Run(new MainForm());
             }
-            catch (MainForm.ConfigFileException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\r\n" +
-                                ex.InnerException?.Message + "\r\n" +
-                                ex.InnerException?.InnerException?.Message, "エラー",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var inner = ex.InnerException;
+                MessageBox.Show(ex.Message +
+                                (inner == null
+                                    ? ""
+                                    : "\r\n" + inner.Message +
+                                      (inner.InnerException == null
+                                          ? ""
+                                          : "\r\n" + inner.InnerException.Message)),
+                    "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

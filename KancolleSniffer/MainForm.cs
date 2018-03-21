@@ -79,14 +79,7 @@ namespace KancolleSniffer
             labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
             _listForm = new ListForm(_sniffer, _config) {Owner = this};
             _notificationManager = new NotificationManager(Alarm);
-            try
-            {
-                _config.Load();
-            }
-            catch (Exception ex)
-            {
-                throw new ConfigFileException("設定ファイルが壊れています。", ex);
-            }
+            _config.Load();
             _proxyManager = new ProxyManager(_config, this);
             _errorLog = new ErrorLog(_sniffer);
             _proxyManager.UpdatePacFile();

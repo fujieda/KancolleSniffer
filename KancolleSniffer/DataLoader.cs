@@ -42,9 +42,9 @@ namespace KancolleSniffer
         public static int[] EnemySlot(int id) =>
             _maxEq != null ? _maxEq.TryGetValue(id, out var slot) ? slot : null : null;
 
+        private const string FileName = "TP.csv";
 
-        private static readonly string TpFile =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TP.csv");
+        private static readonly string TpFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FileName);
 
         private static Dictionary<int, double> _tpSpec;
 
@@ -58,6 +58,10 @@ namespace KancolleSniffer
             }
             catch (IOException)
             {
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(FileName + "が壊れています。", ex);
             }
         }
 

@@ -187,9 +187,6 @@ namespace KancolleSniffer
 
     public class Config
     {
-        private readonly string _baseDir = AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
-        private readonly string _configFileName;
-
         public Point Location { get; set; } = new Point(int.MinValue, int.MinValue);
         public bool TopMost { get; set; }
         public bool HideOnMinimized { get; set; }
@@ -229,9 +226,13 @@ namespace KancolleSniffer
         public static readonly Dictionary<string, int> NotificationIndex =
             NotificationNames.Select((name, i) => new {name, i}).ToDictionary(entry => entry.name, entry => entry.i);
 
+
+        private const string FileName = "config.xml";
+        private static readonly string BaseDir = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly string ConfigFile = Path.Combine(BaseDir, FileName);
+
         public Config()
         {
-            _configFileName = Path.Combine(_baseDir, "config.xml");
             ConvertPath(PrependBaseDir);
         }
 
@@ -247,7 +248,7 @@ namespace KancolleSniffer
             {
                 var serializer = new XmlSerializer(typeof(Config));
                 Config config;
-                using (var file = File.OpenText(_configFileName))
+                using (var file = File.OpenText(ConfigFile))
                     config = (Config)serializer.Deserialize(file);
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(config, null), null);
@@ -281,6 +282,10 @@ namespace KancolleSniffer
                 InitializeValues();
                 Save();
             }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception(FileName + "が壊れています。", ex);
+            }
             ConvertPath(PrependBaseDir);
         }
 
@@ -313,7 +318,7 @@ namespace KancolleSniffer
             DecomposeNotificationFlags();
             ConvertPath(StripBaseDir);
             var serializer = new XmlSerializer(typeof(Config));
-            using (var file = File.CreateText(_configFileName))
+            using (var file = File.CreateText(ConfigFile))
                 serializer.Serialize(file, this);
         }
 
@@ -334,12 +339,12 @@ namespace KancolleSniffer
 
         private string StripBaseDir(string path)
         {
-            if (!path.StartsWith(_baseDir))
+            if (!path.StartsWith(BaseDir))
                 return path;
-            path = path.Substring(_baseDir.Length);
+            path = path.Substring(BaseDir.Length);
             return path.TrimStart(Path.DirectorySeparatorChar);
         }
 
-        private string PrependBaseDir(string path) => Path.IsPathRooted(path) ? path : Path.Combine(_baseDir, path);
+        private string PrependBaseDir(string path) => Path.IsPathRooted(path) ? path : Path.Combine(BaseDir, path);
     }
 }

@@ -28,8 +28,6 @@ namespace KancolleSniffer
 
     public class Status
     {
-        private readonly string _baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        private readonly string _statusFileName;
         public static bool Restoring { get; set; }
         public Achievement Achievement { get; set; }
         public List<MaterialCount> MaterialHistory { get; set; }
@@ -39,9 +37,11 @@ namespace KancolleSniffer
         public QuestCount[] QuestCountList { get; set; }
         public DateTime QuestLastReset { get; set; }
 
+        private const string FileName = "status.xml";
+        private static readonly string StatusFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FileName);
+
         public Status()
         {
-            _statusFileName = Path.Combine(_baseDir, "status.xml");
             CondRegenTime = double.MinValue;
         }
 
@@ -52,13 +52,17 @@ namespace KancolleSniffer
                 Restoring = true;
                 var serializer = new XmlSerializer(typeof(Status));
                 Status status;
-                using (var file = File.OpenText(_statusFileName))
+                using (var file = File.OpenText(StatusFile))
                     status = (Status)serializer.Deserialize(file);
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(status, null), null);
             }
             catch (FileNotFoundException)
             {
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception(FileName + "が壊れています。", ex);
             }
             finally
             {
@@ -69,7 +73,7 @@ namespace KancolleSniffer
         public void Save()
         {
             var serializer = new XmlSerializer(typeof(Status));
-            using (var file = File.CreateText(_statusFileName))
+            using (var file = File.CreateText(StatusFile))
                 serializer.Serialize(file, this);
         }
     }
