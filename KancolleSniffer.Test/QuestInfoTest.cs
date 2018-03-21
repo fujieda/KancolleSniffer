@@ -600,6 +600,10 @@ namespace KancolleSniffer.Test
             PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
         }
 
+        /// <summary>
+        /// 861: 強行輸送艦隊、抜錨！
+        /// </summary>
+        [TestMethod]
         public void MapNext_861()
         {
             var battleInfo = new BattleInfo(null, null);
@@ -608,7 +612,7 @@ namespace KancolleSniffer.Test
 
             battleInfo.InjectResultStatus(new[]
             {
-                ShipStatus(8), ShipStatus(4), ShipStatus(2),
+                ShipStatus(10), ShipStatus(22), ShipStatus(2),
                 ShipStatus(2), ShipStatus(2), ShipStatus(2)
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
@@ -636,7 +640,7 @@ namespace KancolleSniffer.Test
             PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "轟沈あり");
             battleInfo.Result.Friend.Main[1].NowHp = 1;
 
-            battleInfo.Result.Friend.Main[2].Spec.ShipType = 4;
+            battleInfo.Result.Friend.Main[2].Spec.ShipType = 10;
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 1,

@@ -497,7 +497,7 @@ namespace KancolleSniffer
                 {
                     var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.ShipType)
                         .ToArray();
-                    if (fleet.Count(s => s == 10 || s == 15) == 2)
+                    if (fleet.Count(s => s == 10 || s == 22) == 2)
                         IncrementCount(q861.Count);
                 }
             }
