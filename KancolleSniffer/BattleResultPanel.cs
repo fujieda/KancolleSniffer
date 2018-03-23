@@ -159,8 +159,11 @@ namespace KancolleSniffer
             }
         }
 
+        private Point _scrollPosition;
+
         private void ClearResult()
         {
+            _scrollPosition = AutoScrollPosition;
             foreach (var panel in _panelList)
                 panel.Visible = false;
             _infomationPanel.Visible = false;
@@ -170,6 +173,7 @@ namespace KancolleSniffer
         private void ShowResult(BattleInfo.BattleResult result)
         {
             SuspendLayout();
+            AutoScrollPosition = _scrollPosition;
             var friend = result.Friend;
             var enemy = result.Enemy;
             for (var i = 0; i < friend.Main.Length; i++)
