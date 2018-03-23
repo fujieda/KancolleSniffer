@@ -329,6 +329,18 @@ namespace KancolleSniffer
             }
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (VScroll && (ModifierKeys & Keys.Shift) == Keys.Shift)
+            {
+                VScroll = false;
+                OnMouseWheel(e);
+                VScroll = true;
+                return;
+            }
+            base.OnMouseWheel(e);
+        }
+
         protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
         {
             base.ScaleControl(factor, specified);
