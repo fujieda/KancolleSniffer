@@ -975,12 +975,13 @@ namespace KancolleSniffer.Test
         /// 676: 装備開発力の集中整備
         /// 677: 継戦支援能力の整備
         /// 678: 主力艦上戦闘機の更新
+        /// 680: 対空兵装の整備拡充
         /// </summary>
         [TestMethod]
         public void DestroyItem_613_638_663_673_674_675_676_677_678()
         {
             var itemInfo = new ItemInfo();
-            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 9};
+            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 10};
 
             itemInfo.InjectItemSpec(new[]
             {
@@ -993,12 +994,14 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 7, Name = "35.6cm連装砲", Type = 3},
                 new ItemSpec {Id = 25, Name = "零式水上偵察機", Type = 10},
                 new ItemSpec {Id = 13, Name = "61cm三連装魚雷", Type = 5},
-                new ItemSpec {Id = 20, Name = "零式艦戦21型", Type = 6}
+                new ItemSpec {Id = 20, Name = "零式艦戦21型", Type = 6},
+                new ItemSpec {Id = 28, Name = "22号水上電探", Type = 12},
+                new ItemSpec {Id = 31, Name = "32号水上電探", Type = 13}
             });
-            itemInfo.InjectItems(new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20});
-            questInfo.InspectQuestList(CreateQuestList(new[] {613, 638, 663, 673, 674, 675, 676, 677, 678}));
+            itemInfo.InjectItems(new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31});
+            questInfo.InspectQuestList(CreateQuestList(new[] {613, 638, 663, 673, 674, 675, 676, 677, 678, 680}));
             questInfo.InspectDestroyItem(
-                "api%5Fslotitem%5Fids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10&api%5Fverno=1", null);
+                "api%5Fslotitem%5Fids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12&api%5Fverno=1", null);
             PAssert.That(() =>
                 questInfo.Quests.Select(q => new {q.Id, q.Count.Now}).Take(5).SequenceEqual(new[]
                 {
@@ -1013,6 +1016,8 @@ namespace KancolleSniffer.Test
             PAssert.That(() => q677.Id == 677 && q677.Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
             var q678 = questInfo.Quests[8];
             PAssert.That(() => q678.Id == 678 && q678.Count.NowArray.SequenceEqual(new[] {1, 1}));
+            var q680 = questInfo.Quests[9];
+            PAssert.That(() => q680.Id == 680 && q680.Count.NowArray.SequenceEqual(new[] {1, 2}));
         }
 
         /// <summary>

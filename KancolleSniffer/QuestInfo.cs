@@ -289,6 +289,7 @@ namespace KancolleSniffer
             {676, new QuestSpec {Interval = Weekly, MaxArray = new[] {3, 3, 1}, Material = new[] {0, 1, 7, 0}}}, // 676: 装備開発力の集中整備
             {677, new QuestSpec {Interval = Weekly, MaxArray = new[] {4, 2, 3}, Material = new[] {0, 5, 0, 0}}}, // 677: 継戦支援能力の整備
             {678, new QuestSpec {Interval = Quarterly, MaxArray = new[] {3, 5}, Material = new[] {0, 0, 8, 0}}}, // 678: 主力艦上戦闘機の更新
+            {680, new QuestSpec {Interval = Quarterly, MaxArray = new[] {4, 4}, Material = new[] {0, 0, 6, 0}}}, // 680: 対空兵装の整備拡充
 
             {702, new QuestPowerup {Interval = Daily, Max = 2, Material = new[] {0, 1, 0, 0}}}, // 702: 艦の「近代化改修」を実施せよ！
             {703, new QuestPowerup {Interval = Weekly, Max = 15, Material = new[] {1, 0, 2, 0}}} // 703: 「近代化改修」を進め、戦備を整えよ！
@@ -826,6 +827,12 @@ namespace KancolleSniffer
             {
                 q678.Count.NowArray[0] += items.Count(spec => spec.Id == 19);
                 q678.Count.NowArray[1] += items.Count(spec => spec.Id == 20);
+                NeedSave = true;
+            }
+            if (_quests.TryGetValue(680, out var q680))
+            {
+                q680.Count.NowArray[0] += items.Count(spec => spec.Type == 21);
+                q680.Count.NowArray[1] += items.Count(spec => spec.Type == 12 || spec.Type == 13);
                 NeedSave = true;
             }
         }
