@@ -113,5 +113,20 @@ namespace KancolleSniffer.Test
             _battleInfo.InspectBattleResult(Data(logs[6]));
             PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
         }
+
+        /// <summary>
+        /// 機動対敵連合の雷撃戦でダメコンが発動する
+        /// </summary>
+        [TestMethod]
+        public void TreiggerDameconInCombinedBattle()
+        {
+            var logs = ReadAllLines("damecon_002");
+            var battle = Data(logs[3]);
+            _shipInfo.InjectShips(battle, JsonParser.Parse(logs[0]));
+            _battleInfo.InspectBattle(logs[1], logs[2], battle);
+            _battleInfo.InspectBattle(logs[4], logs[5], Data(logs[6]));
+            _battleInfo.InspectBattleResult(Data(logs[9]));
+            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+        }
     }
 }

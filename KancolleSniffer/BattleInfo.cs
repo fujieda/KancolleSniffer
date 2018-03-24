@@ -255,83 +255,71 @@ namespace KancolleSniffer
             return result;
         }
 
-        private enum CombatType
-        {
-            AtOnce,
-            ByTurn,
-            Support,
-            Aircraft,
-            AirBase,
-            Friend
-        }
-
-        private class Phase
-        {
-            public string Api { get; }
-            public CombatType Type { get; }
-            public string Name { get; }
-
-            public Phase(string api, CombatType type, string name = "")
-            {
-                Api = api;
-                Type = type;
-                Name = name;
-            }
-        }
-
         private void CalcDamage(dynamic json)
         {
             AirBattleResults.Clear();
-            var phases = new[]
+            foreach (KeyValuePair<string, dynamic> kv in json)
             {
-                new Phase("air_base_injection", CombatType.Aircraft, "AB噴式"),
-                new Phase("injection_kouku", CombatType.Aircraft, "噴式"),
-                new Phase("air_base_attack", CombatType.AirBase),
-                new Phase("n_support_info", CombatType.Support),
-                new Phase("n_hougeki1", CombatType.ByTurn),
-                new Phase("n_hougeki2", CombatType.ByTurn),
-                new Phase("kouku", CombatType.Aircraft, "航空戦"),
-                new Phase("kouku2", CombatType.Aircraft, "航空戦2"),
-                new Phase("support_info", CombatType.Support),
-                new Phase("opening_taisen", CombatType.ByTurn),
-                new Phase("opening_atack", CombatType.AtOnce),
-                new Phase("friendly_battle", CombatType.Friend),
-                new Phase("hougeki", CombatType.ByTurn),
-                new Phase("hougeki1", CombatType.ByTurn),
-                new Phase("hougeki2", CombatType.ByTurn),
-                new Phase("hougeki3", CombatType.ByTurn),
-                new Phase("raigeki", CombatType.AtOnce)
-            };
-            foreach (var phase in phases)
-                CalcDamageByType(json, phase);
-        }
-
-        private void CalcDamageByType(dynamic json, Phase phase)
-        {
-            var api = "api_" + phase.Api;
-            if (!json.IsDefined(api) || json[api] == null)
-                return;
-            switch (phase.Type)
-            {
-                case CombatType.AtOnce:
-                    CalcDamageAtOnce(json[api]);
-                    break;
-                case CombatType.ByTurn:
-                    CalcDamageByTurn(json[api]);
-                    break;
-                case CombatType.Support:
-                    CalcSupportDamage(json[api]);
-                    break;
-                case CombatType.Aircraft:
-                    AddAirBattleResult(json[api], phase.Name);
-                    CalcKoukuDamage(json[api]);
-                    break;
-                case CombatType.AirBase:
-                    CalcAirBaseAttackDamage(json[api]);
-                    break;
-                case CombatType.Friend:
-                    CalcFriendAttackDamage(json[api]);
-                    break;
+                if (kv.Value == null)
+                    continue;
+                switch (kv.Key)
+                {
+                    case "api_air_base_injection":
+                        AddAirBattleResult(kv.Value, "AB噴式");
+                        CalcKoukuDamage(kv.Value);
+                        break;
+                    case "api_injection_kouku":
+                        AddAirBattleResult(kv.Value, "噴式");
+                        CalcKoukuDamage(kv.Value);
+                        break;
+                    case "api_air_base_attack":
+                        CalcAirBaseAttackDamage(kv.Value);
+                        break;
+                    case "api_n_support_info":
+                        CalcSupportDamage(kv.Value);
+                        break;
+                    case "api_n_hougeki1":
+                        CalcDamageByTurn(kv.Value);
+                        break;
+                    case "api_n_hougeki2":
+                        CalcDamageByTurn(kv.Value);
+                        break;
+                    case "api_kouku":
+                        AddAirBattleResult(kv.Value, "航空戦");
+                        CalcKoukuDamage(kv.Value);
+                        break;
+                    case "api_kouku2":
+                        AddAirBattleResult(kv.Value, "航空戦2");
+                        CalcKoukuDamage(kv.Value);
+                        break;
+                    case "api_support_info":
+                        CalcSupportDamage(kv.Value);
+                        break;
+                    case "api_opening_taisen":
+                        CalcDamageByTurn(kv.Value);
+                        break;
+                    case "api_opening_atack":
+                        CalcDamageAtOnce(kv.Value);
+                        break;
+                    case "api_friendly_battle":
+                        CalcFriendAttackDamage(kv.Value);
+                        break;
+                    case "api_hougeki":
+                        CalcDamageByTurn(kv.Value);
+                        break;
+                    case "api_hougeki1":
+                        CalcDamageByTurn(kv.Value);
+                        break;
+                    case "api_hougeki2":
+                        CalcDamageByTurn(kv.Value);
+                        break;
+                    case "api_hougeki3":
+                        CalcDamageByTurn(kv.Value);
+                        break;
+                    case "api_raigeki":
+                        CalcDamageAtOnce(kv.Value);
+                        break;
+                }
             }
         }
 
@@ -692,11 +680,12 @@ namespace KancolleSniffer
         /// <summary>
         /// テスト専用
         /// </summary>
-        public void InjectResultStatus(ShipStatus[] main, ShipStatus[] guard, ShipStatus[] enemy, ShipStatus[] enemyGuard)
+        public void InjectResultStatus(ShipStatus[] main, ShipStatus[] guard, ShipStatus[] enemy,
+            ShipStatus[] enemyGuard)
         {
             Result = new BattleResult
             {
-                Friend = new BattleResult.Combined { Main = main, Guard = guard},
+                Friend = new BattleResult.Combined {Main = main, Guard = guard},
                 Enemy = new BattleResult.Combined {Main = enemy, Guard = enemyGuard}
             };
         }
