@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
@@ -187,7 +188,7 @@ namespace KancolleSniffer
         private JsonObject ParseObject()
         {
             Consume();
-            var dict = new Dictionary<string, JsonObject>();
+            var dict = new OrderedDictionary();
             while (true)
             {
                 var ch = NextChar();
@@ -250,11 +251,11 @@ namespace KancolleSniffer
         private readonly double _number;
         private readonly string _string;
         private readonly List<JsonObject> _array;
-        private readonly Dictionary<string, JsonObject> _dict;
+        private readonly OrderedDictionary _dict;
 
         public bool IsArray => _type == JsonType.Array;
         public bool IsObject => _type == JsonType.Object;
-        public bool IsDefined(string attr) => IsObject && _dict.ContainsKey(attr);
+        public bool IsDefined(string attr) => IsObject && _dict.Contains(attr);
 
         public JsonObject(bool b)
         {
@@ -280,7 +281,7 @@ namespace KancolleSniffer
             _array = ary;
         }
 
-        public JsonObject(Dictionary<string, JsonObject> dict)
+        public JsonObject(OrderedDictionary dict)
         {
             _type = JsonType.Object;
             _dict = dict;
@@ -291,15 +292,15 @@ namespace KancolleSniffer
             result = null;
             if (_type != JsonType.Object)
                 return false;
-            if (!_dict.TryGetValue(binder.Name, out var dict))
+            if (!_dict.Contains(binder.Name))
                 return false;
-            result = dict?.Value;
+            result = ((JsonObject)_dict[binder.Name])?.Value;
             return true;
         }
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
-            result = _type == JsonType.Object && _dict.ContainsKey(binder.Name);
+            result = _type == JsonType.Object && _dict.Contains(binder.Name);
             return true;
         }
 
@@ -311,7 +312,7 @@ namespace KancolleSniffer
                     result = _array[(int)indexes[0]]?.Value;
                     return true;
                 case JsonType.Object:
-                    result = _dict[(string)indexes[0]]?.Value;
+                    result = ((JsonObject)_dict[(string)indexes[0]])?.Value;
                     return true;
             }
             result = null;
@@ -328,7 +329,7 @@ namespace KancolleSniffer
                         result = _array.Select(x => x.Value);
                         return true;
                     case JsonType.Object:
-                        result = _dict.Select(x => new KeyValuePair<string, dynamic>(x.Key, x.Value));
+                        result = _dict.Cast<DictionaryEntry>().Select(x => new KeyValuePair<string, dynamic>((string)x.Key, x.Value));
                         return true;
                     default:
                         result = null;
@@ -419,8 +420,10 @@ namespace KancolleSniffer
                 case IEnumerable arry:
                     return new JsonObject(arry.Cast<object>().Select(CreateJsonObject).ToList());
                 case object obj:
-                    return new JsonObject(obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                        .ToDictionary(prop => prop.Name, prop => CreateJsonObject(prop.GetValue(obj))));
+                    var dict = new OrderedDictionary();
+                    foreach (var prop in obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                        dict.Add(prop.Name, CreateJsonObject(prop.GetValue(obj)));
+                    return new JsonObject(dict);
             }
             return null;
         }
@@ -491,7 +494,7 @@ namespace KancolleSniffer
                 case JsonType.Object:
                     sb.Append("{");
                     delimiter = "";
-                    foreach (var entry in _dict)
+                    foreach (DictionaryEntry entry in _dict)
                     {
                         sb.Append(delimiter);
                         sb.Append("\"");
@@ -503,7 +506,7 @@ namespace KancolleSniffer
                         }
                         else
                         {
-                            entry.Value.ConvertToString(sb);
+                            ((JsonObject)entry.Value).ConvertToString(sb);
                         }
                         delimiter = ",";
                     }

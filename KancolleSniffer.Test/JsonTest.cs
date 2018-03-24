@@ -231,6 +231,18 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void PropertyOrder()
+        {
+            const int count = 100;
+            var json = "{" + string.Join(",", Enumerable.Range(0, count).Select(n => $"\"{"a" + n}\":{n}")) + "}";
+            var obj = (dynamic)JsonParser.Parse(json);
+            var list = new List<int>();
+            foreach (KeyValuePair<string, dynamic> kv in obj)
+                list.Add((int)kv.Value);
+            Assert.IsTrue(list.SequenceEqual(Enumerable.Range(0, count)));
+        }
+
+        [TestMethod]
         public void CastArrayToPrimitivetArray()
         {
             var bary = (bool[])(dynamic)JsonParser.Parse("[true,false,true]");
