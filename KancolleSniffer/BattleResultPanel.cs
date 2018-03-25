@@ -63,10 +63,12 @@ namespace KancolleSniffer
         public void Update(Sniffer sniffer)
         {
             var state = sniffer.Battle.BattleState;
-            if (_prevBattleState == BattleState.None && state != BattleState.None)
-                _result[0] = _result[1] = null;
+            var prev = _prevBattleState;
             _prevBattleState = state;
-            if (state == BattleState.None && !(_result[0] == null && _result[1] == null))
+            if (prev == BattleState.None && state != BattleState.None)
+                _result[0] = _result[1] = null;
+            if (prev != BattleState.None && state == BattleState.None &&
+                !(_result[0] == null && _result[1] == null))
             {
                 ClearResult();
                 SetPhase("結果");
