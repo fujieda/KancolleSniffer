@@ -15,7 +15,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using static System.Math;
 
@@ -109,11 +108,18 @@ namespace KancolleSniffer
                     label.Tag = i;
                     label.Click += onClick;
                 }
+                var hpLabel = shipLabels[i][0];
+                _hpLables.Add(hpLabel);
+                hpLabel.Click += HpLabelClickHander;
             }
-            _hpLables.AddRange(shipLabels.Select(labels => labels[0]));
             headings[0].Cursor = Cursors.Hand;
-            headings[0].Click += (sender, ev) => ToggleHpPercent();
+            headings[0].Click += HpLabelClickHander;
             parent.ResumeLayout();
+        }
+
+        private void HpLabelClickHander(object sender, EventArgs ev)
+        {
+            ToggleHpPercent();
         }
 
         public void ToggleHpPercent()
@@ -184,16 +190,13 @@ namespace KancolleSniffer
                     label.Tag = i;
                     label.Click += onClick;
                 }
+                var hpLavel = _combinedLabels[i][0];
+                _hpLables.Add(hpLavel);
+                hpLavel.Click += HpLabelClickHander;
             }
-            _hpLables.AddRange(_combinedLabels.Select(record => record[0]).ToArray());
             headings[0].Cursor = headings[2].Cursor = Cursors.Hand;
-            void HpToggle(object sender, EventArgs ev)
-            {
-                foreach (var label in _hpLables)
-                    label.ToggleHpPercent();
-            }
-            headings[0].Click += HpToggle;
-            headings[2].Click += HpToggle;
+            headings[0].Click += HpLabelClickHander;
+            headings[2].Click += HpLabelClickHander;
             parent.ResumeLayout();
         }
 

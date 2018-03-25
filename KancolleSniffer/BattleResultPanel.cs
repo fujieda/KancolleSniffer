@@ -28,7 +28,6 @@ namespace KancolleSniffer
         private readonly List<ShipLabel[]> _friendLabels = new List<ShipLabel[]>();
         private readonly List<ShipLabel[]> _enemyLabels = new List<ShipLabel[]>();
         private readonly List<Panel> _panelList = new List<Panel>();
-        private bool _hpPercent;
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
         private readonly BattleInfo.BattleResult[] _result = new BattleInfo.BattleResult[2];
@@ -48,13 +47,17 @@ namespace KancolleSniffer
             ResumeLayout();
         }
 
-        public void SetShowHpPercent(bool hpPercent)
+        public event Action HpLabelClick;
+
+        private void HpLabelClickHandler(object sender, EventArgs ev)
         {
-            if (hpPercent == _hpPercent)
-                return;
+            HpLabelClick?.Invoke();
+        }
+
+        public void ToggleHpPercent()
+        {
             foreach (var label in _hpLabels)
                 label.ToggleHpPercent();
-            _hpPercent = hpPercent;
         }
 
         public void Update(Sniffer sniffer)
@@ -250,7 +253,7 @@ namespace KancolleSniffer
                 _panelList[i].Width = panelWidth;
             _infomationPanel.Location = new Point(
                 (int)Round(0 * ShipLabel.ScaleFactor.Width) + AutoScrollPosition.X,
-                (int)Round(20 * ShipLabel.ScaleFactor.Height) +AutoScrollPosition.Y);
+                (int)Round(20 * ShipLabel.ScaleFactor.Height) + AutoScrollPosition.Y);
             _infomationPanel.Visible = true;
         }
 
@@ -318,6 +321,7 @@ namespace KancolleSniffer
                 };
                 _friendLabels.Add(friend);
                 _hpLabels.Add(friend[0]);
+                friend[0].Click += HpLabelClickHandler;
                 var enemy = new[]
                 {
                     new ShipLabel {Location = new Point(119, 2), AutoSize = true},

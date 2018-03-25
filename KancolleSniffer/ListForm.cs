@@ -44,6 +44,8 @@ namespace KancolleSniffer
             InitializeComponent();
             _sniffer = sniffer;
             _config = config;
+            battleResultPanel.HpLabelClick += ToggleHpPercent;
+            shipListPanel.HpLabelClick += ToggleHpPercent;
             var swipe = new SwipeScrollify();
             swipe.AddShipListPanel(shipListPanel);
             swipe.AddTreeView(itemTreeView);
@@ -115,7 +117,6 @@ namespace KancolleSniffer
 
         public void UpdateBattleResult()
         {
-            battleResultPanel.SetShowHpPercent(shipListPanel.ShowHpInPercent);
             battleResultPanel.Spoiler = (_config.Spoilers & Spoiler.BattleResult) != 0;
             battleResultPanel.Update(_sniffer);
         }
@@ -174,7 +175,10 @@ namespace KancolleSniffer
             var config = _config.ShipList;
             checkBoxShipType.Checked = config.ShipType;
             if (config.ShowHpInPercent)
+            {
                 shipListPanel.ToggleHpPercent();
+                battleResultPanel.ToggleHpPercent();
+            }
             LoadShipGroupFromConfig();
             comboBoxGroup.SelectedItem = config.Mode ?? "全員";
             if (config.Location.X == int.MinValue)
@@ -198,7 +202,6 @@ namespace KancolleSniffer
             if (!Visible)
                 return;
             var config = _config.ShipList;
-            config.ShowHpInPercent = shipListPanel.ShowHpInPercent;
             StoreShipGroupToConfig();
             var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
             config.Location = bounds.Location;
@@ -358,7 +361,14 @@ namespace KancolleSniffer
 
         private void labelHeaderHp_Click(object sender, EventArgs e)
         {
+            ToggleHpPercent();
+        }
+
+        private void ToggleHpPercent()
+        {
+            _config.ShipList.ShowHpInPercent = !_config.ShipList.ShowHpInPercent;
             shipListPanel.ToggleHpPercent();
+            battleResultPanel.ToggleHpPercent();
         }
     }
 }

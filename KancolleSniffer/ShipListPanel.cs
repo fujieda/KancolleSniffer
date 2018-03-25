@@ -36,7 +36,7 @@ namespace KancolleSniffer
         private readonly List<Panel> _repairPanelList = new List<Panel>();
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private string _mode;
-        public bool ShowHpInPercent { get; private set; }
+        private bool _hpPercent;
 
         public const int GroupCount = 4;
         public HashSet<int>[] GroupSettings { get; } = new HashSet<int>[GroupCount];
@@ -334,9 +334,10 @@ namespace KancolleSniffer
                 label.PresetColor =
                     label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
-            if (ShowHpInPercent)
+            if (_hpPercent)
                 rpl[0].ToggleHpPercent();
             _hpLabels.Add(rpl[0]);
+            rpl[0].Click += HpLabelClickHandler;
         }
 
         private void CreateShipLabels(int i)
@@ -385,9 +386,10 @@ namespace KancolleSniffer
                 label.PresetColor =
                     label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
-            if (ShowHpInPercent)
+            if (_hpPercent)
                 labels[0].ToggleHpPercent();
             _hpLabels.Add(labels[0]);
+            labels[0].Click += HpLabelClickHandler;
         }
 
         private void SetShipLabels()
@@ -495,9 +497,16 @@ namespace KancolleSniffer
             panel.Visible = true;
         }
 
+        public event Action HpLabelClick;
+
+        private void HpLabelClickHandler(object sender, EventArgs ev)
+        {
+            HpLabelClick?.Invoke();
+        }
+
         public void ToggleHpPercent()
         {
-            ShowHpInPercent = !ShowHpInPercent;
+            _hpPercent = !_hpPercent;
             foreach (var label in _hpLabels)
                 label.ToggleHpPercent();
         }
