@@ -59,7 +59,7 @@ namespace KancolleSniffer
         public void CreateShipLabels(Control parent, EventHandler onClick, ShipLabel[][] shipLabels, int lineHeight)
         {
             parent.SuspendLayout();
-            const int top = 3, height = 12;
+            const int top = 1, height = 12;
             ShipLabel[] headings;
             parent.Controls.AddRange(headings = new[]
             {
@@ -79,27 +79,35 @@ namespace KancolleSniffer
                 var y = top + lineHeight * (i + 1);
                 parent.Controls.AddRange(shipLabels[i] = new[]
                 {
-                    new ShipLabel {Location = new Point(129, y), AutoSize = true, AnchorRight = true},
+                    new ShipLabel
+                    {
+                        Location = new Point(129, y),
+                        AutoSize = true,
+                        AnchorRight = true,
+                        MinimumSize = new Size(0, lineHeight),
+                        TextAlign = ContentAlignment.MiddleLeft,
+                        Cursor = Cursors.Hand
+                    },
                     new ShipLabel
                     {
                         Location = new Point(131, y),
+                        Size = new Size(24, lineHeight),
+                        TextAlign = ContentAlignment.MiddleRight
+                    },
+                    new ShipLabel
+                    {
+                        Location = new Point(155, y + 2),
                         Size = new Size(24, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
                     new ShipLabel
                     {
-                        Location = new Point(155, y),
-                        Size = new Size(24, height),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new ShipLabel
-                    {
-                        Location = new Point(176, y),
+                        Location = new Point(176, y + 2),
                         Size = new Size(42, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
-                    new ShipLabel {Location = new Point(2, y), AutoSize = true}, // 名前のZ-orderを下に
-                    new ShipLabel {Location = new Point(0, y - 2), Size = new Size(parent.Width, lineHeight - 1)}
+                    new ShipLabel {Location = new Point(2, y + 2), AutoSize = true}, // 名前のZ-orderを下に
+                    new ShipLabel {Location = new Point(0, y), Size = new Size(parent.Width, lineHeight)}
                 });
                 foreach (var label in shipLabels[i])
                 {
@@ -151,7 +159,7 @@ namespace KancolleSniffer
         public void CreateCombinedShipLabels(Control parent, EventHandler onClick)
         {
             parent.SuspendLayout();
-            const int top = 3, height = 12, lh = 16;
+            const int top = 1, lh = 16;
             const int parentWidth = 220; // parent.Widthを使うとDPIスケーリング時に計算がくるうので
             ShipLabel[] headings;
             parent.Controls.AddRange(headings = new[]
@@ -173,15 +181,23 @@ namespace KancolleSniffer
                 var y = top + lh * (i % ShipInfo.MemberCount + 1);
                 parent.Controls.AddRange(_combinedLabels[i] = new[]
                 {
-                    new ShipLabel {Location = new Point(x + 88, y), AutoSize = true, AnchorRight = true},
+                    new ShipLabel
+                    {
+                        Location = new Point(x + 88, y),
+                        AutoSize = true,
+                        AnchorRight = true,
+                        MinimumSize = new Size(0, lh),
+                        TextAlign = ContentAlignment.MiddleLeft,
+                        Cursor = Cursors.Hand
+                    },
                     new ShipLabel
                     {
                         Location = new Point(x + 85, y),
-                        Size = new Size(24, height),
+                        Size = new Size(24, lh),
                         TextAlign = ContentAlignment.MiddleRight
                     },
-                    new ShipLabel {Location = new Point(x + 2, y), AutoSize = true}, // 名前のZ-orderを下に
-                    new ShipLabel {Location = new Point(x, y - 2), Size = new Size(parentWidth / 2, lh - 1)}
+                    new ShipLabel {Location = new Point(x + 2, y + 2), AutoSize = true}, // 名前のZ-orderを下に
+                    new ShipLabel {Location = new Point(x, y), Size = new Size(parentWidth / 2, lh)}
                 });
                 foreach (var label in _combinedLabels[i])
                 {
@@ -275,12 +291,12 @@ namespace KancolleSniffer
             }
             else
             {
-
                 SetAkashiTimer(statuses, timers, _akashiTimers, _shiplabels);
             }
         }
 
-        public void SetAkashiTimer(ShipStatus[] statuses, AkashiTimer.RepairSpan[] timers, ShipLabel[] timerLabels, ShipLabel[][] shipLabels)
+        public void SetAkashiTimer(ShipStatus[] statuses, AkashiTimer.RepairSpan[] timers, ShipLabel[] timerLabels,
+            ShipLabel[][] shipLabels)
         {
             var shortest = -1;
             for (var i = 0; i < timers.Length; i++)

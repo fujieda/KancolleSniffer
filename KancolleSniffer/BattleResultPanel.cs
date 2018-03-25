@@ -316,7 +316,15 @@ namespace KancolleSniffer
 
                 var friend = new[]
                 {
-                    new ShipLabel {Location = new Point(100, 2), AutoSize = true, AnchorRight = true},
+                    new ShipLabel
+                    {
+                        Location = new Point(100, 0),
+                        AutoSize = true,
+                        AnchorRight = true,
+                        MinimumSize = new Size(0, LineHeight),
+                        TextAlign = ContentAlignment.MiddleLeft,
+                        Cursor = Cursors.Hand
+                    },
                     new ShipLabel {Location = new Point(1, 2), AutoSize = true}
                 };
                 _friendLabels.Add(friend);
@@ -324,7 +332,13 @@ namespace KancolleSniffer
                 friend[0].Click += HpLabelClickHandler;
                 var enemy = new[]
                 {
-                    new ShipLabel {Location = new Point(119, 2), AutoSize = true},
+                    new ShipLabel
+                    {
+                        Location = new Point(119, 0),
+                        AutoSize = true,
+                        MinimumSize = new Size(0, LineHeight),
+                        TextAlign = ContentAlignment.MiddleLeft
+                    },
                     new ShipLabel {Location = new Point(164, 2), AutoSize = true}
                 };
                 _enemyLabels.Add(enemy);

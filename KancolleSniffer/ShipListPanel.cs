@@ -231,12 +231,12 @@ namespace KancolleSniffer
 
         private void CreateGroupingComponents(int i)
         {
-            var y = 3 + LineHeight * i;
+            var y = LineHeight * i + 1;
             var cfgp = new Panel
             {
-                Location = new Point(0, y - 2),
-                Size = new Size(ListForm.PanelWidth, LineHeight - 1),
-                BackColor = ShipLabel.ColumnColors[(i + 1) % 2],
+                Location = new Point(0, y),
+                Size = new Size(ListForm.PanelWidth, LineHeight),
+                BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
             };
             cfgp.Scale(ShipLabel.ScaleFactor);
             cfgp.Tag = cfgp.Location.Y;
@@ -299,19 +299,27 @@ namespace KancolleSniffer
 
         private void CreateRepairLabels(int i)
         {
-            var y = 3 + LineHeight * i;
+            var y = LineHeight * i + 1;
             const int height = LabelHeight;
             var rpp = new Panel
             {
-                Location = new Point(0, y - 2),
-                Size = new Size(ListForm.PanelWidth, LineHeight - 1),
-                BackColor = ShipLabel.ColumnColors[(i + 1) % 2],
+                Location = new Point(0, y),
+                Size = new Size(ListForm.PanelWidth, LineHeight),
+                BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
             };
             rpp.Scale(ShipLabel.ScaleFactor);
             rpp.Tag = rpp.Location.Y;
             var rpl = new[]
             {
-                new ShipLabel {Location = new Point(118, 2), AutoSize = true, AnchorRight = true},
+                new ShipLabel
+                {
+                    Location = new Point(118, 0),
+                    AutoSize = true,
+                    AnchorRight = true,
+                    MinimumSize = new Size(0, LineHeight),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    Cursor = Cursors.Hand
+                },
                 new ShipLabel
                 {
                     Location = new Point(116, 2),
@@ -342,22 +350,30 @@ namespace KancolleSniffer
 
         private void CreateShipLabels(int i)
         {
-            var y = 3 + LineHeight * i;
+            var y = LineHeight * i + 1;
             const int height = LabelHeight;
             var lbp = new Panel
             {
-                Location = new Point(0, y - 2),
-                Size = new Size(ListForm.PanelWidth, LineHeight - 1),
+                Location = new Point(0, y),
+                Size = new Size(ListForm.PanelWidth, LineHeight),
                 BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
             };
             lbp.Scale(ShipLabel.ScaleFactor);
             var labels = new[]
             {
-                new ShipLabel {Location = new Point(126, 2), AutoSize = true, AnchorRight = true},
                 new ShipLabel
                 {
-                    Location = new Point(128, 2),
-                    Size = new Size(24, height),
+                    Location = new Point(126, 0),
+                    AutoSize = true,
+                    AnchorRight = true,
+                    MinimumSize = new Size(0, LineHeight),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    Cursor = Cursors.Hand
+                },
+                new ShipLabel
+                {
+                    Location = new Point(128, 0),
+                    Size = new Size(24, LineHeight),
                     TextAlign = ContentAlignment.MiddleRight
                 },
                 new ShipLabel
