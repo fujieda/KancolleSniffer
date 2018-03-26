@@ -118,7 +118,7 @@ namespace KancolleSniffer
                 }
                 var hpLabel = shipLabels[i][0];
                 _hpLables.Add(hpLabel);
-                hpLabel.Click += HpLabelClickHander;
+                hpLabel.DoubleClick += HpLabelClickHander;
             }
             headings[0].Cursor = Cursors.Hand;
             headings[0].Click += HpLabelClickHander;
@@ -208,7 +208,7 @@ namespace KancolleSniffer
                 }
                 var hpLavel = _combinedLabels[i][0];
                 _hpLables.Add(hpLavel);
-                hpLavel.Click += HpLabelClickHander;
+                hpLavel.DoubleClick += HpLabelClickHander;
             }
             headings[0].Cursor = headings[2].Cursor = Cursors.Hand;
             headings[0].Click += HpLabelClickHander;

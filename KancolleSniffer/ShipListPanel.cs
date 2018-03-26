@@ -345,7 +345,7 @@ namespace KancolleSniffer
             if (_hpPercent)
                 rpl[0].ToggleHpPercent();
             _hpLabels.Add(rpl[0]);
-            rpl[0].Click += HpLabelClickHandler;
+            rpl[0].DoubleClick += HpLabelClickHandler;
         }
 
         private void CreateShipLabels(int i)
@@ -405,7 +405,7 @@ namespace KancolleSniffer
             if (_hpPercent)
                 labels[0].ToggleHpPercent();
             _hpLabels.Add(labels[0]);
-            labels[0].Click += HpLabelClickHandler;
+            labels[0].DoubleClick += HpLabelClickHandler;
         }
 
         private void SetShipLabels()
