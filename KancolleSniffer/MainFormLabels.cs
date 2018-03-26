@@ -337,19 +337,23 @@ namespace KancolleSniffer
 
         public void CreateNDockLabels(Control parent, EventHandler onClick)
         {
+            const int lh = 15;
             for (var i = 0; i < _ndockLabels.Length; i++)
             {
-                var y = 3 + i * 15;
+                var y = i * lh;
                 parent.Controls.AddRange(
                     _ndockLabels[i] = new[]
                     {
                         new ShipLabel
                         {
-                            Location = new Point(138, y),
+                            Location = new Point(138, y + 2),
                             AutoSize = true,
-                            AnchorRight = true
+                            AnchorRight = true,
+                            MinimumSize = new Size(0, lh),
+                            TextAlign = ContentAlignment.MiddleLeft,
+                            Cursor = Cursors.Hand
                         },
-                        new ShipLabel {Location = new Point(29, y), AutoSize = true} // 名前のZ-orderを下に
+                        new ShipLabel {Location = new Point(29, y + 3), AutoSize = true} // 名前のZ-orderを下に
                     });
                 foreach (var label in _ndockLabels[i])
                 {
