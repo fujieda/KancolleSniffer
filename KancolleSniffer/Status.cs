@@ -75,9 +75,8 @@ namespace KancolleSniffer
             var serializer = new XmlSerializer(typeof(Status));
             using (var file = File.CreateText(StatusFile + ".tmp"))
                 serializer.Serialize(file, this);
-            if (File.Exists(StatusFile))
-                File.Delete(StatusFile);
-            File.Move(StatusFile + ".tmp", StatusFile);
+            File.Copy(StatusFile + ".tmp", StatusFile, true);
+            File.Delete(StatusFile + ".tmp");
         }
     }
 }

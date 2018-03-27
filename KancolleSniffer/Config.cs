@@ -320,9 +320,8 @@ namespace KancolleSniffer
             var serializer = new XmlSerializer(typeof(Config));
             using (var file = File.CreateText(ConfigFile + ".tmp"))
                 serializer.Serialize(file, this);
-            if (File.Exists(ConfigFile))
-                File.Delete(ConfigFile);
-            File.Move(ConfigFile + ".tmp", ConfigFile);
+            File.Copy(ConfigFile + ".tmp", ConfigFile, true);
+            File.Delete(ConfigFile + ".tmp");
         }
 
         private void DecomposeNotificationFlags()
