@@ -1242,6 +1242,8 @@ namespace KancolleSniffer
         private void labelQuest_DoubleClick(object sender, EventArgs e)
         {
             var label = (Label)sender;
+            if (string.IsNullOrEmpty(label.Text))
+                return;
             Clipboard.SetText(label.Text);
             _tooltipCopy.Active = true;
             _tooltipCopy.Show("コピーしました。", label);
