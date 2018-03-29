@@ -344,7 +344,7 @@ namespace KancolleSniffer
             // 
             this.panelCombinedFleet.Location = new System.Drawing.Point(0, 0);
             this.panelCombinedFleet.Name = "panelCombinedFleet";
-            this.panelCombinedFleet.Size = new System.Drawing.Size(220, 112);
+            this.panelCombinedFleet.Size = new System.Drawing.Size(220, 113);
             this.panelCombinedFleet.TabIndex = 43;
             this.panelCombinedFleet.Visible = false;
             // 
