@@ -214,7 +214,7 @@ namespace KancolleSniffer
                 var ship = enemy.Main[i];
                 labels[0].SetHp(ship);
                 labels[1].SetName(ShortenName(ship.Name));
-                _toolTip.SetToolTip(labels[1], string.Join("\r\n", ship.Slot.Select(item => item.Spec.Name)));
+                _toolTip.SetToolTip(labels[1], GetEqipString(ship));
             }
             if (enemy.Guard.Length > 0)
             {
@@ -226,8 +226,7 @@ namespace KancolleSniffer
                     var ship = enemy.Guard[i];
                     labels[0].SetHp(ship);
                     labels[1].SetName(ShortenName(ship.Name));
-                    _toolTip.SetToolTip(labels[1],
-                        string.Join("\r\n", ship.Slot.Select(item => item.Spec.Name)));
+                    _toolTip.SetToolTip(labels[1], GetEqipString(ship));
                 }
             }
             var enemyLines = enemy.Main.Length + (enemy.Guard.Length > 0 ? enemy.Guard.Length + 1 : 0);
@@ -261,18 +260,15 @@ namespace KancolleSniffer
 
         private string GetEqipString(ShipStatus ship)
         {
-            var result = new List<string>();
-            for (var i = 0; i < ship.Slot.Length; i++)
-            {
-                var item = ship.Slot[i];
-                var onslot = ship.OnSlot[i];
-                var max = ship.Spec.MaxEq[i];
-                if (item.Id == -1)
-                    continue;
-                result.Add(item.Spec.Name + (item.Spec.IsAircraft ? $" {onslot}/{max}" : ""));
-            }
-            if (ship.SlotEx.Id != 0 && ship.SlotEx.Id != -1)
-                result.Add(ship.SlotEx.Spec.Name);
+            var result =
+            (from i in Enumerable.Range(0, ship.Slot.Length)
+                let item = ship.Slot[i]
+                where item.Id != -1
+                select item.Spec.Name + (item.Spec.IsAircraft && ship.OnSlot.Length > 0 && ship.Spec.MaxEq.Length > 0
+                           ? $"{ship.OnSlot[i]}/{ship.Spec.MaxEq[i]}"
+                           : ""));
+            if (ship.SlotEx.Id > 0)
+                result = result.Concat(new[] {ship.SlotEx.Spec.Name});
             return string.Join("\r\n", result);
         }
 
