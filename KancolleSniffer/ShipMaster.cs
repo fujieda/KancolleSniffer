@@ -21,6 +21,8 @@ namespace KancolleSniffer
         public const int NumSlots = 5;
         private readonly Dictionary<int, ShipSpec> _shipSpecs = new Dictionary<int, ShipSpec>();
 
+        public static bool IsEnemyId(int id) => id > 1500;
+
         public void Inspect(dynamic json)
         {
             var dict = new Dictionary<double, string>();
@@ -59,7 +61,7 @@ namespace KancolleSniffer
         {
             var name = json.api_name;
             var flagship = json.api_yomi;
-            if ((int)json.api_id <= 1500 || flagship == "-" || flagship == "")
+            if (!IsEnemyId((int)json.api_id) || flagship == "-" || flagship == "")
                 return name;
             return name + "(" + flagship + ")";
         }
@@ -104,6 +106,7 @@ namespace KancolleSniffer
     public class ShipSpec
     {
         public int Id { get; set; }
+        public bool IsEnemy => ShipMaster.IsEnemyId(Id);
         public int SortNo { get; set; }
         public string Name { get; set; }
         public int FuelMax { get; set; }
