@@ -520,11 +520,11 @@ namespace KancolleSniffer
                     case 15: // 機銃
                         return 6 * Spec.AntiAir + 4 * Sqrt(Level);
                     case 16: // 高角砲
-                        return 4 * Spec.AntiAir + 3 * Sqrt(Level);
+                        return 4 * Spec.AntiAir + (Spec.AntiAir >= 8 ? 3 : 2) * Sqrt(Level);
                     case 11: // 電探
                         return 3 * Spec.AntiAir;
                     case 30: // 高射装置
-                        return 4 * Spec.AntiAir;
+                        return 4 * Spec.AntiAir + 2 * Sqrt(Level);
                 }
                 return 0;
             }
@@ -549,10 +549,12 @@ namespace KancolleSniffer
                     case 12: // 三式弾
                         return 0.6 * Spec.AntiAir;
                     case 16: // 高角砲
-                        return 0.35 * Spec.AntiAir + 3 * Sqrt(Level);
+                        return 0.35 * Spec.AntiAir + (Spec.AntiAir >= 8 ? 3 : 2) * Sqrt(Level);
                     case 30: // 高射装置
-                        return 0.35 * Spec.AntiAir;
+                        return 0.35 * Spec.AntiAir + 2 * Sqrt(Level);
                     default:
+                        if (Spec.Id == 9) // 46cm三連装砲
+                            return 0.25 * Spec.AntiAir;
                         if (Spec.Type == 10) // 水偵
                             return 0.2 * Spec.AntiAir;
                         break;
