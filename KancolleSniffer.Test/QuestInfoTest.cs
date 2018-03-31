@@ -968,6 +968,8 @@ namespace KancolleSniffer.Test
         /// <summary>
         /// 613: 資源の再利用
         /// 638: 対空機銃量産
+        /// 643: 主力「陸攻」の調達
+        /// 645: 「洋上補給」物資の調達
         /// 663: 新型艤装の継続研究
         /// 673: 装備開発力の整備
         /// 674: 工廠環境の整備
@@ -978,10 +980,10 @@ namespace KancolleSniffer.Test
         /// 680: 対空兵装の整備拡充
         /// </summary>
         [TestMethod]
-        public void DestroyItem_613_638_663_673_674_675_676_677_678()
+        public void DestroyItem_613_638_643_645_663_673_674_675_676_677_678()
         {
             var itemInfo = new ItemInfo();
-            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 10};
+            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 12};
 
             itemInfo.InjectItemSpec(new[]
             {
@@ -996,17 +998,19 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 13, Name = "61cm三連装魚雷", Type = 5},
                 new ItemSpec {Id = 20, Name = "零式艦戦21型", Type = 6},
                 new ItemSpec {Id = 28, Name = "22号水上電探", Type = 12},
-                new ItemSpec {Id = 31, Name = "32号水上電探", Type = 13}
+                new ItemSpec {Id = 31, Name = "32号水上電探", Type = 13},
+                new ItemSpec {Id = 35, Name = "三式弾", Type = 18}
             });
-            var items = new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31};
+            var items = new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31, 35};
             itemInfo.InjectItems(items);
             questInfo.InspectQuestList(CreateQuestList(new[]
-                {613, 638, 663, 673, 674, 675, 676, 677, 678, 680}));
+                {613, 638, 643, 645, 663, 673, 674, 675, 676, 677, 678, 680}));
             questInfo.InspectDestroyItem(
                 $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, items.Length))}&api%5Fverno=1", null);
             var scalar = new[]
             {
-                new {Id = 613, Now = 1}, new {Id = 638, Now = 1},
+
+                new {Id = 613, Now = 1}, new {Id = 638, Now = 1}, new {Id = 643, Now = 1}, new {Id = 645, Now = 1},
                 new {Id = 663, Now = 1}, new {Id = 673, Now = 1}, new {Id = 674, Now = 1}
             };
             foreach (var e in scalar)
