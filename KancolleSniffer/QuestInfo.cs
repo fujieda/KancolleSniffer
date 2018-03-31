@@ -108,8 +108,29 @@ namespace KancolleSniffer
 
     public class QuestDestroyItem : QuestSpec
     {
-        public int[] Items { get; set; }
-        public bool Check(int id) => Items == null || Items.Contains(id);
+        public int[] Types { get; set; }
+        public int[] Ids { get; set; }
+
+        public bool Count(QuestCount count, ItemSpec[] specs)
+        {
+            if (count.NowArray == null)
+            {
+                var num = specs.Count(spec => Types?.Contains(spec.Type) ?? (Ids?.Contains(spec.Id) ?? true));
+                count.Now += num;
+                return num > 0;
+            }
+            if (Types == null && Ids == null)
+                return false;
+            var result = false;
+            for (var i = 0; i < count.NowArray.Length; i++)
+            {
+                var num = specs.Count(spec => Types != null ? Types[i] == spec.Type : Ids[i] == spec.Id);
+                count.NowArray[i] += num;
+                if (num > 0)
+                    result = true;
+            }
+            return result;
+        }
     }
 
     public class QuestPowerup : QuestSpec
@@ -281,14 +302,14 @@ namespace KancolleSniffer
             {619, new QuestSpec {Interval = Daily, Max = 1, Material = new[] {0, 0, 0, 1}}}, // 619: 装備の改修強化
 
             {613, new QuestSpec {Interval = Weekly, Max = 24, Material = new[] {0, 0, 0, 0}}}, // 613: 資源の再利用
-            {638, new QuestDestroyItem {Interval = Weekly, Max = 6, Items = new[] {21}, Material = new[] {0, 0, 2, 1}}}, // 638: 対空機銃量産
-            {663, new QuestDestroyItem {Interval = Quarterly, Max = 10, Items = new[] {3}, Material = new[] {0, 0, 3, 0}}}, // 663: 新型艤装の継続研究
-            {673, new QuestDestroyItem {Interval = Daily, Max = 4, Items = new[] {1}, Shift = 1, Material = new[] {0, 0, 1, 0}}}, // 673: 装備開発力の整備
-            {674, new QuestDestroyItem {Interval = Daily, Max = 3, Items = new[] {21}, Shift = 2, Material = new[] {0, 1, 1, 0}}}, // 674: 工廠環境の整備
-            {675, new QuestSpec {Interval = Quarterly, MaxArray = new[] {6, 4}, Material = new[] {0, 0, 0, 0}}}, // 675: 運用装備の統合整備
-            {676, new QuestSpec {Interval = Weekly, MaxArray = new[] {3, 3, 1}, Material = new[] {0, 1, 7, 0}}}, // 676: 装備開発力の集中整備
-            {677, new QuestSpec {Interval = Weekly, MaxArray = new[] {4, 2, 3}, Material = new[] {0, 5, 0, 0}}}, // 677: 継戦支援能力の整備
-            {678, new QuestSpec {Interval = Quarterly, MaxArray = new[] {3, 5}, Material = new[] {0, 0, 8, 0}}}, // 678: 主力艦上戦闘機の更新
+            {638, new QuestDestroyItem {Interval = Weekly, Max = 6, Types = new[] {21}, Material = new[] {0, 0, 2, 1}}}, // 638: 対空機銃量産
+            {663, new QuestDestroyItem {Interval = Quarterly, Max = 10, Types = new[] {3}, Material = new[] {0, 0, 3, 0}}}, // 663: 新型艤装の継続研究
+            {673, new QuestDestroyItem {Interval = Daily, Max = 4, Types = new[] {1}, Shift = 1, Material = new[] {0, 0, 1, 0}}}, // 673: 装備開発力の整備
+            {674, new QuestDestroyItem {Interval = Daily, Max = 3, Types = new[] {21}, Shift = 2, Material = new[] {0, 1, 1, 0}}}, // 674: 工廠環境の整備
+            {675, new QuestDestroyItem {Interval = Quarterly, MaxArray = new[] {6, 4}, Types = new[] {6, 21}, Material = new[] {0, 0, 0, 0}}}, // 675: 運用装備の統合整備
+            {676, new QuestDestroyItem {Interval = Weekly, MaxArray = new[] {3, 3, 1}, Types = new[] {2, 4, 30}, Material = new[] {0, 1, 7, 0}}}, // 676: 装備開発力の集中整備
+            {677, new QuestDestroyItem {Interval = Weekly, MaxArray = new[] {4, 2, 3}, Types = new[] {3, 10, 5}, Material = new[] {0, 5, 0, 0}}}, // 677: 継戦支援能力の整備
+            {678, new QuestDestroyItem {Interval = Quarterly, MaxArray = new[] {3, 5}, Ids = new[] {19, 20}, Material = new[] {0, 0, 8, 0}}}, // 678: 主力艦上戦闘機の更新
             {680, new QuestSpec {Interval = Quarterly, MaxArray = new[] {4, 4}, Material = new[] {0, 0, 6, 0}}}, // 680: 対空兵装の整備拡充
 
             {702, new QuestPowerup {Interval = Daily, Max = 2, Material = new[] {0, 1, 0, 0}}}, // 702: 艦の「近代化改修」を実施せよ！
@@ -801,33 +822,8 @@ namespace KancolleSniffer
                 var count = quest.Count;
                 if (!(count.Spec is QuestDestroyItem destroy))
                     continue;
-                AddCount(count, items.Count(spec => destroy.Check(spec.Type)));
-            }
-            if (_quests.TryGetValue(675, out var q675))
-            {
-                q675.Count.NowArray[0] += items.Count(spec => spec.Type == 6);
-                q675.Count.NowArray[1] += items.Count(spec => spec.Type == 21);
-                NeedSave = true;
-            }
-            if (_quests.TryGetValue(676, out var q676))
-            {
-                q676.Count.NowArray[0] += items.Count(spec => spec.Type == 2);
-                q676.Count.NowArray[1] += items.Count(spec => spec.Type == 4);
-                q676.Count.NowArray[2] += items.Count(spec => spec.Type == 30);
-                NeedSave = true;
-            }
-            if (_quests.TryGetValue(677, out var q677))
-            {
-                q677.Count.NowArray[0] += items.Count(spec => spec.Type == 3);
-                q677.Count.NowArray[1] += items.Count(spec => spec.Type == 10);
-                q677.Count.NowArray[2] += items.Count(spec => spec.Type == 5);
-                NeedSave = true;
-            }
-            if (_quests.TryGetValue(678, out var q678))
-            {
-                q678.Count.NowArray[0] += items.Count(spec => spec.Id == 19);
-                q678.Count.NowArray[1] += items.Count(spec => spec.Id == 20);
-                NeedSave = true;
+                if (destroy.Count(count, items))
+                    NeedSave = true;
             }
             if (_quests.TryGetValue(680, out var q680))
             {

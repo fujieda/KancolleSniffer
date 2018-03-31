@@ -998,26 +998,33 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 28, Name = "22号水上電探", Type = 12},
                 new ItemSpec {Id = 31, Name = "32号水上電探", Type = 13}
             });
-            itemInfo.InjectItems(new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31});
-            questInfo.InspectQuestList(CreateQuestList(new[] {613, 638, 663, 673, 674, 675, 676, 677, 678, 680}));
+            var items = new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31};
+            itemInfo.InjectItems(items);
+            questInfo.InspectQuestList(CreateQuestList(new[]
+                {613, 638, 663, 673, 674, 675, 676, 677, 678, 680}));
             questInfo.InspectDestroyItem(
-                "api%5Fslotitem%5Fids=1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12&api%5Fverno=1", null);
-            PAssert.That(() =>
-                questInfo.Quests.Select(q => new {q.Id, q.Count.Now}).Take(5).SequenceEqual(new[]
-                {
-                    new {Id = 613, Now = 1}, new {Id = 638, Now = 1}, new {Id = 663, Now = 1},
-                    new {Id = 673, Now = 1}, new {Id = 674, Now = 1}
-                }));
-            var q675 = questInfo.Quests[5];
-            PAssert.That(() => q675.Id == 675 && q675.Count.NowArray.SequenceEqual(new[] {2, 1}));
-            var q676 = questInfo.Quests[6];
-            PAssert.That(() => q676.Id == 676 && q676.Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
-            var q677 = questInfo.Quests[7];
-            PAssert.That(() => q677.Id == 677 && q677.Count.NowArray.SequenceEqual(new[] {1, 1, 1}));
-            var q678 = questInfo.Quests[8];
-            PAssert.That(() => q678.Id == 678 && q678.Count.NowArray.SequenceEqual(new[] {1, 1}));
-            var q680 = questInfo.Quests[9];
-            PAssert.That(() => q680.Id == 680 && q680.Count.NowArray.SequenceEqual(new[] {1, 2}));
+                $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, items.Length))}&api%5Fverno=1", null);
+            var scalar = new[]
+            {
+                new {Id = 613, Now = 1}, new {Id = 638, Now = 1},
+                new {Id = 663, Now = 1}, new {Id = 673, Now = 1}, new {Id = 674, Now = 1}
+            };
+            foreach (var e in scalar)
+            {
+                var c = Array.Find(questInfo.Quests, q => q.Id == e.Id).Count;
+                PAssert.That(() => c.Id == e.Id && c.Now == e.Now, $"{c.Id}");
+            }
+            var array = new[]
+            {
+                new {Id = 675, NowArray = new[] {2, 1}}, new {Id = 676, NowArray = new[] {1, 1, 1}},
+                new {Id = 677, NowArray = new[] {1, 1, 1}}, new {Id = 678, NowArray = new[] {1, 1}},
+                new {Id = 680, NowArray = new[] {1, 2}}
+            };
+            foreach (var e in array)
+            {
+                var c = Array.Find(questInfo.Quests, q => q.Id == e.Id).Count;
+                PAssert.That(() => c.Id == e.Id && c.NowArray.SequenceEqual(e.NowArray), $"{c.Id}");
+            }
         }
 
         /// <summary>
