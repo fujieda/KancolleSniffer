@@ -266,6 +266,7 @@ namespace KancolleSniffer
             {257, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {0, 0, 0, 3}}}, // 257: 「水雷戦隊」南西へ！
             {259, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {0, 3, 0, 4}}}, // 259: 「水上打撃部隊」南方へ！
             {261, new QuestSortie {Interval = Weekly, Max = 3, Rank = "A", Maps = new[] {15}, Material = new[] {0, 0, 0, 3}}}, // 261: 海上輸送路の安全確保に努めよ！
+            {264, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {0, 0, 0, 2}}}, // 264: 「空母機動部隊」西へ！
             {265, new QuestSortie {Interval = Monthly, Max = 10, Rank = "A", Maps = new[] {15}, Material = new[] {0, 0, 5, 3}}}, // 265: 海上護衛強化月間
             {266, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {0, 0, 4, 2}}}, // 266: 「水上反撃部隊」突入せよ！
 
@@ -606,6 +607,16 @@ namespace KancolleSniffer
                     {
                         IncrementCount(q259.Count);
                     }
+                }
+            }
+            if (_quests.TryGetValue(264, out var q264))
+            {
+                if (_map == 42 && _boss && QuestSortie.CompareRank(rank, "S") == 0)
+                {
+                    var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec)
+                        .ToArray();
+                    if (fleet.Count(spec => spec.ShipType == 2) >= 2 && fleet.Count(spec => spec.IsAircraftCarrier) >= 2)
+                        IncrementCount(q264.Count);
                 }
             }
             if (_quests.TryGetValue(266, out var q266))

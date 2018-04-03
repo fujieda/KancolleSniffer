@@ -500,6 +500,44 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 264: 「空母機動部隊」西へ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_264()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {264}));
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(7), ShipStatus(11), ShipStatus(3),
+                ShipStatus(3), ShipStatus(2), ShipStatus(2)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 4,
+                api_mapinfo_no = 2,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 4,
+                api_mapinfo_no = 2,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
+
+            battleInfo.Result.Friend.Main[0].NowHp = 0;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "轟沈あり");
+        }
+
+        /// <summary>
         /// 266: 「水上反撃部隊」突入せよ！
         /// </summary>
         [TestMethod]
