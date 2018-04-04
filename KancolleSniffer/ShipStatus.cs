@@ -200,10 +200,12 @@ namespace KancolleSniffer
         {
             get
             {
-                if (Name == "五十鈴改二")
-                    return true;
                 switch (Name)
                 {
+                    case "五十鈴改二":
+                    case "龍田改二":
+                    case "Jervis改":
+                        return true;
                     case "大鷹":
                         return Slot.Any(item => item.Spec.Name.Contains("九三一空")) && AntiSubmarine >= 65;
                     case "大鷹改":
