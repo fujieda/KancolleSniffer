@@ -281,6 +281,7 @@ namespace KancolleSniffer
             {304, new QuestPractice {Interval = Daily, Max = 5, Win = true, Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
             {302, new QuestPractice {Interval = Weekly, Max = 20, Win = true, Material = new[] {0, 0, 2, 1}}}, // 302: 大規模演習
             {311, new QuestPractice {Interval = Daily, Max = 7, Win = true, Material = new[] {0, 2, 0, 0}}}, // 311: 精鋭艦隊演習
+            {315, new QuestPractice {Interval = Daily, Max = 8, Win = true, Material = new[] {0, 0, 0, 0}}}, // 315: 春季大演習
             {318, new QuestSpec {Interval = Daily, Max = 3, Material = new[] {0, 2, 2, 0}, AdjustCount = false}}, // 318: 給糧艦「伊良湖」の支援
 
             {402, new QuestMission {Interval = Daily, Max = 3, Material = new[] {0, 0, 1, 0}}}, // 402: 「遠征」を3回成功させよう！

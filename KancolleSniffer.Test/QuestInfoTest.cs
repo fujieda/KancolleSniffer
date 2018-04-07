@@ -845,11 +845,11 @@ namespace KancolleSniffer.Test
         /// 318: 給糧艦「伊良湖」の支援
         /// </summary>
         [TestMethod]
-        public void PracticeResult_303_304_302_311_318()
+        public void PracticeResult_303_304_302_311_315_318()
         {
             var battleInfo = new BattleInfo(null, null);
-            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(CreateQuestList(new[] {302, 303, 304, 311, 318}));
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1)) {AcceptMax = 6};
+            questInfo.InspectQuestList(CreateQuestList(new[] {302, 303, 304, 311, 315, 318}));
 
             battleInfo.InjectResultStatus(new[]
             {
@@ -862,15 +862,16 @@ namespace KancolleSniffer.Test
                     .SequenceEqual(new[]
                     {
                         new {Id = 302, Now = 1}, new {Id = 303, Now = 2}, new {Id = 304, Now = 1},
-                        new {Id = 311, Now = 1}, new {Id = 318, Now = 0}
+                        new {Id = 311, Now = 1}, new {Id = 315, Now = 1}, new {Id = 318, Now = 0}
                     }));
             // 318
             battleInfo.Result.Friend.Main[0] = ShipStatus(3, 200);
             questInfo.InspectPracticeResult(Js(new {api_win_rank = "A"}));
-            PAssert.That(() => questInfo.Quests[4].Count.Now == 1);
-            questInfo.Quests[4].Count.Now = 3;
+            var q318 = questInfo.Quests[5];
+            PAssert.That(() => q318.Count.Now == 1);
+            q318.Count.Now = 3;
             questInfo.InspectQuestList(CreateQuestList(new[] {318}));
-            PAssert.That(() => questInfo.Quests[4].Count.Now == 3, "進捗調節しない");
+            PAssert.That(() => q318.Count.Now == 3, "進捗調節しない");
         }
 
         /// <summary>
