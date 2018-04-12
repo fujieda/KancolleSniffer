@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -1262,6 +1263,9 @@ namespace KancolleSniffer
                 Process.Start(proc);
             }
             catch (FileNotFoundException)
+            {
+            }
+            catch (Win32Exception)
             {
             }
         }
