@@ -446,7 +446,7 @@ namespace KancolleSniffer
                     case 3: // 大口径
                         return 1.5 * Sqrt(Level);
                     case 4: // 副砲
-                        return Sqrt(Level);
+                        return SecondaryGunLevelBonus;
                     case 14: // ソナー
                     case 15: // 爆雷
                         return 0.75 * Sqrt(Level);
@@ -454,6 +454,27 @@ namespace KancolleSniffer
                         return Sqrt(Level);
                     default:
                         return 0;
+                }
+            }
+        }
+
+        public double SecondaryGunLevelBonus
+        {
+            get
+            {
+                switch (Spec.Id)
+                {
+                    case 10: // 12.7cm連装高角砲
+                    case 66: // 8cm高角砲
+                    case 220: // 8cm高角砲改+増設機銃
+                    case 275: // 10cm連装高角砲改+増設機銃
+                        return 0.2 * Level;
+                    case 12: // 15.5cm三連装副砲
+                    case 234: // 15.5cm三連装副砲改
+                    case 247: // 15.2cm三連装砲
+                        return 0.3 * Level;
+                    default:
+                        return Sqrt(Level);
                 }
             }
         }
@@ -498,7 +519,7 @@ namespace KancolleSniffer
                     case 3: // 大口径
                         return Sqrt(Level);
                     case 4: // 副砲
-                        return Sqrt(Level);
+                        return SecondaryGunLevelBonus;
                     case 5: // 魚雷
                     case 19: // 徹甲弾
                     case 29: // 探照灯

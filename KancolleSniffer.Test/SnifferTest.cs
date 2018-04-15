@@ -411,6 +411,20 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 副砲の改修レベルの効果を計算する
+        /// </summary>
+        [TestMethod]
+        public void SecondaryGunFirepowerLevelBonus()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "firepower_001");
+            // ReSharper disable CompareOfFloatsByEqualityOperator
+            PAssert.That(() => sniffer.GetShipStatuses(0)[0].EffectiveFirepower == 93.5);
+            PAssert.That(() => sniffer.GetShipStatuses(0)[1].EffectiveFirepower == 82.5);
+            // ReSharper restore CompareOfFloatsByEqualityOperator
+        }
+
+        /// <summary>
         /// 編成で空き番号を使ったローテートを正しく反映する
         /// </summary>
         [TestMethod]
