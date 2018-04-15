@@ -1,4 +1,4 @@
 [submodule "KancolleSniffer.Test/logs"]
 	path = KancolleSniffer.Test/logs
-	url = git://git.osdn.jp/gitroot/kancollesniffer/logs.git
+	url = git://git.osdn.net/gitroot/kancollesniffer/logs.git
 	branch = dev
