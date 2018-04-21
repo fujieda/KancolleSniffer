@@ -22,12 +22,12 @@ namespace KancolleSniffer
     {
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
+        private bool _inSortie;
 
         private const string GuideText =
             "[海域ゲージ情報]\r\n 海域選択画面に進むと表示します。\r\n[演習情報]\r\n 演習相手を選ぶと表示します。\r\n[獲得アイテム]\r\n 帰投したときに表示します。";
 
         public string Text { get; private set; } = GuideText;
-        public bool SortieStarted { private get; set; }
 
         public MiscTextInfo(ShipInfo shipInfo, ItemInfo itemInfo)
         {
@@ -37,9 +37,9 @@ namespace KancolleSniffer
 
         public void Port()
         {
-            if (SortieStarted)
+            if (_inSortie)
             {
-                SortieStarted = false;
+                _inSortie = false;
                 var text = GenerateItemGetText();
                 Text = text == "" ? GuideText : "[獲得アイテム]\r\n" + text;
             }
@@ -153,6 +153,7 @@ namespace KancolleSniffer
 
         public void InspectMapStart(dynamic json)
         {
+            _inSortie = true;
             InspectMapNext(json);
         }
 

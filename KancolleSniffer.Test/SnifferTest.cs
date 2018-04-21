@@ -785,6 +785,19 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 出撃直後に資源を獲得する
+        /// </summary>
+        [TestMethod]
+        public void ItemGetAtStart()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "itemget_002");
+            PAssert.That(() => sniffer.MiscText ==
+                               "[獲得アイテム]\r\n" +
+                               "燃料: 65");
+        }
+
+        /// <summary>
         /// 航空偵察でアイテムを取得する
         /// </summary>
         [TestMethod]

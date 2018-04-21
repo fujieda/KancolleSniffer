@@ -472,7 +472,7 @@ namespace KancolleSniffer
                 _exMapInfo.InspectMapStart(data);
                 _battleInfo.InspectMapStart(data);
                 _logger.InspectMapStart(data);
-                _miscTextInfo.SortieStarted = true;
+                _miscTextInfo.InspectMapStart(data);
                 _questInfo.InspectMapStart(data);
                 RepeatingTimerController?.Suspend();
                 return Update.Timer | Update.Ship;
