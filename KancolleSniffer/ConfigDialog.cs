@@ -307,6 +307,11 @@ namespace KancolleSniffer
                 ShowToolTip("0より大きい数字を入力してください。", textBox);
                 return false;
             }
+            if (result > 65535)
+            {
+                ShowToolTip("65535以下の数字を入力してください。", textBox);
+                return false;
+            }
             return true;
         }
 
