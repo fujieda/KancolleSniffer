@@ -104,6 +104,11 @@ namespace KancolleSniffer
                 SendProxyPac(client, HttpProxy.LocalPort);
                 return;
             }
+            if (File.Exists(full))
+            {
+                SendFile(client, full, "text/plain");
+                return;
+            }
             SendError(client, "404 Not Found");
         }
 
