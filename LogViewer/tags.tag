@@ -327,7 +327,7 @@ this.drawSeqChart = function(picked) {
         },
         data: {
             x: '日付',
-            xFormat: '%Y-%m-%d %X',
+            xFormat: '%Y-%m-%d %H:%M:%S',
             rows: picked.data,
             axes: {
                 燃料: 'y',
