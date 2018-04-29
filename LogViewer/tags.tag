@@ -300,20 +300,54 @@ this.resize = function() {
 };
 
 this.drawChart = function(data) {
+    range = this.calcRange(opts.chartSpec.seqRange);
+    if (range.last === 0)
+        return;
     if (!data) {
         $('#loading').show();
         $.ajax({
-            url: "./資材ログ.json?number=true",
+            url: "./資材ログ.json?number=true" +
+                "&from=" + range.first + "&to=" + range.last,
             success: function(d) { self.drawChart(d); },
             dataType: "json", cache: false
         });
         return;
     }
     var picked;
-    picked = this.pickChartData(data.data, opts.chartSpec.seqRange);
+    picked = this.pickChartData(data.data, range);
     picked.data.unshift(self.header);
     this.drawSeqChart(picked);
 };
+
+this.calcRange = function(range) {
+    var first = 0;
+    var last = (new Date()).valueOf();
+    switch (range) {
+        case 0:
+            first = moment(last).subtract(24, 'hours').valueOf();
+            break;
+        case 1:
+            first = moment(last).subtract(7, 'days').valueOf();
+            break;
+        case 2:
+            first = moment(last).subtract(1, 'months').valueOf();
+            break;
+        case 3:
+            first = moment(last).subtract(3, 'months').valueOf();
+            break;
+        case 4:
+            break;
+        case 5:
+            var fromDate = $('#chart_from').datepicker("getDate");
+            var toDate = $('#chart_to').datepicker("getDate");
+            if (fromDate === null || toDate === null)
+                return {first: 0, last:0};
+            first = fromDate.valueOf() + 3600 * 5000;
+            last = toDate.valueOf() + this.oneDay + 3600 * 5000;
+            break;
+    }
+    return {first: first, last: last};
+}
 
 this.unselected = {};
 
@@ -386,35 +420,9 @@ this.pickChartData = function(data, range) {
     var newdata = [];
     var ticks = [];
     var grid = [];
-    var first = data[0][0];
-    var last = data[data.length - 1][0];
+    var first = range.first;
+    var last = range.last;
     var interval, tickInterval, lastTick;
-    switch (range) {
-        case 0:
-            first = moment(last).subtract(24, 'hours').valueOf();
-            break;
-        case 1:
-            first = moment(last).subtract(7, 'days').valueOf();
-            break;
-        case 2:
-            first = moment(last).subtract(1, 'months').valueOf();
-            break;
-        case 3:
-            first = moment(last).subtract(3, 'months').valueOf();
-            break;
-        case 4:
-            break;
-        case 5:
-            var fromDate = $('#chart_from').datepicker("getDate");
-            var toDate = $('#chart_to').datepicker("getDate");
-            if (fromDate === null || toDate === null)
-                return { data: [], tick: [], grid: [] };
-            var from = fromDate.valueOf() + 3600 * 5000;
-            var to = toDate.valueOf() + this.oneDay + 3600 * 5000;
-            first = Math.max(first, from);
-            last = Math.min(last, to);
-            break;
-    }
     if (last <= first + this.oneDay) {
         interval = 1000;
         tickInterval = 3600 * 1000;
@@ -498,20 +506,53 @@ this.resize = function() {
 };
 
 this.drawChart = function(data) {
+    range = this.calcRange(opts.chartSpec.diffRange);
+    if (range.last === 0)
+        return;
     if (!data) {
         $('#loading').show();
         $.ajax({
-            url: "./資材ログ.json?number=true",
+            url: "./資材ログ.json?number=true" +
+                "&from=" + range.first + "&to=" + range.last,
             success: function(d) { self.drawChart(d); },
             dataType: "json", cache: false
         });
         return;
     }
     var picked;
-    picked = this.pickChartData(data.data, opts.chartSpec.diffRange);
+    picked = this.pickChartData(data.data, range);
     picked.data.unshift(self.header);
     this.drawDiffChart(picked);
 };
+
+this.calcRange = function(range) {
+    var first = 0;
+    var last = (new Date()).valueOf();
+    switch (range) {
+        case 0:
+            first = moment(last).subtract(1, 'months').valueOf();
+            break;
+        case 1:
+            first = moment(last).subtract(3, 'months').valueOf();
+            break;
+        case 2:
+            first = moment(last).subtract(6, 'months').subtract(1, 'weeks').valueOf();
+            break;
+        case 3:
+            break;
+        case 4:
+            var fromDate = $('#chart_from').datepicker("getDate");
+            var toDate = $('#chart_to').datepicker("getDate");
+            if (fromDate === null || toDate === null)
+                return {first: 0, last: 0};
+            var from = fromDate.valueOf() + 3600 * 5000;
+            var to = toDate.valueOf() + this.oneDay + 3600 * 5000;
+            first = Math.max(first, from);
+            last = Math.min(last, to);
+            break;
+    }
+    return {first: first, last: last};
+}
 
 this.unselected = {};
 
@@ -585,33 +626,12 @@ this.pickChartData = function(data, range) {
     var newdata = [];
     var ticks = [];
     var grid = [];
-    var first = data[0][0];
-    var last = data[data.length - 1][0];
+    var first = range.first;
+    var last = range.last;
     var interval, tickInterval, lastTick;
-    switch (range) {
-        case 0:
-            first = moment(last).subtract(1, 'months').valueOf();
-            break;
-        case 1:
-            first = moment(last).subtract(3, 'months').valueOf();
-            break;
-        case 2:
-            first = moment(last).subtract(6, 'months').subtract(1, 'weeks').valueOf();
-            break;
-        case 3:
-            return this.pickMonthlyChartData(data);
-        case 4:
-            var fromDate = $('#chart_from').datepicker("getDate");
-            var toDate = $('#chart_to').datepicker("getDate");
-            if (fromDate === null || toDate === null)
-                return { data: [], tick: [], grid: [] };
-            var from = fromDate.valueOf() + 3600 * 5000;
-            var to = toDate.valueOf() + this.oneDay + 3600 * 5000;
-            first = Math.max(first, from);
-            last = Math.min(last, to);
-            break;
-    }
     var barWidth;
+    if (first === 0)
+        return this.pickMonthlyChartData(data);
     if (last <= first + this.oneDay * 2 * 31) {
         interval = this.oneDay;
         tickInterval = this.oneDay * 2;
