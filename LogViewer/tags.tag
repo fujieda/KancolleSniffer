@@ -440,16 +440,16 @@ this.pickChartData = function(data, range) {
         tickInterval = this.oneDay * 14;
         lastTick = this.to5am(moment(last).day(1).valueOf());
     } else {
-        var years = Math.floor((last - first) / (this.oneDay * 365));
-        interval = 3600 * (years > 2 ? 24000 : 12000);
-        tickInterval = this.oneDay * 28;
+        var magn = Math.ceil((last - data[0][0]) / (this.oneDay * 365) / 2);
+        interval = this.oneDay * magn;
+        tickInterval = this.oneDay * 28 * magn;
         lastTick = this.to5am(moment(last).day(1).valueOf());
     }
     var lastData;
     for (var i = data.length - 1; i >= 0; i--) {
         var row = data[i];
         var date = row[0];
-        if (date > first) {
+        if (date >= first) {
             if (date <= last) {
                 var v = date - date % interval;
                 if (lastData !== v) {
