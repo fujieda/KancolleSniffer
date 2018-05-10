@@ -231,11 +231,6 @@ namespace KancolleSniffer
         public static readonly string BaseDir = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly string ConfigFile = Path.Combine(BaseDir, FileName);
 
-        public Config()
-        {
-            ConvertPath(PrependBaseDir);
-        }
-
         public void InitializeValues()
         {
             NotifyConditions = new List<int>(new[] {40, 49});
@@ -286,7 +281,6 @@ namespace KancolleSniffer
             {
                 throw new Exception(FileName + "が壊れています。", ex);
             }
-            ConvertPath(PrependBaseDir);
         }
 
         private void ComposeNotificationFlags()
@@ -346,7 +340,5 @@ namespace KancolleSniffer
             path = path.Substring(BaseDir.Length);
             return path.TrimStart(Path.DirectorySeparatorChar);
         }
-
-        private string PrependBaseDir(string path) => Path.IsPathRooted(path) ? path : Path.Combine(BaseDir, path);
     }
 }
