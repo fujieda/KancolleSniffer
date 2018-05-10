@@ -184,15 +184,17 @@ namespace KancolleSniffer
                 {
                     var data = line.Split(',');
                     if (!DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeLocal, out DateTime date))
+                        DateTimeStyles.AssumeLocal, out var date))
                     {
                         // システムが和暦に設定されていて和暦が出力されてしまったケースを救う
-                        var wareki = CultureInfo.CreateSpecificCulture("ja-JP");
-                        wareki.DateTimeFormat.Calendar = new JapaneseCalendar();
-                        if (DateTime.TryParseExact(data[0], Logger.DateTimeFormat, wareki,
-                            DateTimeStyles.AssumeLocal, out date))
+                        if (data[0][2] == '-')
                         {
-                            data[0] = Logger.FormatDateTime(date);
+                            if (!int.TryParse(data[0].Substring(0, 2), out var year))
+                                continue;
+                            data[0] = 1988 + year + data[0].Substring(2);
+                            if (!DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
+                                DateTimeStyles.AssumeLocal, out date))
+                                continue;
                         }
                         else if (DateTime.TryParse(data[0], CultureInfo.CurrentCulture,
                             DateTimeStyles.AssumeLocal, out date))
