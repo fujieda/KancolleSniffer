@@ -114,7 +114,7 @@ namespace KancolleSniffer
                         drumShips++;
                     drumTotal += drum;
                     levelTotal += s.Level;
-                    aswTotal += s.AntiSubmarine;
+                    aswTotal += s.MissionAntiSubmarine;
                     antiAirTotal += s.AntiAir;
                     losTotal += s.LoS;
                     var fire = s.EffectiveFirepower;

@@ -225,6 +225,19 @@ namespace KancolleSniffer
             }
         }
 
+        public int MissionAntiSubmarine => AntiSubmarine - AllSlot.Sum(item =>
+        {
+            switch (item.Spec.Type)
+            {
+                case 10: // 水偵
+                case 11: // 水爆
+                case 41: // 大艇
+                    return item.Spec.AntiSubmarine;
+                default:
+                    return 0;
+            }
+        });
+
         private bool HaveSonar => Slot.Any(item => item.Spec.IsSonar);
 
         public double NightBattlePower
