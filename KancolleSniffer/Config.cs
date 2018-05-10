@@ -228,7 +228,7 @@ namespace KancolleSniffer
 
 
         private const string FileName = "config.xml";
-        private static readonly string BaseDir = AppDomain.CurrentDomain.BaseDirectory;
+        public static readonly string BaseDir = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly string ConfigFile = Path.Combine(BaseDir, FileName);
 
         public Config()

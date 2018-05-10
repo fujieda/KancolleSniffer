@@ -258,7 +258,9 @@ namespace KancolleSniffer
         private void buttonOpenFile_Click(object sender, EventArgs e)
         {
             openSoundFileDialog.FileName = textBoxSoundFile.Text;
-            openSoundFileDialog.InitialDirectory = Path.GetDirectoryName(textBoxSoundFile.Text) ?? "";
+            openSoundFileDialog.InitialDirectory = String.IsNullOrEmpty(textBoxSoundFile.Text)
+                ? Config.BaseDir
+                : Path.GetDirectoryName(textBoxSoundFile.Text) ?? Config.BaseDir;
             if (openSoundFileDialog.ShowDialog() != DialogResult.OK)
                 return;
             textBoxSoundFile.Text = openSoundFileDialog.FileName;
