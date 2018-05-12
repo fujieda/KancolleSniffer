@@ -28,7 +28,7 @@ namespace KancolleSniffer
         private Record[] _table;
         private readonly List<FleetLabels> _labelList = new List<FleetLabels>();
         private readonly List<Panel> _panelList = new List<Panel>();
-        private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
+        private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true, AutoPopDelay = 10000};
 
         private class Record
         {
@@ -68,8 +68,11 @@ namespace KancolleSniffer
                 var drumTotal = 0;
                 var drumShips = 0;
                 var levelTotal = 0;
+                var fpTotal = 0;
                 var aswTotal = 0;
                 var antiAirTotal = 0;
+                var fuelTotal = 0;
+                var bullTotal = 0;
                 var losTotal = 0;
                 var ships = new List<Record>();
                 foreach (var s in sniffer.GetShipStatuses(f))
@@ -114,9 +117,12 @@ namespace KancolleSniffer
                         drumShips++;
                     drumTotal += drum;
                     levelTotal += s.Level;
+                    fpTotal += s.Firepower;
                     aswTotal += s.MissionAntiSubmarine;
                     antiAirTotal += s.AntiAir;
                     losTotal += s.LoS;
+                    fuelTotal += Math.Max((int)(s.Spec.FuelMax * (s.Level >= 100 ? 0.85 : 1.0)), 1);
+                    bullTotal += Math.Max((int)(s.Spec.BullMax * (s.Level >= 100 ? 0.85 : 1.0)), 1);
                     var fire = s.EffectiveFirepower;
                     var subm = s.EffectiveAntiSubmarine;
                     var torp = s.EffectiveTorpedo;
@@ -147,12 +153,15 @@ namespace KancolleSniffer
                 list.Add(new Record
                 {
                     Fleet = fn[f] + (levelTotal == 0 ? "" : " Lv" + levelTotal) +
-                            (drumTotal == 0 ? "" : " 缶" + drumTotal + "(" + drumShips + "隻)") +
-                            (aswTotal > 0 ? $" 潜{CutOverFlow(aswTotal)}" : "") +
-                            (antiAirTotal > 0 ? $" 空{CutOverFlow(antiAirTotal)}" : "") +
-                            (losTotal > 0 ? $" 索{CutOverFlow(losTotal)}" : ""),
-                    Fleet2 = (sniffer.CombinedFleetType != 0 && f == 1 ? "" : $"TP:S{(int)tp}A{(int)(tp * 0.7)}") +
-                             (daihatsu > 0 ? $" 発{daihatsu * 100:f1}%" : "")
+                            (drumTotal == 0 ? "" : " ドラム缶" + drumTotal + "(" + drumShips + "隻)") +
+                            (daihatsu > 0 ? $" 大発{daihatsu * 100:f1}%" : ""),
+                    Fleet2 = "計:" +
+                             "火" + CutOverFlow(fpTotal) +
+                             " 空" + CutOverFlow(antiAirTotal) +
+                             " 潜" + CutOverFlow(aswTotal) +
+                             " 索" + CutOverFlow(losTotal) + "\r\n" +
+                             $"戦闘:燃{fuelTotal / 5}弾{bullTotal / 5} 支援:燃{fuelTotal / 2}弾{(int)(bullTotal * 0.8)}" +
+                             (sniffer.CombinedFleetType != 0 && f == 1 ? "" : $"\r\nTP:S{(int)tp} A{(int)(tp * 0.7)}")
                 });
                 list.AddRange(ships);
             }
