@@ -59,25 +59,43 @@ namespace KancolleSniffer
             ResumeLayout();
         }
 
+        private class Total
+        {
+            public int Drum;
+            public int DrumShips;
+            public int Level;
+            public int FirePower;
+            public int AntiSubmarine;
+            public int AntiAir;
+            public int LoS;
+            public int Fuel;
+            public int Bull;
+
+            public void Add(ShipStatus s)
+            {
+                var drum = s.Slot.Count(item => item.Spec.Name == "ドラム缶(輸送用)");
+                DrumShips += drum != 0 ? 1 : 0;
+                Drum += drum;
+                Level += s.Level;
+                FirePower += s.Firepower;
+                AntiSubmarine += s.MissionAntiSubmarine;
+                AntiAir += s.AntiAir;
+                LoS += s.LoS;
+                Fuel += s.EffectiveFuelMax;
+                Bull += s.EffectiveBullMax;
+            }
+        }
+
         private void CreateTable(Sniffer sniffer)
         {
             var list = new List<Record>();
             var fn = new[] {"第一", "第二", "第三", "第四"};
             for (var f = 0; f < fn.Length; f++)
             {
-                var drumTotal = 0;
-                var drumShips = 0;
-                var levelTotal = 0;
-                var fpTotal = 0;
-                var aswTotal = 0;
-                var antiAirTotal = 0;
-                var fuelTotal = 0;
-                var bullTotal = 0;
-                var losTotal = 0;
+                var total = new Total();
                 var ships = new List<Record>();
                 foreach (var s in sniffer.GetShipStatuses(f))
                 {
-                    var drum = 0;
                     var equips = new List<Record>();
                     for (var i = 0; i < s.Slot.Length; i++)
                     {
@@ -86,8 +104,6 @@ namespace KancolleSniffer
                         var max = s.Spec.MaxEq[i];
                         if (item.Id == -1)
                             continue;
-                        if (item.Spec.Name == "ドラム缶(輸送用)")
-                            drum++;
                         var airspec = "";
                         if (item.Spec.IsDiveBomber) // 爆撃
                         {
@@ -99,7 +115,6 @@ namespace KancolleSniffer
                             var normal = 25 + item.Spec.Torpedo * Math.Sqrt(onslot);
                             airspec = "航空戦 " + (int)(normal * 0.8) + "/" + (int)(normal * 1.5);
                         }
-
                         equips.Add(new Record
                         {
                             Equip = GenEquipString(item),
@@ -113,16 +128,7 @@ namespace KancolleSniffer
                         var item = s.SlotEx;
                         equips.Add(new Record {Equip = GenEquipString(item), Color = item.Spec.Color});
                     }
-                    if (drum != 0)
-                        drumShips++;
-                    drumTotal += drum;
-                    levelTotal += s.Level;
-                    fpTotal += s.Firepower;
-                    aswTotal += s.MissionAntiSubmarine;
-                    antiAirTotal += s.AntiAir;
-                    losTotal += s.LoS;
-                    fuelTotal += Math.Max((int)(s.Spec.FuelMax * (s.Level >= 100 ? 0.85 : 1.0)), 1);
-                    bullTotal += Math.Max((int)(s.Spec.BullMax * (s.Level >= 100 ? 0.85 : 1.0)), 1);
+                    total.Add(s);
                     var fire = s.EffectiveFirepower;
                     var subm = s.EffectiveAntiSubmarine;
                     var torp = s.EffectiveTorpedo;
@@ -133,10 +139,8 @@ namespace KancolleSniffer
                         Ship = (s.Escaped ? "[避]" : "") + s.Name + " Lv" + s.Level,
                         Ship2 = "",
                         Id = s.Id,
-                        // ReSharper disable CompareOfFloatsByEqualityOperator
-                        Spec = (fire == 0 ? "" : $"砲{fire:f1}") + (subm == 0 ? "" : $" 潜{subm:f1}{oasa}"),
-                        Spec2 = (torp == 0 ? "" : $"雷{torp:f1}") + (night == 0 ? "" : $" 夜{night:f1}")
-                        // ReSharper restore CompareOfFloatsByEqualityOperator
+                        Spec = HideIfZero("砲", fire) + HideIfZero(" 潜", subm) + oasa,
+                        Spec2 = HideIfZero("雷", torp) + HideIfZero(" 夜", night)
                     };
                     if (ship.Spec == "")
                     {
@@ -152,15 +156,15 @@ namespace KancolleSniffer
                     tp += sniffer.GetTransportPoint(1);
                 list.Add(new Record
                 {
-                    Fleet = fn[f] + (levelTotal == 0 ? "" : " Lv" + levelTotal) +
-                            (drumTotal == 0 ? "" : " ドラム缶" + drumTotal + "(" + drumShips + "隻)") +
-                            (daihatsu > 0 ? $" 大発{daihatsu * 100:f1}%" : ""),
+                    Fleet = fn[f] + HideIfZero(" Lv", total.Level) +
+                            HideIfZero(" ドラム缶", total.Drum) + HideIfZero("(", total.DrumShips, "隻)") +
+                            HideIfZero(" 大発", daihatsu * 100, "%"),
                     Fleet2 = "計:" +
-                             "火" + CutOverFlow(fpTotal) +
-                             " 空" + CutOverFlow(antiAirTotal) +
-                             " 潜" + CutOverFlow(aswTotal) +
-                             " 索" + CutOverFlow(losTotal) + "\r\n" +
-                             $"戦闘:燃{fuelTotal / 5}弾{bullTotal / 5} 支援:燃{fuelTotal / 2}弾{(int)(bullTotal * 0.8)}" +
+                             "火" + CutOverFlow(total.FirePower) +
+                             " 空" + CutOverFlow(total.AntiAir) +
+                             " 潜" + CutOverFlow(total.AntiSubmarine) +
+                             " 索" + CutOverFlow(total.LoS) + "\r\n" +
+                             $"戦闘:燃{total.Fuel / 5}弾{total.Bull / 5} 支援:燃{total.Fuel / 2}弾{(int)(total.Bull * 0.8)}" +
                              (sniffer.CombinedFleetType != 0 && f == 1 ? "" : $"\r\nTP:S{(int)tp} A{(int)(tp * 0.7)}")
                 });
                 list.AddRange(ships);
@@ -219,6 +223,16 @@ namespace KancolleSniffer
         private string RangeString(int[] fp) => fp[0] == fp[1] ? fp[0].ToString() : $"{fp[0]}～{fp[1]}";
 
         private int CutOverFlow(int value) => value > 999 ? 999 : value;
+
+        private string HideIfZero(string name, double value, string suffix = "")
+        {
+            return value > 0 ? name + value.ToString("f1") + suffix : "";
+        }
+
+        private string HideIfZero(string name, int value, string suffix = "")
+        {
+            return value > 0 ? name + value + suffix : "";
+        }
 
         private string GenEquipString(ItemStatus item)
         {

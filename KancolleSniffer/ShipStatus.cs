@@ -320,6 +320,10 @@ namespace KancolleSniffer
 
         public int EffectiveAntiAirForFleet => (int)AllSlot.Sum(item => item.EffectiveAntiAirForFleet);
 
+        public int EffectiveFuelMax => Max((int)(Spec.FuelMax * (Level >= 100 ? 0.85 : 1.0)), 1);
+
+        public int EffectiveBullMax => Max((int)(Spec.BullMax * (Level >= 100 ? 0.85 : 1.0)), 1);
+
         public object Clone()
         {
             var r = (ShipStatus)MemberwiseClone();
