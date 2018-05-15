@@ -140,7 +140,7 @@ namespace KancolleSniffer
                         Ship2 = "",
                         Id = s.Id,
                         Spec = HideIfZero("砲", fire) + HideIfZero(" 潜", subm) + oasa,
-                        Spec2 = HideIfZero("雷", torp) + HideIfZero(" 夜", night)
+                        Spec2 = (HideIfZero("雷", torp) + HideIfZero(" 夜", night)).TrimStart(' ')
                     };
                     if (ship.Spec == "")
                     {
