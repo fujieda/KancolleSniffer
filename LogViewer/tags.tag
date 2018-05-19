@@ -21,35 +21,58 @@ this.changeTab = function(e) {
 </main-tab>
 
 <log-term>
-<form id="term" show={enabled}>
-<p>
-<label><input type="radio" name="term" value="0" checked="checked">直近一か月</label>
-<label><input type="radio" name="term" value="1">期間指定: </label>
+<div id="term" show={enabled}>
+<ul class="tab tabsub" style="float: left; margin-right: 0.2em">
+    <li each={name, i in rangeTabs} class={select: opts.logRange.val === i} onclick={parent.rangeTabChange}>{name}</li>
+</ul>
+<div style="padding: 0.2em 0;">
 <input type="text" id="term_from" style="width: 7em">～<input type="text" id="term_to" style="width: 7em">
-<input type="button" id="term_apply" value="適用">
-</p>
-</form>
+</div>
+</div>
 
 <script>
-this.on("mount", function() {
-    $('#term_from').datepicker({
-        defaultDate: moment().subtract(1, 'months').toDate(),
-        onClose: function() { $('input[name=term]').val(['1']); }
-    });
-    $('#term_to').datepicker({
-        onClose: function() { $('input[name=term]').val(['1']); }
-    });
-    $('#term_apply').click(function() {
-        opts.observable.trigger("termApplied");
-    });
-});
+var self = this;
+
+this.rangeTabs = [
+"今日",
+"今週",
+"今月",
+"すべて",
+"期間指定"
+];
 
 this.enabled = false;
-var self = this;
 
 opts.observable.on("mainTabChanged", function(idx) {
     self.update({enabled: idx >= 0 && idx < self.logTables});
 });
+
+var val = sessionStorage.getItem('logRange');
+opts.logRange.val = val === null ? 2 : +val;
+
+this.init = function() {
+    $('#term_from').datepicker({
+        onClose: function() {
+            if (opts.logRange.val === 4)
+                opts.observable.trigger("logRangeChanged");
+        }
+    });
+    $('#term_to').datepicker({
+        onClose: function() {
+            if (opts.logRange.val === 4)
+                opts.observable.trigger("logRangeChanged");
+        }
+    });
+};
+
+this.on("mount", this.init);
+
+this.rangeTabChange = function(e) {
+    sessionStorage.setItem("logRange", e.item.i);
+    opts.logRange.val = e.item.i;
+    opts.observable.trigger("logRangeChanged");
+};
+
 </script>
 </log-term>
 
@@ -98,7 +121,7 @@ opts.observable.on("mainTabChanged", function(idx) {
     self.show();
 });
 
-opts.observable.on("termApplied", function() {
+opts.observable.on("logRangeChanged", function() {
     self.show();
 });
 
@@ -133,14 +156,53 @@ this.init = function() {
 this.show = function() {
     if (this.mainTab >= this.jsons.length)
         return;
-    var query = "?from=" + moment().subtract(1, 'months').valueOf();
-    if ($('input[name=term]:eq(1)').prop('checked')) {
-        var from = $('#term_from').datepicker("getDate");
+    var now = moment();
+    var from;
+    var query = "?from=";
+    switch (opts.logRange.val){
+    case 0:
+        from = now.clone().startOf('day').hours(5);
+        if (now.hour() < 5)
+            from.subtract(1, 'days');
+        query += from.valueOf();
+        break;
+    case 1:
+        from = now.clone().startOf('week').hours(5);
+        if (now.hour() < 5 && now.days() === 1)
+            from.subtract(1, 'weeks');
+        query += from.valueOf();
+        break;
+    case 2:
+        if (now.hours() >= 22 &&
+            now.dates() === now.clone().endOf('month').date()) {
+            from = now.clone().hours(22);
+        } else {
+            from = now.clone().startOf('month').subtract(1, 'days').hours(22);
+        }
+        query += from.valueOf();
+        break;
+    case 3:
+        query = "";
+        break;
+    case 4:
+        from = $('#term_from').datepicker("getDate");
         var to = $('#term_to').datepicker("getDate");
-        if (from !== null)
-            query = "?from=" + from.valueOf();
-        if (to !== null)
-            query += "&to=" + (to.valueOf() + this.oneDay);
+        if (from === null)
+            return;
+        from = moment(from);
+        if (from.date() === 1)
+            from.subtract(2, 'hours');
+        query += from.valueOf();
+        if (to !== null) {
+            to = moment(to);
+            if (to.date() === to.clone().endOf('month').date()) {
+                to.hour(22);
+            } else {
+                to.add(1, 'days').hours(5);
+            }
+            query += "&to=" + to.valueOf();
+        }
+        break;
     }
     $('#loading').show();
     var url = this.jsons[this.mainTab] + query;
@@ -250,10 +312,10 @@ this.init = function() {
     });
 };
 
-this.on("mount", this.init);
-
 this.mainTab = 0;
 var self = this;
+
+this.on("mount", self.init);
 
 opts.observable.on("mainTabChanged", function(idx) {
     self.update({mainTab: idx});
@@ -300,7 +362,7 @@ this.resize = function() {
 };
 
 this.drawChart = function(data) {
-    range = this.calcRange(opts.chartSpec.seqRange);
+    var range = this.calcRange(opts.chartSpec.seqRange);
     if (range.last === 0)
         return;
     if (!data) {
@@ -347,7 +409,7 @@ this.calcRange = function(range) {
             break;
     }
     return {first: first, last: last};
-}
+};
 
 this.unselected = {};
 
@@ -506,7 +568,7 @@ this.resize = function() {
 };
 
 this.drawChart = function(data) {
-    range = this.calcRange(opts.chartSpec.diffRange);
+    var range = this.calcRange(opts.chartSpec.diffRange);
     if (range.last === 0)
         return;
     if (!data) {
@@ -552,7 +614,7 @@ this.calcRange = function(range) {
             break;
     }
     return {first: first, last: last};
-}
+};
 
 this.unselected = {};
 

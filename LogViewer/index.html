@@ -106,10 +106,11 @@ var mixin = {
 <script>
 var obs = riot.observable();
 var spec = new Object();
+var range = new Object();
 riot.mixin(mixin);
 riot.mount("dummy");
-riot.mount("log-term", {observable: obs});
-riot.mount("log-tables", {observable: obs});
+riot.mount("log-term", {observable: obs, logRange: range});
+riot.mount("log-tables", {observable: obs, logRange: range});
 riot.mount("chart-type", {observable: obs, chartSpec: spec});
 riot.mount("chart-range", {observable: obs, chartSpec: spec});
 riot.mount("sequential-chart", {observable: obs, chartSpec: spec});
