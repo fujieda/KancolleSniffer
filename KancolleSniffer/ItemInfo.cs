@@ -442,6 +442,13 @@ namespace KancolleSniffer
                 {
                     case 1: // 小口径
                     case 2: // 中口径
+                    case 19: // 徹甲弾
+                    case 21: // 対空機銃
+                    case 24: // 上陸用舟艇
+                    case 29: // 探照灯
+                    case 36: // 高射装置
+                    case 42: // 大型探照灯
+                    case 46: // 特型内火艇
                         return Sqrt(Level);
                     case 3: // 大口径
                         return 1.5 * Sqrt(Level);
@@ -449,9 +456,9 @@ namespace KancolleSniffer
                         return SecondaryGunLevelBonus;
                     case 14: // ソナー
                     case 15: // 爆雷
-                        return 0.75 * Sqrt(Level);
-                    case 19: // 徹甲弾
-                        return Sqrt(Level);
+                        return Spec.Id == 226 // 九五式爆雷
+                            ? 0
+                            : 0.75 * Sqrt(Level);
                     default:
                         return 0;
                 }
@@ -483,11 +490,14 @@ namespace KancolleSniffer
         {
             get
             {
-                if (Spec.Type == 5) // 魚雷
-                    return 1.2 * Sqrt(Level);
-                if (Spec.Type == 21) // 機銃
-                    return 1.2 * Sqrt(Level);
-                return 0;
+                switch (Spec.Type)
+                {
+                    case 5: // 魚雷
+                    case 21: // 機銃
+                        return 1.2 * Sqrt(Level);
+                    default:
+                        return 0;
+                }
             }
         }
 
@@ -517,15 +527,16 @@ namespace KancolleSniffer
                     case 1: // 小口径
                     case 2: // 中口径
                     case 3: // 大口径
-                        return Sqrt(Level);
-                    case 4: // 副砲
-                        return SecondaryGunLevelBonus;
                     case 5: // 魚雷
                     case 19: // 徹甲弾
+                    case 24: // 上陸用舟艇
                     case 29: // 探照灯
                     case 36: // 高射装置
                     case 42: // 大型探照灯
+                    case 46: // 特型内火艇
                         return Sqrt(Level);
+                    case 4: // 副砲
+                        return SecondaryGunLevelBonus;
                     default:
                         return 0;
                 }
