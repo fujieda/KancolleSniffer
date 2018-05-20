@@ -157,7 +157,7 @@
             this.textBoxPreliminary.Size = new System.Drawing.Size(36, 19);
             this.textBoxPreliminary.TabIndex = 12;
             this.textBoxPreliminary.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.textBoxPreliminary.TextChanged += new System.EventHandler(this.textBoxpreliminary_TextChanged);
+            this.textBoxPreliminary.TextChanged += new System.EventHandler(this.textBoxPreliminary_TextChanged);
             // 
             // labelPreliminary
             // 

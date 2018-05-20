@@ -158,6 +158,17 @@ namespace KancolleSniffer
                 PreliminaryPeriods[Config.NotificationIndex[name]] = value.PreliminaryPeriod;
             }
         }
+
+        public void Normalization()
+        {
+            Settings = Settings.Select(s =>
+                    (s & NotificationType.Pushbullet) != 0
+                        ? s ^ NotificationType.Pushbullet | NotificationType.Push
+                        : s)
+                .ToArray();
+            RepeatIntervals = RepeatIntervals.Select(v => v < 0 ? 0 : v).ToArray();
+            PreliminaryPeriods = RepeatIntervals.Select(v => v < 0 ? 0 : v).ToArray();
+        }
     }
 
     public class LocationPerMachine
@@ -247,12 +258,7 @@ namespace KancolleSniffer
                     config = (Config)serializer.Deserialize(file);
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(config, null), null);
-                var ns = Notifications.Settings;
-                for (var i = 0; i < ns.Length; i++)
-                {
-                    if ((ns[i] & NotificationType.Pushbullet) != 0)
-                        ns[i] = ns[i] ^ NotificationType.Pushbullet | NotificationType.Push;
-                }
+                Notifications.Normalization();
                 ComposeNotificationFlags();
                 if (AlwaysShowResultRank)
                 {

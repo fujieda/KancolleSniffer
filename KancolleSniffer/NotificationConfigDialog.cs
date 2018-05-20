@@ -51,7 +51,7 @@ namespace KancolleSniffer
                     textBoxRepeat.Text = notification.RepeatInterval.ToString();
                     checkBoxCont.Visible = IsContAvailable;
                     textBoxPreliminary.Visible =
-                        labelPreliminary.Visible = checkBoxPreliminary.Visible = IspreliminaryAvailable;
+                        labelPreliminary.Visible = checkBoxPreliminary.Visible = IsPreliminaryAvailable;
                     textBoxPreliminary.Text = notification.PreliminaryPeriod.ToString();
                     break;
             }
@@ -85,13 +85,13 @@ namespace KancolleSniffer
         private bool IsContAvailable =>
             new[] {"遠征終了", "入渠終了"}.Contains((string)listBoxNotifications.SelectedItem);
 
-        private bool IspreliminaryAvailable =>
+        private bool IsPreliminaryAvailable =>
             new[] {"遠征終了", "入渠終了", "建造完了", "泊地修理20分経過", "疲労回復"}.Contains((string)listBoxNotifications.SelectedItem);
 
         private void textBoxRepeat_TextChanged(object sender, EventArgs e)
         {
             _notifications[(string)listBoxNotifications.SelectedItem].RepeatInterval =
-                int.TryParse(textBoxRepeat.Text, out int interval) ? interval : 0;
+                int.TryParse(textBoxRepeat.Text, out var interval) && interval > 0 ? interval : 0;
         }
 
         private void NotificationConfigDialog_Load(object sender, EventArgs e)
@@ -104,14 +104,15 @@ namespace KancolleSniffer
                 checkBoxRepeat.Enabled && checkBoxRepeat.Checked;
             textBoxPreliminary.Enabled = checkBoxPreliminary.Checked;
 
-            if (listBoxNotifications.SelectedIndex == -1)
-                listBoxNotifications.SelectedIndex = 0;
+            var selected = listBoxNotifications.SelectedIndex;
+            listBoxNotifications.SelectedIndex = -1;
+            listBoxNotifications.SelectedIndex = selected == -1 ? 0 : selected;
         }
 
-        private void textBoxpreliminary_TextChanged(object sender, EventArgs e)
+        private void textBoxPreliminary_TextChanged(object sender, EventArgs e)
         {
             _notifications[(string)listBoxNotifications.SelectedItem].PreliminaryPeriod =
-                int.TryParse(textBoxPreliminary.Text, out int preliminary) ? preliminary : 0;
+                int.TryParse(textBoxPreliminary.Text, out var preliminary) && preliminary > 0 ? preliminary : 0;
         }
 
         protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
