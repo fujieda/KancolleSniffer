@@ -487,22 +487,36 @@ namespace KancolleSniffer
             var daily = now.Date.AddHours(5);
             if (!(_lastReset < daily && daily <= now))
                 return;
-            _quests.Clear(); // 前日に未消化のデイリーを消す。
+            RemoveQuest(QuestInterval.Daily);
             _countList.Remove(QuestInterval.Daily);
             var weekly = now.Date.AddDays(-((6 + (int)now.DayOfWeek) % 7)).AddHours(5);
             if (_lastReset < weekly && weekly <= now)
+            {
+                RemoveQuest(QuestInterval.Weekly);
                 _countList.Remove(QuestInterval.Weekly);
+            }
             var monthly = new DateTime(now.Year, now.Month, 1, 5, 0, 0);
             if (_lastReset < monthly && monthly <= now)
+            {
+                RemoveQuest(QuestInterval.Monthly);
                 _countList.Remove(QuestInterval.Monthly);
+            }
             var season = now.Month / 3;
             var quarterly = new DateTime(now.Year - (season == 0 ? 1 : 0), (season == 0 ? 12 : season * 3), 1, 5, 0, 0);
             if (_lastReset < quarterly && quarterly <= now)
+            {
+                RemoveQuest(QuestInterval.Quarterly);
                 _countList.Remove(QuestInterval.Quarterly);
+            }
             _lastReset = now;
             NeedSave = true;
         }
 
+        private void RemoveQuest(QuestInterval interval)
+        {
+            foreach (var id in (from kv in _quests where kv.Value.Count.Spec.Interval == interval select kv.Key).ToArray())
+                _quests.Remove(id);
+        }
 
         private int _map;
         private bool _boss;

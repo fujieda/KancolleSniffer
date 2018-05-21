@@ -115,7 +115,7 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
-        public void ResetQuest()
+        public void ResetQuestCount()
         {
             var queue = new Queue<DateTime>(new[]
             {
@@ -146,6 +146,36 @@ namespace KancolleSniffer.Test
             questInfo.InspectQuestList(CreateQuestList(new[] {201}));
             questInfo.SaveState(status);
             PAssert.That(() => status.QuestCountList.Length == 0); // クォータリーが消える
+        }
+
+        [TestMethod]
+        public void ResetQuestList()
+        {
+            var queue = new Queue<DateTime>(new[]
+            {
+                new DateTime(2017, 11, 1, 5, 0, 0), new DateTime(2017, 11, 6, 5, 0, 0),
+                new DateTime(2017, 12, 1, 5, 0, 0)
+            });
+            var questInfo = new QuestInfo(null, null, () => queue.Dequeue());
+            var status = new Status
+            {
+                QuestList = new[]
+                {
+                    new QuestStatus{Id = 201, Category = 2}, new QuestStatus{Id = 213, Category = 2},
+                    new QuestStatus{Id = 265, Category = 2}, new QuestStatus{Id = 822, Category = 8}
+                },
+                QuestLastReset = new DateTime(2017, 10, 31, 5, 0, 0)
+            };
+            questInfo.LoadState(status);
+            questInfo.InspectQuestList(CreateQuestList(new int[0]));
+            questInfo.SaveState(status);
+            PAssert.That(() => status.QuestList.Select(q => q.Id).SequenceEqual(new []{213, 822}));  // デイリーとマンスリーが消える
+            questInfo.InspectQuestList(CreateQuestList(new int[0]));
+            questInfo.SaveState(status);
+            PAssert.That(() => status.QuestList.Select(q => q.Id).SequenceEqual(new []{822}));  // ウィークリーが消える
+            questInfo.InspectQuestList(CreateQuestList(new int[0]));
+            questInfo.SaveState(status);
+            PAssert.That(() => status.QuestList.Length == 0); // クォータリーが消える
         }
 
         private JsonObject Js(object obj) => JsonObject.CreateJsonObject(obj);
