@@ -1107,6 +1107,7 @@ namespace KancolleSniffer
                 {
                     a[fleet].Tag = fleet;
                     a[fleet].Click += labelFleet_Click;
+                    a[fleet].DoubleClick += labelFleet_DoubleClick;
                 }
             }
         }
@@ -1137,6 +1138,24 @@ namespace KancolleSniffer
         private void labelFleet1_MouseLeave(object sender, EventArgs e)
         {
             labelFleet1.Text = _combinedFleet ? "連合" : "第一";
+        }
+
+        private void labelFleet_DoubleClick(object sender, EventArgs e)
+        {
+            if (!_started)
+                return;
+            var fleet = (int)((Label)sender).Tag;
+            var text = TextGenerator.GenerateFleetData(_sniffer, fleet);
+            if (string.IsNullOrEmpty(text))
+                return;
+            Clipboard.SetText(text);
+            _tooltipCopy.Active = true;
+            _tooltipCopy.Show("コピーしました。", (Label)sender);
+            Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                _tooltipCopy.Active = false;
+            });
         }
 
         private readonly Color _activeButtonColor = Color.FromArgb(152, 179, 208);

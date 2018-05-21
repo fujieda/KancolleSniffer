@@ -59,40 +59,56 @@ namespace KancolleSniffer
         {
             var dict = new ItemName();
             var sb = new StringBuilder();
+            for (var f = 0; f < ShipInfo.FleetCount; f++)
+                sb.Append(GenerateFleetData(sniffer, f, dict));
+            sb.Append(GenerateBaseAirCorps(sniffer, dict));
+            return sb.ToString();
+        }
+
+        public static string GenerateFleetData(Sniffer sniffer, int fleet)
+        {
+            return GenerateFleetData(sniffer, fleet, new ItemName()).ToString();
+        }
+
+        private static StringBuilder GenerateFleetData(Sniffer sniffer, int fleet, ItemName dict)
+        {
+            var sb = new StringBuilder();
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
-            for (var f = 0; f < fn.Length; f++)
+            sb.Append(fn[fleet] + "\r\n");
+            sb.Append(string.Concat(from s in sniffer.GetShipStatuses(fleet)
+                select ($"{s.Name} Lv{s.Level} " +
+                        string.Join(",",
+                            from item in s.AllSlot
+                            where item.Id != -1
+                            select dict[item.Spec.Name] + ItemStatusString(item))).TrimEnd(' ') + "\r\n"));
+            var fp = sniffer.GetFighterPower(fleet);
+            sb.Append($"制空: {(fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1])} " +
+                      $"索敵: {sniffer.GetFleetLineOfSights(fleet, 1):F1}\r\n");
+            return sb;
+        }
+
+        private static StringBuilder GenerateBaseAirCorps(Sniffer sniffer, ItemName dict)
+        {
+            var sb = new StringBuilder();
+            if (sniffer.BaseAirCorps == null)
+                return sb;
+            foreach (var baseInfo in sniffer.BaseAirCorps)
             {
-                sb.Append(fn[f] + "\r\n");
-                sb.Append(string.Concat(from s in sniffer.GetShipStatuses(f)
-                    select ($"{s.Name} Lv{s.Level} " +
-                            string.Join(",",
-                                from item in s.AllSlot
-                                where item.Id != -1
-                                select dict[item.Spec.Name] + ItemStatusString(item))).TrimEnd(' ') + "\r\n"));
-                var fp = sniffer.GetFighterPower(f);
-                sb.Append($"制空: {(fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1])} " +
-                          $"索敵: {sniffer.GetFleetLineOfSights(f, 1):F1}\r\n");
-            }
-            if (sniffer.BaseAirCorps != null)
-            {
-                foreach (var baseInfo in sniffer.BaseAirCorps)
+                sb.Append(baseInfo.AreaName + " 基地航空隊\r\n");
+                var i = 0;
+                var name = new[] {"第一 ", "第二 ", "第三 "};
+                foreach (var airCorps in baseInfo.AirCorps)
                 {
-                    sb.Append(baseInfo.AreaName + " 基地航空隊\r\n");
-                    var i = 0;
-                    var name = new[] {"第一 ", "第二 ", "第三 "};
-                    foreach (var airCorps in baseInfo.AirCorps)
-                    {
-                        sb.Append(name[i++]);
-                        sb.Append(
-                            string.Join(",",
-                                from plane in airCorps.Planes
-                                select plane.State == 1
-                                    ? dict[plane.Slot.Spec.Name] + ItemStatusString(plane.Slot)
-                                    : plane.StateName) + "\r\n");
-                    }
+                    sb.Append(name[i++]);
+                    sb.Append(
+                        string.Join(",",
+                            from plane in airCorps.Planes
+                            select plane.State == 1
+                                ? dict[plane.Slot.Spec.Name] + ItemStatusString(plane.Slot)
+                                : plane.StateName) + "\r\n");
                 }
             }
-            return sb.ToString();
+            return sb;
         }
 
         private static string ItemStatusString(ItemStatus item)
