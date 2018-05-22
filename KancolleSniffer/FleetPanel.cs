@@ -137,7 +137,7 @@ namespace KancolleSniffer
                     var ship = new Record
                     {
                         Ship = (s.Escaped ? "[避]" : "") + s.Name + " Lv" + s.Level,
-                        Ship2 = "",
+                        Ship2 = $"燃{s.EffectiveFuelMax} 弾{s.EffectiveBullMax}",
                         Id = s.Id,
                         Spec = HideIfZero("砲", fire) + HideIfZero(" 潜", subm) + oasa,
                         Spec2 = (HideIfZero("雷", torp) + HideIfZero(" 夜", night)).TrimStart(' ')
