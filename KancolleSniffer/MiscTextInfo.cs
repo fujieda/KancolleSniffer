@@ -113,7 +113,62 @@ namespace KancolleSniffer
             var raw = _expTable[Min(s1, _expTable.Length) - 1] / 100.0 +
                       _expTable[Min(s2, _expTable.Length) - 1] / 300.0;
             var exp = raw >= 500 ? 500 + (int)Sqrt(raw - 500) : (int)raw;
-            Text += $"獲得経験値 : {exp}\r\nS勝利 : {(int)(exp * 1.2)}";
+            var bonus = 1 + TrainingCruiserBonus(_shipInfo.GetShipStatuses(0));
+            Text += $"獲得経験値 : {(int)(exp * bonus)}\r\nS勝利 : {(int)((int)(exp * 1.2) * bonus)}";
+        }
+
+        private double TrainingCruiserBonus(ShipStatus[] fleet)
+        {
+            if (fleet[0].Spec.IsTrainingCruiser)
+            {
+                var fsLevel = fleet[0].Level;
+                if (fleet.Skip(1).Any(s => s.Spec.IsTrainingCruiser))
+                {
+                    if (fsLevel < 10)
+                        return 0.10;
+                    if (fsLevel < 30)
+                        return 0.13;
+                    if (fsLevel < 60)
+                        return 0.16;
+                    if (fsLevel < 100)
+                        return 0.20;
+                    return 0.25;
+                }
+                if (fsLevel < 10)
+                    return 0.05;
+                if (fsLevel < 30)
+                    return 0.08;
+                if (fsLevel < 60)
+                    return 0.12;
+                if (fsLevel < 100)
+                    return 0.15;
+                return 0.20;
+            }
+            var tc = fleet.Count(s => s.Spec.IsTrainingCruiser);
+            if (tc == 0)
+                return 0;
+            var level = fleet.Where(s => s.Spec.IsTrainingCruiser).Max(s => s.Level);
+            if (tc == 1)
+            {
+                if (level < 10)
+                    return 0.03;
+                if (level < 30)
+                    return 0.05;
+                if (level < 60)
+                    return 0.07;
+                if (level < 100)
+                    return 0.10;
+                return 0.15;
+            }
+            if (level < 10)
+                return 0.04;
+            if (level < 30)
+                return 0.06;
+            if (level < 60)
+                return 0.08;
+            if (level < 100)
+                return 0.12;
+            return 0.175;
         }
 
         public void InspectMapNext(dynamic json)

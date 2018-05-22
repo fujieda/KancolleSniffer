@@ -225,5 +225,7 @@ namespace KancolleSniffer
         }
 
         public bool IsRepairShip => ShipType == 19;
+
+        public bool IsTrainingCruiser => ShipType == 21;
     }
 }
