@@ -1085,18 +1085,18 @@ this.show = function() {
 <h3>今日</h3>
 <table id="sortie_stat_day">
 <thead>
-<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th><th>輸送船</th></tr>
+<tr></tr>
 </thead>
 </table>
 <h3>今週</h3>
 <table id="sortie_stat_week">
 <thead>
-<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th><th>輸送船</th></tr>
+<tr></tr>
 </table>
 <h3>今月</h3>
 <table id="sortie_stat_month">
 <thead>
-<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th></tr>
+<tr></tr>
 </table>
 </div>
 
@@ -1142,37 +1142,7 @@ opts.observable.on("mainTabChanged", function(idx) {
 });
 
 this.init = function() {
-    this.initTable();
     this.initDatePicker();
-};
-
-this.initTable = function() {
-    var terms = ['day', 'week', 'month', 'all'];
-    for (var i = 0; i < terms.length; i++) {
-        $("#sortie_stat_" + terms[i]).dataTable({
-            paging: false,
-            searching: false,
-            ordering: false,
-            columns: terms[i] !== 'month' ? [
-                { data: "map" },
-                { data: "start" },
-                { data: "S" },
-                { data: "A" },
-                { data: "B" },
-                { data: "C" },
-                { data: "D" },
-                { data: "R" }
-            ] : [
-                    { data: "map" },
-                    { data: "start" },
-                    { data: "S" },
-                    { data: "A" },
-                    { data: "B" },
-                    { data: "C" },
-                    { data: "D" }
-                ]
-        });
-    }
 };
 
 this.initDatePicker = function() {
@@ -1265,6 +1235,9 @@ this.gatherData = function(data) {
             if (/^輸送/.test(row[j]) && /^0\x2f/.test(row[j + 1]))
                 resR++;
         }
+        var item = /\+(.*)/.exec(row[10]);
+        if (item)
+            item = item[1];
         var res = row[4];
         if (res === "E")
             res = "D";
@@ -1289,6 +1262,11 @@ this.gatherData = function(data) {
                 }
                 mo["R"] += resR;
                 mo[res]++;
+                if (item) {
+                    if (!mo[item])
+                        mo[item] = 0;
+                    mo[item]++;
+                }
                 if ((b === 0 || b === 2) && isStart) {
                     if (mo.start === "-")
                         mo.start = 0;
@@ -1300,7 +1278,73 @@ this.gatherData = function(data) {
     return r;
 };
 
-this.arrangeTable = function(r) {
+this.isItemColumn = function(col) {
+    return !/^(?:map|start|[SABCDR])$/.test(col);
+};
+
+this.sortItemOrder = function(items) {
+    ["お米", "梅干", "海苔", "お茶"].reverse().forEach(function(item) {
+        var idx = items.indexOf(item);
+        if (idx !== -1) {
+            items.splice(idx, 1);
+            items.unshift(item);
+        }
+    });
+};
+
+this.setupTable = function(r) {
+    for (var term in r) {
+        var header = ["マップ",
+                  "出撃",
+                  "S",
+                  "A",
+                  "B",
+                  "C",
+                  "D以下",
+                  "輸送船"];
+        var columns = [{ data: "map" },
+                   { data: "start" },
+                   { data: "S" },
+                   { data: "A" },
+                   { data: "B" },
+                   { data: "C" },
+                   { data: "D" },
+                   { data: "R" }];
+        if (term === "monthly") {
+            header.pop();
+            columns.pop();
+        }
+        var items = Object.keys(r[term].stat["合計"]).filter(this.isItemColumn);
+        this.sortItemOrder(items);
+        items.forEach(function(item) {
+            header.push(item);
+            columns.push({data: item});
+        });
+        $("#sortie_stat_" + term + " tr").html(
+            header.reduce(function(acc, cur) {
+                return acc + "<td>" + cur + "</td>";
+            }, ""));
+        r[term].columns = columns;
+    }
+};
+
+this.fillupItemRecords = function(r) {
+    for (var term in r) {
+        for (var col in r[term].stat["合計"]) {
+            if (!this.isItemColumn(col))
+                continue;
+            for (var map in r[term].stat) {
+                if (map === "合計")
+                    continue;
+                if (!r[term].stat[map][col]){
+                    r[term].stat[map][col] = 0;
+                }
+            }
+        }
+    }
+};
+
+this.reorderRows = function(r) {
     for (var term in r) {
         if (!r.hasOwnProperty(term))
             continue;
@@ -1334,13 +1378,20 @@ this.show = function(data) {
         return;
     }
     var r = this.gatherData(data);
-    this.arrangeTable(r);
+    this.setupTable(r);
+    this.fillupItemRecords(r);
+    this.reorderRows(r);
     for (var term in r) {
         if (!r.hasOwnProperty(term))
             continue;
-        var dt = $("#sortie_stat_" + term).DataTable();
-        dt.clear();
-        dt.rows.add(r[term].table).draw();
+        var table = $("#sortie_stat_" + term);
+        table.DataTable().destroy();
+        table.DataTable({
+            paging: false,
+            searching: false,
+            ordering: false,
+            columns: r[term].columns
+        }).rows.add(r[term].table).draw();
     }
     $('#loading').hide();
 };
