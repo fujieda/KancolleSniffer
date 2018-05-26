@@ -148,7 +148,7 @@ namespace KancolleSniffer
             }
         }
 
-        private bool InShipStatus => Array.Exists(new[] {"全員", "A", "B", "C", "D"}, x => comboBoxGroup.Text == x);
+        private bool InShipStatus => Array.Exists(new[] {"全艦", "A", "B", "C", "D"}, x => comboBoxGroup.Text == x);
 
         private bool InGroupConfig => comboBoxGroup.Text == "分類";
 
@@ -180,7 +180,7 @@ namespace KancolleSniffer
                 battleResultPanel.ToggleHpPercent();
             }
             LoadShipGroupFromConfig();
-            comboBoxGroup.SelectedItem = config.Mode ?? "全員";
+            comboBoxGroup.SelectedItem = config.Mode ?? "全艦";
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);

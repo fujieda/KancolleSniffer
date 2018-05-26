@@ -421,7 +421,7 @@ namespace KancolleSniffer
             }
         }
 
-        private bool InShipStatus(string mode) => Array.Exists(new[] {"全員", "A", "B", "C", "D"}, x => mode == x);
+        private bool InShipStatus(string mode) => Array.Exists(new[] {"全艦", "A", "B", "C", "D"}, x => mode == x);
 
         private void SetShipStatus(int i)
         {

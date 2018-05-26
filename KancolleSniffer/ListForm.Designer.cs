@@ -244,7 +244,7 @@ namespace KancolleSniffer
             this.comboBoxGroup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboBoxGroup.FormattingEnabled = true;
             this.comboBoxGroup.Items.AddRange(new object[] {
-            "全員",
+            "全艦",
             "A",
             "B",
             "C",
