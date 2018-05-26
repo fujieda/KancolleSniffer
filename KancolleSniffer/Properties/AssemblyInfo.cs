@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("KancolleSniffer")]
-[assembly: AssemblyCopyright("Copyright © 2013-2017 Kazuhiro Fujieda")]
+[assembly: AssemblyCopyright("Copyright © 2013-2018 Kazuhiro Fujieda")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
