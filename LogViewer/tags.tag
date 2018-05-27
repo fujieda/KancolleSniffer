@@ -1084,27 +1084,17 @@ this.show = function() {
 <div style="clear: both;" show={type === "recent"}>
 <h3>今日</h3>
 <table id="sortie_stat_day">
-<thead>
-<tr></tr>
-</thead>
 </table>
 <h3>今週</h3>
 <table id="sortie_stat_week">
-<thead>
-<tr></tr>
 </table>
 <h3>今月</h3>
 <table id="sortie_stat_month">
-<thead>
-<tr></tr>
 </table>
 </div>
 
-<div id="sortie_stat_all_table" show={type === "range"}>
-<table id="sortie_stat_all">
-<thead>
-<tr><th>マップ</th><th>出撃</th><th>S</th><th>A</th><th>B</th><th>C</th><th>D以下</th><th>輸送船</th></tr>
-</thead>
+<div show={type === "range"}>
+<table id="sortie_stat_all" style="width: 100%;">
 </table>
 </div>
 
@@ -1324,10 +1314,13 @@ this.setupTable = function(r) {
             header.push(item);
             columns.push({data: item});
         });
-        $("#sortie_stat_" + term + " tr").html(
+        $("#sortie_stat_" + term).html(
+            "<thead><tr>" +
             header.reduce(function(acc, cur) {
-                return acc + "<td>" + cur + "</td>";
-            }, ""));
+                return acc + "<th>" + cur + "</th>";
+            }, "")
+            + "</tr></thead>"
+        );
         r[term].columns = columns;
     }
 };
