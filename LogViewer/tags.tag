@@ -1314,7 +1314,11 @@ this.setupTable = function(r) {
             header.pop();
             columns.pop();
         }
-        var items = Object.keys(r[term].stat["合計"]).filter(this.isItemColumn);
+        var items = [];
+        for (col in r[term].stat["合計"]) {
+            if (this.isItemColumn(col))
+                items.push(col);
+        }
         this.sortItemOrder(items);
         items.forEach(function(item) {
             header.push(item);
