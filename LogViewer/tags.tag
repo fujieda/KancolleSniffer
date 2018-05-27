@@ -1300,7 +1300,7 @@ this.setupTable = function(r) {
                    { data: "C" },
                    { data: "D" },
                    { data: "R" }];
-        if (term === "monthly") {
+        if (term === "month") {
             header.pop();
             columns.pop();
         }
