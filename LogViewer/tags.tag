@@ -1225,9 +1225,7 @@ this.gatherData = function(data) {
             if (/^輸送/.test(row[j]) && /^0\x2f/.test(row[j + 1]))
                 resR++;
         }
-        var item = /\+(.*)/.exec(row[10]);
-        if (item)
-            item = item[1];
+        var item = /アイテム/.test(row[9]) ? /[^+]+$/.exec(row[10])[0] : null;
         var res = row[4];
         if (res === "E")
             res = "D";
@@ -1305,7 +1303,7 @@ this.setupTable = function(r) {
             columns.pop();
         }
         var items = [];
-        for (col in r[term].stat["合計"]) {
+        for (var col in r[term].stat["合計"]) {
             if (this.isItemColumn(col))
                 items.push(col);
         }
