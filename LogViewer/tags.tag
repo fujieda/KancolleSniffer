@@ -1280,28 +1280,18 @@ this.sortItemOrder = function(items) {
     });
 };
 
-this.setupTable = function(r) {
+this.setupColumns = function(r) {
     for (var term in r) {
-        var header = ["マップ",
-                  "出撃",
-                  "S",
-                  "A",
-                  "B",
-                  "C",
-                  "D以下",
-                  "輸送船"];
-        var columns = [{ data: "map" },
-                   { data: "start" },
-                   { data: "S" },
-                   { data: "A" },
-                   { data: "B" },
-                   { data: "C" },
-                   { data: "D" },
-                   { data: "R" }];
-        if (term === "month") {
-            header.pop();
+        var columns = [{ data: "map", title: "マップ" },
+                       { data: "start", title: "出撃" },
+                       { data: "S", title: "S" },
+                       { data: "A", title: "A" },
+                       { data: "B", title: "B" },
+                       { data: "C", title: "C" },
+                       { data: "D", title: "D" },
+                       { data: "R", title: "R" }];
+        if (term === "month")
             columns.pop();
-        }
         var items = [];
         for (var col in r[term].stat["合計"]) {
             if (this.isItemColumn(col))
@@ -1309,16 +1299,8 @@ this.setupTable = function(r) {
         }
         this.sortItemOrder(items);
         items.forEach(function(item) {
-            header.push(item);
-            columns.push({data: item});
+            columns.push({data: item, title: item});
         });
-        $("#sortie_stat_" + term).html(
-            "<thead><tr>" +
-            header.reduce(function(acc, cur) {
-                return acc + "<th>" + cur + "</th>";
-            }, "")
-            + "</tr></thead>"
-        );
         r[term].columns = columns;
     }
 };
@@ -1373,20 +1355,24 @@ this.show = function(data) {
         return;
     }
     var r = this.gatherData(data);
-    this.setupTable(r);
+    this.setupColumns(r);
     this.fillupItemRecords(r);
     this.reorderRows(r);
     for (var term in r) {
-        if (!r.hasOwnProperty(term))
-            continue;
         var table = $("#sortie_stat_" + term);
-        table.DataTable().destroy();
+        if ($.fn.dataTable.isDataTable(table))
+            table.DataTable().destroy();
+        table.html("<thead><tr>" +
+                   r[term].columns.reduce(function(acc, cur) {
+                       return acc + "<th>" + cur.title + "</th>";
+                   }, "") + "</tr></thead>");
         table.DataTable({
             paging: false,
             searching: false,
             ordering: false,
-            columns: r[term].columns
-        }).rows.add(r[term].table).draw();
+            columns: r[term].columns,
+            data: r[term].table
+        });
     }
     $('#loading').hide();
 };
