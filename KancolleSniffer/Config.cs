@@ -167,7 +167,7 @@ namespace KancolleSniffer
                         : s)
                 .ToArray();
             RepeatIntervals = RepeatIntervals.Select(v => v < 0 ? 0 : v).ToArray();
-            PreliminaryPeriods = RepeatIntervals.Select(v => v < 0 ? 0 : v).ToArray();
+            PreliminaryPeriods = PreliminaryPeriods.Select(v => v < 0 ? 0 : v).ToArray();
         }
     }
 
