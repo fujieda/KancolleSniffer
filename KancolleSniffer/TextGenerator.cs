@@ -22,11 +22,11 @@ namespace KancolleSniffer
     public static class TextGenerator
     {
         public static string GenerateShipList(IEnumerable<ShipStatus> shipList)
-            => "ID,艦種,艦名,レベル,cond\r\n" +
+            => "ID,艦種,艦名,レベル,cond,素対潜\r\n" +
                string.Join("\r\n",
                    from ship in shipList
                    orderby ship.Spec.ShipType, -ship.Level, ship.ExpToNext
-                   select $"{ship.Id},{ship.Spec.ShipTypeName},{ship.Name},{ship.Level},{ship.Cond}");
+                   select $"{ship.Id},{ship.Spec.ShipTypeName},{ship.Name},{ship.Level},{ship.Cond},{ship.ShipAntiSubmarine}");
 
         public static string GenerateKantaiSarashiData(IEnumerable<ShipStatus> shipList)
         {

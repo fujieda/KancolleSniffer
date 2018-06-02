@@ -159,10 +159,8 @@ namespace KancolleSniffer
                 var depthCharge = false;
                 var aircraft = false;
                 var all = 0.0;
-                var vanilla = AntiSubmarine;
                 foreach (var spec in Slot.Select(item => item.Spec))
                 {
-                    vanilla -= spec.AntiSubmarine;
                     if (spec.IsSonar)
                     {
                         sonar = true;
@@ -180,6 +178,7 @@ namespace KancolleSniffer
                     }
                     all += spec.EffectiveAntiSubmarine;
                 }
+                var vanilla = ShipAntiSubmarine;
                 if (vanilla == 0 && !aircraft) // 素対潜0で航空機なしは対潜攻撃なし
                     return 0;
                 var bonus = 1.0;
@@ -195,6 +194,8 @@ namespace KancolleSniffer
                 return bonus * (Sqrt(vanilla) * 2 + all * 1.5 + levelBonus + (aircraft ? 8 : 13));
             }
         }
+
+        public int ShipAntiSubmarine => AntiSubmarine - Slot.Sum(item => item.Spec.AntiSubmarine);
 
         public bool CanOpeningAntiSubmarineAttack
         {
