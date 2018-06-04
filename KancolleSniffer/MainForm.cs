@@ -301,7 +301,7 @@ namespace KancolleSniffer
             ApplyProxySetting();
             CheckVersionUp((current, latest) =>
             {
-                if (double.Parse(latest) <= double.Parse(current))
+                if (latest == current)
                     return;
                 linkLabelGuide.Text = $"バージョン{latest}があります。";
                 linkLabelGuide.LinkArea = new LinkArea(0, linkLabelGuide.Text.Length);
