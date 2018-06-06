@@ -328,6 +328,7 @@ namespace KancolleSniffer
                 serializer.Serialize(file, this);
             File.Copy(ConfigFile + ".tmp", ConfigFile, true);
             File.Delete(ConfigFile + ".tmp");
+            ConvertPath(PrependBaseDir);
         }
 
         private void DecomposeNotificationFlags()
