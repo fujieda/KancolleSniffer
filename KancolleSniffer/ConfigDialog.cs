@@ -195,7 +195,7 @@ namespace KancolleSniffer
 
             _config.Sounds.Volume = (int)numericUpDownSoundVolume.Value;
             foreach (var name in Config.NotificationNames)
-                _config.Sounds[name] = _soundSettings[name];
+                _config.Sounds[name] = MakePathRooted(_soundSettings[name]);
         }
 
         private bool ValidatePorts(out int listen, out int outbound, out int server)
@@ -231,15 +231,31 @@ namespace KancolleSniffer
         {
             _config.Log.On = checkBoxOutput.Checked;
             _config.Log.MaterialLogInterval = (int)numericUpDownMaterialLogInterval.Value;
-            _config.Log.OutputDir = textBoxOutput.Text;
+            _config.Log.OutputDir = MakePathRooted(textBoxOutput.Text);
             _main.ApplyLogSetting();
         }
 
         private void ApplyDebugSettings()
         {
             _config.DebugLogging = checkBoxDebugLog.Checked;
-            _config.DebugLogFile = textBoxDebugLog.Text;
+            _config.DebugLogFile = MakePathRooted(textBoxDebugLog.Text);
             _main.ApplyDebugLogSetting();
+        }
+
+        private string MakePathRooted(string path)
+        {
+            try
+            {
+                return string.IsNullOrWhiteSpace(path)
+                    ? ""
+                    : Path.IsPathRooted(path)
+                        ? path
+                        : Path.Combine(Config.BaseDir, path);
+            }
+            catch (ArgumentException)
+            {
+                return "";
+            }
         }
 
         private void textBoxSoundFile_TextChanged(object sender, EventArgs e)
