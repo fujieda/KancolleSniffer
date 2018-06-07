@@ -257,10 +257,7 @@ namespace KancolleSniffer
 
         private void buttonOpenFile_Click(object sender, EventArgs e)
         {
-            openSoundFileDialog.FileName = textBoxSoundFile.Text;
-            openSoundFileDialog.InitialDirectory = String.IsNullOrEmpty(textBoxSoundFile.Text)
-                ? Config.BaseDir
-                : Path.GetDirectoryName(textBoxSoundFile.Text) ?? Config.BaseDir;
+            SetInitialPath(openSoundFileDialog, textBoxSoundFile.Text);
             if (openSoundFileDialog.ShowDialog() != DialogResult.OK)
                 return;
             textBoxSoundFile.Text = openSoundFileDialog.FileName;
@@ -333,11 +330,35 @@ namespace KancolleSniffer
 
         private void buttonDebugLogOpenFile_Click(object sender, EventArgs e)
         {
-            openDebugLogDialog.FileName = textBoxDebugLog.Text;
-            openDebugLogDialog.InitialDirectory = Path.GetDirectoryName(textBoxDebugLog.Text);
+            SetInitialPath(openDebugLogDialog, textBoxDebugLog.Text);
             if (openDebugLogDialog.ShowDialog(this) == DialogResult.OK)
                 textBoxDebugLog.Text = openDebugLogDialog.FileName;
             textBoxDebugLog.Select(textBoxDebugLog.Text.Length, 0);
+        }
+
+        private void SetInitialPath(OpenFileDialog dialog, string path)
+        {
+            var dir = Config.BaseDir;
+            var file = "";
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+                var res = Path.GetDirectoryName(path);
+                if (res == null) // root
+                {
+                    dir = path;
+                }
+                else if (res != "") // contain directory
+                {
+                    dir = res;
+                    file = Path.GetFileName(path);
+                }
+                else
+                {
+                    file = path;
+                }
+            }
+            dialog.InitialDirectory = dir;
+            dialog.FileName = file;
         }
 
         private void buttonPlayDebugLog_Click(object sender, EventArgs e)
