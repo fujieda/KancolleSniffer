@@ -121,6 +121,7 @@ namespace KancolleSniffer
 
         public static void Refresh()
         {
+            InternetSetOption(IntPtr.Zero, InternetOption.INTERNET_OPTION_SETTINGS_CHANGED, IntPtr.Zero, 0);
             InternetSetOption(IntPtr.Zero, InternetOption.INTERNET_OPTION_PROXY_SETTINGS_CHANGED, IntPtr.Zero, 0);
         }
 
@@ -178,6 +179,7 @@ namespace KancolleSniffer
         private enum InternetOption : uint
         {
             INTERNET_OPTION_REFRESH = 0x00000025,
+            INTERNET_OPTION_SETTINGS_CHANGED = 0x00000027,
             INTERNET_OPTION_PER_CONNECTION_OPTION = 0x0000004B,
             INTERNET_OPTION_PROXY_SETTINGS_CHANGED = 0x0000005F
         }
