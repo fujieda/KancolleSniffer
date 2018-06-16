@@ -326,6 +326,59 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// リピートを例外付きで中断・再開する
+        /// </summary>
+        [TestMethod]
+        public void SuspendRepeatWithException()
+        {
+            var time = new TimeProvider();
+            Message result = null;
+            var manager =
+                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+            var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
+            var taiha = new Message {Title = "大破した艦娘がいます", Body = "摩耶改二", Name = "大破警告"};
+            var elapsed = 0;
+            while (true)
+            {
+                switch (elapsed)
+                {
+                    case 0:
+                        manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
+                        manager.Flash();
+                        PAssert.That(() => ensei.Equals(result));
+                        break;
+                    case 1000:
+                        manager.Flash();
+                        manager.SuspendRepeat("大破警告");
+                        break;
+                    case 2000:
+                        manager.Enqueue("大破警告", "摩耶改二", 8);
+                        manager.Flash();
+                        PAssert.That(() => taiha.Equals(result));
+                        break;
+                    case 10000:
+                        manager.Flash();
+                        PAssert.That(() => taiha.Repeat.Equals(result));
+                        break;
+                    case 11000:
+                        manager.Flash();
+                        manager.ResumeRepeat();
+                        break;
+                    case 12000:
+                        manager.Flash();
+                        PAssert.That(() => ensei.Repeat.Equals(result));
+                        return;
+                    default:
+                        manager.Flash();
+                        PAssert.That(() => result == null, elapsed.ToString());
+                        break;
+                }
+                result = null;
+                elapsed += 1000;
+            }
+        }
+
+        /// <summary>
         /// リピート中の特定の通知を止める
         /// </summary>
         [TestMethod]

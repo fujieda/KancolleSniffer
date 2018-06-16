@@ -78,9 +78,9 @@ namespace KancolleSniffer
             _notificationQueue.StopRepeat(key, fleet);
         }
 
-        public void SuspendRepeat()
+        public void SuspendRepeat(string exception = "")
         {
-            _notificationQueue.SuspendRepeat();
+            _notificationQueue.SuspendRepeat(exception);
         }
 
         public void ResumeRepeat()
@@ -278,6 +278,7 @@ namespace KancolleSniffer
             private readonly NotificationConfig _notificationConfig = new NotificationConfig();
             private DateTime _lastAlarm;
             private bool _suspend;
+            private string _suspendException;
 
             public NotificationQueue(Action<string, string, string> alarm, Func<DateTime> nowFunc = null)
             {
@@ -320,9 +321,10 @@ namespace KancolleSniffer
             private bool IsMatch(Notification n, string key) =>
                 n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Schedule != default;
 
-            public void SuspendRepeat()
+            public void SuspendRepeat(string exception = null)
             {
                 _suspend = true;
+                _suspendException = exception;
             }
 
             public void ResumeRepeat()
@@ -336,7 +338,7 @@ namespace KancolleSniffer
                 if (now - _lastAlarm < TimeSpan.FromSeconds(2))
                     return;
                 var first = _queue.FirstOrDefault(n => n.Schedule.CompareTo(now) <= 0 &&
-                                                       !(_suspend && n.Schedule != default));
+                                                       !(n.Schedule != default && _suspend && n.Key != _suspendException));
                 if (first == null)
                     return;
                 var message = _notificationConfig.GenerateMessage(first);

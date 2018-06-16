@@ -40,7 +40,6 @@ namespace KancolleSniffer
             {
                 case "艦娘数超過":
                 case "装備数超過":
-                case "大破警告":
                     textBoxPreliminary.Visible = labelPreliminary.Visible = checkBoxPreliminary.Visible =
                         textBoxRepeat.Visible = labelRepeat.Visible = checkBoxRepeat.Visible =
                             checkBoxCont.Visible = false;

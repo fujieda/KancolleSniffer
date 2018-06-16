@@ -159,7 +159,7 @@ namespace KancolleSniffer
 
             public void Stop(string key, int fleet) => _manager.StopRepeat(key, fleet);
 
-            public void Suspend() => _manager.SuspendRepeat();
+            public void Suspend(string exception = null) => _manager.SuspendRepeat(exception);
 
             public void Resume() => _manager.ResumeRepeat();
         }
@@ -661,7 +661,7 @@ namespace KancolleSniffer
         {
             if (!_sniffer.BadlyDamagedShips.Any())
                 return;
-            _notificationManager.Enqueue("大破警告", string.Join(" ", _sniffer.BadlyDamagedShips));
+            SetNotification("大破警告", string.Join(" ", _sniffer.BadlyDamagedShips));
             _notificationManager.Flash();
         }
 

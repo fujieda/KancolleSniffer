@@ -45,7 +45,7 @@ namespace KancolleSniffer
         {
             void Stop(string key);
             void Stop(string key, int fleet);
-            void Suspend();
+            void Suspend(string exception = null);
             void Resume();
         }
 
@@ -170,7 +170,7 @@ namespace KancolleSniffer
             _cellInfo.Port();
             SaveState();
             RepeatingTimerController?.Resume();
-            foreach (var s in new[] {"遠征終了", "入渠終了", "疲労回復", "泊地修理"})
+            foreach (var s in new[] {"遠征終了", "入渠終了", "疲労回復", "泊地修理", "大破警告"})
                 RepeatingTimerController?.Stop(s);
             return Update.All;
         }
@@ -517,7 +517,7 @@ namespace KancolleSniffer
                 _miscTextInfo.InspectMapStart(data);
                 _questInfo.InspectMapStart(data);
                 _cellInfo.InspectMapStart(data);
-                RepeatingTimerController?.Suspend();
+                RepeatingTimerController?.Suspend("大破警告");
                 return Update.Timer | Update.Ship | Update.Cell;
             }
             if (url.EndsWith("api_req_map/next"))
