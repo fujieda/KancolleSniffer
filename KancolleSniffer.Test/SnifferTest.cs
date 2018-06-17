@@ -146,6 +146,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 演習中の艦を要修復リストに載せない
+        /// </summary>
+        [TestMethod]
+        public void DamagedShipListNotShowShipInPractice()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "practice_003");
+            PAssert.That(() => sniffer.RepairList.Select(s => s.Name).SequenceEqual(new[] {"飛龍改二", "翔鶴改二"}));
+        }
+
+        /// <summary>
         /// 連合艦隊が開幕雷撃で被弾する
         /// </summary>
         [TestMethod]

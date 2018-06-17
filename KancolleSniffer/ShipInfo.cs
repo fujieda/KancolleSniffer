@@ -345,7 +345,8 @@ namespace KancolleSniffer
 
         public ShipStatus[] GetRepairList(DockInfo dockInfo)
             => (from s in ShipList
-                where s.NowHp < s.MaxHp && !dockInfo.InNDock(s.Id)
+                where s.NowHp < s.MaxHp && !dockInfo.InNDock(s.Id) &&
+                      (s.Fleet == -1 || _fleets[s.Fleet].State != FleetState.Practice)
                 select s).OrderByDescending(s => s.RepairTime).ToArray();
 
         public string[] BadlyDamagedShips { get; private set; } = new string[0];
@@ -401,7 +402,7 @@ namespace KancolleSniffer
             _fleets[deck].Deck = (from ship in ships select ship.Id).ToArray();
             foreach (var ship in ships)
                 _shipInfo[ship.Id] = ship;
-            foreach (var entry in ships.Zip(slots, (ship, slot) =>new {ship, slot}))
+            foreach (var entry in ships.Zip(slots, (ship, slot) => new {ship, slot}))
             {
                 entry.ship.Slot = _itemInfo.InjectItems(entry.slot.Take(5));
                 if (entry.slot.Length >= 6)
