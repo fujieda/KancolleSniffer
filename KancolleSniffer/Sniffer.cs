@@ -339,7 +339,7 @@ namespace KancolleSniffer
             {
                 if (url.EndsWith("/battle"))
                 {
-                    _shipInfo.InspectMapStart(request); // 演習を出撃中とみなす
+                    _shipInfo.StartPractice(request);
                     _conditionTimer.InvalidateCond();
                     RepeatingTimerController?.Suspend();
                 }
@@ -556,9 +556,7 @@ namespace KancolleSniffer
 
         public ShipStatus[] GetShipStatuses(int fleet) => _shipInfo.GetShipStatuses(fleet);
 
-        public int[] GetDeck(int fleet) => _shipInfo.GetDeck(fleet);
-
-        public bool[] InSortie => _shipInfo.InSortie;
+        public Fleet[] Fleets => _shipInfo.Fleets;
 
         public ShipInfo.ShipStatusPair[] BattleResultStatusDiff => _shipInfo.BattleResultDiff;
 

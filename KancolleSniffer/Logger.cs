@@ -243,8 +243,8 @@ namespace KancolleSniffer
             int deckId = BattleInfo.DeckId(_battle);
             if (_battle.api_f_nowhps_combined())
             {
-                var main = _shipInfo.GetDeck(0);
-                var guard = _shipInfo.GetDeck(1);
+                var main = _shipInfo.Fleets[0].Deck;
+                var guard = _shipInfo.Fleets[1].Deck;
                 return main.Zip(guard, (m, g) =>
                 {
                     if (m == -1 && g == -1)
@@ -268,7 +268,7 @@ namespace KancolleSniffer
                     return name + "," + hp;
                 }).ToList();
             }
-            var deck = _shipInfo.GetDeck(deckId);
+            var deck = _shipInfo.Fleets[deckId].Deck;
             if (deck.Length > 6)
             {
                 var result = new List<string>();

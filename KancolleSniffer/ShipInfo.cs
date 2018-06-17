@@ -51,17 +51,29 @@ namespace KancolleSniffer
         }
     }
 
+    public enum FleetState
+    {
+        Port,
+        Mission,
+        Sortie,
+        Practice
+    }
+
+    public class Fleet
+    {
+        public FleetState State { get; set; }
+        public int[] Deck { get; set; } = Enumerable.Repeat(-1, ShipInfo.MemberCount).ToArray();
+    }
+
     public class ShipInfo
     {
         public const int FleetCount = 4;
         public const int MemberCount = 6;
 
-        private readonly int[][] _decks;
+        private readonly Fleet[] _fleets = Enumerable.Range(0, FleetCount).Select(x => new Fleet()).ToArray();
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
         private readonly ShipMaster _shipMaster = new ShipMaster();
         private readonly ItemInfo _itemInfo;
-        private readonly bool[] _inMission = new bool[FleetCount];
-        private readonly bool[] _inSortie = new bool[FleetCount];
         private int _hqLevel;
         private readonly List<int> _escapedShips = new List<int>();
         private int _combinedFleetType;
@@ -85,7 +97,6 @@ namespace KancolleSniffer
         public ShipInfo(ItemInfo itemInfo)
         {
             _itemInfo = itemInfo;
-            _decks = Enumerable.Repeat(Enumerable.Repeat(-1, MemberCount).ToArray(), FleetCount).ToArray();
             ClearShipInfo();
         }
 
@@ -100,7 +111,7 @@ namespace KancolleSniffer
             {
                 ClearShipInfo();
                 for (var i = 0; i < FleetCount; i++)
-                    _inSortie[i] = false;
+                    _fleets[i].State = FleetState.Port;
                 InspectDeck(json.api_deck_port);
                 InspectShipData(json.api_ship);
                 InspectBasic(json.api_basic);
@@ -130,9 +141,9 @@ namespace KancolleSniffer
 
         public void SaveBattleResult()
         {
-            _battleResult = _decks.Where((deck, i) =>
-                    _inSortie[i] && !GetStatus(deck[0]).Spec.IsRepairShip)
-                .SelectMany(deck => deck.Select(GetStatus)).ToArray();
+            _battleResult = _fleets.Where(fleet =>
+                    fleet.State >= FleetState.Sortie && !GetStatus(fleet.Deck[0]).Spec.IsRepairShip)
+                .SelectMany(fleet => fleet.Deck.Select(GetStatus)).ToArray();
         }
 
         private void VerifyBattleResult()
@@ -146,8 +157,8 @@ namespace KancolleSniffer
 
         public void SaveBattleStartStatus()
         {
-            BattleStartStatus = _decks.Where((deck, i) => _inSortie[i])
-                .SelectMany(deck => deck.Select(id => (ShipStatus)GetStatus(id).Clone())).ToArray();
+            BattleStartStatus = _fleets.Where(fleet => fleet.State >= FleetState.Sortie)
+                .SelectMany(fleet => fleet.Deck.Select(id => (ShipStatus)GetStatus(id).Clone())).ToArray();
         }
 
         private void ClearShipInfo()
@@ -161,8 +172,9 @@ namespace KancolleSniffer
             foreach (var entry in json)
             {
                 var fleet = (int)entry.api_id - 1;
-                _decks[fleet] = (int[])entry.api_ship;
-                _inMission[fleet] = (int)entry.api_mission[0] != 0;
+                _fleets[fleet].Deck = (int[])entry.api_ship;
+                if ((int)entry.api_mission[0] != 0)
+                    _fleets[fleet].State = FleetState.Mission;
             }
         }
 
@@ -221,7 +233,7 @@ namespace KancolleSniffer
             var ship = int.Parse(values["api_ship_id"]);
             if (idx == -1)
             {
-                var deck = _decks[fleet];
+                var deck = _fleets[fleet].Deck;
                 for (var i = 1; i < deck.Length; i++)
                     deck[i] = -1;
                 return;
@@ -232,20 +244,20 @@ namespace KancolleSniffer
                 return;
             }
             var of = FindFleet(ship, out var oi);
-            var orig = _decks[fleet][idx];
-            _decks[fleet][idx] = ship;
+            var orig = _fleets[fleet].Deck[idx];
+            _fleets[fleet].Deck[idx] = ship;
             if (of == -1)
                 return;
             // 入れ替えの場合
-            if ((_decks[of][oi] = orig) == -1)
+            if ((_fleets[of].Deck[oi] = orig) == -1)
                 WithdrowShip(of, oi);
         }
 
         private int FindFleet(int ship, out int idx)
         {
-            for (var f = 0; f < _decks.Length; f++)
+            for (var f = 0; f < _fleets.Length; f++)
             {
-                idx = Array.FindIndex(_decks[f], id => id == ship);
+                idx = Array.FindIndex(_fleets[f].Deck, id => id == ship);
                 if (idx < 0)
                     continue;
                 return f;
@@ -256,7 +268,7 @@ namespace KancolleSniffer
 
         private void WithdrowShip(int fleet, int idx)
         {
-            var deck = _decks[fleet];
+            var deck = _fleets[fleet].Deck;
             var j = idx;
             for (var i = idx + 1; i < deck.Length; i++)
             {
@@ -321,13 +333,20 @@ namespace KancolleSniffer
             var fleet = int.Parse(values["api_deck_id"]) - 1;
             if (_combinedFleetType == 0 || fleet > 1)
             {
-                _inSortie[fleet] = true;
+                _fleets[fleet].State = FleetState.Sortie;
             }
             else
             {
-                _inSortie[0] = _inSortie[1] = true;
+                _fleets[0].State = _fleets[1].State = FleetState.Sortie;
             }
             SetBadlyDamagedShips();
+        }
+
+        public void StartPractice(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            var fleet = int.Parse(values["api_deck_id"]) - 1;
+            _fleets[fleet].State = FleetState.Practice;
         }
 
         public void RepairShip(int id)
@@ -339,10 +358,10 @@ namespace KancolleSniffer
 
         public ShipStatus[] GetShipStatuses(int fleet)
         {
-            return _decks[fleet].Where(id => id != -1).Select(GetStatus).ToArray();
+            return _fleets[fleet].Deck.Where(id => id != -1).Select(GetStatus).ToArray();
         }
 
-        public int[] GetDeck(int fleet) => _decks[fleet];
+        public Fleet[] Fleets => _fleets;
 
         public ShipStatus GetStatus(int id)
         {
@@ -369,18 +388,14 @@ namespace KancolleSniffer
 
         public ShipSpec GetSpec(int id) => _shipMaster.GetSpec(id);
 
-        public bool[] InMission => _inMission;
-
-        public bool[] InSortie => _inSortie;
-
         public int CombinedFleetType => _combinedFleetType;
 
         public ShipStatus[] ShipList => _shipInfo.Keys.Where(id => id != -1).Select(GetStatus).ToArray();
 
         public ChargeStatus[] ChargeStatuses
-            => (from deck in _decks
-                let flag = new ChargeStatus(_shipInfo[deck[0]])
-                let others = (from id in deck.Skip(1)
+            => (from fleet in _fleets
+                let flag = new ChargeStatus(_shipInfo[fleet.Deck[0]])
+                let others = (from id in fleet.Deck.Skip(1)
                         select new ChargeStatus(_shipInfo[id]))
                     .Aggregate(
                         (result, next) =>
@@ -485,14 +500,11 @@ namespace KancolleSniffer
         public void SetBadlyDamagedShips()
         {
             BadlyDamagedShips =
-                _inSortie.SelectMany((flag, i) => !flag
-                        ? new ShipStatus[0]
-                        : _combinedFleetType > 0 && i == 1
-                            ? GetShipStatuses(1).Skip(1) // 連合艦隊第二の旗艦を飛ばす
-                            : GetShipStatuses(i))
-                    .Where(s => !s.Escaped && s.DamageLevel == ShipStatus.Damage.Badly)
-                    .Select(s => s.Name)
-                    .ToArray();
+            (from s in _fleets.Where(fleet => fleet.State == FleetState.Sortie)
+                    .SelectMany(fleet => fleet.Deck.Where(id => id != -1).Select(GetStatus))
+                where !s.Escaped && s.DamageLevel == ShipStatus.Damage.Badly &&
+                      !(s.CombinedFleetType > 0 && s.Fleet == 1 && s.DeckIndex == 0) // 第二艦隊の旗艦を除く
+                select s.Name).ToArray();
         }
 
         public void ClearBadlyDamagedShips()
@@ -533,7 +545,7 @@ namespace KancolleSniffer
             var id = _shipInfo.Keys.Count + 1;
             var ships = nowhps.Zip(maxhps,
                 (now, max) => new ShipStatus {Id = id++, NowHp = now, MaxHp = max}).ToArray();
-            _decks[deck] = (from ship in ships select ship.Id).ToArray();
+            _fleets[deck].Deck = (from ship in ships select ship.Id).ToArray();
             foreach (var ship in ships)
                 _shipInfo[ship.Id] = ship;
             foreach (var entry in ships.Zip(slots, (ship, slot) =>new {ship, slot}))

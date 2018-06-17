@@ -432,7 +432,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "deck_001");
-            var result = sniffer.GetDeck(0);
+            var result = sniffer.Fleets[0].Deck;
             PAssert.That(() => new[] {756, 17204, 6156, 28806, 1069, -1}.SequenceEqual(result));
         }
 
@@ -444,7 +444,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "deck_005");
-            var result = sniffer.GetDeck(0);
+            var result = sniffer.Fleets[0].Deck;
             PAssert.That(() => new[] {57391, 50, 24475, 113, -1, -1}.SequenceEqual(result));
         }
 
@@ -457,18 +457,18 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
 
             SniffLogFile(sniffer, "deck_002");
-            var result0 = sniffer.GetDeck(0);
+            var result0 = sniffer.Fleets[0].Deck;
             PAssert.That(() => new[] {1069, 6156, 756, 3223, -1, -1}.SequenceEqual(result0), "編成で艦隊内で艦娘と交換する");
 
             SniffLogFile(sniffer, "deck_003");
-            var result10 = sniffer.GetDeck(0);
-            var result11 = sniffer.GetDeck(1);
+            var result10 = sniffer.Fleets[0].Deck;
+            var result11 = sniffer.Fleets[1].Deck;
             PAssert.That(() => new[] {1069, 6156, 14258, 3223, -1, -1}.SequenceEqual(result10) &&
                                new[] {101, 4487, 756, 14613, 28806, -1}.SequenceEqual(result11), "002に続いて艦隊をまたがって交換する");
 
             SniffLogFile(sniffer, "deck_004");
-            var result20 = sniffer.GetDeck(0);
-            var result21 = sniffer.GetDeck(1);
+            var result20 = sniffer.Fleets[0].Deck;
+            var result21 = sniffer.Fleets[1].Deck;
             PAssert.That(() => new[] {1069, 6156, 14258, 3223, 756, -1}.SequenceEqual(result20) &&
                                new[] {101, 4487, 14613, 28806, -1, -1}.SequenceEqual(result21),
                 "003に続いて空き番号にほかの艦隊の艦娘を配置する");
@@ -482,7 +482,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "preset_001");
-            var result = sniffer.GetDeck(0);
+            var result = sniffer.Fleets[0].Deck;
             PAssert.That(() => new[] {50510, 632, 39843, 113, 478, 47422}.SequenceEqual(result));
         }
 
