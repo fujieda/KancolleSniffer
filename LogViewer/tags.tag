@@ -1289,7 +1289,7 @@ this.setupColumns = function(r) {
                        { data: "B", title: "B" },
                        { data: "C", title: "C" },
                        { data: "D", title: "D" },
-                       { data: "R", title: "R" }];
+                       { data: "R", title: "輸送船" }];
         if (term === "month")
             columns.pop();
         var items = [];
