@@ -83,7 +83,7 @@ namespace KancolleSniffer.Test
         private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected, IEnumerable<int> enemy,
             string msg = null)
         {
-            var result = sniffer.GetShipStatuses(0).Select(s => s.NowHp);
+            var result = sniffer.Fleets[0].Ships.Select(s => s.NowHp);
             PAssert.That(() => expected.SequenceEqual(result), msg);
             var enemyResult = sniffer.Battle.Result.Enemy.Main.Select(s => s.NowHp);
             PAssert.That(() => enemy.SequenceEqual(enemyResult), msg);
@@ -186,8 +186,9 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "escape_001");
-            PAssert.That(() => sniffer.GetShipStatuses(0)[5].Escaped &&
-                               sniffer.GetShipStatuses(1)[2].Escaped);
+            var fleets = sniffer.Fleets;
+            PAssert.That(() => fleets[0].Ships[5].Escaped &&
+                               fleets[1].Ships[2].Escaped);
         }
 
         /// <summary>
@@ -220,7 +221,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "escape_002");
-            PAssert.That(() => sniffer.GetShipStatuses(2)[1].Escaped);
+            PAssert.That(() => sniffer.Fleets[2].Ships[1].Escaped);
             PAssert.That(() => !sniffer.IsBattleResultStatusError);
         }
 
@@ -254,9 +255,10 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "fighterpower_001");
-            PAssert.That(() => sniffer.GetFighterPower(0).SequenceEqual(new[] {156, 159}));
+            var fleet = sniffer.Fleets[0];
+            PAssert.That(() => fleet.FighterPower.SequenceEqual(new[] {156, 159}));
             SniffLogFile(sniffer, "fighterpower_002");
-            PAssert.That(() => sniffer.GetFighterPower(0).SequenceEqual(new[] {140, 143}), "全滅したスロットがある");
+            PAssert.That(() => fleet.FighterPower.SequenceEqual(new[] {140, 143}), "全滅したスロットがある");
         }
 
         /// <summary>
@@ -267,7 +269,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "fighterpower_003");
-            PAssert.That(() => sniffer.GetFighterPower(0).SequenceEqual(new[] {135, 135}));
+            PAssert.That(() => sniffer.Fleets[0].FighterPower.SequenceEqual(new[] {135, 135}));
         }
 
         /// <summary>
@@ -335,11 +337,12 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "lineofsight_001");
-            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0, 1) - 39.45) < 0.01);
-            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0, 3) - 115.19) < 0.01);
-            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0, 4) - 153.06) < 0.01);
+            var fleet = sniffer.Fleets[0];
+            PAssert.That(() => Math.Abs(fleet.GetLineOfSights(1) - 39.45) < 0.01);
+            PAssert.That(() => Math.Abs(fleet.GetLineOfSights(3) - 115.19) < 0.01);
+            PAssert.That(() => Math.Abs(fleet.GetLineOfSights(4) - 153.06) < 0.01);
             SniffLogFile(sniffer, "lineofsight_002");
-            PAssert.That(() => Math.Abs(sniffer.GetFleetLineOfSights(0, 1) - -25.10) < 0.01, "艦隊に空きがある");
+            PAssert.That(() => Math.Abs(fleet.GetLineOfSights(1) - -25.10) < 0.01, "艦隊に空きがある");
         }
 
         /// <summary>
@@ -350,7 +353,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "contact_001");
-            PAssert.That(() => Math.Abs(sniffer.GetContactTriggerRate(0) - 1.8182) < 0.0001);
+            PAssert.That(() => Math.Abs(sniffer.Fleets[0].ContactTriggerRate - 1.8182) < 0.0001);
         }
 
         /// <summary>
@@ -368,7 +371,7 @@ namespace KancolleSniffer.Test
                 var sniffer = new Sniffer();
                 SniffLogFile(sniffer, "transportpoint_00" + (i + 1));
                 var j = i;
-                PAssert.That(() => (int)sniffer.GetShipStatuses(0).Sum(s => s.TransportPoint) == results[j], msgs[j]);
+                PAssert.That(() => (int)sniffer.Fleets[0].TransportPoint == results[j], msgs[j]);
             }
         }
 
@@ -380,7 +383,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "antiairfire_001");
-            var ships = sniffer.GetShipStatuses(0);
+            var ships = sniffer.Fleets[0].Ships;
             PAssert.That(() => ships.Sum(ship => ship.EffectiveAntiAirForFleet) == 88);
             PAssert.That(
                 () =>
@@ -396,7 +399,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "nightbattlepower_001");
-            var ships = sniffer.GetShipStatuses(0);
+            var ships = sniffer.Fleets[0].Ships;
             PAssert.That(() =>
                 ships.Select(ship => (int)(ship.NightBattlePower * 100))
                     .SequenceEqual(new[] {11202, 14985, 20092, 17354}));
@@ -418,9 +421,10 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "firepower_001");
+            var fleet = sniffer.Fleets[0];
             // ReSharper disable CompareOfFloatsByEqualityOperator
-            PAssert.That(() => sniffer.GetShipStatuses(0)[0].EffectiveFirepower == 93.5);
-            PAssert.That(() => sniffer.GetShipStatuses(0)[1].EffectiveFirepower == 82.5);
+            PAssert.That(() => fleet.Ships[0].EffectiveFirepower == 93.5);
+            PAssert.That(() => fleet.Ships[1].EffectiveFirepower == 82.5);
             // ReSharper restore CompareOfFloatsByEqualityOperator
         }
 
@@ -504,7 +508,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "slot_exchange_001");
-            var result = sniffer.GetShipStatuses(0)[0].Slot.Select(item => item.Id);
+            var result = sniffer.Fleets[0].Ships[0].Slot.Select(item => item.Id);
             PAssert.That(() => new[] {26096, 30571, 77694, 61383, -1}.SequenceEqual(result));
         }
 
@@ -516,7 +520,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "powerup_001");
-            PAssert.That(() => Math.Abs(sniffer.GetShipStatuses(0)[0].EffectiveFirepower - 30) < 0.0001);
+            PAssert.That(() => Math.Abs(sniffer.Fleets[0].Ships[0].EffectiveFirepower - 30) < 0.0001);
         }
 
         /// <summary>
@@ -743,7 +747,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer(true);
             SniffLogFile(sniffer, "twofleets_001");
             var expected = Enumerable.Repeat(new ChargeStatus(5, 5), ShipInfo.FleetCount);
-            PAssert.That(() => expected.SequenceEqual(sniffer.ChargeStatuses));
+            PAssert.That(() => expected.SequenceEqual(sniffer.Fleets.Select(f => f.ChargeStatus)));
         }
 
         /// <summary>

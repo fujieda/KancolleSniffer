@@ -519,10 +519,10 @@ namespace KancolleSniffer
             if (!_listForm.Visible)
                 return;
             var idx = (int)((Control)sender).Tag;
-            var statuses = _sniffer.GetShipStatuses(_currentFleet);
-            if (statuses.Length <= idx)
+            var ships = _sniffer.Fleets[_currentFleet].Ships;
+            if (ships.Length <= idx)
                 return;
-            _listForm.ShowShip(statuses[idx].Id);
+            _listForm.ShowShip(ships[idx].Id);
         }
 
         private void UpdateItemInfo()
@@ -636,15 +636,16 @@ namespace KancolleSniffer
 
         private void UpdatePanelShipInfo()
         {
-            var statuses = _sniffer.GetShipStatuses(_currentFleet);
-            panel7Ships.Visible = statuses.Length == 7;
-            _mainLabels.SetShipLabels(statuses);
+            var fleets = _sniffer.Fleets;
+            var ships = fleets[_currentFleet].Ships;
+            panel7Ships.Visible = ships.Length == 7;
+            _mainLabels.SetShipLabels(ships);
             if (_sniffer.CombinedFleetType == 0)
                 _combinedFleet = false;
             labelFleet1.Text = _combinedFleet ? "連合" : "第一";
             panelCombinedFleet.Visible = _combinedFleet;
             if (_combinedFleet)
-                _mainLabels.SetCombinedShipLabels(_sniffer.GetShipStatuses(0), _sniffer.GetShipStatuses(1));
+                _mainLabels.SetCombinedShipLabels(fleets[0].Ships, fleets[1].Ships);
             for (var i = 0; i < _labelCheckFleets.Length; i++)
                 _labelCheckFleets[i].Visible = _currentFleet == i;
             UpdateAkashiTimer();
@@ -664,13 +665,14 @@ namespace KancolleSniffer
 
         public void UpdateFighterPower(bool combined)
         {
+            var fleets = _sniffer.Fleets;
             var fp = combined
-                ? _sniffer.GetFighterPower(0).Zip(_sniffer.GetFighterPower(1), (a, b) => a + b).ToArray()
-                : _sniffer.GetFighterPower(_currentFleet);
+                ? fleets[0].FighterPower.Zip(fleets[1].FighterPower, (a, b) => a + b).ToArray()
+                : fleets[_currentFleet].FighterPower;
             labelFighterPower.Text = fp[0].ToString("D");
             var cr = combined
-                ? _sniffer.GetContactTriggerRate(0) + _sniffer.GetContactTriggerRate(1)
-                : _sniffer.GetContactTriggerRate(_currentFleet);
+                ? fleets[0].ContactTriggerRate + fleets[1].ContactTriggerRate
+                : fleets[_currentFleet].ContactTriggerRate;
             var text = "制空: " + (fp[0] == fp[1] ? $"{fp[0]}" : $"{fp[0]}～{fp[1]}") +
                        $" 触接: {cr * 100:f1}";
             _toolTip.SetToolTip(labelFighterPower, text);
@@ -679,9 +681,10 @@ namespace KancolleSniffer
 
         private void UpdateLoS()
         {
-            labelLoS.Text = RoundDown(_sniffer.GetFleetLineOfSights(_currentFleet, 1)).ToString("F1");
-            var text = $"係数3: {RoundDown(_sniffer.GetFleetLineOfSights(_currentFleet, 3)):F1}\r\n" +
-                       $"係数4: {RoundDown(_sniffer.GetFleetLineOfSights(_currentFleet, 4)):F1}";
+            var fleet = _sniffer.Fleets[_currentFleet];
+            labelLoS.Text = RoundDown(fleet.GetLineOfSights(1)).ToString("F1");
+            var text = $"係数3: {RoundDown(fleet.GetLineOfSights(3)):F1}\r\n" +
+                       $"係数4: {RoundDown(fleet.GetLineOfSights(4)):F1}";
             _toolTip.SetToolTip(labelLoS, text);
             _toolTip.SetToolTip(labelLoSCaption, text);
         }
@@ -751,7 +754,7 @@ namespace KancolleSniffer
 
             for (var i = 0; i < fuelSq.Length; i++)
             {
-                var stat = _sniffer.ChargeStatuses[i];
+                var stat = _sniffer.Fleets[i].ChargeStatus;
                 fuelSq[i].ImageIndex = stat.Fuel;
                 bullSq[i].ImageIndex = stat.Bull;
             }
@@ -908,8 +911,7 @@ namespace KancolleSniffer
         {
             if (_config.UsePresetAkashi)
                 UpdatePresetAkashiTimer();
-            var statuses = _sniffer.GetShipStatuses(_currentFleet);
-            _mainLabels.SetAkashiTimer(statuses,
+            _mainLabels.SetAkashiTimer(_sniffer.Fleets[_currentFleet].Ships,
                 _sniffer.AkashiTimer.GetTimers(_currentFleet));
         }
 

@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="CUDColor.cs" />
     <Compile Include="DockInfo.cs" />
+    <Compile Include="Fleet.cs" />
     <Compile Include="FleetPanel.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -52,7 +52,7 @@ namespace KancolleSniffer.Test
             _battleInfo.InspectBattle(logs[0], logs[1], battle);
             dynamic result = JsonParser.Parse(logs[5]);
             _battleInfo.InspectBattleResult(result);
-            PAssert.That(() => _shipInfo.GetShipStatuses(2)[4].NowHp == 31);
+            PAssert.That(() => _shipInfo.Fleets[2].Ships[4].NowHp == 31);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace KancolleSniffer.Test
             _shipInfo.InjectShips(battle, JsonParser.Parse(logs[0]));
             _battleInfo.InspectBattle(logs[1], logs[2], battle);
             _battleInfo.InspectBattleResult(JsonParser.Parse(logs[6]));
-            PAssert.That(() => _shipInfo.GetShipStatuses(0)[3].NowHp == 12);
+            PAssert.That(() => _shipInfo.Fleets[0].Ships[3].NowHp == 12);
         }
 
         private dynamic Data(string json) => ((dynamic)JsonParser.Parse(json)).api_data;

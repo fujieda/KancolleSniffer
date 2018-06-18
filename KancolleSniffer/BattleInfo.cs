@@ -128,11 +128,12 @@ namespace KancolleSniffer
                 return;
             _shipInfo.SaveBattleStartStatus();
             _fleet = DeckId(json);
-            var fstats = _shipInfo.GetShipStatuses(_fleet);
+            var fleets = _shipInfo.Fleets;
+            var fstats = fleets[_fleet].Ships;
             FlagshipRecovery(request, fstats[0]);
             _friend = Record.Setup(fstats, practice);
             _guard = json.api_f_nowhps_combined()
-                ? Record.Setup(_shipInfo.GetShipStatuses(1), practice)
+                ? Record.Setup(fleets[1].Ships, practice)
                 : new Record[0];
             _enemy = Record.Setup((int[])json.api_e_nowhps,
                 ((int[])json.api_ship_ke).Select(_shipInfo.GetSpec).ToArray(),
@@ -220,9 +221,10 @@ namespace KancolleSniffer
 
         private int[] CalcFighterPower()
         {
+            var fleets = _shipInfo.Fleets;
             if (_guard.Length > 0 && _enemyGuard.Length > 0)
-                return _shipInfo.GetFighterPower(0).Zip(_shipInfo.GetFighterPower(1), (a, b) => a + b).ToArray();
-            return _shipInfo.GetFighterPower(_fleet);
+                return fleets[0].FighterPower.Zip(fleets[1].FighterPower, (a, b) => a + b).ToArray();
+            return fleets[_fleet].FighterPower;
         }
 
         private EnemyFighterPower CalcEnemyFighterPower(dynamic json)
@@ -507,9 +509,10 @@ namespace KancolleSniffer
         {
             if (_friend == null)
                 return;
+            var fleets = _shipInfo.Fleets;
             var ships = _guard.Length > 0
-                ? _shipInfo.GetShipStatuses(0).Concat(_shipInfo.GetShipStatuses(1)).ToArray()
-                : _shipInfo.GetShipStatuses(_fleet);
+                ? fleets[0].Ships.Concat(fleets[1].Ships)
+                : fleets[_fleet].Ships;
             foreach (var entry in ships.Zip(_friend.Concat(_guard), (ship, now) => new {ship, now}))
                 entry.now.UpdateShipStatus(entry.ship);
             if (warnDamagedShip)

@@ -72,18 +72,19 @@ namespace KancolleSniffer
 
         private static StringBuilder GenerateFleetData(Sniffer sniffer, int fleet, ItemName dict)
         {
+            var target = sniffer.Fleets[fleet];
             var sb = new StringBuilder();
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             sb.Append(fn[fleet] + "\r\n");
-            sb.Append(string.Concat(from s in sniffer.GetShipStatuses(fleet)
+            sb.Append(string.Concat(from s in target.Ships
                 select ($"{s.Name} Lv{s.Level} " +
                         string.Join(",",
                             from item in s.AllSlot
                             where item.Id != -1
                             select dict[item.Spec.Name] + ItemStatusString(item))).TrimEnd(' ') + "\r\n"));
-            var fp = sniffer.GetFighterPower(fleet);
+            var fp = target.FighterPower;
             sb.Append($"制空: {(fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1])} " +
-                      $"索敵: {sniffer.GetFleetLineOfSights(fleet, 1):F1}\r\n");
+                      $"索敵: {target.GetLineOfSights(1):F1}\r\n");
             return sb;
         }
 
@@ -144,7 +145,7 @@ namespace KancolleSniffer
                 if (f != 0)
                     sb.Append(",");
                 sb.Append($"\"f{f + 1}\":{{");
-                var ships = sniffer.GetShipStatuses(f);
+                var ships = sniffer.Fleets[f].Ships;
                 for (var s = 0; s < ships.Length; s++)
                 {
                     if (s != 0)

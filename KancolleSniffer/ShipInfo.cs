@@ -19,65 +19,20 @@ using static System.Math;
 
 namespace KancolleSniffer
 {
-    public struct ChargeStatus
-    {
-        public int Fuel { get; set; }
-        public int Bull { get; set; }
-
-        public ChargeStatus(ShipStatus status) : this()
-        {
-            Fuel = CalcChargeState(status.Fuel, status.Spec.FuelMax);
-            Bull = CalcChargeState(status.Bull, status.Spec.BullMax);
-        }
-
-        public ChargeStatus(int fuel, int bull) : this()
-        {
-            Fuel = fuel;
-            Bull = bull;
-        }
-
-        private int CalcChargeState(int now, int full)
-        {
-            if (full == 0 || now == full)
-                return 0;
-            var ratio = (double)now / full;
-            if (ratio >= 7.0 / 9)
-                return 1;
-            if (ratio >= 3.0 / 9)
-                return 2;
-            if (ratio > 0)
-                return 3;
-            return 4;
-        }
-    }
-
-    public enum FleetState
-    {
-        Port,
-        Mission,
-        Sortie,
-        Practice
-    }
-
-    public class Fleet
-    {
-        public FleetState State { get; set; }
-        public int[] Deck { get; set; } = Enumerable.Repeat(-1, ShipInfo.MemberCount).ToArray();
-    }
 
     public class ShipInfo
     {
         public const int FleetCount = 4;
         public const int MemberCount = 6;
 
-        private readonly Fleet[] _fleets = Enumerable.Range(0, FleetCount).Select(x => new Fleet()).ToArray();
+        private readonly Fleet[] _fleets;
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
         private readonly ShipMaster _shipMaster = new ShipMaster();
         private readonly ItemInfo _itemInfo;
-        private int _hqLevel;
         private readonly List<int> _escapedShips = new List<int>();
         private int _combinedFleetType;
         private ShipStatus[] _battleResult = new ShipStatus[0];
+        public int HqLevel { get; private set; }
         public ShipStatusPair[] BattleResultDiff { get; private set; } = new ShipStatusPair[0];
         public bool IsBattleResultError => BattleResultDiff.Length > 0;
         public ShipStatus[] BattleStartStatus { get; private set; } = new ShipStatus[0];
@@ -96,6 +51,7 @@ namespace KancolleSniffer
 
         public ShipInfo(ItemInfo itemInfo)
         {
+            _fleets = Enumerable.Range(0, FleetCount).Select(x => new Fleet(this)).ToArray();
             _itemInfo = itemInfo;
             ClearShipInfo();
         }
@@ -211,7 +167,7 @@ namespace KancolleSniffer
 
         private void InspectBasic(dynamic json)
         {
-            _hqLevel = (int)json.api_level;
+            HqLevel = (int)json.api_level;
         }
 
         public void InspectCharge(dynamic json)
@@ -356,11 +312,6 @@ namespace KancolleSniffer
             s.Cond = Max(40, s.Cond);
         }
 
-        public ShipStatus[] GetShipStatuses(int fleet)
-        {
-            return _fleets[fleet].Deck.Where(id => id != -1).Select(GetStatus).ToArray();
-        }
-
         public Fleet[] Fleets => _fleets;
 
         public ShipStatus GetStatus(int id)
@@ -392,108 +343,10 @@ namespace KancolleSniffer
 
         public ShipStatus[] ShipList => _shipInfo.Keys.Where(id => id != -1).Select(GetStatus).ToArray();
 
-        public ChargeStatus[] ChargeStatuses
-            => (from fleet in _fleets
-                let flag = new ChargeStatus(_shipInfo[fleet.Deck[0]])
-                let others = (from id in fleet.Deck.Skip(1)
-                        select new ChargeStatus(_shipInfo[id]))
-                    .Aggregate(
-                        (result, next) =>
-                            new ChargeStatus(Max(result.Fuel, next.Fuel), Max(result.Bull, next.Bull)))
-                select new ChargeStatus(flag.Fuel != 0 ? flag.Fuel : others.Fuel + 5,
-                    flag.Bull != 0 ? flag.Bull : others.Bull + 5)).ToArray();
-
-        public int[] GetFighterPower(int fleet)
-            => GetShipStatuses(fleet).Where(ship => !ship.Escaped).SelectMany(ship =>
-                    ship.Slot.Zip(ship.OnSlot, (slot, onslot) => slot.CalcFighterPower(onslot)))
-                .Aggregate(new[] {0, 0}, (prev, cur) => new[] {prev[0] + cur[0], prev[1] + cur[1]});
-
-        public double GetContactTriggerRate(int fleet)
-            => GetShipStatuses(fleet).Where(ship => !ship.Escaped).SelectMany(ship =>
-                ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
-                    slot.Spec.ContactTriggerRate * slot.Spec.LoS * Sqrt(onslot))).Sum();
-
         public ShipStatus[] GetRepairList(DockInfo dockInfo)
             => (from s in ShipList
                 where s.NowHp < s.MaxHp && !dockInfo.InNDock(s.Id)
                 select s).OrderByDescending(s => s.RepairTime).ToArray();
-
-        public double GetLineOfSights(int fleet, int factor)
-        {
-            var result = 0.0;
-            var emptyBonus = 6;
-            foreach (var s in GetShipStatuses(fleet).Where(s => !s.Escaped))
-            {
-                emptyBonus--;
-                var itemLoS = 0;
-                foreach (var item in s.Slot)
-                {
-                    var spec = item.Spec;
-                    itemLoS += spec.LoS;
-                    result += (spec.LoS + item.LoSLevelBonus) * spec.LoSScaleFactor * factor;
-                }
-                result += Sqrt(s.LoS - itemLoS);
-            }
-            return result > 0 ? result - Ceiling(_hqLevel * 0.4) + emptyBonus * 2 : 0.0;
-        }
-
-        public double GetDaihatsuBonus(int fleet)
-        {
-            var tokudaiBonus = new[,]
-            {
-                {0.00, 0.00, 0.00, 0.00, 0.00},
-                {0.02, 0.02, 0.02, 0.02, 0.02},
-                {0.04, 0.04, 0.04, 0.04, 0.04},
-                {0.05, 0.05, 0.052, 0.054, 0.054},
-                {0.054, 0.056, 0.058, 0.059, 0.06}
-            };
-            var daihatsu = 0;
-            var tokudai = 0;
-            var bonus = 0.0;
-            var level = 0;
-            var sum = 0;
-            foreach (var ship in GetShipStatuses(fleet))
-            {
-                if (ship.Name == "鬼怒改二")
-                    bonus += 0.05;
-                foreach (var item in ship.Slot)
-                {
-                    switch (item.Spec.Name)
-                    {
-                        case "大発動艇":
-                            level += item.Level;
-                            sum++;
-                            daihatsu++;
-                            bonus += 0.05;
-                            break;
-                        case "特大発動艇":
-                            level += item.Level;
-                            sum++;
-                            tokudai++;
-                            bonus += 0.05;
-                            break;
-                        case "大発動艇(八九式中戦車&陸戦隊)":
-                            level += item.Level;
-                            sum++;
-                            bonus += 0.02;
-                            break;
-                        case "特二式内火艇":
-                            level += item.Level;
-                            sum++;
-                            bonus += 0.01;
-                            break;
-                    }
-                }
-            }
-            var levelAverage = sum == 0 ? 0.0 : (double)level / sum;
-            bonus = Min(bonus, 0.2);
-            return bonus + 0.01 * bonus * levelAverage + tokudaiBonus[Min(tokudai, 4), Min(daihatsu, 4)];
-        }
-
-        public double GetTransportPoint(int fleet)
-        {
-            return GetShipStatuses(fleet).Where(ship => !ship.Escaped).Sum(ship => ship.TransportPoint);
-        }
 
         public string[] BadlyDamagedShips { get; private set; } = new string[0];
 

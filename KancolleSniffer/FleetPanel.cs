@@ -89,12 +89,14 @@ namespace KancolleSniffer
         private void CreateTable(Sniffer sniffer)
         {
             var list = new List<Record>();
+            var fleets = sniffer.Fleets;
             var fn = new[] {"第一", "第二", "第三", "第四"};
             for (var f = 0; f < fn.Length; f++)
             {
                 var total = new Total();
                 var ships = new List<Record>();
-                foreach (var s in sniffer.GetShipStatuses(f))
+                var fleet = fleets[f];
+                foreach (var s in fleet.Ships)
                 {
                     var equips = new List<Record>();
                     for (var i = 0; i < s.Slot.Length; i++)
@@ -150,10 +152,10 @@ namespace KancolleSniffer
                     ships.Add(ship);
                     ships.AddRange(equips);
                 }
-                var daihatsu = sniffer.GetDaihatsuBonus(f);
-                var tp = sniffer.GetTransportPoint(f);
+                var daihatsu = fleet.DaihatsuBonus;
+                var tp = fleet.TransportPoint;
                 if (sniffer.CombinedFleetType != 0 && f == 0)
-                    tp += sniffer.GetTransportPoint(1);
+                    tp += fleets[1].TransportPoint;
                 list.Add(new Record
                 {
                     Fleet = fn[f] + HideIfZero(" Lv", total.Level) +

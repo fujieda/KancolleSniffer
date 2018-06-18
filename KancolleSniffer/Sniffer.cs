@@ -554,8 +554,6 @@ namespace KancolleSniffer
 
         public int[] GetConditionNotice(DateTime prev, DateTime now) => _conditionTimer.GetNotice(prev, now);
 
-        public ShipStatus[] GetShipStatuses(int fleet) => _shipInfo.GetShipStatuses(fleet);
-
         public Fleet[] Fleets => _shipInfo.Fleets;
 
         public ShipInfo.ShipStatusPair[] BattleResultStatusDiff => _shipInfo.BattleResultDiff;
@@ -566,23 +564,11 @@ namespace KancolleSniffer
 
         public int CombinedFleetType => _shipInfo.CombinedFleetType;
 
-        public ChargeStatus[] ChargeStatuses => _shipInfo.ChargeStatuses;
-
-        public int[] GetFighterPower(int fleet) => _shipInfo.GetFighterPower(fleet);
-
-        public double GetContactTriggerRate(int fleet) => _shipInfo.GetContactTriggerRate(fleet);
-
-        public double GetFleetLineOfSights(int fleet, int factor) => _shipInfo.GetLineOfSights(fleet, factor);
-
         public ShipStatus[] RepairList => _shipInfo.GetRepairList(_dockInfo);
 
         public ShipStatus[] ShipList => _shipInfo.ShipList;
 
         public string[] BadlyDamagedShips => _shipInfo.BadlyDamagedShips;
-
-        public double GetDaihatsuBonus(int fleet) => _shipInfo.GetDaihatsuBonus(fleet);
-
-        public double GetTransportPoint(int fleet) => _shipInfo.GetTransportPoint(fleet);
 
         public ItemStatus[] ItemList
         {

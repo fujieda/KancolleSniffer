@@ -113,7 +113,7 @@ namespace KancolleSniffer
             var raw = _expTable[Min(s1, _expTable.Length) - 1] / 100.0 +
                       _expTable[Min(s2, _expTable.Length) - 1] / 300.0;
             var exp = raw >= 500 ? 500 + (int)Sqrt(raw - 500) : (int)raw;
-            var bonus = 1 + TrainingCruiserBonus(_shipInfo.GetShipStatuses(0));
+            var bonus = 1 + TrainingCruiserBonus(_shipInfo.Fleets[0].Ships);
             Text += $"獲得経験値 : {(int)(exp * bonus)}\r\nS勝利 : {(int)((int)(exp * 1.2) * bonus)}";
         }
 

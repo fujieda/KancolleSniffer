@@ -80,9 +80,10 @@ namespace KancolleSniffer
 
         public DateTime GetTimer(int fleet)
         {
-            if (_shipInfo.Fleets[fleet].State != FleetState.Port)
+            var target = _shipInfo.Fleets[fleet];
+            if (target.State != FleetState.Port)
                 return DateTime.MinValue;
-            var cond = _shipInfo.GetShipStatuses(fleet).Select(s => s.Cond).DefaultIfEmpty(49).Min();
+            var cond = target.Ships.Select(s => s.Cond).DefaultIfEmpty(49).Min();
             if (cond >= 49)
                 return DateTime.MinValue;
             var nextRegen = NextRegenTime(_lastUpdate);

@@ -214,7 +214,7 @@ namespace KancolleSniffer
                 else
                     dropName += "+" + itemName;
             }
-            var fp = _shipInfo.GetFighterPower(BattleInfo.DeckId(_battle));
+            var fp = _shipInfo.Fleets[BattleInfo.DeckId(_battle)].FighterPower;
             var fpower = fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1];
             _writer("海戦・ドロップ報告書", string.Join(",", FormatDateTime(_nowFunc()),
                     result.api_quest_name,
@@ -495,7 +495,7 @@ namespace KancolleSniffer
 
         private string Secretary()
         {
-            var ship = _shipInfo.GetShipStatuses(0)[0];
+            var ship = _shipInfo.Fleets[0].Ships[0];
             return ship.Name + "(" + ship.Level + ")";
         }
 
@@ -550,7 +550,7 @@ namespace KancolleSniffer
                 diff[i] = _currentMaterial[i] - after[i];
             var ship1 = Secretary();
             var ship2 = "";
-            var ships = _shipInfo.GetShipStatuses(0);
+            var ships = _shipInfo.Fleets[0].Ships;
             if (ships.Length >= 2)
                 ship2 = ships[1].Name + "(" + ships[1].Level + ")";
             _writer("改修報告書",
