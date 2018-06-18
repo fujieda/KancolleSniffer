@@ -672,7 +672,7 @@ namespace KancolleSniffer
                 if (_map == 63 && _boss && QuestSortie.CompareRank(rank, "A") <= 0)
                 {
                     var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.ShipType).ToArray();
-                    if (fleet.Count(s => s == 3) == 2 && fleet.Count(s => s == 16) == 1)
+                    if (fleet.Count(s => s == 3) >= 2 && fleet.Count(s => s == 16) >= 1)
                         IncrementCount(q862.Count);
                 }
             }

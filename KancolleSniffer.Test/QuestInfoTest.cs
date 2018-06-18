@@ -756,9 +756,10 @@ namespace KancolleSniffer.Test
             PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "轟沈あり");
             battleInfo.Result.Friend.Main[1].NowHp = 1;
 
+            battleInfo.Result.Friend.Main[3].Spec.ShipType = 3;
             battleInfo.Result.Friend.Main[4].Spec.ShipType = 16;
             questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
-            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "水母2隻");
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 2, "軽巡3隻水母2隻");
         }
 
         /// <summary>
