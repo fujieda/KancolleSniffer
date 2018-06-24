@@ -67,6 +67,7 @@
     <Compile Include="BattleResultPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CellInfo.cs" />
     <Compile Include="ErrorLog.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigDialog.cs">

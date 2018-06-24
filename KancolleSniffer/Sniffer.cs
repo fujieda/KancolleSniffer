@@ -36,6 +36,7 @@ namespace KancolleSniffer
         private readonly MiscTextInfo _miscTextInfo;
         private readonly BaseAirCoprs _baseAirCoprs;
         private readonly PresetDeck _presetDeck = new PresetDeck();
+        private readonly CellInfo _cellInfo = new CellInfo();
         private readonly Status _status = new Status();
         private bool _saveState;
         private readonly List<IHaveState> _haveState;
@@ -63,7 +64,8 @@ namespace KancolleSniffer
             Mission = 1 << 6,
             QuestList = 1 << 7,
             Battle = 1 << 8,
-            All = (1 << 9) - 1
+            Cell = 1 << 9,
+            All = (1 << 10) - 1
         }
 
         public Sniffer(bool start = false)
@@ -161,6 +163,7 @@ namespace KancolleSniffer
             _battleInfo.BattleState = BattleState.None;
             _shipInfo.ClearEscapedShips();
             _miscTextInfo.Port();
+            _cellInfo.Port();
             SaveState();
             RepeatingTimerController?.Resume();
             foreach (var s in new[] {"遠征終了", "入渠終了", "疲労回復", "泊地修理"})
@@ -333,6 +336,7 @@ namespace KancolleSniffer
             {
                 _battleInfo.InspectBattle(url, request, data);
                 _logger.InspectBattle(data);
+                _cellInfo.StartBattle();
                 return Update.Ship | Update.Battle;
             }
             if (url.EndsWith("api_req_practice/battle") || url.EndsWith("api_req_practice/midnight_battle"))
@@ -474,8 +478,9 @@ namespace KancolleSniffer
                 _logger.InspectMapStart(data);
                 _miscTextInfo.InspectMapStart(data);
                 _questInfo.InspectMapStart(data);
+                _cellInfo.InspectMapStart(data);
                 RepeatingTimerController?.Suspend();
-                return Update.Timer | Update.Ship;
+                return Update.Timer | Update.Ship | Update.Cell;
             }
             if (url.EndsWith("api_req_map/next"))
             {
@@ -484,7 +489,8 @@ namespace KancolleSniffer
                 _logger.InspectMapNext(data);
                 _questInfo.InspectMapNext(data);
                 _miscTextInfo.InspectMapNext(data);
-                return Update.None;
+                _cellInfo.InspectMapNext(data);
+                return Update.Cell;
             }
             if (url.EndsWith("api_req_mission/start"))
             {
@@ -592,6 +598,8 @@ namespace KancolleSniffer
         public string MiscText => _miscTextInfo.Text;
 
         public BaseAirCoprs.BaseInfo[] BaseAirCorps => _baseAirCoprs.AllAirCorps;
+
+        public string CellInfo => _cellInfo.Text;
 
         public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)
         {

@@ -132,6 +132,7 @@ namespace KancolleSniffer
             this.openSoundFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
+            this.checkBoxNextCell = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tabPageWindow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -455,6 +456,7 @@ namespace KancolleSniffer
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.checkBoxNextCell);
             this.groupBox3.Controls.Add(this.checkBoxBattleResult);
             this.groupBox3.Controls.Add(this.checkBoxAirBattleResult);
             this.groupBox3.Controls.Add(this.checkBoxResultRank);
@@ -469,7 +471,7 @@ namespace KancolleSniffer
             // checkBoxBattleResult
             // 
             this.checkBoxBattleResult.AutoSize = true;
-            this.checkBoxBattleResult.Location = new System.Drawing.Point(147, 21);
+            this.checkBoxBattleResult.Location = new System.Drawing.Point(123, 21);
             this.checkBoxBattleResult.Name = "checkBoxBattleResult";
             this.checkBoxBattleResult.Size = new System.Drawing.Size(48, 16);
             this.checkBoxBattleResult.TabIndex = 2;
@@ -479,7 +481,7 @@ namespace KancolleSniffer
             // checkBoxAirBattleResult
             // 
             this.checkBoxAirBattleResult.AutoSize = true;
-            this.checkBoxAirBattleResult.Location = new System.Drawing.Point(84, 21);
+            this.checkBoxAirBattleResult.Location = new System.Drawing.Point(60, 21);
             this.checkBoxAirBattleResult.Name = "checkBoxAirBattleResult";
             this.checkBoxAirBattleResult.Size = new System.Drawing.Size(60, 16);
             this.checkBoxAirBattleResult.TabIndex = 1;
@@ -491,9 +493,9 @@ namespace KancolleSniffer
             this.checkBoxResultRank.AutoSize = true;
             this.checkBoxResultRank.Location = new System.Drawing.Point(9, 21);
             this.checkBoxResultRank.Name = "checkBoxResultRank";
-            this.checkBoxResultRank.Size = new System.Drawing.Size(72, 16);
+            this.checkBoxResultRank.Size = new System.Drawing.Size(48, 16);
             this.checkBoxResultRank.TabIndex = 0;
-            this.checkBoxResultRank.Text = "勝利判定";
+            this.checkBoxResultRank.Text = "勝敗";
             this.checkBoxResultRank.UseVisualStyleBackColor = true;
             // 
             // groupBox2
@@ -1095,6 +1097,16 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
+            // checkBoxNextCell
+            // 
+            this.checkBoxNextCell.AutoSize = true;
+            this.checkBoxNextCell.Location = new System.Drawing.Point(174, 21);
+            this.checkBoxNextCell.Name = "checkBoxNextCell";
+            this.checkBoxNextCell.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxNextCell.TabIndex = 3;
+            this.checkBoxNextCell.Text = "進路";
+            this.checkBoxNextCell.UseVisualStyleBackColor = true;
+            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1240,5 +1252,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.CheckBox checkBoxBattleResult;
         private System.Windows.Forms.CheckBox checkBoxAirBattleResult;
         private System.Windows.Forms.CheckBox checkBoxResultRank;
+        private System.Windows.Forms.CheckBox checkBoxNextCell;
     }
 }

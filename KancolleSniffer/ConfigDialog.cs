@@ -88,6 +88,7 @@ namespace KancolleSniffer
             checkBoxResultRank.Checked = (_config.Spoilers & Spoiler.ResultRank) != 0;
             checkBoxAirBattleResult.Checked = (_config.Spoilers & Spoiler.AirBattleResult) != 0;
             checkBoxBattleResult.Checked = (_config.Spoilers & Spoiler.BattleResult) != 0;
+            checkBoxNextCell.Checked = (_config.Spoilers & Spoiler.NextCell) != 0;
             checkBoxPresetAkashi.Checked = _config.UsePresetAkashi;
 
             numericUpDownSoundVolume.Value = _config.Sounds.Volume;
@@ -190,7 +191,8 @@ namespace KancolleSniffer
 
             _config.Spoilers = (checkBoxResultRank.Checked ? Spoiler.ResultRank : 0) |
                                (checkBoxAirBattleResult.Checked ? Spoiler.AirBattleResult : 0) |
-                               (checkBoxBattleResult.Checked ? Spoiler.BattleResult : 0);
+                               (checkBoxBattleResult.Checked ? Spoiler.BattleResult : 0) |
+                               (checkBoxNextCell.Checked ? Spoiler.NextCell : 0);
             _config.UsePresetAkashi = checkBoxPresetAkashi.Checked;
 
             _config.Sounds.Volume = (int)numericUpDownSoundVolume.Value;

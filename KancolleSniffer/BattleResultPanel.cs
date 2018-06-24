@@ -31,12 +31,12 @@ namespace KancolleSniffer
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
         private readonly BattleInfo.BattleResult[] _result = new BattleInfo.BattleResult[2];
-        private Label _phaseLabel, _rankLabel;
+        private Label _phaseLabel, _rankLabel, _cellLabel;
         private BattleState _prevBattleState;
         private readonly BattleResultRank[] _rank = new BattleResultRank[2];
         private readonly InformationPanel _infomationPanel;
 
-        public bool Spoiler { get; set; }
+        public Spoiler Spoilers { get; set; }
 
         public BattleResultPanel()
         {
@@ -76,7 +76,7 @@ namespace KancolleSniffer
             }
             if (state != BattleState.Day && state != BattleState.Night)
                 return;
-            if (Spoiler)
+            if ((Spoilers & Spoiler.BattleResult) != 0)
             {
                 ShowResult(sniffer.Battle.Result);
                 ShowResultRank(sniffer.Battle.ResultRank);
@@ -284,6 +284,17 @@ namespace KancolleSniffer
             _rankLabel.Text = result[(int)rank];
         }
 
+        public void UpdateCellInfo(Sniffer sniffer)
+        {
+            var text = sniffer.CellInfo;
+            if (text == null)
+                return;
+            if ((Spoilers & Spoiler.NextCell) == 0 && text[0] == '次')
+                return;
+            _cellLabel.Text = sniffer.CellInfo;
+            _cellLabel.Location = new Point(ClientSize.Width - _cellLabel.Width - 2, 4);
+        }
+
         private void CreateLabels()
         {
             _phaseLabel = new Label
@@ -299,6 +310,12 @@ namespace KancolleSniffer
                 Size = new Size(42, 12)
             };
             Controls.Add(_rankLabel);
+            _cellLabel = new Label
+            {
+                Location = new Point(0, 4),
+                AutoSize = true,
+            };
+            Controls.Add(_cellLabel);
             for (var i = 0; i < 13; i++)
             {
                 var y = LineHeight * i + 38;

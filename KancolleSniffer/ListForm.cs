@@ -117,8 +117,14 @@ namespace KancolleSniffer
 
         public void UpdateBattleResult()
         {
-            battleResultPanel.Spoiler = (_config.Spoilers & Spoiler.BattleResult) != 0;
+            battleResultPanel.Spoilers = _config.Spoilers;
             battleResultPanel.Update(_sniffer);
+        }
+
+        public void UpdateCellInfo()
+        {
+            battleResultPanel.Spoilers = _config.Spoilers;
+            battleResultPanel.UpdateCellInfo(_sniffer);
         }
 
         private void SetHeaderSortOrder()

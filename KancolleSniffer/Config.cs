@@ -186,7 +186,8 @@ namespace KancolleSniffer
         ResultRank = 1,
         AirBattleResult = 1 << 1,
         BattleResult = 1 << 2,
-        All = (1 << 3) - 1
+        NextCell = 1 << 3,
+        All = (1 << 4) - 1
     }
 
     [Flags]

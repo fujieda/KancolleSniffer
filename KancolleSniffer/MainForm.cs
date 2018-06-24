@@ -284,6 +284,8 @@ namespace KancolleSniffer
                 UpdateShipInfo();
             if ((update & Sniffer.Update.Battle) != 0)
                 UpdateBattleInfo();
+            if ((update & Sniffer.Update.Cell) != 0)
+                UpdateCellInfo();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -707,7 +709,15 @@ namespace KancolleSniffer
             if ((_config.Spoilers & Spoiler.ResultRank) != 0)
                 ShowResultRank();
             if (_sniffer.Battle.BattleState == BattleState.Day)
+            {
                 _listForm.UpdateAirBattleResult();
+                _listForm.UpdateCellInfo();
+            }
+        }
+
+        private void UpdateCellInfo()
+        {
+            _listForm.UpdateCellInfo();
         }
 
         private void ResetBattleInfo()
