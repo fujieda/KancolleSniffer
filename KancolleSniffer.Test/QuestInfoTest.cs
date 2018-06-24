@@ -480,6 +480,9 @@ namespace KancolleSniffer.Test
             PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "駆逐軽巡以外");
         }
 
+        private ShipStatus ShipStatus(int shipType, int shipClass, int specId) =>
+            new ShipStatus {NowHp = 1, Spec = new ShipSpec {Id = specId, ShipType = shipType, ShipClass = shipClass}};
+
         /// <summary>
         /// 257: 「水上打撃部隊」南方へ！
         /// </summary>
@@ -490,11 +493,14 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {259}));
 
-            battleInfo.InjectResultStatus(new[]
+            var org = new[]
             {
-                ShipStatus(3, 183), ShipStatus(9, 276), ShipStatus(10, 411),
-                ShipStatus(10, 412), ShipStatus(5, 193), ShipStatus(5, 194)
-            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+                ShipStatus(3, 52, 321), ShipStatus(9, 19, 276), ShipStatus(10, 26, 411),
+                ShipStatus(10, 26, 412), ShipStatus(5, 29, 193), ShipStatus(5, 29, 194)
+            };
+            battleInfo.InjectResultStatus(
+                org.ToArray(), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 5,
@@ -519,14 +525,19 @@ namespace KancolleSniffer.Test
             PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "軽巡轟沈");
             battleInfo.Result.Friend.Main[0].NowHp = 1;
 
-            battleInfo.Result.Friend.Main[4].Spec = new ShipSpec {Id = 136, ShipType = 9};
+            battleInfo.Result.Friend.Main[4] = ShipStatus(9, 37, 136);
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "戦艦4隻");
-            battleInfo.Result.Friend.Main[4].Spec = new ShipSpec {Id = 193, ShipType = 5};
+            battleInfo.Result.Friend.Main[4] = org[4];
 
-            battleInfo.Result.Friend.Main[0].Spec = new ShipSpec {Id = 58, ShipType = 4};
+            battleInfo.Result.Friend.Main[0] = ShipStatus(4, 4, 58);
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => questInfo.Quests[0].Count.Now == 0, "軽巡なし");
+            battleInfo.Result.Friend.Main[0] = org[0];
+
+            battleInfo.Result.Friend.Main[2] = ShipStatus(10, 2, 553);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1, "伊勢改二");
         }
 
         /// <summary>

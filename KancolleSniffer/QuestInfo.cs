@@ -606,18 +606,14 @@ namespace KancolleSniffer
                 if (_map == 51 && _boss && QuestSortie.CompareRank(rank, "S") == 0)
                 {
                     var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec).ToArray();
-                    var senkan = new[]
+                    var ctype = new[]
                     {
-                        131, 136, // 大和
-                        143, 148, 546, // 武蔵
-                        80, 275, 541, // 長門
-                        81, 276, // 陸奥
-                        26, 286, 411, // 扶桑
-                        27, 287, 412, // 山城
-                        77, 82, // 伊勢
-                        87, 88 // 日向
+                        2, // 伊勢型
+                        19, // 長門型
+                        26, // 扶桑型
+                        37 // 大和型
                     };
-                    if (fleet.Select(s => s.Id).Intersect(senkan).Count() == 3 &&
+                    if (fleet.Select(s => s.ShipClass).Count(c => ctype.Contains(c)) == 3 &&
                         fleet.Count(s => s.ShipType == 3) > 0)
                     {
                         IncrementCount(q259.Count);

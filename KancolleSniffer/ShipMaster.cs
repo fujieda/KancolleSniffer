@@ -41,7 +41,8 @@ namespace KancolleSniffer
                     BullMax = entry.api_bull_max() ? (int)entry.api_bull_max : 0,
                     SlotNum = (int)entry.api_slot_num,
                     ShipType = (int)entry.api_stype,
-                    ShipTypeName = dict[entry.api_stype]
+                    ShipTypeName = dict[entry.api_stype],
+                    ShipClass = entry.api_ctype() ? (int)entry.api_ctype : 0
                 };
                 if (entry.api_afterlv())
                 {
@@ -114,6 +115,7 @@ namespace KancolleSniffer
         public int SlotNum { get; set; }
         public int[] MaxEq { get; set; }
         public int ShipType { get; set; }
+        public int ShipClass { get; set; }
         public string ShipTypeName { get; set; }
         public RemodelInfo Remodel { get; } = new RemodelInfo();
 
