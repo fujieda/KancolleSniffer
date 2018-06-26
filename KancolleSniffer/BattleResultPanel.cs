@@ -31,7 +31,8 @@ namespace KancolleSniffer
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
         private readonly BattleInfo.BattleResult[] _result = new BattleInfo.BattleResult[2];
-        private Label _phaseLabel, _rankLabel, _cellLabel;
+        private Label _phaseLabel, _rankLabel;
+        private CellInfoLabel _cellLabel;
         private BattleState _prevBattleState;
         private readonly BattleResultRank[] _rank = new BattleResultRank[2];
         private readonly InformationPanel _infomationPanel;
@@ -286,13 +287,41 @@ namespace KancolleSniffer
 
         public void UpdateCellInfo(Sniffer sniffer)
         {
-            var text = sniffer.CellInfo;
-            if (text == null)
-                return;
-            if ((Spoilers & Spoiler.NextCell) == 0 && text[0] == '次')
-                return;
-            _cellLabel.Text = sniffer.CellInfo;
-            _cellLabel.Location = new Point(ClientSize.Width - _cellLabel.Width - 2, 4);
+            _cellLabel.Update(sniffer);
+        }
+
+        private class CellInfoLabel : Label
+        {
+            private string _cellInfo;
+
+            public void Update(Sniffer sniffer)
+            {
+                var spoilers = ((BattleResultPanel)Parent).Spoilers;
+                _cellInfo = sniffer.CellInfo;
+                if (_cellInfo == null)
+                    return;
+                if ((spoilers & Spoiler.NextCell) == 0 && _cellInfo[0] == '次')
+                {
+                    Text = "次";
+                    BorderStyle = BorderStyle.FixedSingle;
+                    Location = new Point(Parent.ClientSize.Width - Width - 6, 3);
+                    return;
+                }
+                ShowCellInfo();
+            }
+
+            private void ShowCellInfo()
+            {
+                Text = _cellInfo;
+                BorderStyle = BorderStyle.None;
+                Location = new Point(Parent.ClientSize.Width - Width - 2, 4);
+            }
+
+            protected override void OnClick(EventArgs e)
+            {
+                base.OnClick(e);
+                ShowCellInfo();
+            }
         }
 
         private void CreateLabels()
@@ -310,7 +339,7 @@ namespace KancolleSniffer
                 Size = new Size(42, 12)
             };
             Controls.Add(_rankLabel);
-            _cellLabel = new Label
+            _cellLabel = new CellInfoLabel
             {
                 Location = new Point(0, 4),
                 AutoSize = true,
