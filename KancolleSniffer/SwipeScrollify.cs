@@ -161,6 +161,8 @@ namespace KancolleSniffer
 
             public void MouseDown(IntPtr handle, ref bool handled)
             {
+                if (!_panel.ScrollBar.Visible)
+                    return;
                 if (!_mouseStart.IsEmpty)
                     return;
                 if (!_panel.RectangleToScreen(_panel.ClientRectangle).Contains(Control.MousePosition) ||
