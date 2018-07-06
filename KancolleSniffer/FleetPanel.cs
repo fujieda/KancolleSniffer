@@ -89,13 +89,11 @@ namespace KancolleSniffer
         private void CreateTable(Sniffer sniffer)
         {
             var list = new List<Record>();
-            var fleets = sniffer.Fleets;
             var fn = new[] {"第一", "第二", "第三", "第四"};
-            for (var f = 0; f < fn.Length; f++)
+            foreach (var fleet in sniffer.Fleets)
             {
                 var total = new Total();
                 var ships = new List<Record>();
-                var fleet = fleets[f];
                 foreach (var s in fleet.Ships)
                 {
                     var equips = new List<Record>();
@@ -154,11 +152,11 @@ namespace KancolleSniffer
                 }
                 var daihatsu = fleet.DaihatsuBonus;
                 var tp = fleet.TransportPoint;
-                if (sniffer.CombinedFleetType != 0 && f == 0)
-                    tp += fleets[1].TransportPoint;
+                if (sniffer.IsCombinedFleet && fleet.Number == 0)
+                    tp += sniffer.Fleets[1].TransportPoint;
                 list.Add(new Record
                 {
-                    Fleet = fn[f] + HideIfZero(" Lv", total.Level) +
+                    Fleet = fn[fleet.Number] + HideIfZero(" Lv", total.Level) +
                             HideIfZero(" ドラム缶", total.Drum) + HideIfZero("(", total.DrumShips, "隻)") +
                             HideIfZero(" 大発", daihatsu * 100, "%"),
                     Fleet2 = "計:" +
@@ -167,7 +165,7 @@ namespace KancolleSniffer
                              " 潜" + CutOverFlow(total.AntiSubmarine) +
                              " 索" + CutOverFlow(total.LoS) + "\r\n" +
                              $"戦闘:燃{total.Fuel / 5}弾{total.Bull / 5} 支援:燃{total.Fuel / 2}弾{(int)(total.Bull * 0.8)}" +
-                             (sniffer.CombinedFleetType != 0 && f == 1 ? "" : $"\r\nTP:S{(int)tp} A{(int)(tp * 0.7)}")
+                             (sniffer.IsCombinedFleet && fleet.Number == 1 ? "" : $"\r\nTP:S{(int)tp} A{(int)(tp * 0.7)}")
                 });
                 list.AddRange(ships);
             }

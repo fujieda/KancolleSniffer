@@ -86,7 +86,7 @@ namespace KancolleSniffer
                             var ship = byShip.First().Holder;
                             var name = byShip.Key == -1
                                 ? "未装備x" + byShip.Count()
-                                : (ship.Fleet != -1 ? ship.Fleet + 1 + " " : "") +
+                                : (ship.Fleet == null ? "" : ship.Fleet.Number + 1 + " ") +
                                   ship.Name + (ship.Level > 0 ? "Lv" + ship.Level : "") + "x" + byShip.Count();
                             paramNode.Nodes.Add(name, name);
                         }

@@ -95,17 +95,17 @@ namespace KancolleSniffer
             var result = new int[ShipInfo.FleetCount];
             if (prev == DateTime.MinValue)
                 return result;
-            for (var f = 0; f < result.Length; f++)
+            foreach (var fleet in _shipInfo.Fleets)
             {
-                if (_shipInfo.Fleets[f].State != FleetState.Port)
+                if (fleet.State != FleetState.Port)
                     continue;
-                var timer = GetTimer(f);
+                var timer = GetTimer(fleet.Number);
                 if (timer == DateTime.MinValue || prev < _lastUpdate)
                     continue;
                 if (prev < timer.AddMinutes(-9) && now >= timer.AddMinutes(-9))
-                    result[f] = 40;
+                    result[fleet.Number] = 40;
                 else if (prev < timer && now >= timer)
-                    result[f] = 49;
+                    result[fleet.Number] = 49;
             }
             return result;
         }

@@ -642,7 +642,7 @@ namespace KancolleSniffer
             var ships = fleets[_currentFleet].Ships;
             panel7Ships.Visible = ships.Length == 7;
             _mainLabels.SetShipLabels(ships);
-            if (_sniffer.CombinedFleetType == 0)
+            if (!_sniffer.IsCombinedFleet)
                 _combinedFleet = false;
             labelFleet1.Text = _combinedFleet ? "連合" : "第一";
             panelCombinedFleet.Visible = _combinedFleet;
@@ -740,7 +740,7 @@ namespace KancolleSniffer
                 _toolTip.SetToolTip(labelEnemyFighterPower, text);
                 _toolTip.SetToolTip(labelEnemyFighterPowerCaption, text);
             }
-            UpdateFighterPower(_sniffer.CombinedFleetType > 0 && battle.EnemyIsCombined);
+            UpdateFighterPower(_sniffer.IsCombinedFleet && battle.EnemyIsCombined);
             labelFighterPower.ForeColor = new[]
                 {DefaultForeColor, DefaultForeColor, CUDColor.Blue, CUDColor.Green, CUDColor.Orange, CUDColor.Red}[
                 battle.AirControlLevel + 1];
@@ -1134,7 +1134,7 @@ namespace KancolleSniffer
             {
                 if (fleet > 0)
                     return;
-                _combinedFleet = _sniffer.CombinedFleetType > 0 && !_combinedFleet;
+                _combinedFleet = _sniffer.IsCombinedFleet && !_combinedFleet;
                 UpdatePanelShipInfo();
                 return;
             }
@@ -1145,7 +1145,7 @@ namespace KancolleSniffer
 
         private void labelFleet1_MouseHover(object sender, EventArgs e)
         {
-            labelFleet1.Text = _currentFleet == 0 && _sniffer.CombinedFleetType > 0 && !_combinedFleet ? "連合" : "第一";
+            labelFleet1.Text = _currentFleet == 0 && _sniffer.IsCombinedFleet && !_combinedFleet ? "連合" : "第一";
         }
 
         private void labelFleet1_MouseLeave(object sender, EventArgs e)

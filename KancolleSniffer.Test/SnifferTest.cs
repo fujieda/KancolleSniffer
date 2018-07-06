@@ -432,10 +432,24 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "firepower_001");
-            var fleet = sniffer.Fleets[0];
+            var ships = sniffer.Fleets[0].Ships;
             // ReSharper disable CompareOfFloatsByEqualityOperator
-            PAssert.That(() => fleet.Ships[0].EffectiveFirepower == 93.5);
-            PAssert.That(() => fleet.Ships[1].EffectiveFirepower == 82.5);
+            PAssert.That(() => ships[0].EffectiveFirepower == 93.5);
+            PAssert.That(() => ships[1].EffectiveFirepower == 82.5);
+            // ReSharper restore CompareOfFloatsByEqualityOperator
+        }
+
+        /// <summary>
+        /// 連合艦隊補正の載った火力を計算する
+        /// </summary>
+        [TestMethod]
+        public void CombinedFleetFirepower()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_status_001");
+            // ReSharper disable CompareOfFloatsByEqualityOperator
+            PAssert.That(() => sniffer.Fleets[0].Ships[0].EffectiveFirepower == 117.0);
+            PAssert.That(() => sniffer.Fleets[1].Ships[0].EffectiveFirepower == 72.0);
             // ReSharper restore CompareOfFloatsByEqualityOperator
         }
 

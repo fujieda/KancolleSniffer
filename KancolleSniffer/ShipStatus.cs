@@ -22,7 +22,7 @@ namespace KancolleSniffer
     public class ShipStatus : ICloneable
     {
         public int Id { get; set; }
-        public int Fleet { get; set; }
+        public Fleet Fleet { get; set; }
         public int DeckIndex { get; set; }
         public ShipSpec Spec { get; set; }
 
@@ -51,14 +51,11 @@ namespace KancolleSniffer
 
         public Damage DamageLevel => CalcDamage(NowHp, MaxHp);
 
-        public int CombinedFleetType { get; set; }
-
         public IEnumerable<ItemStatus> AllSlot => SlotEx.Id == 0 ? Slot : Slot.Concat(new[] {SlotEx});
 
         public ShipStatus()
         {
             Id = -1;
-            Fleet = -1;
             Spec = new ShipSpec();
             OnSlot = new int[0];
             Slot = new ItemStatus[0];
@@ -102,34 +99,14 @@ namespace KancolleSniffer
                                      Slot.Any(item => item.Spec.Type == 8); // 艦攻装備
                 var levelBonus = AllSlot.Sum(item => item.FirepowerLevelBonus);
                 if (!Spec.IsAircraftCarrier && !isRyuseiAttack)
-                    return Firepower + levelBonus + CombinedFleetFirepowerBonus + 5;
+                    return Firepower + levelBonus + Fleet.CombinedFirepowerBonus + 5;
                 var specs = (from item in Slot where item.Spec.IsAircraft select item.Spec).ToArray();
                 var torpedo = specs.Sum(s => s.Torpedo);
                 var bomber = specs.Sum(s => s.Bomber);
                 if (torpedo == 0 && bomber == 0)
                     return 0;
                 return (int)((Firepower + torpedo + levelBonus +
-                              (int)(bomber * 1.3) + CombinedFleetFirepowerBonus) * 1.5) + 55;
-            }
-        }
-
-        private int CombinedFleetFirepowerBonus
-        {
-            get
-            {
-                switch (CombinedFleetType)
-                {
-                    case 0:
-                        return 0;
-                    case 1: // 機動
-                        return Fleet == 0 ? 2 : 10;
-                    case 2: // 水上
-                        return Fleet == 0 ? 10 : -5;
-                    case 3: // 輸送
-                        return Fleet == 0 ? -5 : 10;
-                    default:
-                        return 0;
-                }
+                              (int)(bomber * 1.3) + Fleet.CombinedFirepowerBonus) * 1.5) + 55;
             }
         }
 
@@ -139,11 +116,9 @@ namespace KancolleSniffer
             {
                 if (Spec.IsAircraftCarrier || Torpedo == 0)
                     return 0;
-                return Torpedo + AllSlot.Sum(item => item.TorpedoLevelBonus) + CombinedFleetTorpedoPenalty + 5;
+                return Torpedo + AllSlot.Sum(item => item.TorpedoLevelBonus) + Fleet.CombinedTorpedoPenalty + 5;
             }
         }
-
-        private int CombinedFleetTorpedoPenalty => CombinedFleetType > 0 && Fleet == 1 ? -5 : 0;
 
         public double EffectiveAntiSubmarine
         {

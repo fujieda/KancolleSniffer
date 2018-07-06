@@ -176,14 +176,14 @@ namespace KancolleSniffer
 
         public void CheckFleet()
         {
-            for (var fleet = 0; fleet < ShipInfo.FleetCount; fleet++)
+            foreach (var fleet in _shipInfo.Fleets)
                 CheckFleet(fleet);
         }
 
-        private void CheckFleet(int fleet)
+        private void CheckFleet(Fleet fleet)
         {
-            var deck = _shipInfo.Fleets[fleet].Deck.ToArray();
-            var repair = _repairStatuses[fleet];
+            var deck = fleet.Deck.ToArray();
+            var repair = _repairStatuses[fleet.Number];
             var fs = _shipInfo.GetStatus(deck[0]);
             repair.State = State.Continue;
             if (!fs.Spec.IsRepairShip)

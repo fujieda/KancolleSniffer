@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 using System.Linq;
 using static System.Math;
 
@@ -58,16 +57,27 @@ namespace KancolleSniffer
         Practice
     }
 
+    public enum CombinedType
+    {
+        None,
+        Carrier, // 機動
+        Surface, // 水上
+        Transport // 輸送
+    }
+
     public class Fleet
     {
         private readonly ShipInfo _shipInfo;
+        public int Number { get; }
         public FleetState State { get; set; }
+        public CombinedType CombinedType { get; set; }
         public int[] Deck { get; set; } = Enumerable.Repeat(-1, ShipInfo.MemberCount).ToArray();
         public ShipStatus[] Ships => Deck.Where(id => id != -1).Select(_shipInfo.GetStatus).ToArray();
 
-        public Fleet(ShipInfo shipInfo)
+        public Fleet(ShipInfo shipInfo, int number)
         {
             _shipInfo = shipInfo;
+            Number = number;
         }
 
         public ChargeStatus ChargeStatus
@@ -167,5 +177,27 @@ namespace KancolleSniffer
         }
 
         public double TransportPoint => Ships.Where(ship => !ship.Escaped).Sum(ship => ship.TransportPoint);
+
+        public int CombinedFirepowerBonus
+        {
+            get
+            {
+                switch (CombinedType)
+                {
+                    case CombinedType.None:
+                        return 0;
+                    case CombinedType.Carrier:
+                        return Number == 0 ? 2 : 10;
+                    case CombinedType.Surface:
+                        return Number == 0 ? 10 : -5;
+                    case CombinedType.Transport:
+                        return Number == 0 ? -5 : 10;
+                    default:
+                        return 0;
+                }
+            }
+        }
+
+        public int CombinedTorpedoPenalty => CombinedType != 0 && Number == 1 ? -5 : 0;
     }
 }

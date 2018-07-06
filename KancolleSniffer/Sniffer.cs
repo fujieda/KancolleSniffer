@@ -568,7 +568,7 @@ namespace KancolleSniffer
 
         public ShipStatus[] BattleStartStatus => _shipInfo.BattleStartStatus;
 
-        public int CombinedFleetType => _shipInfo.CombinedFleetType;
+        public bool IsCombinedFleet => _shipInfo.Fleets[0].CombinedType != 0;
 
         public ShipStatus[] RepairList => _shipInfo.GetRepairList(_dockInfo);
 

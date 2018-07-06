@@ -54,12 +54,12 @@ namespace KancolleSniffer
         {
             _table.Clear();
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
-            for (var f = 0; f < fn.Length; f++)
+            foreach (var fleet in sniffer.Fleets)
             {
-                var ships = sniffer.Fleets[f].Ships;
+                var ships = fleet.Ships;
                 var rawForFleet = ships.Sum(ship => ship.EffectiveAntiAirForFleet);
                 var forFleet = new[] {1.0, 1.2, 1.6}.Select(r => (int)(rawForFleet * r) * 2 / 1.3).ToArray();
-                _table.Add(new Record {Fleet = fn[f] + " : " + string.Join("/", forFleet.Select(x => x.ToString("f1")))});
+                _table.Add(new Record {Fleet = fn[fleet.Number] + " : " + string.Join("/", forFleet.Select(x => x.ToString("f1")))});
                 foreach (var ship in ships)
                 {
                     var rate = ship.EffectiveAntiAirForShip / 4.0;

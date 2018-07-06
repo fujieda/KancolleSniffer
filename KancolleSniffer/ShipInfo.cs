@@ -30,7 +30,6 @@ namespace KancolleSniffer
         private readonly ShipMaster _shipMaster = new ShipMaster();
         private readonly ItemInfo _itemInfo;
         private readonly List<int> _escapedShips = new List<int>();
-        private int _combinedFleetType;
         private ShipStatus[] _battleResult = new ShipStatus[0];
         public int HqLevel { get; private set; }
         public ShipStatusPair[] BattleResultDiff { get; private set; } = new ShipStatusPair[0];
@@ -51,7 +50,7 @@ namespace KancolleSniffer
 
         public ShipInfo(ItemInfo itemInfo)
         {
-            _fleets = Enumerable.Range(0, FleetCount).Select(x => new Fleet(this)).ToArray();
+            _fleets = Enumerable.Range(0, FleetCount).Select((x, i) => new Fleet(this, i)).ToArray();
             _itemInfo = itemInfo;
             ClearShipInfo();
         }
@@ -72,7 +71,7 @@ namespace KancolleSniffer
                 InspectShipData(json.api_ship);
                 InspectBasic(json.api_basic);
                 if (json.api_combined_flag())
-                    _combinedFleetType = (int)json.api_combined_flag;
+                    _fleets[0].CombinedType = _fleets[1].CombinedType = (CombinedType)(int)json.api_combined_flag;
                 _itemInfo.NowShips = ((object[])json.api_ship).Length;
                 VerifyBattleResult();
             }
@@ -184,12 +183,13 @@ namespace KancolleSniffer
         public void InspectChange(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
-            var fleet = int.Parse(values["api_id"]) - 1;
+            var fleet = _fleets[int.Parse(values["api_id"]) - 1];
             var idx = int.Parse(values["api_ship_idx"]);
             var ship = int.Parse(values["api_ship_id"]);
+
             if (idx == -1)
             {
-                var deck = _fleets[fleet].Deck;
+                var deck = fleet.Deck;
                 for (var i = 1; i < deck.Length; i++)
                     deck[i] = -1;
                 return;
@@ -200,31 +200,31 @@ namespace KancolleSniffer
                 return;
             }
             var of = FindFleet(ship, out var oi);
-            var orig = _fleets[fleet].Deck[idx];
-            _fleets[fleet].Deck[idx] = ship;
-            if (of == -1)
+            var orig = fleet.Deck[idx];
+            fleet.Deck[idx] = ship;
+            if (of == null)
                 return;
             // 入れ替えの場合
-            if ((_fleets[of].Deck[oi] = orig) == -1)
+            if ((of.Deck[oi] = orig) == -1)
                 WithdrowShip(of, oi);
         }
 
-        private int FindFleet(int ship, out int idx)
+        private Fleet FindFleet(int ship, out int idx)
         {
-            for (var f = 0; f < _fleets.Length; f++)
+            foreach (var fleet in _fleets)
             {
-                idx = Array.FindIndex(_fleets[f].Deck, id => id == ship);
+                idx = Array.FindIndex(fleet.Deck, id => id == ship);
                 if (idx < 0)
                     continue;
-                return f;
+                return fleet;
             }
             idx = -1;
-            return -1;
+            return null;
         }
 
-        private void WithdrowShip(int fleet, int idx)
+        private void WithdrowShip(Fleet fleet, int idx)
         {
-            var deck = _fleets[fleet].Deck;
+            var deck = fleet.Deck;
             var j = idx;
             for (var i = idx + 1; i < deck.Length; i++)
             {
@@ -271,7 +271,7 @@ namespace KancolleSniffer
                 if (delitem)
                     _itemInfo.DeleteItems(_shipInfo[ship].AllSlot);
                 var of = FindFleet(ship, out var oi);
-                if (of != -1)
+                if (of != null)
                     WithdrowShip(of, oi);
                 _shipInfo.Remove(ship);
             }
@@ -280,14 +280,14 @@ namespace KancolleSniffer
         public void InspectCombined(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
-            _combinedFleetType = int.Parse(values["api_combined_type"]);
+            _fleets[0].CombinedType = _fleets[1].CombinedType = (CombinedType)int.Parse(values["api_combined_type"]);
         }
 
         public void InspectMapStart(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
             var fleet = int.Parse(values["api_deck_id"]) - 1;
-            if (_combinedFleetType == 0 || fleet > 1)
+            if (_fleets[0].CombinedType == 0 || fleet > 1)
             {
                 _fleets[fleet].State = FleetState.Sortie;
             }
@@ -323,7 +323,6 @@ namespace KancolleSniffer
             s.Escaped = _escapedShips.Contains(id);
             s.Fleet = FindFleet(s.Id, out var idx);
             s.DeckIndex = idx;
-            s.CombinedFleetType = s.Fleet < 2 ? _combinedFleetType : 0;
             return s;
         }
 
@@ -339,14 +338,12 @@ namespace KancolleSniffer
 
         public ShipSpec GetSpec(int id) => _shipMaster.GetSpec(id);
 
-        public int CombinedFleetType => _combinedFleetType;
-
         public ShipStatus[] ShipList => _shipInfo.Keys.Where(id => id != -1).Select(GetStatus).ToArray();
 
         public ShipStatus[] GetRepairList(DockInfo dockInfo)
             => (from s in ShipList
                 where s.NowHp < s.MaxHp && !dockInfo.InNDock(s.Id) &&
-                      (s.Fleet == -1 || _fleets[s.Fleet].State != FleetState.Practice)
+                      (s.Fleet == null || s.Fleet.State != FleetState.Practice)
                 select s).OrderByDescending(s => s.RepairTime).ToArray();
 
         public string[] BadlyDamagedShips { get; private set; } = new string[0];
@@ -357,7 +354,7 @@ namespace KancolleSniffer
             (from s in _fleets.Where(fleet => fleet.State == FleetState.Sortie)
                     .SelectMany(fleet => fleet.Deck.Where(id => id != -1).Select(GetStatus))
                 where !s.Escaped && s.DamageLevel == ShipStatus.Damage.Badly &&
-                      !(s.CombinedFleetType > 0 && s.Fleet == 1 && s.DeckIndex == 0) // 第二艦隊の旗艦を除く
+                      !(s.Fleet.CombinedType != 0 && s.Fleet.Number == 1 && s.DeckIndex == 0) // 第二艦隊の旗艦を除く
                 select s.Name).ToArray();
         }
 

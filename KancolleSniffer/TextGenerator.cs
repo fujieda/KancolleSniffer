@@ -140,12 +140,12 @@ namespace KancolleSniffer
         public static string GenerateDeckBuilderData(Sniffer sniffer)
         {
             var sb = new StringBuilder("{\"version\": 4,");
-            for (var f = 0; f < ShipInfo.FleetCount; f++)
+            foreach (var fleet in sniffer.Fleets)
             {
-                if (f != 0)
+                if (fleet.Number != 0)
                     sb.Append(",");
-                sb.Append($"\"f{f + 1}\":{{");
-                var ships = sniffer.Fleets[f].Ships;
+                sb.Append($"\"f{fleet.Number + 1}\":{{");
+                var ships = fleet.Ships;
                 for (var s = 0; s < ships.Length; s++)
                 {
                     if (s != 0)

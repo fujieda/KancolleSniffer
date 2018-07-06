@@ -211,7 +211,7 @@ namespace KancolleSniffer
 
         public void SetFleet(ShipStatus status)
         {
-            Text = status == null ? "" : new[] {"", "1", "2", "3", "4"}[status.Fleet + 1];
+            Text = status?.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
         }
 
         protected override void OnLayout(LayoutEventArgs levent)
