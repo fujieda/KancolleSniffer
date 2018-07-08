@@ -362,7 +362,7 @@ namespace KancolleSniffer
                 {
                     new ShipLabel
                     {
-                        Location = new Point(100, 0),
+                        Location = new Point(101, 0),
                         AutoSize = true,
                         AnchorRight = true,
                         MinimumSize = new Size(0, LineHeight),
