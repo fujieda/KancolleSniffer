@@ -887,11 +887,11 @@ namespace KancolleSniffer.Test
         /// 318: 給糧艦「伊良湖」の支援
         /// </summary>
         [TestMethod]
-        public void PracticeResult_303_304_302_311_315_318()
+        public void PracticeResult_303_304_302_311_315()
         {
             var battleInfo = new BattleInfo(null, null);
-            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1)) {AcceptMax = 6};
-            questInfo.InspectQuestList(CreateQuestList(new[] {302, 303, 304, 311, 315, 318}));
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {302, 303, 304, 311, 315,}));
 
             battleInfo.InjectResultStatus(new[]
             {
@@ -904,16 +904,38 @@ namespace KancolleSniffer.Test
                     .SequenceEqual(new[]
                     {
                         new {Id = 302, Now = 1}, new {Id = 303, Now = 2}, new {Id = 304, Now = 1},
-                        new {Id = 311, Now = 1}, new {Id = 315, Now = 1}, new {Id = 318, Now = 0}
+                        new {Id = 311, Now = 1}, new {Id = 315, Now = 1}
                     }));
-            // 318
-            battleInfo.Result.Friend.Main[0] = ShipStatus(3, 200);
-            questInfo.InspectPracticeResult(Js(new {api_win_rank = "A"}));
-            var q318 = questInfo.Quests[5];
-            PAssert.That(() => q318.Count.Now == 1);
-            q318.Count.Now = 3;
+        }
+
+        [TestMethod]
+        public void PracticeResult_318()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {318}));
-            PAssert.That(() => q318.Count.Now == 3, "進捗調節しない");
+            var q318 = questInfo.Quests[0];
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(2, 543), ShipStatus(3, 488)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "B"}));
+            PAssert.That(() => q318.Count.Now == 0, "軽巡1隻");
+            battleInfo.Result.Friend.Main[0] = ShipStatus(3, 200);
+            questInfo.StartPractice("api%5Fdeck%5Fid=2");
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "B"}));
+            PAssert.That(() => q318.Count.Now == 0, "第2艦隊");
+            questInfo.StartPractice("api%5Fdeck%5Fid=1"); // 第一艦隊
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "C"}));
+            PAssert.That(() => q318.Count.Now == 0, "敗北");
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "B"}));
+            PAssert.That(() => q318.Count.Now == 1);
+
+            q318.Count.Now = 2;
+            questInfo.InspectQuestList(CreateQuestList(new[] {318}));
+            PAssert.That(() => q318.Count.Now == 2, "進捗調節しない");
         }
 
         /// <summary>

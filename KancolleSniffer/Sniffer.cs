@@ -344,6 +344,7 @@ namespace KancolleSniffer
                 if (url.EndsWith("/battle"))
                 {
                     _shipInfo.StartPractice(request);
+                    _questInfo.StartPractice(request);
                     _conditionTimer.InvalidateCond();
                     RepeatingTimerController?.Suspend();
                 }

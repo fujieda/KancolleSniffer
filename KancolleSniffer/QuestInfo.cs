@@ -706,6 +706,14 @@ namespace KancolleSniffer
             }
         }
 
+        private int _questFleet = 0;
+
+        public void StartPractice(string request)
+        {
+            var values = HttpUtility.ParseQueryString(request);
+            _questFleet = int.Parse(values["api_deck_id"]) - 1;
+        }
+
         public void InspectPracticeResult(dynamic json)
         {
             foreach (var quest in _quests.Values)
@@ -718,7 +726,7 @@ namespace KancolleSniffer
             }
             if (_quests.TryGetValue(318, out var q318))
             {
-                if (QuestSortie.CompareRank(json.api_win_rank, "B") <= 0 &&
+                if (_questFleet == 0 && QuestSortie.CompareRank(json.api_win_rank, "B") <= 0 &&
                     _battleInfo.Result.Friend.Main.Count(s => s.Spec.ShipType == 3) >= 2)
                 {
                     IncrementCount(q318.Count);
