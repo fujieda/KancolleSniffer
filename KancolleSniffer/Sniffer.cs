@@ -345,6 +345,7 @@ namespace KancolleSniffer
                 {
                     _shipInfo.StartPractice(request);
                     _questInfo.StartPractice(request);
+                    _cellInfo.StartPractice();
                     _conditionTimer.InvalidateCond();
                     RepeatingTimerController?.Suspend();
                 }

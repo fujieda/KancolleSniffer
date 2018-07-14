@@ -35,6 +35,11 @@ namespace KancolleSniffer
             Current = Next = _info;
         }
 
+        public void StartPractice()
+        {
+            Current = Next = _info;
+        }
+
         public void InspectMapStart(dynamic json)
         {
             _batttleCount = 0;
