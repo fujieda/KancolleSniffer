@@ -289,9 +289,7 @@ namespace KancolleSniffer
             var text = sniffer.CellInfo;
             if (text == null)
                 return;
-            if ((Spoilers & Spoiler.NextCell) == 0 && text[0] == '次')
-                return;
-            _cellLabel.Text = sniffer.CellInfo;
+            _cellLabel.Text = (Spoilers & Spoiler.NextCell) == 0 ? sniffer.CellInfo.Current : sniffer.CellInfo.Next;
             _cellLabel.Location = new Point(ClientSize.Width - _cellLabel.Width - 2, 4);
         }
 
@@ -313,7 +311,7 @@ namespace KancolleSniffer
             _cellLabel = new Label
             {
                 Location = new Point(0, 4),
-                AutoSize = true,
+                AutoSize = true
             };
             Controls.Add(_cellLabel);
             for (var i = 0; i < 13; i++)

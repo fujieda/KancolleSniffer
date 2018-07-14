@@ -18,18 +18,21 @@ namespace KancolleSniffer
     {
         private int _batttleCount;
 
-        public string Text { get; set; }
+        public string Next { get; set; }
+
+        public string Current { get; set; }
 
         private string _info;
 
         public void Port()
         {
-            Text = _info;
+            Current = Next = _info;
+            _info = "";
         }
 
         public void StartBattle()
         {
-            Text = _info;
+            Current = Next = _info;
         }
 
         public void InspectMapStart(dynamic json)
@@ -40,8 +43,9 @@ namespace KancolleSniffer
 
         public void InspectMapNext(dynamic json)
         {
+            Current = _info;
             SetInfo(json);
-            Text = "次" + _info;
+            Next = "次" + _info;
         }
 
         private void SetInfo(dynamic json)

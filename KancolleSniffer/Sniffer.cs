@@ -600,7 +600,7 @@ namespace KancolleSniffer
 
         public BaseAirCoprs.BaseInfo[] BaseAirCorps => _baseAirCoprs.AllAirCorps;
 
-        public string CellInfo => _cellInfo.Text;
+        public CellInfo CellInfo => _cellInfo;
 
         public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)
         {
