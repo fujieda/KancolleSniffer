@@ -125,6 +125,10 @@ namespace KancolleSniffer
                 return ApiKousyou(url, request, data);
             if (url.Contains("battle") || url.Contains("sortie"))
                 return ApiBattle(url, request, data);
+            if (url.Contains("hensei"))
+                return ApiHensei(url, request, data);
+            if (url.Contains("air_corps"))
+                return ApiAirCorps(url, request, data);
             return ApiOthers(url, request, data);
         }
 
@@ -400,7 +404,7 @@ namespace KancolleSniffer
                    url.EndsWith("api_req_combined_battle/each_battle_water");
         }
 
-        private Update ApiOthers(string url, string request, dynamic data)
+        private Update ApiHensei(string url, string request, dynamic data)
         {
             if (url.EndsWith("api_req_hensei/change"))
             {
@@ -429,6 +433,38 @@ namespace KancolleSniffer
                 _shipInfo.InspectCombined(request);
                 return Update.Ship;
             }
+            return Update.None;
+        }
+
+        private Update ApiAirCorps(string url, string request, dynamic data)
+        {
+            if (url.EndsWith("api_req_air_corps/supply"))
+            {
+                _materialInfo.InspectAirCorpsSupply(data);
+                _baseAirCoprs.InspectSupply(request, data);
+                return Update.Item;
+            }
+            if (url.EndsWith("api_req_air_corps/set_plane"))
+            {
+                _materialInfo.InspectAirCorpsSetPlane(data);
+                _baseAirCoprs.InspectSetPlane(request, data);
+                return Update.Item | Update.Ship;
+            }
+            if (url.EndsWith("api_req_air_corps/set_action"))
+            {
+                _baseAirCoprs.InspectSetAction(request);
+                return Update.Ship;
+            }
+            if (url.EndsWith("api_req_air_corps/expand_base"))
+            {
+                _baseAirCoprs.InspectExpandBase(request, data);
+                return Update.Ship;
+            }
+            return Update.None;
+        }
+
+        private Update ApiOthers(string url, string request, dynamic data)
+        {
             if (url.EndsWith("api_req_hokyu/charge"))
             {
                 _shipInfo.InspectCharge(data);
@@ -518,28 +554,6 @@ namespace KancolleSniffer
                 _questInfo.InspectClearItemGet(request);
                 _logger.InspectClearItemGet(data);
                 return Update.QuestList;
-            }
-            if (url.EndsWith("api_req_air_corps/supply"))
-            {
-                _materialInfo.InspectAirCorpsSupply(data);
-                _baseAirCoprs.InspectSupply(request, data);
-                return Update.Item;
-            }
-            if (url.EndsWith("api_req_air_corps/set_plane"))
-            {
-                _materialInfo.InspectAirCorpsSetPlane(data);
-                _baseAirCoprs.InspectSetPlane(request, data);
-                return Update.Item | Update.Ship;
-            }
-            if (url.EndsWith("api_req_air_corps/set_action"))
-            {
-                _baseAirCoprs.InspectSetAction(request);
-                return Update.Ship;
-            }
-            if (url.EndsWith("api_req_air_corps/expand_base"))
-            {
-                _baseAirCoprs.InspectExpandBase(request, data);
-                return Update.Ship;
             }
             return Update.None;
         }
