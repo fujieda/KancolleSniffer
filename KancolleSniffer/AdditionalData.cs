@@ -19,14 +19,14 @@ using System.Linq;
 
 namespace KancolleSniffer
 {
-    public static class DataLoader
+    public class AdditionalData
     {
         private static readonly string EnemySlotFile =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EnemySlot.csv");
 
-        private static Dictionary<int, int[]> _maxEq;
+        private Dictionary<int, int[]> _maxEq;
 
-        public static void LoadEnemySlot()
+        public void LoadEnemySlot()
         {
             try
             {
@@ -39,16 +39,16 @@ namespace KancolleSniffer
             }
         }
 
-        public static int[] EnemySlot(int id) =>
+        public int[] EnemySlot(int id) =>
             _maxEq != null ? _maxEq.TryGetValue(id, out var slot) ? slot : null : null;
 
-        private const string FileName = "TP.csv";
+        private const string TpFileName = "TP.csv";
 
-        private static readonly string TpFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FileName);
+        private static readonly string TpFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, TpFileName);
 
-        private static Dictionary<int, double> _tpSpec;
+        private Dictionary<int, double> _tpSpec;
 
-        public static void LoadTpSpec()
+        public void LoadTpSpec()
         {
             try
             {
@@ -61,11 +61,11 @@ namespace KancolleSniffer
             }
             catch (Exception ex)
             {
-                throw new Exception(FileName + "が壊れています。", ex);
+                throw new Exception(TpFileName + "が壊れています。", ex);
             }
         }
 
-        public static double ItemTp(int id) =>
+        public double ItemTp(int id) =>
             _tpSpec != null ? _tpSpec.TryGetValue(id, out var tp) ? tp : -1 : -1;
     }
 }

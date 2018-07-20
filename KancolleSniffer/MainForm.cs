@@ -115,7 +115,6 @@ namespace KancolleSniffer
         {
             var target = "";
             _sniffer.LoadState();
-            DataLoader.LoadTpSpec();
             _watcher.SynchronizingObject = this;
             _watcherTimer.Tick += (sender, ev) =>
             {
@@ -126,7 +125,7 @@ namespace KancolleSniffer
                         _sniffer.LoadState();
                         break;
                     case "TP.csv":
-                        DataLoader.LoadTpSpec();
+                        _sniffer.AdditionalData.LoadTpSpec();
                         break;
                 }
             };

@@ -25,8 +25,8 @@ namespace KancolleSniffer.Test
     [TestClass]
     public class SnifferTest
     {
-        [TestInitialize]
-        public void Intialize()
+        [ClassInitialize]
+        public static void Intialize(TestContext context)
         {
             ExpressionToCodeConfiguration.GlobalAssertionConfiguration = ExpressionToCodeConfiguration
                 .GlobalAssertionConfiguration.WithPrintedListLengthLimit(200).WithMaximumValueLength(1000);
@@ -373,13 +373,11 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void TransportPoint()
         {
-            DataLoader.LoadTpSpec();
-
+            var sniffer = new Sniffer();
             var msgs = new[] {"", "鬼怒改二+特大発+おにぎり", "駆逐艦+士魂部隊", "補給艦"};
             var results = new[] {47, 19, 13, 15};
             for (var i = 0; i < msgs.Length; i++)
             {
-                var sniffer = new Sniffer();
                 SniffLogFile(sniffer, "transportpoint_00" + (i + 1));
                 var j = i;
                 PAssert.That(() => (int)sniffer.Fleets[0].TransportPoint == results[j], msgs[j]);

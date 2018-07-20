@@ -27,7 +27,7 @@ namespace KancolleSniffer
 
         private readonly Fleet[] _fleets;
         private readonly Dictionary<int, ShipStatus> _shipInfo = new Dictionary<int, ShipStatus>();
-        private readonly ShipMaster _shipMaster = new ShipMaster();
+        private readonly ShipMaster _shipMaster;
         private readonly ItemInfo _itemInfo;
         private readonly List<int> _escapedShips = new List<int>();
         private ShipStatus[] _battleResult = new ShipStatus[0];
@@ -48,8 +48,9 @@ namespace KancolleSniffer
             }
         }
 
-        public ShipInfo(ItemInfo itemInfo)
+        public ShipInfo(ShipMaster shipMaster, ItemInfo itemInfo)
         {
+            _shipMaster = shipMaster;
             _fleets = Enumerable.Range(0, FleetCount).Select((x, i) => new Fleet(this, i)).ToArray();
             _itemInfo = itemInfo;
             ClearShipInfo();

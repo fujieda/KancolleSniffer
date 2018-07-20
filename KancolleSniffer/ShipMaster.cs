@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 
 namespace KancolleSniffer
@@ -20,6 +21,7 @@ namespace KancolleSniffer
     {
         public const int NumSlots = 5;
         private readonly Dictionary<int, ShipSpec> _shipSpecs = new Dictionary<int, ShipSpec>();
+        public AdditionalData AdditionalData { get; set; }
 
         public static bool IsEnemyId(int id) => id > 1500;
 
@@ -29,7 +31,7 @@ namespace KancolleSniffer
             foreach (var entry in json.api_mst_stype)
                 dict[entry.api_id] = entry.api_name;
             dict[8] = "巡洋戦艦";
-            DataLoader.LoadEnemySlot();
+            AdditionalData?.LoadEnemySlot();
             foreach (var entry in json.api_mst_ship)
             {
                 var shipSpec = _shipSpecs[(int)entry.api_id] = new ShipSpec
@@ -49,9 +51,9 @@ namespace KancolleSniffer
                     shipSpec.Remodel.Level = (int)entry.api_afterlv;
                     shipSpec.Remodel.After = int.Parse(entry.api_aftershipid);
                 }
-                shipSpec.MaxEq = entry.api_maxeq()
-                    ? entry.api_maxeq
-                    : DataLoader.EnemySlot(shipSpec.Id);
+                shipSpec.GetMaxEq = entry.api_maxeq()
+                    ? (Func<int[]>)(() => entry.api_maxeq)
+                    : () => AdditionalData?.EnemySlot(shipSpec.Id);
             }
             _shipSpecs[-1] = new ShipSpec();
             SetRemodelBaseAndStep();
@@ -113,7 +115,8 @@ namespace KancolleSniffer
         public int FuelMax { get; set; }
         public int BullMax { get; set; }
         public int SlotNum { get; set; }
-        public int[] MaxEq { get; set; }
+        public Func<int[]> GetMaxEq { get; set; }
+        public int[] MaxEq => GetMaxEq?.Invoke();
         public int ShipType { get; set; }
         public int ShipClass { get; set; }
         public string ShipTypeName { get; set; }
@@ -131,7 +134,6 @@ namespace KancolleSniffer
         {
             Id = -1;
             Name = "";
-            MaxEq = new int[0];
         }
 
         public double RepairWeight

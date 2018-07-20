@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -158,13 +159,15 @@ namespace KancolleSniffer
             }
         }
 
+        public Func<int, double?> GetItemTp { private get; set; }
+
         public double TransportPoint
         {
             get
             {
-                var tp = DataLoader.ItemTp(Id);
+                var tp = GetItemTp?.Invoke(Id);
                 if (tp >= 0)
-                    return tp;
+                    return (double)tp;
                 switch (Id)
                 {
                     case 75: // ドラム缶(輸送用)
@@ -648,6 +651,8 @@ namespace KancolleSniffer
             MarginEquips = 10;
         }
 
+        public AdditionalData AdditionalData { get; set; }
+
         public void InspectBasic(dynamic json)
         {
             MaxShips = (int)json.api_max_chara;
@@ -662,6 +667,7 @@ namespace KancolleSniffer
             var dict = new Dictionary<int, string>();
             foreach (var entry in json.api_mst_slotitem_equiptype)
                 dict[(int)entry.api_id] = entry.api_name;
+            AdditionalData?.LoadTpSpec();
             foreach (var entry in json.api_mst_slotitem)
             {
                 var type = (int)entry.api_type[2];
@@ -680,7 +686,8 @@ namespace KancolleSniffer
                     Bomber = (int)entry.api_baku,
                     Interception = type == 48 ? (int)entry.api_houk : 0, // 局地戦闘機は回避の値が迎撃
                     AntiBomber = type == 48 ? (int)entry.api_houm : 0, // 〃命中の値が対爆
-                    Distance = entry.api_distance() ? (int)entry.api_distance : 0
+                    Distance = entry.api_distance() ? (int)entry.api_distance : 0,
+                    GetItemTp = id => AdditionalData?.ItemTp(id)
                 };
             }
             _itemSpecs[-1] = _itemSpecs[0] = new ItemSpec();

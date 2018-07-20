@@ -25,6 +25,7 @@ namespace KancolleSniffer
         private readonly MaterialInfo _materialInfo = new MaterialInfo();
         private readonly QuestInfo _questInfo;
         private readonly MissionInfo _missionInfo = new MissionInfo();
+        private readonly ShipMaster _shipMaster = new ShipMaster();
         private readonly ShipInfo _shipInfo;
         private readonly ConditionTimer _conditionTimer;
         private readonly DockInfo _dockInfo;
@@ -40,6 +41,7 @@ namespace KancolleSniffer
         private readonly Status _status = new Status();
         private bool _saveState;
         private readonly List<IHaveState> _haveState;
+        private AdditionalData _additionalData;
 
         public interface IRepeatingTimerController
         {
@@ -71,7 +73,7 @@ namespace KancolleSniffer
         public Sniffer(bool start = false)
         {
             _start = start;
-            _shipInfo = new ShipInfo(_itemInfo);
+            _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
             _conditionTimer = new ConditionTimer(_shipInfo);
             _dockInfo = new DockInfo(_shipInfo, _materialInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo, _presetDeck);
@@ -81,6 +83,18 @@ namespace KancolleSniffer
             _baseAirCoprs = new BaseAirCoprs(_itemInfo);
             _miscTextInfo = new MiscTextInfo(_shipInfo, _itemInfo);
             _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo, _questInfo};
+            AdditionalData = new AdditionalData();
+        }
+
+        public AdditionalData AdditionalData
+        {
+            get => _additionalData;
+            set
+            {
+                _additionalData = value;
+                _shipMaster.AdditionalData = value;
+                _itemInfo.AdditionalData = value;
+            }
         }
 
         public void SaveState()
