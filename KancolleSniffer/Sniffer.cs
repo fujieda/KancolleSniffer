@@ -250,7 +250,7 @@ namespace KancolleSniffer
                 _shipInfo.InspectShip(data);
                 _akashiTimer.CheckFleet();
                 _battleInfo.BattleState = BattleState.None;
-                return Update.Ship | Update.Battle;
+                return Update.Ship | Update.Battle | Update.Item;
             }
             if (url.EndsWith("api_get_member/ship3"))
             {

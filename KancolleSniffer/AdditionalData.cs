@@ -67,5 +67,35 @@ namespace KancolleSniffer
 
         public double ItemTp(int id) =>
             _tpSpec != null ? _tpSpec.TryGetValue(id, out var tp) ? tp : -1 : -1;
+
+        private static readonly string NumEquipsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "NumEquips.csv");
+
+        private Dictionary<int, int> _numEquips = new Dictionary<int, int>();
+
+        public bool UseNumEquipsFile { get; set; } = true;
+
+        public void LoadNumEquips()
+        {
+            try
+            {
+                if (!UseNumEquipsFile)
+                    return;
+                _numEquips = File.ReadLines(NumEquipsFile)
+                    .Select(line => line.Split(','))
+                    .ToDictionary(f => int.Parse(f[0]), f => int.Parse(f[2]));
+            }
+            catch (IOException)
+            {
+            }
+        }
+
+        public int NumEquips(int id) => _numEquips.TryGetValue(id, out var num) ? num : -1;
+
+        public void RecordNumEquips(int id, string name, int numEquips)
+        {
+            _numEquips[id] = numEquips;
+            if (UseNumEquipsFile)
+                File.AppendAllText(NumEquipsFile, $"{id},{name},{numEquips}\r\n");
+        }
     }
 }

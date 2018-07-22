@@ -159,13 +159,13 @@ namespace KancolleSniffer
             }
         }
 
-        public Func<int, double?> GetItemTp { private get; set; }
+        public Func<double> GetItemTp { get; set; }
 
         public double TransportPoint
         {
             get
             {
-                var tp = GetItemTp?.Invoke(Id);
+                var tp = GetItemTp?.Invoke();
                 if (tp >= 0)
                     return (double)tp;
                 switch (Id)
@@ -632,7 +632,7 @@ namespace KancolleSniffer
         public int NowEquips
         {
             get => _nowEquips;
-            private set
+            set
             {
                 if (MaxEquips != 0)
                 {
@@ -667,13 +667,14 @@ namespace KancolleSniffer
             var dict = new Dictionary<int, string>();
             foreach (var entry in json.api_mst_slotitem_equiptype)
                 dict[(int)entry.api_id] = entry.api_name;
-            AdditionalData?.LoadTpSpec();
+            AdditionalData.LoadTpSpec();
             foreach (var entry in json.api_mst_slotitem)
             {
                 var type = (int)entry.api_type[2];
+                var id = (int)entry.api_id;
                 _itemSpecs[(int)entry.api_id] = new ItemSpec
                 {
-                    Id = (int)entry.api_id,
+                    Id = id,
                     Name = (string)entry.api_name,
                     Type = type,
                     TypeName = dict.TryGetValue(type, out var typeName) ? typeName : "不明",
@@ -687,7 +688,7 @@ namespace KancolleSniffer
                     Interception = type == 48 ? (int)entry.api_houk : 0, // 局地戦闘機は回避の値が迎撃
                     AntiBomber = type == 48 ? (int)entry.api_houm : 0, // 〃命中の値が対爆
                     Distance = entry.api_distance() ? (int)entry.api_distance : 0,
-                    GetItemTp = id => AdditionalData?.ItemTp(id)
+                    GetItemTp = () => AdditionalData.ItemTp(id)
                 };
             }
             _itemSpecs[-1] = _itemSpecs[0] = new ItemSpec();

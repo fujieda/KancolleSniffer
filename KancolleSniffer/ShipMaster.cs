@@ -31,7 +31,8 @@ namespace KancolleSniffer
             foreach (var entry in json.api_mst_stype)
                 dict[entry.api_id] = entry.api_name;
             dict[8] = "巡洋戦艦";
-            AdditionalData?.LoadEnemySlot();
+            AdditionalData.LoadEnemySlot();
+            AdditionalData.LoadNumEquips();
             foreach (var entry in json.api_mst_ship)
             {
                 var shipSpec = _shipSpecs[(int)entry.api_id] = new ShipSpec
@@ -53,7 +54,9 @@ namespace KancolleSniffer
                 }
                 shipSpec.GetMaxEq = entry.api_maxeq()
                     ? (Func<int[]>)(() => entry.api_maxeq)
-                    : () => AdditionalData?.EnemySlot(shipSpec.Id);
+                    : () => AdditionalData.EnemySlot(shipSpec.Id);
+                shipSpec.GetNumEquips = () => AdditionalData.NumEquips(shipSpec.Id);
+                shipSpec.SetNumEquips = num => AdditionalData.RecordNumEquips(shipSpec.Id, shipSpec.Name,num);
             }
             _shipSpecs[-1] = new ShipSpec();
             SetRemodelBaseAndStep();
@@ -117,6 +120,15 @@ namespace KancolleSniffer
         public int SlotNum { get; set; }
         public Func<int[]> GetMaxEq { get; set; }
         public int[] MaxEq => GetMaxEq?.Invoke();
+        public Func<int> GetNumEquips { get; set; }
+        public Action<int> SetNumEquips { get; set; }
+
+        public int NumEquips
+        {
+            get => GetNumEquips();
+            set => SetNumEquips(value);
+        }
+
         public int ShipType { get; set; }
         public int ShipClass { get; set; }
         public string ShipTypeName { get; set; }

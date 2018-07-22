@@ -31,10 +31,25 @@ namespace KancolleSniffer
         private readonly ItemInfo _itemInfo;
         private readonly List<int> _escapedShips = new List<int>();
         private ShipStatus[] _battleResult = new ShipStatus[0];
+        private readonly NumEquipsChecker _numEquipsChecker = new NumEquipsChecker();
         public int HqLevel { get; private set; }
         public ShipStatusPair[] BattleResultDiff { get; private set; } = new ShipStatusPair[0];
         public bool IsBattleResultError => BattleResultDiff.Length > 0;
         public ShipStatus[] BattleStartStatus { get; private set; } = new ShipStatus[0];
+        public int DropShipId { private get; set; } = -1;
+
+        private class NumEquipsChecker
+        {
+            public int MaxId { private get; set; } = int.MaxValue;
+
+            public void Check(ShipStatus ship)
+            {
+                var spec = ship.Spec;
+                if (spec.NumEquips != -1 || ship.Id <= MaxId)
+                    return;
+                spec.NumEquips = ship.Slot.Count(item => item.Id != -1);
+            }
+        }
 
         public class ShipStatusPair
         {
@@ -59,6 +74,7 @@ namespace KancolleSniffer
         public void InspectMaster(dynamic json)
         {
             _shipMaster.Inspect(json);
+            ClearShipInfo();
         }
 
         public void InspectShip(dynamic json)
@@ -78,21 +94,28 @@ namespace KancolleSniffer
             }
             else if (json.api_data()) // ship2
             {
-                // 一隻分のデータしか来ないことがあるので艦娘数を数えない
                 InspectDeck(json.api_data_deck);
                 InspectShipData(json.api_data);
             }
             else if (json.api_ship_data()) // ship3とship_deck
             {
-                // 一隻分のデータしか来ないことがあるので艦娘数を数えない
                 InspectDeck(json.api_deck_data);
                 InspectShipData(json.api_ship_data);
                 VerifyBattleResult();
+                // ship_deckでドロップ艦を反映する
+                if (DropShipId != -1)
+                {
+                    _itemInfo.NowShips++;
+                    var num = _shipMaster.GetSpec(DropShipId).NumEquips;
+                    if (num > 0)
+                        _itemInfo.NowEquips += num;
+                }
             }
             else if (json.api_ship()) // getshipとpowerup
             {
                 InspectShipData(new[] {json.api_ship});
             }
+            DropShipId = -1;
         }
 
         public void SaveBattleResult()
@@ -138,9 +161,10 @@ namespace KancolleSniffer
         {
             foreach (var entry in json)
             {
-                _shipInfo[(int)entry.api_id] = new ShipStatus
+                var id = (int)entry.api_id;
+                var ship = new ShipStatus
                 {
-                    Id = (int)entry.api_id,
+                    Id = id,
                     Spec = _shipMaster.GetSpec((int)entry.api_ship_id),
                     Level = (int)entry.api_lv,
                     ExpToNext = (int)entry.api_exp[1],
@@ -150,7 +174,7 @@ namespace KancolleSniffer
                     Fuel = (int)entry.api_fuel,
                     Bull = (int)entry.api_bull,
                     OnSlot = (int[])entry.api_onslot,
-                    Slot = ((int[])entry.api_slot).Select(id => new ItemStatus(id)).ToArray(),
+                    Slot = ((int[])entry.api_slot).Select(item => new ItemStatus(item)).ToArray(),
                     SlotEx = entry.api_slot_ex() ? new ItemStatus((int)entry.api_slot_ex) : new ItemStatus(0),
                     NdockTime = (int)entry.api_ndock_time,
                     NdockItem = (int[])entry.api_ndock_item,
@@ -162,7 +186,10 @@ namespace KancolleSniffer
                     Lucky = (int)entry.api_lucky[0],
                     Locked = entry.api_locked() && entry.api_locked == 1
                 };
+                _shipInfo[id] = ship;
+                _numEquipsChecker.Check(ship);
             }
+            _numEquipsChecker.MaxId = _shipInfo.Keys.Max();
         }
 
         private void InspectBasic(dynamic json)

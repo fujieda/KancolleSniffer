@@ -22,6 +22,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test
 {
+    using Sniffer = SnifferTest.TestingSniffer;
+
     [TestClass]
     public class SnifferTest
     {
@@ -30,6 +32,14 @@ namespace KancolleSniffer.Test
         {
             ExpressionToCodeConfiguration.GlobalAssertionConfiguration = ExpressionToCodeConfiguration
                 .GlobalAssertionConfiguration.WithPrintedListLengthLimit(200).WithMaximumValueLength(1000);
+        }
+
+        public class TestingSniffer : KancolleSniffer.Sniffer
+        {
+            public TestingSniffer(bool start = false) : base(start)
+            {
+                AdditionalData.UseNumEquipsFile = false;
+            }
         }
 
         public static StreamReader OpenLogFile(string name)
@@ -845,6 +855,31 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "airrecon_003");
             PAssert.That(() =>
                 sniffer.MiscText == "[獲得アイテム]\r\n弾薬: 150\r\n開発資材: 1", "途中でリロードして再出撃");
+        }
+
+        /// <summary>
+        /// 新規のドロップ艦の初期装備数を登録する
+        /// </summary>
+        [TestMethod]
+        public void RecordNumEqipsOfNewDropShip()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "dropship_001");
+            PAssert.That(() => sniffer.AdditionalData.NumEquips(565) == 2);
+            PAssert.That(() => sniffer.ShipList.First(s => s.Spec.Id == 565).Spec.NumEquips == 2);
+        }
+
+        /// <summary>
+        /// 既知のドロップ艦とその装備をカウントする
+        /// </summary>
+        [TestMethod]
+        public void CountDropShip()
+        {
+            var sniffer = new Sniffer();
+            sniffer.AdditionalData.RecordNumEquips(11, "", 1);
+            SniffLogFile(sniffer, "dropship_002");
+            PAssert.That(() => sniffer.Item.NowShips == 250);
+            PAssert.That(() => sniffer.Item.NowEquips == 1159);
         }
     }
 }

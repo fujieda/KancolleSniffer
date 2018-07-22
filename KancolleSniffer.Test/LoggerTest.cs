@@ -21,6 +21,8 @@ using Moq;
 
 namespace KancolleSniffer.Test
 {
+    using Sniffer = SnifferTest.TestingSniffer;
+
     [TestClass]
     public class LoggerTest
     {

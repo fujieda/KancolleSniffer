@@ -478,6 +478,7 @@ namespace KancolleSniffer
             BattleState = BattleState.Result;
             ShowResult(!_lastCell);
             _shipInfo.SaveBattleResult();
+            _shipInfo.DropShipId = json.api_get_ship() ? (int)json.api_get_ship.api_ship_id : -1;
             VerifyResultRank(json);
             CleanupResult();
             SetEscapeShips(json);
