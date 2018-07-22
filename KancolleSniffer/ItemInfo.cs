@@ -428,9 +428,14 @@ namespace KancolleSniffer
                 {
                     case 10: // 水偵
                         return 1.2 * Sqrt(Level);
+                    case 11: // 水爆
+                        return 1.15 * Sqrt(Level);
                     case 12: // 小型電探
-                    case 13: // 大型電探
                         return 1.25 * Sqrt(Level);
+                    case 13: // 大型電探
+                        return 1.4 * Sqrt(Level);
+                    case 94: // 艦上偵察機（II）
+                        return 1.2 * Sqrt(Level);
                     default:
                         return 0;
                 }
