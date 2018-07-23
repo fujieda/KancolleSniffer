@@ -18,6 +18,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using ExpressionToCodeLib;
+using KancolleSniffer.Model;
+using KancolleSniffer.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test

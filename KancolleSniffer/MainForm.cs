@@ -26,6 +26,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using KancolleSniffer.Model;
+using KancolleSniffer.Net;
+using KancolleSniffer.Util;
+using KancolleSniffer.View;
 using Microsoft.CSharp.RuntimeBinder;
 using static System.Math;
 

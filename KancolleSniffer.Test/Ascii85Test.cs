@@ -14,6 +14,7 @@
 
 using System.Collections.Generic;
 using ExpressionToCodeLib;
+using KancolleSniffer.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test

@@ -54,20 +54,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Achievement.cs" />
-    <Compile Include="AkashiTimer.cs" />
-    <Compile Include="AlarmTimer.cs" />
-    <Compile Include="AntiAirPanel.cs">
+    <Compile Include="Model\Achievement.cs" />
+    <Compile Include="Model\AkashiTimer.cs" />
+    <Compile Include="Model\AlarmTimer.cs" />
+    <Compile Include="View\AntiAirPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="AirBattleResultPanel.cs" />
-    <Compile Include="Ascii85.cs" />
-    <Compile Include="BaseAirCoprs.cs" />
-    <Compile Include="BattleInfo.cs" />
-    <Compile Include="BattleResultPanel.cs">
+    <Compile Include="View\AirBattleResultPanel.cs" />
+    <Compile Include="Util\Ascii85.cs" />
+    <Compile Include="Model\BaseAirCoprs.cs" />
+    <Compile Include="Model\BattleInfo.cs" />
+    <Compile Include="View\BattleResultPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CellInfo.cs" />
+    <Compile Include="Model\CellInfo.cs" />
     <Compile Include="ErrorLog.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigDialog.cs">
@@ -82,30 +82,30 @@
     <Compile Include="ConfirmDialog.Designer.cs">
       <DependentUpon>ConfirmDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="CUDColor.cs" />
-    <Compile Include="DockInfo.cs" />
-    <Compile Include="Fleet.cs" />
-    <Compile Include="FleetPanel.cs">
+    <Compile Include="Util\CUDColor.cs" />
+    <Compile Include="Model\DockInfo.cs" />
+    <Compile Include="Model\Fleet.cs" />
+    <Compile Include="View\FleetPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ExMapInfo.cs" />
+    <Compile Include="Model\ExMapInfo.cs" />
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="HttpProxy.cs" />
-    <Compile Include="HttpUtility.cs" />
-    <Compile Include="ItemTreeView.cs">
+    <Compile Include="Net\HttpProxy.cs" />
+    <Compile Include="Util\HttpUtility.cs" />
+    <Compile Include="View\ItemTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="JsonParser.cs" />
+    <Compile Include="Util\JsonParser.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="LogServer.cs" />
-    <Compile Include="MaterialInfo.cs" />
-    <Compile Include="MiscTextInfo.cs" />
-    <Compile Include="AdditionalData.cs" />
+    <Compile Include="Net\LogServer.cs" />
+    <Compile Include="Model\MaterialInfo.cs" />
+    <Compile Include="View\MiscTextInfo.cs" />
+    <Compile Include="Model\AdditionalData.cs" />
     <Compile Include="NotificationConfigDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -113,13 +113,13 @@
       <DependentUpon>NotificationConfigDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="NotificationManager.cs" />
-    <Compile Include="PresetDeck.cs" />
-    <Compile Include="ProxyManager.cs" />
-    <Compile Include="PushNotification.cs" />
-    <Compile Include="RepairListForMain.cs">
+    <Compile Include="Model\PresetDeck.cs" />
+    <Compile Include="Net\ProxyManager.cs" />
+    <Compile Include="Net\PushNotification.cs" />
+    <Compile Include="View\RepairListForMain.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MainFormLabels.cs" />
+    <Compile Include="View\MainFormLabels.cs" />
     <Compile Include="ListForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -132,28 +132,28 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MissionInfo.cs" />
+    <Compile Include="Model\MissionInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuestInfo.cs" />
-    <Compile Include="ConditionTimer.cs" />
-    <Compile Include="ResizableToolTip.cs">
+    <Compile Include="Model\QuestInfo.cs" />
+    <Compile Include="Model\ConditionTimer.cs" />
+    <Compile Include="View\ResizableToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ShipInfo.cs" />
-    <Compile Include="ShipLabel.cs" />
-    <Compile Include="ShipListPanel.cs">
+    <Compile Include="Model\ShipInfo.cs" />
+    <Compile Include="View\ShipLabel.cs" />
+    <Compile Include="View\ShipListPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ShipMaster.cs" />
-    <Compile Include="ShipStatus.cs" />
+    <Compile Include="Model\ShipMaster.cs" />
+    <Compile Include="Model\ShipStatus.cs" />
     <Compile Include="Sniffer.cs" />
-    <Compile Include="ItemInfo.cs" />
-    <Compile Include="Status.cs" />
-    <Compile Include="SwipeScrollify.cs" />
-    <Compile Include="SystemProxy.cs" />
+    <Compile Include="Model\ItemInfo.cs" />
+    <Compile Include="Model\Status.cs" />
+    <Compile Include="View\SwipeScrollify.cs" />
+    <Compile Include="Net\SystemProxy.cs" />
     <Compile Include="TextGenerator.cs" />
-    <Compile Include="Win32API.cs" />
+    <Compile Include="Util\Win32API.cs" />
     <EmbeddedResource Include="ConfigDialog.resx">
       <DependentUpon>ConfigDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -199,6 +199,7 @@
   <ItemGroup>
     <Content Include="app.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>COPY $(SolutionDir)\Data\*.* $(TargetDir)</PostBuildEvent>
