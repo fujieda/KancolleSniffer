@@ -57,6 +57,7 @@
     <Compile Include="Model\Achievement.cs" />
     <Compile Include="Model\AkashiTimer.cs" />
     <Compile Include="Model\AlarmTimer.cs" />
+    <Compile Include="Model\ItemMaster.cs" />
     <Compile Include="Model\ItemSpec.cs" />
     <Compile Include="Model\ItemStatus.cs" />
     <Compile Include="Model\ShipSpec.cs" />

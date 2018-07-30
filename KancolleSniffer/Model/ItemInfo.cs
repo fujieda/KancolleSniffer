@@ -21,10 +21,8 @@ namespace KancolleSniffer.Model
     public class ItemInfo
     {
         private int _nowShips, _nowEquips;
-        private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
+        private readonly ItemMaster _itemMaster;
         private readonly Dictionary<int, ItemStatus> _itemInfo = new Dictionary<int, ItemStatus>();
-        private readonly Dictionary<int, string> _useItemName = new Dictionary<int, string>();
-
         public int MaxShips { get; private set; }
         public int MarginShips { get; set; }
         public bool AlarmShips { get; set; }
@@ -64,13 +62,12 @@ namespace KancolleSniffer.Model
 
         public bool TooManyEquips => MaxEquips != 0 && NowEquips >= MaxEquips - MarginEquips;
 
-        public ItemInfo()
+        public ItemInfo(ItemMaster itemMaster)
         {
+            _itemMaster = itemMaster;
             MarginShips = 4;
             MarginEquips = 10;
         }
-
-        public AdditionalData AdditionalData { get; set; }
 
         public void InspectBasic(dynamic json)
         {
@@ -83,36 +80,7 @@ namespace KancolleSniffer.Model
 
         public void InspectMaster(dynamic json)
         {
-            var dict = new Dictionary<int, string>();
-            foreach (var entry in json.api_mst_slotitem_equiptype)
-                dict[(int)entry.api_id] = entry.api_name;
-            AdditionalData.LoadTpSpec();
-            foreach (var entry in json.api_mst_slotitem)
-            {
-                var type = (int)entry.api_type[2];
-                var id = (int)entry.api_id;
-                _itemSpecs[(int)entry.api_id] = new ItemSpec
-                {
-                    Id = id,
-                    Name = (string)entry.api_name,
-                    Type = type,
-                    TypeName = dict.TryGetValue(type, out var typeName) ? typeName : "不明",
-                    IconType = (int)entry.api_type[3],
-                    Firepower = (int)entry.api_houg,
-                    AntiAir = (int)entry.api_tyku,
-                    LoS = (int)entry.api_saku,
-                    AntiSubmarine = (int)entry.api_tais,
-                    Torpedo = (int)entry.api_raig,
-                    Bomber = (int)entry.api_baku,
-                    Interception = type == 48 ? (int)entry.api_houk : 0, // 局地戦闘機は回避の値が迎撃
-                    AntiBomber = type == 48 ? (int)entry.api_houm : 0, // 〃命中の値が対爆
-                    Distance = entry.api_distance() ? (int)entry.api_distance : 0,
-                    GetItemTp = () => AdditionalData.ItemTp(id)
-                };
-            }
-            _itemSpecs[-1] = _itemSpecs[0] = new ItemSpec();
-            foreach (var entry in json.api_mst_useitem)
-                _useItemName[(int)entry.api_id] = entry.api_name;
+            _itemMaster.InspectMaster(json);
         }
 
         public void InspectSlotItem(dynamic json, bool full = false)
@@ -129,7 +97,7 @@ namespace KancolleSniffer.Model
                 var id = (int)entry.api_id;
                 _itemInfo[id] = new ItemStatus(id)
                 {
-                    Spec = _itemSpecs[(int)entry.api_slotitem_id],
+                    Spec = _itemMaster[(int)entry.api_slotitem_id],
                     Level = entry.api_level() ? (int)entry.api_level : 0,
                     Alv = entry.api_alv() ? (int)entry.api_alv : 0
                 };
@@ -181,7 +149,7 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public ItemSpec GetSpecByItemId(int id) => _itemSpecs.TryGetValue(id, out var spec) ? spec : new ItemSpec();
+        public ItemSpec GetSpecByItemId(int id) => _itemMaster[id];
 
         public string GetName(int id) => GetStatus(id).Spec.Name;
 
@@ -198,12 +166,12 @@ namespace KancolleSniffer.Model
 
         public ItemStatus[] ItemList => (from e in _itemInfo where e.Key != -1 select e.Value).ToArray();
 
-        public string GetUseItemName(int id) => _useItemName[id];
+        public string GetUseItemName(int id) => _itemMaster.GetUseItemName(id);
 
         public void InjectItemSpec(IEnumerable<ItemSpec> specs)
         {
             foreach (var spec in specs)
-                _itemSpecs.Add(spec.Id, spec);
+                _itemMaster[spec.Id] = spec;
         }
 
         public ItemStatus[] InjectItems(IEnumerable<int> itemIds)
@@ -211,10 +179,11 @@ namespace KancolleSniffer.Model
             var id = _itemInfo.Keys.Count + 1;
             return itemIds.Select(itemId =>
             {
-                if (!_itemSpecs.TryGetValue(itemId, out var spec))
+                var spec = _itemMaster[itemId];
+                if (spec.Id == -1)
                 {
                     spec = new ItemSpec {Id = itemId};
-                    _itemSpecs.Add(itemId, spec);
+                    _itemMaster[itemId] = spec;
                 }
                 var item = new ItemStatus {Id = id++, Spec = spec};
                 _itemInfo.Add(item.Id, item);

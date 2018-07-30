@@ -36,7 +36,7 @@ namespace KancolleSniffer.Test
         [TestInitialize]
         public void Initialize()
         {
-            _itemInfo = new ItemInfo();
+            _itemInfo = new ItemInfo(new ItemMaster());
             _shipInfo = new ShipInfo(new ShipMaster(), _itemInfo);
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
         }

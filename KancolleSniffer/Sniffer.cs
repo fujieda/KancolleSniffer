@@ -24,7 +24,8 @@ namespace KancolleSniffer
     public class Sniffer
     {
         private bool _start;
-        private readonly ItemInfo _itemInfo = new ItemInfo();
+        private readonly ItemMaster _itemMaster = new ItemMaster();
+        private readonly ItemInfo _itemInfo;
         private readonly MaterialInfo _materialInfo = new MaterialInfo();
         private readonly QuestInfo _questInfo;
         private readonly MissionInfo _missionInfo = new MissionInfo();
@@ -76,6 +77,7 @@ namespace KancolleSniffer
         public Sniffer(bool start = false)
         {
             _start = start;
+            _itemInfo = new ItemInfo(_itemMaster);
             _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
             _conditionTimer = new ConditionTimer(_shipInfo);
             _dockInfo = new DockInfo(_shipInfo, _materialInfo);
@@ -95,8 +97,8 @@ namespace KancolleSniffer
             set
             {
                 _additionalData = value;
+                _itemMaster.AdditionalData = value;
                 _shipMaster.AdditionalData = value;
-                _itemInfo.AdditionalData = value;
             }
         }
 
