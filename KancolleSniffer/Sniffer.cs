@@ -25,12 +25,14 @@ namespace KancolleSniffer
     {
         private bool _start;
         private readonly ItemMaster _itemMaster = new ItemMaster();
+        private readonly ItemInventry _itemInventry = new ItemInventry();
         private readonly ItemInfo _itemInfo;
+        private readonly ShipMaster _shipMaster = new ShipMaster();
+        private readonly ShipInventry _shipInventry = new ShipInventry();
+        private readonly ShipInfo _shipInfo;
         private readonly MaterialInfo _materialInfo = new MaterialInfo();
         private readonly QuestInfo _questInfo;
         private readonly MissionInfo _missionInfo = new MissionInfo();
-        private readonly ShipMaster _shipMaster = new ShipMaster();
-        private readonly ShipInfo _shipInfo;
         private readonly ConditionTimer _conditionTimer;
         private readonly DockInfo _dockInfo;
         private readonly AkashiTimer _akashiTimer;
@@ -77,8 +79,8 @@ namespace KancolleSniffer
         public Sniffer(bool start = false)
         {
             _start = start;
-            _itemInfo = new ItemInfo(_itemMaster);
-            _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
+            _itemInfo = new ItemInfo(_itemMaster, _itemInventry);
+            _shipInfo = new ShipInfo(_shipMaster, _shipInventry, _itemInfo);
             _conditionTimer = new ConditionTimer(_shipInfo);
             _dockInfo = new DockInfo(_shipInfo, _materialInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo, _presetDeck);

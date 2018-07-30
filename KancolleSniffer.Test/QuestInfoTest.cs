@@ -1087,7 +1087,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void DestroyItem_613_638_643_645_663_673_674_675_676_677_678()
         {
-            var itemInfo = new ItemInfo(new ItemMaster());
+            var itemInfo = new ItemInfo(new ItemMaster(), new ItemInventry());
             var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 12};
 
             itemInfo.InjectItemSpec(new[]

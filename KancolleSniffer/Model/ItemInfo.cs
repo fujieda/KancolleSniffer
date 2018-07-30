@@ -22,7 +22,7 @@ namespace KancolleSniffer.Model
     {
         private int _nowShips, _nowEquips;
         private readonly ItemMaster _itemMaster;
-        private readonly Dictionary<int, ItemStatus> _itemInfo = new Dictionary<int, ItemStatus>();
+        private readonly ItemInventry _itemInventry;
         public int MaxShips { get; private set; }
         public int MarginShips { get; set; }
         public bool AlarmShips { get; set; }
@@ -62,9 +62,10 @@ namespace KancolleSniffer.Model
 
         public bool TooManyEquips => MaxEquips != 0 && NowEquips >= MaxEquips - MarginEquips;
 
-        public ItemInfo(ItemMaster itemMaster)
+        public ItemInfo(ItemMaster itemMaster, ItemInventry itemInventry)
         {
             _itemMaster = itemMaster;
+            _itemInventry = itemInventry;
             MarginShips = 4;
             MarginEquips = 10;
         }
@@ -88,21 +89,18 @@ namespace KancolleSniffer.Model
             if (!json.IsArray)
                 json = new[] {json};
             if (full)
-            {
-                _itemInfo.Clear();
-                _itemInfo[-1] = new ItemStatus();
-            }
+                _itemInventry.Clear();
             foreach (var entry in json)
             {
                 var id = (int)entry.api_id;
-                _itemInfo[id] = new ItemStatus(id)
+                _itemInventry[id] = new ItemStatus(id)
                 {
                     Spec = _itemMaster[(int)entry.api_slotitem_id],
                     Level = entry.api_level() ? (int)entry.api_level : 0,
                     Alv = entry.api_alv() ? (int)entry.api_alv : 0
                 };
             }
-            NowEquips = _itemInfo.Count - 1;
+            NowEquips = _itemInventry.Count;
         }
 
         public void InspectCreateItem(dynamic json)
@@ -142,11 +140,8 @@ namespace KancolleSniffer.Model
 
         private void DeleteItems(IEnumerable<int> ids)
         {
-            foreach (var id in ids.Where(id => id != -1))
-            {
-                _itemInfo.Remove(id);
-                NowEquips--;
-            }
+            _itemInventry.Remove(ids);
+            NowEquips = _itemInventry.Count;
         }
 
         public ItemSpec GetSpecByItemId(int id) => _itemMaster[id];
@@ -155,16 +150,16 @@ namespace KancolleSniffer.Model
 
         public ItemStatus GetStatus(int id)
         {
-            return _itemInfo.TryGetValue(id, out var item) ? item : new ItemStatus(id);
+            return _itemInventry[id];
         }
 
         public void ClearHolder()
         {
-            foreach (var item in _itemInfo.Values)
+            foreach (var item in _itemInventry.AllItems)
                 item.Holder = new ShipStatus();
         }
 
-        public ItemStatus[] ItemList => (from e in _itemInfo where e.Key != -1 select e.Value).ToArray();
+        public ItemStatus[] ItemList => _itemInventry.AllItems.ToArray();
 
         public string GetUseItemName(int id) => _itemMaster.GetUseItemName(id);
 
@@ -176,7 +171,7 @@ namespace KancolleSniffer.Model
 
         public ItemStatus[] InjectItems(IEnumerable<int> itemIds)
         {
-            var id = _itemInfo.Keys.Count + 1;
+            var id = _itemInventry.MaxId + 1;
             return itemIds.Select(itemId =>
             {
                 var spec = _itemMaster[itemId];
@@ -186,7 +181,7 @@ namespace KancolleSniffer.Model
                     _itemMaster[itemId] = spec;
                 }
                 var item = new ItemStatus {Id = id++, Spec = spec};
-                _itemInfo.Add(item.Id, item);
+                _itemInventry.Add(item);
                 return item;
             }).ToArray();
         }
