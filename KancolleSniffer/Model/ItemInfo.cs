@@ -20,63 +20,20 @@ namespace KancolleSniffer.Model
 {
     public class ItemInfo
     {
-        private int _nowShips, _nowEquips;
         private readonly ItemMaster _itemMaster;
         private readonly ItemInventry _itemInventry;
-        public int MaxShips { get; private set; }
-        public int MarginShips { get; set; }
-        public bool AlarmShips { get; set; }
-        public int MaxEquips { get; private set; }
-        public int MarginEquips { get; set; }
-        public bool AlarmEquips { get; set; }
-
-        public int NowShips
-        {
-            get => _nowShips;
-            set
-            {
-                if (MaxShips != 0)
-                {
-                    var limit = MaxShips - MarginShips;
-                    AlarmShips = AlarmShips || _nowShips < limit && value >= limit;
-                }
-                _nowShips = value;
-            }
-        }
-
-        public bool TooManyShips => MaxShips != 0 && NowShips >= MaxShips - MarginShips;
-
-        public int NowEquips
-        {
-            get => _nowEquips;
-            set
-            {
-                if (MaxEquips != 0)
-                {
-                    var limit = MaxEquips - MarginEquips;
-                    AlarmEquips = AlarmEquips || _nowEquips < limit && value >= limit;
-                }
-                _nowEquips = value;
-            }
-        }
-
-        public bool TooManyEquips => MaxEquips != 0 && NowEquips >= MaxEquips - MarginEquips;
+        public AlarmCounter Counter { get; }
 
         public ItemInfo(ItemMaster itemMaster, ItemInventry itemInventry)
         {
             _itemMaster = itemMaster;
             _itemInventry = itemInventry;
-            MarginShips = 4;
-            MarginEquips = 10;
+            Counter = new AlarmCounter(() => _itemInventry.Count) {Margin = 10};
         }
 
         public void InspectBasic(dynamic json)
         {
-            MaxShips = (int)json.api_max_chara;
-            var check = MaxEquips == 0;
-            MaxEquips = (int)json.api_max_slotitem;
-            if (check)
-                AlarmEquips = NowEquips >= MaxEquips - MarginEquips;
+            Counter.Max = (int)json.api_max_slotitem;
         }
 
         public void InspectMaster(dynamic json)
@@ -100,7 +57,6 @@ namespace KancolleSniffer.Model
                     Alv = entry.api_alv() ? (int)entry.api_alv : 0
                 };
             }
-            NowEquips = _itemInventry.Count;
         }
 
         public void InspectCreateItem(dynamic json)
@@ -112,7 +68,6 @@ namespace KancolleSniffer.Model
 
         public void InspectGetShip(dynamic json)
         {
-            NowShips += 1;
             if (json.api_slotitem == null) // まるゆにはスロットがない
                 return;
             InspectSlotItem(json.api_slotitem);
@@ -141,7 +96,6 @@ namespace KancolleSniffer.Model
         private void DeleteItems(IEnumerable<int> ids)
         {
             _itemInventry.Remove(ids);
-            NowEquips = _itemInventry.Count;
         }
 
         public ItemSpec GetSpecByItemId(int id) => _itemMaster[id];

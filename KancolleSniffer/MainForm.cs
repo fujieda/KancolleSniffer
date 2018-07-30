@@ -434,9 +434,9 @@ namespace KancolleSniffer
         private void ApplyConfig()
         {
             _listForm.TopMost = TopMost = _config.TopMost;
-            _sniffer.Item.MarginShips = _config.MarginShips;
+            _sniffer.ShipCounter.Margin = _config.MarginShips;
             UpdateNumOfShips();
-            _sniffer.Item.MarginEquips = _config.MarginEquips;
+            _sniffer.ItemCounter.Margin = _config.MarginEquips;
             UpdateNumOfEquips();
             _sniffer.Achievement.ResetHours = _config.ResetHours;
             labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible =
@@ -551,27 +551,27 @@ namespace KancolleSniffer
 
         private void UpdateNumOfShips()
         {
-            var item = _sniffer.Item;
-            labelNumOfShips.Text = $"{item.NowShips:D}/{item.MaxShips:D}";
-            labelNumOfShips.ForeColor = item.TooManyShips ? CUDColor.Red : Color.Black;
-            if (item.AlarmShips)
+            var ship = _sniffer.ShipCounter;
+            labelNumOfShips.Text = $"{ship.Now:D}/{ship.Max:D}";
+            labelNumOfShips.ForeColor = ship.TooMany ? CUDColor.Red : Color.Black;
+            if (ship.Alarm)
             {
-                var message = $"残り{_sniffer.Item.MaxShips - _sniffer.Item.NowShips:D}隻";
+                var message = $"残り{ship.Rest:D}隻";
                 _notificationManager.Enqueue("艦娘数超過", message);
-                item.AlarmShips = false;
+                ship.Alarm = false;
             }
         }
 
         private void UpdateNumOfEquips()
         {
-            var item = _sniffer.Item;
-            labelNumOfEquips.Text = $"{item.NowEquips:D}/{item.MaxEquips:D}";
-            labelNumOfEquips.ForeColor = item.TooManyEquips ? CUDColor.Red : Color.Black;
-            if (item.AlarmEquips)
+            var item = _sniffer.ItemCounter;
+            labelNumOfEquips.Text = $"{item.Now:D}/{item.Max:D}";
+            labelNumOfEquips.ForeColor = item.TooMany ? CUDColor.Red : Color.Black;
+            if (item.Alarm)
             {
-                var message = $"残り{_sniffer.Item.MaxEquips - _sniffer.Item.NowEquips:D}個";
+                var message = $"残り{item.Rest:D}個";
                 _notificationManager.Enqueue("装備数超過", message);
-                item.AlarmEquips = false;
+                item.Alarm = false;
             }
         }
 

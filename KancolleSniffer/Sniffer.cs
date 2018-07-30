@@ -80,7 +80,7 @@ namespace KancolleSniffer
         {
             _start = start;
             _itemInfo = new ItemInfo(_itemMaster, _itemInventry);
-            _shipInfo = new ShipInfo(_shipMaster, _shipInventry, _itemInfo);
+            _shipInfo = new ShipInfo(_shipMaster, _shipInventry, _itemInventry);
             _conditionTimer = new ConditionTimer(_shipInfo);
             _dockInfo = new DockInfo(_shipInfo, _materialInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo, _presetDeck);
@@ -583,6 +583,8 @@ namespace KancolleSniffer
 
         public AlarmTimer[] KDock => _dockInfo.KDock;
 
+        public AlarmCounter ItemCounter => _itemInfo.Counter;
+
         public ItemInfo Item => _itemInfo;
 
         public MaterialInfo Material => _materialInfo;
@@ -596,6 +598,8 @@ namespace KancolleSniffer
         public DateTime GetConditionTimer(int fleet) => _conditionTimer.GetTimer(fleet);
 
         public int[] GetConditionNotice(DateTime prev, DateTime now) => _conditionTimer.GetNotice(prev, now);
+
+        public AlarmCounter ShipCounter => _shipInfo.Counter;
 
         public Fleet[] Fleets => _shipInfo.Fleets;
 

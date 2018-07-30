@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Model\Achievement.cs" />
     <Compile Include="Model\AkashiTimer.cs" />
+    <Compile Include="Model\AlarmCounter.cs" />
     <Compile Include="Model\AlarmTimer.cs" />
     <Compile Include="Model\ItemMaster.cs" />
     <Compile Include="Model\Inventry.cs" />

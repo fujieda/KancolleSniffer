@@ -45,6 +45,7 @@ namespace KancolleSniffer.Model
     public abstract class Inventry<T>
     {
         private readonly Dictionary<int, T> _dict = new Dictionary<int, T>();
+        private int _inflated;
 
         protected abstract T CreateDummy(int id);
 
@@ -57,6 +58,7 @@ namespace KancolleSniffer.Model
         {
             _dict.Clear();
             _dict[-1] = CreateDummy(-1);
+            _inflated = 0;
         }
 
         public virtual T this[int id]
@@ -108,7 +110,9 @@ namespace KancolleSniffer.Model
         public IEnumerable<T> AllItems =>
             from kv in _dict where kv.Key != -1 select kv.Value;
 
-        public int Count => _dict.Count - 1;
+        public void InflateCount(int count) => _inflated += count;
+
+        public int Count => _dict.Count + _inflated - 1;
 
         public int MaxId => Math.Max(_dict.Keys.Max(), 0);
     }
