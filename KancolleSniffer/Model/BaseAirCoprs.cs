@@ -174,7 +174,7 @@ namespace KancolleSniffer.Model
             {
                 var planeId = (int)planeInfo.api_squadron_id - 1;
                 var prev = airCorps.Planes[planeId];
-                if (prev.Slot.Id != -1)
+                if (!prev.Slot.Empty)
                     _relocationgPlanes.Add(prev.Slot.Id);
                 airCorps.Planes[planeId] = new PlaneInfo
                 {

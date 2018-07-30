@@ -37,7 +37,7 @@ namespace KancolleSniffer.View
         private TreeNode CreateItemNodes(IEnumerable<ItemStatus> itemList)
         {
             var grouped = from item in itemList
-                where item.Spec.Id != -1
+                where !item.Spec.Empty
                 orderby item.Spec.Type, item.Spec.Id, item.Alv, item.Level
                 group item by item.Spec.Type
                 into byTypeGroup
@@ -85,7 +85,7 @@ namespace KancolleSniffer.View
                         foreach (var byShip in byParam)
                         {
                             var ship = byShip.First().Holder;
-                            var name = byShip.Key == -1
+                            var name = ship.Empty
                                 ? "未装備x" + byShip.Count()
                                 : (ship.Fleet == null ? "" : ship.Fleet.Number + 1 + " ") +
                                   ship.Name + (ship.Level > 0 ? "Lv" + ship.Level : "") + "x" + byShip.Count();

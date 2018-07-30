@@ -20,6 +20,8 @@ namespace KancolleSniffer.Model
     public class ItemStatus
     {
         public int Id { get; set; }
+        public bool Empty => Id == -1;
+        public bool Unimplemented => Id == 0;
         public ItemSpec Spec { get; set; } = new ItemSpec();
         public int Level { get; set; }
         public int Alv { get; set; }

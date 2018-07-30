@@ -22,6 +22,7 @@ namespace KancolleSniffer.Model
     public class ShipStatus : ICloneable
     {
         public int Id { get; set; }
+        public bool Empty => Id == -1;
         public Fleet Fleet { get; set; }
         public int DeckIndex { get; set; }
         public ShipSpec Spec { get; set; }
@@ -286,7 +287,7 @@ namespace KancolleSniffer.Model
         {
             get
             {
-                if (AllSlot.All(item => item.Id == -1 || item.Id == 0))
+                if (AllSlot.All(item => item.Empty || item.Unimplemented))
                     return AntiAir;
                 var vanilla = AntiAir - AllSlot.Sum(item => item.Spec.AntiAir);
                 var x = vanilla + AllSlot.Sum(item => item.EffectiveAntiAirForShip);

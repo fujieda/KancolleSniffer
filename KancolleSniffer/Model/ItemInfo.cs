@@ -180,7 +180,7 @@ namespace KancolleSniffer.Model
             return itemIds.Select(itemId =>
             {
                 var spec = _itemMaster[itemId];
-                if (spec.Id == -1)
+                if (spec.Empty)
                 {
                     spec = new ItemSpec {Id = itemId};
                     _itemMaster[itemId] = spec;

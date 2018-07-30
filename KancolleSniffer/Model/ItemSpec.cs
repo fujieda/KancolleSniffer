@@ -21,6 +21,7 @@ namespace KancolleSniffer.Model
     {
         public static bool IncreaceLandPowerTp = false;
         public int Id;
+        public bool Empty => Id == -1;
         public string Name;
         public int Type;
         public string TypeName;

@@ -103,7 +103,7 @@ namespace KancolleSniffer.View
                         var item = s.Slot[i];
                         var onslot = s.OnSlot[i];
                         var max = s.Spec.MaxEq[i];
-                        if (item.Id == -1)
+                        if (item.Empty)
                             continue;
                         var airspec = "";
                         if (item.Spec.IsDiveBomber) // 爆撃

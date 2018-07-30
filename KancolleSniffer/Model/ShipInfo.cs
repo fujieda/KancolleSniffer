@@ -47,7 +47,7 @@ namespace KancolleSniffer.Model
                 var spec = ship.Spec;
                 if (spec.NumEquips != -1 || ship.Id <= MaxId)
                     return;
-                spec.NumEquips = ship.Slot.Count(item => item.Id != -1);
+                spec.NumEquips = ship.Slot.Count(item => !item.Empty);
             }
         }
 

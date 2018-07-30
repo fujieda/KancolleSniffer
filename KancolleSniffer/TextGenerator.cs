@@ -49,7 +49,7 @@ namespace KancolleSniffer
             => "区分,装備名,熟練度,改修,個数\r\n" +
                string.Join("\r\n",
                    (from item in itemList
-                       where item.Spec.Id != -1
+                       where !item.Spec.Empty
                        orderby item.Spec.Type, item.Spec.Id, item.Alv, item.Level
                        group item by
                            $"{item.Spec.TypeName},{item.Spec.Name},{item.Alv},{item.Level}"
@@ -81,7 +81,7 @@ namespace KancolleSniffer
                 select ($"{s.Name} Lv{s.Level} " +
                         string.Join(",",
                             from item in s.AllSlot
-                            where item.Id != -1
+                            where !item.Empty
                             select dict[item.Spec.Name] + ItemStatusString(item))).TrimEnd(' ') + "\r\n"));
             var fp = target.FighterPower;
             sb.Append($"制空: {(fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1])} " +
@@ -158,15 +158,15 @@ namespace KancolleSniffer
                     for (var i = 0; i < items.Length; i++)
                     {
                         var item = items[i];
-                        if (item.Id == -1)
+                        if (item.Empty)
                             continue;
                         if (i != 0)
                             sb.Append(",");
                         sb.Append($"\"i{i + 1}\":{{\"id\":{item.Spec.Id},\"rf\":{item.Level},\"mas\":{item.Alv}}}");
                     }
-                    if (ship.SlotEx.Id != 0 && ship.SlotEx.Id != -1)
+                    if (!ship.SlotEx.Unimplemented && !ship.SlotEx.Empty)
                     {
-                        if (ship.Slot.Any(item => item.Id != -1))
+                        if (ship.Slot.Any(item => !item.Empty))
                             sb.Append(",");
                         var name = ship.Spec.SlotNum == 5 ? "ix" : $"i{ship.Spec.SlotNum + 1}";
                         sb.Append($"\"{name}\":{{\"id\":{ship.SlotEx.Spec.Id},\"rf\":{ship.SlotEx.Level}}}");

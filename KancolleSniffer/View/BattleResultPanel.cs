@@ -264,7 +264,7 @@ namespace KancolleSniffer.View
             var result =
             (from i in Enumerable.Range(0, ship.Slot.Length)
                 let item = ship.Slot[i]
-                where item.Id != -1
+                where !item.Empty
                 select item.Spec.Name + (item.Spec.IsAircraft && ship.OnSlot.Length > 0 && ship.Spec.MaxEq.Length > 0
                            ? $"{ship.OnSlot[i]}/{ship.Spec.MaxEq[i]}"
                            : ""));

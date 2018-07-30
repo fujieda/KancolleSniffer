@@ -303,24 +303,24 @@ namespace KancolleSniffer
             var result = _battleInfo.Result.Enemy.Main.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
             if (_battleInfo.Result.Enemy.Guard.Length == 0)
             {
-                return result.Select(s => s.Id == -1 ? "," : $"{s.Name},{s.NowHp}/{s.MaxHp}").ToList();
+                return result.Select(s => s.Empty ? "," : $"{s.Name},{s.NowHp}/{s.MaxHp}").ToList();
             }
             var main = result;
             var guard = _battleInfo.Result.Enemy.Guard.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
             return main.Zip(guard, (m, g) =>
             {
-                if (m.Id == -1 && g.Id == -1)
+                if (m.Empty && g.Empty)
                     return ",";
                 var name = "";
                 var hp = "";
-                if (m.Id != -1)
+                if (!m.Empty)
                 {
                     name = $"{m.Name}";
                     hp = $"{m.NowHp}/{m.MaxHp}";
                 }
                 name += "・";
                 hp += "・";
-                if (g.Id != -1)
+                if (!g.Empty)
                 {
                     name += $"{g.Name}";
                     hp += $"{g.NowHp}/{g.MaxHp}";

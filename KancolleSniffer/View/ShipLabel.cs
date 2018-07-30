@@ -65,11 +65,11 @@ namespace KancolleSniffer.View
                 return;
             }
             var empty = SlotStatus.Equipped;
-            if (status.Id != -1)
+            if (!status.Empty)
             {
-                if (status.Slot.All(item => item.Id == -1))
+                if (status.Slot.All(item => item.Empty))
                     empty |= SlotStatus.NormalEmpty;
-                if (status.SlotEx.Id == -1)
+                if (status.SlotEx.Empty)
                     empty |= SlotStatus.ExtraEmpty;
             }
             var dc = status.PreparedDamageControl;
