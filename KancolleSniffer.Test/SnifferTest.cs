@@ -886,5 +886,20 @@ namespace KancolleSniffer.Test
             PAssert.That(() => sniffer.ShipCounter.Now == 250);
             PAssert.That(() => sniffer.ItemCounter.Now == 1159);
         }
+
+        /// <summary>
+        /// 艦娘数を数える
+        /// </summary>
+        [TestMethod]
+        public void CountShips()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "ship_count_001");
+            PAssert.That(() => sniffer.ShipCounter.Now == 267 && sniffer.ShipCounter.Alarm, "ログイン");
+            SniffLogFile(sniffer, "ship_count_002");
+            PAssert.That(() => sniffer.ShipCounter.Now == 266 && sniffer.ShipCounter.Alarm, "建造");
+            SniffLogFile(sniffer, "ship_count_003");
+            PAssert.That(() => sniffer.ShipCounter.Now == 266 && sniffer.ShipCounter.Alarm, "ドロップ");
+        }
     }
 }
