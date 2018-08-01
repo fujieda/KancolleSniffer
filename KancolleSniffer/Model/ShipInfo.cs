@@ -84,6 +84,7 @@ namespace KancolleSniffer.Model
             if (json.api_deck_port()) // port
             {
                 _shipInventry.Clear();
+                _escapedShips.Clear();
                 for (var i = 0; i < FleetCount; i++)
                     _fleets[i].State = FleetState.Port;
                 InspectDeck(json.api_deck_port);
@@ -180,7 +181,8 @@ namespace KancolleSniffer.Model
                     AntiSubmarine = (int)entry.api_taisen[0],
                     AntiAir = (int)entry.api_taiku[0],
                     Lucky = (int)entry.api_lucky[0],
-                    Locked = entry.api_locked() && entry.api_locked == 1
+                    Locked = entry.api_locked() && entry.api_locked == 1,
+                    Escaped = _escapedShips.Contains(id)
                 };
                 _shipInventry.Add(ship);
                 _numEquipsChecker.Check(ship);
@@ -342,7 +344,6 @@ namespace KancolleSniffer.Model
         {
             if (ship.Empty)
                 return ship;
-            ship.Escaped = _escapedShips.Contains(ship.Id);
             ship.Fleet = FindFleet(ship.Id, out var idx);
             ship.DeckIndex = idx;
             return ship;
@@ -385,14 +386,11 @@ namespace KancolleSniffer.Model
             BadlyDamagedShips = new string[0];
         }
 
-        public void SetEscapedShips(List<int> ships)
+        public void SetEscapedShips(List<int> ids)
         {
-            _escapedShips.AddRange(ships);
-        }
-
-        public void ClearEscapedShips()
-        {
-            _escapedShips.Clear();
+            _escapedShips.AddRange(ids);
+            foreach (var id in ids)
+                _shipInventry[id].Escaped = true;
         }
     }
 }

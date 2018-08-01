@@ -186,7 +186,6 @@ namespace KancolleSniffer
                 _baseAirCoprs.InspectPlaneInfo(data.api_plane_info);
             _battleInfo.CleanupResult();
             _battleInfo.BattleState = BattleState.None;
-            _shipInfo.ClearEscapedShips();
             _miscTextInfo.Port();
             _cellInfo.Port();
             SaveState();
