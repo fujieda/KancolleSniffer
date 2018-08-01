@@ -21,15 +21,15 @@ namespace KancolleSniffer.Model
     public class DockInfo
     {
         public const int DockCount = 4;
-        private readonly ShipInfo _shipInfo;
+        private readonly ShipInventry _shipInventry;
         private readonly MaterialInfo _materialInfo;
         private readonly int[] _ndoc = new int[DockCount];
         private readonly AlarmTimer[] _ndocTimers = new AlarmTimer[DockCount];
         private readonly AlarmTimer[] _kdocTimers = new AlarmTimer[DockCount];
 
-        public DockInfo(ShipInfo ship, MaterialInfo material)
+        public DockInfo(ShipInventry shipInventry, MaterialInfo material)
         {
-            _shipInfo = ship;
+            _shipInventry = shipInventry;
             _materialInfo = material;
             for (var i = 0; i < _ndocTimers.Length; i++)
                 _ndocTimers[i] = new AlarmTimer();
@@ -46,7 +46,7 @@ namespace KancolleSniffer.Model
                 var prev = _ndoc[id];
                 _ndoc[id] = (int)entry.api_ship_id;
                 if (prev != 0 && _ndoc[id] == 0) // 修復完了
-                    _shipInfo.RepairShip(prev);
+                    _shipInventry[prev].RepairShip();
             }
         }
 
@@ -54,25 +54,25 @@ namespace KancolleSniffer.Model
         {
             var values = HttpUtility.ParseQueryString(request);
             var id = int.Parse(values["api_ship_id"]);
-            var ship = _shipInfo.GetStatus(id);
+            var ship = _shipInventry[id];
             var m = ship.NdockItem;
             _materialInfo.SubMaterial(Material.Fuel, m[0]);
             _materialInfo.SubMaterial(Material.Steal, m[1]);
             if (int.Parse(values["api_highspeed"]) == 1)
             {
-                _shipInfo.RepairShip(id);
+                ship.RepairShip();
                 _materialInfo.SubMaterial(Material.Bucket, 1);
                 return;
             }
             if (ship.RepairTime.CompareTo(TimeSpan.FromMinutes(1)) <= 0)
-                _shipInfo.RepairShip(id);
+                ship.RepairShip();
         }
 
         public void InspectSpeedChange(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
             var dock = int.Parse(values["api_ndock_id"]) - 1;
-            _shipInfo.RepairShip(_ndoc[dock]);
+            _shipInventry[_ndoc[dock]].RepairShip();
             _ndoc[dock] = 0;
             _ndocTimers[dock].SetEndTime(0);
             _materialInfo.SubMaterial(Material.Bucket, 1);
@@ -80,7 +80,7 @@ namespace KancolleSniffer.Model
 
         public NameAndTimer[] NDock
             => _ndoc.Zip(_ndocTimers,
-                    (id, timer) => new NameAndTimer {Name = id == 0 ? "" : _shipInfo.GetStatus(id).Name, Timer = timer}).ToArray();
+                    (id, timer) => new NameAndTimer {Name = id == 0 ? "" : _shipInventry[id].Name, Timer = timer}).ToArray();
 
         public bool InNDock(int id) => _ndoc.Any(n => n == id); // 空のドックのidは0
 

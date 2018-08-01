@@ -88,6 +88,12 @@ namespace KancolleSniffer.Model
             Sunk
         }
 
+        public void RepairShip()
+        {
+            NowHp = MaxHp;
+            Cond = Max(40, Cond);
+        }
+
         public static Damage CalcDamage(int now, int max)
         {
             if (now == 0 && max > 0)

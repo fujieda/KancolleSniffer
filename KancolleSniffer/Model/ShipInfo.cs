@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using KancolleSniffer.Util;
-using static System.Math;
 
 namespace KancolleSniffer.Model
 {
@@ -327,13 +326,6 @@ namespace KancolleSniffer.Model
             var values = HttpUtility.ParseQueryString(request);
             var fleet = int.Parse(values["api_deck_id"]) - 1;
             _fleets[fleet].State = FleetState.Practice;
-        }
-
-        public void RepairShip(int id)
-        {
-            var s = _shipInventry[id];
-            s.NowHp = s.MaxHp;
-            s.Cond = Max(40, s.Cond);
         }
 
         public Fleet[] Fleets => _fleets;

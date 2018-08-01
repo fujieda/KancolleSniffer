@@ -82,7 +82,7 @@ namespace KancolleSniffer
             _itemInfo = new ItemInfo(_itemMaster, _itemInventry);
             _shipInfo = new ShipInfo(_shipMaster, _shipInventry, _itemInventry);
             _conditionTimer = new ConditionTimer(_shipInfo);
-            _dockInfo = new DockInfo(_shipInfo, _materialInfo);
+            _dockInfo = new DockInfo(_shipInventry, _materialInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo, _presetDeck);
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
