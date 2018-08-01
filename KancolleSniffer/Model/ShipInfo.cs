@@ -169,6 +169,7 @@ namespace KancolleSniffer.Model
                     Fuel = (int)entry.api_fuel,
                     Bull = (int)entry.api_bull,
                     OnSlot = (int[])entry.api_onslot,
+                    GetItem = item => _itemInventry[item.Id],
                     Slot = ((int[])entry.api_slot).Select(item => new ItemStatus(item)).ToArray(),
                     SlotEx = entry.api_slot_ex() ? new ItemStatus((int)entry.api_slot_ex) : new ItemStatus(0),
                     NdockTime = (int)entry.api_ndock_time,
@@ -341,8 +342,6 @@ namespace KancolleSniffer.Model
         {
             if (ship.Empty)
                 return ship;
-            ship.Slot = ship.Slot.Select(item => _itemInventry[item.Id]).ToArray();
-            ship.SlotEx = _itemInventry[ship.SlotEx.Id];
             ship.Escaped = _escapedShips.Contains(ship.Id);
             ship.Fleet = FindFleet(ship.Id, out var idx);
             ship.DeckIndex = idx;

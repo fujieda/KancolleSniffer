@@ -262,7 +262,7 @@ namespace KancolleSniffer.View
         private string GetEqipString(ShipStatus ship)
         {
             var result =
-            (from i in Enumerable.Range(0, ship.Slot.Length)
+            (from i in Enumerable.Range(0, ship.Slot.Count)
                 let item = ship.Slot[i]
                 where !item.Empty
                 select item.Spec.Name + (item.Spec.IsAircraft && ship.OnSlot.Length > 0 && ship.Spec.MaxEq.Length > 0

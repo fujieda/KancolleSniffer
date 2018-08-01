@@ -37,8 +37,6 @@ namespace KancolleSniffer.Model
         public int Fuel { get; set; }
         public int Bull { get; set; }
         public int[] OnSlot { get; set; }
-        public ItemStatus[] Slot { get; set; }
-        public ItemStatus SlotEx { get; set; }
         public int NdockTime { get; set; }
         public int[] NdockItem { get; set; }
         public int LoS { get; set; }
@@ -51,6 +49,24 @@ namespace KancolleSniffer.Model
         public bool Escaped { get; set; }
 
         public Damage DamageLevel => CalcDamage(NowHp, MaxHp);
+
+        private IList<ItemStatus> _slot;
+        private ItemStatus _slotEx;
+        public Func<ItemStatus, ItemStatus> GetItem { get; set; } = item => item;
+
+        public IReadOnlyList<ItemStatus> Slot
+        {
+            get => _slot.Select(item => GetItem(item)).ToList();
+            set => _slot = value.ToList();
+        }
+
+        public ItemStatus SlotEx
+        {
+            get => GetItem(_slotEx);
+            set => _slotEx = value;
+        }
+
+        public void FreeSlot(int idx) => _slot[idx] = new ItemStatus();
 
         public IEnumerable<ItemStatus> AllSlot => SlotEx.Id == 0 ? Slot : Slot.Concat(new[] {SlotEx});
 

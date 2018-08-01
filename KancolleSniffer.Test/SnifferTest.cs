@@ -425,12 +425,14 @@ namespace KancolleSniffer.Test
                 ships.Select(ship => (int)(ship.NightBattlePower * 100))
                     .SequenceEqual(new[] {11202, 14985, 20092, 17354}));
             // 夜間作戦航空要員を外す
-            ships[0].Slot[3] = ships[1].Slot[2] = ships[3].Slot[2] = new ItemStatus();
+            ships[0].FreeSlot(3);
+            ships[1].FreeSlot(2);
+            ships[3].FreeSlot(2);
             PAssert.That(() =>
                 ships.Select(ship => (int)(ship.NightBattlePower * 100))
                     .SequenceEqual(new[] {6900, 7500, 20092, 0}));
             // Ark RoyalからSwordfishを外す
-            ships[0].Slot[0] = new ItemStatus();
+            ships[0].FreeSlot(0);
             PAssert.That(() => (int)ships[0].NightBattlePower == 0);
         }
 

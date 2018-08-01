@@ -98,7 +98,7 @@ namespace KancolleSniffer.View
                 foreach (var s in fleet.Ships)
                 {
                     var equips = new List<Record>();
-                    for (var i = 0; i < s.Slot.Length; i++)
+                    for (var i = 0; i < s.Slot.Count; i++)
                     {
                         var item = s.Slot[i];
                         var onslot = s.OnSlot[i];

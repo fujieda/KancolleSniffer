@@ -193,11 +193,11 @@ namespace KancolleSniffer.Model
                 ship.SlotEx = new ItemStatus();
                 return;
             }
-            for (var i = 0; i < ship.Slot.Length; i++)
+            for (var i = 0; i < ship.Slot.Count; i++)
             {
                 if (ship.Slot[i].Spec.Id == id)
                 {
-                    ship.Slot[i] = new ItemStatus();
+                    ship.FreeSlot(i);
                     break;
                 }
             }

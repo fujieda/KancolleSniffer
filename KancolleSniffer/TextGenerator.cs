@@ -155,7 +155,7 @@ namespace KancolleSniffer
                     sb.Append(
                         $"\"s{s + 1}\":{{\"id\":\"{ship.Spec.Id}\",\"lv\":{ship.Level},\"luck\":{ship.Lucky},\"items\":{{");
                     var items = ship.Slot;
-                    for (var i = 0; i < items.Length; i++)
+                    for (var i = 0; i < items.Count; i++)
                     {
                         var item = items[i];
                         if (item.Empty)
