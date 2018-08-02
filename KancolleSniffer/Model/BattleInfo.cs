@@ -53,7 +53,7 @@ namespace KancolleSniffer.Model
     {
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
-        private int _fleet;
+        private Fleet _fleet;
         private Record[] _friend;
         private Record[] _guard;
         private Record[] _enemy;
@@ -129,11 +129,10 @@ namespace KancolleSniffer.Model
             if (_friend != null)
                 return;
             _shipInfo.SaveBattleStartStatus();
-            _fleet = DeckId(json);
             var fleets = _shipInfo.Fleets;
-            var fstats = fleets[_fleet].Ships;
-            FlagshipRecovery(request, fstats[0]);
-            _friend = Record.Setup(fstats, practice);
+            _fleet = fleets[DeckId(json)];
+            FlagshipRecovery(request, _fleet.Ships[0]);
+            _friend = Record.Setup(_fleet.Ships, practice);
             _guard = json.api_f_nowhps_combined()
                 ? Record.Setup(fleets[1].Ships, practice)
                 : new Record[0];
@@ -226,7 +225,7 @@ namespace KancolleSniffer.Model
             var fleets = _shipInfo.Fleets;
             if (_guard.Length > 0 && _enemyGuard.Length > 0)
                 return fleets[0].FighterPower.Zip(fleets[1].FighterPower, (a, b) => a + b).ToArray();
-            return fleets[_fleet].FighterPower;
+            return _fleet.FighterPower;
         }
 
         private EnemyFighterPower CalcEnemyFighterPower(dynamic json)
@@ -515,7 +514,7 @@ namespace KancolleSniffer.Model
             var fleets = _shipInfo.Fleets;
             var ships = _guard.Length > 0
                 ? fleets[0].Ships.Concat(fleets[1].Ships)
-                : fleets[_fleet].Ships;
+                : _fleet.Ships;
             foreach (var entry in ships.Zip(_friend.Concat(_guard), (ship, now) => new {ship, now}))
                 entry.now.UpdateShipStatus(entry.ship);
             if (warnDamagedShip)
