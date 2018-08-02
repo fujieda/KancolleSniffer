@@ -77,7 +77,7 @@ namespace KancolleSniffer
             var sb = new StringBuilder();
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             sb.Append(fn[fleet] + "\r\n");
-            sb.Append(string.Concat(from s in target.Ships
+            sb.Append(string.Concat(from s in target.ActualShips
                 select ($"{s.Name} Lv{s.Level} " +
                         string.Join(",",
                             from item in s.AllSlot
@@ -146,8 +146,8 @@ namespace KancolleSniffer
                 if (fleet.Number != 0)
                     sb.Append(",");
                 sb.Append($"\"f{fleet.Number + 1}\":{{");
-                var ships = fleet.Ships;
-                for (var s = 0; s < ships.Length; s++)
+                var ships = fleet.ActualShips;
+                for (var s = 0; s < ships.Count; s++)
                 {
                     if (s != 0)
                         sb.Append(",");

@@ -144,22 +144,22 @@ namespace KancolleSniffer.View
                 label.ToggleHpPercent();
         }
 
-        public void SetShipLabels(ShipStatus[] statuses)
+        public void SetShipLabels(IReadOnlyList<ShipStatus> ships)
         {
-            SetShipLabels(statuses, statuses.Length == 7 ? _shipLabels7 : _shiplabels);
+            SetShipLabels(ships, ships.Count == 7 ? _shipLabels7 : _shiplabels);
         }
 
-        public void SetShipLabels(ShipStatus[] statuses, ShipLabel[][] shipLabels)
+        public void SetShipLabels(IReadOnlyList<ShipStatus> ships, ShipLabel[][] shipLabels)
         {
             for (var i = 0; i < shipLabels.Length; i++)
             {
                 var labels = shipLabels[i];
-                var s = i < statuses.Length ? statuses[i] : null;
-                labels[0].SetHp(s);
-                labels[1].SetCond(s);
-                labels[2].SetLevel(s);
-                labels[3].SetExpToNext(s);
-                labels[4].SetName(s, ShipNameWidth.MainPanel);
+                var ship = i < ships.Count ? ships[i] : null;
+                labels[0].SetHp(ship);
+                labels[1].SetCond(ship);
+                labels[2].SetLevel(ship);
+                labels[3].SetExpToNext(ship);
+                labels[4].SetName(ship, ShipNameWidth.MainPanel);
             }
         }
 
@@ -223,14 +223,14 @@ namespace KancolleSniffer.View
             parent.ResumeLayout();
         }
 
-        public void SetCombinedShipLabels(ShipStatus[] first, ShipStatus[] second)
+        public void SetCombinedShipLabels(IReadOnlyList<ShipStatus> first, IReadOnlyList<ShipStatus> second)
         {
             for (var i = 0; i < _combinedLabels.Length; i++)
             {
                 var idx = i % ShipInfo.MemberCount;
-                var statuses = i < ShipInfo.MemberCount ? first : second;
+                var ships = i < ShipInfo.MemberCount ? first : second;
                 var labels = _combinedLabels[i];
-                var s = idx < statuses.Length ? statuses[idx] : null;
+                var s = idx < ships.Count ? ships[idx] : null;
                 labels[0].SetHp(s);
                 labels[1].SetCond(s);
                 labels[2].SetName(s, ShipNameWidth.Combined);
@@ -290,19 +290,19 @@ namespace KancolleSniffer.View
             }
         }
 
-        public void SetAkashiTimer(ShipStatus[] statuses, AkashiTimer.RepairSpan[] timers)
+        public void SetAkashiTimer(IReadOnlyList<ShipStatus> ships, AkashiTimer.RepairSpan[] timers)
         {
-            if (statuses.Length == 7)
+            if (ships.Count == 7)
             {
-                SetAkashiTimer(statuses, timers, _akashiTimers7, _shipLabels7);
+                SetAkashiTimer(ships, timers, _akashiTimers7, _shipLabels7);
             }
             else
             {
-                SetAkashiTimer(statuses, timers, _akashiTimers, _shiplabels);
+                SetAkashiTimer(ships, timers, _akashiTimers, _shiplabels);
             }
         }
 
-        public void SetAkashiTimer(ShipStatus[] statuses, AkashiTimer.RepairSpan[] timers, ShipLabel[] timerLabels,
+        public void SetAkashiTimer(IReadOnlyList<ShipStatus> ships, AkashiTimer.RepairSpan[] timers, ShipLabel[] timerLabels,
             ShipLabel[][] shipLabels)
         {
             var shortest = -1;
@@ -325,7 +325,7 @@ namespace KancolleSniffer.View
                     continue;
                 }
                 var timer = timers[i];
-                var stat = statuses[i];
+                var stat = ships[i];
                 label.Visible = true;
                 label.Text = timer.Span.ToString(@"mm\:ss");
                 label.ForeColor = Control.DefaultForeColor;

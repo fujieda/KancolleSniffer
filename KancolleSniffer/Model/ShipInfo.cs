@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using KancolleSniffer.Util;
@@ -24,15 +23,15 @@ namespace KancolleSniffer.Model
         public const int FleetCount = 4;
         public const int MemberCount = 6;
 
-        private readonly Fleet[] _fleets;
+        private readonly IReadOnlyList<Fleet> _fleets;
         private readonly ShipMaster _shipMaster;
         private readonly ShipInventry _shipInventry;
         private readonly ItemInventry _itemInventry;
         private readonly List<int> _escapedShips = new List<int>();
         private ShipStatus[] _battleResult = new ShipStatus[0];
         private readonly NumEquipsChecker _numEquipsChecker = new NumEquipsChecker();
+        private int _hqLevel;
         public AlarmCounter Counter { get; }
-        public int HqLevel { get; private set; }
         public ShipStatusPair[] BattleResultDiff { get; private set; } = new ShipStatusPair[0];
         public bool IsBattleResultError => BattleResultDiff.Length > 0;
         public ShipStatus[] BattleStartStatus { get; private set; } = new ShipStatus[0];
@@ -67,7 +66,7 @@ namespace KancolleSniffer.Model
         {
             _shipMaster = shipMaster;
             _shipInventry = shipInventry;
-            _fleets = Enumerable.Range(0, FleetCount).Select((x, i) => new Fleet(this, i)).ToArray();
+            _fleets = Enumerable.Range(0, FleetCount).Select((x, i) => new Fleet(_shipInventry, i, () => _hqLevel)).ToArray();
             _itemInventry = itemInventry;
             Counter = new AlarmCounter(() => _shipInventry.Count){Margin = 4};
         }
@@ -86,8 +85,7 @@ namespace KancolleSniffer.Model
                 _escapedShips.Clear();
                 for (var i = 0; i < FleetCount; i++)
                     _fleets[i].State = FleetState.Port;
-                InspectDeck(json.api_deck_port);
-                InspectShipData(json.api_ship);
+                InspectShipDataAndDeck(json.api_ship, json.api_deck_port);
                 InspectBasic(json.api_basic);
                 if (json.api_combined_flag())
                     _fleets[0].CombinedType = _fleets[1].CombinedType = (CombinedType)(int)json.api_combined_flag;
@@ -95,13 +93,11 @@ namespace KancolleSniffer.Model
             }
             else if (json.api_data()) // ship2
             {
-                InspectDeck(json.api_data_deck);
-                InspectShipData(json.api_data);
+                InspectShipDataAndDeck(json.api_data, json.api_data_deck);
             }
             else if (json.api_ship_data()) // ship3とship_deck
             {
-                InspectDeck(json.api_deck_data);
-                InspectShipData(json.api_ship_data);
+                InspectShipDataAndDeck(json.api_ship_data, json.api_deck_data);
                 VerifyBattleResult();
                 // ship_deckでドロップ艦を反映する
                 if (DropShipId != -1)
@@ -112,7 +108,7 @@ namespace KancolleSniffer.Model
                         _itemInventry.InflateCount(num);
                 }
             }
-            else if (json.api_ship()) // getshipとpowerup
+            else if (json.api_ship()) // getship
             {
                 InspectShipData(new[] {json.api_ship});
             }
@@ -122,14 +118,14 @@ namespace KancolleSniffer.Model
         public void SaveBattleResult()
         {
             _battleResult = _fleets.Where(fleet =>
-                    fleet.State >= FleetState.Sortie && !GetStatus(fleet.Deck[0]).Spec.IsRepairShip)
-                .SelectMany(fleet => fleet.Deck.Select(GetStatus)).ToArray();
+                    fleet.State >= FleetState.Sortie && !fleet.Ships[0].Spec.IsRepairShip)
+                .SelectMany(fleet => fleet.Ships).ToArray();
         }
 
         private void VerifyBattleResult()
         {
             BattleResultDiff = (from assumed in _battleResult
-                let actual = GetStatus(assumed.Id)
+                let actual = GetShip(assumed.Id)
                 where !assumed.Escaped && assumed.NowHp != actual.NowHp
                 select new ShipStatusPair(assumed, actual)).ToArray();
             _battleResult = new ShipStatus[0];
@@ -138,7 +134,13 @@ namespace KancolleSniffer.Model
         public void SaveBattleStartStatus()
         {
             BattleStartStatus = _fleets.Where(fleet => fleet.State >= FleetState.Sortie)
-                .SelectMany(fleet => fleet.Deck.Select(id => (ShipStatus)GetStatus(id).Clone())).ToArray();
+                .SelectMany(fleet => fleet.Ships.Select(ship => (ShipStatus)ship.Clone())).ToArray();
+        }
+
+        private void InspectShipDataAndDeck(dynamic ship, dynamic deck)
+        {
+            InspectShipData(ship);
+            InspectDeck(deck); // FleetのDeckを設定した時点でShipStatusを取得するので必ずdeckが後
         }
 
         public void InspectDeck(dynamic json)
@@ -191,7 +193,7 @@ namespace KancolleSniffer.Model
 
         private void InspectBasic(dynamic json)
         {
-            HqLevel = (int)json.api_level;
+            _hqLevel = (int)json.api_level;
             Counter.Max = (int)json.api_max_chara;
         }
 
@@ -209,56 +211,36 @@ namespace KancolleSniffer.Model
         public void InspectChange(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
-            var fleet = _fleets[int.Parse(values["api_id"]) - 1];
-            var idx = int.Parse(values["api_ship_idx"]);
-            var ship = int.Parse(values["api_ship_id"]);
+            var dstFleet = _fleets[int.Parse(values["api_id"]) - 1];
+            var dstIdx = int.Parse(values["api_ship_idx"]);
+            var shipId = int.Parse(values["api_ship_id"]);
 
-            if (idx == -1)
+            if (dstIdx == -1 || shipId == -1) // 解除
             {
-                var deck = fleet.Deck;
-                for (var i = 1; i < deck.Length; i++)
-                    deck[i] = -1;
+                dstFleet.WithdrowShip(dstIdx);
                 return;
             }
-            if (ship == -1)
-            {
-                WithdrowShip(fleet, idx);
-                return;
-            }
-            var of = FindFleet(ship, out var oi);
-            var orig = fleet.Deck[idx];
-            fleet.Deck[idx] = ship;
-            if (of == null)
+            var srcFleet = FindFleet(shipId, out var srcIdx);
+            var prevShipId = dstFleet.SetShip(dstIdx, shipId);
+            if (srcFleet == null)
                 return;
             // 入れ替えの場合
-            if ((of.Deck[oi] = orig) == -1)
-                WithdrowShip(of, oi);
+            srcFleet.SetShip(srcIdx, prevShipId);
+            if (prevShipId == -1)
+                srcFleet.WithdrowShip(srcIdx);
         }
 
         private Fleet FindFleet(int ship, out int idx)
         {
             foreach (var fleet in _fleets)
             {
-                idx = Array.FindIndex(fleet.Deck, id => id == ship);
+                idx = fleet.Deck.ToList().IndexOf(ship);
                 if (idx < 0)
                     continue;
                 return fleet;
             }
             idx = -1;
             return null;
-        }
-
-        private void WithdrowShip(Fleet fleet, int idx)
-        {
-            var deck = fleet.Deck;
-            var j = idx;
-            for (var i = idx + 1; i < deck.Length; i++)
-            {
-                if (deck[i] != -1)
-                    deck[j++] = deck[i];
-            }
-            for (; j < deck.Length; j++)
-                deck[j] = -1;
         }
 
         public void InspectPowerup(string request, dynamic json)
@@ -269,8 +251,7 @@ namespace KancolleSniffer.Model
                 return;
             _itemInventry.Remove(ships.SelectMany(id => _shipInventry[id].Slot));
             _shipInventry.Remove(ships);
-            InspectDeck(json.api_deck);
-            InspectShip(json);
+            InspectShipDataAndDeck(new[]{json.api_ship}, json.api_deck);
         }
 
         public void InspectSlotExchange(string request, dynamic json)
@@ -283,20 +264,21 @@ namespace KancolleSniffer.Model
         public void InspectSlotDeprive(dynamic json)
         {
             InspectShipData(new[] {json.api_ship_data.api_set_ship, json.api_ship_data.api_unset_ship});
+            foreach (var fleet in _fleets)
+                fleet.SetDeck(); // ShipStatusの差し替え
         }
 
         public void InspectDestroyShip(string request, dynamic json)
         {
             var values = HttpUtility.ParseQueryString(request);
             var delitem = int.Parse(values["api_slot_dest_flag"] ?? "0") == 1;
-            foreach (var id in values["api_ship_id"].Split(',').Select(int.Parse))
+            foreach (var shipId in values["api_ship_id"].Split(',').Select(int.Parse))
             {
                 if (delitem)
-                    _itemInventry.Remove(_shipInventry[id].AllSlot);
-                var of = FindFleet(id, out var oi);
-                if (of != null)
-                    WithdrowShip(of, oi);
-                _shipInventry.Remove(id);
+                    _itemInventry.Remove(_shipInventry[shipId].AllSlot);
+                var srcFleet = FindFleet(shipId, out var srcIdx);
+                srcFleet?.WithdrowShip(srcIdx);
+                _shipInventry.Remove(shipId);
             }
         }
 
@@ -328,18 +310,9 @@ namespace KancolleSniffer.Model
             _fleets[fleet].State = FleetState.Practice;
         }
 
-        public Fleet[] Fleets => _fleets;
+        public IReadOnlyList<Fleet> Fleets => _fleets;
 
-        public ShipStatus GetStatus(int id) => FillUp(_shipInventry[id]);
-
-        private ShipStatus FillUp(ShipStatus ship)
-        {
-            if (ship.Empty)
-                return ship;
-            ship.Fleet = FindFleet(ship.Id, out var idx);
-            ship.DeckIndex = idx;
-            return ship;
-        }
+        public ShipStatus GetShip(int id) => _shipInventry[id];
 
         public void SetItemHolder()
         {
@@ -353,7 +326,7 @@ namespace KancolleSniffer.Model
 
         public ShipSpec GetSpec(int id) => _shipMaster.GetSpec(id);
 
-        public ShipStatus[] ShipList => _shipInventry.AllShips.Select(FillUp).ToArray();
+        public ShipStatus[] ShipList => _shipInventry.AllShips.ToArray();
 
         public ShipStatus[] GetRepairList(DockInfo dockInfo)
             => (from s in ShipList
@@ -367,7 +340,7 @@ namespace KancolleSniffer.Model
         {
             BadlyDamagedShips =
             (from s in _fleets.Where(fleet => fleet.State == FleetState.Sortie)
-                    .SelectMany(fleet => fleet.Deck.Where(id => id != -1).Select(GetStatus))
+                    .SelectMany(fleet => fleet.ActualShips)
                 where !s.Escaped && s.DamageLevel == ShipStatus.Damage.Badly &&
                       !(s.Fleet.CombinedType != 0 && s.Fleet.Number == 1 && s.DeckIndex == 0) // 第二艦隊の旗艦を除く
                 select s.Name).ToArray();

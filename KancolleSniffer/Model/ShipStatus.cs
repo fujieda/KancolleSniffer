@@ -56,8 +56,8 @@ namespace KancolleSniffer.Model
 
         public IReadOnlyList<ItemStatus> Slot
         {
-            get => _slot.Select(item => GetItem(item)).ToList();
-            set => _slot = value.ToList();
+            get => _slot.Select(item => GetItem(item)).ToArray();
+            set => _slot = value.ToArray();
         }
 
         public ItemStatus SlotEx

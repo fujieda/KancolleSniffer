@@ -62,8 +62,8 @@ namespace KancolleSniffer.Test
             var id = _shipInventry.MaxId + 1;
             var ships = nowhps.Zip(maxhps,
                 (now, max) => new ShipStatus {Id = id++, NowHp = now, MaxHp = max}).ToArray();
-            _shipInfo.Fleets[deck].Deck = (from ship in ships select ship.Id).ToArray();
             _shipInventry.Add(ships);
+            _shipInfo.Fleets[deck].Deck = (from ship in ships select ship.Id).ToArray();
             foreach (var entry in ships.Zip(slots, (ship, slot) => new {ship, slot}))
             {
                 entry.ship.Slot = _itemInfo.InjectItems(entry.slot.Take(5));

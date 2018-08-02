@@ -56,7 +56,7 @@ namespace KancolleSniffer.View
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             foreach (var fleet in sniffer.Fleets)
             {
-                var ships = fleet.Ships;
+                var ships = fleet.ActualShips;
                 var rawForFleet = ships.Sum(ship => ship.EffectiveAntiAirForFleet);
                 var forFleet = new[] {1.0, 1.2, 1.6}.Select(r => (int)(rawForFleet * r) * 2 / 1.3).ToArray();
                 _table.Add(new Record

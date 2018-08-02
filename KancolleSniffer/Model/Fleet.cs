@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using static System.Math;
 
@@ -67,25 +69,87 @@ namespace KancolleSniffer.Model
 
     public class Fleet
     {
-        private readonly ShipInfo _shipInfo;
+        private readonly ShipInventry _shipInventry;
+        private readonly Func<int> _getHqLevel;
+        private int[] _deck = Enumerable.Repeat(-1, ShipInfo.MemberCount).ToArray();
         public int Number { get; }
         public FleetState State { get; set; }
         public CombinedType CombinedType { get; set; }
-        public int[] Deck { get; set; } = Enumerable.Repeat(-1, ShipInfo.MemberCount).ToArray();
-        public ShipStatus[] Ships => Deck.Where(id => id != -1).Select(_shipInfo.GetStatus).ToArray();
+        public IReadOnlyList<ShipStatus> Ships { get; private set; }
+        public IReadOnlyList<ShipStatus> ActualShips { get; private set; }
 
-        public Fleet(ShipInfo shipInfo, int number)
+        public Fleet(ShipInventry shipInventry, int number, Func<int> getHqLevel)
         {
-            _shipInfo = shipInfo;
+            _shipInventry = shipInventry;
             Number = number;
+            _getHqLevel = getHqLevel;
+            Ships = _deck.Select(id => new ShipStatus()).ToArray();
+            ActualShips = new ShipStatus[0];
+        }
+
+        public IReadOnlyList<int> Deck
+        {
+            get => _deck;
+            set
+            {
+                _deck = value.ToArray();
+                SetDeck();
+            }
+        }
+
+        public void SetDeck()
+        {
+            foreach (var ship in Ships)
+            {
+                ship.Fleet = null;
+                ship.DeckIndex = -1;
+            }
+            Ships = _deck.Select((id, idx) =>
+            {
+                var ship = _shipInventry[id];
+                if (ship.Empty)
+                    return ship;
+                ship.DeckIndex = id;
+                ship.Fleet = this;
+                return ship;
+            }).ToArray();
+            ActualShips = Ships.Where(ship => !ship.Empty).ToArray();
+        }
+
+        public int SetShip(int index, int shipId)
+        {
+            var prev = _deck[index];
+            _deck[index] = shipId;
+            SetDeck();
+            return prev;
+        }
+
+        public void WithdrowShip(int index)
+        {
+            if (index == -1) // 旗艦以外解除
+            {
+                for (var i = 1; i < _deck.Length; i++)
+                    _deck[i] = -1;
+                SetDeck();
+                return;
+            }
+            var dst = index;
+            for (var src = index + 1; src < _deck.Length; src++)
+            {
+                if (_deck[src] != -1)
+                    _deck[dst++] = _deck[src];
+            }
+            for (; dst < _deck.Length; dst++)
+                _deck[dst] = -1;
+            SetDeck();
         }
 
         public ChargeStatus ChargeStatus
         {
             get
             {
-                var fs = new ChargeStatus(_shipInfo.GetStatus(Deck[0]));
-                var others = (from id in Deck.Skip(1) select new ChargeStatus(_shipInfo.GetStatus(id))).Aggregate(
+                var fs = new ChargeStatus(Ships[0]);
+                var others = (from ship in Ships.Skip(1) select new ChargeStatus(ship)).Aggregate(
                     (result, next) => new ChargeStatus(Max(result.Fuel, next.Fuel), Max(result.Bull, next.Bull)));
                 return new ChargeStatus(fs.Fuel != 0 ? fs.Fuel : others.Fuel + 5,
                     fs.Bull != 0 ? fs.Bull : others.Bull + 5);
@@ -93,12 +157,12 @@ namespace KancolleSniffer.Model
         }
 
         public int[] FighterPower
-            => Ships.Where(ship => !ship.Escaped).SelectMany(ship =>
+            => ActualShips.Where(ship => !ship.Escaped).SelectMany(ship =>
                     ship.Slot.Zip(ship.OnSlot, (slot, onslot) => slot.CalcFighterPower(onslot)))
                 .Aggregate(new[] {0, 0}, (prev, cur) => new[] {prev[0] + cur[0], prev[1] + cur[1]});
 
         public double ContactTriggerRate
-            => Ships.Where(ship => !ship.Escaped).SelectMany(ship =>
+            => ActualShips.Where(ship => !ship.Escaped).SelectMany(ship =>
                 ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
                     slot.Spec.ContactTriggerRate * slot.Spec.LoS * Sqrt(onslot))).Sum();
 
@@ -106,7 +170,7 @@ namespace KancolleSniffer.Model
         {
             var result = 0.0;
             var emptyBonus = 6;
-            foreach (var s in Ships.Where(s => !s.Escaped))
+            foreach (var s in ActualShips.Where(s => !s.Escaped))
             {
                 emptyBonus--;
                 var itemLoS = 0;
@@ -118,7 +182,7 @@ namespace KancolleSniffer.Model
                 }
                 result += Sqrt(s.LoS - itemLoS);
             }
-            return result > 0 ? result - Ceiling(_shipInfo.HqLevel * 0.4) + emptyBonus * 2 : 0.0;
+            return result > 0 ? result - Ceiling(_getHqLevel() * 0.4) + emptyBonus * 2 : 0.0;
         }
 
         public double DaihatsuBonus

@@ -94,15 +94,15 @@ namespace KancolleSniffer.View
             foreach (var fleet in sniffer.Fleets)
             {
                 var total = new Total();
-                var ships = new List<Record>();
-                foreach (var s in fleet.Ships)
+                var shipRecords = new List<Record>();
+                foreach (var ship in fleet.ActualShips)
                 {
                     var equips = new List<Record>();
-                    for (var i = 0; i < s.Slot.Count; i++)
+                    for (var i = 0; i < ship.Slot.Count; i++)
                     {
-                        var item = s.Slot[i];
-                        var onslot = s.OnSlot[i];
-                        var max = s.Spec.MaxEq[i];
+                        var item = ship.Slot[i];
+                        var onslot = ship.OnSlot[i];
+                        var max = ship.Spec.MaxEq[i];
                         if (item.Empty)
                             continue;
                         var airspec = "";
@@ -124,32 +124,32 @@ namespace KancolleSniffer.View
                             Color = item.Spec.Color
                         });
                     }
-                    if (s.SlotEx.Id > 0)
+                    if (ship.SlotEx.Id > 0)
                     {
-                        var item = s.SlotEx;
+                        var item = ship.SlotEx;
                         equips.Add(new Record {Equip = GenEquipString(item), Color = item.Spec.Color});
                     }
-                    total.Add(s);
-                    var fire = s.EffectiveFirepower;
-                    var subm = s.EffectiveAntiSubmarine;
-                    var torp = s.EffectiveTorpedo;
-                    var night = s.NightBattlePower;
-                    var oasa = s.CanOpeningAntiSubmarineAttack ? "*" : "";
-                    var ship = new Record
+                    total.Add(ship);
+                    var fire = ship.EffectiveFirepower;
+                    var subm = ship.EffectiveAntiSubmarine;
+                    var torp = ship.EffectiveTorpedo;
+                    var night = ship.NightBattlePower;
+                    var oasa = ship.CanOpeningAntiSubmarineAttack ? "*" : "";
+                    var record = new Record
                     {
-                        Ship = (s.Escaped ? "[避]" : "") + s.Name + " Lv" + s.Level,
-                        Ship2 = $"燃{s.EffectiveFuelMax} 弾{s.EffectiveBullMax}",
-                        Id = s.Id,
+                        Ship = (ship.Escaped ? "[避]" : "") + ship.Name + " Lv" + ship.Level,
+                        Ship2 = $"燃{ship.EffectiveFuelMax} 弾{ship.EffectiveBullMax}",
+                        Id = ship.Id,
                         Spec = HideIfZero("砲", fire) + HideIfZero(" 潜", subm) + oasa,
                         Spec2 = (HideIfZero("雷", torp) + HideIfZero(" 夜", night)).TrimStart(' ')
                     };
-                    if (ship.Spec == "")
+                    if (record.Spec == "")
                     {
-                        ship.Spec = ship.Spec2;
-                        ship.Spec2 = "";
+                        record.Spec = record.Spec2;
+                        record.Spec2 = "";
                     }
-                    ships.Add(ship);
-                    ships.AddRange(equips);
+                    shipRecords.Add(record);
+                    shipRecords.AddRange(equips);
                 }
                 var daihatsu = fleet.DaihatsuBonus;
                 var tp = fleet.TransportPoint;
@@ -170,7 +170,7 @@ namespace KancolleSniffer.View
                                  ? ""
                                  : $"\r\nTP:S{(int)tp} A{(int)(tp * 0.7)}")
                 });
-                list.AddRange(ships);
+                list.AddRange(shipRecords);
             }
             if (sniffer.BaseAirCorps != null)
             {

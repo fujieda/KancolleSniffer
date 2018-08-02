@@ -41,8 +41,8 @@ namespace KancolleSniffer.Model
 
         private class RepairStatus
         {
-            private ShipStatus[] _target = new ShipStatus[0];
-            private int[] _deck = new int[0];
+            private IReadOnlyList<ShipStatus> _target = new ShipStatus[0];
+            private IReadOnlyList<int> _deck = new int[0];
             private TimeSpan FirstRepairTime => TimeSpan.FromMinutes(20);
 
             private bool PassedFirstRepairTime(DateTime start, DateTime prev, DateTime now) =>
@@ -52,7 +52,7 @@ namespace KancolleSniffer.Model
                 TimeSpan.FromMinutes(Math.Ceiling(ship.RepairTime.TotalMinutes / (ship.MaxHp - ship.NowHp) * damage));
 
 
-            public int[] Deck
+            public IReadOnlyList<int> Deck
             {
                 set => _deck = value;
             }
@@ -183,11 +183,11 @@ namespace KancolleSniffer.Model
 
         private void CheckFleet(Fleet fleet)
         {
-            var deck = fleet.Deck.ToArray();
+            var deck = fleet.Deck;
+            var ships = fleet.Ships;
             var repair = _repairStatuses[fleet.Number];
-            var fs = _shipInfo.GetStatus(deck[0]);
             repair.State = State.Continue;
-            if (!fs.Spec.IsRepairShip)
+            if (!ships[0].Spec.IsRepairShip)
             {
                 repair.UpdateTarget(new ShipStatus[0]);
                 repair.Deck = deck;
@@ -198,15 +198,15 @@ namespace KancolleSniffer.Model
                 repair.State = State.Reset;
                 repair.Deck = deck;
             }
-            var target = RepairTarget(deck);
+            var target = RepairTarget(ships);
             if (repair.IsRepaired(target))
                 repair.State = State.Reset;
             repair.UpdateTarget(target);
         }
 
-        private ShipStatus[] RepairTarget(int[] deck)
+        private ShipStatus[] RepairTarget(IReadOnlyList<ShipStatus> ships)
         {
-            var fs = _shipInfo.GetStatus(deck[0]);
+            var fs = ships[0];
             if (!fs.Spec.IsRepairShip || _dockInfo.InNDock(fs.Id) || fs.DamageLevel >= ShipStatus.Damage.Half)
                 return new ShipStatus[0];
             var cap = fs.Slot.Count(item => item.Spec.IsRepairFacility) + 2;
@@ -215,11 +215,11 @@ namespace KancolleSniffer.Model
              * - 入渠中の艦娘は終わったときに回復扱いされないようNowHp=MaxHpに
              * - 中破以上でNowHp=MaxHpにすると回復扱いされるのでNowHp=MaxHp=0に
             */
-            return (from id in deck.Take(cap)
-                let s = (ShipStatus)_shipInfo.GetStatus(id).Clone()
+            return (from ship in ships.Take(cap)
+                let s = (ShipStatus)ship.Clone()
                 let full = new ShipStatus {NowHp = s.MaxHp, MaxHp = s.MaxHp}
                 let zero = new ShipStatus()
-                select _dockInfo.InNDock(id) ? full : s.DamageLevel >= ShipStatus.Damage.Half ? zero : s).ToArray();
+                select _dockInfo.InNDock(s.Id) ? full : s.DamageLevel >= ShipStatus.Damage.Half ? zero : s).ToArray();
         }
 
         public RepairSpan[] GetTimers(int fleet)
@@ -242,7 +242,7 @@ namespace KancolleSniffer.Model
 
         public bool CheckPresetRepairing()
             => _presetDeck.Decks.Where(deck => deck != null)
-                .Any(deck => RepairTarget(deck).Any(s => s.NowHp < s.MaxHp));
+                .Any(deck => RepairTarget(deck.Select(id => _shipInfo.GetShip(id)).ToArray()).Any(s => s.NowHp < s.MaxHp));
 
         public Notice[] GetNotice(DateTime prev, DateTime now)
         {

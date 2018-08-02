@@ -245,56 +245,53 @@ namespace KancolleSniffer
             int deckId = BattleInfo.DeckId(_battle);
             if (_battle.api_f_nowhps_combined())
             {
-                var main = _shipInfo.Fleets[0].Deck;
-                var guard = _shipInfo.Fleets[1].Deck;
-                return main.Zip(guard, (m, g) =>
+                var mainShips = _shipInfo.Fleets[0].Ships;
+                var guardShips = _shipInfo.Fleets[1].Ships;
+                return mainShips.Zip(guardShips, (main, guard) =>
                 {
-                    if (m == -1 && g == -1)
+                    if (main.Empty && guard.Empty)
                         return ",";
                     var name = "";
                     var hp = "";
-                    if (m != -1)
+                    if (!main.Empty)
                     {
-                        var sm = _shipInfo.GetStatus(m);
-                        name = $"{sm.Name}(Lv{sm.Level})";
-                        hp = $"{sm.NowHp}/{sm.MaxHp}";
+                        name = $"{main.Name}(Lv{main.Level})";
+                        hp = $"{main.NowHp}/{main.MaxHp}";
                     }
                     name += "・";
                     hp += "・";
-                    if (g != -1)
+                    if (!guard.Empty)
                     {
-                        var sg = _shipInfo.GetStatus(g);
-                        name += $"{sg.Name}(Lv{sg.Level})";
-                        hp += $"{sg.NowHp}/{sg.MaxHp}";
+                        name += $"{guard.Name}(Lv{guard.Level})";
+                        hp += $"{guard.NowHp}/{guard.MaxHp}";
                     }
                     return name + "," + hp;
                 }).ToList();
             }
-            var deck = _shipInfo.Fleets[deckId].Deck;
-            if (deck.Length > 6)
+            var ships = _shipInfo.Fleets[deckId].Ships;
+            if (ships.Count > 6)
             {
                 var result = new List<string>();
-                for (var i = 0; i < 12 - deck.Length; i++)
+                for (var i = 0; i < 12 - ships.Count; i++)
                 {
-                    var s = _shipInfo.GetStatus(deck[i]);
-                    result.Add($"{s.Name}(Lv{s.Level}),{s.NowHp}/{s.MaxHp}");
+                    var ship = ships[i];
+                    result.Add($"{ship.Name}(Lv{ship.Level}),{ship.NowHp}/{ship.MaxHp}");
                 }
-                for (var i = 0; i < deck.Length - 6; i++)
+                for (var i = 0; i < ships.Count - 6; i++)
                 {
-                    var s1 = _shipInfo.GetStatus(deck[12 - deck.Length + i]);
-                    var s2 = _shipInfo.GetStatus(deck[6 + i]);
+                    var s1 = ships[12 - ships.Count + i];
+                    var s2 = ships[6 + i];
                     result.Add(
                         $"{s1.Name}(Lv{s1.Level})・{s2.Name}(Lv{s2.Level})," +
                         $"{s1.NowHp}/{s1.MaxHp}・{s2.NowHp}/{s2.MaxHp}");
                 }
                 return result;
             }
-            return deck.Select(id =>
+            return ships.Select(ship =>
             {
-                if (id == -1)
+                if (ship.Empty)
                     return ",";
-                var s = _shipInfo.GetStatus(id);
-                return $"{s.Name}(Lv{s.Level}),{s.NowHp}/{s.MaxHp}";
+                return $"{ship.Name}(Lv{ship.Level}),{ship.NowHp}/{ship.MaxHp}";
             }).ToList();
         }
 
@@ -305,25 +302,25 @@ namespace KancolleSniffer
             {
                 return result.Select(s => s.Empty ? "," : $"{s.Name},{s.NowHp}/{s.MaxHp}").ToList();
             }
-            var main = result;
-            var guard = _battleInfo.Result.Enemy.Guard.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
-            return main.Zip(guard, (m, g) =>
+            var mainShips = result;
+            var guardShips = _battleInfo.Result.Enemy.Guard.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
+            return mainShips.Zip(guardShips, (main, guard) =>
             {
-                if (m.Empty && g.Empty)
+                if (main.Empty && guard.Empty)
                     return ",";
                 var name = "";
                 var hp = "";
-                if (!m.Empty)
+                if (!main.Empty)
                 {
-                    name = $"{m.Name}";
-                    hp = $"{m.NowHp}/{m.MaxHp}";
+                    name = $"{main.Name}";
+                    hp = $"{main.NowHp}/{main.MaxHp}";
                 }
                 name += "・";
                 hp += "・";
-                if (!g.Empty)
+                if (!guard.Empty)
                 {
-                    name += $"{g.Name}";
-                    hp += $"{g.NowHp}/{g.MaxHp}";
+                    name += $"{guard.Name}";
+                    hp += $"{guard.NowHp}/{guard.MaxHp}";
                 }
                 return name + "," + hp;
             }).ToList();
@@ -553,7 +550,7 @@ namespace KancolleSniffer
             var ship1 = Secretary();
             var ship2 = "";
             var ships = _shipInfo.Fleets[0].Ships;
-            if (ships.Length >= 2)
+            if (!ships[1].Empty)
                 ship2 = ships[1].Name + "(" + ships[1].Level + ")";
             _writer("改修報告書",
                 FormatDateTime(now) + "," +

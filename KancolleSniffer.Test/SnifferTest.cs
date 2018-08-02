@@ -420,7 +420,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "nightbattlepower_001");
-            var ships = sniffer.Fleets[0].Ships;
+            var ships = sniffer.Fleets[0].ActualShips;
             PAssert.That(() =>
                 ships.Select(ship => (int)(ship.NightBattlePower * 100))
                     .SequenceEqual(new[] {11202, 14985, 20092, 17354}));

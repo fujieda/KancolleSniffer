@@ -524,8 +524,8 @@ namespace KancolleSniffer
             if (!_listForm.Visible)
                 return;
             var idx = (int)((Control)sender).Tag;
-            var ships = _sniffer.Fleets[_currentFleet].Ships;
-            if (ships.Length <= idx)
+            var ships = _sniffer.Fleets[_currentFleet].ActualShips;
+            if (ships.Count <= idx)
                 return;
             _listForm.ShowShip(ships[idx].Id);
         }
@@ -642,15 +642,15 @@ namespace KancolleSniffer
         private void UpdatePanelShipInfo()
         {
             var fleets = _sniffer.Fleets;
-            var ships = fleets[_currentFleet].Ships;
-            panel7Ships.Visible = ships.Length == 7;
+            var ships = fleets[_currentFleet].ActualShips;
+            panel7Ships.Visible = ships.Count == 7;
             _mainLabels.SetShipLabels(ships);
             if (!_sniffer.IsCombinedFleet)
                 _combinedFleet = false;
             labelFleet1.Text = _combinedFleet ? "連合" : "第一";
             panelCombinedFleet.Visible = _combinedFleet;
             if (_combinedFleet)
-                _mainLabels.SetCombinedShipLabels(fleets[0].Ships, fleets[1].Ships);
+                _mainLabels.SetCombinedShipLabels(fleets[0].ActualShips, fleets[1].ActualShips);
             for (var i = 0; i < _labelCheckFleets.Length; i++)
                 _labelCheckFleets[i].Visible = _currentFleet == i;
             UpdateAkashiTimer();
@@ -924,7 +924,7 @@ namespace KancolleSniffer
         {
             if (_config.UsePresetAkashi)
                 UpdatePresetAkashiTimer();
-            _mainLabels.SetAkashiTimer(_sniffer.Fleets[_currentFleet].Ships,
+            _mainLabels.SetAkashiTimer(_sniffer.Fleets[_currentFleet].ActualShips,
                 _sniffer.AkashiTimer.GetTimers(_currentFleet));
         }
 

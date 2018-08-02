@@ -600,7 +600,7 @@ namespace KancolleSniffer
 
         public AlarmCounter ShipCounter => _shipInfo.Counter;
 
-        public Fleet[] Fleets => _shipInfo.Fleets;
+        public IReadOnlyList<Fleet> Fleets => _shipInfo.Fleets;
 
         public ShipInfo.ShipStatusPair[] BattleResultStatusDiff => _shipInfo.BattleResultDiff;
 
