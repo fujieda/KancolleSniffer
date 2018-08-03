@@ -712,10 +712,8 @@ namespace KancolleSniffer
             if ((_config.Spoilers & Spoiler.ResultRank) != 0)
                 ShowResultRank();
             if (_sniffer.Battle.BattleState == BattleState.Day)
-            {
                 _listForm.UpdateAirBattleResult();
-                _listForm.UpdateCellInfo();
-            }
+            UpdateCellInfo();
         }
 
         private void UpdateCellInfo()
