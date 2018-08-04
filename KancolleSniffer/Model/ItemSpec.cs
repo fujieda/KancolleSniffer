@@ -141,6 +141,8 @@ namespace KancolleSniffer.Model
 
         public bool IsAntiAirGun => Type == 21;
 
+        public bool IsDrum => Id == 75;
+
         public double ContactTriggerRate
         {
             get

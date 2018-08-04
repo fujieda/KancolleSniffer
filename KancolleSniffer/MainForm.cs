@@ -613,6 +613,7 @@ namespace KancolleSniffer
             NotifyDamagedShip();
             UpdateChargeInfo();
             UpdateRepairList();
+            UpdateMissionLabels();
             if (_listForm.Visible)
                 _listForm.UpdateList();
         }
@@ -785,10 +786,31 @@ namespace KancolleSniffer
 
         private void UpdateMissionLabels()
         {
-            foreach (var entry in
-                new[] {labelMissionName1, labelMissionName2, labelMissionName3}.Zip(_sniffer.Missions,
-                    (label, mission) => new {label, mission.Name}))
-                entry.label.Text = entry.Name;
+            var labels = new[] {labelMissionName1, labelMissionName2, labelMissionName3};
+            var names = _sniffer.Missions.Select(mission => mission.Name).ToArray();
+            for (var i = 0; i < ShipInfo.FleetCount - 1; i++)
+            {
+                labels[i].Text = string.IsNullOrEmpty(names[i])
+                    ? GenerateFleetSpecForMission(i + 1)
+                    : names[i];
+            }
+        }
+
+        private string GenerateFleetSpecForMission(int fleetNumber)
+        {
+            var result = new List<string>();
+            var fleet = _sniffer.Fleets[fleetNumber];
+            var kira = fleet.Ships.Count(ship => ship.Cond > 49);
+            var plus = fleet.Ships[0].Cond > 49;
+            if (kira > 0)
+                result.Add($"ｷﾗ{kira}{(plus ? "+" : "")}");
+            var drums = fleet.Ships.SelectMany(ship => ship.Slot).Count(item => item.Spec.IsDrum);
+            var drumShips = fleet.Ships.Count(ship => ship.Slot.Any(item => item.Spec.IsDrum));
+            if (drums > 0)
+                result.Add($"ド{drums}({drumShips}隻)");
+            if (fleet.DaihatsuBonus > 0)
+                result.Add($"ﾀﾞ{fleet.DaihatsuBonus * 100:f1}%");
+            return string.Join(" ", result);
         }
 
         private void labelMission_Click(object sender, EventArgs e)

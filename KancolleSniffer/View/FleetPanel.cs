@@ -74,7 +74,7 @@ namespace KancolleSniffer.View
 
             public void Add(ShipStatus s)
             {
-                var drum = s.Slot.Count(item => item.Spec.Name == "ドラム缶(輸送用)");
+                var drum = s.Slot.Count(item => item.Spec.IsDrum);
                 DrumShips += drum != 0 ? 1 : 0;
                 Drum += drum;
                 Level += s.Level;
