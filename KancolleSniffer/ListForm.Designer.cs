@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using KancolleSniffer.View;
+
 namespace KancolleSniffer
 {
     partial class ListForm
@@ -76,12 +78,12 @@ namespace KancolleSniffer
             this.label1Fleet3 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
             this.labelFleet1 = new System.Windows.Forms.Label();
-            this.airBattleResultPanel = new KancolleSniffer.AirBattleResultPanel();
-            this.battleResultPanel = new KancolleSniffer.BattleResultPanel();
-            this.antiAirPanel = new KancolleSniffer.AntiAirPanel();
-            this.fleetPanel = new KancolleSniffer.FleetPanel();
-            this.itemTreeView = new KancolleSniffer.ItemTreeView();
-            this.shipListPanel = new KancolleSniffer.ShipListPanel();
+            this.airBattleResultPanel = new AirBattleResultPanel();
+            this.battleResultPanel = new BattleResultPanel();
+            this.antiAirPanel = new AntiAirPanel();
+            this.fleetPanel = new FleetPanel();
+            this.itemTreeView = new ItemTreeView();
+            this.shipListPanel = new ShipListPanel();
             this.contextMenuStripShipList.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();

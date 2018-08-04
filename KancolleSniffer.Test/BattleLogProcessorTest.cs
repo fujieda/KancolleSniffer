@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using ExpressionToCodeLib;
+using KancolleSniffer.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test

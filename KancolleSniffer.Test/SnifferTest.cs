@@ -18,6 +18,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using ExpressionToCodeLib;
+using KancolleSniffer.Model;
+using KancolleSniffer.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test
@@ -418,17 +420,19 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "nightbattlepower_001");
-            var ships = sniffer.Fleets[0].Ships;
+            var ships = sniffer.Fleets[0].ActualShips;
             PAssert.That(() =>
                 ships.Select(ship => (int)(ship.NightBattlePower * 100))
                     .SequenceEqual(new[] {11202, 14985, 20092, 17354}));
             // 夜間作戦航空要員を外す
-            ships[0].Slot[3] = ships[1].Slot[2] = ships[3].Slot[2] = new ItemStatus();
+            ships[0].FreeSlot(3);
+            ships[1].FreeSlot(2);
+            ships[3].FreeSlot(2);
             PAssert.That(() =>
                 ships.Select(ship => (int)(ship.NightBattlePower * 100))
                     .SequenceEqual(new[] {6900, 7500, 20092, 0}));
             // Ark RoyalからSwordfishを外す
-            ships[0].Slot[0] = new ItemStatus();
+            ships[0].FreeSlot(0);
             PAssert.That(() => (int)ships[0].NightBattlePower == 0);
         }
 
@@ -564,7 +568,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "powerup_002");
-            PAssert.That(() => sniffer.Item.NowShips == 218);
+            PAssert.That(() => sniffer.ShipCounter.Now == 218);
         }
 
         /// <summary>
@@ -587,10 +591,10 @@ namespace KancolleSniffer.Test
         {
             var sniffer1 = new Sniffer();
             SniffLogFile(sniffer1, "createitem_001");
-            PAssert.That(() => sniffer1.Item.NowEquips == 900);
+            PAssert.That(() => sniffer1.ItemCounter.Now == 900);
             var sniffer2 = new Sniffer();
             SniffLogFile(sniffer2, "createship_001");
-            PAssert.That(() => sniffer2.Item.NowEquips == 904);
+            PAssert.That(() => sniffer2.ItemCounter.Now == 904);
         }
 
         /// <summary>
@@ -599,12 +603,15 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void WarnItemCount()
         {
+            Action<int> func = i => { };
             var sniffer1 = new Sniffer();
             SniffLogFile(sniffer1, "item_count_001");
-            PAssert.That(() => sniffer1.Item.AlarmEquips, "出撃から母港に戻ったとき");
+            func.Invoke(sniffer1.ItemCounter.Now); // Nowを読まないとAlarmが立たない
+            PAssert.That(() => sniffer1.ItemCounter.Alarm, "出撃から母港に戻ったとき");
             var sniffer2 = new Sniffer();
             SniffLogFile(sniffer2, "item_count_002");
-            PAssert.That(() => sniffer2.Item.AlarmEquips, "ログインしたとき");
+            func.Invoke(sniffer2.ItemCounter.Now);
+            PAssert.That(() => sniffer2.ItemCounter.Alarm, "ログインしたとき");
         }
 
         /// <summary>
@@ -766,8 +773,8 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "destroyship_001");
-            PAssert.That(() => sniffer.Item.NowShips == 250);
-            PAssert.That(() => sniffer.Item.NowEquips == 1118);
+            PAssert.That(() => sniffer.ShipCounter.Now == 250);
+            PAssert.That(() => sniffer.ItemCounter.Now == 1118);
             PAssert.That(() => sniffer.Material.Current.Take(4).SequenceEqual(new[] {285615, 286250, 291010, 284744}));
         }
 
@@ -791,7 +798,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "ship2_001");
-            PAssert.That(() => sniffer.Item.NowShips == 243);
+            PAssert.That(() => sniffer.ShipCounter.Now == 243);
         }
 
         /// <summary>
@@ -878,8 +885,23 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             sniffer.AdditionalData.RecordNumEquips(11, "", 1);
             SniffLogFile(sniffer, "dropship_002");
-            PAssert.That(() => sniffer.Item.NowShips == 250);
-            PAssert.That(() => sniffer.Item.NowEquips == 1159);
+            PAssert.That(() => sniffer.ShipCounter.Now == 250);
+            PAssert.That(() => sniffer.ItemCounter.Now == 1159);
+        }
+
+        /// <summary>
+        /// 艦娘数を数える
+        /// </summary>
+        [TestMethod]
+        public void CountShips()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "ship_count_001");
+            PAssert.That(() => sniffer.ShipCounter.Now == 267 && sniffer.ShipCounter.Alarm, "ログイン");
+            SniffLogFile(sniffer, "ship_count_002");
+            PAssert.That(() => sniffer.ShipCounter.Now == 266 && sniffer.ShipCounter.Alarm, "建造");
+            SniffLogFile(sniffer, "ship_count_003");
+            PAssert.That(() => sniffer.ShipCounter.Now == 266 && sniffer.ShipCounter.Alarm, "ドロップ");
         }
     }
 }

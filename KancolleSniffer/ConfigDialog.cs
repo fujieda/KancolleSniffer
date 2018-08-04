@@ -18,6 +18,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using KancolleSniffer.Net;
+using KancolleSniffer.View;
 
 namespace KancolleSniffer
 {

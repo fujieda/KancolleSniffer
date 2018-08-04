@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using KancolleSniffer.View;
+
 namespace KancolleSniffer
 {
     partial class MainForm
@@ -163,13 +165,13 @@ namespace KancolleSniffer
             this.labelFuelSq4 = new System.Windows.Forms.Label();
             this.labelAkashiRepair = new System.Windows.Forms.Label();
             this.labelClearQuest = new System.Windows.Forms.Label();
-            this.panelRepairList = new KancolleSniffer.RepairListForMain();
-            this.labelQuestCount1 = new KancolleSniffer.ShipLabel();
-            this.labelQuestCount2 = new KancolleSniffer.ShipLabel();
-            this.labelQuestCount3 = new KancolleSniffer.ShipLabel();
-            this.labelQuestCount4 = new KancolleSniffer.ShipLabel();
-            this.labelQuestCount5 = new KancolleSniffer.ShipLabel();
-            this.labelQuestCount6 = new KancolleSniffer.ShipLabel();
+            this.panelRepairList = new RepairListForMain();
+            this.labelQuestCount1 = new ShipLabel();
+            this.labelQuestCount2 = new ShipLabel();
+            this.labelQuestCount3 = new ShipLabel();
+            this.labelQuestCount4 = new ShipLabel();
+            this.labelQuestCount5 = new ShipLabel();
+            this.labelQuestCount6 = new ShipLabel();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();

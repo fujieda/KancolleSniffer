@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using KancolleSniffer.Model;
 
 namespace KancolleSniffer
 {
@@ -48,7 +49,7 @@ namespace KancolleSniffer
             => "区分,装備名,熟練度,改修,個数\r\n" +
                string.Join("\r\n",
                    (from item in itemList
-                       where item.Spec.Id != -1
+                       where !item.Spec.Empty
                        orderby item.Spec.Type, item.Spec.Id, item.Alv, item.Level
                        group item by
                            $"{item.Spec.TypeName},{item.Spec.Name},{item.Alv},{item.Level}"
@@ -76,11 +77,11 @@ namespace KancolleSniffer
             var sb = new StringBuilder();
             var fn = new[] {"第一艦隊", "第二艦隊", "第三艦隊", "第四艦隊"};
             sb.Append(fn[fleet] + "\r\n");
-            sb.Append(string.Concat(from s in target.Ships
+            sb.Append(string.Concat(from s in target.ActualShips
                 select ($"{s.Name} Lv{s.Level} " +
                         string.Join(",",
                             from item in s.AllSlot
-                            where item.Id != -1
+                            where !item.Empty
                             select dict[item.Spec.Name] + ItemStatusString(item))).TrimEnd(' ') + "\r\n"));
             var fp = target.FighterPower;
             sb.Append($"制空: {(fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1])} " +
@@ -145,8 +146,8 @@ namespace KancolleSniffer
                 if (fleet.Number != 0)
                     sb.Append(",");
                 sb.Append($"\"f{fleet.Number + 1}\":{{");
-                var ships = fleet.Ships;
-                for (var s = 0; s < ships.Length; s++)
+                var ships = fleet.ActualShips;
+                for (var s = 0; s < ships.Count; s++)
                 {
                     if (s != 0)
                         sb.Append(",");
@@ -154,18 +155,18 @@ namespace KancolleSniffer
                     sb.Append(
                         $"\"s{s + 1}\":{{\"id\":\"{ship.Spec.Id}\",\"lv\":{ship.Level},\"luck\":{ship.Lucky},\"items\":{{");
                     var items = ship.Slot;
-                    for (var i = 0; i < items.Length; i++)
+                    for (var i = 0; i < items.Count; i++)
                     {
                         var item = items[i];
-                        if (item.Id == -1)
+                        if (item.Empty)
                             continue;
                         if (i != 0)
                             sb.Append(",");
                         sb.Append($"\"i{i + 1}\":{{\"id\":{item.Spec.Id},\"rf\":{item.Level},\"mas\":{item.Alv}}}");
                     }
-                    if (ship.SlotEx.Id != 0 && ship.SlotEx.Id != -1)
+                    if (!ship.SlotEx.Unimplemented && !ship.SlotEx.Empty)
                     {
-                        if (ship.Slot.Any(item => item.Id != -1))
+                        if (ship.Slot.Any(item => !item.Empty))
                             sb.Append(",");
                         var name = ship.Spec.SlotNum == 5 ? "ix" : $"i{ship.Spec.SlotNum + 1}";
                         sb.Append($"\"{name}\":{{\"id\":{ship.SlotEx.Spec.Id},\"rf\":{ship.SlotEx.Level}}}");

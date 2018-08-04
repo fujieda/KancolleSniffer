@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using ExpressionToCodeLib;
+using KancolleSniffer.Model;
+using KancolleSniffer.View;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test

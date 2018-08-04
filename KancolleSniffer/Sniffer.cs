@@ -13,20 +13,26 @@
 // limitations under the License.
 
 using System;
+using KancolleSniffer.Util;
+using KancolleSniffer.View;
 using System.Collections.Generic;
 using System.Linq;
+using KancolleSniffer.Model;
 
 namespace KancolleSniffer
 {
     public class Sniffer
     {
         private bool _start;
-        private readonly ItemInfo _itemInfo = new ItemInfo();
+        private readonly ItemMaster _itemMaster = new ItemMaster();
+        private readonly ItemInventry _itemInventry = new ItemInventry();
+        private readonly ItemInfo _itemInfo;
+        private readonly ShipMaster _shipMaster = new ShipMaster();
+        private readonly ShipInventry _shipInventry = new ShipInventry();
+        private readonly ShipInfo _shipInfo;
         private readonly MaterialInfo _materialInfo = new MaterialInfo();
         private readonly QuestInfo _questInfo;
         private readonly MissionInfo _missionInfo = new MissionInfo();
-        private readonly ShipMaster _shipMaster = new ShipMaster();
-        private readonly ShipInfo _shipInfo;
         private readonly ConditionTimer _conditionTimer;
         private readonly DockInfo _dockInfo;
         private readonly AkashiTimer _akashiTimer;
@@ -73,9 +79,10 @@ namespace KancolleSniffer
         public Sniffer(bool start = false)
         {
             _start = start;
-            _shipInfo = new ShipInfo(_shipMaster, _itemInfo);
+            _itemInfo = new ItemInfo(_itemMaster, _itemInventry);
+            _shipInfo = new ShipInfo(_shipMaster, _shipInventry, _itemInventry);
             _conditionTimer = new ConditionTimer(_shipInfo);
-            _dockInfo = new DockInfo(_shipInfo, _materialInfo);
+            _dockInfo = new DockInfo(_shipInventry, _materialInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo, _presetDeck);
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
@@ -92,8 +99,8 @@ namespace KancolleSniffer
             set
             {
                 _additionalData = value;
+                _itemMaster.AdditionalData = value;
                 _shipMaster.AdditionalData = value;
-                _itemInfo.AdditionalData = value;
             }
         }
 
@@ -179,7 +186,6 @@ namespace KancolleSniffer
                 _baseAirCoprs.InspectPlaneInfo(data.api_plane_info);
             _battleInfo.CleanupResult();
             _battleInfo.BattleState = BattleState.None;
-            _shipInfo.ClearEscapedShips();
             _miscTextInfo.Port();
             _cellInfo.Port();
             SaveState();
@@ -576,6 +582,8 @@ namespace KancolleSniffer
 
         public AlarmTimer[] KDock => _dockInfo.KDock;
 
+        public AlarmCounter ItemCounter => _itemInfo.Counter;
+
         public ItemInfo Item => _itemInfo;
 
         public MaterialInfo Material => _materialInfo;
@@ -590,7 +598,9 @@ namespace KancolleSniffer
 
         public int[] GetConditionNotice(DateTime prev, DateTime now) => _conditionTimer.GetNotice(prev, now);
 
-        public Fleet[] Fleets => _shipInfo.Fleets;
+        public AlarmCounter ShipCounter => _shipInfo.Counter;
+
+        public IReadOnlyList<Fleet> Fleets => _shipInfo.Fleets;
 
         public ShipInfo.ShipStatusPair[] BattleResultStatusDiff => _shipInfo.BattleResultDiff;
 

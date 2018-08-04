@@ -26,6 +26,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using KancolleSniffer.Model;
+using KancolleSniffer.Net;
+using KancolleSniffer.Util;
+using KancolleSniffer.View;
 using Microsoft.CSharp.RuntimeBinder;
 using static System.Math;
 
@@ -430,9 +434,9 @@ namespace KancolleSniffer
         private void ApplyConfig()
         {
             _listForm.TopMost = TopMost = _config.TopMost;
-            _sniffer.Item.MarginShips = _config.MarginShips;
+            _sniffer.ShipCounter.Margin = _config.MarginShips;
             UpdateNumOfShips();
-            _sniffer.Item.MarginEquips = _config.MarginEquips;
+            _sniffer.ItemCounter.Margin = _config.MarginEquips;
             UpdateNumOfEquips();
             _sniffer.Achievement.ResetHours = _config.ResetHours;
             labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible =
@@ -520,8 +524,8 @@ namespace KancolleSniffer
             if (!_listForm.Visible)
                 return;
             var idx = (int)((Control)sender).Tag;
-            var ships = _sniffer.Fleets[_currentFleet].Ships;
-            if (ships.Length <= idx)
+            var ships = _sniffer.Fleets[_currentFleet].ActualShips;
+            if (ships.Count <= idx)
                 return;
             _listForm.ShowShip(ships[idx].Id);
         }
@@ -547,27 +551,27 @@ namespace KancolleSniffer
 
         private void UpdateNumOfShips()
         {
-            var item = _sniffer.Item;
-            labelNumOfShips.Text = $"{item.NowShips:D}/{item.MaxShips:D}";
-            labelNumOfShips.ForeColor = item.TooManyShips ? CUDColor.Red : Color.Black;
-            if (item.AlarmShips)
+            var ship = _sniffer.ShipCounter;
+            labelNumOfShips.Text = $"{ship.Now:D}/{ship.Max:D}";
+            labelNumOfShips.ForeColor = ship.TooMany ? CUDColor.Red : Color.Black;
+            if (ship.Alarm)
             {
-                var message = $"残り{_sniffer.Item.MaxShips - _sniffer.Item.NowShips:D}隻";
+                var message = $"残り{ship.Rest:D}隻";
                 _notificationManager.Enqueue("艦娘数超過", message);
-                item.AlarmShips = false;
+                ship.Alarm = false;
             }
         }
 
         private void UpdateNumOfEquips()
         {
-            var item = _sniffer.Item;
-            labelNumOfEquips.Text = $"{item.NowEquips:D}/{item.MaxEquips:D}";
-            labelNumOfEquips.ForeColor = item.TooManyEquips ? CUDColor.Red : Color.Black;
-            if (item.AlarmEquips)
+            var item = _sniffer.ItemCounter;
+            labelNumOfEquips.Text = $"{item.Now:D}/{item.Max:D}";
+            labelNumOfEquips.ForeColor = item.TooMany ? CUDColor.Red : Color.Black;
+            if (item.Alarm)
             {
-                var message = $"残り{_sniffer.Item.MaxEquips - _sniffer.Item.NowEquips:D}個";
+                var message = $"残り{item.Rest:D}個";
                 _notificationManager.Enqueue("装備数超過", message);
-                item.AlarmEquips = false;
+                item.Alarm = false;
             }
         }
 
@@ -638,15 +642,15 @@ namespace KancolleSniffer
         private void UpdatePanelShipInfo()
         {
             var fleets = _sniffer.Fleets;
-            var ships = fleets[_currentFleet].Ships;
-            panel7Ships.Visible = ships.Length == 7;
+            var ships = fleets[_currentFleet].ActualShips;
+            panel7Ships.Visible = ships.Count == 7;
             _mainLabels.SetShipLabels(ships);
             if (!_sniffer.IsCombinedFleet)
                 _combinedFleet = false;
             labelFleet1.Text = _combinedFleet ? "連合" : "第一";
             panelCombinedFleet.Visible = _combinedFleet;
             if (_combinedFleet)
-                _mainLabels.SetCombinedShipLabels(fleets[0].Ships, fleets[1].Ships);
+                _mainLabels.SetCombinedShipLabels(fleets[0].ActualShips, fleets[1].ActualShips);
             for (var i = 0; i < _labelCheckFleets.Length; i++)
                 _labelCheckFleets[i].Visible = _currentFleet == i;
             UpdateAkashiTimer();
@@ -920,7 +924,7 @@ namespace KancolleSniffer
         {
             if (_config.UsePresetAkashi)
                 UpdatePresetAkashiTimer();
-            _mainLabels.SetAkashiTimer(_sniffer.Fleets[_currentFleet].Ships,
+            _mainLabels.SetAkashiTimer(_sniffer.Fleets[_currentFleet].ActualShips,
                 _sniffer.AkashiTimer.GetTimers(_currentFleet));
         }
 
