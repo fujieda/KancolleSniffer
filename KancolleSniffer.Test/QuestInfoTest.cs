@@ -882,6 +882,70 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 888: 新編成「三川艦隊」、鉄底海峡に突入せよ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_888()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {888}));
+            var count = questInfo.Quests[0].Count;
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(5, 427), ShipStatus(5, 264), ShipStatus(5, 142),
+                ShipStatus(5, 417), ShipStatus(2, 144), ShipStatus(2, 195)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 5,
+                api_mapinfo_no = 1,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 5,
+                api_mapinfo_no = 1,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => count.NowArray[0] == 0);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[0] == 1);
+
+            battleInfo.Result.Friend.Main[0].NowHp = 0;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[0] == 1, "轟沈あり");
+            battleInfo.Result.Friend.Main[0].NowHp = 1;
+
+            battleInfo.Result.Friend.Main[0].Spec.Id = 319;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[0] == 1, "三川艦隊3隻");
+            battleInfo.Result.Friend.Main[0].Spec.Id = 427;
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 5,
+                api_mapinfo_no = 3,
+                api_event_id = 5,
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0}));
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 5,
+                api_mapinfo_no = 4,
+                api_event_id = 5,
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1}));
+        }
+
+
+        /// <summary>
         /// 302: 大規模演習
         /// 303: 「演習」で練度向上！
         /// 304: 「演習」で他提督を圧倒せよ！
@@ -1175,7 +1239,8 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 854, NowArray = new[] {2, 1, 1, 1}},
                     new QuestCount {Id = 426, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 428, NowArray = new[] {1, 1, 1}},
-                    new QuestCount {Id = 873, NowArray = new[] {1, 1, 1}}
+                    new QuestCount {Id = 873, NowArray = new[] {1, 1, 1}},
+                    new QuestCount {Id= 888, NowArray = new []{1, 1, 1}}
                 }
             };
             questInfo.LoadState(status);
@@ -1196,6 +1261,9 @@ namespace KancolleSniffer.Test
             var q873 = status.QuestCountList[5];
             PAssert.That(() => q873.ToString() == "3/3");
             PAssert.That(() => q873.ToToolTip() == "3-1 3-2 3-3");
+            var q888 = status.QuestCountList[6];
+            PAssert.That(() => q888.ToString() == "3/3");
+            PAssert.That(() => q888.ToToolTip() == "5-1 5-3 5-4");
         }
 
         /// <summary>

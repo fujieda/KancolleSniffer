@@ -195,7 +195,7 @@ namespace KancolleSniffer.Model
 
         public override string ToString()
         {
-            if (Id == 426 || Id == 854 || Id == 873)
+            if (Id == 426 || Id == 854 || Id == 873 || Id == 888)
                 return $"{NowArray.Count(n => n >= 1)}/{Spec.MaxArray.Length}";
             return NowArray != null
                 ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
@@ -222,6 +222,10 @@ namespace KancolleSniffer.Model
                 case 873:
                     return string.Join(" ",
                         new[] {"3-1", "3-2", "3-3"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
+                case 888:
+                    return string.Join(" ",
+                        new[] {"5-1", "5-3", "5-4"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
                             .Where(s => !string.IsNullOrEmpty(s)));
             }
             return "";
@@ -277,6 +281,7 @@ namespace KancolleSniffer.Model
             {862, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 0, 8, 4}}}, // 862: 前線の航空偵察を実施せよ！
             {873, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 873: 北方海域警備を実施せよ！
             {875, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 0, 0, 0}}}, // 875: 精鋭「三一駆」、鉄底海域に突入せよ！
+            {888, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 888: 新編成「三川艦隊」、鉄底海峡に突入せよ！
 
             {303, new QuestPractice {Interval = Daily, Max = 3, Win = false, Material = new[] {1, 0, 0, 0}}}, // 303: 「演習」で練度向上！
             {304, new QuestPractice {Interval = Daily, Max = 5, Win = true, Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
@@ -706,6 +711,40 @@ namespace KancolleSniffer.Model
                     var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.Id).ToArray();
                     if (fleet.Contains(543) && fleet.Intersect(new[] {344, 345, 359}).Any())
                         IncrementCount(q875.Count);
+                }
+            }
+            if (_quests.TryGetValue(888, out var q888))
+            {
+                if (!_boss || QuestSortie.CompareRank(rank, "S") != 0)
+                    return;
+                var fleet = from ship in _battleInfo.Result.Friend.Main where ship.NowHp > 0 select ship.Spec.Id;
+                var member = new[]
+                {
+                    69, 272, 427, // 鳥海
+                    61, 264, // 青葉
+                    123, 295, 142, // 衣笠
+                    59, 262, 416, // 古鷹
+                    60, 263, 417, // 加古
+                    51, 213, 477, // 天龍
+                    115, 293 // 夕張
+                };
+                if (fleet.Intersect(member).Count() < 4)
+                    return;
+                var array = q888.Count.NowArray;
+                switch (_map)
+                {
+                    case 51:
+                        array[0]++;
+                        NeedSave = true;
+                        break;
+                    case 53:
+                        array[1]++;
+                        NeedSave = true;
+                        break;
+                    case 54:
+                        array[2]++;
+                        NeedSave = true;
+                        break;
                 }
             }
         }
