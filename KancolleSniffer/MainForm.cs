@@ -742,6 +742,11 @@ namespace KancolleSniffer
                 _toolTip.SetToolTip(labelEnemyFighterPower, text);
                 _toolTip.SetToolTip(labelEnemyFighterPowerCaption, text);
             }
+            else
+            {
+                _toolTip.SetToolTip(labelEnemyFighterPower, "");
+                _toolTip.SetToolTip(labelEnemyFighterPowerCaption, "");
+            }
             UpdateFighterPower(_sniffer.IsCombinedFleet && battle.EnemyIsCombined);
             labelFighterPower.ForeColor = new[]
                 {DefaultForeColor, DefaultForeColor, CUDColor.Blue, CUDColor.Green, CUDColor.Orange, CUDColor.Red}[
