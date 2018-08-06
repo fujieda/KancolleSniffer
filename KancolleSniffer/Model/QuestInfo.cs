@@ -259,7 +259,7 @@ namespace KancolleSniffer.Model
 
             {213, new QuestEnemyType {Interval = Weekly, Max = 20, EnemyType = new[] {15}, Material = new[] {0, 0, 3, 0}}}, // 213: 海上通商破壊作戦
             {214, new QuestSpec {Interval = Weekly, MaxArray = new[] {36, 6, 24, 12}, Material = new[] {2, 0, 2, 0}}}, // 214: あ号作戦
-            {220, new QuestEnemyType {Interval = Weekly, Max = 20, EnemyType = new[] {7, 11}, Material = new[] {0, 2, 0, 0}}}, // 220: い号作戦
+            {220, new QuestEnemyType {Interval = Weekly, Max = 20, EnemyType = new[] {7, 11}, Material = new[] {0, 0, 2, 0}}}, // 220: い号作戦
             {221, new QuestEnemyType {Interval = Weekly, Max = 50, EnemyType = new[] {15}, Material = new[] {0, 3, 0, 0}}}, // 221: ろ号作戦
             {228, new QuestEnemyType {Interval = Weekly, Max = 15, EnemyType = new[] {13}, Material = new[] {0, 2, 0, 1}}}, // 228: 海上護衛戦
             {229, new QuestSortie {Interval = Weekly, Max = 12, Rank = "B", Maps = new[] {41, 42, 43, 44, 45}, Material = new[] {0, 0, 2, 0}}}, // 229: 敵東方艦隊を撃滅せよ！
