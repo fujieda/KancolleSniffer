@@ -36,6 +36,7 @@ namespace KancolleSniffer.View
         private BattleState _prevBattleState;
         private readonly BattleResultRank[] _rank = new BattleResultRank[2];
         private readonly InformationPanel _infomationPanel;
+        private CellInfo _cellInfo;
 
         public Spoiler Spoilers { get; set; }
 
@@ -66,6 +67,7 @@ namespace KancolleSniffer.View
             var state = sniffer.Battle.BattleState;
             var prev = _prevBattleState;
             _prevBattleState = state;
+            _cellInfo = sniffer.CellInfo;
             if (prev == BattleState.None && state != BattleState.None)
                 _result[0] = _result[1] = null;
             if (prev != BattleState.None && state == BattleState.None &&
@@ -73,6 +75,7 @@ namespace KancolleSniffer.View
             {
                 ClearResult();
                 SetPhase("結果");
+                UpdateCellInfo(_cellInfo);
                 return;
             }
             if (state != BattleState.Day && state != BattleState.Night)
@@ -257,6 +260,7 @@ namespace KancolleSniffer.View
                 (int)Round(0 * ShipLabel.ScaleFactor.Width) + AutoScrollPosition.X,
                 (int)Round(20 * ShipLabel.ScaleFactor.Height) + AutoScrollPosition.Y);
             _infomationPanel.Visible = true;
+            UpdateCellInfo(_cellInfo);
         }
 
         private string GetEqipString(ShipStatus ship)
@@ -285,12 +289,9 @@ namespace KancolleSniffer.View
             _rankLabel.Text = result[(int)rank];
         }
 
-        public void UpdateCellInfo(Sniffer sniffer)
+        public void UpdateCellInfo(CellInfo cellInfo)
         {
-            var text = sniffer.CellInfo;
-            if (text == null)
-                return;
-            _cellLabel.Text = (Spoilers & Spoiler.NextCell) == 0 ? sniffer.CellInfo.Current : sniffer.CellInfo.Next;
+            _cellLabel.Text = (Spoilers & Spoiler.NextCell) == 0 ? cellInfo.Current : cellInfo.Next;
             _cellLabel.Location = new Point(ClientSize.Width - _cellLabel.Width - 2, 4);
         }
 

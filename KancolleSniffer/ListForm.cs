@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using KancolleSniffer.Util;
 using KancolleSniffer.View;
 using static System.Math;
 
@@ -126,7 +125,7 @@ namespace KancolleSniffer
         public void UpdateCellInfo()
         {
             battleResultPanel.Spoilers = _config.Spoilers;
-            battleResultPanel.UpdateCellInfo(_sniffer);
+            battleResultPanel.UpdateCellInfo(_sniffer.CellInfo);
         }
 
         private void SetHeaderSortOrder()
