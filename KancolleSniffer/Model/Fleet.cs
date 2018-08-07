@@ -104,12 +104,12 @@ namespace KancolleSniffer.Model
                 ship.Fleet = null;
                 ship.DeckIndex = -1;
             }
-            Ships = _deck.Select((id, idx) =>
+            Ships = _deck.Select((id, num) =>
             {
                 var ship = _shipInventry[id];
                 if (ship.Empty)
                     return ship;
-                ship.DeckIndex = id;
+                ship.DeckIndex = num;
                 ship.Fleet = this;
                 return ship;
             }).ToArray();

@@ -340,9 +340,10 @@ namespace KancolleSniffer.Model
         {
             BadlyDamagedShips =
             (from s in _fleets.Where(fleet => fleet.State == FleetState.Sortie)
-                    .SelectMany(fleet => fleet.ActualShips)
-                where !s.Escaped && s.DamageLevel == ShipStatus.Damage.Badly &&
-                      !(s.Fleet.CombinedType != 0 && s.Fleet.Number == 1 && s.DeckIndex == 0) // 第二艦隊の旗艦を除く
+                    .SelectMany(fleet => fleet.CombinedType != 0 && fleet.Number == 1
+                        ? fleet.ActualShips.Skip(1) // 第二艦隊の旗艦を除く
+                        : fleet.ActualShips)
+                where !s.Escaped && s.DamageLevel == ShipStatus.Damage.Badly
                 select s.Name).ToArray();
         }
 

@@ -271,6 +271,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 連合艦隊の第二旗艦の大破を警告しない
+        /// </summary>
+        [TestMethod]
+        public void NotWarnDamaged1StShipInGuardFleet()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_battle_004");
+            PAssert.That(() => !sniffer.BadlyDamagedShips.Any());
+        }
+
+        /// <summary>
         /// 熟練度込みの制空値を正しく計算する
         /// </summary>
         [TestMethod]
