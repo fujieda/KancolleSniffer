@@ -89,7 +89,7 @@ namespace KancolleSniffer.Model
 
         public IReadOnlyList<int> Deck
         {
-            get => _deck;
+            get => _deck.ToArray();
             set
             {
                 _deck = value.ToArray();
