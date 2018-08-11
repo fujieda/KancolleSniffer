@@ -101,6 +101,8 @@ namespace KancolleSniffer.Model
         {
             foreach (var ship in Ships)
             {
+                if (ship.Fleet != this) // 入れ替え操作で他の艦隊に移動しているときには触らない。
+                    continue;
                 ship.Fleet = null;
                 ship.DeckIndex = -1;
             }

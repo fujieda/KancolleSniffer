@@ -26,12 +26,12 @@ namespace KancolleSniffer.View
     {
         private const int LineHeight = 14;
         private const int LabelHeight = 12;
-        private Record[] _table;
+        private Record[] _table = new Record[0];
         private readonly List<FleetLabels> _labelList = new List<FleetLabels>();
         private readonly List<Panel> _panelList = new List<Panel>();
         private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true, AutoPopDelay = 10000};
 
-        private class Record
+        public class Record
         {
             public string Fleet { get; set; }
             public string Fleet2 { get; set; }
@@ -53,7 +53,7 @@ namespace KancolleSniffer.View
 
         public void Update(Sniffer sniffer)
         {
-            CreateTable(sniffer);
+            _table = CreateTable(sniffer);
             SuspendLayout();
             CreateLabels();
             SetRecords();
@@ -87,7 +87,7 @@ namespace KancolleSniffer.View
             }
         }
 
-        private void CreateTable(Sniffer sniffer)
+        public Record[] CreateTable(Sniffer sniffer)
         {
             var list = new List<Record>();
             var fn = new[] {"第一", "第二", "第三", "第四"};
@@ -220,7 +220,7 @@ namespace KancolleSniffer.View
                     }
                 }
             }
-            _table = list.ToArray();
+            return list.ToArray();
         }
 
         private string RangeString(int[] fp) => fp[0] == fp[1] ? fp[0].ToString() : $"{fp[0]}～{fp[1]}";
