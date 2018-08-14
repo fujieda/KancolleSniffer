@@ -864,7 +864,7 @@ namespace KancolleSniffer
             for (var i = 0; i < _sniffer.KDock.Length; i++)
             {
                 var timer = _sniffer.KDock[i];
-                CheckAlarm("建造完了", timer, 0, $"第{i + 1:D}ドック");
+                CheckAlarm("建造完了", timer, i, "");
             }
             NotifyCondTimers();
             NotifyAkashiTimer();
