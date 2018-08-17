@@ -16,8 +16,13 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using Titanium.Web.Proxy;
+using Titanium.Web.Proxy.EventArguments;
+using Titanium.Web.Proxy.Http;
+using Titanium.Web.Proxy.Models;
 
 namespace KancolleSniffer.Net
 {
@@ -26,18 +31,40 @@ namespace KancolleSniffer.Net
         private readonly Config _config;
         private readonly Control _parent;
         private readonly SystemProxy _systemProxy = new SystemProxy();
-        private int _prevProxyPort;
+        private readonly ProxyServer _proxyServer = new ProxyServer("KancolleSniffer", "KancolleSniffer Root Certificate Authority");
+        private ExplicitProxyEndPoint _proxyEndPoint;
         private int _autoConfigRetryCount;
         private readonly Timer _timer = new Timer {Interval = 1000};
         private bool _initiated;
         private DateTime _pacFileTime;
 
+        public event Action<HttpWebClient> BeforeResponse;
+
         public ProxyManager(Config config, Control parent)
         {
             _config = config;
             _parent = parent;
+            _proxyServer.CertificateManager.SaveFakeCertificates = true;
+            _proxyServer.BeforeResponse += ProxyServer_BeforeResponse;
+            _proxyServer.BeforeRequest += ProxyServer_BeforeRequest;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
             _timer.Tick += CheckProxy;
+        }
+
+        private async Task ProxyServer_BeforeResponse(object sender, SessionEventArgs e)
+        {
+            e.WebSession.Response.KeepBody = true;
+            await e.GetResponseBodyAsString();
+            BeforeResponse?.Invoke(e.WebSession);
+        }
+
+        private async Task ProxyServer_BeforeRequest(object sender, SessionEventArgs e)
+        {
+            var request = e.WebSession.Request;
+            if (!(request.Host.StartsWith("127.0.0.1") || request.Host.StartsWith("localhost")))
+                return;
+            var response = await LogServer.CreateResponse(request);
+            e.Respond(response);
         }
 
         public bool ApplyConfig()
@@ -46,21 +73,27 @@ namespace KancolleSniffer.Net
                 RestoreSystemProxy();
             if (_config.Proxy.UseUpstream)
             {
-                HttpProxy.UpstreamProxyHost = "127.0.0.1";
-                HttpProxy.UpstreamProxyPort = _config.Proxy.UpstreamPort;
+                _proxyServer.UpStreamHttpsProxy = _proxyServer.UpStreamHttpProxy =
+                    new ExternalProxy {HostName = "127.0.0.1", Port = _config.Proxy.UpstreamPort};
             }
-            HttpProxy.IsEnableUpstreamProxy = _config.Proxy.UseUpstream;
-            var result = true;
-            if (!HttpProxy.IsInListening || _config.Proxy.Listen != _prevProxyPort)
+            else
             {
-                ShutdownProxy();
+                _proxyServer.UpStreamHttpsProxy = _proxyServer.UpStreamHttpProxy = null;
+            }
+            var result = true;
+            if (_proxyEndPoint != null && _proxyEndPoint.Port != _config.Proxy.Listen)
+            {
+                _proxyServer.RemoveEndPoint(_proxyEndPoint);
+                result = StartProxy();
+            }
+            if (_proxyEndPoint == null)
+            {
                 result = StartProxy();
             }
             if (_config.Proxy.Auto && result)
             {
                 SetAndCheckAutoConfigUrl();
             }
-            _prevProxyPort = _config.Proxy.Listen;
             return result;
         }
 
@@ -68,12 +101,17 @@ namespace KancolleSniffer.Net
         {
             try
             {
-                HttpProxy.Startup(_config.Proxy.Listen, false, false);
+                _proxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Loopback, _config.Proxy.Listen);
+                _proxyServer.AddEndPoint(_proxyEndPoint);
+                if (!_proxyServer.ProxyRunning)
+                    _proxyServer.Start();
             }
             catch (SocketException e)
             {
-                if (e.SocketErrorCode != SocketError.AddressAlreadyInUse &&
-                    e.SocketErrorCode != SocketError.AccessDenied)
+                var sockex = (SocketException)e.InnerException;
+                if (sockex == null ||
+                    sockex.SocketErrorCode != SocketError.AddressAlreadyInUse &&
+                    sockex.SocketErrorCode != SocketError.AccessDenied)
                 {
                     throw;
                 }
@@ -83,9 +121,12 @@ namespace KancolleSniffer.Net
                     RestoreSystemProxy();
                     return false;
                 }
-                HttpProxy.Startup(0, false, false);
-                _config.Proxy.Listen = HttpProxy.LocalPort;
+                _proxyServer.RemoveEndPoint(_proxyEndPoint);
+                _proxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Loopback, 0);
+                _proxyServer.AddEndPoint(_proxyEndPoint);
+                _config.Proxy.Listen = _proxyEndPoint.Port;
             }
+            LogServer.Port = _proxyEndPoint.Port;
             return true;
         }
 
@@ -117,7 +158,7 @@ namespace KancolleSniffer.Net
 
         private void ShutdownProxy()
         {
-            HttpProxy.Shutdown();
+            _proxyServer.Stop();
         }
 
         private void SetAndCheckAutoConfigUrl()

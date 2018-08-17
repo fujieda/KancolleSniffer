@@ -17,15 +17,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using KancolleSniffer.Model;
 using KancolleSniffer.Util;
+using Titanium.Web.Proxy.Http;
+using Titanium.Web.Proxy.Models;
 
 namespace KancolleSniffer.Net
 {
-    public class LogServer
+    public static class LogServer
     {
         private static readonly string IndexDir = AppDomain.CurrentDomain.BaseDirectory;
         private static string _outputDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -35,32 +37,24 @@ namespace KancolleSniffer.Net
             set => _outputDir = value;
         }
 
+        public static int Port;
+
         public static MaterialCount[] MaterialHistory { private get; set; }
 
-        public static void Process(Socket client, string requestLine)
+        public static async Task<Response> CreateResponse(Request request)
         {
             var from = DateTime.MinValue;
             var to = DateTime.MaxValue;
             var timestamp = false;
 
-            var request = requestLine.Split(' ');
-            if (request.Length != 3)
-            {
-                SendError(client, "400 Bad Request");
-                return;
-            }
-            if (!request[0].StartsWith("GET", StringComparison.OrdinalIgnoreCase))
-            {
-                SendError(client, "501 Not Implemented");
-                return;
-            }
-            var tmp = request[1].Split('?');
+            if (!request.Method.Equals("GET", StringComparison.OrdinalIgnoreCase))
+                return CreateErrorResponse(501, "Not Implemented");
+
+            var tmp = request.OriginalUrl.Split('?');
             var path = HttpUtility.UrlDecode(tmp[0]);
             if (path == null || !path.StartsWith("/"))
-            {
-                SendError(client, "400 Bad Request");
-                return;
-            }
+                return CreateErrorResponse(400, "Bad Request");
+
             if (tmp.Length == 2)
             {
                 var query = HttpUtility.ParseQueryString(tmp[1]);
@@ -83,165 +77,180 @@ namespace KancolleSniffer.Net
             var csv = Path.Combine(_outputDir, path);
             if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
             {
-                SendFile(client, full, "text/html");
-                return;
+                return await CreateSendFileResponse(full, "text");
             }
             if (path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) && File.Exists(csv))
             {
-                SendFile(client, csv, "text/csv; charset=Shift_JIS");
-                return;
+                return await CreateSendFileResponse(csv, "text/csv; charset=Shift_JIS");
             }
             if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                SendJsonData(client, csv, from, to, timestamp);
-                return;
+                return await CreateSendJsonResponse(csv, from, to, timestamp);
             }
             if (path.EndsWith(".js", StringComparison.OrdinalIgnoreCase) && File.Exists(full))
             {
-                SendFile(client, full, "application/javascript");
-                return;
+                return await CreateSendFileResponse(full, "application/javascript");
             }
             if (path.EndsWith(".pac"))
             {
-                SendProxyPac(client, HttpProxy.LocalPort);
-                return;
+                return await CreateSendProxyPacResponse(Port);
             }
             if (File.Exists(full))
             {
-                SendFile(client, full, "text/plain");
-                return;
+                return await CreateSendFileResponse(full, "text/plain");
             }
-            SendError(client, "404 Not Found");
+            return CreateErrorResponse(404, "Not Found");
         }
 
-        private static void SendError(Socket client, string error)
+        private static IEnumerable<HttpHeader> CommonHeader => new[]
         {
-            using (var writer = new StreamWriter(new MemoryStream(), Encoding.ASCII))
+            new HttpHeader("Server", "KancolleSniffer"),
+            new HttpHeader("Date", $"{DateTime.Now:R}")
+        };
+
+        private static Response CreateErrorResponse(int statusCode, string statusDescription)
+        {
+            var body = string.Format(
+                "<html><head><title>{0} {1}</title></head>\r\n<body><h4>{0} {1}</h4></body></html>\r\n",
+                statusCode, statusDescription);
+            var response = new Response(Encoding.ASCII.GetBytes(body))
             {
-                writer.Write("HTTP/1.1 {0}\r\n", error);
-                writer.Write("Server: KancolleSniffer\r\n");
-                writer.Write("Date: {0:R}\r\n", DateTime.Now);
-                writer.Write("Connection: close\r\n\r\n");
-                writer.Write("<html><head><title>{0}</title></head>\r\n", error);
-                writer.Write("<body><h4>{0}</h4></body></html>\r\n\r\n", error);
-                writer.Flush();
-                client.Send(((MemoryStream)writer.BaseStream).ToArray());
-            }
+                HttpVersion = new Version(1, 1),
+                StatusCode = statusCode,
+                StatusDescription = statusDescription
+            };
+            response.Headers.AddHeaders(CommonHeader);
+            return response;
         }
 
-        private static void SendJsonData(Socket client, string path, DateTime from, DateTime to, bool number)
+        private static async Task<Response> CreateSendJsonResponse(string path, DateTime from, DateTime to, bool number)
         {
-            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
-            {
-                header.Write("HTTP/1.1 200 OK\r\n");
-                header.Write("Server: KancolleSniffer\r\n");
-                header.Write("Date: {0:R}\r\n", DateTime.Now);
-                header.Write("Content-Type: {0}\r\n", "application/json; charset=Shift_JIS");
-                header.Write("Connection: close\r\n\r\n");
-                header.Flush();
-                client.Send(((MemoryStream)header.BaseStream).ToArray());
-            }
+            var body = new StringBuilder();
             var csv = path.Replace(".json", ".csv");
             var encoding = Encoding.GetEncoding("Shift_JIS");
-            client.Send(encoding.GetBytes("{ \"data\": [\n"));
+            body.Append("{ \"data\": [\n");
             var battle = false;
             var material = false;
+            if (!File.Exists(csv))
+                return CreateErrorResponse(404, "Not Found");
+            var records = 0;
+            if (path.EndsWith("遠征報告書.json"))
+            {
+                records = 10;
+            }
+            else if (path.EndsWith("改修報告書.json"))
+            {
+                records = 15;
+            }
+            else if (path.EndsWith("海戦・ドロップ報告書.json"))
+            {
+                records = 39;
+                battle = true;
+            }
+            else if (path.EndsWith("開発報告書.json"))
+            {
+                records = 9;
+            }
+            else if (path.EndsWith("建造報告書.json"))
+            {
+                records = 12;
+            }
+            else if (path.EndsWith("資材ログ.json"))
+            {
+                records = 9;
+                material = true;
+            }
+            else if (path.EndsWith("戦果.json"))
+            {
+                records = 3;
+            }
             try
             {
-                if (!File.Exists(csv))
-                    return;
-                var records = 0;
-                if (path.EndsWith("遠征報告書.json"))
+                using (var file = File.OpenRead(csv))
+                using (var reader = new StreamReader(file, encoding))
                 {
-                    records = 10;
-                }
-                else if (path.EndsWith("改修報告書.json"))
-                {
-                    records = 15;
-                }
-                else if (path.EndsWith("海戦・ドロップ報告書.json"))
-                {
-                    records = 39;
-                    battle = true;
-                }
-                else if (path.EndsWith("開発報告書.json"))
-                {
-                    records = 9;
-                }
-                else if (path.EndsWith("建造報告書.json"))
-                {
-                    records = 12;
-                }
-                else if (path.EndsWith("資材ログ.json"))
-                {
-                    records = 9;
-                    material = true;
-                }
-                else if (path.EndsWith("戦果.json"))
-                {
-                    records = 3;
-                }
-                var delimiter = "";
-                foreach (var line in File.ReadLines(csv, encoding).Skip(1))
-                {
-                    var data = line.Split(',');
-                    if (!DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeLocal, out var date))
+                    var delimiter = "";
+                    await reader.ReadLineAsync(); // drop header
+                    while (true)
                     {
-                        // システムが和暦に設定されていて和暦が出力されてしまったケースを救う
-                        if (data[0][2] == '-')
-                        {
-                            if (!int.TryParse(data[0].Substring(0, 2), out var year))
-                                continue;
-                            data[0] = 1988 + year + data[0].Substring(2);
-                            if (!DateTime.TryParseExact(data[0], Logger.DateTimeFormat, CultureInfo.InvariantCulture,
-                                DateTimeStyles.AssumeLocal, out date))
-                                continue;
-                        }
-                        else if (DateTime.TryParse(data[0], CultureInfo.CurrentCulture,
-                            DateTimeStyles.AssumeLocal, out date))
-                        {
-                            data[0] = Logger.FormatDateTime(date);
-                        }
-                        else
-                        {
+                        var line = await reader.ReadLineAsync();
+                        if (line == null)
+                            break;
+                        var data = line.Split(',');
+                        var date = ParseDateTime(data[0]);
+                        if (date == default)
                             continue;
-                        }
+                        data[0] = Logger.FormatDateTime(date);
+                        if (to < date)
+                            break;
+                        if (date < from)
+                            continue;
+                        IEnumerable<string> entries = data;
+                        if (material)
+                            entries = data.Take(9);
+                        if (battle)
+                            entries = BattleLogProcessor.Process(data);
+                        if (entries.Count() != records)
+                            continue;
+                        body.Append(delimiter);
+                        body.Append(number
+                            ? "[" + JavaScriptTicks(date) + "," + string.Join(",", entries.Skip(1)) + "]"
+                            : "[\"" + string.Join("\",\"", entries) + "\"]"
+                        );
+                        delimiter = ",\n";
                     }
-                    if (date < from || to < date)
-                        continue;
-                    IEnumerable<string> entries = data;
-                    if (material)
-                        entries = data.Take(9);
-                    if (battle)
-                        entries = BattleLogProcessor.Process(data);
-                    if (entries.Count() != records)
-                        continue;
-                    if (number)
+                    if (material && !number) // Add current value of materials
                     {
-                        var stamp = ((date.ToUniversalTime().Ticks -
-                                      new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks) /
-                                     TimeSpan.TicksPerMillisecond).ToString();
-                        client.Send(encoding.GetBytes(delimiter + "[" + stamp + "," +
-                                                      string.Join(",", entries.Skip(1)) + "]"));
+                        body.Append(delimiter + "[\"" + string.Join("\",\"", GetCurrentMaterialRecord()) + "\"]");
                     }
-                    else
-                    {
-                        client.Send(encoding.GetBytes(delimiter + "[\"" +
-                                                      string.Join("\",\"", entries) + "\"]"));
-                    }
-                    delimiter = ",\n";
-                }
-                if (material && !number)
-                {
-                    client.Send(encoding.GetBytes(delimiter + "[\"" +
-                                                  string.Join("\",\"", GetCurrentMaterialRecord()) + "\"]"));
                 }
             }
-            finally
+            catch
             {
-                client.Send(encoding.GetBytes("]}\n"));
+                return CreateErrorResponse(500, "Internal Server Error");
             }
+            body.Append("]}\n");
+            var response = new Response(encoding.GetBytes(body.ToString()))
+            {
+                HttpVersion = new Version(1, 1),
+                StatusCode = 200,
+                StatusDescription = "OK",
+                ContentType = "application/json; charset=Shift_JIS"
+            };
+            response.Headers.AddHeaders(CommonHeader);
+            return response;
+        }
+
+        private static DateTime ParseDateTime(string dateTime)
+        {
+            if (DateTime.TryParseExact(dateTime, Logger.DateTimeFormat, CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeLocal, out var date))
+            {
+                return date;
+            }
+            // システムが和暦に設定されていて和暦が出力されてしまったケースを救う
+            if (dateTime[2] == '-')
+            {
+                if (!int.TryParse(dateTime.Substring(0, 2), out var year))
+                    return default;
+                dateTime = 1988 + year + dateTime.Substring(2);
+                if (!DateTime.TryParseExact(dateTime, Logger.DateTimeFormat, CultureInfo.InvariantCulture,
+                    DateTimeStyles.AssumeLocal, out date))
+                {
+                    return default;
+                }
+                return date;
+            }
+            if (!DateTime.TryParse(dateTime, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out date))
+                return default;
+            return date;
+        }
+
+        private static long JavaScriptTicks(DateTime date)
+        {
+            return ((date.ToUniversalTime().Ticks -
+                     new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks) /
+                    TimeSpan.TicksPerMillisecond);
         }
 
         private static IEnumerable<string> GetCurrentMaterialRecord()
@@ -249,44 +258,48 @@ namespace KancolleSniffer.Net
             return new[] {Logger.FormatDateTime(DateTime.Now)}.Concat(MaterialHistory.Select(c => c.Now.ToString()));
         }
 
-        private static void SendFile(Socket client, string path, string mime)
+        private static async Task<Response> CreateSendFileResponse(string path, string mime)
         {
-            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
+            using (var file = File.OpenRead(path))
+            using (var memory = new MemoryStream())
             {
-                header.Write("HTTP/1.1 200 OK\r\n");
-                header.Write("Server: KancolleSniffer\r\n");
-                header.Write("Date: {0:R}\r\n", DateTime.Now);
-                header.Write("Content-Length: {0}\r\n", new FileInfo(path).Length);
-                header.Write("Content-Type: {0}\r\n", mime);
-                header.Write("Connection: close\r\n\r\n");
-                header.Flush();
-                client.SendFile(path, ((MemoryStream)header.BaseStream).ToArray(), null,
-                    TransmitFileOptions.UseDefaultWorkerThread);
+                await file.CopyToAsync(memory);
+                var response = new Response(memory.ToArray())
+                {
+                    HttpVersion = new Version(1, 1),
+                    StatusCode = 200,
+                    StatusDescription = "OK",
+                    ContentType = mime
+                };
+                response.Headers.AddHeaders(CommonHeader);
+                return response;
             }
         }
 
-        private static void SendProxyPac(Socket client, int port)
+        private static async Task<Response> CreateSendProxyPacResponse(int port)
         {
-            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
-            {
-                header.Write("HTTP/1.1 200 OK\r\n");
-                header.Write("Server: KancolleSniffer\r\n");
-                header.Write("Date: {0:R}\r\n", DateTime.Now);
-                header.Write("Content-Type: application/x-ns-proxy-autoconfig\r\n");
-                header.Write("Connection: close\r\n\r\n");
-                header.Flush();
-                client.Send(((MemoryStream)header.BaseStream).ToArray());
-            }
-            string pacFile;
+            string body;
             try
             {
-                pacFile = File.ReadAllText("proxy.pac").Replace("8080", port.ToString());
+                using (var file = File.OpenRead(Path.Combine(IndexDir, "proxy.pac")))
+                using (var reader = new StreamReader(file, Encoding.ASCII))
+                {
+                    body = (await reader.ReadToEndAsync()).Replace("8080", port.ToString());
+                }
             }
             catch
             {
-                pacFile = "";
+                body = "";
             }
-            client.Send(Encoding.ASCII.GetBytes(pacFile));
+            var response = new Response(Encoding.ASCII.GetBytes(body))
+            {
+                HttpVersion = new Version(1, 1),
+                StatusCode = 200,
+                StatusDescription = "OK",
+                ContentType = "application/x-ns-proxy-autoconfig"
+            };
+            response.Headers.AddHeaders(CommonHeader);
+            return response;
         }
     }
 

@@ -31,6 +31,7 @@ using KancolleSniffer.Net;
 using KancolleSniffer.Util;
 using KancolleSniffer.View;
 using Microsoft.CSharp.RuntimeBinder;
+using Titanium.Web.Proxy.Http;
 using static System.Math;
 
 namespace KancolleSniffer
@@ -63,7 +64,6 @@ namespace KancolleSniffer
         public MainForm()
         {
             InitializeComponent();
-            HttpProxy.AfterSessionComplete += HttpProxy_AfterSessionComplete;
             _configDialog = new ConfigDialog(_config, this);
             _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
 
@@ -86,8 +86,9 @@ namespace KancolleSniffer
             _notificationManager = new NotificationManager(Alarm);
             _config.Load();
             _proxyManager = new ProxyManager(_config, this);
-            _errorLog = new ErrorLog(_sniffer);
+            _proxyManager.BeforeResponse += ProxyManager_BeforeResponse;
             _proxyManager.UpdatePacFile();
+            _errorLog = new ErrorLog(_sniffer);
             PerformZoom();
             _mainLabels.AdjustAkashiTimers();
             LoadData();
@@ -174,18 +175,18 @@ namespace KancolleSniffer
             }
         }
 
-        private void HttpProxy_AfterSessionComplete(HttpProxy.Session session)
+        private void ProxyManager_BeforeResponse(HttpWebClient session)
         {
-            BeginInvoke(new Action<HttpProxy.Session>(ProcessRequest), session);
+            BeginInvoke(new Action<HttpWebClient>(ProcessRequest), session);
         }
 
-        private void ProcessRequest(HttpProxy.Session session)
+        private void ProcessRequest(HttpWebClient session)
         {
-            var url = session.Request.PathAndQuery;
+            var url = session.Request.RequestUri.PathAndQuery;
             if (!url.Contains("kcsapi/"))
                 return;
-            var request = session.Request.BodyAsString;
-            var response = session.Response.BodyAsString;
+            var request = session.Request.BodyString;
+            var response = session.Response.BodyString;
             if (response == null || !response.StartsWith("svdata="))
             {
                 WriteDebugLog(url, request, response);
