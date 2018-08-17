@@ -131,7 +131,7 @@ namespace KancolleSniffer
                 return Update.None;
             var data = json.api_data() ? json.api_data : new object();
 
-            if (url.EndsWith("api_start2"))
+            if (url.Contains("api_start2"))
             {
                 return ApiStart(data);
             }
