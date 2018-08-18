@@ -188,8 +188,8 @@ namespace KancolleSniffer.View
                     if (_order == ListForm.SortOrder.ExpToNextDescend)
                         return b.ExpToNext - a.ExpToNext;
                 }
-                if (a.Spec.SortNo != b.Spec.SortNo)
-                    return a.Spec.SortNo - b.Spec.SortNo;
+                if (a.Spec.SortId != b.Spec.SortId)
+                    return a.Spec.SortId - b.Spec.SortId;
                 return a.Id - b.Id;
             }
         }

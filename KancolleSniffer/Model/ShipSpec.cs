@@ -20,7 +20,7 @@ namespace KancolleSniffer.Model
     {
         public int Id { get; set; }
         public bool IsEnemy => ShipMaster.IsEnemyId(Id);
-        public int SortNo { get; set; }
+        public int SortId { get; set; }
         public string Name { get; set; }
         public int FuelMax { get; set; }
         public int BullMax { get; set; }

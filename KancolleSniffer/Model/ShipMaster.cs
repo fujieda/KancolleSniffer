@@ -38,7 +38,7 @@ namespace KancolleSniffer.Model
                 var shipSpec = _shipSpecs[(int)entry.api_id] = new ShipSpec
                 {
                     Id = (int)entry.api_id,
-                    SortNo = entry.api_sortno() ? (int)entry.api_sortno : 0,
+                    SortId = entry.api_sort_id() ? (int)entry.api_sort_id : 0,
                     Name = ShipName(entry),
                     FuelMax = entry.api_fuel_max() ? (int)entry.api_fuel_max : 0,
                     BullMax = entry.api_bull_max() ? (int)entry.api_bull_max : 0,
