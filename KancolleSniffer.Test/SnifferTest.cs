@@ -527,6 +527,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 随伴艦一括解除を実行する
+        /// </summary>
+        [TestMethod]
+        public void WithdrawAccompanyingShipsAtOnce()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "deck_006");
+            var result = sniffer.Fleets[0].Deck;
+            PAssert.That(() => new[] {135, -1, -1, -1, -1, -1}.SequenceEqual(result));
+        }
+
+        /// <summary>
         /// 編成展開を正しく反映する
         /// </summary>
         [TestMethod]

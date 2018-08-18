@@ -126,15 +126,15 @@ namespace KancolleSniffer.Model
             return prev;
         }
 
-        public void WithdrowShip(int index)
+        public void WithrawAccompanyingShips()
         {
-            if (index == -1) // 旗艦以外解除
-            {
-                for (var i = 1; i < _deck.Length; i++)
-                    _deck[i] = -1;
-                SetDeck();
-                return;
-            }
+            for (var i = 1; i < _deck.Length; i++)
+                _deck[i] = -1;
+            SetDeck();
+        }
+
+        public void WithdrawShip(int index)
+        {
             var dst = index;
             for (var src = index + 1; src < _deck.Length; src++)
             {

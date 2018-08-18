@@ -215,9 +215,14 @@ namespace KancolleSniffer.Model
             var dstIdx = int.Parse(values["api_ship_idx"]);
             var shipId = int.Parse(values["api_ship_id"]);
 
-            if (dstIdx == -1 || shipId == -1) // 解除
+            if (shipId == -2)
             {
-                dstFleet.WithdrowShip(dstIdx);
+                dstFleet.WithrawAccompanyingShips();
+                return;
+            }
+            if (shipId == -1)
+            {
+                dstFleet.WithdrawShip(dstIdx);
                 return;
             }
             var srcFleet = FindFleet(shipId, out var srcIdx);
@@ -227,7 +232,7 @@ namespace KancolleSniffer.Model
             // 入れ替えの場合
             srcFleet.SetShip(srcIdx, prevShipId);
             if (prevShipId == -1)
-                srcFleet.WithdrowShip(srcIdx);
+                srcFleet.WithdrawShip(srcIdx);
         }
 
         private Fleet FindFleet(int ship, out int idx)
@@ -277,7 +282,7 @@ namespace KancolleSniffer.Model
                 if (delitem)
                     _itemInventry.Remove(_shipInventry[shipId].AllSlot);
                 var srcFleet = FindFleet(shipId, out var srcIdx);
-                srcFleet?.WithdrowShip(srcIdx);
+                srcFleet?.WithdrawShip(srcIdx);
                 _shipInventry.Remove(shipId);
             }
         }
