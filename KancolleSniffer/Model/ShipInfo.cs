@@ -273,6 +273,13 @@ namespace KancolleSniffer.Model
                 fleet.SetDeck(); // ShipStatusの差し替え
         }
 
+        public void InspectMarriage(dynamic json)
+        {
+            InspectShipData(new[]{json});
+            foreach (var fleet in _fleets)
+                fleet.SetDeck(); // ShipStatusの差し替え
+        }
+
         public void InspectDestroyShip(string request, dynamic json)
         {
             var values = HttpUtility.ParseQueryString(request);

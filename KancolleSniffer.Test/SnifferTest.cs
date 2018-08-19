@@ -595,6 +595,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// ship2を待たずにケッコンの結果を反映する
+        /// </summary>
+        [TestMethod]
+        public void MarriageResult()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "marriage_001");
+            PAssert.That(() => sniffer.Fleets[0].Ships[2].Level == 100);
+        }
+
+        /// <summary>
         /// 改修による資材の減少をすぐに反映する
         /// </summary>
         [TestMethod]

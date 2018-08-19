@@ -148,6 +148,8 @@ namespace KancolleSniffer
                 return ApiBattle(url, request, data);
             if (url.Contains("hensei"))
                 return ApiHensei(url, request, data);
+            if (url.Contains("kaisou"))
+                return ApiKaisou(url, request, data);
             if (url.Contains("air_corps"))
                 return ApiAirCorps(url, request, data);
             return ApiOthers(url, request, data);
@@ -456,6 +458,34 @@ namespace KancolleSniffer
             return Update.None;
         }
 
+        private Update ApiKaisou(string url, string request, dynamic data)
+        {
+            if (url.EndsWith("api_req_kaisou/powerup"))
+            {
+                _shipInfo.InspectPowerup(request, data);
+                _conditionTimer.CheckCond();
+                _akashiTimer.CheckFleet();
+                _questInfo.InspectPowerup(data);
+                return Update.Item | Update.Ship | Update.QuestList;
+            }
+            if (url.EndsWith("api_req_kaisou/slot_exchange_index"))
+            {
+                _shipInfo.InspectSlotExchange(request, data);
+                return Update.Ship;
+            }
+            if (url.EndsWith("api_req_kaisou/slot_deprive"))
+            {
+                _shipInfo.InspectSlotDeprive(data);
+                return Update.Ship;
+            }
+            if (url.EndsWith("api_req_kaisou/marriage"))
+            {
+                _shipInfo.InspectMarriage(data);
+                return Update.Ship;
+            }
+            return Update.None;
+        }
+
         private Update ApiAirCorps(string url, string request, dynamic data)
         {
             if (url.EndsWith("api_req_air_corps/supply"))
@@ -491,24 +521,6 @@ namespace KancolleSniffer
                 _materialInfo.InspectCharge(data);
                 _questInfo.CountCharge();
                 return Update.Item | Update.Ship | Update.QuestList;
-            }
-            if (url.EndsWith("api_req_kaisou/powerup"))
-            {
-                _shipInfo.InspectPowerup(request, data);
-                _conditionTimer.CheckCond();
-                _akashiTimer.CheckFleet();
-                _questInfo.InspectPowerup(data);
-                return Update.Item | Update.Ship | Update.QuestList;
-            }
-            if (url.EndsWith("api_req_kaisou/slot_exchange_index"))
-            {
-                _shipInfo.InspectSlotExchange(request, data);
-                return Update.Ship;
-            }
-            if (url.EndsWith("api_req_kaisou/slot_deprive"))
-            {
-                _shipInfo.InspectSlotDeprive(data);
-                return Update.Ship;
             }
             if (url.EndsWith("api_req_nyukyo/start"))
             {
