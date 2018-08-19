@@ -213,8 +213,8 @@ namespace KancolleSniffer
         public bool PlaySound { get; set; } = true;
         public NotificationType NotificationFlags { get; set; } = NotificationType.All;
         public NotificationConfig Notifications { get; set; } = new NotificationConfig();
-        public int MarginShips { get; set; } = 4;
-        public int MarginEquips { get; set; } = 10;
+        public int MarginShips { get; set; } = 5;
+        public int MarginEquips { get; set; } = 5;
         public List<int> NotifyConditions { get; set; }
         public List<int> ResetHours { get; set; }
         public bool AlwaysShowResultRank { get; set; }

@@ -68,7 +68,7 @@ namespace KancolleSniffer.Model
             _shipInventry = shipInventry;
             _fleets = Enumerable.Range(0, FleetCount).Select((x, i) => new Fleet(_shipInventry, i, () => _hqLevel)).ToArray();
             _itemInventry = itemInventry;
-            Counter = new AlarmCounter(() => _shipInventry.Count){Margin = 4};
+            Counter = new AlarmCounter(() => _shipInventry.Count) {Margin = 5};
         }
 
         public void InspectMaster(dynamic json)

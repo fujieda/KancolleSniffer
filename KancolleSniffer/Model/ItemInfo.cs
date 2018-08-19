@@ -28,7 +28,7 @@ namespace KancolleSniffer.Model
         {
             _itemMaster = itemMaster;
             _itemInventry = itemInventry;
-            Counter = new AlarmCounter(() => _itemInventry.Count) {Margin = 10};
+            Counter = new AlarmCounter(() => _itemInventry.Count) {Margin = 5};
         }
 
         public void InspectBasic(dynamic json)
