@@ -73,6 +73,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AkashiTimerTest.cs" />
     <Compile Include="Ascii85Test.cs" />
     <Compile Include="BattleLogProcessorTest.cs" />
     <Compile Include="BattleTest.cs" />

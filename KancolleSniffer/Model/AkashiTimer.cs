@@ -171,7 +171,7 @@ namespace KancolleSniffer.Model
         {
             CheckFleet();
             var values = HttpUtility.ParseQueryString(request);
-            if (int.Parse(values["api_ship_idx"]) == -1)
+            if (int.Parse(values["api_ship_id"]) == -2)
                 return;
             if (_repairStatuses.Any(r => r.State == State.Reset))
                 _start = _nowFunc();
