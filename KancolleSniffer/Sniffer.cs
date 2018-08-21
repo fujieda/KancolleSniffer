@@ -14,7 +14,6 @@
 
 using System;
 using KancolleSniffer.Util;
-using KancolleSniffer.View;
 using System.Collections.Generic;
 using System.Linq;
 using KancolleSniffer.Model;

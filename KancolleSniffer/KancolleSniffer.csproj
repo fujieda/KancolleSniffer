@@ -110,7 +110,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Net\LogServer.cs" />
     <Compile Include="Model\MaterialInfo.cs" />
-    <Compile Include="View\MiscTextInfo.cs" />
+    <Compile Include="Model\MiscTextInfo.cs" />
     <Compile Include="Model\AdditionalData.cs" />
     <Compile Include="NotificationConfigDialog.cs">
       <SubType>Form</SubType>
