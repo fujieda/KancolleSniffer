@@ -949,18 +949,18 @@ namespace KancolleSniffer
             if (_config.UsePresetAkashi)
                 UpdatePresetAkashiTimer();
             _mainLabels.SetAkashiTimer(_sniffer.Fleets[_currentFleet].ActualShips,
-                _sniffer.AkashiTimer.GetTimers(_currentFleet));
+                _sniffer.AkashiTimer.GetTimers(_currentFleet, _now));
         }
 
         private void UpdatePresetAkashiTimer()
         {
             var akashi = _sniffer.AkashiTimer;
-            var span = akashi.PresetDeckTimer;
+            var span = akashi.GetPresetDeckTimer(_now);
             var color = span == TimeSpan.Zero && akashi.CheckPresetRepairing() ? CUDColor.Red : DefaultForeColor;
             var text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
             labelAkashiRepairTimer.ForeColor = color;
             labelAkashiRepairTimer.Text = text;
-            if (akashi.CheckPresetRepairing() && !akashi.CheckRepairing(_currentFleet))
+            if (akashi.CheckPresetRepairing() && !akashi.CheckRepairing(_currentFleet, _now))
             {
                 labelPresetAkashiTimer.ForeColor = color;
                 labelPresetAkashiTimer.Text = text;
@@ -981,7 +981,7 @@ namespace KancolleSniffer
                 _notificationManager.StopRepeat("泊地修理");
                 return;
             }
-            if (!akashi.CheckRepairing() && !(akashi.CheckPresetRepairing() && _config.UsePresetAkashi))
+            if (!akashi.CheckRepairing(_now) && !(akashi.CheckPresetRepairing() && _config.UsePresetAkashi))
             {
                 _notificationManager.StopRepeat("泊地修理");
                 return;

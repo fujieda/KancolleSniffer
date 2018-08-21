@@ -26,6 +26,7 @@ namespace KancolleSniffer.Model
         private readonly PresetDeck _presetDeck;
         private readonly RepairStatus[] _repairStatuses = new RepairStatus[ShipInfo.FleetCount];
         private DateTime _start;
+        private readonly Func<DateTime> _nowFunc;
 
         public class RepairSpan
         {
@@ -141,11 +142,12 @@ namespace KancolleSniffer.Model
             public string Completed { get; set; }
         }
 
-        public AkashiTimer(ShipInfo ship, DockInfo dock, PresetDeck preset)
+        public AkashiTimer(ShipInfo ship, DockInfo dock, PresetDeck preset, Func<DateTime> nowFunc = null)
         {
             _shipInfo = ship;
             _dockInfo = dock;
             _presetDeck = preset;
+            _nowFunc = nowFunc ?? (() => DateTime.Now);
             for (var i = 0; i < _repairStatuses.Length; i++)
                 _repairStatuses[i] = new RepairStatus();
         }
@@ -159,7 +161,7 @@ namespace KancolleSniffer.Model
         public void Port()
         {
             CheckFleet();
-            var now = DateTime.Now;
+            var now = _nowFunc();
             var reset = _repairStatuses.Any(r => r.State == State.Reset);
             if (_start == DateTime.MinValue || now - _start > TimeSpan.FromMinutes(20) || reset)
                 _start = now;
@@ -172,7 +174,7 @@ namespace KancolleSniffer.Model
             if (int.Parse(values["api_ship_idx"]) == -1)
                 return;
             if (_repairStatuses.Any(r => r.State == State.Reset))
-                _start = DateTime.Now;
+                _start = _nowFunc();
         }
 
         public void CheckFleet()
@@ -222,23 +224,20 @@ namespace KancolleSniffer.Model
                 select _dockInfo.InNDock(s.Id) ? full : s.DamageLevel >= ShipStatus.Damage.Half ? zero : s).ToArray();
         }
 
-        public RepairSpan[] GetTimers(int fleet)
-            => _start == DateTime.MinValue ? new RepairSpan[0] : _repairStatuses[fleet].GetTimers(_start, DateTime.Now);
+        public RepairSpan[] GetTimers(int fleet, DateTime now)
+            => _start == DateTime.MinValue ? new RepairSpan[0] : _repairStatuses[fleet].GetTimers(_start, now);
 
-        public TimeSpan PresetDeckTimer
+        public TimeSpan GetPresetDeckTimer(DateTime now)
         {
-            get
-            {
-                if (_start == DateTime.MinValue)
-                    return TimeSpan.MinValue;
-                var r = TimeSpan.FromMinutes(20) - TimeSpan.FromSeconds((int)(DateTime.Now - _start).TotalSeconds);
-                return r >= TimeSpan.Zero ? r : TimeSpan.Zero;
-            }
+            if (_start == DateTime.MinValue)
+                return TimeSpan.MinValue;
+            var r = TimeSpan.FromMinutes(20) - TimeSpan.FromSeconds((int)(now - _start).TotalSeconds);
+            return r >= TimeSpan.Zero ? r : TimeSpan.Zero;
         }
 
-        public bool CheckRepairing(int fleet) => GetTimers(fleet).Any(r => r.Span != TimeSpan.MinValue);
+        public bool CheckRepairing(int fleet, DateTime now) => GetTimers(fleet, now).Any(r => r.Span != TimeSpan.MinValue);
 
-        public bool CheckRepairing() => Enumerable.Range(0, ShipInfo.FleetCount).Any(CheckRepairing);
+        public bool CheckRepairing(DateTime now) => Enumerable.Range(0, ShipInfo.FleetCount).Any(fleet => CheckRepairing(fleet, now));
 
         public bool CheckPresetRepairing()
             => _presetDeck.Decks.Where(deck => deck != null)
