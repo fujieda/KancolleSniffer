@@ -23,6 +23,8 @@ namespace KancolleSniffer.Model
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
         private bool _inSortie;
+        private readonly Dictionary<int, int> _gaugeCount = new Dictionary<int, int>();
+        private readonly Dictionary<int, string> _furniture = new Dictionary<int, string>();
 
         private const string GuideText =
             "[海域ゲージ情報]\r\n 海域選択画面に進むと表示します。\r\n[演習情報]\r\n 演習相手を選ぶと表示します。\r\n[獲得アイテム]\r\n 帰投したときに表示します。";
@@ -46,23 +48,22 @@ namespace KancolleSniffer.Model
             _items.Clear();
         }
 
-        private readonly Dictionary<int, int> _required = new Dictionary<int, int>
+        public void InspectMaster(dynamic json)
         {
-            {15, 4},
-            {16, 7},
-            {25, 4},
-            {35, 4},
-            {44, 4},
-            {45, 5},
-            {52, 4},
-            {53, 5},
-            {54, 5},
-            {55, 5},
-            {62, 3},
-            {63, 4},
-            {64, 5},
-            {65, 6}
-        };
+            if (json.api_mst_mapinfo())
+            {
+                foreach (var entry in json.api_mst_mapinfo)
+                {
+                    if (entry.api_required_defeat_count != null)
+                        _gaugeCount[(int)entry.api_id] = (int)entry.api_required_defeat_count;
+                }
+            }
+            if (json.api_mst_furniture())
+            {
+                foreach (var entry in json.api_mst_furniture)
+                    _furniture[(int)entry.api_id] = (string)entry.api_title;
+            }
+        }
 
         public void InspectMapInfo(dynamic json)
         {
@@ -78,7 +79,7 @@ namespace KancolleSniffer.Model
                 }
                 if (!entry.api_defeat_count())
                     continue;
-                var reqStr = _required.TryGetValue(map, out var req) ? req.ToString() : "?";
+                var reqStr = _gaugeCount.TryGetValue(map, out var req) ? req.ToString() : "?";
                 Text += $"{map / 10}-{map % 10} : 撃破 {(int)entry.api_defeat_count}/{reqStr}\r\n";
             }
         }
@@ -246,16 +247,6 @@ namespace KancolleSniffer.Model
             if (!dict.ContainsKey(id))
                 dict[id] = 0;
             dict[id] += count;
-        }
-
-        private readonly Dictionary<int, string> _furniture = new Dictionary<int, string>();
-
-        public void InspectMaster(dynamic json)
-        {
-            if (!json.api_mst_furniture())
-                return;
-            foreach (var entry in json.api_mst_furniture)
-                _furniture[(int)entry.api_id] = (string)entry.api_title;
         }
 
         private string GetName(int type, int id)

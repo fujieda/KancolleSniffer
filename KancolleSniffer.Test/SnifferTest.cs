@@ -899,6 +899,23 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 海域ゲージの情報を生成する
+        /// </summary>
+        [TestMethod]
+        public void AreaGauge()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "mapgauge_001");
+            PAssert.That(() =>
+                sniffer.MiscText ==
+                               "[海域ゲージ]\r\n" +
+                               "1-6 : 撃破 2/7\r\n" +
+                               "2-5 : 撃破 0/4\r\n" +
+                               "3-5 : 撃破 0/4\r\n" +
+                               "4-4 : 撃破 0/4\r\n");
+        }
+
+        /// <summary>
         /// 新規のドロップ艦の初期装備数を登録する
         /// </summary>
         [TestMethod]
