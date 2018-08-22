@@ -791,17 +791,22 @@ namespace KancolleSniffer
 
         private void UpdateMissionLabels()
         {
-            var labels = new[] {labelMissionName1, labelMissionName2, labelMissionName3};
+            var nameLabels = new[] {labelMissionName1, labelMissionName2, labelMissionName3};
+            var paramsLabels = new[] {labelMissionParams1, labelMissionParams2, labelMissionParams3};
             var names = _sniffer.Missions.Select(mission => mission.Name).ToArray();
             for (var i = 0; i < ShipInfo.FleetCount - 1; i++)
             {
-                labels[i].Text = string.IsNullOrEmpty(names[i])
-                    ? GenerateFleetSpecForMission(i + 1)
-                    : names[i];
+                paramsLabels[i].Visible = false;
+                if (string.IsNullOrEmpty(names[i]))
+                {
+                    paramsLabels[i].Text = GenerateFleetParamsForMission(i + 1);
+                    paramsLabels[i].Visible = true;
+                }
+                nameLabels[i].Text = names[i];
             }
         }
 
-        private string GenerateFleetSpecForMission(int fleetNumber)
+        private string GenerateFleetParamsForMission(int fleetNumber)
         {
             var result = new List<string>();
             var fleet = _sniffer.Fleets[fleetNumber];
