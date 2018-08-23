@@ -105,6 +105,7 @@ namespace KancolleSniffer.Model
 
         public bool Contains(int id) => _dict.ContainsKey(id);
 
+        // ReSharper disable once UnusedMember.Global
         public bool Contains(T item) => Contains(GetId(item));
 
         public IEnumerable<T> AllItems =>

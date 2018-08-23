@@ -50,6 +50,7 @@ namespace KancolleSniffer.Model
 
     public enum QuestInterval
     {
+        // ReSharper disable once UnusedMember.Global
         Other,
         Daily,
         Weekly,
@@ -71,7 +72,6 @@ namespace KancolleSniffer.Model
     {
         public string Rank { get; set; }
         public int[] Maps { get; set; }
-        public int[] ShipTypes { get; set; }
 
         public static int CompareRank(string a, string b)
         {

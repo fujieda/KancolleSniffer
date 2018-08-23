@@ -167,13 +167,6 @@ namespace KancolleSniffer
             public void Resume() => _manager.ResumeRepeat();
         }
 
-        public class ConfigFileException : Exception
-        {
-            public ConfigFileException(string message, Exception innerException) : base(message, innerException)
-            {
-            }
-        }
-
         private void HttpProxy_AfterSessionComplete(HttpProxy.Session session)
         {
             BeginInvoke(new Action<HttpProxy.Session>(ProcessRequest), session);

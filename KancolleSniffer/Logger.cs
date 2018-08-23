@@ -638,14 +638,6 @@ namespace KancolleSniffer
 
     public class LogIOException : Exception
     {
-        public LogIOException()
-        {
-        }
-
-        public LogIOException(string message) : base(message)
-        {
-        }
-
         public LogIOException(string message, Exception inner) : base(message, inner)
         {
         }

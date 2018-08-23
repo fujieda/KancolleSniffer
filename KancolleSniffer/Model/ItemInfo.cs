@@ -88,11 +88,6 @@ namespace KancolleSniffer.Model
             DeleteItems((int[])json.api_use_slot_id);
         }
 
-        public void DeleteItems(IEnumerable<ItemStatus> items)
-        {
-            DeleteItems(items.Select(item => item.Id));
-        }
-
         private void DeleteItems(IEnumerable<int> ids)
         {
             _itemInventry.Remove(ids);

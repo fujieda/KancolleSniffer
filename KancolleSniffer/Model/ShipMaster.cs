@@ -19,7 +19,6 @@ namespace KancolleSniffer.Model
 {
     public class ShipMaster
     {
-        public const int NumSlots = 5;
         private readonly Dictionary<int, ShipSpec> _shipSpecs = new Dictionary<int, ShipSpec>();
         public AdditionalData AdditionalData { get; set; }
 

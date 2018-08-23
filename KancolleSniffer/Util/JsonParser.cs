@@ -255,6 +255,7 @@ namespace KancolleSniffer.Util
 
         public bool IsArray => _type == JsonType.Array;
         public bool IsObject => _type == JsonType.Object;
+        // ReSharper disable once UnusedMember.Global
         public bool IsDefined(string attr) => IsObject && _dict.Contains(attr);
 
         public JsonObject(bool b)
@@ -544,10 +545,6 @@ namespace KancolleSniffer.Util
 
     public class JsonParserException : Exception
     {
-        public JsonParserException()
-        {
-        }
-
         public JsonParserException(string message) : base(message)
         {
         }
