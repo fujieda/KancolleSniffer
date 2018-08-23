@@ -49,7 +49,7 @@ namespace KancolleSniffer.Net
             _listener.Start();
             LocalPort = ((IPEndPoint)_listener.LocalEndpoint).Port;
             IsInListening = true;
-            Task.Run(() => AcceptClient());
+            Task.Run(AcceptClient);
         }
 
         public static void Shutdown()
