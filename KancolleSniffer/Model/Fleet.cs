@@ -69,7 +69,7 @@ namespace KancolleSniffer.Model
 
     public class Fleet
     {
-        private readonly ShipInventry _shipInventry;
+        private readonly ShipInventory _shipInventory;
         private readonly Func<int> _getHqLevel;
         private int[] _deck = Enumerable.Repeat(-1, ShipInfo.MemberCount).ToArray();
         public int Number { get; }
@@ -78,9 +78,9 @@ namespace KancolleSniffer.Model
         public IReadOnlyList<ShipStatus> Ships { get; private set; }
         public IReadOnlyList<ShipStatus> ActualShips { get; private set; }
 
-        public Fleet(ShipInventry shipInventry, int number, Func<int> getHqLevel)
+        public Fleet(ShipInventory shipInventory, int number, Func<int> getHqLevel)
         {
-            _shipInventry = shipInventry;
+            _shipInventory = shipInventory;
             Number = number;
             _getHqLevel = getHqLevel;
             Ships = _deck.Select(id => new ShipStatus()).ToArray();
@@ -108,7 +108,7 @@ namespace KancolleSniffer.Model
             }
             Ships = _deck.Select((id, num) =>
             {
-                var ship = _shipInventry[id];
+                var ship = _shipInventory[id];
                 if (ship.Empty)
                     return ship;
                 ship.DeckIndex = num;
@@ -126,7 +126,7 @@ namespace KancolleSniffer.Model
             return prev;
         }
 
-        public void WithrawAccompanyingShips()
+        public void WithdrawAccompanyingShips()
         {
             for (var i = 1; i < _deck.Length; i++)
                 _deck[i] = -1;
@@ -160,13 +160,13 @@ namespace KancolleSniffer.Model
 
         public int[] FighterPower
             => ActualShips.Where(ship => !ship.Escaped).SelectMany(ship =>
-                    ship.Slot.Zip(ship.OnSlot, (slot, onslot) => slot.CalcFighterPower(onslot)))
+                    ship.Slot.Zip(ship.OnSlot, (slot, onSlot) => slot.CalcFighterPower(onSlot)))
                 .Aggregate(new[] {0, 0}, (prev, cur) => new[] {prev[0] + cur[0], prev[1] + cur[1]});
 
         public double ContactTriggerRate
             => ActualShips.Where(ship => !ship.Escaped).SelectMany(ship =>
-                ship.Slot.Zip(ship.OnSlot, (slot, onslot) =>
-                    slot.Spec.ContactTriggerRate * slot.Spec.LoS * Sqrt(onslot))).Sum();
+                ship.Slot.Zip(ship.OnSlot, (slot, onSlot) =>
+                    slot.Spec.ContactTriggerRate * slot.Spec.LoS * Sqrt(onSlot))).Sum();
 
         public double GetLineOfSights(int factor)
         {
@@ -191,6 +191,7 @@ namespace KancolleSniffer.Model
         {
             get
             {
+                // ReSharper disable IdentifierTypo
                 var tokudaiBonus = new[,]
                 {
                     {0.00, 0.00, 0.00, 0.00, 0.00},
@@ -204,6 +205,7 @@ namespace KancolleSniffer.Model
                 var bonus = 0.0;
                 var level = 0;
                 var sum = 0;
+                // ReSharper restore IdentifierTypo
                 foreach (var ship in Ships)
                 {
                     if (ship.Name == "鬼怒改二")

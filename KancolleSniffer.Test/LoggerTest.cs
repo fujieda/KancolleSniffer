@@ -28,7 +28,7 @@ namespace KancolleSniffer.Test
     public class LoggerTest
     {
         [TestInitialize]
-        public void Intialize()
+        public void Initialize()
         {
             ExpressionToCodeConfiguration.GlobalAssertionConfiguration = ExpressionToCodeConfiguration
                 .GlobalAssertionConfiguration.WithPrintedListLengthLimit(200).WithMaximumValueLength(1000);
@@ -87,7 +87,7 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
-        public void FaileToMergeTmpFile()
+        public void FailToMergeTmpFile()
         {
             MergeTmpFileMain(true);
         }
@@ -217,7 +217,7 @@ namespace KancolleSniffer.Test
         public void Achievement()
         {
             var logger = new Logger(null, null, null);
-            logger.EnableLog(LogType.Achivement);
+            logger.EnableLog(LogType.Achievement);
             var result = "";
             var dateEnum = new[]
             {
@@ -253,7 +253,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             var result = "";
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2017, 5, 1));
-            sniffer.EnableLog(LogType.Achivement);
+            sniffer.EnableLog(LogType.Achievement);
             SnifferTest.SniffLogFile(sniffer, "clearitemget_001");
             PAssert.That(() =>
                 "2017-05-01 00:00:00,45417045,0|2017-05-01 00:00:00,45417045,350|" == result);
@@ -267,7 +267,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer(true);
             sniffer.SetLogWriter((path, s, h) => { }, () => new DateTime(2017, 5, 1));
-            sniffer.EnableLog(LogType.Achivement);
+            sniffer.EnableLog(LogType.Achievement);
             sniffer.Sniff("/kcsapi/api_req_quest/clearitemget",
                 "api%5Fquest%5Fid=656&api%5Fverno=1",
                 JsonParser.Parse(

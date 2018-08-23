@@ -134,7 +134,7 @@ namespace KancolleSniffer.Model
         }
     }
 
-    public class QuestPowerup : QuestSpec
+    public class QuestPowerUp : QuestSpec
     {
     }
 
@@ -322,8 +322,8 @@ namespace KancolleSniffer.Model
             {678, new QuestDestroyItem {Interval = Quarterly, MaxArray = new[] {3, 5}, Ids = new[] {19, 20}, Material = new[] {0, 0, 8, 0}}}, // 678: 主力艦上戦闘機の更新
             {680, new QuestSpec {Interval = Quarterly, MaxArray = new[] {4, 4}, Material = new[] {0, 0, 6, 0}}}, // 680: 対空兵装の整備拡充
 
-            {702, new QuestPowerup {Interval = Daily, Max = 2, Material = new[] {0, 1, 0, 0}}}, // 702: 艦の「近代化改修」を実施せよ！
-            {703, new QuestPowerup {Interval = Weekly, Max = 15, Material = new[] {1, 0, 2, 0}}} // 703: 「近代化改修」を進め、戦備を整えよ！
+            {702, new QuestPowerUp {Interval = Daily, Max = 2, Material = new[] {0, 1, 0, 0}}}, // 702: 艦の「近代化改修」を実施せよ！
+            {703, new QuestPowerUp {Interval = Weekly, Max = 15, Material = new[] {1, 0, 2, 0}}} // 703: 「近代化改修」を進め、戦備を整えよ！
         };
         // @formatter:on
 
@@ -613,6 +613,7 @@ namespace KancolleSniffer.Model
                 if (_map == 51 && _boss && QuestSortie.CompareRank(rank, "S") == 0)
                 {
                     var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec).ToArray();
+                    // ReSharper disable once IdentifierTypo
                     var ctype = new[]
                     {
                         2, // 伊勢型
@@ -908,14 +909,14 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public void InspectPowerup(dynamic json)
+        public void InspectPowerUp(dynamic json)
         {
             if ((int)json.api_powerup_flag == 0)
                 return;
             foreach (var quest in _quests.Values)
             {
                 var count = quest.Count;
-                if (!(count.Spec is QuestPowerup))
+                if (!(count.Spec is QuestPowerUp))
                     continue;
                 IncrementCount(count);
             }

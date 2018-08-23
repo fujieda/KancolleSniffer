@@ -23,7 +23,7 @@ namespace KancolleSniffer.Model
         private const int Interval = 180;
         private int _lastCond = int.MinValue;
         private DateTime _lastUpdate;
-        private double _regenTime;
+        private double _regainTime;
 
         public bool NeedSave { get; private set; }
 
@@ -32,7 +32,7 @@ namespace KancolleSniffer.Model
             _shipInfo = shipInfo;
         }
 
-        public void CalcRegenTime()
+        public void CalcRegainTime()
         {
             var now = DateTime.Now;
             var prevTime = _lastUpdate;
@@ -40,30 +40,30 @@ namespace KancolleSniffer.Model
             _lastUpdate = now;
             _lastCond = _shipInfo.ShipList.Min(s => s.Cond);
 // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (_regenTime == double.MinValue)
+            if (_regainTime == double.MinValue)
             {
-                ResetRegenTime(now);
+                ResetRegainTime(now);
                 return;
             }
             if (prevCond == int.MinValue || prevCond == _lastCond)
                 return;
-            var next = NextRegenTime(prevTime);
+            var next = NextRegainTime(prevTime);
             var ticks = next > now ? 0 : (int)(now - next).TotalSeconds / Interval + 1;
             var diff = (_lastCond - prevCond + 2) / 3 - ticks;
             if (_lastCond == 49 ? diff > 0 : diff != 0)
-                ResetRegenTime(now);
+                ResetRegainTime(now);
         }
 
-        private DateTime NextRegenTime(DateTime now)
+        private DateTime NextRegainTime(DateTime now)
         {
-            var batch = new DateTime((long)((now.Ticks / TimeSpan.TicksPerSecond / Interval * Interval + _regenTime) *
+            var batch = new DateTime((long)((now.Ticks / TimeSpan.TicksPerSecond / Interval * Interval + _regainTime) *
                                             TimeSpan.TicksPerSecond));
             return batch < now ? batch.AddSeconds(Interval) : batch;
         }
 
-        private void ResetRegenTime(DateTime now)
+        private void ResetRegainTime(DateTime now)
         {
-            _regenTime = (double)now.Ticks / TimeSpan.TicksPerSecond % Interval;
+            _regainTime = (double)now.Ticks / TimeSpan.TicksPerSecond % Interval;
             NeedSave = true;
         }
 
@@ -86,8 +86,8 @@ namespace KancolleSniffer.Model
             var cond = target.ActualShips.Select(s => s.Cond).DefaultIfEmpty(49).Min();
             if (cond >= 49)
                 return DateTime.MinValue;
-            var nextRegen = NextRegenTime(_lastUpdate);
-            return cond >= 46 ? nextRegen : nextRegen.AddSeconds((46 - cond + 2) / 3 * Interval);
+            var nextRegain = NextRegainTime(_lastUpdate);
+            return cond >= 46 ? nextRegain : nextRegain.AddSeconds((46 - cond + 2) / 3 * Interval);
         }
 
         public int[] GetNotice(DateTime prev, DateTime now)
@@ -113,12 +113,12 @@ namespace KancolleSniffer.Model
         public void SaveState(Status status)
         {
             NeedSave = false;
-            status.CondRegenTime = _regenTime;
+            status.CondRegenTime = _regainTime;
         }
 
         public void LoadState(Status status)
         {
-            _regenTime = status.CondRegenTime;
+            _regainTime = status.CondRegenTime;
         }
     }
 }

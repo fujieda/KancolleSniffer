@@ -10,18 +10,18 @@ namespace KancolleSniffer
     public partial class NotificationConfigDialog : Form
     {
         private readonly Dictionary<string, NotificationSpec> _notifications;
-        private readonly Dictionary<NotificationType, CheckBox> _configCheckBoxs;
+        private readonly Dictionary<NotificationType, CheckBox> _configCheckBoxes;
         private readonly ResizableToolTip _toolTip = new ResizableToolTip();
 
         public NotificationConfigDialog(Dictionary<string, NotificationSpec> notifications,
-            Dictionary<NotificationType, CheckBox> checkBoxs)
+            Dictionary<NotificationType, CheckBox> checkBoxes)
         {
             InitializeComponent();
             _notifications = notifications;
-            _configCheckBoxs = checkBoxs;
+            _configCheckBoxes = checkBoxes;
 
             checkBoxFlashWindow.Tag = NotificationType.FlashWindow;
-            checkBoxShowBaloonTip.Tag = NotificationType.ShowBaloonTip;
+            checkBoxShowBalloonTip.Tag = NotificationType.ShowBaloonTip;
             checkBoxPlaySound.Tag = NotificationType.PlaySound;
             checkBoxPush.Tag = NotificationType.Push;
             checkBoxRepeat.Tag = NotificationType.Repeat;
@@ -47,7 +47,7 @@ namespace KancolleSniffer
                     break;
                 default:
                     textBoxRepeat.Visible = labelRepeat.Visible = checkBoxRepeat.Visible = true;
-                    checkBoxRepeat.Enabled = _configCheckBoxs[NotificationType.Repeat].Checked;
+                    checkBoxRepeat.Enabled = _configCheckBoxes[NotificationType.Repeat].Checked;
                     textBoxRepeat.Text = notification.RepeatInterval.ToString();
                     checkBoxCont.Visible = IsContAvailable;
                     textBoxPreliminary.Visible =
@@ -56,7 +56,7 @@ namespace KancolleSniffer
                     break;
             }
             checkBoxFlashWindow.Checked = (notification.Flags & NotificationType.FlashWindow) != 0;
-            checkBoxShowBaloonTip.Checked = (notification.Flags & NotificationType.ShowBaloonTip) != 0;
+            checkBoxShowBalloonTip.Checked = (notification.Flags & NotificationType.ShowBaloonTip) != 0;
             checkBoxPlaySound.Checked = (notification.Flags & NotificationType.PlaySound) != 0;
             checkBoxPush.Checked = (notification.Flags & NotificationType.Push) != 0;
             checkBoxRepeat.Checked = (notification.Flags & NotificationType.Repeat) != 0;
@@ -76,7 +76,7 @@ namespace KancolleSniffer
             if (type == NotificationType.Repeat)
             {
                 textBoxRepeat.Enabled = labelRepeat.Enabled = checkBoxCont.Enabled =
-                    _configCheckBoxs[NotificationType.Repeat].Checked && checkBox.Checked;
+                    _configCheckBoxes[NotificationType.Repeat].Checked && checkBox.Checked;
             }
             if (type == NotificationType.Preliminary)
                 textBoxPreliminary.Enabled = labelPreliminary.Enabled = checkBox.Checked;
@@ -96,10 +96,10 @@ namespace KancolleSniffer
 
         private void NotificationConfigDialog_Load(object sender, EventArgs e)
         {
-            checkBoxFlashWindow.Enabled = _configCheckBoxs[NotificationType.FlashWindow].Checked;
-            checkBoxShowBaloonTip.Enabled = _configCheckBoxs[NotificationType.ShowBaloonTip].Checked;
-            checkBoxPlaySound.Enabled = _configCheckBoxs[NotificationType.PlaySound].Checked;
-            checkBoxRepeat.Enabled = _configCheckBoxs[NotificationType.Repeat].Checked;
+            checkBoxFlashWindow.Enabled = _configCheckBoxes[NotificationType.FlashWindow].Checked;
+            checkBoxShowBalloonTip.Enabled = _configCheckBoxes[NotificationType.ShowBaloonTip].Checked;
+            checkBoxPlaySound.Enabled = _configCheckBoxes[NotificationType.PlaySound].Checked;
+            checkBoxRepeat.Enabled = _configCheckBoxes[NotificationType.Repeat].Checked;
             textBoxRepeat.Enabled = labelRepeat.Enabled = checkBoxCont.Enabled =
                 checkBoxRepeat.Enabled && checkBoxRepeat.Checked;
             textBoxPreliminary.Enabled = checkBoxPreliminary.Checked;

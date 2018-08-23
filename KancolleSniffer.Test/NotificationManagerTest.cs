@@ -144,7 +144,7 @@ namespace KancolleSniffer.Test
         /// 二つの通知をリピートさせる
         /// </summary>
         [TestMethod]
-        public void TwoRepeatableNotofication()
+        public void TwoRepeatableNotification()
         {
             var time = new TimeProvider();
             Message result = null;

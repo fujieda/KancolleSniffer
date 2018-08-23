@@ -101,26 +101,26 @@ namespace KancolleSniffer.View
                     for (var i = 0; i < ship.Slot.Count; i++)
                     {
                         var item = ship.Slot[i];
-                        var onslot = ship.OnSlot[i];
+                        var onSlot = ship.OnSlot[i];
                         var max = ship.Spec.MaxEq[i];
                         if (item.Empty)
                             continue;
-                        var airspec = "";
+                        var airSpec = "";
                         if (item.Spec.IsDiveBomber) // 爆撃
                         {
-                            airspec = "航空戦 " +
-                                      (25 + (int)((item.Spec.Bomber + item.BomberLevelBonus) * Math.Sqrt(onslot)));
+                            airSpec = "航空戦 " +
+                                      (25 + (int)((item.Spec.Bomber + item.BomberLevelBonus) * Math.Sqrt(onSlot)));
                         }
                         else if (item.Spec.IsTorpedoBomber)
                         {
-                            var normal = 25 + item.Spec.Torpedo * Math.Sqrt(onslot);
-                            airspec = "航空戦 " + (int)(normal * 0.8) + "/" + (int)(normal * 1.5);
+                            var normal = 25 + item.Spec.Torpedo * Math.Sqrt(onSlot);
+                            airSpec = "航空戦 " + (int)(normal * 0.8) + "/" + (int)(normal * 1.5);
                         }
                         equips.Add(new Record
                         {
                             Equip = GenEquipString(item),
-                            Spec = item.Spec.IsAircraft ? $"+{item.Alv} {onslot}/{max}" : "",
-                            AircraftSpec = airspec,
+                            Spec = item.Spec.IsAircraft ? $"+{item.Alv} {onSlot}/{max}" : "",
+                            AircraftSpec = airSpec,
                             Color = item.Spec.Color
                         });
                     }
@@ -131,10 +131,12 @@ namespace KancolleSniffer.View
                     }
                     total.Add(ship);
                     var fire = ship.EffectiveFirepower;
+                    // ReSharper disable IdentifierTypo
                     var subm = ship.EffectiveAntiSubmarine;
                     var torp = ship.EffectiveTorpedo;
                     var night = ship.NightBattlePower;
                     var oasa = ship.CanOpeningAntiSubmarineAttack ? "*" : "";
+                    // ReSharper restore IdentifierTypo
                     var record = new Record
                     {
                         Ship = (ship.Escaped ? "[避]" : "") + ship.Name + " Lv" + ship.Level,

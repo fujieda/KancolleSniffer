@@ -35,7 +35,7 @@ namespace KancolleSniffer.View
         private Label _phaseLabel, _rankLabel, _cellLabel;
         private BattleState _prevBattleState;
         private readonly BattleResultRank[] _rank = new BattleResultRank[2];
-        private readonly InformationPanel _infomationPanel;
+        private readonly InformationPanel _informationPanel;
         private CellInfo _cellInfo;
 
         public Spoiler Spoilers { get; set; }
@@ -44,8 +44,8 @@ namespace KancolleSniffer.View
         {
             SuspendLayout();
             CreateLabels();
-            _infomationPanel = new InformationPanel();
-            Controls.Add(_infomationPanel);
+            _informationPanel = new InformationPanel();
+            Controls.Add(_informationPanel);
             ResumeLayout();
         }
 
@@ -96,7 +96,7 @@ namespace KancolleSniffer.View
                     _rank[1] = sniffer.Battle.ResultRank;
                     SetPhase("夜戦");
                 }
-                _infomationPanel.Visible = true;
+                _informationPanel.Visible = true;
             }
             else
             {
@@ -113,7 +113,7 @@ namespace KancolleSniffer.View
                     _rank[1] = sniffer.Battle.ResultRank;
                 }
             }
-            _infomationPanel.SetInformation(sniffer.Battle);
+            _informationPanel.SetInformation(sniffer.Battle);
         }
 
         private void PhaseLabelClick(object sender, EventArgs ev)
@@ -175,7 +175,7 @@ namespace KancolleSniffer.View
             _scrollPosition = AutoScrollPosition;
             foreach (var panel in _panelList)
                 panel.Visible = false;
-            _infomationPanel.Visible = false;
+            _informationPanel.Visible = false;
             _rankLabel.Text = "";
         }
 
@@ -191,7 +191,7 @@ namespace KancolleSniffer.View
                 var ship = friend.Main[i];
                 labels[0].SetHp(ship);
                 labels[1].SetName(ship, ShipNameWidth.BattleResult);
-                _toolTip.SetToolTip(labels[1], GetEqipString(ship));
+                _toolTip.SetToolTip(labels[1], GetEquipString(ship));
             }
             if (friend.Guard.Length > 0)
             {
@@ -203,7 +203,7 @@ namespace KancolleSniffer.View
                     var ship = friend.Guard[i];
                     labels[0].SetHp(ship);
                     labels[1].SetName(ship, ShipNameWidth.BattleResult);
-                    _toolTip.SetToolTip(labels[1], GetEqipString(ship));
+                    _toolTip.SetToolTip(labels[1], GetEquipString(ship));
                 }
             }
             var friendLines = friend.Main.Length + (friend.Guard.Length > 0 ? friend.Guard.Length + 1 : 0);
@@ -218,7 +218,7 @@ namespace KancolleSniffer.View
                 var ship = enemy.Main[i];
                 labels[0].SetHp(ship);
                 labels[1].SetName(ShortenName(ship.Name));
-                _toolTip.SetToolTip(labels[1], GetEqipString(ship));
+                _toolTip.SetToolTip(labels[1], GetEquipString(ship));
             }
             if (enemy.Guard.Length > 0)
             {
@@ -230,7 +230,7 @@ namespace KancolleSniffer.View
                     var ship = enemy.Guard[i];
                     labels[0].SetHp(ship);
                     labels[1].SetName(ShortenName(ship.Name));
-                    _toolTip.SetToolTip(labels[1], GetEqipString(ship));
+                    _toolTip.SetToolTip(labels[1], GetEquipString(ship));
                 }
             }
             var enemyLines = enemy.Main.Length + (enemy.Guard.Length > 0 ? enemy.Guard.Length + 1 : 0);
@@ -256,14 +256,14 @@ namespace KancolleSniffer.View
                 _enemyLabels[0][1].Location.X + _enemyLabels.Max(labels => labels[1].Size.Width) - 1); // 敵の名前の右端
             for (var i = 0; i < lines; i++)
                 _panelList[i].Width = panelWidth;
-            _infomationPanel.Location = new Point(
+            _informationPanel.Location = new Point(
                 (int)Round(0 * ShipLabel.ScaleFactor.Width) + AutoScrollPosition.X,
                 (int)Round(20 * ShipLabel.ScaleFactor.Height) + AutoScrollPosition.Y);
-            _infomationPanel.Visible = true;
+            _informationPanel.Visible = true;
             UpdateCellInfo(_cellInfo);
         }
 
-        private string GetEqipString(ShipStatus ship)
+        private string GetEquipString(ShipStatus ship)
         {
             var result =
             (from i in Enumerable.Range(0, ship.Slot.Count)

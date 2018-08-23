@@ -184,7 +184,7 @@ namespace KancolleSniffer
                 WriteDebugLog(url, request, response);
                 return;
             }
-            response = UnescapeString(response.Remove(0, "svdata=".Length));
+            response = UnEscapeString(response.Remove(0, "svdata=".Length));
             WriteDebugLog(url, request, response);
             ProcessRequestMain(url, request, response);
         }
@@ -239,7 +239,7 @@ namespace KancolleSniffer
             }
         }
 
-        private string UnescapeString(string s)
+        private string UnEscapeString(string s)
         {
             try
             {
@@ -537,7 +537,7 @@ namespace KancolleSniffer
             _toolTip.SetToolTip(labelAchievement,
                 "今月 " + _sniffer.Achievement.ValueOfMonth.ToString("F1") + "\n" +
                 "EO " + _sniffer.ExMap.Achievement);
-            UpdateMaterialHistry();
+            UpdateMaterialHistory();
             if (_listForm.Visible)
                 _listForm.UpdateList();
         }
@@ -576,7 +576,7 @@ namespace KancolleSniffer
             labelBucketHistory.Text = $"{day:+#;-#;±0} 今日\n{week:+#;-#;±0} 今週";
         }
 
-        private void UpdateMaterialHistry()
+        private void UpdateMaterialHistory()
         {
             var labels = new[] {labelFuelHistory, labelBulletHistory, labelSteelHistory, labelBouxiteHistory};
             var text = new[] {"燃料", "弾薬", "鋼材", "ボーキ"};
@@ -1106,9 +1106,10 @@ namespace KancolleSniffer
 
         [DllImport("winmm.dll")]
         private static extern int mciSendString(String command,
-            StringBuilder buffer, int bufferSize, IntPtr hwndCallback);
+            StringBuilder buffer, int bufferSize, IntPtr hWndCallback);
 
 // ReSharper disable InconsistentNaming
+        // ReSharper disable once IdentifierTypo
         private const int MM_MCINOTIFY = 0x3B9;
 
         private const int MCI_NOTIFY_SUCCESSFUL = 1;
@@ -1241,7 +1242,7 @@ namespace KancolleSniffer
             labelMaterialHistoryButton.BackColor = DefaultBackColor;
         }
 
-        public void ResetAchievemnt()
+        public void ResetAchievement()
         {
             _sniffer.Achievement.Reset();
             UpdateItemInfo();

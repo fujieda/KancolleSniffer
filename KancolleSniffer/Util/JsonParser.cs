@@ -131,13 +131,13 @@ namespace KancolleSniffer.Util
                 len++;
                 Consume();
             }
-            return Unescape(_source.Substring(_position - len - 1, len));
+            return UnEscape(_source.Substring(_position - len - 1, len));
         }
 
         private static readonly Regex EscapeRegex =
             new Regex(@"\\[^u]|\\u(?:[0-9A-Fa-f]{4})", RegexOptions.Compiled);
 
-        private string Unescape(string s)
+        private string UnEscape(string s)
         {
             return EscapeRegex.Replace(s, m =>
             {
@@ -418,8 +418,8 @@ namespace KancolleSniffer.Util
                     return new JsonObject(d);
                 case JsonObject json:
                     return json;
-                case IEnumerable arry:
-                    return new JsonObject(arry.Cast<object>().Select(CreateJsonObject).ToList());
+                case IEnumerable ary:
+                    return new JsonObject(ary.Cast<object>().Select(CreateJsonObject).ToList());
                 case object obj:
                     var dict = new OrderedDictionary();
                     foreach (var prop in obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))

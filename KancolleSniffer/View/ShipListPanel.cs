@@ -115,6 +115,7 @@ namespace KancolleSniffer.View
             }
             var types = ships.Select(s => new {Id = s.Spec.ShipType, Name = s.Spec.ShipTypeName})
                 .Distinct()
+                // ReSharper disable once IdentifierTypo
                 .Select(stype =>
                     new ShipStatus
                     {
@@ -233,15 +234,15 @@ namespace KancolleSniffer.View
         private void CreateGroupingComponents(int i)
         {
             var y = LineHeight * i + 1;
-            var cfgp = new Panel
+            var panel = new Panel
             {
                 Location = new Point(0, y),
                 Size = new Size(ListForm.PanelWidth, LineHeight),
                 BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
             };
-            cfgp.Scale(ShipLabel.ScaleFactor);
-            cfgp.Tag = cfgp.Location.Y;
-            var cfgl = new[]
+            panel.Scale(ShipLabel.ScaleFactor);
+            panel.Tag = panel.Location.Y;
+            var labels = new[]
             {
                 new ShipLabel
                 {
@@ -266,15 +267,15 @@ namespace KancolleSniffer.View
                 cb[j].Scale(ShipLabel.ScaleFactor);
                 cb[j].CheckedChanged += checkboxGroup_CheckedChanged;
             }
-            _groupingLabelList.Add(cfgl);
+            _groupingLabelList.Add(labels);
             _checkBoxesList.Add(cb);
-            _groupingPanelList.Add(cfgp);
+            _groupingPanelList.Add(panel);
             // ReSharper disable CoVariantArrayConversion
-            cfgp.Controls.AddRange(cfgl);
-            cfgp.Controls.AddRange(cb);
+            panel.Controls.AddRange(labels);
+            panel.Controls.AddRange(cb);
             // ReSharper restore CoVariantArrayConversion
-            Controls.Add(cfgp);
-            foreach (var label in cfgl)
+            Controls.Add(panel);
+            foreach (var label in labels)
             {
                 label.Scale();
                 label.PresetColor =
@@ -302,15 +303,15 @@ namespace KancolleSniffer.View
         {
             var y = LineHeight * i + 1;
             const int height = LabelHeight;
-            var rpp = new Panel
+            var panel = new Panel
             {
                 Location = new Point(0, y),
                 Size = new Size(ListForm.PanelWidth, LineHeight),
                 BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
             };
-            rpp.Scale(ShipLabel.ScaleFactor);
-            rpp.Tag = rpp.Location.Y;
-            var rpl = new[]
+            panel.Scale(ShipLabel.ScaleFactor);
+            panel.Tag = panel.Location.Y;
+            var labels = new[]
             {
                 new ShipLabel
                 {
@@ -332,34 +333,34 @@ namespace KancolleSniffer.View
                 new ShipLabel {Location = new Point(10, 2), AutoSize = true},
                 new ShipLabel {Location = new Point(1, 2), AutoSize = true}
             };
-            _repairLabelList.Add(rpl);
-            _repairPanelList.Add(rpp);
+            _repairLabelList.Add(labels);
+            _repairPanelList.Add(panel);
             // ReSharper disable once CoVariantArrayConversion
-            rpp.Controls.AddRange(rpl);
-            Controls.Add(rpp);
-            foreach (var label in rpl)
+            panel.Controls.AddRange(labels);
+            Controls.Add(panel);
+            foreach (var label in labels)
             {
                 label.Scale();
                 label.PresetColor =
                     label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
             if (_hpPercent)
-                rpl[0].ToggleHpPercent();
-            _hpLabels.Add(rpl[0]);
-            rpl[0].DoubleClick += HpLabelClickHandler;
+                labels[0].ToggleHpPercent();
+            _hpLabels.Add(labels[0]);
+            labels[0].DoubleClick += HpLabelClickHandler;
         }
 
         private void CreateShipLabels(int i)
         {
             var y = LineHeight * i + 1;
             const int height = LabelHeight;
-            var lbp = new Panel
+            var panel = new Panel
             {
                 Location = new Point(0, y),
                 Size = new Size(ListForm.PanelWidth, LineHeight),
                 BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
             };
-            lbp.Scale(ShipLabel.ScaleFactor);
+            panel.Scale(ShipLabel.ScaleFactor);
             var labels = new[]
             {
                 new ShipLabel
@@ -393,10 +394,10 @@ namespace KancolleSniffer.View
                 new ShipLabel {Location = new Point(1, 2), AutoSize = true}
             };
             _labelList.Add(labels);
-            _labelPanelList.Add(lbp);
+            _labelPanelList.Add(panel);
             // ReSharper disable once CoVariantArrayConversion
-            lbp.Controls.AddRange(labels);
-            Controls.Add(lbp);
+            panel.Controls.AddRange(labels);
+            Controls.Add(panel);
             foreach (var label in labels)
             {
                 label.Scale();
@@ -504,13 +505,13 @@ namespace KancolleSniffer.View
                 SetShipType(i);
                 return;
             }
-            var rpl = _repairLabelList[i];
-            rpl[0].SetHp(s);
-            rpl[1].SetLevel(s);
-            rpl[2].SetRepairTime(s);
-            rpl[3].Text = s.RepairTimePerHp.ToString(@"mm\:ss");
-            rpl[4].SetName(s, ShipNameWidth.RepairListFull);
-            rpl[5].SetFleet(s);
+            var labels = _repairLabelList[i];
+            labels[0].SetHp(s);
+            labels[1].SetLevel(s);
+            labels[2].SetRepairTime(s);
+            labels[3].Text = s.RepairTimePerHp.ToString(@"mm\:ss");
+            labels[4].SetName(s, ShipNameWidth.RepairListFull);
+            labels[5].SetFleet(s);
             panel.Visible = true;
         }
 

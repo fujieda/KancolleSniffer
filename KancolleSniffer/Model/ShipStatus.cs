@@ -250,7 +250,7 @@ namespace KancolleSniffer.Model
                     (Spec.Id == 545 || // Saratoga Mk.II
                      Slot.Any(item => item.Spec.Id == 258 || item.Spec.Id == 259))) // 夜間作戦航空要員
                 {
-                    return Firepower + Slot.Zip(OnSlot, (item, onslot) =>
+                    return Firepower + Slot.Zip(OnSlot, (item, onSlot) =>
                     {
                         double a, b;
                         var spec = item.Spec;
@@ -272,9 +272,9 @@ namespace KancolleSniffer.Model
                             default:
                                 return -spec.Firepower;
                         }
-                        return spec.Torpedo + a * onslot +
+                        return spec.Torpedo + a * onSlot +
                                b * (spec.Firepower + spec.Torpedo + spec.Bomber + spec.AntiSubmarine) *
-                               Sqrt(onslot) + Sqrt(item.Level);
+                               Sqrt(onSlot) + Sqrt(item.Level);
                     }).Sum();
                 }
                 switch (Spec.Id)

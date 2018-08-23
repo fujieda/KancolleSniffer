@@ -29,6 +29,7 @@ namespace KancolleSniffer
                    orderby ship.Spec.ShipType, -ship.Level, ship.ExpToNext
                    select $"{ship.Id},{ship.Spec.ShipTypeName},{ship.Name},{ship.Level},{ship.Cond},{ship.ShipAntiSubmarine}");
 
+        // ReSharper disable IdentifierTypo
         public static string GenerateKantaiSarashiData(IEnumerable<ShipStatus> shipList)
         {
             return ".2|" +
@@ -44,6 +45,7 @@ namespace KancolleSniffer
                                       ? "." + ship.Spec.Remodel.Step
                                       : "")));
         }
+        // ReSharper restore IdentifierTypo
 
         public static string GenerateItemList(IEnumerable<ItemStatus> itemList)
             => "区分,装備名,熟練度,改修,個数\r\n" +

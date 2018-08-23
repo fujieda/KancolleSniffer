@@ -15,6 +15,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
+// ReSharper disable once IdentifierTypo
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace KancolleSniffer.Net
@@ -142,6 +143,7 @@ namespace KancolleSniffer.Net
 
         [DllImport("WinInet.dll", CharSet = CharSet.Unicode)]
         private static extern bool InternetQueryOption(IntPtr hInternet, InternetOption dwOption,
+            // ReSharper disable once IdentifierTypo
             ref InternetPerConnOptionList optionList, ref int lpdwBufferLength);
 
         [DllImport("WinInet.dll", CharSet = CharSet.Unicode)]

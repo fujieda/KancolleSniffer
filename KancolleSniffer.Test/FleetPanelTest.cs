@@ -49,10 +49,10 @@ namespace KancolleSniffer.Test
             SnifferTest.SniffLogFile(sniffer, "deck_002");
             SnifferTest.SniffLogFile(sniffer, "deck_003");
             var table = panel.CreateTable(sniffer);
-            PAssert.That(() => ComapreFleetRecord(table[13], expected));
+            PAssert.That(() => CompareFleetRecord(table[13], expected));
         }
 
-        private bool ComapreFleetRecord(FleetPanel.Record a, FleetPanel.Record b)
+        private bool CompareFleetRecord(FleetPanel.Record a, FleetPanel.Record b)
         {
             foreach (var property in typeof(FleetPanel.Record).GetProperties())
             {

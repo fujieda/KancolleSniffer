@@ -16,7 +16,7 @@ namespace KancolleSniffer.Model
 {
     public class CellInfo
     {
-        private int _batttleCount;
+        private int _battleCount;
 
         public string Next { get; set; }
 
@@ -42,7 +42,7 @@ namespace KancolleSniffer.Model
 
         public void InspectMapStart(dynamic json)
         {
-            _batttleCount = 0;
+            _battleCount = 0;
             InspectMapNext(json);
         }
 
@@ -67,7 +67,7 @@ namespace KancolleSniffer.Model
                     switch ((int)json.api_event_id)
                     {
                         case 4:
-                            _batttleCount++;
+                            _battleCount++;
                             _info = $"{BattleCount}戦目";
                             break;
                         case 6:
@@ -82,7 +82,7 @@ namespace KancolleSniffer.Model
                     _info = "揚陸地点";
                     break;
                 case 7:
-                    _batttleCount++;
+                    _battleCount++;
                     _info = $"{BattleCount}戦目(航空)";
                     break;
                 case 8:
@@ -92,12 +92,12 @@ namespace KancolleSniffer.Model
                     _info = "航空偵察";
                     break;
                 case 10:
-                    _batttleCount++;
+                    _battleCount++;
                     _info = $"{BattleCount}戦目(空襲)";
                     break;
             }
         }
 
-        private string BattleCount => ((char)('０' + _batttleCount)).ToString();
+        private string BattleCount => ((char)('０' + _battleCount)).ToString();
     }
 }
