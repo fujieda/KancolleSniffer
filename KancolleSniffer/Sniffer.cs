@@ -24,10 +24,10 @@ namespace KancolleSniffer
     {
         private bool _start;
         private readonly ItemMaster _itemMaster = new ItemMaster();
-        private readonly ItemInventry _itemInventry = new ItemInventry();
+        private readonly ItemInventory _itemInventory = new ItemInventory();
         private readonly ItemInfo _itemInfo;
         private readonly ShipMaster _shipMaster = new ShipMaster();
-        private readonly ShipInventry _shipInventry = new ShipInventry();
+        private readonly ShipInventory _shipInventory = new ShipInventory();
         private readonly ShipInfo _shipInfo;
         private readonly MaterialInfo _materialInfo = new MaterialInfo();
         private readonly QuestInfo _questInfo;
@@ -40,7 +40,7 @@ namespace KancolleSniffer
         private readonly Logger _logger;
         private readonly ExMapInfo _exMapInfo = new ExMapInfo();
         private readonly MiscTextInfo _miscTextInfo;
-        private readonly BaseAirCoprs _baseAirCoprs;
+        private readonly BaseAirCorps _baseAirCorps;
         private readonly PresetDeck _presetDeck = new PresetDeck();
         private readonly CellInfo _cellInfo = new CellInfo();
         private readonly Status _status = new Status();
@@ -78,15 +78,15 @@ namespace KancolleSniffer
         public Sniffer(bool start = false)
         {
             _start = start;
-            _itemInfo = new ItemInfo(_itemMaster, _itemInventry);
-            _shipInfo = new ShipInfo(_shipMaster, _shipInventry, _itemInventry);
+            _itemInfo = new ItemInfo(_itemMaster, _itemInventory);
+            _shipInfo = new ShipInfo(_shipMaster, _shipInventory, _itemInventory);
             _conditionTimer = new ConditionTimer(_shipInfo);
-            _dockInfo = new DockInfo(_shipInventry, _materialInfo);
+            _dockInfo = new DockInfo(_shipInventory, _materialInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo, _presetDeck);
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
             _questInfo = new QuestInfo(_itemInfo, _battleInfo);
-            _baseAirCoprs = new BaseAirCoprs(_itemInfo);
+            _baseAirCorps = new BaseAirCorps(_itemInfo);
             _miscTextInfo = new MiscTextInfo(_shipInfo, _itemInfo);
             _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo, _questInfo};
             AdditionalData = new AdditionalData();
@@ -173,7 +173,7 @@ namespace KancolleSniffer
             _logger.InspectMaterial(data.api_material);
             _shipInfo.InspectShip(data);
             _shipInfo.ClearBadlyDamagedShips();
-            _conditionTimer.CalcRegenTime();
+            _conditionTimer.CalcRegainTime();
             _missionInfo.InspectDeck(data.api_deck_port);
             _questInfo.InspectDeck(data.api_deck_port);
             _dockInfo.InspectNDock(data.api_ndock);
@@ -182,9 +182,9 @@ namespace KancolleSniffer
             if (data.api_parallel_quest_count()) // 昔のログにはないので
                 _questInfo.AcceptMax = (int)data.api_parallel_quest_count;
             if (data.api_event_object())
-                _baseAirCoprs.InspectEventObject(data.api_event_object);
+                _baseAirCorps.InspectEventObject(data.api_event_object);
             if (data.api_plane_info())
-                _baseAirCoprs.InspectPlaneInfo(data.api_plane_info);
+                _baseAirCorps.InspectPlaneInfo(data.api_plane_info);
             _battleInfo.CleanupResult();
             _battleInfo.BattleState = BattleState.None;
             _miscTextInfo.Port();
@@ -276,7 +276,7 @@ namespace KancolleSniffer
                 _exMapInfo.InspectMapInfo(data);
                 _miscTextInfo.InspectMapInfo(data);
                 if (data.api_air_base())
-                    _baseAirCoprs.Inspect(data.api_air_base);
+                    _baseAirCorps.Inspect(data.api_air_base);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_member/get_practice_enemyinfo"))
@@ -291,7 +291,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_get_member/base_air_corps"))
             {
-                _baseAirCoprs.Inspect(data);
+                _baseAirCorps.Inspect(data);
                 return Update.Ship;
             }
             return Update.None;
@@ -461,10 +461,10 @@ namespace KancolleSniffer
         {
             if (url.EndsWith("api_req_kaisou/powerup"))
             {
-                _shipInfo.InspectPowerup(request, data);
+                _shipInfo.InspectPowerUp(request, data);
                 _conditionTimer.CheckCond();
                 _akashiTimer.CheckFleet();
-                _questInfo.InspectPowerup(data);
+                _questInfo.InspectPowerUp(data);
                 return Update.Item | Update.Ship | Update.QuestList;
             }
             if (url.EndsWith("api_req_kaisou/slot_exchange_index"))
@@ -490,23 +490,23 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_air_corps/supply"))
             {
                 _materialInfo.InspectAirCorpsSupply(data);
-                _baseAirCoprs.InspectSupply(request, data);
+                _baseAirCorps.InspectSupply(request, data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_air_corps/set_plane"))
             {
                 _materialInfo.InspectAirCorpsSetPlane(data);
-                _baseAirCoprs.InspectSetPlane(request, data);
+                _baseAirCorps.InspectSetPlane(request, data);
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_air_corps/set_action"))
             {
-                _baseAirCoprs.InspectSetAction(request);
+                _baseAirCorps.InspectSetAction(request);
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_air_corps/expand_base"))
             {
-                _baseAirCoprs.InspectExpandBase(request, data);
+                _baseAirCorps.InspectExpandBase(request, data);
                 return Update.Ship;
             }
             return Update.None;
@@ -633,7 +633,7 @@ namespace KancolleSniffer
             {
                 _itemInfo.ClearHolder();
                 _shipInfo.SetItemHolder();
-                _baseAirCoprs.SetItemHolder();
+                _baseAirCorps.SetItemHolder();
                 return _itemInfo.ItemList;
             }
         }
@@ -648,7 +648,7 @@ namespace KancolleSniffer
 
         public string MiscText => _miscTextInfo.Text;
 
-        public BaseAirCoprs.BaseInfo[] BaseAirCorps => _baseAirCoprs.AllAirCorps;
+        public BaseAirCorps.BaseInfo[] BaseAirCorps => _baseAirCorps.AllAirCorps;
 
         public CellInfo CellInfo => _cellInfo;
 

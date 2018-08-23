@@ -165,11 +165,15 @@ namespace KancolleSniffer.View
         }
 
         // ReSharper disable InconsistentNaming
+        // ReSharper disable IdentifierTypo
 
         private const int TV_FIRST = 0x1100;
+
         private const int TVM_SETEXTENDEDSTYLE = TV_FIRST + 44;
+
         private const int TVS_EX_DOUBLEBUFFER = 0x0004;
 
+        // ReSharper restore IdentifierTypo
         // ReSharper restore InconsistentNaming
 
         [DllImport("user32.dll")]

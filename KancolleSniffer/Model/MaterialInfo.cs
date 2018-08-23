@@ -119,13 +119,13 @@ namespace KancolleSniffer.Model
         public void InspectAirCorpsSupply(dynamic json)
         {
             SetMaterial(Material.Fuel, (int)json.api_after_fuel);
-            SetMaterial(Material.Bouxite, (int)json.api_after_bauxite);
+            SetMaterial(Material.Bauxite, (int)json.api_after_bauxite);
         }
 
         public void InspectAirCorpsSetPlane(dynamic json)
         {
             if (json.api_after_bauxite())
-                SetMaterial(Material.Bouxite, (int)json.api_after_bauxite);
+                SetMaterial(Material.Bauxite, (int)json.api_after_bauxite);
         }
 
         public void SetMaterials(int[] material)
@@ -172,7 +172,7 @@ namespace KancolleSniffer.Model
         Fuel,
         Bullet,
         Steal,
-        Bouxite,
+        Bauxite,
         Burner,
         Bucket,
         Development,

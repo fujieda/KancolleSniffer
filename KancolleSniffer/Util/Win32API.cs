@@ -60,13 +60,14 @@ namespace KancolleSniffer.Util
         }
 
         [DllImport("user32.dll")]
+        // ReSharper disable once IdentifierTypo
         private static extern Int32 FlashWindowEx(ref FLASHWINFO pwfi);
 
         public static void FlashWindow(IntPtr handle)
         {
             var info = new FLASHWINFO();
             info.cbSize = Convert.ToUInt32(Marshal.SizeOf(info));
-            info.hwnd = handle;
+            info.hWnd = handle;
             info.dwFlags = 3; // FLASHW_ALL
             info.uCount = 3;
             info.dwTimeout = 0;
@@ -77,7 +78,7 @@ namespace KancolleSniffer.Util
         private struct FLASHWINFO
         {
             public UInt32 cbSize;
-            public IntPtr hwnd;
+            public IntPtr hWnd;
             public UInt32 dwFlags;
             public UInt32 uCount;
             public UInt32 dwTimeout;

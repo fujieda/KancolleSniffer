@@ -25,10 +25,10 @@ namespace KancolleSniffer.Test
     public class BattleTest
     {
         private ItemMaster _itemMaster;
-        private ItemInventry _itemInventry;
+        private ItemInventory _itemInventory;
         private ItemInfo _itemInfo;
         private ShipMaster _shipMaster;
-        private ShipInventry _shipInventry;
+        private ShipInventory _shipInventory;
         private ShipInfo _shipInfo;
         private BattleInfo _battleInfo;
 
@@ -57,12 +57,12 @@ namespace KancolleSniffer.Test
                 _itemInfo.InjectItems(((int[][])battle.api_eSlot_combined).SelectMany(x => x));
         }
 
-        private void InjectShips(int deck, int[] nowhps, int[] maxhps, int[][] slots)
+        private void InjectShips(int deck, int[] nowHps, int[] maxHps, int[][] slots)
         {
-            var id = _shipInventry.MaxId + 1;
-            var ships = nowhps.Zip(maxhps,
+            var id = _shipInventory.MaxId + 1;
+            var ships = nowHps.Zip(maxHps,
                 (now, max) => new ShipStatus {Id = id++, NowHp = now, MaxHp = max}).ToArray();
-            _shipInventry.Add(ships);
+            _shipInventory.Add(ships);
             _shipInfo.Fleets[deck].Deck = (from ship in ships select ship.Id).ToArray();
             foreach (var entry in ships.Zip(slots, (ship, slot) => new {ship, slot}))
             {
@@ -76,11 +76,11 @@ namespace KancolleSniffer.Test
         public void Initialize()
         {
             _itemMaster = new ItemMaster();
-            _itemInventry = new ItemInventry();
-            _itemInfo = new ItemInfo(_itemMaster, _itemInventry);
-            _shipInventry = new ShipInventry();
+            _itemInventory = new ItemInventory();
+            _itemInfo = new ItemInfo(_itemMaster, _itemInventory);
+            _shipInventory = new ShipInventory();
             _shipMaster = new ShipMaster();
-            _shipInfo = new ShipInfo(_shipMaster, _shipInventry, _itemInventry);
+            _shipInfo = new ShipInfo(_shipMaster, _shipInventory, _itemInventory);
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
         }
 
@@ -135,7 +135,7 @@ namespace KancolleSniffer.Test
         /// 空襲戦で轟沈する
         /// </summary>
         [TestMethod]
-        public void LdAirbattleHaveSunkenShip()
+        public void LdAirBattleHaveSunkenShip()
         {
             var logs = ReadAllLines("ld_airbattle_001");
             var battle = Data(logs[3]);
@@ -149,7 +149,7 @@ namespace KancolleSniffer.Test
         /// 空襲戦で女神が発動して復活する
         /// </summary>
         [TestMethod]
-        public void LdAirbattleHaveRevivedShip()
+        public void LdAirBattleHaveRevivedShip()
         {
             var logs = ReadAllLines("ld_airbattle_002");
             var battle = Data(logs[3]);
@@ -163,7 +163,7 @@ namespace KancolleSniffer.Test
         /// 機動対敵連合の雷撃戦でダメコンが発動する
         /// </summary>
         [TestMethod]
-        public void TreiggerDameconInCombinedBattle()
+        public void TriggerDameConInCombinedBattle()
         {
             var logs = ReadAllLines("damecon_002");
             var battle = Data(logs[3]);

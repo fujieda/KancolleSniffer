@@ -187,12 +187,12 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void ArrayWithPrimitives()
         {
-            var bary = (dynamic)JsonParser.Parse("[true,false,true]");
-            Assert.IsTrue(bary[0]);
-            var dary = (dynamic)JsonParser.Parse("[1,2,3]");
-            Assert.AreEqual(dary[0], 1d);
-            var sary = (dynamic)JsonParser.Parse("[\"1\", \"2\", \"3\"]");
-            Assert.AreEqual(sary[0], "1");
+            var bAry = (dynamic)JsonParser.Parse("[true,false,true]");
+            Assert.IsTrue(bAry[0]);
+            var dAry = (dynamic)JsonParser.Parse("[1,2,3]");
+            Assert.AreEqual(dAry[0], 1d);
+            var sAry = (dynamic)JsonParser.Parse("[\"1\", \"2\", \"3\"]");
+            Assert.AreEqual(sAry[0], "1");
         }
 
         [TestMethod]
@@ -244,21 +244,21 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
-        public void CastArrayToPrimitivetArray()
+        public void CastArrayToPrimitiveArray()
         {
-            var bary = (bool[])(dynamic)JsonParser.Parse("[true,false,true]");
-            Assert.IsTrue(bary.SequenceEqual(new[] {true, false, true}));
-            var dary = (double[])(dynamic)JsonParser.Parse("[1,2,3]");
-            Assert.IsTrue(dary.SequenceEqual(new[] {1d, 2d, 3d}));
-            var sary = (string[])(dynamic)JsonParser.Parse("[\"1\", \"2\", \"3\"]");
-            Assert.IsTrue(sary.SequenceEqual(new[] {"1", "2", "3"}));
+            var bAry = (bool[])(dynamic)JsonParser.Parse("[true,false,true]");
+            Assert.IsTrue(bAry.SequenceEqual(new[] {true, false, true}));
+            var dAry = (double[])(dynamic)JsonParser.Parse("[1,2,3]");
+            Assert.IsTrue(dAry.SequenceEqual(new[] {1d, 2d, 3d}));
+            var sAry = (string[])(dynamic)JsonParser.Parse("[\"1\", \"2\", \"3\"]");
+            Assert.IsTrue(sAry.SequenceEqual(new[] {"1", "2", "3"}));
         }
 
         [TestMethod]
         public void CastArrayToIntArray()
         {
-            var iary = (int[])(dynamic)JsonParser.Parse("[1,2,3]");
-            Assert.IsTrue(iary.SequenceEqual(new[] {1, 2, 3}));
+            var iAry = (int[])(dynamic)JsonParser.Parse("[1,2,3]");
+            Assert.IsTrue(iAry.SequenceEqual(new[] {1, 2, 3}));
         }
 
         [TestMethod]
@@ -271,9 +271,9 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void CastArrayOfArrayToArrayOfIntArray()
         {
-            var iary = (double[][])(dynamic)JsonParser.Parse("[[1,2],[3,4],[5,6]]");
+            var ary = (double[][])(dynamic)JsonParser.Parse("[[1,2],[3,4],[5,6]]");
             // ReSharper disable once PossibleNullReferenceException
-            Assert.IsTrue(iary.GetType().GetElementType().IsArray);
+            Assert.IsTrue(ary.GetType().GetElementType().IsArray);
         }
 
         [TestMethod]

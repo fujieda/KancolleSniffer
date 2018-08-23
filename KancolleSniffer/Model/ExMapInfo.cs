@@ -107,6 +107,7 @@ namespace KancolleSniffer.Model
         }
 
         // テスト用
+        // ReSharper disable once UnusedMember.Global
         public void ClearClearStatus()
         {
             _clearStatus.Clear();

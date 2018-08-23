@@ -24,7 +24,7 @@ namespace KancolleSniffer.Test
     public class AkashiTimerTest
     {
         private TimeProvider _timeProvider;
-        private ShipInventry _shipInventry;
+        private ShipInventory _shipInventory;
         private ShipInfo _shipInfo;
         private AkashiTimer _akashiTimer;
         private ShipStatus[] _ships;
@@ -40,8 +40,8 @@ namespace KancolleSniffer.Test
         public void Initialize()
         {
             _timeProvider = new TimeProvider();
-            _shipInventry = new ShipInventry();
-            _shipInfo = new ShipInfo(null, _shipInventry, new ItemInventry());
+            _shipInventory = new ShipInventory();
+            _shipInfo = new ShipInfo(null, _shipInventory, new ItemInventory());
             _akashiTimer = new AkashiTimer(_shipInfo, new DockInfo(null, null), null, _timeProvider.GetTime);
             SetupFleet();
         }
@@ -70,7 +70,7 @@ namespace KancolleSniffer.Test
                 }
             };
             foreach (var ship in _ships)
-                _shipInventry[ship.Id] = ship;
+                _shipInventory[ship.Id] = ship;
             _shipInfo.Fleets[0].Deck = new[] {17160, 1, -1, -1, -1, -1};
         }
 

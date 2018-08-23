@@ -54,7 +54,5 @@ namespace KancolleSniffer.Model
         }
 
         public NameAndTimer[] Missions => _missions;
-
-        public bool InMission(int fleet) => fleet != 0 && _missions[fleet - 1].Name != "";
     }
 }

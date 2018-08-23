@@ -44,18 +44,18 @@ namespace KancolleSniffer.View
 
     public class MainFormLabels
     {
-        private readonly ShipLabel[][] _shiplabels = new ShipLabel[ShipInfo.MemberCount][];
+        private readonly ShipLabel[][] _shipLabels = new ShipLabel[ShipInfo.MemberCount][];
         private readonly ShipLabel[][] _shipLabels7 = new ShipLabel[7][];
         private readonly ShipLabel[][] _combinedLabels = new ShipLabel[ShipInfo.MemberCount * 2][];
         private readonly ShipLabel[] _akashiTimers = new ShipLabel[ShipInfo.MemberCount];
         private readonly ShipLabel[] _akashiTimers7 = new ShipLabel[ShipInfo.MemberCount];
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
-        private readonly List<ShipLabel> _hpLables = new List<ShipLabel>();
+        private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         public bool ShowHpInPercent { get; private set; }
 
         public void CreateShipLabels(Control parent, EventHandler onClick)
         {
-            CreateShipLabels(parent, onClick, _shiplabels, 16);
+            CreateShipLabels(parent, onClick, _shipLabels, 16);
         }
 
         public void CreateShipLabels7(Control parent, EventHandler onClick)
@@ -124,15 +124,15 @@ namespace KancolleSniffer.View
                     label.Click += onClick;
                 }
                 var hpLabel = shipLabels[i][0];
-                _hpLables.Add(hpLabel);
-                hpLabel.DoubleClick += HpLabelClickHander;
+                _hpLabels.Add(hpLabel);
+                hpLabel.DoubleClick += HpLabelClickHandler;
             }
             headings[0].Cursor = Cursors.Hand;
-            headings[0].Click += HpLabelClickHander;
+            headings[0].Click += HpLabelClickHandler;
             parent.ResumeLayout();
         }
 
-        private void HpLabelClickHander(object sender, EventArgs ev)
+        private void HpLabelClickHandler(object sender, EventArgs ev)
         {
             ToggleHpPercent();
         }
@@ -140,13 +140,13 @@ namespace KancolleSniffer.View
         public void ToggleHpPercent()
         {
             ShowHpInPercent = !ShowHpInPercent;
-            foreach (var label in _hpLables)
+            foreach (var label in _hpLabels)
                 label.ToggleHpPercent();
         }
 
         public void SetShipLabels(IReadOnlyList<ShipStatus> ships)
         {
-            SetShipLabels(ships, ships.Count == 7 ? _shipLabels7 : _shiplabels);
+            SetShipLabels(ships, ships.Count == 7 ? _shipLabels7 : _shipLabels);
         }
 
         public void SetShipLabels(IReadOnlyList<ShipStatus> ships, ShipLabel[][] shipLabels)
@@ -213,13 +213,13 @@ namespace KancolleSniffer.View
                     label.Tag = i;
                     label.Click += onClick;
                 }
-                var hpLavel = _combinedLabels[i][0];
-                _hpLables.Add(hpLavel);
-                hpLavel.DoubleClick += HpLabelClickHander;
+                var hpLabel = _combinedLabels[i][0];
+                _hpLabels.Add(hpLabel);
+                hpLabel.DoubleClick += HpLabelClickHandler;
             }
             headings[0].Cursor = headings[2].Cursor = Cursors.Hand;
-            headings[0].Click += HpLabelClickHander;
-            headings[2].Click += HpLabelClickHander;
+            headings[0].Click += HpLabelClickHandler;
+            headings[2].Click += HpLabelClickHandler;
             parent.ResumeLayout();
         }
 
@@ -298,7 +298,7 @@ namespace KancolleSniffer.View
             }
             else
             {
-                SetAkashiTimer(ships, timers, _akashiTimers, _shiplabels);
+                SetAkashiTimer(ships, timers, _akashiTimers, _shipLabels);
             }
         }
 

@@ -291,7 +291,7 @@ namespace KancolleSniffer
 
         private void buttonResetAchievement_Click(object sender, EventArgs e)
         {
-            _main.ResetAchievemnt();
+            _main.ResetAchievement();
         }
 
         private void linkLabelProductName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

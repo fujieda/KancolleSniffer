@@ -61,10 +61,12 @@ namespace KancolleSniffer.View
             public event MouseHandler MouseMove, MouseDown, MouseUp;
 
             // ReSharper disable InconsistentNaming
+            // ReSharper disable IdentifierTypo
             private const int WM_MOUSEMOVE = 0x0200;
             private const int WM_LBUTTONDOWN = 0x0201;
 
             private const int WM_LBUTTONUP = 0x0202;
+            // ReSharper restore IdentifierTypo
             // ReSharper restore InconsistentNaming
 
             public bool PreFilterMessage(ref Message m)
@@ -227,10 +229,12 @@ namespace KancolleSniffer.View
             private static extern int SetScrollPos(IntPtr hWnd, int nBar, int nPos, bool bRedraw);
 
             // ReSharper disable InconsistentNaming
+            // ReSharper disable IdentifierTypo
             private const int GWL_STYLE = -16;
             private const int WS_HSCROLL = 0x00100000;
 
             private const int WS_VSCROLL = 0x00200000;
+            // ReSharper restore IdentifierTypo
             // ReSharper restore InconsistentNaming
 
             [DllImport("user32.dll")]

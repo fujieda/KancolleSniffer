@@ -100,7 +100,7 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
-        public void AdjestCountNowArray()
+        public void AdjustCountNowArray()
         {
             var count = new QuestCount
             {
@@ -1095,7 +1095,7 @@ namespace KancolleSniffer.Test
         /// 504: 艦隊酒保祭り！
         /// </summary>
         [TestMethod]
-        public void Powerup_503_504()
+        public void PowerUp_503_504()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {503, 504}));
@@ -1151,7 +1151,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void DestroyItem_613_638_643_645_663_673_674_675_676_677_678()
         {
-            var itemInfo = new ItemInfo(new ItemMaster(), new ItemInventry());
+            var itemInfo = new ItemInfo(new ItemMaster(), new ItemInventory());
             var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 12};
 
             itemInfo.InjectItemSpec(new[]
@@ -1205,11 +1205,11 @@ namespace KancolleSniffer.Test
         /// 703: 「近代化改修」を進め、戦備を整えよ！
         /// </summary>
         [TestMethod]
-        public void Powerup_702_703()
+        public void PowerUp_702_703()
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {702, 703}));
-            questInfo.InspectPowerup(Js(new {api_powerup_flag = 1}));
+            questInfo.InspectPowerUp(Js(new {api_powerup_flag = 1}));
             PAssert.That(() =>
                 questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
                     .SequenceEqual(new[] {new {Id = 702, Now = 1}, new {Id = 703, Now = 1}}));

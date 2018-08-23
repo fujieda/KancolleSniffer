@@ -31,6 +31,7 @@ namespace KancolleSniffer.Model
         public static bool Restoring { get; set; }
         public Achievement Achievement { get; set; }
         public List<MaterialCount> MaterialHistory { get; set; }
+        // ReSharper disable once IdentifierTypo
         public double CondRegenTime { get; set; }
         public ExMapInfo.ExMapState ExMapState { get; set; }
         public QuestStatus[] QuestList { get; set; }

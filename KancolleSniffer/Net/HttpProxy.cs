@@ -49,7 +49,7 @@ namespace KancolleSniffer.Net
             _listener.Start();
             LocalPort = ((IPEndPoint)_listener.LocalEndpoint).Port;
             IsInListening = true;
-            Task.Run(() => AcceptClient());
+            Task.Run(AcceptClient);
         }
 
         public static void Shutdown()
@@ -205,13 +205,13 @@ namespace KancolleSniffer.Net
                 _clientStream.WriteLines("HTTP/1.0 200 Connection established\r\n\r\n");
                 Task[] tasks =
                 {
-                    Task.Run(() => { TunnnelSockets(_client, _server); }),
-                    Task.Run(() => { TunnnelSockets(_server, _client); })
+                    Task.Run(() => { TunnelSockets(_client, _server); }),
+                    Task.Run(() => { TunnelSockets(_server, _client); })
                 };
                 Task.WaitAll(tasks);
             }
 
-            private void TunnnelSockets(Socket from, Socket to)
+            private void TunnelSockets(Socket from, Socket to)
             {
                 try
                 {
@@ -317,7 +317,7 @@ namespace KancolleSniffer.Net
             private string _headers;
             public byte[] Body { get; set; }
 
-            private static readonly Regex CharsetRegx = new Regex("charset=([\\w-]+)",
+            private static readonly Regex CharsetRegex = new Regex("charset=([\\w-]+)",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
             public int ContentLength { get; set; } = -1;
@@ -393,7 +393,7 @@ namespace KancolleSniffer.Net
                 {
                     if (Body == null)
                         return "";
-                    var m = CharsetRegx.Match(ContentType ?? "");
+                    var m = CharsetRegex.Match(ContentType ?? "");
                     var encoding = Encoding.ASCII;
                     if (m.Success)
                     {

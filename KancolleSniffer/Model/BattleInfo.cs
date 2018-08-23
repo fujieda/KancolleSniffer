@@ -387,13 +387,13 @@ namespace KancolleSniffer.Model
             };
             if (json.api_stage2 != null && json.api_stage2.api_air_fire())
             {
-                var airfire = json.api_stage2.api_air_fire;
-                var idx = (int)airfire.api_idx;
+                var airFire = json.api_stage2.api_air_fire;
+                var idx = (int)airFire.api_idx;
                 result.AirFire = new AirBattleResult.AirFireResult
                 {
                     ShipName = idx < _friend.Length ? _friend[idx].Name : _guard[idx - 6].Name,
-                    Kind = (int)airfire.api_kind,
-                    Items = ((int[])airfire.api_use_items).Select(id => _itemInfo.GetSpecByItemId(id).Name).ToArray()
+                    Kind = (int)airFire.api_kind,
+                    Items = ((int[])airFire.api_use_items).Select(id => _itemInfo.GetSpecByItemId(id).Name).ToArray()
                 };
             }
             AirBattleResults.Add(result);
@@ -446,21 +446,21 @@ namespace KancolleSniffer.Model
 
             var targets = (int[][])json.api_df_list;
             var damages = (int[][])json.api_damage;
-            var eflags = (int[])json.api_at_eflag;
+            var eFlags = (int[])json.api_at_eflag;
             var records = new[] {new Record[12], new Record[12]};
             Array.Copy(_friend, records[1], _friend.Length);
             Array.Copy(_guard, 0, records[1], 6, _guard.Length);
             Array.Copy(_enemy, records[0], _enemy.Length);
             Array.Copy(_enemyGuard, 0, records[0], 6, _enemyGuard.Length);
-            for (var i = 0; i < eflags.Length; i++)
+            for (var i = 0; i < eFlags.Length; i++)
             {
                 // 一度に複数の目標を狙う攻撃はないものと仮定する
                 var hit = new {t = targets[i][0], d = damages[i].Sum(d => d >= 0 ? d : 0)};
                 if (hit.t == -1)
                     continue;
-                if (ignoreFriendDamage && eflags[i] == 1)
+                if (ignoreFriendDamage && eFlags[i] == 1)
                     continue;
-                records[eflags[i]][hit.t].ApplyDamage(hit.d);
+                records[eFlags[i]][hit.t].ApplyDamage(hit.d);
             }
         }
 
@@ -564,17 +564,17 @@ namespace KancolleSniffer.Model
             (from s in ships
                 select new Record {_status = (ShipStatus)s.Clone(), _practice = practice, StartHp = s.NowHp}).ToArray();
 
-            public static Record[] Setup(int[] nowhps, ShipSpec[] specs, ItemSpec[][] slots, bool practice)
+            public static Record[] Setup(int[] nowHps, ShipSpec[] specs, ItemSpec[][] slots, bool practice)
             {
-                return Enumerable.Range(0, nowhps.Length).Select(i =>
+                return Enumerable.Range(0, nowHps.Length).Select(i =>
                     new Record
                     {
-                        StartHp = nowhps[i],
+                        StartHp = nowHps[i],
                         _status = new ShipStatus
                         {
                             Id = specs[i].Id,
-                            NowHp = nowhps[i],
-                            MaxHp = nowhps[i],
+                            NowHp = nowHps[i],
+                            MaxHp = nowHps[i],
                             Spec = specs[i],
                             Slot = slots[i].Select(spec => new ItemStatus {Id = spec.Id, Spec = spec}).ToArray(),
                             SlotEx = new ItemStatus(0)

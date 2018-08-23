@@ -21,20 +21,20 @@ namespace KancolleSniffer.Model
     public class DockInfo
     {
         public const int DockCount = 4;
-        private readonly ShipInventry _shipInventry;
+        private readonly ShipInventory _shipInventory;
         private readonly MaterialInfo _materialInfo;
-        private readonly int[] _ndoc = new int[DockCount];
-        private readonly AlarmTimer[] _ndocTimers = new AlarmTimer[DockCount];
-        private readonly AlarmTimer[] _kdocTimers = new AlarmTimer[DockCount];
+        private readonly int[] _ndock = new int[DockCount];
+        private readonly AlarmTimer[] _ndockTimers = new AlarmTimer[DockCount];
+        private readonly AlarmTimer[] _kdockTimers = new AlarmTimer[DockCount];
 
-        public DockInfo(ShipInventry shipInventry, MaterialInfo material)
+        public DockInfo(ShipInventory shipInventory, MaterialInfo material)
         {
-            _shipInventry = shipInventry;
+            _shipInventory = shipInventory;
             _materialInfo = material;
-            for (var i = 0; i < _ndocTimers.Length; i++)
-                _ndocTimers[i] = new AlarmTimer();
-            for (var i = 0; i < _kdocTimers.Length; i++)
-                _kdocTimers[i] = new AlarmTimer(0);
+            for (var i = 0; i < _ndockTimers.Length; i++)
+                _ndockTimers[i] = new AlarmTimer();
+            for (var i = 0; i < _kdockTimers.Length; i++)
+                _kdockTimers[i] = new AlarmTimer(0);
         }
 
         public void InspectNDock(dynamic json)
@@ -42,11 +42,11 @@ namespace KancolleSniffer.Model
             foreach (var entry in json)
             {
                 var id = (int)entry.api_id - 1;
-                _ndocTimers[id].SetEndTime(entry.api_complete_time);
-                var prev = _ndoc[id];
-                _ndoc[id] = (int)entry.api_ship_id;
-                if (prev != 0 && _ndoc[id] == 0) // 修復完了
-                    _shipInventry[prev].RepairShip();
+                _ndockTimers[id].SetEndTime(entry.api_complete_time);
+                var prev = _ndock[id];
+                _ndock[id] = (int)entry.api_ship_id;
+                if (prev != 0 && _ndock[id] == 0) // 修復完了
+                    _shipInventory[prev].RepairShip();
             }
         }
 
@@ -54,7 +54,7 @@ namespace KancolleSniffer.Model
         {
             var values = HttpUtility.ParseQueryString(request);
             var id = int.Parse(values["api_ship_id"]);
-            var ship = _shipInventry[id];
+            var ship = _shipInventory[id];
             var m = ship.NdockItem;
             _materialInfo.SubMaterial(Material.Fuel, m[0]);
             _materialInfo.SubMaterial(Material.Steal, m[1]);
@@ -72,23 +72,23 @@ namespace KancolleSniffer.Model
         {
             var values = HttpUtility.ParseQueryString(request);
             var dock = int.Parse(values["api_ndock_id"]) - 1;
-            _shipInventry[_ndoc[dock]].RepairShip();
-            _ndoc[dock] = 0;
-            _ndocTimers[dock].SetEndTime(0);
+            _shipInventory[_ndock[dock]].RepairShip();
+            _ndock[dock] = 0;
+            _ndockTimers[dock].SetEndTime(0);
             _materialInfo.SubMaterial(Material.Bucket, 1);
         }
 
         public NameAndTimer[] NDock
-            => _ndoc.Zip(_ndocTimers,
-                    (id, timer) => new NameAndTimer {Name = id == 0 ? "" : _shipInventry[id].Name, Timer = timer}).ToArray();
+            => _ndock.Zip(_ndockTimers,
+                    (id, timer) => new NameAndTimer {Name = id == 0 ? "" : _shipInventory[id].Name, Timer = timer}).ToArray();
 
-        public bool InNDock(int id) => _ndoc.Any(n => n == id); // 空のドックのidは0
+        public bool InNDock(int id) => _ndock.Any(n => n == id); // 空のドックのidは0
 
         public void InspectKDock(dynamic json)
         {
             foreach (var entry in json)
             {
-                var timer = _kdocTimers[(int)entry.api_id - 1];
+                var timer = _kdockTimers[(int)entry.api_id - 1];
                 var complete = (double)entry.api_complete_time;
                 if ((int)complete == 0 && (int)entry.api_created_ship_id != 0)
                 {
@@ -105,9 +105,9 @@ namespace KancolleSniffer.Model
         {
             var values = HttpUtility.ParseQueryString(request);
             var dock = int.Parse(values["api_kdock_id"]) - 1;
-            _kdocTimers[dock].Finish();
+            _kdockTimers[dock].Finish();
         }
 
-        public AlarmTimer[] KDock => _kdocTimers;
+        public AlarmTimer[] KDock => _kdockTimers;
     }
 }

@@ -73,9 +73,9 @@ namespace KancolleSniffer.View
                     empty |= SlotStatus.ExtraEmpty;
             }
             var dc = status.PreparedDamageControl;
-            var dcname = dc == 42 ? "[ダ]" :
+            var dcName = dc == 42 ? "[ダ]" :
                 dc == 43 ? "[メ]" : "";
-            SetName(status.Escaped ? "[避]" : dcname, status.Name, empty, width);
+            SetName(status.Escaped ? "[避]" : dcName, status.Name, empty, width);
         }
 
         public void SetName(string name)
@@ -151,7 +151,7 @@ namespace KancolleSniffer.View
             SetHp(new ShipStatus {NowHp = now, MaxHp = max});
         }
 
-        public static Color DamageColor(ShipStatus status, Color backcolor)
+        public static Color DamageColor(ShipStatus status, Color backColor)
         {
             switch (status.DamageLevel)
             {
@@ -164,7 +164,7 @@ namespace KancolleSniffer.View
                 case ShipStatus.Damage.Small:
                     return Color.FromArgb(240, 240, 0);
                 default:
-                    return backcolor;
+                    return backColor;
             }
         }
 
@@ -217,12 +217,12 @@ namespace KancolleSniffer.View
             Text = status?.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
         }
 
-        protected override void OnLayout(LayoutEventArgs levent)
+        protected override void OnLayout(LayoutEventArgs args)
         {
-            base.OnLayout(levent);
+            base.OnLayout(args);
             if (!AnchorRight)
                 return;
-            if (_right == Int32.MinValue || _left != Left)
+            if (_right == int.MinValue || _left != Left)
             {
                 _right = Right;
                 _left = Left;

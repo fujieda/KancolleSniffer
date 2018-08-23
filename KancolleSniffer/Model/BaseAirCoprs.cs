@@ -20,12 +20,12 @@ using KancolleSniffer.Util;
 
 namespace KancolleSniffer.Model
 {
-    public class BaseAirCoprs
+    public class BaseAirCorps
     {
         private readonly ItemInfo _itemInfo;
-        private List<int> _relocationgPlanes = new List<int>();
+        private List<int> _relocatingPlanes = new List<int>();
 
-        public BaseAirCoprs(ItemInfo item)
+        public BaseAirCorps(ItemInfo item)
         {
             _itemInfo = item;
         }
@@ -175,7 +175,7 @@ namespace KancolleSniffer.Model
                 var planeId = (int)planeInfo.api_squadron_id - 1;
                 var prev = airCorps.Planes[planeId];
                 if (!prev.Slot.Empty)
-                    _relocationgPlanes.Add(prev.Slot.Id);
+                    _relocatingPlanes.Add(prev.Slot.Id);
                 airCorps.Planes[planeId] = new PlaneInfo
                 {
                     Slot = _itemInfo.GetStatus((int)planeInfo.api_slotid),
@@ -228,7 +228,7 @@ namespace KancolleSniffer.Model
 
         public void InspectPlaneInfo(dynamic json)
         {
-            _relocationgPlanes = json.api_base_convert_slot()
+            _relocatingPlanes = json.api_base_convert_slot()
                 ? new List<int>((int[])json.api_base_convert_slot)
                 : new List<int>();
         }
@@ -245,13 +245,13 @@ namespace KancolleSniffer.Model
             var name = new[] {"第一", "第二", "第三"};
             foreach (var baseInfo in AllAirCorps.Select((data, i) => new {data, i}))
             {
-                var areaAame = baseInfo.data.AreaName;
+                var areaName = baseInfo.data.AreaName;
                 foreach (var airCorps in baseInfo.data.AirCorps.Select((data, i) => new {data, i}))
                 {
                     var ship = new ShipStatus
                     {
                         Id = 10000 + baseInfo.i * 1000 + airCorps.i,
-                        Spec = new ShipSpec {Name = areaAame + " " + name[airCorps.i] + "航空隊"}
+                        Spec = new ShipSpec {Name = areaName + " " + name[airCorps.i] + "航空隊"}
                     };
                     foreach (var plane in airCorps.data.Planes)
                     {
@@ -261,10 +261,10 @@ namespace KancolleSniffer.Model
                     }
                 }
             }
-            if (_relocationgPlanes == null)
+            if (_relocatingPlanes == null)
                 return;
             var relocating = new ShipStatus {Id = 1500, Spec = new ShipSpec {Name = "配置転換中"}};
-            foreach (var id in _relocationgPlanes)
+            foreach (var id in _relocatingPlanes)
                 _itemInfo.GetStatus(id).Holder = relocating;
         }
     }

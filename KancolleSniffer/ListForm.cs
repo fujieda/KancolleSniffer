@@ -356,10 +356,12 @@ namespace KancolleSniffer
             Clipboard.SetText(TextGenerator.GenerateShipList(shipListPanel.CurrentShipList));
         }
 
+        // ReSharper disable IdentifierTypo
         private void kantaiSarashiToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(TextGenerator.GenerateKantaiSarashiData(shipListPanel.CurrentShipList));
         }
+        // ReSharper enable IdentifierTypo
 
         private void labelFleet_Click(object sender, EventArgs e)
         {

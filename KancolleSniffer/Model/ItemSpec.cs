@@ -19,7 +19,6 @@ namespace KancolleSniffer.Model
 {
     public class ItemSpec
     {
-        public static bool IncreaceLandPowerTp = false;
         public int Id;
         public bool Empty => Id == -1;
         public string Name;
@@ -138,8 +137,6 @@ namespace KancolleSniffer.Model
         public bool IsDepthCharge => Type == 15;
 
         public bool IsRepairFacility => Type == 31;
-
-        public bool IsAntiAirGun => Type == 21;
 
         public bool IsDrum => Id == 75;
 

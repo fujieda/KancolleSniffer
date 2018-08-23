@@ -33,7 +33,7 @@ namespace KancolleSniffer
         CreateItem = 1 << 3,
         CreateShip = 1 << 4,
         RemodelSlot = 1 << 5,
-        Achivement = 1 << 6,
+        Achievement = 1 << 6,
         All = (1 << 7) - 1
     }
 
@@ -96,13 +96,13 @@ namespace KancolleSniffer
 
         public void FlashLog()
         {
-            FlashAchivementLog();
+            FlashAchievementLog();
         }
 
         public void InspectMissionResult(dynamic json)
         {
             var r = (int)json.api_clear_result;
-            var rstr = r == 2 ? "大成功" : r == 1 ? "成功" : "失敗";
+            var resStr = r == 2 ? "大成功" : r == 1 ? "成功" : "失敗";
             var material = new int[7];
             if (r != 0)
                 ((int[])json.api_get_material).CopyTo(material, 0);
@@ -124,7 +124,7 @@ namespace KancolleSniffer
             {
                 _writer("遠征報告書",
                     string.Join(",", FormatDateTime(_nowFunc()),
-                        rstr, json.api_quest_name, string.Join(",", material)),
+                        resStr, json.api_quest_name, string.Join(",", material)),
                     "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材");
             }
         }
@@ -140,7 +140,7 @@ namespace KancolleSniffer
 
         public void InspectMapNext(dynamic json)
         {
-            if ((_logType & LogType.Achivement) != 0 && json.api_get_eo_rate() && (int)json.api_get_eo_rate != 0)
+            if ((_logType & LogType.Achievement) != 0 && json.api_get_eo_rate() && (int)json.api_get_eo_rate != 0)
             {
                 _writer("戦果",
                     FormatDateTime(_nowFunc()) + "," + _lastExp + "," + (int)json.api_get_eo_rate,
@@ -151,7 +151,7 @@ namespace KancolleSniffer
 
         public void InspectClearItemGet(dynamic json)
         {
-            if ((_logType & LogType.Achivement) == 0)
+            if ((_logType & LogType.Achievement) == 0)
                 return;
             if (!json.api_bounus())
                 return;
@@ -175,7 +175,7 @@ namespace KancolleSniffer
 
         public void InspectBattleResult(dynamic result)
         {
-            if ((_logType & LogType.Achivement) != 0 && result.api_get_exmap_rate())
+            if ((_logType & LogType.Achievement) != 0 && result.api_get_exmap_rate())
             {
                 var rate = result.api_get_exmap_rate is string
                     ? int.Parse(result.api_get_exmap_rate)
@@ -191,8 +191,8 @@ namespace KancolleSniffer
                 _map = _battle = null;
                 return;
             }
-            var fships = GenerateFirendShipList();
-            var eships = GenerateEnemyShipList();
+            var fShips = GenerateFriendShipList();
+            var eShips = GenerateEnemyShipList();
             var cell = (int)_map.api_no;
             var boss = "";
             if (_start)
@@ -217,7 +217,7 @@ namespace KancolleSniffer
                     dropName += "+" + itemName;
             }
             var fp = _shipInfo.Fleets[BattleInfo.DeckId(_battle)].FighterPower;
-            var fpower = fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1];
+            var fPower = fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1];
             _writer("海戦・ドロップ報告書", string.Join(",", FormatDateTime(_nowFunc()),
                     result.api_quest_name,
                     cell, boss,
@@ -227,9 +227,9 @@ namespace KancolleSniffer
                     FormationName(_battle.api_formation[1]),
                     result.api_enemy_info.api_deck_name,
                     dropType, dropName,
-                    string.Join(",", fships),
-                    string.Join(",", eships),
-                    fpower, _battleInfo.EnemyFighterPower.AirCombat + _battleInfo.EnemyFighterPower.UnknownMark,
+                    string.Join(",", fShips),
+                    string.Join(",", eShips),
+                    fPower, _battleInfo.EnemyFighterPower.AirCombat + _battleInfo.EnemyFighterPower.UnknownMark,
                     AirControlLevelName(_battle)),
                 "日付,海域,マス,ボス,ランク,艦隊行動,味方陣形,敵陣形,敵艦隊,ドロップ艦種,ドロップ艦娘," +
                 "味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP," +
@@ -240,7 +240,7 @@ namespace KancolleSniffer
             _start = false;
         }
 
-        private IEnumerable<string> GenerateFirendShipList()
+        private IEnumerable<string> GenerateFriendShipList()
         {
             int deckId = BattleInfo.DeckId(_battle);
             if (_battle.api_f_nowhps_combined())
@@ -404,7 +404,7 @@ namespace KancolleSniffer
         public void InspectBasic(dynamic json)
         {
             _basic = json;
-            if ((_logType & LogType.Achivement) == 0)
+            if ((_logType & LogType.Achievement) == 0)
                 return;
             var now = _nowFunc();
             var exp = (int)json.api_experience;
@@ -439,9 +439,9 @@ namespace KancolleSniffer
             _lastExp = exp;
         }
 
-        private void FlashAchivementLog()
+        private void FlashAchievementLog()
         {
-            if ((_logType & LogType.Achivement) == 0)
+            if ((_logType & LogType.Achievement) == 0)
                 return;
             if (_lastDate != DateTime.MinValue)
             {
@@ -556,7 +556,7 @@ namespace KancolleSniffer
                 FormatDateTime(now) + "," +
                 string.Join(",", name, level, success, certain, useName, useNum,
                     diff[(int)Material.Fuel], diff[(int)Material.Bullet], diff[(int)Material.Steal],
-                    diff[(int)Material.Bouxite],
+                    diff[(int)Material.Bauxite],
                     diff[(int)Material.Development], diff[(int)Material.Screw],
                     ship1, ship2),
                 "日付,改修装備,レベル,成功,確実化,消費装備,消費数,燃料,弾薬,鋼材,ボーキ,開発資材,改修資材,秘書艦,二番艦");
@@ -638,14 +638,6 @@ namespace KancolleSniffer
 
     public class LogIOException : Exception
     {
-        public LogIOException()
-        {
-        }
-
-        public LogIOException(string message) : base(message)
-        {
-        }
-
         public LogIOException(string message, Exception inner) : base(message, inner)
         {
         }

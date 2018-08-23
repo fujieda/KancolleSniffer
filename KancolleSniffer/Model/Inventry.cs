@@ -18,9 +18,9 @@ using System.Linq;
 
 namespace KancolleSniffer.Model
 {
-    public class ShipInventry : Inventry<ShipStatus>
+    public class ShipInventory : Inventory<ShipStatus>
     {
-        public ShipInventry() : base(new ShipStatus())
+        public ShipInventory() : base(new ShipStatus())
         {
         }
 
@@ -31,9 +31,9 @@ namespace KancolleSniffer.Model
         public IEnumerable<ShipStatus> AllShips => AllItems;
     }
 
-    public class ItemInventry : Inventry<ItemStatus>
+    public class ItemInventory : Inventory<ItemStatus>
     {
-        public ItemInventry() : base(new ItemStatus())
+        public ItemInventory() : base(new ItemStatus())
         {
         }
 
@@ -42,14 +42,14 @@ namespace KancolleSniffer.Model
         protected override int GetId(ItemStatus item) => item.Id;
     }
 
-    public abstract class Inventry<T>
+    public abstract class Inventory<T>
     {
         private readonly Dictionary<int, T> _dict = new Dictionary<int, T>();
         private int _inflated;
 
         protected abstract T CreateDummy(int id);
 
-        protected Inventry(T dummy)
+        protected Inventory(T dummy)
         {
             _dict[-1] = dummy;
         }
@@ -105,6 +105,7 @@ namespace KancolleSniffer.Model
 
         public bool Contains(int id) => _dict.ContainsKey(id);
 
+        // ReSharper disable once UnusedMember.Global
         public bool Contains(T item) => Contains(GetId(item));
 
         public IEnumerable<T> AllItems =>

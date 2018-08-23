@@ -112,6 +112,7 @@ namespace KancolleSniffer
     public enum NotificationType
     {
         FlashWindow = 1,
+        // ReSharper disable once IdentifierTypo
         ShowBaloonTip = 1 << 1,
         PlaySound = 1 << 2,
         All = (1 << 3) - 1,
@@ -209,6 +210,7 @@ namespace KancolleSniffer
         public bool ShowHpInPercent { get; set; }
         public TimerKind ShowEndTime { get; set; }
         public bool FlashWindow { get; set; } = true;
+        // ReSharper disable once IdentifierTypo
         public bool ShowBaloonTip { get; set; } = true;
         public bool PlaySound { get; set; } = true;
         public NotificationType NotificationFlags { get; set; } = NotificationType.All;

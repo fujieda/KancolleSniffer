@@ -30,7 +30,7 @@ namespace KancolleSniffer.Test
     public class SnifferTest
     {
         [ClassInitialize]
-        public static void Intialize(TestContext context)
+        public static void Initialize(TestContext context)
         {
             ExpressionToCodeConfiguration.GlobalAssertionConfiguration = ExpressionToCodeConfiguration
                 .GlobalAssertionConfiguration.WithPrintedListLengthLimit(200).WithMaximumValueLength(1000);
@@ -83,7 +83,7 @@ namespace KancolleSniffer.Test
         /// 4-2-1で開幕対潜雷撃を含む戦闘を行う
         /// </summary>
         [TestMethod]
-        public void NormalBattleWithVriousTypesOfAttack()
+        public void NormalBattleWithVariousTypesOfAttack()
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "battle_001");
@@ -150,7 +150,7 @@ namespace KancolleSniffer.Test
         /// 演習でダメコンを発動させない
         /// </summary>
         [TestMethod]
-        public void NotTriggerDameconInPractice()
+        public void NotTriggerDameConInPractice()
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "practice_002");
@@ -576,7 +576,7 @@ namespace KancolleSniffer.Test
         /// 近代化改修の結果をすぐに反映する
         /// </summary>
         [TestMethod]
-        public void PowerupResult()
+        public void PowerUpResult()
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "powerup_001");
@@ -587,7 +587,7 @@ namespace KancolleSniffer.Test
         /// 近代化改修が二重に行われた場合に対応する
         /// </summary>
         [TestMethod]
-        public void DuplicatedPowerup()
+        public void DuplicatedPowerUp()
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "powerup_002");
@@ -919,7 +919,7 @@ namespace KancolleSniffer.Test
         /// 新規のドロップ艦の初期装備数を登録する
         /// </summary>
         [TestMethod]
-        public void RecordNumEqipsOfNewDropShip()
+        public void RecordNumEquipsOfNewDropShip()
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "dropship_001");

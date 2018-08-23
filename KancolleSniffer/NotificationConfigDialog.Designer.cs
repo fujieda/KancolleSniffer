@@ -30,7 +30,7 @@
         {
             this.listBoxNotifications = new System.Windows.Forms.ListBox();
             this.checkBoxFlashWindow = new System.Windows.Forms.CheckBox();
-            this.checkBoxShowBaloonTip = new System.Windows.Forms.CheckBox();
+            this.checkBoxShowBalloonTip = new System.Windows.Forms.CheckBox();
             this.checkBoxPlaySound = new System.Windows.Forms.CheckBox();
             this.buttonClose = new System.Windows.Forms.Button();
             this.checkBoxPush = new System.Windows.Forms.CheckBox();
@@ -66,16 +66,16 @@
             this.checkBoxFlashWindow.UseVisualStyleBackColor = true;
             this.checkBoxFlashWindow.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
-            // checkBoxShowBaloonTip
+            // checkBoxShowBalloonTip
             // 
-            this.checkBoxShowBaloonTip.AutoSize = true;
-            this.checkBoxShowBaloonTip.Location = new System.Drawing.Point(81, 106);
-            this.checkBoxShowBaloonTip.Name = "checkBoxShowBaloonTip";
-            this.checkBoxShowBaloonTip.Size = new System.Drawing.Size(72, 16);
-            this.checkBoxShowBaloonTip.TabIndex = 2;
-            this.checkBoxShowBaloonTip.Text = "通知領域";
-            this.checkBoxShowBaloonTip.UseVisualStyleBackColor = true;
-            this.checkBoxShowBaloonTip.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            this.checkBoxShowBalloonTip.AutoSize = true;
+            this.checkBoxShowBalloonTip.Location = new System.Drawing.Point(81, 106);
+            this.checkBoxShowBalloonTip.Name = "checkBoxShowBalloonTip";
+            this.checkBoxShowBalloonTip.Size = new System.Drawing.Size(72, 16);
+            this.checkBoxShowBalloonTip.TabIndex = 2;
+            this.checkBoxShowBalloonTip.Text = "通知領域";
+            this.checkBoxShowBalloonTip.UseVisualStyleBackColor = true;
+            this.checkBoxShowBalloonTip.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // checkBoxPlaySound
             // 
@@ -196,7 +196,7 @@
             this.Controls.Add(this.checkBoxPush);
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.checkBoxPlaySound);
-            this.Controls.Add(this.checkBoxShowBaloonTip);
+            this.Controls.Add(this.checkBoxShowBalloonTip);
             this.Controls.Add(this.checkBoxFlashWindow);
             this.Controls.Add(this.listBoxNotifications);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -216,7 +216,7 @@
 
         private System.Windows.Forms.ListBox listBoxNotifications;
         private System.Windows.Forms.CheckBox checkBoxFlashWindow;
-        private System.Windows.Forms.CheckBox checkBoxShowBaloonTip;
+        private System.Windows.Forms.CheckBox checkBoxShowBalloonTip;
         private System.Windows.Forms.CheckBox checkBoxPlaySound;
         private System.Windows.Forms.Button buttonClose;
         private System.Windows.Forms.CheckBox checkBoxPush;
