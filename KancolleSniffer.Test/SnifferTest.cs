@@ -237,6 +237,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 第二期の開幕夜戦のセル情報を表示する
+        /// </summary>
+        [TestMethod]
+        // ReSharper disable once InconsistentNaming
+        public void SpMidnightIn2ndSequence()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "sp_midnight_003");
+            PAssert.That(() => sniffer.CellInfo.Current == "１戦目(夜戦)");
+        }
+
+        /// <summary>
         /// 単艦退避する
         /// </summary>
         [TestMethod]
