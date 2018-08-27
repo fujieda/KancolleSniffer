@@ -28,7 +28,7 @@ namespace KancolleSniffer.Net
         private readonly SystemProxy _systemProxy = new SystemProxy();
         private int _prevProxyPort;
         private int _autoConfigRetryCount;
-        private readonly Timer _timer = new Timer {Interval = 1000};
+        private readonly Timer _timer = new Timer();
         private bool _initiated;
         private DateTime _pacFileTime;
 
@@ -124,6 +124,7 @@ namespace KancolleSniffer.Net
         {
             SetAutoConfigUrl();
             _initiated = false;
+            _timer.Interval = 5000;
             _timer.Start();
         }
 
@@ -142,9 +143,10 @@ namespace KancolleSniffer.Net
             if (IsProxyWorking)
             {
                 _initiated = true;
+                _timer.Interval = 1000;
                 return;
             }
-            if (_autoConfigRetryCount > 0 && _autoConfigRetryCount % 5 == 0)
+            if (_autoConfigRetryCount > 0 && _autoConfigRetryCount % 6 == 0)
             {
                 _timer.Stop();
                 switch (MessageBox.Show(_parent, "プロキシの自動設定に失敗しました。", "エラー", MessageBoxButtons.AbortRetryIgnore,
