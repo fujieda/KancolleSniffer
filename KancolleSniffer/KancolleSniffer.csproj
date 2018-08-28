@@ -91,6 +91,7 @@
     <Compile Include="View\CUDColors.cs" />
     <Compile Include="Model\DockInfo.cs" />
     <Compile Include="Model\Fleet.cs" />
+    <Compile Include="View\CustomColors.cs" />
     <Compile Include="View\FleetPanel.cs">
       <SubType>Component</SubType>
     </Compile>

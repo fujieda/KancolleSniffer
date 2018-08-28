@@ -1198,8 +1198,6 @@ namespace KancolleSniffer
             });
         }
 
-        private readonly Color _activeButtonColor = Color.FromArgb(152, 179, 208);
-
         private void labelBucketHistoryButton_Click(object sender, EventArgs e)
         {
             if (labelBucketHistory.Visible)
@@ -1211,7 +1209,7 @@ namespace KancolleSniffer
             {
                 labelBucketHistory.Visible = true;
                 labelBucketHistory.BringToFront();
-                labelBucketHistoryButton.BackColor = _activeButtonColor;
+                labelBucketHistoryButton.BackColor = CustomColors.ActiveButtonColor;
             }
         }
 
@@ -1232,7 +1230,7 @@ namespace KancolleSniffer
             {
                 panelMaterialHistory.Visible = true;
                 panelMaterialHistory.BringToFront();
-                labelMaterialHistoryButton.BackColor = _activeButtonColor;
+                labelMaterialHistoryButton.BackColor = CustomColors.ActiveButtonColor;
             }
         }
 
@@ -1259,7 +1257,7 @@ namespace KancolleSniffer
             {
                 panelRepairList.Visible = true;
                 panelRepairList.BringToFront();
-                labelRepairListButton.BackColor = _activeButtonColor;
+                labelRepairListButton.BackColor = CustomColors.ActiveButtonColor;
             }
         }
 
@@ -1291,7 +1289,7 @@ namespace KancolleSniffer
 
         private void labelClearQuest_MouseDown(object sender, MouseEventArgs e)
         {
-            labelClearQuest.BackColor = _activeButtonColor;
+            labelClearQuest.BackColor = CustomColors.ActiveButtonColor;
         }
 
         private void labelClearQuest_MouseUp(object sender, MouseEventArgs e)
