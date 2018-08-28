@@ -546,7 +546,7 @@ namespace KancolleSniffer
         {
             var ship = _sniffer.ShipCounter;
             labelNumOfShips.Text = $"{ship.Now:D}/{ship.Max:D}";
-            labelNumOfShips.ForeColor = ship.TooMany ? CUDColor.Red : Color.Black;
+            labelNumOfShips.ForeColor = ship.TooMany ? CUDColors.Red : Color.Black;
             if (ship.Alarm)
             {
                 var message = $"残り{ship.Rest:D}隻";
@@ -559,7 +559,7 @@ namespace KancolleSniffer
         {
             var item = _sniffer.ItemCounter;
             labelNumOfEquips.Text = $"{item.Now:D}/{item.Max:D}";
-            labelNumOfEquips.ForeColor = item.TooMany ? CUDColor.Red : Color.Black;
+            labelNumOfEquips.ForeColor = item.TooMany ? CUDColors.Red : Color.Black;
             if (item.Alarm)
             {
                 var message = $"残り{item.Rest:D}個";
@@ -742,7 +742,7 @@ namespace KancolleSniffer
             }
             UpdateFighterPower(_sniffer.IsCombinedFleet && battle.EnemyIsCombined);
             labelFighterPower.ForeColor = new[]
-                {DefaultForeColor, DefaultForeColor, CUDColor.Blue, CUDColor.Green, CUDColor.Orange, CUDColor.Red}[
+                {DefaultForeColor, DefaultForeColor, CUDColors.Blue, CUDColors.Green, CUDColors.Orange, CUDColors.Red}[
                 battle.AirControlLevel + 1];
         }
 
@@ -886,7 +886,7 @@ namespace KancolleSniffer
 
         private void SetTimerColor(Label label, AlarmTimer timer, DateTime now)
         {
-            label.ForeColor = timer.IsFinished(now) ? CUDColor.Red : Color.Black;
+            label.ForeColor = timer.IsFinished(now) ? CUDColors.Red : Color.Black;
         }
 
         private void UpdateCondTimers()
@@ -919,7 +919,7 @@ namespace KancolleSniffer
             {
                 labelCondTimerTitle.Text = "cond49まで";
                 labelCondTimer.Text = (span >= TimeSpan.Zero ? span : TimeSpan.Zero).ToString(@"mm\:ss");
-                labelCondTimer.ForeColor = span <= TimeSpan.Zero ? CUDColor.Red : DefaultForeColor;
+                labelCondTimer.ForeColor = span <= TimeSpan.Zero ? CUDColors.Red : DefaultForeColor;
             }
         }
 
@@ -955,7 +955,7 @@ namespace KancolleSniffer
         {
             var akashi = _sniffer.AkashiTimer;
             var span = akashi.GetPresetDeckTimer(_now);
-            var color = span == TimeSpan.Zero && akashi.CheckPresetRepairing() ? CUDColor.Red : DefaultForeColor;
+            var color = span == TimeSpan.Zero && akashi.CheckPresetRepairing() ? CUDColors.Red : DefaultForeColor;
             var text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
             labelAkashiRepairTimer.ForeColor = color;
             labelAkashiRepairTimer.Text = text;
@@ -1064,7 +1064,7 @@ namespace KancolleSniffer
                         continue;
                     }
                     count[i].Text = " " + c;
-                    count[i].ForeColor = c.Cleared ? CUDColor.Green : Color.Black;
+                    count[i].ForeColor = c.Cleared ? CUDColors.Green : Color.Black;
                     _toolTip.SetToolTip(count[i], c.ToToolTip());
                 }
                 else

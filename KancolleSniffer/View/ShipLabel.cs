@@ -19,7 +19,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
-using KancolleSniffer.Util;
 using static System.Math;
 
 namespace KancolleSniffer.View
@@ -158,9 +157,9 @@ namespace KancolleSniffer.View
                 case ShipStatus.Damage.Sunk:
                     return Color.CornflowerBlue;
                 case ShipStatus.Damage.Badly:
-                    return CUDColor.Red;
+                    return CUDColors.Red;
                 case ShipStatus.Damage.Half:
-                    return CUDColor.Orange;
+                    return CUDColors.Orange;
                 case ShipStatus.Damage.Small:
                     return Color.FromArgb(240, 240, 0);
                 default:
@@ -179,12 +178,12 @@ namespace KancolleSniffer.View
             var cond = status.Cond;
             Text = cond.ToString("D");
             BackColor = cond >= 50
-                ? CUDColor.Yellow
+                ? CUDColors.Yellow
                 : cond >= 30
                     ? PresetColor
                     : cond >= 20
-                        ? CUDColor.Orange
-                        : CUDColor.Red;
+                        ? CUDColors.Orange
+                        : CUDColors.Red;
         }
 
         public void SetLevel(ShipStatus status)

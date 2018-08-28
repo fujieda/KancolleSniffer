@@ -336,7 +336,7 @@ namespace KancolleSniffer.View
                     continue;
                 }
                 if (i == shortest)
-                    label.ForeColor = CUDColor.Red;
+                    label.ForeColor = CUDColors.Red;
                 labelHp.ForeColor = Color.DimGray;
                 labelHp.SetHp(stat.NowHp + timer.Diff, stat.MaxHp);
             }
@@ -379,7 +379,7 @@ namespace KancolleSniffer.View
         public void SetNDockTimer(int dock, AlarmTimer timer, DateTime now, bool finishTime)
         {
             var label = _ndockLabels[dock][0];
-            label.ForeColor = timer.IsFinished(now) ? CUDColor.Red : Color.Black;
+            label.ForeColor = timer.IsFinished(now) ? CUDColors.Red : Color.Black;
             label.Text = timer.ToString(now, finishTime);
         }
     }
