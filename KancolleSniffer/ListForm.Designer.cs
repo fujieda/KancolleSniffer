@@ -55,7 +55,6 @@ namespace KancolleSniffer
             this.labelHeaderCond = new System.Windows.Forms.Label();
             this.labelHeaderExp = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.checkBoxShipType = new System.Windows.Forms.CheckBox();
             this.panelGroupHeader = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -78,18 +77,31 @@ namespace KancolleSniffer
             this.label1Fleet3 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
             this.labelFleet1 = new System.Windows.Forms.Label();
-            this.airBattleResultPanel = new AirBattleResultPanel();
-            this.battleResultPanel = new BattleResultPanel();
-            this.antiAirPanel = new AntiAirPanel();
-            this.fleetPanel = new FleetPanel();
-            this.itemTreeView = new ItemTreeView();
-            this.shipListPanel = new ShipListPanel();
+            this.panelSType = new System.Windows.Forms.Panel();
+            this.checkBoxSTypeAll = new System.Windows.Forms.CheckBox();
+            this.checkBoxSTypeAuxiliary = new System.Windows.Forms.CheckBox();
+            this.checkBoxSTypeSubmarine = new System.Windows.Forms.CheckBox();
+            this.checkBoxSTypeEscort = new System.Windows.Forms.CheckBox();
+            this.checkBoxSTypeDestroyer = new System.Windows.Forms.CheckBox();
+            this.checkBoxSTypeLightCruiser = new System.Windows.Forms.CheckBox();
+            this.checkBoxSTypeHeavyCruiser = new System.Windows.Forms.CheckBox();
+            this.checkBoxSTypeAircraftCarrier = new System.Windows.Forms.CheckBox();
+            this.checkBoxSTypeBattleShip = new System.Windows.Forms.CheckBox();
+            this.labelSTypeButton = new System.Windows.Forms.Label();
+            this.airBattleResultPanel = new KancolleSniffer.View.AirBattleResultPanel();
+            this.battleResultPanel = new KancolleSniffer.View.BattleResultPanel();
+            this.antiAirPanel = new KancolleSniffer.View.AntiAirPanel();
+            this.fleetPanel = new KancolleSniffer.View.FleetPanel();
+            this.itemTreeView = new KancolleSniffer.View.ItemTreeView();
+            this.shipListPanel = new KancolleSniffer.View.ShipListPanel();
+            this.labelSType = new System.Windows.Forms.Label();
             this.contextMenuStripShipList.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
             this.contextMenuStripFleetData.SuspendLayout();
             this.panelFleetHeader.SuspendLayout();
+            this.panelSType.SuspendLayout();
             this.SuspendLayout();
             // 
             // contextMenuStripShipList
@@ -171,17 +183,6 @@ namespace KancolleSniffer
             this.label3.Size = new System.Drawing.Size(17, 12);
             this.label3.TabIndex = 13;
             this.label3.Text = "Lv";
-            // 
-            // checkBoxShipType
-            // 
-            this.checkBoxShipType.AutoSize = true;
-            this.checkBoxShipType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBoxShipType.Location = new System.Drawing.Point(58, 6);
-            this.checkBoxShipType.Name = "checkBoxShipType";
-            this.checkBoxShipType.Size = new System.Drawing.Size(45, 16);
-            this.checkBoxShipType.TabIndex = 15;
-            this.checkBoxShipType.Text = "艦種";
-            this.checkBoxShipType.CheckedChanged += new System.EventHandler(this.checkBoxShipType_CheckedChanged);
             // 
             // panelGroupHeader
             // 
@@ -406,6 +407,134 @@ namespace KancolleSniffer
             this.labelFleet1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.labelFleet1.Click += new System.EventHandler(this.labelFleet_Click);
             // 
+            // panelSType
+            // 
+            this.panelSType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelSType.Controls.Add(this.checkBoxSTypeAll);
+            this.panelSType.Controls.Add(this.checkBoxSTypeAuxiliary);
+            this.panelSType.Controls.Add(this.checkBoxSTypeSubmarine);
+            this.panelSType.Controls.Add(this.checkBoxSTypeEscort);
+            this.panelSType.Controls.Add(this.checkBoxSTypeDestroyer);
+            this.panelSType.Controls.Add(this.checkBoxSTypeLightCruiser);
+            this.panelSType.Controls.Add(this.checkBoxSTypeHeavyCruiser);
+            this.panelSType.Controls.Add(this.checkBoxSTypeAircraftCarrier);
+            this.panelSType.Controls.Add(this.checkBoxSTypeBattleShip);
+            this.panelSType.Location = new System.Drawing.Point(56, 21);
+            this.panelSType.Name = "panelSType";
+            this.panelSType.Size = new System.Drawing.Size(188, 64);
+            this.panelSType.TabIndex = 17;
+            this.panelSType.Visible = false;
+            this.panelSType.Click += new System.EventHandler(this.panelSType_Click);
+            // 
+            // checkBoxSTypeAll
+            // 
+            this.checkBoxSTypeAll.AutoSize = true;
+            this.checkBoxSTypeAll.Location = new System.Drawing.Point(3, 45);
+            this.checkBoxSTypeAll.Name = "checkBoxSTypeAll";
+            this.checkBoxSTypeAll.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxSTypeAll.TabIndex = 8;
+            this.checkBoxSTypeAll.Text = "全部";
+            this.checkBoxSTypeAll.UseVisualStyleBackColor = true;
+            this.checkBoxSTypeAll.Click += new System.EventHandler(this.checkBoxSTypeAll_Click);
+            // 
+            // checkBoxSTypeAuxiliary
+            // 
+            this.checkBoxSTypeAuxiliary.AutoSize = true;
+            this.checkBoxSTypeAuxiliary.Location = new System.Drawing.Point(140, 24);
+            this.checkBoxSTypeAuxiliary.Name = "checkBoxSTypeAuxiliary";
+            this.checkBoxSTypeAuxiliary.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxSTypeAuxiliary.TabIndex = 7;
+            this.checkBoxSTypeAuxiliary.Text = "補助";
+            this.checkBoxSTypeAuxiliary.UseVisualStyleBackColor = true;
+            this.checkBoxSTypeAuxiliary.Click += new System.EventHandler(this.checkBoxSType_Click);
+            // 
+            // checkBoxSTypeSubmarine
+            // 
+            this.checkBoxSTypeSubmarine.AutoSize = true;
+            this.checkBoxSTypeSubmarine.Location = new System.Drawing.Point(95, 24);
+            this.checkBoxSTypeSubmarine.Name = "checkBoxSTypeSubmarine";
+            this.checkBoxSTypeSubmarine.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxSTypeSubmarine.TabIndex = 6;
+            this.checkBoxSTypeSubmarine.Text = "潜水";
+            this.checkBoxSTypeSubmarine.UseVisualStyleBackColor = true;
+            this.checkBoxSTypeSubmarine.Click += new System.EventHandler(this.checkBoxSType_Click);
+            // 
+            // checkBoxSTypeEscort
+            // 
+            this.checkBoxSTypeEscort.AutoSize = true;
+            this.checkBoxSTypeEscort.Location = new System.Drawing.Point(49, 24);
+            this.checkBoxSTypeEscort.Name = "checkBoxSTypeEscort";
+            this.checkBoxSTypeEscort.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxSTypeEscort.TabIndex = 5;
+            this.checkBoxSTypeEscort.Text = "海防";
+            this.checkBoxSTypeEscort.UseVisualStyleBackColor = true;
+            this.checkBoxSTypeEscort.Click += new System.EventHandler(this.checkBoxSType_Click);
+            // 
+            // checkBoxSTypeDestroyer
+            // 
+            this.checkBoxSTypeDestroyer.AutoSize = true;
+            this.checkBoxSTypeDestroyer.Location = new System.Drawing.Point(3, 24);
+            this.checkBoxSTypeDestroyer.Name = "checkBoxSTypeDestroyer";
+            this.checkBoxSTypeDestroyer.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxSTypeDestroyer.TabIndex = 4;
+            this.checkBoxSTypeDestroyer.Text = "駆逐";
+            this.checkBoxSTypeDestroyer.UseVisualStyleBackColor = true;
+            this.checkBoxSTypeDestroyer.Click += new System.EventHandler(this.checkBoxSType_Click);
+            // 
+            // checkBoxSTypeLightCruiser
+            // 
+            this.checkBoxSTypeLightCruiser.AutoSize = true;
+            this.checkBoxSTypeLightCruiser.Location = new System.Drawing.Point(141, 3);
+            this.checkBoxSTypeLightCruiser.Name = "checkBoxSTypeLightCruiser";
+            this.checkBoxSTypeLightCruiser.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxSTypeLightCruiser.TabIndex = 3;
+            this.checkBoxSTypeLightCruiser.Text = "軽巡";
+            this.checkBoxSTypeLightCruiser.UseVisualStyleBackColor = true;
+            this.checkBoxSTypeLightCruiser.Click += new System.EventHandler(this.checkBoxSType_Click);
+            // 
+            // checkBoxSTypeHeavyCruiser
+            // 
+            this.checkBoxSTypeHeavyCruiser.AutoSize = true;
+            this.checkBoxSTypeHeavyCruiser.Location = new System.Drawing.Point(95, 3);
+            this.checkBoxSTypeHeavyCruiser.Name = "checkBoxSTypeHeavyCruiser";
+            this.checkBoxSTypeHeavyCruiser.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxSTypeHeavyCruiser.TabIndex = 2;
+            this.checkBoxSTypeHeavyCruiser.Text = "重巡";
+            this.checkBoxSTypeHeavyCruiser.UseVisualStyleBackColor = true;
+            this.checkBoxSTypeHeavyCruiser.Click += new System.EventHandler(this.checkBoxSType_Click);
+            // 
+            // checkBoxSTypeAircraftCarrier
+            // 
+            this.checkBoxSTypeAircraftCarrier.AutoSize = true;
+            this.checkBoxSTypeAircraftCarrier.Location = new System.Drawing.Point(49, 3);
+            this.checkBoxSTypeAircraftCarrier.Name = "checkBoxSTypeAircraftCarrier";
+            this.checkBoxSTypeAircraftCarrier.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxSTypeAircraftCarrier.TabIndex = 1;
+            this.checkBoxSTypeAircraftCarrier.Text = "空母";
+            this.checkBoxSTypeAircraftCarrier.UseVisualStyleBackColor = true;
+            this.checkBoxSTypeAircraftCarrier.Click += new System.EventHandler(this.checkBoxSType_Click);
+            // 
+            // checkBoxSTypeBattleShip
+            // 
+            this.checkBoxSTypeBattleShip.AutoSize = true;
+            this.checkBoxSTypeBattleShip.Location = new System.Drawing.Point(3, 3);
+            this.checkBoxSTypeBattleShip.Name = "checkBoxSTypeBattleShip";
+            this.checkBoxSTypeBattleShip.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxSTypeBattleShip.TabIndex = 0;
+            this.checkBoxSTypeBattleShip.Text = "戦艦";
+            this.checkBoxSTypeBattleShip.UseVisualStyleBackColor = true;
+            this.checkBoxSTypeBattleShip.Click += new System.EventHandler(this.checkBoxSType_Click);
+            // 
+            // labelSTypeButton
+            // 
+            this.labelSTypeButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelSTypeButton.Image = global::KancolleSniffer.Properties.Resources.arrow_virtical;
+            this.labelSTypeButton.Location = new System.Drawing.Point(58, 7);
+            this.labelSTypeButton.Name = "labelSTypeButton";
+            this.labelSTypeButton.Size = new System.Drawing.Size(14, 14);
+            this.labelSTypeButton.TabIndex = 19;
+            this.labelSTypeButton.Click += new System.EventHandler(this.labelSTypeButton_Click);
+            // 
             // airBattleResultPanel
             // 
             this.airBattleResultPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -472,16 +601,28 @@ namespace KancolleSniffer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.shipListPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.shipListPanel.ContextMenuStrip = this.contextMenuStripShipList;
+            this.shipListPanel.GroupUpdated = false;
             this.shipListPanel.Location = new System.Drawing.Point(6, 23);
             this.shipListPanel.Name = "shipListPanel";
             this.shipListPanel.Size = new System.Drawing.Size(238, 263);
             this.shipListPanel.TabIndex = 0;
+            // 
+            // labelSType
+            // 
+            this.labelSType.AutoSize = true;
+            this.labelSType.Location = new System.Drawing.Point(74, 8);
+            this.labelSType.Name = "labelSType";
+            this.labelSType.Size = new System.Drawing.Size(29, 12);
+            this.labelSType.TabIndex = 20;
+            this.labelSType.Text = "艦種";
+            this.labelSType.Click += new System.EventHandler(this.labelSTypeButton_Click);
             // 
             // ListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(250, 292);
+            this.Controls.Add(this.panelSType);
             this.Controls.Add(this.panelFleetHeader);
             this.Controls.Add(this.airBattleResultPanel);
             this.Controls.Add(this.battleResultPanel);
@@ -489,7 +630,8 @@ namespace KancolleSniffer
             this.Controls.Add(this.panelItemHeader);
             this.Controls.Add(this.panelRepairHeader);
             this.Controls.Add(this.panelGroupHeader);
-            this.Controls.Add(this.checkBoxShipType);
+            this.Controls.Add(this.labelSType);
+            this.Controls.Add(this.labelSTypeButton);
             this.Controls.Add(this.labelHeaderExp);
             this.Controls.Add(this.labelHeaderCond);
             this.Controls.Add(this.label3);
@@ -516,6 +658,8 @@ namespace KancolleSniffer
             this.panelRepairHeader.PerformLayout();
             this.contextMenuStripFleetData.ResumeLayout(false);
             this.panelFleetHeader.ResumeLayout(false);
+            this.panelSType.ResumeLayout(false);
+            this.panelSType.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -528,7 +672,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelHeaderCond;
         private System.Windows.Forms.Label labelHeaderExp;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckBox checkBoxShipType;
         private System.Windows.Forms.Panel panelGroupHeader;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label9;
@@ -561,5 +704,17 @@ namespace KancolleSniffer
         private AntiAirPanel antiAirPanel;
         private AirBattleResultPanel airBattleResultPanel;
         private BattleResultPanel battleResultPanel;
+        private System.Windows.Forms.Panel panelSType;
+        private System.Windows.Forms.CheckBox checkBoxSTypeAll;
+        private System.Windows.Forms.CheckBox checkBoxSTypeAuxiliary;
+        private System.Windows.Forms.CheckBox checkBoxSTypeSubmarine;
+        private System.Windows.Forms.CheckBox checkBoxSTypeEscort;
+        private System.Windows.Forms.CheckBox checkBoxSTypeDestroyer;
+        private System.Windows.Forms.CheckBox checkBoxSTypeLightCruiser;
+        private System.Windows.Forms.CheckBox checkBoxSTypeHeavyCruiser;
+        private System.Windows.Forms.CheckBox checkBoxSTypeAircraftCarrier;
+        private System.Windows.Forms.CheckBox checkBoxSTypeBattleShip;
+        private System.Windows.Forms.Label labelSTypeButton;
+        private System.Windows.Forms.Label labelSType;
     }
 }

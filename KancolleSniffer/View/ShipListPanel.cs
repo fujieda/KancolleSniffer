@@ -78,10 +78,10 @@ namespace KancolleSniffer.View
                 ScrollBar.Value - e.Delta * SystemInformation.MouseWheelScrollLines / 120));
         }
 
-        public void Update(Sniffer sniffer, string mode, ListForm.SortOrder sortOrder, bool byShipType)
+        public void Update(Sniffer sniffer, string mode, ShipListConfig config)
         {
             _mode = mode;
-            CreateShipList(sniffer, sortOrder, byShipType);
+            CreateShipList(sniffer, config);
             SuspendDrawing();
             SetupLabels();
             SetShipLabels();
@@ -104,27 +104,13 @@ namespace KancolleSniffer.View
             Refresh();
         }
 
-        private void CreateShipList(Sniffer sniffer, ListForm.SortOrder sortOrder, bool byShipType)
+        private void CreateShipList(Sniffer sniffer, ShipListConfig config)
         {
-            var ships = _mode == "修復" ? sniffer.RepairList : FilterByGroup(sniffer.ShipList, _mode).ToArray();
-            var order = _mode == "修復" ? ListForm.SortOrder.Repair : sortOrder;
-            if (!byShipType)
-            {
-                _shipList = ships.OrderBy(s => s, new CompareShip(false, order)).ToArray();
-                return;
-            }
-            var types = ships.Select(s => new {Id = s.Spec.ShipType, Name = s.Spec.ShipTypeName})
-                .Distinct()
-                // ReSharper disable once IdentifierTypo
-                .Select(stype =>
-                    new ShipStatus
-                    {
-                        Spec = new ShipSpec {Name = stype.Name, ShipType = stype.Id},
-                        Level = 1000,
-                        NowHp = -1000,
-                        Cond = -1000
-                    });
-            _shipList = ships.Concat(types).OrderBy(s => s, new CompareShip(true, order)).ToArray();
+            var ships = FilterByShipTypes(
+                _mode == "修復" ? sniffer.RepairList : FilterByGroup(sniffer.ShipList, _mode),
+                config.ShipCategories);
+            var order = _mode == "修復" ? ListForm.SortOrder.Repair : config.SortOrder;
+            _shipList = ships.OrderBy(s => s, new CompareShip(false, order)).ToArray();
         }
 
         private IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships, string group)
@@ -133,6 +119,62 @@ namespace KancolleSniffer.View
             if (g == -1)
                 return ships;
             return from s in ships where GroupSettings[g].Contains(s.Id) select s;
+        }
+
+        private readonly int[][] _shipTypeIds =
+        {
+            new[] // 戦艦
+            {
+                10, // 航空戦艦
+                9, // 戦艦
+                8 // 巡洋戦艦
+            },
+            new[] // 空母
+            {
+                18, // 装甲空母
+                11, // 正規空母
+                7 // 軽空母
+            },
+            new[] // 重巡
+            {
+                6, // 航空巡洋艦
+                5 // 重巡洋艦
+            },
+            new[] // 軽巡
+            {
+                21, // 練習巡洋艦
+                4, // 重雷装巡洋艦
+                3 // 軽巡洋艦
+            },
+            new[] // 駆逐
+            {
+                2 // 駆逐艦
+            },
+            new[] // 海防
+            {
+                1 // 海防艦
+            },
+            new[] // 潜水
+            {
+                14, // 潜水空母
+                13 // 潜水艦
+            },
+            new[] // 補助
+            {
+                22, // 補給艦
+                20, // 潜水母艦
+                19, // 工作艦
+                17, // 揚陸艦
+                16 // 水上機母艦
+            }
+        };
+
+        private IEnumerable<ShipStatus> FilterByShipTypes(IEnumerable<ShipStatus> ships, ShipCategory shipTypes)
+        {
+            var ids = Enumerable.Range(0, _shipTypeIds.Length)
+                .Where(type => ((int)shipTypes & (1 << type)) != 0)
+                .SelectMany(type => _shipTypeIds[type]).ToArray();
+            return ships.Where(ship => ids.Contains(ship.Spec.ShipType));
         }
 
         public IEnumerable<ShipStatus> CurrentShipList => _shipList.Where(ship => ship.Level != 1000);

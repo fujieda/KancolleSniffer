@@ -26,6 +26,7 @@ namespace KancolleSniffer
     {
         private readonly Sniffer _sniffer;
         private readonly Config _config;
+        private readonly CheckBox[] _shipTypeCheckBoxes;
         public const int PanelWidth = 217;
 
         public enum SortOrder
@@ -45,6 +46,17 @@ namespace KancolleSniffer
             InitializeComponent();
             _sniffer = sniffer;
             _config = config;
+            _shipTypeCheckBoxes = new[]
+            {
+                checkBoxSTypeBattleShip,
+                checkBoxSTypeAircraftCarrier,
+                checkBoxSTypeHeavyCruiser,
+                checkBoxSTypeLightCruiser,
+                checkBoxSTypeDestroyer,
+                checkBoxSTypeEscort,
+                checkBoxSTypeSubmarine,
+                checkBoxSTypeAuxiliary
+            };
             battleResultPanel.HpLabelClick += ToggleHpPercent;
             shipListPanel.HpLabelClick += ToggleHpPercent;
             var swipe = new SwipeScrollify();
@@ -99,8 +111,7 @@ namespace KancolleSniffer
             else
             {
                 SetHeaderSortOrder();
-                shipListPanel.Update(_sniffer, comboBoxGroup.Text, _config.ShipList.SortOrder,
-                    _config.ShipList.ShipType);
+                shipListPanel.Update(_sniffer, comboBoxGroup.Text, _config.ShipList);
             }
             if (shipListPanel.GroupUpdated)
             {
@@ -180,7 +191,6 @@ namespace KancolleSniffer
             MinimumSize = new Size(Width, 0);
             MaximumSize = new Size(Width, int.MaxValue);
             var config = _config.ShipList;
-            checkBoxShipType.Checked = config.ShipType;
             if (config.ShowHpInPercent)
             {
                 shipListPanel.ToggleHpPercent();
@@ -188,6 +198,7 @@ namespace KancolleSniffer
             }
             LoadShipGroupFromConfig();
             comboBoxGroup.SelectedItem = config.Mode ?? "全艦";
+            SetCheckBoxSTypeSate();
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);
@@ -201,6 +212,13 @@ namespace KancolleSniffer
             var group = _config.ShipList.ShipGroup;
             for (var i = 0; i < ShipListPanel.GroupCount; i++)
                 shipListPanel.GroupSettings[i] = i < group.Count ? new HashSet<int>(group[i]) : new HashSet<int>();
+        }
+
+        private void SetCheckBoxSTypeSate()
+        {
+            for (var type = 0; type < _shipTypeCheckBoxes.Length; type++)
+                _shipTypeCheckBoxes[type].Checked = ((int)_config.ShipList.ShipCategories & (1 << type)) != 0;
+            checkBoxSTypeAll.Checked = _config.ShipList.ShipCategories == ShipCategory.All;
         }
 
         private void ShipListForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -250,13 +268,6 @@ namespace KancolleSniffer
             }
         }
 
-        private void checkBoxShipType_CheckedChanged(object sender, EventArgs e)
-        {
-            _config.ShipList.ShipType = checkBoxShipType.Checked;
-            UpdateList();
-            SetActiveControl();
-        }
-
         private void comboBoxGroup_DropDownClosed(object sender, EventArgs e)
         {
             SetActiveControl();
@@ -267,6 +278,8 @@ namespace KancolleSniffer
             UpdateList();
             SetActiveControl();
             copyToolStripMenuItem.Enabled = InShipStatus | InItemList;
+            if (!(InShipStatus || InGroupConfig || InRepairList))
+                SetPanelSTypeState(false);
         }
 
         private void ShipListForm_KeyPress(object sender, KeyPressEventArgs e)
@@ -378,6 +391,39 @@ namespace KancolleSniffer
             _config.ShipList.ShowHpInPercent = !_config.ShipList.ShowHpInPercent;
             shipListPanel.ToggleHpPercent();
             battleResultPanel.ToggleHpPercent();
+        }
+
+        private void labelSTypeButton_Click(object sender, EventArgs e)
+        {
+            SetPanelSTypeState(!panelSType.Visible);
+        }
+
+        private void checkBoxSType_Click(object sender, EventArgs e)
+        {
+            _config.ShipList.ShipCategories = SelectedShipTypes;
+            UpdateList();
+            SetActiveControl();
+        }
+
+        private ShipCategory SelectedShipTypes =>
+            (ShipCategory)_shipTypeCheckBoxes.Select((cb, type) => cb.Checked ? 1 << type : 0).Sum();
+
+        private void checkBoxSTypeAll_Click(object sender, EventArgs e)
+        {
+            foreach (var checkBox in _shipTypeCheckBoxes)
+                checkBox.Checked = checkBoxSTypeAll.Checked;
+            checkBoxSType_Click(sender, e);
+        }
+
+        private void panelSType_Click(object sender, EventArgs e)
+        {
+            SetPanelSTypeState(false);
+        }
+
+        private void SetPanelSTypeState(bool visible)
+        {
+            panelSType.Visible = visible;
+            labelSTypeButton.BackColor = visible ? CustomColors.ActiveButtonColor : DefaultBackColor;
         }
     }
 }

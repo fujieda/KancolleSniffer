@@ -38,13 +38,28 @@ namespace KancolleSniffer
         }
     }
 
+    [Flags]
+    public enum ShipCategory
+    {
+        None = 0,
+        BattleShip = 1 << 0,
+        AircraftCarrier = 1 << 1,
+        HeavyCruiser = 1 << 2,
+        LightCruiser = 1 << 3,
+        Destroyer = 1 << 4,
+        Escort = 1 << 5,
+        Submarine = 1 << 6,
+        Assistant = 1 << 7,
+        All = (1 << 8) - 1
+    }
+
     public class ShipListConfig
     {
         public bool Visible { get; set; }
         public Point Location { get; set; }
         public Size Size { get; set; }
         public string Mode { get; set; }
-        public bool ShipType { get; set; }
+        public ShipCategory ShipCategories { get; set; } = ShipCategory.All;
         public bool ShowHpInPercent { get; set; }
         public ListForm.SortOrder SortOrder { get; set; } = ListForm.SortOrder.ExpToNext;
         public List<List<int>> ShipGroup { get; set; }
