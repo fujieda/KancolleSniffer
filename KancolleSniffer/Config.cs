@@ -60,6 +60,7 @@ namespace KancolleSniffer
         public Size Size { get; set; }
         public string Mode { get; set; }
         public ShipCategory ShipCategories { get; set; } = ShipCategory.All;
+        public bool ShipType;
         public bool ShowHpInPercent { get; set; }
         public ListForm.SortOrder SortOrder { get; set; } = ListForm.SortOrder.ExpToNext;
         public List<List<int>> ShipGroup { get; set; }

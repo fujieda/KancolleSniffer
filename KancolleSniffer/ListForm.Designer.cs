@@ -78,6 +78,7 @@ namespace KancolleSniffer
             this.labelFleet2 = new System.Windows.Forms.Label();
             this.labelFleet1 = new System.Windows.Forms.Label();
             this.panelSType = new System.Windows.Forms.Panel();
+            this.checkBoxSTypeDetails = new System.Windows.Forms.CheckBox();
             this.checkBoxSTypeAll = new System.Windows.Forms.CheckBox();
             this.checkBoxSTypeAuxiliary = new System.Windows.Forms.CheckBox();
             this.checkBoxSTypeSubmarine = new System.Windows.Forms.CheckBox();
@@ -88,13 +89,13 @@ namespace KancolleSniffer
             this.checkBoxSTypeAircraftCarrier = new System.Windows.Forms.CheckBox();
             this.checkBoxSTypeBattleShip = new System.Windows.Forms.CheckBox();
             this.labelSTypeButton = new System.Windows.Forms.Label();
+            this.labelSType = new System.Windows.Forms.Label();
             this.airBattleResultPanel = new KancolleSniffer.View.AirBattleResultPanel();
             this.battleResultPanel = new KancolleSniffer.View.BattleResultPanel();
             this.antiAirPanel = new KancolleSniffer.View.AntiAirPanel();
             this.fleetPanel = new KancolleSniffer.View.FleetPanel();
             this.itemTreeView = new KancolleSniffer.View.ItemTreeView();
             this.shipListPanel = new KancolleSniffer.View.ShipListPanel();
-            this.labelSType = new System.Windows.Forms.Label();
             this.contextMenuStripShipList.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
@@ -410,6 +411,7 @@ namespace KancolleSniffer
             // panelSType
             // 
             this.panelSType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelSType.Controls.Add(this.checkBoxSTypeDetails);
             this.panelSType.Controls.Add(this.checkBoxSTypeAll);
             this.panelSType.Controls.Add(this.checkBoxSTypeAuxiliary);
             this.panelSType.Controls.Add(this.checkBoxSTypeSubmarine);
@@ -425,6 +427,17 @@ namespace KancolleSniffer
             this.panelSType.TabIndex = 17;
             this.panelSType.Visible = false;
             this.panelSType.Click += new System.EventHandler(this.panelSType_Click);
+            // 
+            // checkBoxSTypeDetails
+            // 
+            this.checkBoxSTypeDetails.AutoSize = true;
+            this.checkBoxSTypeDetails.Location = new System.Drawing.Point(49, 45);
+            this.checkBoxSTypeDetails.Name = "checkBoxSTypeDetails";
+            this.checkBoxSTypeDetails.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxSTypeDetails.TabIndex = 9;
+            this.checkBoxSTypeDetails.Text = "種別";
+            this.checkBoxSTypeDetails.UseVisualStyleBackColor = true;
+            this.checkBoxSTypeDetails.Click += new System.EventHandler(this.checkBoxSTypeDetails_Click);
             // 
             // checkBoxSTypeAll
             // 
@@ -535,6 +548,16 @@ namespace KancolleSniffer
             this.labelSTypeButton.TabIndex = 19;
             this.labelSTypeButton.Click += new System.EventHandler(this.labelSTypeButton_Click);
             // 
+            // labelSType
+            // 
+            this.labelSType.AutoSize = true;
+            this.labelSType.Location = new System.Drawing.Point(74, 8);
+            this.labelSType.Name = "labelSType";
+            this.labelSType.Size = new System.Drawing.Size(29, 12);
+            this.labelSType.TabIndex = 20;
+            this.labelSType.Text = "艦種";
+            this.labelSType.Click += new System.EventHandler(this.labelSTypeButton_Click);
+            // 
             // airBattleResultPanel
             // 
             this.airBattleResultPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -606,16 +629,6 @@ namespace KancolleSniffer
             this.shipListPanel.Name = "shipListPanel";
             this.shipListPanel.Size = new System.Drawing.Size(238, 263);
             this.shipListPanel.TabIndex = 0;
-            // 
-            // labelSType
-            // 
-            this.labelSType.AutoSize = true;
-            this.labelSType.Location = new System.Drawing.Point(74, 8);
-            this.labelSType.Name = "labelSType";
-            this.labelSType.Size = new System.Drawing.Size(29, 12);
-            this.labelSType.TabIndex = 20;
-            this.labelSType.Text = "艦種";
-            this.labelSType.Click += new System.EventHandler(this.labelSTypeButton_Click);
             // 
             // ListForm
             // 
@@ -716,5 +729,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.CheckBox checkBoxSTypeBattleShip;
         private System.Windows.Forms.Label labelSTypeButton;
         private System.Windows.Forms.Label labelSType;
+        private System.Windows.Forms.CheckBox checkBoxSTypeDetails;
     }
 }

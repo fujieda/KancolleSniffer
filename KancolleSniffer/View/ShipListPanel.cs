@@ -108,9 +108,19 @@ namespace KancolleSniffer.View
         {
             var ships = FilterByShipTypes(
                 _mode == "修復" ? sniffer.RepairList : FilterByGroup(sniffer.ShipList, _mode),
-                config.ShipCategories);
+                config.ShipCategories).ToArray();
             var order = _mode == "修復" ? ListForm.SortOrder.Repair : config.SortOrder;
-            _shipList = ships.OrderBy(s => s, new CompareShip(false, order)).ToArray();
+            if (!config.ShipType)
+            {
+                _shipList = ships.OrderBy(s => s, new CompareShip(false, order)).ToArray();
+                return;
+            }
+            _shipList = ships.Select(ship => new {Id = ship.Spec.ShipType, Name = ship.Spec.ShipTypeName})
+                .Distinct().Select(type => new ShipStatus
+                {
+                    Spec = new ShipSpec { Name = type.Name, ShipType = type.Id},
+                    Level = 1000,
+                }).Concat(ships).OrderBy(ship => ship, new CompareShip(true, order)).ToArray();
         }
 
         private IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships, string group)
@@ -121,7 +131,7 @@ namespace KancolleSniffer.View
             return from s in ships where GroupSettings[g].Contains(s.Id) select s;
         }
 
-        private readonly int[][] _shipTypeIds =
+        private static readonly int[][] ShipTypeIds =
         {
             new[] // 戦艦
             {
@@ -169,11 +179,22 @@ namespace KancolleSniffer.View
             }
         };
 
+        private static readonly int[] ShipTypeSortIds = CreateShipTypeSortIds();
+
+        private static int[] CreateShipTypeSortIds()
+        {
+            var ids = ShipTypeIds.SelectMany(x => x).ToArray();
+            var res = new int[ids.Max() + 1];
+            for (var i = 0; i < ids.Length; i++)
+                res[ids[i]] = i;
+            return res;
+        }
+
         private IEnumerable<ShipStatus> FilterByShipTypes(IEnumerable<ShipStatus> ships, ShipCategory shipTypes)
         {
-            var ids = Enumerable.Range(0, _shipTypeIds.Length)
+            var ids = Enumerable.Range(0, ShipTypeIds.Length)
                 .Where(type => ((int)shipTypes & (1 << type)) != 0)
-                .SelectMany(type => _shipTypeIds[type]).ToArray();
+                .SelectMany(type => ShipTypeIds[type]).ToArray();
             return ships.Where(ship => ids.Contains(ship.Spec.ShipType));
         }
 
@@ -197,7 +218,7 @@ namespace KancolleSniffer.View
                 if (_shipType)
                 {
                     if (a.Spec.ShipType != b.Spec.ShipType)
-                        return a.Spec.ShipType - b.Spec.ShipType;
+                        return ShipTypeSortIds[a.Spec.ShipType] - ShipTypeSortIds[b.Spec.ShipType];
                     if (a.Level != b.Level)
                     {
                         if (a.Level == 1000)
@@ -480,6 +501,7 @@ namespace KancolleSniffer.View
             if (s.Level == 1000) // 艦種の表示
             {
                 SetShipType(i);
+                panel.Visible = true;
                 return;
             }
             labels[0].SetHp(s);
@@ -502,7 +524,6 @@ namespace KancolleSniffer.View
             labels[4].SetName(null);
             labels[5].SetFleet(null);
             labels[5].Text = s.Name;
-            _labelPanelList[i].Visible = true;
         }
 
         private void SetGrouping(int i)

@@ -219,6 +219,7 @@ namespace KancolleSniffer
             for (var type = 0; type < _shipTypeCheckBoxes.Length; type++)
                 _shipTypeCheckBoxes[type].Checked = ((int)_config.ShipList.ShipCategories & (1 << type)) != 0;
             checkBoxSTypeAll.Checked = _config.ShipList.ShipCategories == ShipCategory.All;
+            checkBoxSTypeDetails.Checked = _config.ShipList.ShipType;
         }
 
         private void ShipListForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -424,6 +425,13 @@ namespace KancolleSniffer
         {
             panelSType.Visible = visible;
             labelSTypeButton.BackColor = visible ? CustomColors.ActiveButtonColor : DefaultBackColor;
+        }
+
+        private void checkBoxSTypeDetails_Click(object sender, EventArgs e)
+        {
+            _config.ShipList.ShipType = checkBoxSTypeDetails.Checked;
+            UpdateList();
+            SetActiveControl();
         }
     }
 }
