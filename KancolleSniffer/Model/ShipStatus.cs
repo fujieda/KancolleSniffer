@@ -180,11 +180,9 @@ namespace KancolleSniffer.Model
                 if (vanilla == 0 && !aircraft) // 素対潜0で航空機なしは対潜攻撃なし
                     return 0;
                 var bonus = 1.0;
-                if (sonar && projector)
-                    bonus = 1.15;
-                if (sonar && depthCharge)
-                    bonus = 1.1;
                 if (projector && depthCharge)
+                    bonus = 1.1;
+                if (sonar && (projector || depthCharge))
                     bonus = 1.15;
                 if (sonar && projector && depthCharge)
                     bonus = 1.15 * 1.25;
