@@ -21,6 +21,7 @@ using ExpressionToCodeLib;
 using KancolleSniffer.Model;
 using KancolleSniffer.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static System.Math;
 
 namespace KancolleSniffer.Test
 {
@@ -384,11 +385,11 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "lineofsight_001");
             var fleet = sniffer.Fleets[0];
-            PAssert.That(() => Math.Abs(fleet.GetLineOfSights(1) - 39.45) < 0.01);
-            PAssert.That(() => Math.Abs(fleet.GetLineOfSights(3) - 115.19) < 0.01);
-            PAssert.That(() => Math.Abs(fleet.GetLineOfSights(4) - 153.06) < 0.01);
+            PAssert.That(() => Abs(fleet.GetLineOfSights(1) - 39.45) < 0.01);
+            PAssert.That(() => Abs(fleet.GetLineOfSights(3) - 115.19) < 0.01);
+            PAssert.That(() => Abs(fleet.GetLineOfSights(4) - 153.06) < 0.01);
             SniffLogFile(sniffer, "lineofsight_002");
-            PAssert.That(() => Math.Abs(fleet.GetLineOfSights(1) - -25.10) < 0.01, "艦隊に空きがある");
+            PAssert.That(() => Abs(fleet.GetLineOfSights(1) - -25.10) < 0.01, "艦隊に空きがある");
         }
 
         /// <summary>
@@ -399,7 +400,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "contact_001");
-            PAssert.That(() => Math.Abs(sniffer.Fleets[0].ContactTriggerRate - 1.8182) < 0.0001);
+            PAssert.That(() => Abs(sniffer.Fleets[0].ContactTriggerRate - 1.8182) < 0.0001);
         }
 
         /// <summary>
@@ -486,6 +487,20 @@ namespace KancolleSniffer.Test
             PAssert.That(() => sniffer.Fleets[0].Ships[0].EffectiveFirepower == 117.0);
             PAssert.That(() => sniffer.Fleets[1].Ships[0].EffectiveFirepower == 72.0);
             // ReSharper restore CompareOfFloatsByEqualityOperator
+        }
+
+        /// <summary>
+        /// 対潜攻撃力を計算する
+        /// </summary>
+        [TestMethod]
+        public void AntiSubmarine()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "antisubmarine_001");
+            PAssert.That(() => Abs(sniffer.Fleets[0].Ships[0].EffectiveAntiSubmarine - 92.16) < 0.01);
+            PAssert.That(() => Abs(sniffer.Fleets[0].Ships[1].EffectiveAntiSubmarine - 84.49) < 0.01);
+            PAssert.That(() => Abs(sniffer.Fleets[0].Ships[2].EffectiveAntiSubmarine - 57.84) < 0.01);
+            PAssert.That(() => Abs(sniffer.Fleets[0].Ships[3].EffectiveAntiSubmarine - 61.37) < 0.01);
         }
 
         /// <summary>
@@ -592,7 +607,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "powerup_001");
-            PAssert.That(() => Math.Abs(sniffer.Fleets[0].Ships[0].EffectiveFirepower - 30) < 0.0001);
+            PAssert.That(() => Abs(sniffer.Fleets[0].Ships[0].EffectiveFirepower - 30) < 0.0001);
         }
 
         /// <summary>

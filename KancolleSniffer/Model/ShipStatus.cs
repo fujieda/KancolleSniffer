@@ -153,8 +153,9 @@ namespace KancolleSniffer.Model
                 if (Spec.IsAircraftCarrier && EffectiveFirepower == 0 && !CanOpeningAntiSubmarineAttack)
                     return 0;
                 var sonar = false;
-                var projector = false;
-                var depthCharge = false;
+                var dct = false;
+                var dc = false;
+                var special = false;
                 var aircraft = false;
                 var all = 0.0;
                 foreach (var spec in Slot.Select(item => item.Spec))
@@ -163,12 +164,17 @@ namespace KancolleSniffer.Model
                     {
                         sonar = true;
                     }
-                    else if (spec.IsDepthCharge)
+                    else if (spec.IsDCT)
                     {
-                        if (spec.Name.EndsWith("投射機"))
-                            projector = true;
-                        if (spec.Name.EndsWith("爆雷"))
-                            depthCharge = true;
+                        dct = true;
+                    }
+                    else if (spec.IsDC)
+                    {
+                        dc = true;
+                    }
+                    else if (spec.IsSpecialDCT)
+                    {
+                        special = true;
                     }
                     else if (spec.IsAircraft)
                     {
@@ -180,11 +186,11 @@ namespace KancolleSniffer.Model
                 if (vanilla == 0 && !aircraft) // 素対潜0で航空機なしは対潜攻撃なし
                     return 0;
                 var bonus = 1.0;
-                if (projector && depthCharge)
+                if (dct && dc)
                     bonus = 1.1;
-                if (sonar && (projector || depthCharge))
+                if (sonar && (dct || dc || special))
                     bonus = 1.15;
-                if (sonar && projector && depthCharge)
+                if (sonar && dct && dc)
                     bonus = 1.15 * 1.25;
                 var levelBonus = Slot.Sum(item => item.AntiSubmarineLevelBonus);
                 return bonus * (Sqrt(vanilla) * 2 + all * 1.5 + levelBonus + (aircraft ? 8 : 13));

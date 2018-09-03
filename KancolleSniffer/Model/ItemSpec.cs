@@ -134,7 +134,16 @@ namespace KancolleSniffer.Model
         public bool IsSonar => Type == 14 || // ソナー
                                Type == 40; // 大型ソナー
 
-        public bool IsDepthCharge => Type == 15;
+        public bool IsDCT =>  // Depth Charge Thrower
+            Id == 44 || // 九四式爆雷投射機
+            Id == 45; // 三式爆雷投射機
+
+        public bool IsDC => // Depth Charge
+            Id == 226 || // 九五式爆雷
+            Id == 227; // 二式爆雷
+
+        public bool IsSpecialDCT => Id == 287 || // 三式爆雷投射機 集中配備
+                                    Id == 288; // 試製15cm9連装対潜噴進砲
 
         public bool IsRepairFacility => Type == 31;
 
