@@ -26,7 +26,7 @@ this.changeTab = function(e) {
     <li each={name, i in rangeTabs} class={select: opts.logRange.val === i} onclick={parent.rangeTabChange}>{name}</li>
 </ul>
 <div style="padding: 0.2em 0;">
-<input type="text" id="term_from" style="width: 7em">～<input type="text" id="term_to" style="width: 7em">
+<input type="text" id="term_from" style="width: 10em">～<input type="text" id="term_to" style="width: 10em">
 </div>
 </div>
 
@@ -51,13 +51,13 @@ var val = sessionStorage.getItem('logRange');
 opts.logRange.val = val === null ? 2 : +val;
 
 this.init = function() {
-    $('#term_from').datepicker({
+    $('#term_from').datetimepicker({
         onClose: function() {
             if (opts.logRange.val === 4)
                 opts.observable.trigger("logRangeChanged");
         }
     });
-    $('#term_to').datepicker({
+    $('#term_to').datetimepicker({
         onClose: function() {
             if (opts.logRange.val === 4)
                 opts.observable.trigger("logRangeChanged");
@@ -185,23 +185,13 @@ this.show = function() {
         query = "";
         break;
     case 4:
-        from = $('#term_from').datepicker("getDate");
-        var to = $('#term_to').datepicker("getDate");
+        from = $('#term_from').datetimepicker("getValue");
+        var to = $('#term_to').datetimepicker("getValue");
         if (from === null)
             return;
-        from = moment(from);
-        if (from.date() === 1)
-            from.subtract(2, 'hours');
         query += from.valueOf();
-        if (to !== null) {
-            to = moment(to);
-            if (to.date() === to.clone().endOf('month').date()) {
-                to.hour(22);
-            } else {
-                to.add(1, 'days').hours(5);
-            }
+        if (to !== null)
             query += "&to=" + to.valueOf();
-        }
         break;
     }
     $('#loading').show();
@@ -247,7 +237,7 @@ opts.observable.on("mainTabChanged", function(idx) {
     <li each={name, i in diffChartRanges} class={select: chartSpec.diffRange === i} onclick={parent.rangeTabChange}>{name}</li>
 </ul>
 <div style="padding: 0.2em 0;">
-<input type="text" id="chart_from" style="width: 7em">～<input type="text" id="chart_to" style="width: 7em">
+<input type="text" id="chart_from" style="width: 10em">～<input type="text" id="chart_to" style="width: 10em">
 <label><input type="checkbox" id="tooltip" value="" style="margin-left: 2em;" onchange={tooltipChange} checked={opts.chartSpec.tooltip === 1}>ツールチップ</label>
 </div>
 </div>
@@ -298,13 +288,13 @@ this.useDatePicker = function() {
 };
 
 this.init = function() {
-    $('#chart_from').datepicker({
+    $('#chart_from').datetimepicker({
         onClose: function() {
             if (self.useDatePicker())
                 opts.observable.trigger("chartSpecChanged");
         }
     });
-    $('#chart_to').datepicker({
+    $('#chart_to').datetimepicker({
         onClose: function() {
             if (self.useDatePicker())
                 opts.observable.trigger("chartSpecChanged");
@@ -400,12 +390,12 @@ this.calcRange = function(range) {
         case 4:
             break;
         case 5:
-            var fromDate = $('#chart_from').datepicker("getDate");
-            var toDate = $('#chart_to').datepicker("getDate");
+            var fromDate = $('#chart_from').datetimepicker("getValue");
+            var toDate = $('#chart_to').datetimepicker("getValue");
             if (fromDate === null || toDate === null)
                 return {first: 0, last:0};
-            first = fromDate.valueOf() + 3600 * 5000;
-            last = toDate.valueOf() + this.oneDay + 3600 * 5000;
+            first = fromDate.valueOf();
+            last = toDate.valueOf();
             break;
     }
     return {first: first, last: last};
@@ -603,14 +593,12 @@ this.calcRange = function(range) {
         case 3:
             break;
         case 4:
-            var fromDate = $('#chart_from').datepicker("getDate");
-            var toDate = $('#chart_to').datepicker("getDate");
+            var fromDate = $('#chart_from').datetimepicker("getValue");
+            var toDate = $('#chart_to').datetimepicker("getValue");
             if (fromDate === null || toDate === null)
                 return {first: 0, last: 0};
-            var from = fromDate.valueOf() + 3600 * 5000;
-            var to = toDate.valueOf() + this.oneDay + 3600 * 5000;
-            first = Math.max(first, from);
-            last = Math.min(last, to);
+            first = Math.max(first, fromDate.valueOf());
+            last = Math.min(last, toDate.valueOf());
             break;
     }
     return {first: first, last: last};
@@ -1078,7 +1066,7 @@ this.show = function() {
 </ul>
 
 <div style="padding: 0.2em 0;">
-<input type="text" id="sortie_stat_from" style="width: 7em">～<input type="text" id="sortie_stat_to" style="width: 7em">
+<input type="text" id="sortie_stat_from" style="width: 10em">～<input type="text" id="sortie_stat_to" style="width: 10em">
 </div>
 
 <div style="clear: both;" show={type === "recent"}>
@@ -1136,10 +1124,10 @@ this.init = function() {
 };
 
 this.initDatePicker = function() {
-    $('#sortie_stat_from').datepicker({
+    $('#sortie_stat_from').datetimepicker({
         onClose: function() { if (self.type === "range") self.show(); }
     });
-    $('#sortie_stat_to').datepicker({
+    $('#sortie_stat_to').datetimepicker({
         onClose: function() { if (self.type === "range") self.show(); }
     });
 };
@@ -1152,23 +1140,14 @@ this.loadData = function() {
         from = moment().subtract(1, 'months').subtract(1, 'day').valueOf();
         to = new Date().valueOf();
     } else {
-        var fromDate = $('#sortie_stat_from').datepicker("getDate");
-        var toDate = $('#sortie_stat_to').datepicker("getDate");
+        var fromDate = $('#sortie_stat_from').datetimepicker("getValue");
+        var toDate = $('#sortie_stat_to').datetimepicker("getValue");
         if (fromDate === null || toDate === null) {
             this.show([]);
             return;
         }
-        from = moment(fromDate);
-        if (from.date() === 1)
-            from.subtract(2, 'hours');
-        from = from.valueOf();
-        to = moment(toDate);
-        if (to.date() === to.clone().endOf('month').date()) {
-            to.hour(22);
-        } else {
-            to.endOf('day');
-        }
-        to = to.valueOf();
+        from = fromDate.valueOf();
+        to = toDate.valueOf();
     }
     $.ajax({
         url: "./海戦・ドロップ報告書.json?from=" + from + "&to=" + to,
