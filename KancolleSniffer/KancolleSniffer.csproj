@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Log\LogProcessor.cs" />
     <Compile Include="Model\Achievement.cs" />
     <Compile Include="Model\AkashiTimer.cs" />
     <Compile Include="Model\AlarmCounter.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Model\ItemSpec.cs" />
     <Compile Include="Model\ItemStatus.cs" />
     <Compile Include="Model\ShipSpec.cs" />
+    <Compile Include="Log\BattleLogProcessor.cs" />
     <Compile Include="View\AntiAirPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -108,7 +110,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Util\JsonParser.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Log\Logger.cs" />
     <Compile Include="Net\LogServer.cs" />
     <Compile Include="Model\MaterialInfo.cs" />
     <Compile Include="Model\MiscTextInfo.cs" />

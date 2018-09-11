@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ExpressionToCodeLib;
+using KancolleSniffer.Log;
 using KancolleSniffer.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

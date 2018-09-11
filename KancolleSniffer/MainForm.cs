@@ -26,6 +26,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using KancolleSniffer.Log;
 using KancolleSniffer.Model;
 using KancolleSniffer.Net;
 using KancolleSniffer.Util;
@@ -449,7 +450,7 @@ namespace KancolleSniffer
         public void ApplyLogSetting()
         {
             LogServer.OutputDir = _config.Log.OutputDir;
-            LogServer.MaterialHistory = _sniffer.Material.MaterialHistory;
+            LogServer.LogProcessor = new LogProcessor(_sniffer.Material.MaterialHistory);
             _sniffer.EnableLog(_config.Log.On ? LogType.All : LogType.None);
             _sniffer.MaterialLogInterval = _config.Log.MaterialLogInterval;
             _sniffer.LogOutputDir = _config.Log.OutputDir;

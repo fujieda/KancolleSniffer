@@ -16,6 +16,7 @@ using System;
 using KancolleSniffer.Util;
 using System.Collections.Generic;
 using System.Linq;
+using KancolleSniffer.Log;
 using KancolleSniffer.Model;
 
 namespace KancolleSniffer

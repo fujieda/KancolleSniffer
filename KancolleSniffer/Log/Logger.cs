@@ -21,7 +21,7 @@ using System.Text;
 using KancolleSniffer.Model;
 using KancolleSniffer.Util;
 
-namespace KancolleSniffer
+namespace KancolleSniffer.Log
 {
     [Flags]
     public enum LogType
