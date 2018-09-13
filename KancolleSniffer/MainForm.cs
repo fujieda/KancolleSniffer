@@ -24,6 +24,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using KancolleSniffer.Log;
@@ -32,6 +33,7 @@ using KancolleSniffer.Net;
 using KancolleSniffer.Util;
 using KancolleSniffer.View;
 using Microsoft.CSharp.RuntimeBinder;
+using Timer = System.Windows.Forms.Timer;
 using static System.Math;
 
 namespace KancolleSniffer
@@ -450,7 +452,7 @@ namespace KancolleSniffer
         public void ApplyLogSetting()
         {
             LogServer.OutputDir = _config.Log.OutputDir;
-            LogServer.LogProcessor = new LogProcessor(_sniffer.Material.MaterialHistory);
+            LogServer.LogProcessor = new LogProcessor(_sniffer.Material.MaterialHistory, _sniffer.MapDictionary);
             _sniffer.EnableLog(_config.Log.On ? LogType.All : LogType.None);
             _sniffer.MaterialLogInterval = _config.Log.MaterialLogInterval;
             _sniffer.LogOutputDir = _config.Log.OutputDir;
@@ -1144,7 +1146,10 @@ namespace KancolleSniffer
             };
             foreach (var a in labels)
             {
-                for (var fleet = 0; fleet < labels[0].Length; fleet++)
+                a[0].Tag = 0;
+                a[0].Click += labelFleet1_Click;
+                a[0].DoubleClick += labelFleet1_DoubleClick;
+                for (var fleet = 1; fleet < labels[0].Length; fleet++)
                 {
                     a[fleet].Tag = fleet;
                     a[fleet].Click += labelFleet_Click;
@@ -1159,15 +1164,36 @@ namespace KancolleSniffer
                 return;
             var fleet = (int)((Label)sender).Tag;
             if (_currentFleet == fleet)
-            {
-                if (fleet > 0)
-                    return;
-                _combinedFleet = _sniffer.IsCombinedFleet && !_combinedFleet;
-                UpdatePanelShipInfo();
                 return;
-            }
             _combinedFleet = false;
             _currentFleet = fleet;
+            UpdatePanelShipInfo();
+        }
+
+        private readonly SemaphoreSlim _clickSemaphore = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _doubleClickSemaphore = new SemaphoreSlim(0);
+
+        private async void labelFleet1_Click(object sender, EventArgs e)
+        {
+            if (!_started)
+                return;
+            if (_currentFleet != 0)
+            {
+                labelFleet_Click(sender, e);
+                return;
+            }
+            if (!_clickSemaphore.Wait(0))
+                return;
+            try
+            {
+                if (await _doubleClickSemaphore.WaitAsync(SystemInformation.DoubleClickTime))
+                    return;
+            }
+            finally
+            {
+                _clickSemaphore.Release();
+            }
+            _combinedFleet = _sniffer.IsCombinedFleet && !_combinedFleet;
             UpdatePanelShipInfo();
         }
 
@@ -1187,11 +1213,27 @@ namespace KancolleSniffer
                 return;
             var fleet = (int)((Label)sender).Tag;
             var text = TextGenerator.GenerateFleetData(_sniffer, fleet);
+            CopyFleetText(text, (Label)sender);
+        }
+
+        private void labelFleet1_DoubleClick(object sender, EventArgs e)
+        {
+            if (!_started)
+                return;
+            _doubleClickSemaphore.Release();
+            var text = TextGenerator.GenerateFleetData(_sniffer, 0);
+            if (_combinedFleet)
+                text += TextGenerator.GenerateFleetData(_sniffer, 1);
+            CopyFleetText(text, (Label)sender);
+        }
+
+        private void CopyFleetText(string text, Label fleetButton)
+        {
             if (string.IsNullOrEmpty(text))
                 return;
             Clipboard.SetText(text);
             _tooltipCopy.Active = true;
-            _tooltipCopy.Show("コピーしました。", (Label)sender);
+            _tooltipCopy.Show("コピーしました。", fleetButton);
             Task.Run(async () =>
             {
                 await Task.Delay(1000);
