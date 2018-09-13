@@ -53,7 +53,26 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
-        /// 資材ログは最後に現在値を示すレコードを追加する
+        /// 海戦・ドロップ報告書を加工する
+        /// </summary>
+        [TestMethod]
+        public void BattleLog()
+        {
+            var processor = new LogProcessor(null, new Dictionary<string, string> {{"鎮守府正面海域", "1-1"}});
+            var log = new[]
+            {
+                "2018-09-08 11:28:01,鎮守府正面海域,3,ボス,A,同航戦,単縦陣,単縦陣,敵主力艦隊,駆逐艦,雷,浜波改(Lv78),32/32,涼風(Lv10),3/16,,,,,,,,,軽巡ホ級,0/33,駆逐イ級,0/20,駆逐イ級,7/20,,,,,,,0,0,"
+            };
+            var result = processor.Process(log, "海戦・ドロップ報告書.csv", DateTime.MinValue, DateTime.MaxValue, false);
+            PAssert.That(() =>
+                result.First() ==
+                "[\"2018-09-08 11:28:01\",\"鎮守府正面海域\",\"3\",\"ボス\",\"A\",\"同航戦\",\"単縦陣\",\"単縦陣\",\"敵主力艦隊\",\"駆逐艦\",\"雷\"," +
+                "\"浜波改(Lv78)\",\"32/32\",\"涼風(Lv10)\",\"3/16\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"," +
+                "\"軽巡ホ級\",\"0/33\",\"駆逐イ級\",\"0/20\",\"駆逐イ級\",\"7/20\",\"\",\"\",\"\",\"\",\"\",\"\",\"0\",\"0\",\"\",\"涼風(Lv10)\",\"1-1\"]");
+        }
+
+        /// <summary>
+        /// 資材ログの最後に現在値を示すレコードを追加する
         /// </summary>
         [TestMethod]
         public void MaterialLogWithCurrentRecord()

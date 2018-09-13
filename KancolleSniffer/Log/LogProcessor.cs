@@ -26,10 +26,10 @@ namespace KancolleSniffer.Log
         private readonly MaterialCount[] _materialCount;
         private readonly BattleLogProcessor _battleLogProcessor;
 
-        public LogProcessor(MaterialCount[] materialCount = null)
+        public LogProcessor(MaterialCount[] materialCount = null, Dictionary<string, string> mapDictionary = null)
         {
             _materialCount = materialCount ?? new MaterialCount[0];
-            _battleLogProcessor = new BattleLogProcessor();
+            _battleLogProcessor = new BattleLogProcessor(mapDictionary);
         }
 
         public IEnumerable<string> Process(IEnumerable<string> lines, string path, DateTime from, DateTime to,
@@ -47,7 +47,7 @@ namespace KancolleSniffer.Log
                     fields = 15;
                     break;
                 case "海戦・ドロップ報告書":
-                    fields = 39;
+                    fields = 40;
                     battle = true;
                     break;
                 case "開発報告書":

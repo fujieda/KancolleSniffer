@@ -59,6 +59,8 @@ namespace KancolleSniffer
 
         public IRepeatingTimerController RepeatingTimerController { get; set; }
 
+        public Dictionary<string, string> MapDictionary { get; } = new Dictionary<string, string>();
+
         [Flags]
         public enum Update
         {
@@ -162,8 +164,15 @@ namespace KancolleSniffer
             _itemInfo.InspectMaster(data);
             _exMapInfo.ResetIfNeeded();
             _miscTextInfo.InspectMaster(data);
+            SetMapDictionary(data.api_mst_mapinfo);
             _start = true;
             return Update.Start;
+        }
+
+        private void SetMapDictionary(dynamic json)
+        {
+            foreach (var map in json)
+                MapDictionary[map.api_name] = $"{map.api_maparea_id}-{map.api_no}";
         }
 
         private Update ApiPort(dynamic data)

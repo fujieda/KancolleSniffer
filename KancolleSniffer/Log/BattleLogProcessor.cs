@@ -22,18 +22,34 @@ namespace KancolleSniffer.Log
 {
     public class BattleLogProcessor
     {
+        private readonly Dictionary<string, string> _mapDictionary;
+
+        public BattleLogProcessor(Dictionary<string, string> mapDictionary = null)
+        {
+            _mapDictionary = mapDictionary ?? new Dictionary<string, string>();
+        }
+
         public string[] Process(string[] data)
         {
-            if (data.Length == 35)
-                data = data.Concat(Enumerable.Repeat("", 3)).ToArray();
-            if (data.Length == 40)
+            string map;
+            switch (data.Length)
             {
-                data = data.Take(21).Concat(new[] {data[21] + "・" + data[23], data[22] + "・" + data[24]})
-                    .Concat(data.Skip(25)).ToArray();
-            }
-            else if (data.Length != 38)
-            {
-                return data;
+                case 35:
+                    data = data.Concat(Enumerable.Repeat("", 3)).ToArray();
+                    goto case 38;
+                case 38:
+                    map = _mapDictionary.TryGetValue(data[1], out var num) ? num : "";
+                    break;
+                case 39:
+                    map = data[38];
+                    break;
+                case 40: // 七隻分のログが出力されている
+                    data[21] = data[21] + "・" + data[23];
+                    data[22] = data[22] + "・" + data[24];
+                    Array.Copy(data, 24, data, 23, 15);
+                    goto case 38;
+                default:
+                    return data;
             }
             if (data[5] == "Ｔ字戦(有利)")
                 data[5] = "Ｔ字有利";
@@ -44,7 +60,11 @@ namespace KancolleSniffer.Log
             if (data[7].EndsWith("航行序列"))
                 data[7] = data[7].Substring(0, 4);
             data[37] = ShortenAirBattleResult(data[37]);
-            return AddDamagedShip(data);
+            var result = new string[40];
+            result[38] = GenerateDamagedShip(data);
+            result[39] = map;
+            Array.Copy(data, result, 38);
+            return result;
         }
 
         private static string ShortenAirBattleResult(string result)
@@ -66,7 +86,7 @@ namespace KancolleSniffer.Log
             }
         }
 
-        private static string[] AddDamagedShip(string[] data)
+        private static string GenerateDamagedShip(string[] data)
         {
             var damaged = new List<string>();
             for (var i = 11; i < 11 + 12; i += 2)
@@ -85,10 +105,10 @@ namespace KancolleSniffer.Log
                 }
                 catch (FormatException)
                 {
-                    return data;
+                    return "";
                 }
             }
-            return data.Take(23).Concat(new[] {string.Join("・", damaged)}).Concat(data.Skip(23)).ToArray();
+            return string.Join("・", damaged);
         }
 
         private static readonly Regex Kana = new Regex(@"\([^)]+\)\(", RegexOptions.Compiled);

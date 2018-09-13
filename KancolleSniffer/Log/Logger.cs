@@ -230,11 +230,12 @@ namespace KancolleSniffer.Log
                     string.Join(",", fShips),
                     string.Join(",", eShips),
                     fPower, _battleInfo.EnemyFighterPower.AirCombat + _battleInfo.EnemyFighterPower.UnknownMark,
-                    AirControlLevelName(_battle)),
+                    AirControlLevelName(_battle),
+                    $"{(int)_map.api_maparea_id}-{(int)_map.api_mapinfo_no}"),
                 "日付,海域,マス,ボス,ランク,艦隊行動,味方陣形,敵陣形,敵艦隊,ドロップ艦種,ドロップ艦娘," +
                 "味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP," +
                 "敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP," +
-                "味方制空値,敵制空値,制空状態"
+                "味方制空値,敵制空値,制空状態,マップ"
             );
             _map = _battle = null;
             _start = false;

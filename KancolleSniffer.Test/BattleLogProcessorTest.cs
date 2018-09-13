@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.Linq;
 using ExpressionToCodeLib;
 using KancolleSniffer.Log;
@@ -43,8 +44,8 @@ namespace KancolleSniffer.Test
             input[37] = "制空権確保";
             var result = new BattleLogProcessor().Process(input);
             PAssert.That(() => result[5] == "Ｔ字有利");
-            PAssert.That(() => result[23] == "龍鳳改(Lv97)・夕立改(Lv148)");
-            PAssert.That(() => result[38] == "確保");
+            PAssert.That(() => result[37] == "確保");
+            PAssert.That(() => result[38] == "龍鳳改(Lv97)・夕立改(Lv148)");
         }
 
         [TestMethod]
@@ -57,8 +58,9 @@ namespace KancolleSniffer.Test
             input[37] = "航空劣勢";
             var result = new BattleLogProcessor().Process(input);
             PAssert.That(() => result[6] == "第四警戒");
-            PAssert.That(() => result[23] == "龍鳳改(Lv97)・夕立改(Lv148)");
-            PAssert.That(() => result[38] == "劣勢");
+            PAssert.That(() => result[37] == "劣勢");
+            PAssert.That(() => result[38] == "龍鳳改(Lv97)・夕立改(Lv148)");
+
         }
 
         [TestMethod]
@@ -70,7 +72,7 @@ namespace KancolleSniffer.Test
             input[13] = "・夕立改(Lv148)";
             input[14] = "・5/36";
             var result = new BattleLogProcessor().Process(input);
-            PAssert.That(() => result[23] == "龍鳳改(Lv97)・夕立改(Lv148)");
+            PAssert.That(() => result[38] == "龍鳳改(Lv97)・夕立改(Lv148)");
         }
 
         [TestMethod]
@@ -81,7 +83,7 @@ namespace KancolleSniffer.Test
             input[12] = "2/11";
             var result = new BattleLogProcessor().Process(input);
             PAssert.That(() => result[11] == "Luigi Torelli(Lv7)");
-            PAssert.That(() => result[23] == "Luigi Torelli(Lv7)");
+            PAssert.That(() => result[38] == "Luigi Torelli(Lv7)");
         }
 
         [TestMethod]
@@ -98,7 +100,16 @@ namespace KancolleSniffer.Test
             var result = new BattleLogProcessor().Process(input);
             PAssert.That(() => result[21] == "潮改二(Lv94)・龍驤改二(Lv99)" &&
                                result[22] == "33/33・50/50");
-            PAssert.That(() => result.Length == 39);
+            PAssert.That(() => result.Length == 40);
+        }
+
+        [TestMethod]
+        public void AddMapNumber()
+        {
+            var input = Enumerable.Repeat("", 38).ToArray();
+            input[1] = "サーモン海域";
+            var result = new BattleLogProcessor(new Dictionary<string, string> {{"サーモン海域", "5-4"}}).Process(input);
+            PAssert.That(() => result[39] == "5-4");
         }
     }
 }
