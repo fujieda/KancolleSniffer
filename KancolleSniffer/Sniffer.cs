@@ -59,7 +59,14 @@ namespace KancolleSniffer
 
         public IRepeatingTimerController RepeatingTimerController { get; set; }
 
-        public Dictionary<string, string> MapDictionary { get; } = new Dictionary<string, string>();
+        public Dictionary<string, string> MapDictionary { get; } = new Dictionary<string, string>
+        {
+            {"南西作戦海域方面 バリ島沖", "42-1"},
+            {"西方作戦海域方面 マラッカ海峡北方", "42-2"},
+            {"西方作戦海域方面 セイロン島南西沖", "42-3"},
+            {"欧州作戦海域方面 地中海マルタ島沖", "42-4"},
+            {"欧州作戦海域方面 北海/北大西洋海域", "42-5"}
+        };
 
         [Flags]
         public enum Update
