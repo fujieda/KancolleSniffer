@@ -52,13 +52,25 @@ opts.logRange.val = val === null ? 2 : +val;
 
 this.init = function() {
     $('#term_from').datetimepicker({
+        onShow: function() {
+            self.datetimepickerOpen = true;
+        },
         onClose: function() {
+            if (!self.datetimepickerOpen)
+                return;
+            self.datetimepickerOpen = false;
             if (opts.logRange.val === 4)
                 opts.observable.trigger("logRangeChanged");
         }
     });
     $('#term_to').datetimepicker({
+        onShow: function() {
+            self.datetimepickerOpen = true;
+        },
         onClose: function() {
+            if (!self.datetimepickerOpen)
+                return;
+            self.datetimepickerOpen = false;
             if (opts.logRange.val === 4)
                 opts.observable.trigger("logRangeChanged");
         }
@@ -291,15 +303,29 @@ this.useDatePicker = function() {
         opts.chartSpec.type === 1 && opts.chartSpec.diffRange === 4;
 };
 
+var self = this;
+
 this.init = function() {
     $('#chart_from').datetimepicker({
+        onShow: function() {
+            self.datetimepickerOpen = true;
+        },
         onClose: function() {
+            if (!self.datetimepickerOpen)
+                return;
+            self.datetimepickerOpen = false;
             if (self.useDatePicker())
                 opts.observable.trigger("chartSpecChanged");
         }
     });
     $('#chart_to').datetimepicker({
+        onShow: function() {
+            self.datetimepickerOpen = true;
+        },
         onClose: function() {
+            if (!self.datetimepickerOpen)
+                return;
+            self.datetimepickerOpen = false;
             if (self.useDatePicker())
                 opts.observable.trigger("chartSpecChanged");
         }
@@ -307,7 +333,6 @@ this.init = function() {
 };
 
 this.mainTab = 0;
-var self = this;
 
 this.on("mount", self.init);
 
@@ -1129,10 +1154,28 @@ this.init = function() {
 
 this.initDatePicker = function() {
     $('#sortie_stat_from').datetimepicker({
-        onClose: function() { if (self.type === "range") self.show(); }
+        onShow: function() {
+            self.datetimepickerOpen = true;
+        },
+        onClose: function() {
+            if (!self.datetimepickerOpen)
+                return;
+            self.datetimepickerOpen = false;
+            if (self.type === "range")
+                self.show();
+        }
     });
     $('#sortie_stat_to').datetimepicker({
-        onClose: function() { if (self.type === "range") self.show(); }
+        onShow: function() {
+            self.datetimepickerOpen = true;
+        },
+        onClose: function() {
+            if (!self.datetimepickerOpen)
+                return;
+            self.datetimepickerOpen = false;
+            if (self.type === "range")
+                self.show();
+        }
     });
 };
 
