@@ -452,15 +452,18 @@ namespace KancolleSniffer.Model
             Array.Copy(_guard, 0, records[1], 6, _guard.Length);
             Array.Copy(_enemy, records[0], _enemy.Length);
             Array.Copy(_enemyGuard, 0, records[0], 6, _enemyGuard.Length);
-            for (var i = 0; i < eFlags.Length; i++)
+            for (var turn = 0; turn < eFlags.Length; turn++)
             {
-                // 一度に複数の目標を狙う攻撃はないものと仮定する
-                var hit = new {t = targets[i][0], d = damages[i].Sum(d => d >= 0 ? d : 0)};
-                if (hit.t == -1)
+                if (ignoreFriendDamage && eFlags[turn] == 1)
                     continue;
-                if (ignoreFriendDamage && eFlags[i] == 1)
-                    continue;
-                records[eFlags[i]][hit.t].ApplyDamage(hit.d);
+                for (var shot = 0; shot < targets[turn].Length; shot++)
+                {
+                    var target = targets[turn][shot];
+                    var damage  = damages[turn][shot];
+                    if (target == -1 || damage == -1)
+                        continue;
+                    records[eFlags[turn]][target].ApplyDamage(damage);
+                }
             }
         }
 
