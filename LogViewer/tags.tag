@@ -51,29 +51,9 @@ var val = sessionStorage.getItem('logRange');
 opts.logRange.val = val === null ? 2 : +val;
 
 this.init = function() {
-    $('#term_from').datetimepicker({
-        onShow: function() {
-            self.datetimepickerOpen = true;
-        },
-        onClose: function() {
-            if (!self.datetimepickerOpen)
-                return;
-            self.datetimepickerOpen = false;
-            if (opts.logRange.val === 4)
-                opts.observable.trigger("logRangeChanged");
-        }
-    });
-    $('#term_to').datetimepicker({
-        onShow: function() {
-            self.datetimepickerOpen = true;
-        },
-        onClose: function() {
-            if (!self.datetimepickerOpen)
-                return;
-            self.datetimepickerOpen = false;
-            if (opts.logRange.val === 4)
-                opts.observable.trigger("logRangeChanged");
-        }
+    self.initPicker('#term_from', '#term_to', function() {
+        if (opts.logRange.val === 4)
+            opts.observable.trigger( "logRangeChanged");
     });
 };
 
@@ -306,29 +286,9 @@ this.useDatePicker = function() {
 var self = this;
 
 this.init = function() {
-    $('#chart_from').datetimepicker({
-        onShow: function() {
-            self.datetimepickerOpen = true;
-        },
-        onClose: function() {
-            if (!self.datetimepickerOpen)
-                return;
-            self.datetimepickerOpen = false;
-            if (self.useDatePicker())
-                opts.observable.trigger("chartSpecChanged");
-        }
-    });
-    $('#chart_to').datetimepicker({
-        onShow: function() {
-            self.datetimepickerOpen = true;
-        },
-        onClose: function() {
-            if (!self.datetimepickerOpen)
-                return;
-            self.datetimepickerOpen = false;
-            if (self.useDatePicker())
-                opts.observable.trigger("chartSpecChanged");
-        }
+    self.initPicker('#chart_from', '#chart_to', function() {
+        if (self.useDatePicker())
+            opts.observable.trigger("chartSpecChanged");
     });
 };
 
@@ -1149,33 +1109,9 @@ opts.observable.on("mainTabChanged", function(idx) {
 });
 
 this.init = function() {
-    this.initDatePicker();
-};
-
-this.initDatePicker = function() {
-    $('#sortie_stat_from').datetimepicker({
-        onShow: function() {
-            self.datetimepickerOpen = true;
-        },
-        onClose: function() {
-            if (!self.datetimepickerOpen)
-                return;
-            self.datetimepickerOpen = false;
-            if (self.type === "range")
-                self.show();
-        }
-    });
-    $('#sortie_stat_to').datetimepicker({
-        onShow: function() {
-            self.datetimepickerOpen = true;
-        },
-        onClose: function() {
-            if (!self.datetimepickerOpen)
-                return;
-            self.datetimepickerOpen = false;
-            if (self.type === "range")
-                self.show();
-        }
+    self.initPicker('#sortie_stat_from', '#sortie_stat_to', function() {
+        if (self.type === "range")
+            self.show();
     });
 };
 
