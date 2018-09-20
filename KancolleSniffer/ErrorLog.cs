@@ -114,7 +114,7 @@ namespace KancolleSniffer
 
         public static void RemoveUnwantedInformation(ref string request, ref string response)
         {
-            var token = new Regex(@"&api%5Ftoken=.+?(?=&|$)|api%5Ftoken=.+?(?:&|$)|api%5Fbtime=\d+&?");
+            var token = new Regex(@"&api(?:%5F|_)token=.+?(?=&|$)|api(?:%5F|_)token=.+?(?:&|$)|api(?:%5F|_)btime=\d+&?");
             request = token.Replace(request, "");
             var id = new Regex(@"""api_member_id"":""?\d+""?,?|""api_nickname"":"".+?"",?|""api_nickname_id"":""\d+"",?|""api_name_id"":"".+?"",?|");
             response = id.Replace(response, "");

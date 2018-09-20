@@ -23,8 +23,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void RemoveTokenFromRequest()
         {
-            var request =
-                "api%5Fverno=1&api%5Ftoken=0123456abcdef&api%5Fport=0123456789";
+            var request = "api%5Fverno=1&api%5Ftoken=0123456abcdef&api%5Fport=0123456789";
             var response = "";
             ErrorLog.RemoveUnwantedInformation(ref request, ref response);
             PAssert.That(() => request == "api%5Fverno=1&api%5Fport=0123456789", "トークンが中間");
@@ -37,9 +36,24 @@ namespace KancolleSniffer.Test
             var request4 = "api%5Ftoken=0123456abcdef";
             ErrorLog.RemoveUnwantedInformation(ref request4, ref response);
             PAssert.That(() => request4 == "", "トークン単独");
-            var request5 = "api%5Fbtime=83026279&api%5Ftoken=b936475084b75920aa646d2a609b23cf3838bbc1&api%5Fverno=1";
+            var request5 = "api%5Fbtime=83026279&api%5Ftoken=0123456abcdef&api%5Fverno=1";
             ErrorLog.RemoveUnwantedInformation(ref request5, ref response);
             PAssert.That(() => request5 == "api%5Fverno=1", "戦闘APIの時刻印を削除");
+        }
+
+        /// <summary>
+        /// 二期は%エンコードされていない
+        /// </summary>
+        [TestMethod]
+        public void RemoveTokenFromRequest2()
+        {
+            var request = "api_verno=1&api_token=0123456abcdef&api_port=0123456789";
+            var response = "";
+            ErrorLog.RemoveUnwantedInformation(ref request, ref response);
+            PAssert.That(() => request == "api_verno=1&api_port=0123456789", "トークンが中間");
+            var request5 = "api_btime=83026279&api_token=0123456abcdef&api_verno=1";
+            ErrorLog.RemoveUnwantedInformation(ref request5, ref response);
+            PAssert.That(() => request5 == "api_verno=1", "戦闘APIの時刻印を削除");
         }
 
         [TestMethod]
