@@ -430,7 +430,10 @@ namespace KancolleSniffer.Model
         {
             var damage = (int[])rawDamage;
             for (var i = 0; i < friend.Length; i++)
+            {
                 friend[i].ApplyDamage(damage[i]);
+                friend[i].CheckDamageControl();
+            }
             if (guard == null)
                 return;
             for (var i = 0; i < guard.Length; i++)
@@ -464,6 +467,8 @@ namespace KancolleSniffer.Model
                         continue;
                     records[eFlags[turn]][target].ApplyDamage(damage);
                 }
+                foreach (var ship in records[1])
+                    ship?.CheckDamageControl();
             }
         }
 
@@ -589,13 +594,12 @@ namespace KancolleSniffer.Model
 
             public void ApplyDamage(int damage)
             {
-                if (_status.NowHp > damage)
-                {
-                    _status.NowHp -= damage;
-                    return;
-                }
-                _status.NowHp = 0;
-                if (_practice)
+                _status.NowHp = Max(0, _status.NowHp - damage);
+            }
+
+            public void CheckDamageControl()
+            {
+                if (_status.NowHp > 0 || _practice)
                     return;
                 foreach (var item in new[] {_status.SlotEx}.Concat(_status.Slot))
                 {
