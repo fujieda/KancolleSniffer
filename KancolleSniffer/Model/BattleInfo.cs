@@ -567,7 +567,6 @@ namespace KancolleSniffer.Model
             public ShipStatus.Damage DamageLevel => _status.DamageLevel;
             public string Name => _status.Name;
             public int StartHp { get; private set; }
-            public bool GoddessConsumed { get; private set; }
 
             public static Record[] Setup(IEnumerable<ShipStatus> ships, bool practice) =>
             (from s in ships
@@ -613,7 +612,6 @@ namespace KancolleSniffer.Model
                     {
                         _status.NowHp = _status.MaxHp;
                         ConsumeSlotItem(_status, 43);
-                        GoddessConsumed = true;
                         break;
                     }
                 }
@@ -655,7 +653,6 @@ namespace KancolleSniffer.Model
             var friendStartHpTotal = 0;
             var friendNowHpTotal = 0;
             var friendSunk = 0;
-            var goddessConsumed = false;
             foreach (var ship in friend)
             {
                 if (ship.Escaped)
@@ -664,7 +661,6 @@ namespace KancolleSniffer.Model
                 friendNowHpTotal += ship.NowHp;
                 if (ship.NowHp == 0)
                     friendSunk++;
-                goddessConsumed |= ship.GoddessConsumed;
             }
             var friendGaugeRate = (int)((double)(friendStartHpTotal - friendNowHpTotal) / friendStartHpTotal * 100);
 
@@ -676,7 +672,7 @@ namespace KancolleSniffer.Model
 
             if (friendSunk == 0 && enemySunk == enemyCount)
             {
-                if (friendNowHpTotal == friendStartHpTotal && !goddessConsumed)
+                if (friendNowHpTotal >= friendStartHpTotal)
                     return BattleResultRank.P;
                 return BattleResultRank.S;
             }
