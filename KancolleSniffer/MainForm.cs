@@ -520,10 +520,11 @@ namespace KancolleSniffer
             if (!_listForm.Visible)
                 return;
             var idx = (int)((Control)sender).Tag;
-            var ships = _sniffer.Fleets[_currentFleet].ActualShips;
-            if (ships.Count <= idx)
-                return;
-            _listForm.ShowShip(ships[idx].Id);
+            var ship = (_combinedFleet
+                ? _sniffer.Fleets[0].Ships.Concat(_sniffer.Fleets[1].Ships).ToArray()
+                : _sniffer.Fleets[_currentFleet].Ships)[idx];
+            if (!ship.Empty)
+                _listForm.ShowShip(ship.Id);
         }
 
         private void UpdateItemInfo()
