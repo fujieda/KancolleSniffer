@@ -501,7 +501,6 @@ namespace KancolleSniffer.View
             if (s.Level == 1000) // 艦種の表示
             {
                 SetShipType(i);
-                panel.Visible = true;
                 return;
             }
             labels[0].SetHp(s);
@@ -524,6 +523,7 @@ namespace KancolleSniffer.View
             labels[4].SetName(null);
             labels[5].SetFleet(null);
             labels[5].Text = s.Name;
+            _labelPanelList[i].Visible = true;
         }
 
         private void SetGrouping(int i)
