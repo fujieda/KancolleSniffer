@@ -98,9 +98,9 @@ namespace KancolleSniffer
 
         private string HpDiffLog() => string.Join(" ",
             from pair in _sniffer.BattleResultStatusDiff
-            let assumed = pair.Assumed
+            let assumed = pair.Assumed // こちらのFleetはnull
             let actual = pair.Actual
-            select $"({assumed.Fleet}-{assumed.DeckIndex}) {assumed.NowHp}->{actual.NowHp}");
+            select $"({actual.Fleet.Number}-{actual.DeckIndex}) {assumed.NowHp}->{actual.NowHp}");
 
         public string GenerateErrorLog(string url, string request, string response, string exception)
         {
