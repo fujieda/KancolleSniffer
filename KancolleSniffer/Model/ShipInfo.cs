@@ -122,13 +122,18 @@ namespace KancolleSniffer.Model
                 .SelectMany(fleet => fleet.Ships).ToArray();
         }
 
+        public void ClearBattleResult()
+        {
+            _battleResult = new ShipStatus[0];
+        }
+
         private void VerifyBattleResult()
         {
             BattleResultDiff = (from assumed in _battleResult
                 let actual = GetShip(assumed.Id)
                 where !assumed.Escaped && assumed.NowHp != actual.NowHp
                 select new ShipStatusPair(assumed, actual)).ToArray();
-            _battleResult = new ShipStatus[0];
+            ClearBattleResult();
         }
 
         public void SaveBattleStartStatus()

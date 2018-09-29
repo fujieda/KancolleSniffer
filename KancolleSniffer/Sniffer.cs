@@ -167,6 +167,7 @@ namespace KancolleSniffer
         private Update ApiStart(dynamic data)
         {
             _shipInfo.InspectMaster(data);
+            _shipInfo.ClearBattleResult();
             _missionInfo.InspectMaster(data.api_mst_mission);
             _itemInfo.InspectMaster(data);
             _exMapInfo.ResetIfNeeded();
