@@ -936,10 +936,10 @@ namespace KancolleSniffer.Test
             PAssert.That(() =>
                 sniffer.MiscText ==
                                "[海域ゲージ]\r\n" +
-                               "1-6 : 撃破 2/7\r\n" +
-                               "2-5 : 撃破 0/4\r\n" +
-                               "3-5 : 撃破 0/4\r\n" +
-                               "4-4 : 撃破 0/4\r\n");
+                               "1-6 : 残り 5/7\r\n" +
+                               "2-5 : 残り 4/4\r\n" +
+                               "3-5 : 残り 4/4\r\n" +
+                               "4-4 : 残り 4/4\r\n");
         }
 
         /// <summary>

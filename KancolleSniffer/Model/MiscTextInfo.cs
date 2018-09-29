@@ -74,13 +74,16 @@ namespace KancolleSniffer.Model
                 if (entry.api_eventmap())
                 {
                     var eventMap = entry.api_eventmap;
-                    Text += $"{map / 10}-{map % 10} : HP {(int)eventMap.api_now_maphp}/{(int)eventMap.api_max_maphp}\r\n";
+                    Text +=
+                        $"{map / 10}-{map % 10} : HP {(int)eventMap.api_now_maphp}/{(int)eventMap.api_max_maphp}\r\n";
                     continue;
                 }
                 if (!entry.api_defeat_count())
                     continue;
-                var reqStr = _gaugeCount.TryGetValue(map, out var req) ? req.ToString() : "?";
-                Text += $"{map / 10}-{map % 10} : 撃破 {(int)entry.api_defeat_count}/{reqStr}\r\n";
+                var count = _gaugeCount.TryGetValue(map, out var max)
+                    ? $"{max - (int)entry.api_defeat_count}/{max}"
+                    : "?/?";
+                Text += $"{map / 10}-{map % 10} : 残り {count}\r\n";
             }
         }
 
