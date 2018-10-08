@@ -702,6 +702,7 @@ namespace KancolleSniffer
         {
             ResetBattleInfo();
             _listForm.UpdateBattleResult();
+            _listForm.UpdateAirBattleResult();
             if (_sniffer.Battle.BattleState == BattleState.None)
                 return;
             panelBattleInfo.BringToFront();
@@ -710,8 +711,6 @@ namespace KancolleSniffer
             UpdateBattleFighterPower();
             if ((_config.Spoilers & Spoiler.ResultRank) != 0)
                 ShowResultRank();
-            if (_sniffer.Battle.BattleState == BattleState.Day)
-                _listForm.UpdateAirBattleResult();
         }
 
         private void UpdateCellInfo()

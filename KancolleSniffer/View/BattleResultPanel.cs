@@ -33,7 +33,6 @@ namespace KancolleSniffer.View
         private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
         private readonly BattleInfo.BattleResult[] _result = new BattleInfo.BattleResult[2];
         private Label _phaseLabel, _rankLabel, _cellLabel;
-        private BattleState _prevBattleState;
         private readonly BattleResultRank[] _rank = new BattleResultRank[2];
         private readonly InformationPanel _informationPanel;
         private CellInfo _cellInfo;
@@ -65,36 +64,41 @@ namespace KancolleSniffer.View
         public void Update(Sniffer sniffer)
         {
             var state = sniffer.Battle.BattleState;
-            var prev = _prevBattleState;
-            _prevBattleState = state;
             _cellInfo = sniffer.CellInfo;
-            if (prev == BattleState.None && state != BattleState.None)
-                _result[0] = _result[1] = null;
-            if (prev != BattleState.None && state == BattleState.None &&
-                !(_result[0] == null && _result[1] == null))
+            switch (sniffer.Battle.BattleState)
             {
-                ClearResult();
-                SetPhase("結果");
-                UpdateCellInfo(_cellInfo);
-                return;
+                case BattleState.None:
+                    if (_result[0] == null && _result[1] == null)
+                        return;
+                        ClearResult();
+                        SetPhase("結果");
+                        UpdateCellInfo(_cellInfo);
+                        return;
+                case BattleState.Day:
+                case BattleState.SpNight:
+                    _result[0] = _result[1] = null;
+                    break;
+                case BattleState.Result:
+                case BattleState.Unknown:
+                    return;
             }
-            if (state != BattleState.Day && state != BattleState.Night)
-                return;
             if ((Spoilers & Spoiler.BattleResult) != 0)
             {
                 ShowResult(sniffer.Battle.Result);
                 ShowResultRank(sniffer.Battle.ResultRank);
-                if (state == BattleState.Day)
+                switch (state)
                 {
-                    _result[0] = sniffer.Battle.Result;
-                    _rank[0] = sniffer.Battle.ResultRank;
-                    SetPhase("昼戦");
-                }
-                else if (state == BattleState.Night)
-                {
-                    _result[1] = sniffer.Battle.Result;
-                    _rank[1] = sniffer.Battle.ResultRank;
-                    SetPhase("夜戦");
+                    case BattleState.Day:
+                        _result[0] = sniffer.Battle.Result;
+                        _rank[0] = sniffer.Battle.ResultRank;
+                        SetPhase("昼戦");
+                        break;
+                    case BattleState.Night:
+                    case BattleState.SpNight:
+                        _result[1] = sniffer.Battle.Result;
+                        _rank[1] = sniffer.Battle.ResultRank;
+                        SetPhase("夜戦");
+                        break;
                 }
                 _informationPanel.Visible = true;
             }
@@ -102,15 +106,17 @@ namespace KancolleSniffer.View
             {
                 ClearResult();
                 SetPhase("結果");
-                if (state == BattleState.Day)
+                switch (state)
                 {
-                    _result[0] = sniffer.Battle.Result;
-                    _rank[0] = sniffer.Battle.ResultRank;
-                }
-                else if (state == BattleState.Night)
-                {
-                    _result[1] = sniffer.Battle.Result;
-                    _rank[1] = sniffer.Battle.ResultRank;
+                    case BattleState.Day:
+                        _result[0] = sniffer.Battle.Result;
+                        _rank[0] = sniffer.Battle.ResultRank;
+                        break;
+                    case BattleState.Night:
+                    case BattleState.SpNight:
+                        _result[1] = sniffer.Battle.Result;
+                        _rank[1] = sniffer.Battle.ResultRank;
+                        break;
                 }
             }
             _informationPanel.SetInformation(sniffer.Battle);

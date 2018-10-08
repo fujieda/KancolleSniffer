@@ -37,6 +37,7 @@ namespace KancolleSniffer.Model
         None,
         Day,
         Night,
+        SpNight,
         Result,
         Unknown
     }
@@ -107,13 +108,12 @@ namespace KancolleSniffer.Model
             SetupResult(request, json, url.Contains("practice"));
             FighterPower = CalcFighterPower();
             EnemyFighterPower = CalcEnemyFighterPower(json);
-            BattleState = IsNightBattle(json) ? BattleState.Night : BattleState.Day;
+            BattleState = url.Contains("sp_midnight") ? BattleState.SpNight :
+                url.Contains("midnight") ? BattleState.Night : BattleState.Day;
             CalcDamage(json);
             ResultRank = url.EndsWith("ld_airbattle") ? CalcLdAirBattleRank() : CalcResultRank();
             SetResult();
         }
-
-        private bool IsNightBattle(dynamic json) => json.api_hougeki();
 
         public static int DeckId(dynamic json)
         {

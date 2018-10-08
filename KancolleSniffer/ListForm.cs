@@ -108,7 +108,7 @@ namespace KancolleSniffer
             {
                 richTextBoxMiscText.Text = _sniffer.MiscText;
             }
-            else
+            else if (InShipStatus || InGroupConfig || InRepairList)
             {
                 SetHeaderSortOrder();
                 shipListPanel.Update(_sniffer, comboBoxGroup.Text, _config.ShipList);
@@ -124,7 +124,7 @@ namespace KancolleSniffer
         public void UpdateAirBattleResult()
         {
             airBattleResultPanel.ShowResultAutomatic = (_config.Spoilers & Spoiler.AirBattleResult) != 0;
-            airBattleResultPanel.SetResult(_sniffer.Battle.AirBattleResults);
+            airBattleResultPanel.SetResult(_sniffer);
         }
 
         public void UpdateBattleResult()

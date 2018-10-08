@@ -13,11 +13,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using KancolleSniffer.Util;
+using KancolleSniffer.Model;
 
 // ReSharper disable CoVariantArrayConversion
 
@@ -128,9 +127,12 @@ namespace KancolleSniffer.View
             _phaseName.Click += PhaseNameOnClick;
         }
 
-        public void SetResult(List<AirBattleResult> resultList)
+        public void SetResult(Sniffer sniffer)
         {
-            _resultList = resultList.ToArray();
+            var state = sniffer.Battle.BattleState;
+            if (state != BattleState.Day && state != BattleState.SpNight)
+                return;
+            _resultList = sniffer.Battle.AirBattleResults.ToArray();
             if (_resultList.Length == 0)
             {
                 ResultRemained = false;
