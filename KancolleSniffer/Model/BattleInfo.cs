@@ -447,9 +447,11 @@ namespace KancolleSniffer.Model
                   json.api_at_eflag() && json.api_at_eflag != null))
                 return;
 
+            var eFlags = (int[])json.api_at_eflag;
+            var sources = (int[])json.api_at_list;
+            var types = json.api_at_type() ? (int[])json.api_at_type : null;
             var targets = (int[][])json.api_df_list;
             var damages = (int[][])json.api_damage;
-            var eFlags = (int[])json.api_at_eflag;
             var records = new[] {new Record[12], new Record[12]};
             Array.Copy(_friend, records[1], _friend.Length);
             Array.Copy(_guard, 0, records[1], 6, _guard.Length);
@@ -459,6 +461,8 @@ namespace KancolleSniffer.Model
             {
                 if (ignoreFriendDamage && eFlags[turn] == 1)
                     continue;
+                if (types != null && types[turn] == 100) // Nelson Touch
+                    records[eFlags[turn] ^ 1][sources[turn]].TriggerSpecialAttack();
                 for (var shot = 0; shot < targets[turn].Length; shot++)
                 {
                     var target = targets[turn][shot];
@@ -591,6 +595,11 @@ namespace KancolleSniffer.Model
                     }).ToArray();
             }
 
+            public void TriggerSpecialAttack()
+            {
+                _status.SpecialAttackTriggered = true;
+            }
+
             public void ApplyDamage(int damage)
             {
                 _status.NowHp = Max(0, _status.NowHp - damage);
@@ -622,6 +631,7 @@ namespace KancolleSniffer.Model
                 ship.NowHp = NowHp;
                 ship.Slot = _status.Slot;
                 ship.SlotEx = _status.SlotEx;
+                ship.SpecialAttackTriggered = _status.SpecialAttackTriggered;
             }
         }
 

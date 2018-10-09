@@ -186,6 +186,7 @@ namespace KancolleSniffer.Test
             _battleInfo.InspectBattle(logs[1], logs[2], battle);
             _battleInfo.InspectBattleResult(Data(logs[6]));
             PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+            PAssert.That(() => _shipInfo.Fleets[1].Ships[0].SpecialAttackTriggered);
         }
     }
 }

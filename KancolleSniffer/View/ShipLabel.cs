@@ -74,7 +74,8 @@ namespace KancolleSniffer.View
             var dc = status.PreparedDamageControl;
             var dcName = dc == 42 ? "[ダ]" :
                 dc == 43 ? "[メ]" : "";
-            SetName(status.Escaped ? "[避]" : dcName, status.Name, empty, width);
+            var sp = status.SpecialAttackTriggered ? "*" : "";
+            SetName((status.Escaped ? "[避]" : dcName) + sp, status.Name, empty, width);
         }
 
         public void SetName(string name)

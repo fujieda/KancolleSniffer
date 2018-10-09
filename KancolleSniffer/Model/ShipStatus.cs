@@ -47,6 +47,7 @@ namespace KancolleSniffer.Model
         public int Lucky { get; set; }
         public bool Locked { get; set; }
         public bool Escaped { get; set; }
+        public bool SpecialAttackTriggered { get; set; }
 
         public Damage DamageLevel => CalcDamage(NowHp, MaxHp);
 
