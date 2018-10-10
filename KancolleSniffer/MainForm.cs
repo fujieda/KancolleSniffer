@@ -645,7 +645,7 @@ namespace KancolleSniffer
             _mainLabels.SetShipLabels(ships);
             if (!_sniffer.IsCombinedFleet)
                 _combinedFleet = false;
-            labelFleet1.Text = _combinedFleet ? "連合" : "第一";
+            labelFleet1.Text = _combinedFleet ? CombinedName : "第一";
             panelCombinedFleet.Visible = _combinedFleet;
             if (_combinedFleet)
                 _mainLabels.SetCombinedShipLabels(fleets[0].ActualShips, fleets[1].ActualShips);
@@ -656,6 +656,24 @@ namespace KancolleSniffer
             UpdateFighterPower(_combinedFleet && (battle.BattleState == BattleState.None || battle.EnemyIsCombined));
             UpdateLoS();
             UpdateCondTimers();
+        }
+
+        private string CombinedName
+        {
+            get
+            {
+                switch (_sniffer.Fleets[0].CombinedType)
+                {
+                    case CombinedType.Carrier:
+                        return "機動";
+                    case CombinedType.Surface:
+                        return "水上";
+                    case CombinedType.Transport:
+                        return "輸送";
+                    default:
+                        return "連合";
+                }
+            }
         }
 
         private void NotifyDamagedShip()
@@ -1204,7 +1222,7 @@ namespace KancolleSniffer
 
         private void labelFleet1_MouseLeave(object sender, EventArgs e)
         {
-            labelFleet1.Text = _combinedFleet ? "連合" : "第一";
+            labelFleet1.Text = _combinedFleet ? CombinedName : "第一";
         }
 
         private void labelFleet_DoubleClick(object sender, EventArgs e)
