@@ -58,7 +58,6 @@ namespace KancolleSniffer
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
         private DateTime _prev, _now;
-        private bool _inSortie;
 
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
         private readonly ErrorLog _errorLog;
@@ -606,6 +605,7 @@ namespace KancolleSniffer
         private void UpdateShipInfo()
         {
             SetCurrentFleet();
+            SetCombined();
             UpdatePanelShipInfo();
             NotifyDamagedShip();
             UpdateChargeInfo();
@@ -614,6 +614,8 @@ namespace KancolleSniffer
             if (_listForm.Visible)
                 _listForm.UpdateList();
         }
+
+        private bool _inSortie;
 
         private void SetCurrentFleet()
         {
@@ -635,6 +637,18 @@ namespace KancolleSniffer
                 _combinedFleet = false;
                 _currentFleet = Array.FindIndex(states, state => state >= FleetState.Sortie);
             }
+        }
+
+        private bool _prevCombined;
+
+        private void SetCombined()
+        {
+            if (_sniffer.IsCombinedFleet && !_prevCombined)
+            {
+                _combinedFleet = true;
+                _currentFleet = 0;
+            }
+            _prevCombined = _sniffer.IsCombinedFleet;
         }
 
         private void UpdatePanelShipInfo()
