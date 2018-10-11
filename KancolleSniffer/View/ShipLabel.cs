@@ -74,7 +74,16 @@ namespace KancolleSniffer.View
             var dc = status.PreparedDamageControl;
             var dcName = dc == 42 ? "[ダ]" :
                 dc == 43 ? "[メ]" : "";
-            var sp = status.SpecialAttackTriggered ? "*" : "";
+            var sp = "";
+            switch (status.SpecialAttack)
+            {
+                case ShipStatus.Attack.Fire:
+                    sp = "+";
+                    break;
+                case ShipStatus.Attack.Fired:
+                    sp = "-";
+                    break;
+            }
             SetName((status.Escaped ? "[避]" : dcName) + sp, status.Name, empty, width);
         }
 

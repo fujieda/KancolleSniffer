@@ -35,7 +35,7 @@ namespace KancolleSniffer.Test
         private string[] ReadAllLines(string log)
         {
             using (var logfile = SnifferTest.OpenLogFile(log))
-                return logfile.ReadToEnd().Split(new [] {"\r\n"}, StringSplitOptions.None);
+                return logfile.ReadToEnd().Split(new[] {"\r\n"}, StringSplitOptions.None);
         }
 
         public void InjectShips(dynamic battle, dynamic item)
@@ -186,7 +186,8 @@ namespace KancolleSniffer.Test
             _battleInfo.InspectBattle(logs[1], logs[2], battle);
             _battleInfo.InspectBattleResult(Data(logs[6]));
             PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
-            PAssert.That(() => _shipInfo.Fleets[1].Ships[0].SpecialAttackTriggered);
+            PAssert.That(() => _battleInfo.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
+            PAssert.That(() => _shipInfo.Fleets[1].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
         }
     }
 }

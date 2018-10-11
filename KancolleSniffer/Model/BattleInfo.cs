@@ -165,7 +165,7 @@ namespace KancolleSniffer.Model
             };
         }
 
-        private void FlagshipRecovery(string request,  ShipStatus flagship)
+        private void FlagshipRecovery(string request, ShipStatus flagship)
         {
             var type = int.Parse(HttpUtility.ParseQueryString(request)["api_recovery_type"] ?? "0");
             switch (type)
@@ -466,7 +466,7 @@ namespace KancolleSniffer.Model
                 for (var shot = 0; shot < targets[turn].Length; shot++)
                 {
                     var target = targets[turn][shot];
-                    var damage  = damages[turn][shot];
+                    var damage = damages[turn][shot];
                     if (target == -1 || damage == -1)
                         continue;
                     records[eFlags[turn]][target].ApplyDamage(damage);
@@ -597,7 +597,7 @@ namespace KancolleSniffer.Model
 
             public void TriggerSpecialAttack()
             {
-                _status.SpecialAttackTriggered = true;
+                _status.SpecialAttack = ShipStatus.Attack.Fire;
             }
 
             public void ApplyDamage(int damage)
@@ -631,7 +631,9 @@ namespace KancolleSniffer.Model
                 ship.NowHp = NowHp;
                 ship.Slot = _status.Slot;
                 ship.SlotEx = _status.SlotEx;
-                ship.SpecialAttackTriggered = _status.SpecialAttackTriggered;
+                ship.SpecialAttack = _status.SpecialAttack == ShipStatus.Attack.Fire
+                    ? ShipStatus.Attack.Fired
+                    : ShipStatus.Attack.None;
             }
         }
 
