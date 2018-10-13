@@ -125,6 +125,9 @@
     <Compile Include="Model\PresetDeck.cs" />
     <Compile Include="Net\ProxyManager.cs" />
     <Compile Include="Net\PushNotification.cs" />
+    <Compile Include="View\PanelWithToolTip.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\RepairListForMain.cs">
       <SubType>Component</SubType>
     </Compile>

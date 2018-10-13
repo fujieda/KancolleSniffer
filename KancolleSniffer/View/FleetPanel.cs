@@ -22,14 +22,18 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View
 {
-    public class FleetPanel : Panel
+    public class FleetPanel : PanelWithToolTip
     {
         private const int LineHeight = 14;
         private const int LabelHeight = 12;
         private Record[] _table = new Record[0];
         private readonly List<FleetLabels> _labelList = new List<FleetLabels>();
         private readonly List<Panel> _panelList = new List<Panel>();
-        private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true, AutoPopDelay = 10000};
+
+        public FleetPanel()
+        {
+            ToolTip.AutoPopDelay = 10000;
+        }
 
         public class Record
         {
@@ -329,15 +333,15 @@ namespace KancolleSniffer.View
             labels.Fleet.Text = e.Fleet;
             labels.Name.SetName(e.Ship);
             if (e.Ship2 != "")
-                _toolTip.SetToolTip(labels.Name, e.Ship2);
+                ToolTip.SetToolTip(labels.Name, e.Ship2);
             labels.Equip.Text = e.Equip;
             labels.EquipColor.Visible = e.Equip != "";
             labels.EquipColor.BackColor = e.Color;
             labels.Spec.Text = e.Spec;
             if (e.Fleet != "" && e.Fleet2 != "")
-                _toolTip.SetToolTip(labels.Fleet, e.Fleet2);
-            _toolTip.SetToolTip(labels.Equip, e.AircraftSpec != "" ? e.AircraftSpec : "");
-            _toolTip.SetToolTip(labels.Spec, e.Spec2 != "" ? e.Spec2 : "");
+                ToolTip.SetToolTip(labels.Fleet, e.Fleet2);
+            ToolTip.SetToolTip(labels.Equip, e.AircraftSpec != "" ? e.AircraftSpec : "");
+            ToolTip.SetToolTip(labels.Spec, e.Spec2 != "" ? e.Spec2 : "");
             lbp.Visible = true;
         }
 
@@ -357,13 +361,6 @@ namespace KancolleSniffer.View
                 return;
             var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
             AutoScrollPosition = new Point(0, y);
-        }
-
-        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
-        {
-            base.ScaleControl(factor, specified);
-            if (factor.Height > 1)
-                _toolTip.Font = new Font(_toolTip.Font.FontFamily, _toolTip.Font.Size * factor.Height);
         }
     }
 }

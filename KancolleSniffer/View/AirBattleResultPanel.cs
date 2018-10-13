@@ -47,7 +47,7 @@ namespace KancolleSniffer.View
     }
 
     [DesignerCategory("Code")]
-    public class AirBattleResultPanel : Panel
+    public class AirBattleResultPanel : PanelWithToolTip
     {
         private readonly Label _phaseName;
         private readonly Label _stage1;
@@ -56,7 +56,6 @@ namespace KancolleSniffer.View
         private int _resultIndex;
         private readonly ShipLabel _ciShipName;
         private readonly Label _ciKind;
-        private readonly ResizableToolTip _toolTip = new ResizableToolTip{ShowAlways = true};
 
         public bool ShowResultAutomatic { get; set; }
 
@@ -189,13 +188,13 @@ namespace KancolleSniffer.View
             {
                 _ciShipName.SetName(null);
                 _ciKind.Text = "";
-                _toolTip.SetToolTip(_ciKind, "");
+                ToolTip.SetToolTip(_ciKind, "");
             }
             else
             {
                 _ciShipName.SetName(result.AirFire.ShipName, ShipNameWidth.CiShipName);
                 _ciKind.Text = result.AirFire.Kind.ToString();
-                _toolTip.SetToolTip(_ciKind, string.Join("\r\n", result.AirFire.Items));
+                ToolTip.SetToolTip(_ciKind, string.Join("\r\n", result.AirFire.Items));
             }
         }
 
@@ -215,14 +214,7 @@ namespace KancolleSniffer.View
             }
             _ciShipName.SetName(null);
             _ciKind.Text = "";
-            _toolTip.SetToolTip(_ciKind, "");
-        }
-
-        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
-        {
-            base.ScaleControl(factor, specified);
-            if (factor.Height > 1)
-                _toolTip.Font = new Font(_toolTip.Font.FontFamily, _toolTip.Font.Size * factor.Height);
+            ToolTip.SetToolTip(_ciKind, "");
         }
     }
 }

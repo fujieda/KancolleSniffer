@@ -23,14 +23,13 @@ using static System.Math;
 
 namespace KancolleSniffer.View
 {
-    public class BattleResultPanel : Panel
+    public class BattleResultPanel : PanelWithToolTip
     {
         private const int LineHeight = 16;
         private readonly List<ShipLabel[]> _friendLabels = new List<ShipLabel[]>();
         private readonly List<ShipLabel[]> _enemyLabels = new List<ShipLabel[]>();
         private readonly List<Panel> _panelList = new List<Panel>();
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
-        private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
         private readonly BattleInfo.BattleResult[] _result = new BattleInfo.BattleResult[2];
         private Label _phaseLabel, _rankLabel, _cellLabel;
         private readonly BattleResultRank[] _rank = new BattleResultRank[2];
@@ -197,7 +196,7 @@ namespace KancolleSniffer.View
                 var ship = friend.Main[i];
                 labels[0].SetHp(ship);
                 labels[1].SetName(ship, ShipNameWidth.BattleResult);
-                _toolTip.SetToolTip(labels[1], GetEquipString(ship));
+                ToolTip.SetToolTip(labels[1], GetEquipString(ship));
             }
             if (friend.Guard.Length > 0)
             {
@@ -209,7 +208,7 @@ namespace KancolleSniffer.View
                     var ship = friend.Guard[i];
                     labels[0].SetHp(ship);
                     labels[1].SetName(ship, ShipNameWidth.BattleResult);
-                    _toolTip.SetToolTip(labels[1], GetEquipString(ship));
+                    ToolTip.SetToolTip(labels[1], GetEquipString(ship));
                 }
             }
             var friendLines = friend.Main.Length + (friend.Guard.Length > 0 ? friend.Guard.Length + 1 : 0);
@@ -224,7 +223,7 @@ namespace KancolleSniffer.View
                 var ship = enemy.Main[i];
                 labels[0].SetHp(ship);
                 labels[1].SetName(ShortenName(ship.Name));
-                _toolTip.SetToolTip(labels[1], GetEquipString(ship));
+                ToolTip.SetToolTip(labels[1], GetEquipString(ship));
             }
             if (enemy.Guard.Length > 0)
             {
@@ -236,7 +235,7 @@ namespace KancolleSniffer.View
                     var ship = enemy.Guard[i];
                     labels[0].SetHp(ship);
                     labels[1].SetName(ShortenName(ship.Name));
-                    _toolTip.SetToolTip(labels[1], GetEquipString(ship));
+                    ToolTip.SetToolTip(labels[1], GetEquipString(ship));
                 }
             }
             var enemyLines = enemy.Main.Length + (enemy.Guard.Length > 0 ? enemy.Guard.Length + 1 : 0);
@@ -384,18 +383,10 @@ namespace KancolleSniffer.View
             base.OnMouseWheel(e);
         }
 
-        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
-        {
-            base.ScaleControl(factor, specified);
-            if (factor.Height > 1)
-                _toolTip.Font = new Font(_toolTip.Font.FontFamily, _toolTip.Font.Size * factor.Height);
-        }
-
-        private class InformationPanel : Panel
+        private class InformationPanel : PanelWithToolTip
         {
             private readonly Label[] _formation;
             private readonly Label[] _fighterPower;
-            private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
 
             public InformationPanel()
             {
@@ -460,10 +451,10 @@ namespace KancolleSniffer.View
                 }
                 var fp = battleInfo.FighterPower;
                 _fighterPower[0].Text = fp[0].ToString("D");
-                _toolTip.SetToolTip(_fighterPower[0], fp[0] == fp[1] ? "" : $"{fp[0]}～{fp[1]}");
+                ToolTip.SetToolTip(_fighterPower[0], fp[0] == fp[1] ? "" : $"{fp[0]}～{fp[1]}");
                 var efp = battleInfo.EnemyFighterPower;
                 _fighterPower[1].Text = efp.AirCombat + efp.UnknownMark;
-                _toolTip.SetToolTip(_fighterPower[1],
+                ToolTip.SetToolTip(_fighterPower[1],
                     efp.AirCombat == efp.Interception ? "" : "防空:" + efp.Interception + efp.UnknownMark);
                 _fighterPower[2].Text =
                     new[] {"", "制空均衡", "制空確保", "航空優勢", "航空劣勢", "制空喪失"}[battleInfo.AirControlLevel + 1];
@@ -498,13 +489,6 @@ namespace KancolleSniffer.View
                     default:
                         return "";
                 }
-            }
-
-            protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
-            {
-                base.ScaleControl(factor, specified);
-                if (factor.Height > 1)
-                    _toolTip.Font = new Font(_toolTip.Font.FontFamily, _toolTip.Font.Size * factor.Height);
             }
         }
     }
