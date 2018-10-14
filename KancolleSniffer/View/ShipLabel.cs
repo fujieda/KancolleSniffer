@@ -226,9 +226,20 @@ namespace KancolleSniffer.View
             Text = status?.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
         }
 
+        protected override void OnSizeChanged(EventArgs args)
+        {
+            base.OnSizeChanged(args);
+            KeepAnchorRight();
+        }
+
         protected override void OnLayout(LayoutEventArgs args)
         {
             base.OnLayout(args);
+            KeepAnchorRight();
+        }
+
+        private void KeepAnchorRight()
+        {
             if (!AnchorRight)
                 return;
             if (_right == int.MinValue || _left != Left)
