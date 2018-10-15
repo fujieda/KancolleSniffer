@@ -148,7 +148,7 @@ namespace KancolleSniffer
                 return Update.None;
 
             if (url.EndsWith("api_port/port"))
-                return ApiPort(data);
+                return ApiPort(url, data);
             if (url.Contains("member"))
                 return ApiMember(url, json);
             if (url.Contains("kousyou"))
@@ -183,13 +183,13 @@ namespace KancolleSniffer
                 MapDictionary[map.api_name] = $"{map.api_maparea_id}-{map.api_no}";
         }
 
-        private Update ApiPort(dynamic data)
+        private Update ApiPort(string url, dynamic data)
         {
             _itemInfo.InspectBasic(data.api_basic);
             _materialInfo.InspectMaterialPort(data.api_material);
             _logger.InspectBasic(data.api_basic);
             _logger.InspectMaterial(data.api_material);
-            _shipInfo.InspectShip(data);
+            _shipInfo.InspectShip(url, data);
             _shipInfo.ClearBadlyDamagedShips();
             _conditionTimer.CalcRegainTime();
             _missionInfo.InspectDeck(data.api_deck_port);
@@ -265,21 +265,21 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/ship2"))
             {
                 // ここだけjsonなので注意
-                _shipInfo.InspectShip(json);
+                _shipInfo.InspectShip(url, json);
                 _akashiTimer.CheckFleet();
                 _battleInfo.BattleState = BattleState.None;
                 return Update.Item | Update.Ship | Update.Battle;
             }
             if (url.EndsWith("api_get_member/ship_deck"))
             {
-                _shipInfo.InspectShip(data);
+                _shipInfo.InspectShip(url, data);
                 _akashiTimer.CheckFleet();
                 _battleInfo.BattleState = BattleState.None;
                 return Update.Ship | Update.Battle | Update.Item;
             }
             if (url.EndsWith("api_get_member/ship3"))
             {
-                _shipInfo.InspectShip(data);
+                _shipInfo.InspectShip(url, data);
                 _akashiTimer.CheckFleet();
                 _conditionTimer.CheckCond();
                 return Update.Ship;
@@ -328,7 +328,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_kousyou/getship"))
             {
                 _itemInfo.InspectGetShip(data);
-                _shipInfo.InspectShip(data);
+                _shipInfo.InspectShip(url, data);
                 _dockInfo.InspectKDock(data.api_kdock);
                 _conditionTimer.CheckCond();
                 RepeatingTimerController?.Stop("建造完了");

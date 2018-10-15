@@ -27,7 +27,6 @@ namespace KancolleSniffer.Model
         private readonly ShipMaster _shipMaster;
         private readonly ShipInventory _shipInventory;
         private readonly ItemInventory _itemInventory;
-        private readonly List<int> _escapedShips = new List<int>();
         private ShipStatus[] _battleResult = new ShipStatus[0];
         private readonly NumEquipsChecker _numEquipsChecker = new NumEquipsChecker();
         private int _hqLevel;
@@ -77,42 +76,99 @@ namespace KancolleSniffer.Model
             _shipInventory.Clear();
         }
 
-        public void InspectShip(dynamic json)
+        public void InspectShip(string url, dynamic json)
         {
-            if (json.api_deck_port()) // port
+            if (url.Contains("port"))
             {
-                _shipInventory.Clear();
-                _escapedShips.Clear();
-                for (var i = 0; i < FleetCount; i++)
-                    _fleets[i].State = FleetState.Port;
-                InspectShipDataAndDeck(json.api_ship, json.api_deck_port);
-                InspectBasic(json.api_basic);
-                if (json.api_combined_flag())
-                    _fleets[0].CombinedType = _fleets[1].CombinedType = (CombinedType)(int)json.api_combined_flag;
-                VerifyBattleResult();
+                HandlePort(json);
             }
-            else if (json.api_data()) // ship2
+            else if (url.Contains("ship2"))
             {
-                InspectShipDataAndDeck(json.api_data, json.api_data_deck);
+                FillShipData(json.api_data, json.api_data_deck);
             }
-            else if (json.api_ship_data()) // ship3とship_deck
+            else if (url.Contains("ship3"))
             {
-                InspectShipDataAndDeck(json.api_ship_data, json.api_deck_data);
-                VerifyBattleResult();
-                // ship_deckでドロップ艦を反映する
-                if (DropShipId != -1)
-                {
-                    _shipInventory.InflateCount(1);
-                    var num = _shipMaster.GetSpec(DropShipId).NumEquips;
-                    if (num > 0)
-                        _itemInventory.InflateCount(num);
-                }
+                FillShipData(json.api_ship_data, json.api_deck_data);
             }
-            else if (json.api_ship()) // getship
+            else if (url.Contains("ship_deck"))
             {
-                InspectShipData(new[] {json.api_ship});
+                HandleShipDeck(json);
+            }
+            else if (url.Contains("getship")) // getship
+            {
+                HandleGetShip(json);
             }
             DropShipId = -1;
+        }
+
+        private void HandlePort(dynamic json)
+        {
+            _shipInventory.Clear();
+            for (var i = 0; i < FleetCount; i++)
+                _fleets[i].State = FleetState.Port;
+            FillPortShipData(json);
+            InspectBasic(json.api_basic);
+            if (json.api_combined_flag())
+                _fleets[0].CombinedType = _fleets[1].CombinedType = (CombinedType)(int)json.api_combined_flag;
+            VerifyBattleResult();
+        }
+
+        private void FillPortShipData(dynamic json)
+        {
+            foreach (var entry in json.api_ship)
+            {
+                var ship = (ShipStatus)CreateShipStatus(entry);
+                _shipInventory.Add(ship);
+                _numEquipsChecker.Check(ship);
+            }
+            _numEquipsChecker.MaxId = _shipInventory.MaxId;
+            InspectDeck(json.api_deck_port);
+        }
+
+        private void HandleShipDeck(dynamic json)
+        {
+            FillShipDeckShipData(json);
+            VerifyBattleResult();
+            // ドロップ艦を反映する
+            if (DropShipId != -1)
+            {
+                _shipInventory.InflateCount(1);
+                var num = _shipMaster.GetSpec(DropShipId).NumEquips;
+                if (num > 0)
+                    _itemInventory.InflateCount(num);
+            }
+        }
+
+        private void FillShipDeckShipData(dynamic json)
+        {
+            foreach (var entry in json.api_ship_data)
+            {
+                var ship = (ShipStatus)CreateShipStatus(entry);
+                var org = _shipInventory[ship.Id];
+                ship.Escaped = org.Escaped; // 出撃中は継続する
+                _shipInventory.Add(ship);
+            }
+            InspectDeck(json.api_deck_data);
+        }
+
+        private void FillShipData(dynamic ship, dynamic deck)
+        {
+            FillShips(ship);
+            InspectDeck(deck); // FleetのDeckを設定した時点でShipStatusを取得するので必ずdeckが後
+        }
+
+        private void HandleGetShip(dynamic json)
+        {
+            var ship = CreateShipStatus(json.api_ship);
+            _shipInventory.Add(ship);
+            _numEquipsChecker.Check(ship);
+            _numEquipsChecker.MaxId = _shipInventory.MaxId;
+        }
+
+        private void FillShips(dynamic json)
+        {
+            foreach (var entry in json)
+                _shipInventory.Add(CreateShipStatus(entry));
         }
 
         public void SaveBattleResult()
@@ -142,12 +198,6 @@ namespace KancolleSniffer.Model
                 .SelectMany(fleet => fleet.Ships.Select(ship => (ShipStatus)ship.Clone())).ToArray();
         }
 
-        private void InspectShipDataAndDeck(dynamic ship, dynamic deck)
-        {
-            InspectShipData(ship);
-            InspectDeck(deck); // FleetのDeckを設定した時点でShipStatusを取得するので必ずdeckが後
-        }
-
         public void InspectDeck(dynamic json)
         {
             foreach (var entry in json)
@@ -159,41 +209,33 @@ namespace KancolleSniffer.Model
             }
         }
 
-        private void InspectShipData(dynamic json)
+        private ShipStatus CreateShipStatus(dynamic entry)
         {
-            foreach (var entry in json)
+            return new ShipStatus
             {
-                var id = (int)entry.api_id;
-                var ship = new ShipStatus
-                {
-                    Id = id,
-                    Spec = _shipMaster.GetSpec((int)entry.api_ship_id),
-                    Level = (int)entry.api_lv,
-                    ExpToNext = (int)entry.api_exp[1],
-                    MaxHp = (int)entry.api_maxhp,
-                    NowHp = (int)entry.api_nowhp,
-                    Cond = (int)entry.api_cond,
-                    Fuel = (int)entry.api_fuel,
-                    Bull = (int)entry.api_bull,
-                    OnSlot = (int[])entry.api_onslot,
-                    GetItem = item => _itemInventory[item.Id],
-                    Slot = ((int[])entry.api_slot).Select(item => new ItemStatus(item)).ToArray(),
-                    SlotEx = entry.api_slot_ex() ? new ItemStatus((int)entry.api_slot_ex) : new ItemStatus(0),
-                    NdockTime = (int)entry.api_ndock_time,
-                    NdockItem = (int[])entry.api_ndock_item,
-                    LoS = (int)entry.api_sakuteki[0],
-                    Firepower = (int)entry.api_karyoku[0],
-                    Torpedo = (int)entry.api_raisou[0],
-                    AntiSubmarine = (int)entry.api_taisen[0],
-                    AntiAir = (int)entry.api_taiku[0],
-                    Lucky = (int)entry.api_lucky[0],
-                    Locked = entry.api_locked() && entry.api_locked == 1,
-                    Escaped = _escapedShips.Contains(id)
-                };
-                _shipInventory.Add(ship);
-                _numEquipsChecker.Check(ship);
-            }
-            _numEquipsChecker.MaxId = _shipInventory.MaxId;
+                Id = (int)entry.api_id,
+                Spec = _shipMaster.GetSpec((int)entry.api_ship_id),
+                Level = (int)entry.api_lv,
+                ExpToNext = (int)entry.api_exp[1],
+                MaxHp = (int)entry.api_maxhp,
+                NowHp = (int)entry.api_nowhp,
+                Cond = (int)entry.api_cond,
+                Fuel = (int)entry.api_fuel,
+                Bull = (int)entry.api_bull,
+                OnSlot = (int[])entry.api_onslot,
+                GetItem = item => _itemInventory[item.Id],
+                Slot = ((int[])entry.api_slot).Select(item => new ItemStatus(item)).ToArray(),
+                SlotEx = entry.api_slot_ex() ? new ItemStatus((int)entry.api_slot_ex) : new ItemStatus(0),
+                NdockTime = (int)entry.api_ndock_time,
+                NdockItem = (int[])entry.api_ndock_item,
+                LoS = (int)entry.api_sakuteki[0],
+                Firepower = (int)entry.api_karyoku[0],
+                Torpedo = (int)entry.api_raisou[0],
+                AntiSubmarine = (int)entry.api_taisen[0],
+                AntiAir = (int)entry.api_taiku[0],
+                Lucky = (int)entry.api_lucky[0],
+                Locked = entry.api_locked() && entry.api_locked == 1,
+            };
         }
 
         private void InspectBasic(dynamic json)
@@ -261,7 +303,7 @@ namespace KancolleSniffer.Model
                 return;
             _itemInventory.Remove(ships.SelectMany(id => _shipInventory[id].Slot));
             _shipInventory.Remove(ships);
-            InspectShipDataAndDeck(new[]{json.api_ship}, json.api_deck);
+            FillShipData(new[]{json.api_ship}, json.api_deck);
         }
 
         public void InspectSlotExchange(string request, dynamic json)
@@ -273,14 +315,14 @@ namespace KancolleSniffer.Model
 
         public void InspectSlotDeprive(dynamic json)
         {
-            InspectShipData(new[] {json.api_ship_data.api_set_ship, json.api_ship_data.api_unset_ship});
+            FillShips(new[] {json.api_ship_data.api_set_ship, json.api_ship_data.api_unset_ship});
             foreach (var fleet in _fleets)
                 fleet.SetDeck(); // ShipStatusの差し替え
         }
 
         public void InspectMarriage(dynamic json)
         {
-            InspectShipData(new[]{json});
+            FillShips(new[]{json});
             foreach (var fleet in _fleets)
                 fleet.SetDeck(); // ShipStatusの差し替え
         }
@@ -371,7 +413,6 @@ namespace KancolleSniffer.Model
 
         public void SetEscapedShips(List<int> ids)
         {
-            _escapedShips.AddRange(ids);
             foreach (var id in ids)
                 _shipInventory[id].Escaped = true;
         }
