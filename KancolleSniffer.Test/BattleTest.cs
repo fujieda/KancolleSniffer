@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2017 Kazuhiro Fujieda <fujieda@users.osdn.me>
+﻿// Copyright (C) 2018 Kazuhiro Fujieda <fujieda@users.osdn.me>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,182 +12,239 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Collections.Generic;
 using System.Linq;
-using ExpressionToCodeLib;
 using KancolleSniffer.Model;
-using KancolleSniffer.Util;
+using ExpressionToCodeLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test
 {
+    using Sniffer = SnifferTest.TestingSniffer;
+    using static SnifferTest;
+
     [TestClass]
     public class BattleTest
     {
-        private ItemMaster _itemMaster;
-        private ItemInventory _itemInventory;
-        private ItemInfo _itemInfo;
-        private ShipMaster _shipMaster;
-        private ShipInventory _shipInventory;
-        private ShipInfo _shipInfo;
-        private BattleInfo _battleInfo;
-
-        private string[] ReadAllLines(string log)
+        [ClassInitialize]
+        public static void Initialize(TestContext context)
         {
-            using (var logfile = SnifferTest.OpenLogFile(log))
-                return logfile.ReadToEnd().Split(new[] {"\r\n"}, StringSplitOptions.None);
-        }
-
-        public void InjectShips(dynamic battle, dynamic item)
-        {
-            var deck = (int)battle.api_deck_id - 1;
-            InjectShips(deck, (int[])battle.api_f_nowhps, (int[])battle.api_f_maxhps, (int[][])item[0]);
-            if (battle.api_f_nowhps_combined())
-                InjectShips(1, (int[])battle.api_f_nowhps_combined, (int[])battle.api_f_maxhps_combined,
-                    (int[][])item[1]);
-            foreach (var enemy in (int[])battle.api_ship_ke)
-                _shipMaster.InjectSpec(enemy);
-            if (battle.api_ship_ke_combined())
-            {
-                foreach (var enemy in (int[])battle.api_ship_ke_combined)
-                    _shipMaster.InjectSpec(enemy);
-            }
-            _itemInfo.InjectItems(((int[][])battle.api_eSlot).SelectMany(x => x));
-            if (battle.api_eSlot_combined())
-                _itemInfo.InjectItems(((int[][])battle.api_eSlot_combined).SelectMany(x => x));
-        }
-
-        private void InjectShips(int deck, int[] nowHps, int[] maxHps, int[][] slots)
-        {
-            var id = _shipInventory.MaxId + 1;
-            var ships = nowHps.Zip(maxHps,
-                (now, max) => new ShipStatus {Id = id++, NowHp = now, MaxHp = max}).ToArray();
-            _shipInventory.Add(ships);
-            _shipInfo.Fleets[deck].Deck = (from ship in ships select ship.Id).ToArray();
-            foreach (var entry in ships.Zip(slots, (ship, slot) => new {ship, slot}))
-            {
-                entry.ship.Slot = _itemInfo.InjectItems(entry.slot.Take(5));
-                if (entry.slot.Length >= 6)
-                    entry.ship.SlotEx = _itemInfo.InjectItems(entry.slot.Skip(5)).First();
-            }
-        }
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            _itemMaster = new ItemMaster();
-            _itemInventory = new ItemInventory();
-            _itemInfo = new ItemInfo(_itemMaster, _itemInventory);
-            _shipInventory = new ShipInventory();
-            _shipMaster = new ShipMaster();
-            _shipInfo = new ShipInfo(_shipMaster, _shipInventory, _itemInventory);
-            _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
+            ExpressionToCodeConfiguration.GlobalAssertionConfiguration = ExpressionToCodeConfiguration
+                .GlobalAssertionConfiguration.WithPrintedListLengthLimit(200).WithMaximumValueLength(1000);
         }
 
         /// <summary>
-        /// 連撃を受けて女神が発動する
+        /// 4-2-1で開幕対潜雷撃を含む戦闘を行う
         /// </summary>
         [TestMethod]
-        public void CauseRepairGoddessByDoubleAttack()
+        public void NormalBattleWithVariousTypesOfAttack()
         {
-            var logs = ReadAllLines("damecon_001");
-            var items = JsonParser.Parse("[[[],[],[],[],[43]]]");
-            dynamic battle = JsonParser.Parse(logs[2]);
-            InjectShips(battle, items);
-            _battleInfo.InspectBattle(logs[0], logs[1], battle);
-            dynamic result = JsonParser.Parse(logs[5]);
-            _battleInfo.InspectBattleResult(result);
-            PAssert.That(() => _shipInfo.Fleets[2].Ships[4].NowHp == 31);
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "battle_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.A);
+            AssertEqualBattleResult(sniffer,
+                new[] {57, 66, 50, 65, 40, 42}, new[] {34, 5, 0, 0, 0, 0});
+        }
+
+        private void AssertEqualBattleResult(Sniffer sniffer, IEnumerable<int> expected, IEnumerable<int> enemy,
+            string msg = null)
+        {
+            var result = sniffer.Fleets[0].Ships.Select(s => s.NowHp);
+            PAssert.That(() => expected.SequenceEqual(result), msg);
+            var enemyResult = sniffer.Battle.Result.Enemy.Main.Select(s => s.NowHp);
+            PAssert.That(() => enemy.SequenceEqual(enemyResult), msg);
         }
 
         /// <summary>
-        /// 夜戦で戦艦の攻撃を受ける
+        /// 開幕夜戦で潜水艦同士がお見合いする
         /// </summary>
         [TestMethod]
-        public void AttackedByBattleShipInMidnight()
+        public void SpMidnightWithoutBattle()
         {
-            var logs = ReadAllLines("midnight_002");
-            var battle = JsonParser.Parse(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
-            _battleInfo.InspectBattle(logs[1], logs[2], battle);
-            _battleInfo.InspectBattleResult(JsonParser.Parse(logs[6]));
-            PAssert.That(() => _shipInfo.Fleets[0].Ships[3].NowHp == 12);
-        }
-
-        private dynamic Data(string json) => ((dynamic)JsonParser.Parse(json)).api_data;
-
-        /// <summary>
-        /// NPC友軍の支援攻撃がある
-        /// </summary>
-        [TestMethod]
-        public void NpcFriendFleetAttack()
-        {
-            var logs = ReadAllLines("friendfleet_001");
-            var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
-            _battleInfo.InspectBattle(logs[1], logs[2], battle);
-            _battleInfo.InspectBattle(logs[4], logs[5], Data(logs[6]));
-            _battleInfo.InspectBattleResult(Data(logs[9]));
-            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "sp_midnight_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.D);
         }
 
         /// <summary>
-        /// 空襲戦で轟沈する
+        /// 夜戦で戦艦が攻撃すると一回で三発分のデータが来る
+        /// そのうち存在しない攻撃はターゲット、ダメージともに-1になる
         /// </summary>
         [TestMethod]
-        public void LdAirBattleHaveSunkenShip()
+        public void BattleShipAttackInMidnight()
         {
-            var logs = ReadAllLines("ld_airbattle_001");
-            var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
-            _battleInfo.InspectBattle(logs[1], logs[2], battle);
-            _battleInfo.InspectBattleResult(Data(logs[6]));
-            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "midnight_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.S);
         }
 
         /// <summary>
-        /// 空襲戦で女神が発動して復活する
+        /// 7隻編成の戦闘で7隻目が攻撃される
         /// </summary>
         [TestMethod]
-        public void LdAirBattleHaveRevivedShip()
+        public void Ship7Battle()
         {
-            var logs = ReadAllLines("ld_airbattle_002");
-            var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
-            _battleInfo.InspectBattle(logs[1], logs[2], battle);
-            _battleInfo.InspectBattleResult(Data(logs[6]));
-            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "ship7battle_001");
+            PAssert.That(() => sniffer.Battle.ResultRank == BattleResultRank.P);
         }
 
         /// <summary>
-        /// 機動対敵連合の雷撃戦でダメコンが発動する
+        /// 演習のあとのportで戦闘結果の検証を行わない
         /// </summary>
         [TestMethod]
-        public void TriggerDameConInCombinedBattle()
+        public void NotVerifyBattleResultAfterPractice()
         {
-            var logs = ReadAllLines("damecon_002");
-            var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
-            _battleInfo.InspectBattle(logs[1], logs[2], battle);
-            _battleInfo.InspectBattle(logs[4], logs[5], Data(logs[6]));
-            _battleInfo.InspectBattleResult(Data(logs[9]));
-            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "practice_001");
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
         }
 
         /// <summary>
-        /// Nelson Touchに対応する
+        /// 演習でダメコンを発動させない
         /// </summary>
         [TestMethod]
-        public void NelsonTouch()
+        public void NotTriggerDameConInPractice()
         {
-            var logs = ReadAllLines("nelsontouch_001");
-            var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
-            _battleInfo.InspectBattle(logs[1], logs[2], battle);
-            _battleInfo.InspectBattleResult(Data(logs[6]));
-            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
-            PAssert.That(() => _battleInfo.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
-            PAssert.That(() => _shipInfo.Fleets[1].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "practice_002");
+            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
+        }
+
+        /// <summary>
+        /// 演習中の艦を要修復リストに載せない
+        /// </summary>
+        [TestMethod]
+        public void DamagedShipListNotShowShipInPractice()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "practice_003");
+            PAssert.That(() => sniffer.RepairList.Select(s => s.Name).SequenceEqual(new[] {"飛龍改二", "翔鶴改二"}));
+        }
+
+        /// <summary>
+        /// 連合艦隊が開幕雷撃で被弾する
+        /// </summary>
+        [TestMethod]
+        public void OpeningTorpedoInCombinedBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_battle_001");
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
+        }
+
+        /// <summary>
+        /// 連合艦隊が閉幕雷撃で被弾する
+        /// </summary>
+        [TestMethod]
+        public void ClosingTorpedoInCombinedBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_battle_002");
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
+        }
+
+        /// <summary>
+        /// 第一が6隻未満の連合艦隊で戦闘する
+        /// </summary>
+        [TestMethod]
+        public void SmallCombinedFleetBattle()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_battle_003");
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
+        }
+
+        /// <summary>
+        /// 護衛退避する
+        /// </summary>
+        [TestMethod]
+        public void EscapeWithEscort()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "escape_001");
+            var fleets = sniffer.Fleets;
+            PAssert.That(() => fleets[0].Ships[5].Escaped &&
+                               fleets[1].Ships[2].Escaped);
+        }
+
+        /// <summary>
+        /// 開幕夜戦に支援が来る
+        /// </summary>
+        [TestMethod]
+        public void SpMidnightSupportAttack()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "sp_midnight_002");
+            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
+        }
+
+        /// <summary>
+        /// 払暁戦を行う
+        /// </summary>
+        [TestMethod]
+        public void NightToDay()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "nighttoday_001");
+            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError && !sniffer.IsBattleResultStatusError);
+        }
+
+        /// <summary>
+        /// 第二期の開幕夜戦のセル情報を表示する
+        /// </summary>
+        [TestMethod]
+        // ReSharper disable once InconsistentNaming
+        public void SpMidnightIn2ndSequence()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "sp_midnight_003");
+            PAssert.That(() => sniffer.CellInfo.Current == "１戦目(夜戦)");
+        }
+
+        /// <summary>
+        /// 単艦退避する
+        /// </summary>
+        [TestMethod]
+        public void EscapeWithoutEscort()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "escape_002");
+            PAssert.That(() => sniffer.Fleets[2].Ships[1].Escaped);
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
+        }
+
+        /// <summary>
+        /// 出撃時に大破している艦娘がいたら警告する
+        /// </summary>
+        [TestMethod]
+        public void DamagedShipWarningOnMapStart()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "mapstart_001");
+            PAssert.That(() => sniffer.BadlyDamagedShips.SequenceEqual(new[] {"大潮"}));
+        }
+
+        /// <summary>
+        /// 連合艦隊に大破艦がいる状態で第3艦隊が出撃したときに警告しない
+        /// </summary>
+        [TestMethod]
+        public void NotWarnDamagedShipInCombinedFleetOnMapStart()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "mapstart_002");
+            PAssert.That(() => !sniffer.BadlyDamagedShips.Any());
+        }
+
+        /// <summary>
+        /// 連合艦隊の第二旗艦の大破を警告しない
+        /// </summary>
+        [TestMethod]
+        public void NotWarnDamaged1StShipInGuardFleet()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "combined_battle_004");
+            PAssert.That(() => !sniffer.BadlyDamagedShips.Any());
         }
     }
 }

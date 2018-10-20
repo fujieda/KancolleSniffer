@@ -76,6 +76,7 @@
     <Compile Include="AkashiTimerTest.cs" />
     <Compile Include="Ascii85Test.cs" />
     <Compile Include="BattleLogProcessorTest.cs" />
+    <Compile Include="BattleBriefTest.cs" />
     <Compile Include="BattleTest.cs" />
     <Compile Include="ErrorLogTest.cs" />
     <Compile Include="FleetPanelTest.cs" />
