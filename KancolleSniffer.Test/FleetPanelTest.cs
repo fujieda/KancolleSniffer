@@ -70,5 +70,14 @@ namespace KancolleSniffer.Test
             }
             return true;
         }
+
+        [TestMethod]
+        public void ShowSpeed()
+        {
+            var sniffer = new Sniffer();
+            SnifferTest.SniffLogFile(sniffer, "speed_001");
+            var table = new FleetPanel().CreateTable(sniffer);
+            PAssert.That(() => table[0].Fleet == "第一 高速+" && table[37].Fleet == "第二 高速");
+        }
     }
 }

@@ -99,6 +99,7 @@ namespace KancolleSniffer.View
             {
                 var total = new Total();
                 var shipRecords = new List<Record>();
+                var speed = int.MaxValue;
                 foreach (var ship in fleet.ActualShips)
                 {
                     var equips = new List<Record>();
@@ -134,6 +135,7 @@ namespace KancolleSniffer.View
                         equips.Add(new Record {Equip = GenEquipString(item), Color = item.Spec.Color});
                     }
                     total.Add(ship);
+                    speed = Math.Min(speed, ship.Speed);
                     var fire = ship.EffectiveFirepower;
                     // ReSharper disable IdentifierTypo
                     var subm = ship.EffectiveAntiSubmarine;
@@ -161,20 +163,22 @@ namespace KancolleSniffer.View
                 var tp = fleet.TransportPoint;
                 if (sniffer.IsCombinedFleet && fleet.Number == 0)
                     tp += sniffer.Fleets[1].TransportPoint;
+                var speedName = speed == int.MaxValue ? "" : new[] {"", "低速", "高速", "高速+", "最速"}[speed / 5];
                 list.Add(new Record
                 {
-                    Fleet = fn[fleet.Number] + HideIfZero(" Lv", total.Level) +
-                            HideIfZero(" ドラム缶", total.Drum) + HideIfZero("(", total.DrumShips, "隻)") +
-                            HideIfZero(" 大発", daihatsu * 100, "%"),
-                    Fleet2 = "計:" +
-                             "火" + CutOverFlow(total.FirePower) +
-                             " 空" + CutOverFlow(total.AntiAir) +
-                             " 潜" + CutOverFlow(total.AntiSubmarine) +
-                             " 索" + CutOverFlow(total.LoS) + "\r\n" +
-                             $"戦闘:燃{total.Fuel / 5}弾{total.Bull / 5} 支援:燃{total.Fuel / 2}弾{(int)(total.Bull * 0.8)}" +
-                             (sniffer.IsCombinedFleet && fleet.Number == 1
-                                 ? ""
-                                 : $"\r\nTP:S{(int)tp} A{(int)(tp * 0.7)}")
+                    Fleet = fn[fleet.Number] + " " + speedName,
+                    Fleet2 =
+                        "計:" + HideIfZero(" Lv", total.Level) +
+                        HideIfZero(" ド", total.Drum) + HideIfZero("(", total.DrumShips, "隻)") +
+                        HideIfZero(" 大", daihatsu * 100, "%") + "\r\n" +
+                        "　 火" + CutOverFlow(total.FirePower) +
+                        " 空" + CutOverFlow(total.AntiAir) +
+                        " 潜" + CutOverFlow(total.AntiSubmarine) +
+                        " 索" + CutOverFlow(total.LoS) + "\r\n" +
+                        $"戦闘:燃{total.Fuel / 5}弾{total.Bull / 5} 支援:燃{total.Fuel / 2}弾{(int)(total.Bull * 0.8)}" +
+                        (sniffer.IsCombinedFleet && fleet.Number == 1
+                            ? ""
+                            : $"\r\nTP:S{(int)tp} A{(int)(tp * 0.7)}")
                 });
                 list.AddRange(shipRecords);
             }

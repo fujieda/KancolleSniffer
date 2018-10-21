@@ -220,6 +220,7 @@ namespace KancolleSniffer.Model
                 ExpToNext = (int)entry.api_exp[1],
                 MaxHp = (int)entry.api_maxhp,
                 NowHp = (int)entry.api_nowhp,
+                Speed = entry.api_soku() ? (int)entry.api_soku : 0,
                 Cond = (int)entry.api_cond,
                 Fuel = (int)entry.api_fuel,
                 Bull = (int)entry.api_bull,

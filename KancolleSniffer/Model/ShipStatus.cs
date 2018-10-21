@@ -33,6 +33,7 @@ namespace KancolleSniffer.Model
         public int ExpToNext { get; set; }
         public int MaxHp { get; set; }
         public int NowHp { get; set; }
+        public int Speed { get; set; }
         public int Cond { get; set; }
         public int Fuel { get; set; }
         public int Bull { get; set; }
