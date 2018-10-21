@@ -163,15 +163,15 @@ this.show = function() {
         query += from.valueOf();
         break;
     case 1:
-        from = now.clone().startOf('week').hours(5);
-        if (now.hour() < 5 && now.days() === 1)
+        from = now.clone().day(1).startOf('day').hours(5);
+        if (now.day() === 0 || now.day() === 1 && now.hour() < 5)
             from.subtract(1, 'weeks');
         query += from.valueOf();
         break;
     case 2:
         if (now.hours() >= 22 &&
-            now.dates() === now.clone().endOf('month').date()) {
-            from = now.clone().hours(22);
+            now.date() === now.clone().endOf('month').date()) {
+            from = now.clone().startOf('day').hours(22);
         } else {
             from = now.clone().startOf('month').subtract(1, 'days').hours(22);
         }
