@@ -146,6 +146,7 @@ namespace KancolleSniffer.Model
                 var ship = (ShipStatus)CreateShipStatus(entry);
                 var org = _shipInventory[ship.Id];
                 ship.Escaped = org.Escaped; // 出撃中は継続する
+                ship.SpecialAttack = org.SpecialAttack;
                 _shipInventory.Add(ship);
             }
             InspectDeck(json.api_deck_data);

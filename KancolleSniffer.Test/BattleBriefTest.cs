@@ -173,21 +173,5 @@ namespace KancolleSniffer.Test
             _battleInfo.InspectBattleResult(Data(logs[9]));
             PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
         }
-
-        /// <summary>
-        /// Nelson Touchに対応する        
-        /// </summary>
-        [TestMethod]
-        public void NelsonTouch()
-        {
-            var logs = ReadAllLines("nelsontouch_001");
-            var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
-            _battleInfo.InspectBattle(logs[1], logs[2], battle);
-            _battleInfo.InspectBattleResult(Data(logs[6]));
-            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
-            PAssert.That(() => _battleInfo.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
-            PAssert.That(() => _shipInfo.Fleets[1].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
-        }
     }
 }

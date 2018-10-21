@@ -246,5 +246,21 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "combined_battle_004");
             PAssert.That(() => !sniffer.BadlyDamagedShips.Any());
         }
+
+        /// <summary>
+        /// Nelson Touchに対応する
+        /// </summary>
+        [TestMethod]
+        public void NelsonTouch()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "nelsontouch_001");
+            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
+            PAssert.That(() => sniffer.Battle.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
+            PAssert.That(() => sniffer.Fleets[0].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
+            // ship_deckでフラグを引き継ぐ
+            SniffLogFile(sniffer, "nelsontouch_002");
+            PAssert.That(() => sniffer.Fleets[0].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
+        }
     }
 }
