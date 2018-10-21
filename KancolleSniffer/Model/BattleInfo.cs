@@ -449,7 +449,7 @@ namespace KancolleSniffer.Model
 
             var eFlags = (int[])json.api_at_eflag;
             var sources = (int[])json.api_at_list;
-            var types = json.api_at_type() ? (int[])json.api_at_type : null;
+            var types = json.api_at_type() ? (int[])json.api_at_type : (int[])json.api_sp_list;
             var targets = (int[][])json.api_df_list;
             var damages = (int[][])json.api_damage;
             var records = new[] {new Record[12], new Record[12]};
@@ -461,7 +461,7 @@ namespace KancolleSniffer.Model
             {
                 if (ignoreFriendDamage && eFlags[turn] == 1)
                     continue;
-                if (types != null && types[turn] == 100) // Nelson Touch
+                if (types[turn] == 100) // Nelson Touch
                     records[eFlags[turn] ^ 1][sources[turn]].TriggerSpecialAttack();
                 for (var shot = 0; shot < targets[turn].Length; shot++)
                 {

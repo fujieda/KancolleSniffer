@@ -261,6 +261,10 @@ namespace KancolleSniffer.Test
             // ship_deckでフラグを引き継ぐ
             SniffLogFile(sniffer, "nelsontouch_002");
             PAssert.That(() => sniffer.Fleets[0].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
+            // 夜戦
+            var night = new Sniffer();
+            SniffLogFile(night, "nelsontouch_003");
+            PAssert.That(() => night.Battle.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
         }
     }
 }
