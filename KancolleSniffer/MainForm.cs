@@ -888,6 +888,8 @@ namespace KancolleSniffer
             for (var i = 0; i < _sniffer.Missions.Length; i++)
             {
                 var entry = _sniffer.Missions[i];
+                if (entry.Name == "前衛支援任務" || entry.Name == "艦隊決戦支援任務")
+                    continue;
                 CheckAlarm("遠征終了", entry.Timer, i + 1, entry.Name);
             }
             for (var i = 0; i < _sniffer.NDock.Length; i++)
