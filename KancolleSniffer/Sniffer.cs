@@ -377,6 +377,8 @@ namespace KancolleSniffer
         {
             if (IsNormalBattleAPI(url) || IsCombinedBattleAPI(url))
             {
+                _shipInfo.ClearBadlyDamagedShips();
+                RepeatingTimerController?.Stop("大破警告");
                 _battleInfo.InspectBattle(url, request, data);
                 _logger.InspectBattle(data);
                 _cellInfo.StartBattle();
