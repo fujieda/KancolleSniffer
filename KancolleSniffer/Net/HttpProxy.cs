@@ -36,7 +36,9 @@ namespace KancolleSniffer.Net
         public static event Action<Session> AfterSessionComplete;
 
         private TcpListener _listener;
-
+#if DEBUG
+        private static readonly object SyncObj = new object();
+#endif
         public static void Startup(int port, bool dummy0, bool dummy1)
         {
             LocalPort = port;
@@ -137,7 +139,8 @@ namespace KancolleSniffer.Net
 #if DEBUG
                 catch (Exception e)
                 {
-                    File.AppendAllText("debug.log", $"[{DateTime.Now:g}] " + e + "\r\n");
+                    lock (SyncObj)
+                        File.AppendAllText("debug.log", $"[{DateTime.Now:g}] " + e + "\r\n");
                 }
 #else // ReSharper disable once EmptyGeneralCatchClause
                 catch
