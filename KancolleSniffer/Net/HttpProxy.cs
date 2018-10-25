@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -87,42 +88,51 @@ namespace KancolleSniffer.Net
         {
             private readonly Socket _client;
             private Socket _server;
-            private readonly Session _session;
-            private readonly HttpStream _clientStream;
+            private string _host;
+            private int _port;
+            private Session _session;
+            private HttpStream _clientStream;
             private HttpStream _serverStream;
 
             public HttpClient(Socket client)
             {
                 _client = client;
-                _clientStream = new HttpStream(client);
-                _session = new Session();
             }
 
             public void ProcessRequest()
             {
                 try
                 {
-                    ReceiveRequest();
-                    if (_session.Request.Method == null)
-                        return;
-                    if (_session.Request.Method == "CONNECT")
+                    do
                     {
-                        HandleConnect();
-                        return;
-                    }
-                    if (_session.Request.Host.StartsWith("localhost") || _session.Request.Host.StartsWith("127.0.0.1"))
-                    {
-                        LogServer.Process(_client, _session.Request.RequestLine);
-                        return;
-                    }
-                    SendRequest();
-                    ReceiveRequestBody();
-                    SendRequestBody();
-                    ReceiveResponse();
-                    if (_session.Response.StatusCode == null)
-                        return;
-                    AfterSessionComplete?.Invoke(_session);
-                    SendResponse();
+                        _clientStream = new HttpStream(_client);
+                        _session = new Session();
+                        if (CheckServerTimeOut())
+                            return;
+                        ReceiveRequest();
+                        if (_session.Request.Method == null)
+                            return;
+                        if (_session.Request.Method == "CONNECT")
+                        {
+                            HandleConnect();
+                            return;
+                        }
+                        if (_session.Request.Host.StartsWith("localhost") ||
+                            _session.Request.Host.StartsWith("127.0.0.1"))
+                        {
+                            LogServer.Process(_client, _session.Request.RequestLine);
+                            return;
+                        }
+                        SendRequest();
+                        ReceiveRequestBody();
+                        SendRequestBody();
+                        ReceiveResponse();
+                        if (_session.Response.StatusCode == null)
+                            return;
+                        AfterSessionComplete?.Invoke(_session);
+                        SendResponse();
+                    } while (_client.Connected && _server.Connected &&
+                             _session.Request.IsKeepAlive && _session.Response.IsKeepAlive);
                 }
 #if DEBUG
                 catch (Exception e)
@@ -138,6 +148,16 @@ namespace KancolleSniffer.Net
                 {
                     Close();
                 }
+            }
+
+            private bool CheckServerTimeOut()
+            {
+                if (_server == null)
+                    return false;
+                var readList = new ArrayList {_client, _server};
+                // ReSharper disable once AssignNullToNotNullAttribute
+                Socket.Select(readList, null, null, -1);
+                return readList.Count == 1 && readList[0] == _server && _server.Available == 0;
             }
 
             private void ReceiveRequest()
@@ -157,10 +177,57 @@ namespace KancolleSniffer.Net
 
             private void SendRequest()
             {
-                _server = ConnectServer();
+                GetHostAndPort(out var host, out var port);
+                if (_server == null || host != _host || port != _port || IsSocketDead(_server))
+                {
+                    SocketClose(_server);
+                    _server = ConnectServer(host, port);
+                    _host = host;
+                    _port = port;
+                }
                 _serverStream =
                     new HttpStream(_server).WriteLines(_session.Request.RequestLine + _session.Request.ModifiedHeaders);
             }
+
+            private Socket ConnectServer(string host, int port)
+            {
+                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.Connect(host, port);
+                return socket;
+            }
+
+            private void GetHostAndPort(out string host, out int port)
+            {
+                if (IsEnableUpstreamProxy)
+                {
+                    host = UpstreamProxyHost;
+                    port = UpstreamProxyPort;
+                }
+                else
+                {
+                    MakeRequestUrlRelative(out host, out port);
+                    if (host == null && !ParseAuthority(_session.Request.Host, ref host, ref port))
+                        throw new HttpProxyAbort("Can't find destination host");
+                }
+            }
+
+            private static readonly Regex HostAndPortRegex =
+                new Regex("http://([^:/]+)(?::(\\d+))?/", RegexOptions.Compiled);
+
+            private void MakeRequestUrlRelative(out string host, out int port)
+            {
+                host = null;
+                port = 80;
+                var m = HostAndPortRegex.Match(_session.Request.RequestLine);
+                if (!m.Success)
+                    return;
+                host = m.Groups[1].Value;
+                if (m.Groups[2].Success)
+                    port = int.Parse(m.Groups[2].Value);
+                _session.Request.RequestLine = _session.Request.RequestLine.Remove(m.Index, m.Length - 1);
+            }
+
+            bool IsSocketDead(Socket s) => (s.Poll(1000, SelectMode.SelectRead) && s.Available == 0) || !s.Connected;
 
             private void SendRequestBody()
             {
@@ -232,35 +299,6 @@ namespace KancolleSniffer.Net
                 }
             }
 
-            private static readonly Regex HostAndPortRegex =
-                new Regex("http://([^:/]+)(?::(\\d+))?/", RegexOptions.Compiled);
-
-            private Socket ConnectServer()
-            {
-                string host = null;
-                var port = 80;
-                if (IsEnableUpstreamProxy)
-                {
-                    host = UpstreamProxyHost;
-                    port = UpstreamProxyPort;
-                    goto connect;
-                }
-                var m = HostAndPortRegex.Match(_session.Request.RequestLine);
-                if (m.Success)
-                {
-                    host = m.Groups[1].Value;
-                    if (m.Groups[2].Success)
-                        port = int.Parse(m.Groups[2].Value);
-                    _session.Request.RequestLine = _session.Request.RequestLine.Remove(m.Index, m.Length - 1);
-                }
-                if (host == null && !ParseAuthority(_session.Request.Host, ref host, ref port))
-                    throw new HttpProxyAbort("Can't find destination host");
-                connect:
-                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                socket.Connect(host, port);
-                return socket;
-            }
-
             private static readonly Regex AuthorityRegex = new Regex("([^:]+)(?::(\\d+))?");
 
             private bool ParseAuthority(string authority, ref string host, ref int port)
@@ -325,6 +363,7 @@ namespace KancolleSniffer.Net
             public string ContentType { get; set; }
             public string ContentEncoding { get; set; }
             public string Host { get; set; }
+            public bool IsKeepAlive;
 
             public string Headers
             {
@@ -336,13 +375,7 @@ namespace KancolleSniffer.Net
                 }
             }
 
-            public virtual string ModifiedHeaders => SetConnectionClose(Headers);
-
-            private string SetConnectionClose(string headers)
-            {
-                return InsertHeader(RemoveHeaders(headers,
-                    new[] {"connection", "keep-alive", "proxy-connection"}), "Connection: close\r\n");
-            }
+            public virtual string ModifiedHeaders => RemoveHeaders(Headers, new[] {"proxy-connection"});
 
             protected string RemoveHeaders(string headers, string[] fields)
             {
@@ -372,6 +405,7 @@ namespace KancolleSniffer.Net
                 ContentType = GetField("content-type");
                 ContentEncoding = GetField("content-encoding");
                 Host = GetField("host");
+                IsKeepAlive = GetField("connection")?.ToLower(CultureInfo.InvariantCulture) != "close";
             }
 
             protected Match MatchField(string name, string headers)
