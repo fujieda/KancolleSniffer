@@ -266,12 +266,6 @@ namespace KancolleSniffer.View
                 CreateRepairLabels(i);
                 CreateShipLabels(i);
             }
-            for (var i = 0; i * LineHeight < Height; i++)
-            {
-                _labelPanelList[i].Visible = InShipStatus(_mode);
-                _groupingPanelList[i].Visible = _mode == "分類";
-                _repairPanelList[i].Visible = _mode == "修復";
-            }
             SetupScrollBar();
         }
 
@@ -338,6 +332,7 @@ namespace KancolleSniffer.View
             panel.Controls.AddRange(cb);
             // ReSharper restore CoVariantArrayConversion
             Controls.Add(panel);
+            var unused = panel.Handle; // create handle
             foreach (var label in labels)
             {
                 label.Scale();
@@ -401,6 +396,7 @@ namespace KancolleSniffer.View
             // ReSharper disable once CoVariantArrayConversion
             panel.Controls.AddRange(labels);
             Controls.Add(panel);
+            var unused = panel.Handle; // create handle
             foreach (var label in labels)
             {
                 label.Scale();
@@ -461,6 +457,7 @@ namespace KancolleSniffer.View
             // ReSharper disable once CoVariantArrayConversion
             panel.Controls.AddRange(labels);
             Controls.Add(panel);
+            var unused = panel.Handle; // create handle
             foreach (var label in labels)
             {
                 label.Scale();
@@ -477,6 +474,9 @@ namespace KancolleSniffer.View
         {
             for (var i = 0; i < (Height + LineHeight - 1) / LineHeight; i++)
             {
+                HidePanels(i);
+                if (i + ScrollBar.Value >= _shipList.Length)
+                    continue;
                 if (InShipStatus(_mode))
                     SetShipStatus(i);
                 if (_mode == "分類")
@@ -486,16 +486,15 @@ namespace KancolleSniffer.View
             }
         }
 
+        private void HidePanels(int i)
+        {
+            _labelPanelList[i].Visible = _groupingPanelList[i].Visible = _repairPanelList[i].Visible = false;
+        }
+
         private bool InShipStatus(string mode) => Array.Exists(new[] {"全艦", "A", "B", "C", "D"}, x => mode == x);
 
         private void SetShipStatus(int i)
         {
-            var panel = _labelPanelList[i];
-            if (i + ScrollBar.Value >= _shipList.Length)
-            {
-                panel.Visible = false;
-                return;
-            }
             var s = _shipList[i + ScrollBar.Value];
             var labels = _labelList[i];
             if (s.Level == 1000) // 艦種の表示
@@ -509,7 +508,7 @@ namespace KancolleSniffer.View
             labels[3].SetExpToNext(s);
             labels[4].SetName(s, ShipNameWidth.ShipList);
             labels[5].SetFleet(s);
-            panel.Visible = true;
+            _labelPanelList[i].Visible = true;
         }
 
         private void SetShipType(int i)
@@ -528,18 +527,10 @@ namespace KancolleSniffer.View
 
         private void SetGrouping(int i)
         {
-            var panel = _groupingPanelList[i];
-            if (i + ScrollBar.Value >= _shipList.Length)
-            {
-                panel.Visible = false;
-                _labelPanelList[i].Visible = false;
-                return;
-            }
             var s = _shipList[i + ScrollBar.Value];
             var labels = _groupingLabelList[i];
             if (s.Level == 1000)
             {
-                panel.Visible = false;
                 SetShipType(i);
                 return;
             }
@@ -549,22 +540,14 @@ namespace KancolleSniffer.View
             var cb = _checkBoxesList[i];
             for (var j = 0; j < cb.Length; j++)
                 cb[j].Checked = GroupSettings[j].Contains(s.Id);
-            panel.Visible = true;
+            _groupingPanelList[i].Visible = true;
         }
 
         private void SetRepairList(int i)
         {
-            var panel = _repairPanelList[i];
-            if (i + ScrollBar.Value >= _shipList.Length)
-            {
-                panel.Visible = false;
-                _labelPanelList[i].Visible = false;
-                return;
-            }
             var s = _shipList[i + ScrollBar.Value];
             if (s.Level == 1000)
             {
-                panel.Visible = false;
                 SetShipType(i);
                 return;
             }
@@ -575,7 +558,7 @@ namespace KancolleSniffer.View
             labels[3].Text = s.RepairTimePerHp.ToString(@"mm\:ss");
             labels[4].SetName(s, ShipNameWidth.RepairListFull);
             labels[5].SetFleet(s);
-            panel.Visible = true;
+            _repairPanelList[i].Visible = true;
         }
 
         public event Action HpLabelClick;
