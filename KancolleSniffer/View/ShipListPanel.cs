@@ -577,6 +577,8 @@ namespace KancolleSniffer.View
 
         public void ShowShip(int id)
         {
+            if (!ScrollBar.Visible)
+                return;
             var i = Array.FindIndex(_shipList, s => s.Id == id);
             if (i == -1)
                 return;
