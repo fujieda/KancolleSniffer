@@ -63,6 +63,7 @@
     <Compile Include="Model\Inventry.cs" />
     <Compile Include="Model\ItemSpec.cs" />
     <Compile Include="Model\ItemStatus.cs" />
+    <Compile Include="Model\PracticeExp.cs" />
     <Compile Include="Model\ShipSpec.cs" />
     <Compile Include="Log\BattleLogProcessor.cs" />
     <Compile Include="View\AntiAirPanel.cs">
