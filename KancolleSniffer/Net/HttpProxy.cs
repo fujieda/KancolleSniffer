@@ -588,7 +588,7 @@ namespace KancolleSniffer.Net
                 {
                     line = ReadLine();
                     sb.Append(line);
-                } while (line != "\r\n");
+                } while (line != "" && line != "\r\n");
                 return sb.ToString();
             }
 
