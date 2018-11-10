@@ -1147,12 +1147,13 @@ namespace KancolleSniffer.Test
         /// 677: 継戦支援能力の整備
         /// 678: 主力艦上戦闘機の更新
         /// 680: 対空兵装の整備拡充
+        /// 688: 航空戦力の強化
         /// </summary>
         [TestMethod]
-        public void DestroyItem_613_638_643_645_663_673_674_675_676_677_678()
+        public void DestroyItem_613_638_643_645_663_673_674_675_676_677_678_680_688()
         {
             var itemInfo = new ItemInfo(new ItemMaster(), new ItemInventory());
-            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1)) {AcceptMax = 12};
+            var questInfo = new QuestInfo(itemInfo, null, () => new DateTime(2015, 1, 1));
 
             itemInfo.InjectItemSpec(new[]
             {
@@ -1168,12 +1169,15 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 20, Name = "零式艦戦21型", Type = 6},
                 new ItemSpec {Id = 28, Name = "22号水上電探", Type = 12},
                 new ItemSpec {Id = 31, Name = "32号水上電探", Type = 13},
-                new ItemSpec {Id = 35, Name = "三式弾", Type = 18}
+                new ItemSpec {Id = 35, Name = "三式弾", Type = 18},
+                new ItemSpec {Id = 23, Name = "九九式艦爆", Type = 7},
+                new ItemSpec {Id = 16, Name = "九七式艦攻", Type = 8}
             });
-            var items = new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31, 35};
+            var items = new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31, 35, 23, 16};
             itemInfo.InjectItems(items);
-            questInfo.InspectQuestList(CreateQuestList(new[]
-                {613, 638, 643, 645, 663, 673, 674, 675, 676, 677, 678, 680}));
+            var questList = new[] {613, 638, 643, 645, 663, 673, 674, 675, 676, 677, 678, 680, 688};
+            questInfo.AcceptMax = questList.Length;
+            questInfo.InspectQuestList(CreateQuestList(questList));
             questInfo.InspectDestroyItem(
                 $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, items.Length))}&api%5Fverno=1", null);
             var scalar = new[]
@@ -1191,7 +1195,7 @@ namespace KancolleSniffer.Test
             {
                 new {Id = 675, NowArray = new[] {2, 1}}, new {Id = 676, NowArray = new[] {1, 1, 1}},
                 new {Id = 677, NowArray = new[] {1, 1, 1}}, new {Id = 678, NowArray = new[] {1, 1}},
-                new {Id = 680, NowArray = new[] {1, 2}}
+                new {Id = 680, NowArray = new[] {1, 2}}, new {Id = 688, NowArray = new[] {2, 1, 1, 1}}
             };
             foreach (var e in array)
             {
@@ -1240,7 +1244,8 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 426, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 428, NowArray = new[] {1, 1, 1}},
                     new QuestCount {Id = 873, NowArray = new[] {1, 1, 1}},
-                    new QuestCount {Id= 888, NowArray = new []{1, 1, 1}}
+                    new QuestCount {Id= 888, NowArray = new []{1, 1, 1}},
+                    new QuestCount {Id = 688, NowArray = new[] {2, 1, 2, 1}}
                 }
             };
             questInfo.LoadState(status);
@@ -1264,6 +1269,8 @@ namespace KancolleSniffer.Test
             var q888 = status.QuestCountList[6];
             PAssert.That(() => q888.ToString() == "3/3");
             PAssert.That(() => q888.ToToolTip() == "5-1 5-3 5-4");
+            var q688 = status.QuestCountList[7];
+            PAssert.That(() => q688.ToToolTip() == "艦戦2 艦爆1 艦攻2 水偵1");
         }
 
         /// <summary>

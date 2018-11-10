@@ -227,6 +227,10 @@ namespace KancolleSniffer.Model
                     return string.Join(" ",
                         new[] {"5-1", "5-3", "5-4"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
                             .Where(s => !string.IsNullOrEmpty(s)));
+                case 688:
+                    return string.Join(" ",
+                        new[] {"艦戦", "艦爆", "艦攻", "水偵"}.Zip(NowArray, (type, n) => n >= 1 ? type + n : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
             }
             return "";
         }
@@ -321,6 +325,7 @@ namespace KancolleSniffer.Model
             {677, new QuestDestroyItem {Interval = Weekly, MaxArray = new[] {4, 2, 3}, Types = new[] {3, 10, 5}, Material = new[] {0, 5, 0, 0}}}, // 677: 継戦支援能力の整備
             {678, new QuestDestroyItem {Interval = Quarterly, MaxArray = new[] {3, 5}, Ids = new[] {19, 20}, Material = new[] {0, 0, 8, 0}}}, // 678: 主力艦上戦闘機の更新
             {680, new QuestSpec {Interval = Quarterly, MaxArray = new[] {4, 4}, Material = new[] {0, 0, 6, 0}}}, // 680: 対空兵装の整備拡充
+            {688, new QuestDestroyItem {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Types = new[] {6, 7, 8, 10}, Material = new[] {0, 0, 0, 0}}}, // 688: 航空戦力の強化
 
             {702, new QuestPowerUp {Interval = Daily, Max = 2, Material = new[] {0, 1, 0, 0}}}, // 702: 艦の「近代化改修」を実施せよ！
             {703, new QuestPowerUp {Interval = Weekly, Max = 15, Material = new[] {1, 0, 2, 0}}} // 703: 「近代化改修」を進め、戦備を整えよ！
