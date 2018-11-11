@@ -808,12 +808,18 @@ namespace KancolleSniffer
         private void UpdateNDocLabels()
         {
             _mainLabels.SetNDockLabels(_sniffer.NDock);
+            SetNDockLabel();
         }
 
+        private void SetNDockLabel()
+        {
+            labelNDock.Text = (_config.ShowEndTime & TimerKind.NDock) != 0 ? "入渠終了" : "入渠";
+        }
 
         private void labelNDock_Click(object sender, EventArgs e)
         {
             _config.ShowEndTime ^= TimerKind.NDock;
+            SetNDockLabel();
             UpdateTimers();
         }
 
@@ -832,6 +838,12 @@ namespace KancolleSniffer
                 }
                 nameLabels[i].Text = names[i];
             }
+            SetMissionLabel();
+        }
+
+        private void SetMissionLabel()
+        {
+            labelMission.Text = (_config.ShowEndTime & TimerKind.Mission) != 0 ? "遠征終了" : "遠征";
         }
 
         private string GenerateFleetParamsForMission(int fleetNumber)
@@ -854,6 +866,7 @@ namespace KancolleSniffer
         private void labelMission_Click(object sender, EventArgs e)
         {
             _config.ShowEndTime ^= TimerKind.Mission;
+            SetMissionLabel();
             UpdateTimers();
         }
 

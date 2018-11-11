@@ -49,6 +49,7 @@ namespace KancolleSniffer
             this.panelHeadquarters = new System.Windows.Forms.Panel();
             this.labelPlayLog = new System.Windows.Forms.Label();
             this.labelLogin = new System.Windows.Forms.Label();
+            this.labelBucketHistoryButton = new System.Windows.Forms.Label();
             this.labelAchievement = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
             this.labelNumOfBuckets = new System.Windows.Forms.Label();
@@ -80,7 +81,7 @@ namespace KancolleSniffer
             this.labelBulletHistory = new System.Windows.Forms.Label();
             this.label35 = new System.Windows.Forms.Label();
             this.labelFuelHistory = new System.Windows.Forms.Label();
-            this.labelRepair = new System.Windows.Forms.Label();
+            this.labelNDock = new System.Windows.Forms.Label();
             this.panelDock = new System.Windows.Forms.Panel();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -113,12 +114,6 @@ namespace KancolleSniffer
             this.label13 = new System.Windows.Forms.Label();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
             this.panel3 = new System.Windows.Forms.Panel();
-            this.labelQuestCount1 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestCount2 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestCount3 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestCount4 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestCount5 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestCount6 = new KancolleSniffer.View.ShipLabel();
             this.labelQuestColor6 = new System.Windows.Forms.Label();
             this.labelQuestColor5 = new System.Windows.Forms.Label();
             this.labelQuestColor4 = new System.Windows.Forms.Label();
@@ -158,7 +153,6 @@ namespace KancolleSniffer
             this.imageListBullSq = new System.Windows.Forms.ImageList(this.components);
             this.labelAkashiRepair = new System.Windows.Forms.Label();
             this.labelClearQuest = new System.Windows.Forms.Label();
-            this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
             this.labelBullSq4 = new System.Windows.Forms.Label();
             this.labelFuelSq4 = new System.Windows.Forms.Label();
             this.labelBullSq3 = new System.Windows.Forms.Label();
@@ -173,7 +167,13 @@ namespace KancolleSniffer
             this.labelCheckFleet3 = new System.Windows.Forms.Label();
             this.labelCheckFleet4 = new System.Windows.Forms.Label();
             this.labelCheckFleet1 = new System.Windows.Forms.Label();
-            this.labelBucketHistoryButton = new System.Windows.Forms.Label();
+            this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
+            this.labelQuestCount1 = new KancolleSniffer.View.ShipLabel();
+            this.labelQuestCount2 = new KancolleSniffer.View.ShipLabel();
+            this.labelQuestCount3 = new KancolleSniffer.View.ShipLabel();
+            this.labelQuestCount4 = new KancolleSniffer.View.ShipLabel();
+            this.labelQuestCount5 = new KancolleSniffer.View.ShipLabel();
+            this.labelQuestCount6 = new KancolleSniffer.View.ShipLabel();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -224,6 +224,16 @@ namespace KancolleSniffer
             this.labelLogin.TabIndex = 23;
             this.labelLogin.Text = "艦これにログインしてください。\r\nログイン中ならログインし直してください。";
             this.labelLogin.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labelBucketHistoryButton
+            // 
+            this.labelBucketHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelBucketHistoryButton.Image = ((System.Drawing.Image)(resources.GetObject("labelBucketHistoryButton.Image")));
+            this.labelBucketHistoryButton.Location = new System.Drawing.Point(146, 15);
+            this.labelBucketHistoryButton.Name = "labelBucketHistoryButton";
+            this.labelBucketHistoryButton.Size = new System.Drawing.Size(14, 14);
+            this.labelBucketHistoryButton.TabIndex = 9;
+            this.labelBucketHistoryButton.Click += new System.EventHandler(this.labelBucketHistoryButton_Click);
             // 
             // labelAchievement
             // 
@@ -518,14 +528,16 @@ namespace KancolleSniffer
             this.labelFuelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.labelFuelHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
             // 
-            // labelRepair
+            // labelNDock
             // 
-            this.labelRepair.AutoSize = true;
-            this.labelRepair.Location = new System.Drawing.Point(8, 195);
-            this.labelRepair.Name = "labelRepair";
-            this.labelRepair.Size = new System.Drawing.Size(29, 12);
-            this.labelRepair.TabIndex = 3;
-            this.labelRepair.Text = "入渠";
+            this.labelNDock.AutoSize = true;
+            this.labelNDock.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelNDock.Location = new System.Drawing.Point(8, 195);
+            this.labelNDock.Name = "labelNDock";
+            this.labelNDock.Size = new System.Drawing.Size(29, 12);
+            this.labelNDock.TabIndex = 3;
+            this.labelNDock.Text = "入渠";
+            this.labelNDock.Click += new System.EventHandler(this.labelNDock_Click);
             // 
             // panelDock
             // 
@@ -686,11 +698,13 @@ namespace KancolleSniffer
             // labelMission
             // 
             this.labelMission.AutoSize = true;
+            this.labelMission.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelMission.Location = new System.Drawing.Point(8, 276);
             this.labelMission.Name = "labelMission";
             this.labelMission.Size = new System.Drawing.Size(29, 12);
             this.labelMission.TabIndex = 10;
             this.labelMission.Text = "遠征";
+            this.labelMission.Click += new System.EventHandler(this.labelMission_Click);
             // 
             // panel2
             // 
@@ -858,72 +872,6 @@ namespace KancolleSniffer
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(220, 94);
             this.panel3.TabIndex = 13;
-            // 
-            // labelQuestCount1
-            // 
-            this.labelQuestCount1.AnchorRight = true;
-            this.labelQuestCount1.AutoSize = true;
-            this.labelQuestCount1.Location = new System.Drawing.Point(191, 3);
-            this.labelQuestCount1.Name = "labelQuestCount1";
-            this.labelQuestCount1.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount1.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount1.TabIndex = 54;
-            this.labelQuestCount1.UseMnemonic = false;
-            // 
-            // labelQuestCount2
-            // 
-            this.labelQuestCount2.AnchorRight = true;
-            this.labelQuestCount2.AutoSize = true;
-            this.labelQuestCount2.Location = new System.Drawing.Point(191, 18);
-            this.labelQuestCount2.Name = "labelQuestCount2";
-            this.labelQuestCount2.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount2.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount2.TabIndex = 53;
-            this.labelQuestCount2.UseMnemonic = false;
-            // 
-            // labelQuestCount3
-            // 
-            this.labelQuestCount3.AnchorRight = true;
-            this.labelQuestCount3.AutoSize = true;
-            this.labelQuestCount3.Location = new System.Drawing.Point(191, 33);
-            this.labelQuestCount3.Name = "labelQuestCount3";
-            this.labelQuestCount3.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount3.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount3.TabIndex = 52;
-            this.labelQuestCount3.UseMnemonic = false;
-            // 
-            // labelQuestCount4
-            // 
-            this.labelQuestCount4.AnchorRight = true;
-            this.labelQuestCount4.AutoSize = true;
-            this.labelQuestCount4.Location = new System.Drawing.Point(191, 48);
-            this.labelQuestCount4.Name = "labelQuestCount4";
-            this.labelQuestCount4.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount4.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount4.TabIndex = 51;
-            this.labelQuestCount4.UseMnemonic = false;
-            // 
-            // labelQuestCount5
-            // 
-            this.labelQuestCount5.AnchorRight = true;
-            this.labelQuestCount5.AutoSize = true;
-            this.labelQuestCount5.Location = new System.Drawing.Point(191, 63);
-            this.labelQuestCount5.Name = "labelQuestCount5";
-            this.labelQuestCount5.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount5.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount5.TabIndex = 50;
-            this.labelQuestCount5.UseMnemonic = false;
-            // 
-            // labelQuestCount6
-            // 
-            this.labelQuestCount6.AnchorRight = true;
-            this.labelQuestCount6.AutoSize = true;
-            this.labelQuestCount6.Location = new System.Drawing.Point(191, 78);
-            this.labelQuestCount6.Name = "labelQuestCount6";
-            this.labelQuestCount6.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount6.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount6.TabIndex = 49;
-            this.labelQuestCount6.UseMnemonic = false;
             // 
             // labelQuestColor6
             // 
@@ -1258,16 +1206,6 @@ namespace KancolleSniffer
             this.labelClearQuest.MouseDown += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseDown);
             this.labelClearQuest.MouseUp += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseUp);
             // 
-            // panelRepairList
-            // 
-            this.panelRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelRepairList.Location = new System.Drawing.Point(6, 207);
-            this.panelRepairList.Name = "panelRepairList";
-            this.panelRepairList.Size = new System.Drawing.Size(129, 21);
-            this.panelRepairList.TabIndex = 4;
-            this.panelRepairList.Visible = false;
-            this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
-            // 
             // labelBullSq4
             // 
             this.labelBullSq4.ImageIndex = 0;
@@ -1395,15 +1333,81 @@ namespace KancolleSniffer
             this.labelCheckFleet1.Size = new System.Drawing.Size(5, 14);
             this.labelCheckFleet1.TabIndex = 16;
             // 
-            // labelBucketHistoryButton
+            // panelRepairList
             // 
-            this.labelBucketHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelBucketHistoryButton.Image = ((System.Drawing.Image)(resources.GetObject("labelBucketHistoryButton.Image")));
-            this.labelBucketHistoryButton.Location = new System.Drawing.Point(146, 15);
-            this.labelBucketHistoryButton.Name = "labelBucketHistoryButton";
-            this.labelBucketHistoryButton.Size = new System.Drawing.Size(14, 14);
-            this.labelBucketHistoryButton.TabIndex = 9;
-            this.labelBucketHistoryButton.Click += new System.EventHandler(this.labelBucketHistoryButton_Click);
+            this.panelRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelRepairList.Location = new System.Drawing.Point(6, 207);
+            this.panelRepairList.Name = "panelRepairList";
+            this.panelRepairList.Size = new System.Drawing.Size(129, 21);
+            this.panelRepairList.TabIndex = 4;
+            this.panelRepairList.Visible = false;
+            this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
+            // 
+            // labelQuestCount1
+            // 
+            this.labelQuestCount1.AnchorRight = true;
+            this.labelQuestCount1.AutoSize = true;
+            this.labelQuestCount1.Location = new System.Drawing.Point(191, 3);
+            this.labelQuestCount1.Name = "labelQuestCount1";
+            this.labelQuestCount1.PresetColor = System.Drawing.Color.Empty;
+            this.labelQuestCount1.Size = new System.Drawing.Size(0, 12);
+            this.labelQuestCount1.TabIndex = 54;
+            this.labelQuestCount1.UseMnemonic = false;
+            // 
+            // labelQuestCount2
+            // 
+            this.labelQuestCount2.AnchorRight = true;
+            this.labelQuestCount2.AutoSize = true;
+            this.labelQuestCount2.Location = new System.Drawing.Point(191, 18);
+            this.labelQuestCount2.Name = "labelQuestCount2";
+            this.labelQuestCount2.PresetColor = System.Drawing.Color.Empty;
+            this.labelQuestCount2.Size = new System.Drawing.Size(0, 12);
+            this.labelQuestCount2.TabIndex = 53;
+            this.labelQuestCount2.UseMnemonic = false;
+            // 
+            // labelQuestCount3
+            // 
+            this.labelQuestCount3.AnchorRight = true;
+            this.labelQuestCount3.AutoSize = true;
+            this.labelQuestCount3.Location = new System.Drawing.Point(191, 33);
+            this.labelQuestCount3.Name = "labelQuestCount3";
+            this.labelQuestCount3.PresetColor = System.Drawing.Color.Empty;
+            this.labelQuestCount3.Size = new System.Drawing.Size(0, 12);
+            this.labelQuestCount3.TabIndex = 52;
+            this.labelQuestCount3.UseMnemonic = false;
+            // 
+            // labelQuestCount4
+            // 
+            this.labelQuestCount4.AnchorRight = true;
+            this.labelQuestCount4.AutoSize = true;
+            this.labelQuestCount4.Location = new System.Drawing.Point(191, 48);
+            this.labelQuestCount4.Name = "labelQuestCount4";
+            this.labelQuestCount4.PresetColor = System.Drawing.Color.Empty;
+            this.labelQuestCount4.Size = new System.Drawing.Size(0, 12);
+            this.labelQuestCount4.TabIndex = 51;
+            this.labelQuestCount4.UseMnemonic = false;
+            // 
+            // labelQuestCount5
+            // 
+            this.labelQuestCount5.AnchorRight = true;
+            this.labelQuestCount5.AutoSize = true;
+            this.labelQuestCount5.Location = new System.Drawing.Point(191, 63);
+            this.labelQuestCount5.Name = "labelQuestCount5";
+            this.labelQuestCount5.PresetColor = System.Drawing.Color.Empty;
+            this.labelQuestCount5.Size = new System.Drawing.Size(0, 12);
+            this.labelQuestCount5.TabIndex = 50;
+            this.labelQuestCount5.UseMnemonic = false;
+            // 
+            // labelQuestCount6
+            // 
+            this.labelQuestCount6.AnchorRight = true;
+            this.labelQuestCount6.AutoSize = true;
+            this.labelQuestCount6.Location = new System.Drawing.Point(191, 78);
+            this.labelQuestCount6.Name = "labelQuestCount6";
+            this.labelQuestCount6.PresetColor = System.Drawing.Color.Empty;
+            this.labelQuestCount6.Size = new System.Drawing.Size(0, 12);
+            this.labelQuestCount6.TabIndex = 49;
+            this.labelQuestCount6.UseMnemonic = false;
             // 
             // MainForm
             // 
@@ -1443,7 +1447,7 @@ namespace KancolleSniffer
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.labelConstruct);
             this.Controls.Add(this.panelDock);
-            this.Controls.Add(this.labelRepair);
+            this.Controls.Add(this.labelNDock);
             this.Controls.Add(this.panelShipInfo);
             this.Controls.Add(this.labelFleet1);
             this.Controls.Add(this.panelHeadquarters);
@@ -1489,7 +1493,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelNumOfShips;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panelShipInfo;
-        private System.Windows.Forms.Label labelRepair;
+        private System.Windows.Forms.Label labelNDock;
         private System.Windows.Forms.Panel panelDock;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
