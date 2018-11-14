@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Privacy.cs" />
     <Compile Include="Log\LogProcessor.cs" />
     <Compile Include="Model\Achievement.cs" />
     <Compile Include="Model\AkashiTimer.cs" />

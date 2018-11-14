@@ -69,7 +69,7 @@ namespace KancolleSniffer
         public string GenerateBattleErrorLog()
         {
             foreach (var logs in _battleApiLog)
-                RemoveUnwantedInformation(ref logs[1], ref logs[2]);
+                Privacy.Remove(ref logs[0], ref logs[1], ref logs[2]);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
             var api = CompressApi(string.Join("\r\n",
                 new[] {BattleStartSlots()}.Concat(_battleApiLog.SelectMany(logs => logs))));
@@ -104,22 +104,12 @@ namespace KancolleSniffer
 
         public string GenerateErrorLog(string url, string request, string response, string exception)
         {
-            RemoveUnwantedInformation(ref request, ref response);
+            Privacy.Remove(ref url, ref request, ref response);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
             var api = CompressApi($"{url}\r\n{request}\r\n{response}");
             var result = $"{{{{{{\r\n{DateTime.Now:g} {version}\r\n{exception}\r\n{api}\r\n}}}}}}";
             File.WriteAllText("error.log", result);
             return result;
-        }
-
-        public static void RemoveUnwantedInformation(ref string request, ref string response)
-        {
-            var token = new Regex(@"&api(?:%5F|_)token=.+?(?=&|$)|api(?:%5F|_)token=.+?(?:&|$)|api(?:%5F|_)btime=\d+&?");
-            request = token.Replace(request, "");
-            var id = new Regex(@"""api_member_id"":""?\d+""?,?|""api_nickname"":"".+?"",?|""api_nickname_id"":""\d+"",?|""api_name_id"":"".+?"",?|");
-            response = id.Replace(response, "");
-            var name = new Regex(@"""api_name"":"".+?""");
-            response = name.Replace(response, @"""api_name"":""""");
         }
 
         private string CompressApi(string api)

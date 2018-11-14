@@ -78,7 +78,7 @@
     <Compile Include="BattleLogProcessorTest.cs" />
     <Compile Include="BattleBriefTest.cs" />
     <Compile Include="BattleTest.cs" />
-    <Compile Include="ErrorLogTest.cs" />
+    <Compile Include="PrivacyTest.cs" />
     <Compile Include="FleetPanelTest.cs" />
     <Compile Include="JsonTest.cs" />
     <Compile Include="LogProcessorTest.cs" />

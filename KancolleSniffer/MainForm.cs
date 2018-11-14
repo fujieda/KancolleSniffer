@@ -181,6 +181,7 @@ namespace KancolleSniffer
                 return;
             var request = session.Request.BodyAsString;
             var response = session.Response.BodyAsString;
+            Privacy.Remove(ref url, ref request, ref response);
             if (response == null || !response.StartsWith("svdata="))
             {
                 WriteDebugLog(url, request, response);
