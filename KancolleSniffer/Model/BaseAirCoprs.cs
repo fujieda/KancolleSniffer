@@ -46,9 +46,17 @@ namespace KancolleSniffer.Model
             public bool IsInterceptor => AirCombat[0] != Interception[0];
         }
 
+        public class Distance
+        {
+            public int Base { get; set; }
+            public int Bonus { get; set; }
+
+            public override string ToString() => Bonus > 0 ? $"{Base}+{Bonus}" : Base.ToString();
+        }
+
         public class AirCorpsInfo
         {
-            public int Distance { get; set; }
+            public Distance Distance { get; set; }
             public int Action { get; set; }
             public PlaneInfo[] Planes { get; set; }
 
@@ -147,7 +155,7 @@ namespace KancolleSniffer.Model
                 group
                 new AirCorpsInfo
                 {
-                    Distance = (int)entry.api_distance,
+                    Distance = CreateDistance(entry.api_distance),
                     Action = (int)entry.api_action_kind,
                     Planes = (from plane in (dynamic[])entry.api_plane_info
                         select new PlaneInfo
@@ -169,7 +177,7 @@ namespace KancolleSniffer.Model
             var values = HttpUtility.ParseQueryString(request);
             var airCorps = GetBaseInfo(values).AirCorps[int.Parse(values["api_base_id"]) - 1];
             if (json.api_distance()) // 2016春イベにはない
-                airCorps.Distance = (int)json.api_distance;
+                airCorps.Distance = CreateDistance(json.api_distance);
             foreach (var planeInfo in json.api_plane_info)
             {
                 var planeId = (int)planeInfo.api_squadron_id - 1;
@@ -185,6 +193,11 @@ namespace KancolleSniffer.Model
                 };
             }
         }
+
+        private Distance CreateDistance(dynamic distance) => distance is double
+            // ReSharper disable once PossibleInvalidCastException
+            ? new Distance {Base = (int)distance}
+            : new Distance {Base = (int)distance.api_base, Bonus = (int)distance.api_bonus};
 
         public void InspectSupply(string request, dynamic json)
         {

@@ -211,7 +211,7 @@ namespace KancolleSniffer.View
                         {
                             Ship = name[i++] + " " + airCorps.ActionName,
                             Ship2 = $"出撃コスト:燃{cost[0]}弾{cost[1]}",
-                            Spec = spec + " 距離:" + airCorps.Distance,
+                            Spec = spec + $" 距離:{airCorps.Distance}",
                             Spec2 = spec2
                         });
                         list.AddRange(airCorps.Planes.Select(plane =>
