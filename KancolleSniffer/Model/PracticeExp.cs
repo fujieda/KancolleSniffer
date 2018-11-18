@@ -30,11 +30,15 @@ namespace KancolleSniffer.Model
 
         public static double GetExp(int ship1Lv, int ship2Lv)
         {
-            return ExpTable[Min(ship1Lv, ExpTable.Length) - 1] / 100.0 +
+            var raw = ExpTable[Min(ship1Lv, ExpTable.Length) - 1] / 100.0 +
                       ExpTable[Min(ship2Lv, ExpTable.Length) - 1] / 300.0;
+            return raw >= 500 ? 500 + (int)Sqrt(raw - 500) : (int)raw;
         }
 
-        public static double TrainingCruiserBonus(IReadOnlyList<ShipStatus> fleet)
+        public static double TrainingCruiserBonus(IReadOnlyList<ShipStatus> fleet) =>
+            1.0 + TrainingCruiserBonusRate(fleet);
+
+        private static double TrainingCruiserBonusRate(IReadOnlyList<ShipStatus> fleet)
         {
             if (fleet[0].Spec.IsTrainingCruiser)
             {

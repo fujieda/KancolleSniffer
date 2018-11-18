@@ -729,6 +729,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 演習の獲得経験値を計算する
+        /// </summary>
+        [TestMethod]
+        public void PracticeExpPoint()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "practice_004");
+            PAssert.That(() => sniffer.MiscText == "[演習情報]\r\n敵艦隊名 : 第一艦隊\r\n獲得経験値 : 878\r\nS勝利 : 1053");
+        }
+
+        /// <summary>
         /// 新規のドロップ艦の初期装備数を登録する
         /// </summary>
         [TestMethod]
