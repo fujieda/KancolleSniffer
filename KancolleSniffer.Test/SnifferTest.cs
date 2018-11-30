@@ -721,11 +721,29 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "mapgauge_001");
             PAssert.That(() =>
                 sniffer.MiscText ==
-                               "[海域ゲージ]\r\n" +
-                               "1-6 : 残り 5/7\r\n" +
-                               "2-5 : 残り 4/4\r\n" +
-                               "3-5 : 残り 4/4\r\n" +
-                               "4-4 : 残り 4/4\r\n");
+                "[海域ゲージ]\r\n" +
+                "1-6 : 残り 5/7\r\n" +
+                "2-5 : 残り 4/4\r\n" +
+                "3-5 : 残り 4/4\r\n" +
+                "4-4 : 残り 4/4\r\n");
+        }
+
+        /// <summary>
+        /// 7-2の2本目の海域ゲージを正しく表示する
+        /// </summary>
+        [TestMethod]
+        public void SecondAreaGauge()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "mapgauge_002");
+            PAssert.That(() =>
+                sniffer.MiscText ==
+                "[海域ゲージ]\r\n" +
+                "1-6 : 残り 5/7\r\n" +
+                "2-5 : 残り 2/4\r\n" +
+                "5-5 : 残り 5/5\r\n" +
+                "6-5 : 残り 6/6\r\n" +
+                "7-2 : 残り 1/4\r\n");
         }
 
         /// <summary>

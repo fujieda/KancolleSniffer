@@ -79,9 +79,10 @@ namespace KancolleSniffer.Model
                 }
                 if (!entry.api_defeat_count())
                     continue;
-                var count = _gaugeCount.TryGetValue(map, out var max)
-                    ? $"{max - (int)entry.api_defeat_count}/{max}"
-                    : "?/?";
+                var max = entry.api_required_defeat_count()
+                    ? (int)entry.api_required_defeat_count
+                    : _gaugeCount[map];
+                var count = $"{max - (int)entry.api_defeat_count}/{max}";
                 Text += $"{map / 10}-{map % 10} : 残り {count}\r\n";
             }
         }
