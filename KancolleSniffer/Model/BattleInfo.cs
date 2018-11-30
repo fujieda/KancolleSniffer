@@ -461,7 +461,7 @@ namespace KancolleSniffer.Model
             {
                 if (ignoreFriendDamage && eFlags[turn] == 1)
                     continue;
-                if (types[turn] == 100) // Nelson Touch
+                if (types[turn] == 100 || types[turn] == 101) // Nelson Touchと長門一斉射
                     records[eFlags[turn] ^ 1][sources[turn]].TriggerSpecialAttack();
                 for (var shot = 0; shot < targets[turn].Length; shot++)
                 {

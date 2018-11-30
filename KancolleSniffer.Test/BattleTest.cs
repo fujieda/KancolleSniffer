@@ -266,5 +266,16 @@ namespace KancolleSniffer.Test
             SniffLogFile(night, "nelsontouch_003");
             PAssert.That(() => night.Battle.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
         }
+
+        [TestMethod]
+        // ReSharper disable once IdentifierTypo
+        public void NagatoSpecial()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "nagatospecial_001");
+            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
+            PAssert.That(() => sniffer.Battle.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
+            PAssert.That(() => sniffer.Fleets[0].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
+        }
     }
 }
