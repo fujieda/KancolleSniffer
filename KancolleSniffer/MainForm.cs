@@ -1115,7 +1115,7 @@ namespace KancolleSniffer
                         continue;
                     }
                     count[i].Text = " " + c;
-                    count[i].ForeColor = c.Cleared ? CUDColors.Green : Color.Black;
+                    count[i].ForeColor = c.Cleared ? CUDColors.Red : Color.Black;
                     _toolTip.SetToolTip(count[i], c.ToToolTip());
                 }
                 else
