@@ -79,6 +79,11 @@ namespace KancolleSniffer
             _notificationQueue.StopRepeat(key, fleet);
         }
 
+        public void StopRepeat(string key, string subject)
+        {
+            _notificationQueue.StopRepeat(key, subject);
+        }
+
         public void SuspendRepeat(string exception = "")
         {
             _notificationQueue.SuspendRepeat(exception);
@@ -179,6 +184,13 @@ namespace KancolleSniffer
                     {
                         Title = "疲労が回復しました",
                         Body = "%f艦隊"
+                    }
+                },
+                {
+                    "任務達成", new Message
+                    {
+                        Title = "任務を達成しました",
+                        Body = "%s"
                     }
                 }
             };
@@ -317,6 +329,11 @@ namespace KancolleSniffer
             public void StopRepeat(string key, int fleet)
             {
                 _queue.RemoveAll(n => IsMatch(n, key) && n.Fleet == fleet);
+            }
+
+            public void StopRepeat(string key, string subject)
+            {
+                _queue.RemoveAll(n => IsMatch(n, key) && n.Subject == subject);
             }
 
             private bool IsMatch(Notification n, string key) =>

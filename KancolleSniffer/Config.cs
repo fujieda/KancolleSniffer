@@ -103,7 +103,7 @@ namespace KancolleSniffer
     {
         public int Volume { get; set; } = 100;
 
-        public string[] Files { get; set; } =
+        public string[] Files =
         {
             "ensei.mp3",
             "nyuukyo.mp3",
@@ -114,13 +114,23 @@ namespace KancolleSniffer
             "20min.mp3",
             "syuuri.mp3",
             "syuuri2.mp3",
-            "hirou.mp3"
+            "hirou.mp3",
+            "ninmu.mp3"
         };
 
         public string this[string name]
         {
             get => Files[Config.NotificationIndex[name]];
             set => Files[Config.NotificationIndex[name]] = value;
+        }
+
+        public void Upgrade()
+        {
+            var expected = Config.NotificationNames.Length;
+            if (Files.Length == expected)
+                return;
+            Array.Resize(ref Files, expected);
+            Files[expected - 1] = "ninmu.mp3";
         }
     }
 
@@ -176,15 +186,35 @@ namespace KancolleSniffer
             }
         }
 
-        public void Normalization()
+        public void Upgrade()
         {
-            Settings = Settings.Select(s =>
-                    (s & NotificationType.Pushbullet) != 0
-                        ? s ^ NotificationType.Pushbullet | NotificationType.Push
-                        : s)
-                .ToArray();
-            RepeatIntervals = RepeatIntervals.Select(v => v < 0 ? 0 : v).ToArray();
-            PreliminaryPeriods = PreliminaryPeriods.Select(v => v < 0 ? 0 : v).ToArray();
+            UpgradeSettings(ref Settings);
+            UpgradeParameterArray(ref RepeatIntervals);
+            UpgradeParameterArray(ref PreliminaryPeriods);
+        }
+
+        private void UpgradeSettings(ref NotificationType[] settings)
+        {
+            for (var i = 0; i < settings.Length; i++)
+            {
+                if ((settings[i] & NotificationType.Pushbullet) != 0)
+                    settings[i] = settings[i] ^ NotificationType.Pushbullet | NotificationType.Push;
+            }
+            var expected = Config.NotificationNames.Length;
+            if (expected == settings.Length)
+                return;
+            Array.Resize(ref settings, expected);
+            settings[expected - 1] = NotificationType.All;
+        }
+
+        private void UpgradeParameterArray(ref int[] array)
+        {
+            Array.Resize(ref array, Config.NotificationNames.Length);
+            for (var i = 0; i < array.Length; i++)
+            {
+                if (array[i] < 0)
+                    array[i] = 0;
+            }
         }
     }
 
@@ -250,7 +280,7 @@ namespace KancolleSniffer
         public static readonly string[] NotificationNames =
         {
             "遠征終了", "入渠終了", "建造完了", "艦娘数超過", "装備数超過",
-            "大破警告", "泊地修理20分経過", "泊地修理進行", "泊地修理完了", "疲労回復"
+            "大破警告", "泊地修理20分経過", "泊地修理進行", "泊地修理完了", "疲労回復", "任務達成"
         };
 
         public static readonly Dictionary<string, int> NotificationIndex =
@@ -282,8 +312,9 @@ namespace KancolleSniffer
                     config = (Config)serializer.Deserialize(file);
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(config, null), null);
-                Notifications.Normalization();
+                Notifications.Upgrade();
                 ComposeNotificationFlags();
+                Sounds.Upgrade();
                 if (AlwaysShowResultRank)
                 {
                     Spoilers = Spoiler.All;

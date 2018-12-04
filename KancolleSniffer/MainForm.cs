@@ -1126,6 +1126,12 @@ namespace KancolleSniffer
                     _toolTip.SetToolTip(count[i], "");
                 }
             }
+            _sniffer.GetQuestNotifications(out var notify, out var stop);
+            foreach (var questName in notify)
+                SetNotification("任務達成", 0, questName);
+            foreach (var questName in stop)
+                _notificationManager.StopRepeat("任務達成", questName);
+            _notificationManager.Flash();
         }
 
         private void Alarm(string balloonTitle, string balloonMessage, string name)

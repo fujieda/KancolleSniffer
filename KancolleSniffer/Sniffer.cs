@@ -621,6 +621,9 @@ namespace KancolleSniffer
 
         public QuestStatus[] Quests => _questInfo.Quests;
 
+        public void GetQuestNotifications(out string[] notify, out string[] stop) =>
+            _questInfo.GetNotifications(out notify, out stop);
+
         public void ClearQuests() => _questInfo.ClearQuests();
 
         public NameAndTimer[] Missions => _missionInfo.Missions;

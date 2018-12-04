@@ -235,7 +235,7 @@ namespace KancolleSniffer.Model
             return "";
         }
 
-        public bool Cleared => NowArray?.Zip(Spec.MaxArray, (n, m) => n >= m).All(x => x) ?? Now >= Spec.Max;
+        public bool Cleared => NowArray?.Zip(Spec.MaxArray, (n, m) => n >= m).All(x => x) ?? Spec.Max != 0 && Now >= Spec.Max;
     }
 
     // @formatter:off
@@ -390,6 +390,7 @@ namespace KancolleSniffer.Model
         private readonly BattleInfo _battleInfo;
         private readonly Func<DateTime> _nowFunc = () => DateTime.Now;
         private DateTime _lastReset;
+        private IEnumerable<QuestStatus> _clearedQuest = new List<QuestStatus>();
 
         private readonly Color[] _color =
         {
@@ -408,6 +409,27 @@ namespace KancolleSniffer.Model
             _battleInfo = battleInfo;
             if (nowFunc != null)
                 _nowFunc = nowFunc;
+        }
+
+        public void GetNotifications(out string[] notify, out string[] stop)
+        {
+            var cleared = _quests.Values.Where(q => q.Count.Cleared).ToArray();
+            notify = cleared.Except(_clearedQuest, new QuestComparer()).Select(q => q.Name).ToArray();
+            stop = _clearedQuest.Except(cleared, new QuestComparer()).Select(q => q.Name).ToArray();
+            _clearedQuest = cleared;
+        }
+
+        private class QuestComparer : IEqualityComparer<QuestStatus>
+        {
+            public bool Equals(QuestStatus x, QuestStatus y)
+            {
+                return x?.Id == y?.Id;
+            }
+
+            public int GetHashCode(QuestStatus obj)
+            {
+                return obj.Id;
+            }
         }
 
         public void InspectQuestList(dynamic json)
