@@ -944,6 +944,56 @@ namespace KancolleSniffer.Test
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1}));
         }
 
+        /// <summary>
+        /// 893: 泊地周辺海域の安全確保を徹底せよ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_893()
+        {
+            var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {893}));
+            var count = questInfo.Quests[0].Count;
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 5,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => count.NowArray[0] == 0, "A勝利はカウントしない");
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[0] == 1, "1-5");
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 7,
+                api_mapinfo_no = 1,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[1] == 1, "7-1");
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 7,
+                api_mapinfo_no = 2,
+                api_no = 9,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[2] == 1, "7-2G");
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 7,
+                api_mapinfo_no = 2,
+                api_no = 15,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[3] == 1, "7-2M");
+        }
 
         /// <summary>
         /// 302: 大規模演習
@@ -1245,7 +1295,8 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 428, NowArray = new[] {1, 1, 1}},
                     new QuestCount {Id = 873, NowArray = new[] {1, 1, 1}},
                     new QuestCount {Id= 888, NowArray = new []{1, 1, 1}},
-                    new QuestCount {Id = 688, NowArray = new[] {2, 1, 2, 1}}
+                    new QuestCount {Id = 688, NowArray = new[] {2, 1, 2, 1}},
+                    new QuestCount {Id = 893, NowArray = new[] {1, 1, 1, 1}}
                 }
             };
             questInfo.LoadState(status);
@@ -1271,6 +1322,8 @@ namespace KancolleSniffer.Test
             PAssert.That(() => q888.ToToolTip() == "5-1 5-3 5-4");
             var q688 = status.QuestCountList[7];
             PAssert.That(() => q688.ToToolTip() == "艦戦2 艦爆1 艦攻2 水偵1");
+            var q893 = status.QuestCountList[8];
+            PAssert.That(() => q893.ToToolTip() == "1-5:1 7-1:1 7-2G:1 7-2M:1");
         }
 
         /// <summary>

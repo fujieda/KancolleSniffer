@@ -231,6 +231,10 @@ namespace KancolleSniffer.Model
                     return string.Join(" ",
                         new[] {"艦戦", "艦爆", "艦攻", "水偵"}.Zip(NowArray, (type, n) => n >= 1 ? type + n : "")
                             .Where(s => !string.IsNullOrEmpty(s)));
+                case 893:
+                    return string.Join(" ",
+                        new[] {"1-5", "7-1", "7-2G", "7-2M"}.Zip(NowArray, (map, n) => n >= 1 ? $"{map}:{n}" : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
             }
             return "";
         }
@@ -286,6 +290,7 @@ namespace KancolleSniffer.Model
             {873, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 873: 北方海域警備を実施せよ！
             {875, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 0, 0, 0}}}, // 875: 精鋭「三一駆」、鉄底海域に突入せよ！
             {888, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 888: 新編成「三川艦隊」、鉄底海峡に突入せよ！
+            {893, new QuestSpec {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Material = new[] {0, 0, 0, 0}}}, // 893: 泊地周辺海域の安全確保を徹底せよ！
 
             {303, new QuestPractice {Interval = Daily, Max = 3, Win = false, Material = new[] {1, 0, 0, 0}}}, // 303: 「演習」で練度向上！
             {304, new QuestPractice {Interval = Daily, Max = 5, Win = true, Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
@@ -553,6 +558,7 @@ namespace KancolleSniffer.Model
         }
 
         private int _map;
+        private int _cell;
         private bool _boss;
 
         public void InspectMapStart(dynamic json)
@@ -565,6 +571,7 @@ namespace KancolleSniffer.Model
         public void InspectMapNext(dynamic json)
         {
             _map = (int)json.api_maparea_id * 10 + (int)json.api_mapinfo_no;
+            _cell = json.api_no() ? (int)json.api_no : 0;
             _boss = (int)json.api_event_id == 5;
 
             if (_quests.TryGetValue(861, out var q861))
@@ -771,6 +778,36 @@ namespace KancolleSniffer.Model
                         break;
                     case 54:
                         array[2]++;
+                        NeedSave = true;
+                        break;
+                }
+            }
+            if (_quests.TryGetValue(893, out var q893))
+            {
+                if (QuestSortie.CompareRank(rank, "S") != 0)
+                    return;
+                var array = q893.Count.NowArray;
+                if (!_boss)
+                {
+                    if (_map == 72 && _cell == 9)
+                    {
+                        array[2]++;
+                        NeedSave = true;
+                    }
+                    return;
+                }
+                switch (_map)
+                {
+                    case 15:
+                        array[0]++;
+                        NeedSave = true;
+                        break;
+                    case 71:
+                        array[1]++;
+                        NeedSave = true;
+                        break;
+                    case 72:
+                        array[3]++;
                         NeedSave = true;
                         break;
                 }
