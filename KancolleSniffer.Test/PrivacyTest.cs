@@ -69,7 +69,7 @@ namespace KancolleSniffer.Test
             PAssert.That(() => Privacy.RemoveName(response2) == result2);
             const string response3 =
                 @"{""api_deck_data"":[{""api_member_id"":123456,""api_id"":1,""api_name"":""第\\/一艦\\""隊\\"""",""api_name_id"":""123456"",""api_mission"":[0,0,0,0],""api_flagship"":""0""}]}";
-            PAssert.That(() => Privacy.RemoveName(response2) == result2);
+            PAssert.That(() => Privacy.RemoveName(response3) == result2);
         }
     }
 }
