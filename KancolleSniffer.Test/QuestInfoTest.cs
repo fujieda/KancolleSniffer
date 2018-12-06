@@ -163,18 +163,18 @@ namespace KancolleSniffer.Test
             {
                 QuestList = new[]
                 {
-                    new QuestStatus{Id = 201, Category = 2}, new QuestStatus{Id = 213, Category = 2},
-                    new QuestStatus{Id = 265, Category = 2}, new QuestStatus{Id = 822, Category = 8}
+                    new QuestStatus {Id = 201, Category = 2}, new QuestStatus {Id = 213, Category = 2},
+                    new QuestStatus {Id = 265, Category = 2}, new QuestStatus {Id = 822, Category = 8}
                 },
                 QuestLastReset = new DateTime(2017, 10, 31, 5, 0, 0)
             };
             questInfo.LoadState(status);
             questInfo.InspectQuestList(CreateQuestList(new int[0]));
             questInfo.SaveState(status);
-            PAssert.That(() => status.QuestList.Select(q => q.Id).SequenceEqual(new []{213, 822}));  // デイリーとマンスリーが消える
+            PAssert.That(() => status.QuestList.Select(q => q.Id).SequenceEqual(new[] {213, 822})); // デイリーとマンスリーが消える
             questInfo.InspectQuestList(CreateQuestList(new int[0]));
             questInfo.SaveState(status);
-            PAssert.That(() => status.QuestList.Select(q => q.Id).SequenceEqual(new []{822}));  // ウィークリーが消える
+            PAssert.That(() => status.QuestList.Select(q => q.Id).SequenceEqual(new[] {822})); // ウィークリーが消える
             questInfo.InspectQuestList(CreateQuestList(new int[0]));
             questInfo.SaveState(status);
             PAssert.That(() => status.QuestList.Length == 0); // クォータリーが消える
@@ -185,16 +185,16 @@ namespace KancolleSniffer.Test
         private object CreateQuestList(int[] ids) => Js(new
         {
             api_list =
-            ids.Select(id => new
-            {
-                api_no = id,
-                api_category = id / 100,
-                api_state = 2,
-                api_title = "",
-                api_detail = "",
-                api_get_material = new int[0],
-                api_progress_flag = 0
-            })
+                ids.Select(id => new
+                {
+                    api_no = id,
+                    api_category = id / 100,
+                    api_state = 2,
+                    api_title = "",
+                    api_detail = "",
+                    api_get_material = new int[0],
+                    api_progress_flag = 0
+                })
         });
 
         /// <summary>
@@ -929,7 +929,7 @@ namespace KancolleSniffer.Test
             {
                 api_maparea_id = 5,
                 api_mapinfo_no = 3,
-                api_event_id = 5,
+                api_event_id = 5
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0}));
@@ -938,7 +938,7 @@ namespace KancolleSniffer.Test
             {
                 api_maparea_id = 5,
                 api_mapinfo_no = 4,
-                api_event_id = 5,
+                api_event_id = 5
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1}));
@@ -1007,7 +1007,7 @@ namespace KancolleSniffer.Test
         {
             var battleInfo = new BattleInfo(null, null);
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(CreateQuestList(new[] {302, 303, 304, 311, 315,}));
+            questInfo.InspectQuestList(CreateQuestList(new[] {302, 303, 304, 311, 315}));
 
             battleInfo.InjectResultStatus(new[]
             {
@@ -1232,7 +1232,6 @@ namespace KancolleSniffer.Test
                 $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, items.Length))}&api%5Fverno=1", null);
             var scalar = new[]
             {
-
                 new {Id = 613, Now = 1}, new {Id = 638, Now = 1}, new {Id = 643, Now = 1}, new {Id = 645, Now = 1},
                 new {Id = 663, Now = 1}, new {Id = 673, Now = 1}, new {Id = 674, Now = 1}
             };
@@ -1294,7 +1293,7 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 426, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 428, NowArray = new[] {1, 1, 1}},
                     new QuestCount {Id = 873, NowArray = new[] {1, 1, 1}},
-                    new QuestCount {Id= 888, NowArray = new []{1, 1, 1}},
+                    new QuestCount {Id=  888, NowArray = new []{1, 1, 1}},
                     new QuestCount {Id = 688, NowArray = new[] {2, 1, 2, 1}},
                     new QuestCount {Id = 893, NowArray = new[] {1, 1, 1, 1}}
                 }
