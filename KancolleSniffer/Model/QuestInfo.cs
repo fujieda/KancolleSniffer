@@ -195,7 +195,7 @@ namespace KancolleSniffer.Model
 
         public override string ToString()
         {
-            if (Id == 426 || Id == 854 || Id == 873 || Id == 888)
+            if (Id == 426 || Id == 854 || Id == 873 || Id == 888 || Id == 894)
                 return $"{NowArray.Count(n => n >= 1)}/{Spec.MaxArray.Length}";
             return NowArray != null
                 ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
@@ -234,6 +234,10 @@ namespace KancolleSniffer.Model
                 case 893:
                     return string.Join(" ",
                         new[] {"1-5", "7-1", "7-2G", "7-2M"}.Zip(NowArray, (map, n) => n >= 1 ? $"{map}:{n}" : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
+                case 894:
+                    return string.Join(" ",
+                        new[] {"1-3", "1-4", "2-1", "2-2", "2-3"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
                             .Where(s => !string.IsNullOrEmpty(s)));
             }
             return "";
@@ -291,6 +295,7 @@ namespace KancolleSniffer.Model
             {875, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 0, 0, 0}}}, // 875: 精鋭「三一駆」、鉄底海域に突入せよ！
             {888, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 888: 新編成「三川艦隊」、鉄底海峡に突入せよ！
             {893, new QuestSpec {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Material = new[] {0, 0, 0, 0}}}, // 893: 泊地周辺海域の安全確保を徹底せよ！
+            {894, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 894: 空母戦力の投入による兵站線戦闘哨戒
 
             {303, new QuestPractice {Interval = Daily, Max = 3, Win = false, Material = new[] {1, 0, 0, 0}}}, // 303: 「演習」で練度向上！
             {304, new QuestPractice {Interval = Daily, Max = 5, Win = true, Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
@@ -812,6 +817,32 @@ namespace KancolleSniffer.Model
                         break;
                 }
             }
+            if (_quests.TryGetValue(894, out var q894))
+            {
+                if (!_boss ||
+                    QuestSortie.CompareRank(rank, "S") != 0 ||
+                    !_battleInfo.Result.Friend.Main.Any(s => s.Spec.IsAircraftCarrier && s.NowHp > 0))
+                    return;
+                var count = q894.Count;
+                switch (_map)
+                {
+                    case 13:
+                        IncrementNowArray(count, 0);
+                        break;
+                    case 14:
+                        IncrementNowArray(count, 1);
+                        break;
+                    case 21:
+                        IncrementNowArray(count, 2);
+                        break;
+                    case 22:
+                        IncrementNowArray(count, 3);
+                        break;
+                    case 23:
+                        IncrementNowArray(count, 4);
+                        break;
+                }
+            }
         }
 
         private int _questFleet;
@@ -926,6 +957,12 @@ namespace KancolleSniffer.Model
                 quest.Count.Now += value;
                 NeedSave = true;
             }
+        }
+
+        private void IncrementNowArray(QuestCount count, int n)
+        {
+            count.NowArray[n]++;
+            NeedSave = true;
         }
 
         public void CountNyukyo() => IncrementCount(503);

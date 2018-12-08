@@ -996,6 +996,75 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 894: 空母戦力の投入による兵站線戦闘哨戒
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_894()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {894}));
+            var count = questInfo.Quests[0].Count;
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(2), ShipStatus(2), ShipStatus(2),
+                ShipStatus(2), ShipStatus(2), ShipStatus(2)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 3,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[0] == 0, "空母なしはカウントしない");
+
+            battleInfo.Result.Friend.Main[0].Spec.ShipType = 7;
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => count.NowArray[0] == 0, "A勝利はカウントしない");
+
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[0] == 1, "1-3");
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 4,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[1] == 1, "1-4");
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 2,
+                api_mapinfo_no = 1,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[2] == 1, "2-1");
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 2,
+                api_mapinfo_no = 2,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[3] == 1, "2-2");
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 2,
+                api_mapinfo_no = 3,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[4] == 1, "2-3");
+        }
+
+        /// <summary>
         /// 302: 大規模演習
         /// 303: 「演習」で練度向上！
         /// 304: 「演習」で他提督を圧倒せよ！
@@ -1293,9 +1362,10 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 426, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 428, NowArray = new[] {1, 1, 1}},
                     new QuestCount {Id = 873, NowArray = new[] {1, 1, 1}},
-                    new QuestCount {Id=  888, NowArray = new []{1, 1, 1}},
+                    new QuestCount {Id = 888, NowArray = new[] {1, 1, 1}},
                     new QuestCount {Id = 688, NowArray = new[] {2, 1, 2, 1}},
-                    new QuestCount {Id = 893, NowArray = new[] {1, 1, 1, 1}}
+                    new QuestCount {Id = 893, NowArray = new[] {1, 1, 1, 1}},
+                    new QuestCount {Id = 894, NowArray = new[] {1, 1, 1, 1, 1}}
                 }
             };
             questInfo.LoadState(status);
@@ -1323,6 +1393,9 @@ namespace KancolleSniffer.Test
             PAssert.That(() => q688.ToToolTip() == "艦戦2 艦爆1 艦攻2 水偵1");
             var q893 = status.QuestCountList[8];
             PAssert.That(() => q893.ToToolTip() == "1-5:1 7-1:1 7-2G:1 7-2M:1");
+            var q894 = status.QuestCountList[9];
+            PAssert.That(() => q894.ToString() == "5/5");
+            PAssert.That(() => q894.ToToolTip() == "1-3 1-4 2-1 2-2 2-3");
         }
 
         /// <summary>
