@@ -613,19 +613,15 @@ namespace KancolleSniffer.Model
             }
             if (_quests.TryGetValue(214, out var ago))
             {
-                var array = ago.Count.NowArray;
+                var count = ago.Count;
                 if (_boss)
                 {
-                    array[2]++;
+                    IncrementNowArray(count, 2);
                     if (QuestSortie.CompareRank(rank, "B") <= 0)
-                        array[3]++;
-                    NeedSave = true;
+                        IncrementNowArray(count, 3);
                 }
                 if (rank == "S")
-                {
-                    array[1]++;
-                    NeedSave = true;
-                }
+                    IncrementNowArray(count, 1);
             }
             if (_quests.TryGetValue(249, out var q249))
             {
@@ -690,24 +686,21 @@ namespace KancolleSniffer.Model
             }
             if (_quests.TryGetValue(854, out var opz) && _boss)
             {
-                var array = opz.Count.NowArray;
+                var count = opz.Count;
                 switch (_map)
                 {
                     case 24 when QuestSortie.CompareRank(rank, "A") <= 0:
-                        array[0]++;
-                        NeedSave = true;
+                        IncrementNowArray(count, 0);
                         break;
                     case 61 when QuestSortie.CompareRank(rank, "A") <= 0:
-                        array[1]++;
-                        NeedSave = true;
+                        IncrementNowArray(count, 1);
                         break;
                     case 63 when QuestSortie.CompareRank(rank, "A") <= 0:
-                        array[2]++;
+                        IncrementNowArray(count, 2);
                         NeedSave = true;
                         break;
                     case 64 when QuestSortie.CompareRank(rank, "S") <= 0:
-                        array[3]++;
-                        NeedSave = true;
+                        IncrementNowArray(count, 3);
                         break;
                 }
             }
@@ -726,20 +719,17 @@ namespace KancolleSniffer.Model
                 if (_battleInfo.Result.Friend.Main.Count(s => s.NowHp > 0 && s.Spec.ShipType == 3) >= 1 &&
                     _boss && QuestSortie.CompareRank(rank, "A") <= 0)
                 {
-                    var array = q873.Count.NowArray;
+                    var count = q873.Count;
                     switch (_map)
                     {
                         case 31:
-                            array[0]++;
-                            NeedSave = true;
+                            IncrementNowArray(count, 0);
                             break;
                         case 32:
-                            array[1]++;
-                            NeedSave = true;
+                            IncrementNowArray(count, 1);
                             break;
                         case 33:
-                            array[2]++;
-                            NeedSave = true;
+                            IncrementNowArray(count, 2);
                             break;
                     }
                 }
@@ -770,20 +760,17 @@ namespace KancolleSniffer.Model
                 };
                 if (fleet.Intersect(member).Count() < 4)
                     return;
-                var array = q888.Count.NowArray;
+                var count = q888.Count;
                 switch (_map)
                 {
                     case 51:
-                        array[0]++;
-                        NeedSave = true;
+                        IncrementNowArray(count, 0);
                         break;
                     case 53:
-                        array[1]++;
-                        NeedSave = true;
+                        IncrementNowArray(count, 1);
                         break;
                     case 54:
-                        array[2]++;
-                        NeedSave = true;
+                        IncrementNowArray(count, 2);
                         break;
                 }
             }
@@ -791,29 +778,25 @@ namespace KancolleSniffer.Model
             {
                 if (QuestSortie.CompareRank(rank, "S") != 0)
                     return;
-                var array = q893.Count.NowArray;
+                var count = q893.Count;
                 if (!_boss)
                 {
                     if (_map == 72 && _cell == 9)
                     {
-                        array[2]++;
-                        NeedSave = true;
+                        IncrementNowArray(count, 2);
                     }
                     return;
                 }
                 switch (_map)
                 {
                     case 15:
-                        array[0]++;
-                        NeedSave = true;
+                        IncrementNowArray(count, 0);
                         break;
                     case 71:
-                        array[1]++;
-                        NeedSave = true;
+                        IncrementNowArray(count, 1);
                         break;
                     case 72:
-                        array[3]++;
-                        NeedSave = true;
+                        IncrementNowArray(count, 3);
                         break;
                 }
             }
@@ -902,16 +885,16 @@ namespace KancolleSniffer.Model
                 switch (mid)
                 {
                     case 3:
-                        count.NowArray[0]++;
+                        IncrementNowArray(count, 0);
                         break;
                     case 4:
-                        count.NowArray[1]++;
+                        IncrementNowArray(count, 1);
                         break;
                     case 5:
-                        count.NowArray[2]++;
+                        IncrementNowArray(count, 2);
                         break;
                     case 10:
-                        count.NowArray[3]++;
+                        IncrementNowArray(count, 3);
                         break;
                 }
             }
@@ -921,13 +904,13 @@ namespace KancolleSniffer.Model
                 switch (mid)
                 {
                     case 4:
-                        count.NowArray[0]++;
+                        IncrementNowArray(count, 0);
                         break;
                     case 101:
-                        count.NowArray[1]++;
+                        IncrementNowArray(count, 1);
                         break;
                     case 102:
-                        count.NowArray[2]++;
+                        IncrementNowArray(count, 2);
                         break;
                 }
             }
