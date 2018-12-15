@@ -242,8 +242,7 @@ namespace KancolleSniffer.View
                         return b.Level - a.Level;
                     if (_order == ListForm.SortOrder.ExpToNextDescend)
                         return a.Level - b.Level;
-                    if (!_shipType) // Condが同じかSortOrder.Noneで艦種なし
-                        return b.Level - a.Level;
+                    return b.Level - a.Level;
                 }
                 if (a.ExpToNext != b.ExpToNext)
                 {
