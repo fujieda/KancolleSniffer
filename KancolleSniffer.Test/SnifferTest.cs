@@ -747,6 +747,26 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 2019冬イベからクリア済みマップのゲージ情報がない
+        /// </summary>
+        [TestMethod]
+        public void ClearedExMapGage()
+        {
+            var miscTextInfo = new MiscTextInfo(null, null);
+            using (var stream = OpenLogFile("mapgauge_003"))
+            {
+                miscTextInfo.InspectMapInfo(JsonParser.Parse(stream.ReadToEnd()));
+            }
+            PAssert.That(() =>
+                miscTextInfo.Text ==
+                "[海域ゲージ]\r\n" +
+                "1-6 : 残り 5/7\r\n" +
+                "5-5 : 残り 5/5\r\n" +
+                "7-2 : 残り 1/4\r\n" +
+                "43-2 : HP 1050/1400\r\n");
+        }
+
+        /// <summary>
         /// 演習の獲得経験値を計算する
         /// </summary>
         [TestMethod]

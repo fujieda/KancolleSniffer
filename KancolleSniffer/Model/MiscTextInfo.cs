@@ -73,8 +73,11 @@ namespace KancolleSniffer.Model
                 if (entry.api_eventmap())
                 {
                     var eventMap = entry.api_eventmap;
-                    Text +=
-                        $"{map / 10}-{map % 10} : HP {(int)eventMap.api_now_maphp}/{(int)eventMap.api_max_maphp}\r\n";
+                    if (eventMap.api_now_maphp())
+                    {
+                        Text +=
+                            $"{map / 10}-{map % 10} : HP {(int)eventMap.api_now_maphp}/{(int)eventMap.api_max_maphp}\r\n";
+                    }
                     continue;
                 }
                 if (!entry.api_defeat_count())
