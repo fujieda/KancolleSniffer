@@ -426,6 +426,7 @@ namespace KancolleSniffer
             return url.EndsWith("api_req_sortie/battle") ||
                    url.EndsWith("api_req_sortie/airbattle") ||
                    url.EndsWith("api_req_sortie/ld_airbattle") ||
+                   url.EndsWith("api_req_sortie/ld_shooting") ||
                    url.EndsWith("api_req_battle_midnight/battle") ||
                    url.EndsWith("api_req_battle_midnight/sp_midnight");
         }

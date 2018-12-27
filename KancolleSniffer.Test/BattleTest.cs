@@ -277,5 +277,16 @@ namespace KancolleSniffer.Test
             PAssert.That(() => sniffer.Battle.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
             PAssert.That(() => sniffer.Fleets[0].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
         }
+
+        /// <summary>
+        /// レーザー射撃戦に対応する
+        /// </summary>
+        [TestMethod]
+        public void LdShooting()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "ld_shooting_001");
+            PAssert.That(() => sniffer.Battle.Result.Friend.Main[0].NowHp == 44);
+        }
     }
 }
