@@ -286,7 +286,8 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "ld_shooting_001");
-            PAssert.That(() => sniffer.Battle.Result.Friend.Main[0].NowHp == 44);
+            PAssert.That(() => !sniffer.IsBattleResultStatusError);
+            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
         }
     }
 }

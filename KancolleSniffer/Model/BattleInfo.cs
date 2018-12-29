@@ -111,7 +111,7 @@ namespace KancolleSniffer.Model
             BattleState = url.Contains("sp_midnight") ? BattleState.SpNight :
                 url.Contains("midnight") ? BattleState.Night : BattleState.Day;
             CalcDamage(json);
-            ResultRank = url.EndsWith("ld_airbattle") ? CalcLdAirBattleRank() : CalcResultRank();
+            ResultRank = url.Contains("/ld_") ? CalcLdResultRank() : CalcResultRank();
             SetResult();
         }
 
@@ -637,7 +637,7 @@ namespace KancolleSniffer.Model
             }
         }
 
-        private BattleResultRank CalcLdAirBattleRank()
+        private BattleResultRank CalcLdResultRank()
         {
             var combined = _friend.Concat(_guard).Where(r => !r.Escaped).ToArray();
             var friendGauge = combined.Sum(r => r.StartHp - r.NowHp);
