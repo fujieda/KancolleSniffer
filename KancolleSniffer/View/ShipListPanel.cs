@@ -242,7 +242,6 @@ namespace KancolleSniffer.View
                         return b.Level - a.Level;
                     if (_order == ListForm.SortOrder.ExpToNextDescend)
                         return a.Level - b.Level;
-                    return b.Level - a.Level;
                 }
                 if (a.ExpToNext != b.ExpToNext)
                 {
@@ -251,8 +250,20 @@ namespace KancolleSniffer.View
                     if (_order == ListForm.SortOrder.ExpToNextDescend)
                         return b.ExpToNext - a.ExpToNext;
                 }
-                if (a.Spec.SortId != b.Spec.SortId)
-                    return a.Spec.SortId - b.Spec.SortId;
+                if (_shipType)
+                {
+                    if (a.Spec.SortId != b.Spec.SortId)
+                        return a.Spec.SortId - b.Spec.SortId;
+                    if (a.Level != b.Level)
+                        return b.Level - a.Level;
+                }
+                else
+                {
+                    if (a.Level != b.Level)
+                        return b.Level - a.Level;
+                    if (a.Spec.SortId != b.Spec.SortId)
+                        return a.Spec.SortId - b.Spec.SortId;
+                }
                 return a.Id - b.Id;
             }
         }
