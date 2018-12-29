@@ -639,7 +639,7 @@ namespace KancolleSniffer
 
         public ShipInfo.ShipStatusPair[] BattleResultStatusDiff => _shipInfo.BattleResultDiff;
 
-        public bool IsBattleResultStatusError => _shipInfo.IsBattleResultError;
+        public bool IsBattleResultError => _shipInfo.IsBattleResultError || _battleInfo.DisplayedResultRank.IsError;
 
         public ShipStatus[] BattleStartStatus => _shipInfo.BattleStartStatus;
 

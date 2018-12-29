@@ -97,7 +97,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "practice_001");
-            PAssert.That(() => !sniffer.IsBattleResultStatusError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "practice_002");
-            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_battle_001");
-            PAssert.That(() => !sniffer.IsBattleResultStatusError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_battle_002");
-            PAssert.That(() => !sniffer.IsBattleResultStatusError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "combined_battle_003");
-            PAssert.That(() => !sniffer.IsBattleResultStatusError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "sp_midnight_002");
-            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "nighttoday_001");
-            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError && !sniffer.IsBattleResultStatusError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "escape_002");
             PAssert.That(() => sniffer.Fleets[2].Ships[1].Escaped);
-            PAssert.That(() => !sniffer.IsBattleResultStatusError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "nelsontouch_001");
-            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
             PAssert.That(() => sniffer.Battle.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
             PAssert.That(() => sniffer.Fleets[0].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
             // ship_deckでフラグを引き継ぐ
@@ -273,7 +273,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "nagatospecial_001");
-            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
             PAssert.That(() => sniffer.Battle.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
             PAssert.That(() => sniffer.Fleets[0].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
         }
@@ -286,8 +286,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "ld_shooting_001");
-            PAssert.That(() => !sniffer.IsBattleResultStatusError);
-            PAssert.That(() => !sniffer.Battle.DisplayedResultRank.IsError);
+            PAssert.That(() => !sniffer.IsBattleResultError);
         }
     }
 }

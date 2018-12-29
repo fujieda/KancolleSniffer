@@ -18,7 +18,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
 using KancolleSniffer.Util;
@@ -52,7 +51,7 @@ namespace KancolleSniffer
                 }
                 else if (_prevBattleState == BattleState.Result &&
                          // battleresultのあとのship_deckかportでのみエラー判定する
-                         IsBattleResultError)
+                         _sniffer.IsBattleResultError)
                 {
                     throw new BattleResultError();
                 }
@@ -62,9 +61,6 @@ namespace KancolleSniffer
                 _prevBattleState = _sniffer.Battle.BattleState;
             }
         }
-
-        private bool IsBattleResultError =>
-            _sniffer.Battle.DisplayedResultRank.IsError || _sniffer.IsBattleResultStatusError;
 
         public string GenerateBattleErrorLog()
         {
