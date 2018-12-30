@@ -30,8 +30,11 @@ namespace KancolleSniffer.Model
         public void InspectMaster(dynamic json)
         {
             foreach (var entry in json)
-                _missionNames[(int)entry.api_id] = (string)entry.api_name;
+                _missionNames[(int)entry.api_id] =
+                    (string)entry.api_name + (IsEventMap(entry) ? "S" : "");
         }
+
+        private bool IsEventMap(dynamic json) => json.api_disp_no() && json.api_disp_no.StartsWith("S");
 
         public void InspectDeck(dynamic json)
         {
