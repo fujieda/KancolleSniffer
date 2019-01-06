@@ -163,7 +163,7 @@ namespace KancolleSniffer.Test
         /// 機動対敵連合の雷撃戦でダメコンが発動する
         /// </summary>
         [TestMethod]
-        public void TriggerDameConInCombinedBattle()
+        public void TorpedoTriggerDameConInCombinedBattleAir()
         {
             var logs = ReadAllLines("damecon_002");
             var battle = Data(logs[3]);
@@ -172,6 +172,20 @@ namespace KancolleSniffer.Test
             _battleInfo.InspectBattle(logs[4], logs[5], Data(logs[6]));
             _battleInfo.InspectBattleResult(Data(logs[9]));
             PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+        }
+
+        /// <summary>
+        /// 水上対敵連合の雷撃戦でダメコンが発動する
+        /// </summary>
+        [TestMethod]
+        public void TorpedoTriggerDamageControlInCombinedBattleWater()
+        {
+            var logs = ReadAllLines("damecon_003");
+            var battle = Data(logs[3]);
+            InjectShips(battle, JsonParser.Parse(logs[0]));
+            _battleInfo.InspectBattle(logs[1], logs[2], battle);
+            _battleInfo.InspectBattleResult(Data(logs[6]));
+            PAssert.That(() => _shipInfo.Fleets[1].Ships[5].NowHp == 6);
         }
     }
 }

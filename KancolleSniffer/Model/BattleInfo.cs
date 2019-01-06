@@ -437,7 +437,10 @@ namespace KancolleSniffer.Model
             if (guard == null)
                 return;
             for (var i = 0; i < guard.Length; i++)
+            {
                 guard[i].ApplyDamage(damage[i + 6]);
+                guard[i].CheckDamageControl();
+            }
         }
 
         private void CalcDamageByTurn(dynamic json, bool ignoreFriendDamage = false)
