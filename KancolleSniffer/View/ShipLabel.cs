@@ -47,8 +47,9 @@ namespace KancolleSniffer.View
         private enum SlotStatus
         {
             Equipped = 0,
-            NormalEmpty = 1,
-            ExtraEmpty = 2
+            SemiEquipped = 1,
+            NormalEmpty = 2,
+            ExtraEmpty = 4
         }
 
         public ShipLabel()
@@ -66,8 +67,15 @@ namespace KancolleSniffer.View
             var empty = SlotStatus.Equipped;
             if (!status.Empty)
             {
-                if (status.Slot.All(item => item.Empty))
+                var slots = status.Slot.Take(status.Spec.SlotNum).ToArray();
+                if (slots.All(item => item.Empty))
+                {
                     empty |= SlotStatus.NormalEmpty;
+                }
+                else if (slots.Any(item => item.Empty))
+                {
+                    empty |= SlotStatus.SemiEquipped;
+                }
                 if (status.SlotEx.Empty)
                     empty |= SlotStatus.ExtraEmpty;
             }
@@ -261,14 +269,21 @@ namespace KancolleSniffer.View
             {
                 e.Graphics.DrawRectangle(
                     Pens.Black,
-                    ClientSize.Width - 3 * ScaleFactor.Width, 1 * ScaleFactor.Height,
-                    2 * ScaleFactor.Width, 4 * ScaleFactor.Height);
+                    ClientSize.Width - 3 * ScaleFactor.Width, 0,
+                    2 * ScaleFactor.Width, 5 * ScaleFactor.Height);
+            }
+            else if ((_slotStatus & SlotStatus.SemiEquipped) != 0)
+            {
+                e.Graphics.DrawLine(
+                    Pens.Black,
+                    ClientSize.Width - 1 * ScaleFactor.Width, 0,
+                    ClientSize.Width - 1 * ScaleFactor.Width, 5 * ScaleFactor.Height);
             }
             if ((_slotStatus & SlotStatus.ExtraEmpty) != 0)
             {
                 e.Graphics.DrawRectangle(
                     Pens.Black,
-                    ClientSize.Width - 3 * ScaleFactor.Width, 7 * ScaleFactor.Height,
+                    ClientSize.Width - 3 * ScaleFactor.Width, 8 * ScaleFactor.Height,
                     2 * ScaleFactor.Width, 3 * ScaleFactor.Height);
             }
         }
