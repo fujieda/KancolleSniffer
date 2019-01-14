@@ -31,10 +31,11 @@ namespace KancolleSniffer.View
         private readonly List<Panel> _panelList = new List<Panel>();
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private readonly BattleInfo.BattleResult[] _result = new BattleInfo.BattleResult[2];
-        private Label _phaseLabel, _rankLabel, _cellLabel;
+        private Label _phaseLabel, _rankLabel, _supportLabel, _cellLabel;
         private readonly BattleResultRank[] _rank = new BattleResultRank[2];
         private readonly InformationPanel _informationPanel;
         private CellInfo _cellInfo;
+        private string _supportType;
 
         public Spoiler Spoilers { get; set; }
 
@@ -81,6 +82,7 @@ namespace KancolleSniffer.View
                 case BattleState.Unknown:
                     return;
             }
+            _supportType = sniffer.Battle.SupportType;
             if ((Spoilers & Spoiler.BattleResult) != 0)
             {
                 ShowResult(sniffer.Battle.Result);
@@ -182,6 +184,7 @@ namespace KancolleSniffer.View
                 panel.Visible = false;
             _informationPanel.Visible = false;
             _rankLabel.Text = "";
+            _supportLabel.Text = "";
         }
 
         private void ShowResult(BattleInfo.BattleResult result)
@@ -292,6 +295,7 @@ namespace KancolleSniffer.View
         {
             var result = new[] {"完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E"};
             _rankLabel.Text = result[(int)rank];
+            _supportLabel.Text = _supportType;
         }
 
         public void UpdateCellInfo(CellInfo cellInfo)
@@ -315,6 +319,12 @@ namespace KancolleSniffer.View
                 Size = new Size(42, 12)
             };
             Controls.Add(_rankLabel);
+            _supportLabel = new Label
+            {
+                Location = new Point(77, 4),
+                AutoSize = true
+            };
+            Controls.Add(_supportLabel);
             _cellLabel = new Label
             {
                 Location = new Point(0, 4),

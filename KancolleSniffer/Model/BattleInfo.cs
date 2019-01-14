@@ -72,6 +72,7 @@ namespace KancolleSniffer.Model
         public BattleResult Result { get; set; }
         public bool EnemyIsCombined => _enemyGuard.Length > 0;
         public List<AirBattleResult> AirBattleResults { get; } = new List<AirBattleResult>();
+        public string SupportType { get; private set; }
 
         public class RankPair
         {
@@ -104,6 +105,7 @@ namespace KancolleSniffer.Model
                 Formation = ((dynamic[])json.api_formation).Select(f => f is string ? (int)int.Parse(f) : (int)f)
                     .ToArray();
             AirControlLevel = CheckAirControlLevel(json);
+            SetSupportType(json);
             ShowResult(false); // 昼戦の結果を夜戦のときに表示する
             SetupResult(request, json, url.Contains("practice"));
             FighterPower = CalcFighterPower();
@@ -218,6 +220,28 @@ namespace KancolleSniffer.Model
             if (stage1.api_f_count == 0 && stage1.api_e_count == 0)
                 return -1;
             return (int)stage1.api_disp_seiku;
+        }
+
+        private void SetSupportType(dynamic json)
+        {
+            SupportType = "";
+            if (!json.api_support_flag())
+                return;
+            switch ((int)json.api_support_flag)
+            {
+                case 1:
+                    SupportType = "空支援";
+                    break;
+                case 2:
+                    SupportType = "砲支援";
+                    break;
+                case 3:
+                    SupportType = "雷支援";
+                    break;
+                case 4:
+                    SupportType = "潜支援";
+                    break;
+            }
         }
 
         private int[] CalcFighterPower()
