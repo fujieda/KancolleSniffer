@@ -720,7 +720,8 @@ namespace KancolleSniffer
         {
             var fleet = _sniffer.Fleets[_currentFleet];
             labelLoS.Text = RoundDown(fleet.GetLineOfSights(1)).ToString("F1");
-            var text = $"係数3: {RoundDown(fleet.GetLineOfSights(3)):F1}\r\n" +
+            var text = $"係数2: {RoundDown(fleet.GetLineOfSights(2)):F1}\r\n" +
+                       $"係数3: {RoundDown(fleet.GetLineOfSights(3)):F1}\r\n" +
                        $"係数4: {RoundDown(fleet.GetLineOfSights(4)):F1}";
             _toolTip.SetToolTip(labelLoS, text);
             _toolTip.SetToolTip(labelLoSCaption, text);
