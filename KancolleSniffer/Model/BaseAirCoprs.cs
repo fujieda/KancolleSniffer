@@ -39,13 +39,6 @@ namespace KancolleSniffer.Model
             public AirCorpsInfo[] AirCorps { get; set; }
         }
 
-        public class FighterPower
-        {
-            public int[] AirCombat { get; set; }
-            public int[] Interception { get; set; }
-            public bool IsInterceptor => AirCombat[0] != Interception[0];
-        }
-
         public class Distance
         {
             public int Base { get; set; }
@@ -82,21 +75,24 @@ namespace KancolleSniffer.Model
                 }
             }
 
-            public FighterPower FighterPower =>
-                new FighterPower {AirCombat = CalcFighterPower(false), Interception = CalcFighterPower(true)};
-
-            private int[] CalcFighterPower(bool interception)
+            public AirBaseParams[] CalcFighterPower()
             {
-                var reconPlaneBonus = interception
-                    ? Planes.Max(plane => plane.Slot.Spec.ReconPlaneInterceptionBonus)
-                    : 1.0;
-                return Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
+                var reconPlaneBonus = Planes.Aggregate(new AirBaseParams(), (max, plane) =>
+                {
+                    var bonus = plane.Slot.Spec.ReconPlaneAirBaseBonus;
+                    return AirBaseParams.Max(max, bonus);
+                });
+                return Planes.Aggregate(new[] {new AirBaseParams(), new AirBaseParams()}, (previous, plane) =>
                 {
                     if (plane.State != 1)
-                        return prev;
-                    var cur = plane.Slot.CalcFighterPowerInBase(plane.Count, interception);
-                    return new[] {prev[0] + cur[0], prev[1] + cur[1]};
-                }).Select(fp => (int)(fp * reconPlaneBonus)).ToArray();
+                        return previous;
+                    var current = plane.Slot.CalcFighterPowerInBase(plane.Count);
+                    return new[]
+                    {
+                        previous[0] + current[0],
+                        previous[1] + current[1]
+                    };
+                }).Select(param => (param * reconPlaneBonus).Floor()).ToArray();
             }
 
             public int[] CostForSortie => Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
@@ -143,29 +139,26 @@ namespace KancolleSniffer.Model
                 }
             }
 
-            public FighterPower FighterPower
-                => new FighterPower{AirCombat = CalcFighterPower(false), Interception = CalcFighterPower(true)};
-
-            private int[] CalcFighterPower(bool interception) => Slot.CalcFighterPowerInBase(Count, interception);
+            public AirBaseParams[] FighterPower => Slot.CalcFighterPowerInBase(Count);
         }
 
         public void Inspect(dynamic json)
         {
             AllAirCorps = (from entry in (dynamic[])json
                 group
-                new AirCorpsInfo
-                {
-                    Distance = CreateDistance(entry.api_distance),
-                    Action = (int)entry.api_action_kind,
-                    Planes = (from plane in (dynamic[])entry.api_plane_info
-                        select new PlaneInfo
-                        {
-                            Slot = _itemInfo.GetStatus((int)plane.api_slotid),
-                            State = (int)plane.api_state,
-                            Count = plane.api_count() ? (int)plane.api_count : 0,
-                            MaxCount = plane.api_max_count() ? (int)plane.api_max_count : 0,
-                        }).ToArray()
-                } by entry.api_area_id() ? (int)entry.api_area_id : 0
+                    new AirCorpsInfo
+                    {
+                        Distance = CreateDistance(entry.api_distance),
+                        Action = (int)entry.api_action_kind,
+                        Planes = (from plane in (dynamic[])entry.api_plane_info
+                            select new PlaneInfo
+                            {
+                                Slot = _itemInfo.GetStatus((int)plane.api_slotid),
+                                State = (int)plane.api_state,
+                                Count = plane.api_count() ? (int)plane.api_count : 0,
+                                MaxCount = plane.api_max_count() ? (int)plane.api_max_count : 0
+                            }).ToArray()
+                    } by entry.api_area_id() ? (int)entry.api_area_id : 0
                 into grp
                 select new BaseInfo {AreaId = grp.Key, AirCorps = grp.ToArray()}).ToArray();
         }
@@ -227,9 +220,8 @@ namespace KancolleSniffer.Model
             baseInfo.AirCorps = airCorps;
             airCorps[airCorps.Length - 1] = new AirCorpsInfo
             {
-                Planes =
-                    ((dynamic[])json[0].api_plane_info).
-                        Select(plane => new PlaneInfo {Slot = new ItemStatus()}).ToArray()
+                Planes = ((dynamic[])json[0].api_plane_info).Select(plane =>
+                    new PlaneInfo {Slot = new ItemStatus()}).ToArray()
             };
         }
 

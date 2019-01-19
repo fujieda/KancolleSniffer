@@ -45,13 +45,13 @@ namespace KancolleSniffer.Model
             return AlvBonus.Select(bonus => (int)(unskilled + bonus)).ToArray();
         }
 
-        public int[] CalcFighterPowerInBase(int slot, bool airDefense)
+        public AirBaseParams[] CalcFighterPowerInBase(int slot)
         {
             if (!Spec.IsAircraft || slot == 0)
-                return new[] {0, 0};
-            var airDefenseBonus = airDefense ? Spec.AntiBomber * 2 + Spec.Interception : Spec.Interception * 1.5;
-            var unskilled = (Spec.AntiAir + airDefenseBonus + FighterPowerLevelBonus) * Math.Sqrt(slot);
-            return AlvBonusInBase.Select(bonus => (int)(unskilled + bonus)).ToArray();
+                return new[] {new AirBaseParams(), new AirBaseParams()};
+            var baseFighterPower = (new AirBaseParams(Spec.Interception * 1.5, Spec.AntiBomber * 2 + Spec.Interception) +
+                                   Spec.AntiAir  + FighterPowerLevelBonus) * Math.Sqrt(slot);
+            return AlvBonusInBase.Select(bonus => (baseFighterPower + bonus).Floor()).ToArray();
         }
 
         private readonly double[] _alvBonusMin =

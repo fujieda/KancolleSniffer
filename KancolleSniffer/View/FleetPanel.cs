@@ -193,18 +193,21 @@ namespace KancolleSniffer.View
                     {
                         if (i >= name.Length)
                             break;
-                        var corpsFp = airCorps.FighterPower;
+                        var corpsFp = airCorps.CalcFighterPower();
+                        var airCombat = new[] { (int)corpsFp[0].AirCombat, (int)corpsFp[1].AirCombat };
+                        var interception = new[] { (int)corpsFp[0].Interception, (int)corpsFp[1].Interception };
+                        var different = interception[0] != airCombat[0];
                         string spec;
                         string spec2;
                         if (airCorps.Action == 2)
                         {
-                            spec = "制空:" + RangeString(corpsFp.Interception);
-                            spec2 = corpsFp.IsInterceptor ? "制空(出撃):" + RangeString(corpsFp.AirCombat) : "";
+                            spec = "制空:" + RangeString(interception);
+                            spec2 = different ? "制空(出撃):" + RangeString(airCombat) : "";
                         }
                         else
                         {
-                            spec = "制空:" + RangeString(corpsFp.AirCombat);
-                            spec2 = corpsFp.IsInterceptor ? "制空(防空):" + RangeString(corpsFp.Interception) : "";
+                            spec = "制空:" + RangeString(airCombat);
+                            spec2 = different ? "制空(防空):" + RangeString(interception) : "";
                         }
                         var cost = airCorps.CostForSortie;
                         list.Add(new Record
@@ -217,13 +220,16 @@ namespace KancolleSniffer.View
                         list.AddRange(airCorps.Planes.Select(plane =>
                         {
                             var planeFp = plane.FighterPower;
+                            airCombat = new[] {(int)planeFp[0].AirCombat, (int)planeFp[1].AirCombat};
+                            interception = new[] {(int) planeFp[0].Interception, (int)planeFp[1].Interception };
+                            different = interception[0] != airCombat[0];
                             return new Record
                             {
                                 Equip = plane.State != 1 ? plane.StateName : GenEquipString(plane.Slot),
                                 Spec = plane.State != 1 ? "" : $"+{plane.Slot.Alv} {plane.Count}/{plane.MaxCount}",
                                 AircraftSpec =
-                                    $"距離:{plane.Slot.Spec.Distance} 制空:{RangeString(planeFp.AirCombat)}" +
-                                    (planeFp.IsInterceptor ? $" 防空:{RangeString(planeFp.Interception)}" : ""),
+                                    $"距離:{plane.Slot.Spec.Distance} 制空:{RangeString(airCombat)}" +
+                                    (different ? $" 防空:{RangeString(interception)}" : ""),
                                 Color = plane.Slot.Spec.Color
                             };
                         }));
