@@ -978,8 +978,8 @@ namespace KancolleSniffer.Test
             {
                 api_maparea_id = 7,
                 api_mapinfo_no = 2,
-                api_no = 9,
-                api_event_id = 4
+                api_no = 7,
+                api_event_id = 5
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => count.NowArray[2] == 1, "7-2G");

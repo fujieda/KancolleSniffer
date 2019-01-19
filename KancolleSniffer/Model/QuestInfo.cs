@@ -633,14 +633,6 @@ namespace KancolleSniffer.Model
                 if (QuestSortie.CompareRank(rank, "S") != 0)
                     return;
                 var count = q893.Count;
-                if (!_boss)
-                {
-                    if (_map == 72 && _cell == 9)
-                    {
-                        IncrementNowArray(count, 2);
-                    }
-                    return;
-                }
                 switch (_map)
                 {
                     case 15:
@@ -650,6 +642,11 @@ namespace KancolleSniffer.Model
                         IncrementNowArray(count, 1);
                         break;
                     case 72:
+                        if (_cell == 7)
+                        {
+                            IncrementNowArray(count, 2);
+                            break;
+                        }
                         IncrementNowArray(count, 3);
                         break;
                 }
