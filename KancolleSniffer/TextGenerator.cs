@@ -64,7 +64,7 @@ namespace KancolleSniffer
             var sb = new StringBuilder();
             for (var f = 0; f < ShipInfo.FleetCount; f++)
                 sb.Append(GenerateFleetData(sniffer, f, dict));
-            sb.Append(GenerateBaseAirCorps(sniffer, dict));
+            sb.Append(GenerateAirBase(sniffer, dict));
             return sb.ToString();
         }
 
@@ -91,12 +91,12 @@ namespace KancolleSniffer
             return sb;
         }
 
-        private static StringBuilder GenerateBaseAirCorps(Sniffer sniffer, ItemName dict)
+        private static StringBuilder GenerateAirBase(Sniffer sniffer, ItemName dict)
         {
             var sb = new StringBuilder();
-            if (sniffer.BaseAirCorps == null)
+            if (sniffer.AirBase == null)
                 return sb;
-            foreach (var baseInfo in sniffer.BaseAirCorps)
+            foreach (var baseInfo in sniffer.AirBase)
             {
                 sb.Append(baseInfo.AreaName + " 基地航空隊\r\n");
                 var i = 0;

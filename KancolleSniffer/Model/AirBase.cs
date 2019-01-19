@@ -20,12 +20,12 @@ using KancolleSniffer.Util;
 
 namespace KancolleSniffer.Model
 {
-    public class BaseAirCorps
+    public class AirBase
     {
         private readonly ItemInfo _itemInfo;
         private List<int> _relocatingPlanes = new List<int>();
 
-        public BaseAirCorps(ItemInfo item)
+        public AirBase(ItemInfo item)
         {
             _itemInfo = item;
         }

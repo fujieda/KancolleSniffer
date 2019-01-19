@@ -42,7 +42,9 @@ namespace KancolleSniffer
     public enum ShipCategory
     {
         None = 0,
+        // ReSharper disable UnusedMember.Global
         BattleShip = 1 << 0,
+
         AircraftCarrier = 1 << 1,
         HeavyCruiser = 1 << 2,
         LightCruiser = 1 << 3,
@@ -50,6 +52,7 @@ namespace KancolleSniffer
         Escort = 1 << 5,
         Submarine = 1 << 6,
         Assistant = 1 << 7,
+        // ReSharper restore UnusedMember.Global
         All = (1 << 8) - 1
     }
 

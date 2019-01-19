@@ -182,10 +182,10 @@ namespace KancolleSniffer.View
                 });
                 list.AddRange(shipRecords);
             }
-            if (sniffer.BaseAirCorps != null)
+            if (sniffer.AirBase != null)
             {
                 var name = new[] {"第一", "第二", "第三"};
-                foreach (var baseInfo in sniffer.BaseAirCorps)
+                foreach (var baseInfo in sniffer.AirBase)
                 {
                     list.Add(new Record {Fleet = baseInfo.AreaName + " 基地航空隊"});
                     var i = 0;

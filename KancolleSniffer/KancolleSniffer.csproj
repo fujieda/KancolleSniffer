@@ -74,7 +74,7 @@
     </Compile>
     <Compile Include="View\AirBattleResultPanel.cs" />
     <Compile Include="Util\Ascii85.cs" />
-    <Compile Include="Model\BaseAirCoprs.cs" />
+    <Compile Include="Model\AirBase.cs" />
     <Compile Include="Model\BattleInfo.cs" />
     <Compile Include="View\BattleResultPanel.cs">
       <SubType>Component</SubType>

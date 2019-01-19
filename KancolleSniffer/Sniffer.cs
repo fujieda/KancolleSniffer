@@ -41,7 +41,7 @@ namespace KancolleSniffer
         private readonly Logger _logger;
         private readonly ExMapInfo _exMapInfo = new ExMapInfo();
         private readonly MiscTextInfo _miscTextInfo;
-        private readonly BaseAirCorps _baseAirCorps;
+        private readonly AirBase _airBase;
         private readonly PresetDeck _presetDeck = new PresetDeck();
         private readonly CellInfo _cellInfo = new CellInfo();
         private readonly Status _status = new Status();
@@ -96,7 +96,7 @@ namespace KancolleSniffer
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
             _questInfo = new QuestInfo(_itemInfo, _battleInfo);
-            _baseAirCorps = new BaseAirCorps(_itemInfo);
+            _airBase = new AirBase(_itemInfo);
             _miscTextInfo = new MiscTextInfo(_shipInfo, _itemInfo);
             _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo, _questInfo};
             AdditionalData = new AdditionalData();
@@ -200,9 +200,9 @@ namespace KancolleSniffer
             if (data.api_parallel_quest_count()) // 昔のログにはないので
                 _questInfo.AcceptMax = (int)data.api_parallel_quest_count;
             if (data.api_event_object())
-                _baseAirCorps.InspectEventObject(data.api_event_object);
+                _airBase.InspectEventObject(data.api_event_object);
             if (data.api_plane_info())
-                _baseAirCorps.InspectPlaneInfo(data.api_plane_info);
+                _airBase.InspectPlaneInfo(data.api_plane_info);
             _battleInfo.CleanupResult();
             _battleInfo.BattleState = BattleState.None;
             _miscTextInfo.Port();
@@ -294,7 +294,7 @@ namespace KancolleSniffer
                 _exMapInfo.InspectMapInfo(data);
                 _miscTextInfo.InspectMapInfo(data);
                 if (data.api_air_base())
-                    _baseAirCorps.Inspect(data.api_air_base);
+                    _airBase.Inspect(data.api_air_base);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_member/get_practice_enemyinfo"))
@@ -309,7 +309,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_get_member/base_air_corps"))
             {
-                _baseAirCorps.Inspect(data);
+                _airBase.Inspect(data);
                 return Update.Ship;
             }
             return Update.None;
@@ -511,23 +511,23 @@ namespace KancolleSniffer
             if (url.EndsWith("api_req_air_corps/supply"))
             {
                 _materialInfo.InspectAirCorpsSupply(data);
-                _baseAirCorps.InspectSupply(request, data);
+                _airBase.InspectSupply(request, data);
                 return Update.Item;
             }
             if (url.EndsWith("api_req_air_corps/set_plane"))
             {
                 _materialInfo.InspectAirCorpsSetPlane(data);
-                _baseAirCorps.InspectSetPlane(request, data);
+                _airBase.InspectSetPlane(request, data);
                 return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_req_air_corps/set_action"))
             {
-                _baseAirCorps.InspectSetAction(request);
+                _airBase.InspectSetAction(request);
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_air_corps/expand_base"))
             {
-                _baseAirCorps.InspectExpandBase(request, data);
+                _airBase.InspectExpandBase(request, data);
                 return Update.Ship;
             }
             return Update.None;
@@ -657,7 +657,7 @@ namespace KancolleSniffer
             {
                 _itemInfo.ClearHolder();
                 _shipInfo.SetItemHolder();
-                _baseAirCorps.SetItemHolder();
+                _airBase.SetItemHolder();
                 return _itemInfo.ItemList;
             }
         }
@@ -672,7 +672,7 @@ namespace KancolleSniffer
 
         public string MiscText => _miscTextInfo.Text;
 
-        public BaseAirCorps.BaseInfo[] BaseAirCorps => _baseAirCorps.AllAirCorps;
+        public AirBase.BaseInfo[] AirBase => _airBase.AllAirCorps;
 
         public CellInfo CellInfo => _cellInfo;
 

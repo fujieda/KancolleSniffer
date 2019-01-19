@@ -109,13 +109,13 @@ namespace KancolleSniffer.Test
         /// 基地航空隊の制空値を正しく計算する
         /// </summary>
         [TestMethod]
-        public void FighterPowerOfBaseAirCorps()
+        public void FighterPowerOfAirBase()
         {
             var sniffer = new Sniffer();
-            SniffLogFile(sniffer, "baseaircorps_001");
-            PAssert.That(() => (int)sniffer.BaseAirCorps[0].AirCorps[0].CalcFighterPower()[1].AirCombat == 301);
-            sniffer.BaseAirCorps[0].AirCorps[0].Action = 2; // 防空
-            PAssert.That(() => (int)sniffer.BaseAirCorps[0].AirCorps[0].CalcFighterPower()[1].Interception == 320);
+            SniffLogFile(sniffer, "airbase_001");
+            PAssert.That(() => (int)sniffer.AirBase[0].AirCorps[0].CalcFighterPower()[1].AirCombat == 301);
+            sniffer.AirBase[0].AirCorps[0].Action = 2; // 防空
+            PAssert.That(() => (int)sniffer.AirBase[0].AirCorps[0].CalcFighterPower()[1].Interception == 320);
         }
 
         /// <summary>
@@ -125,8 +125,8 @@ namespace KancolleSniffer.Test
         public void FighterPowerWithReconBonus()
         {
             var sniffer = new Sniffer();
-            SniffLogFile(sniffer, "baseaircorps_002");
-            PAssert.That(() => (int)sniffer.BaseAirCorps[0].AirCorps[2].CalcFighterPower()[0].Interception == 353);
+            SniffLogFile(sniffer, "airbase_002");
+            PAssert.That(() => (int)sniffer.AirBase[0].AirCorps[2].CalcFighterPower()[0].Interception == 353);
         }
 
         /// <summary>
@@ -136,19 +136,19 @@ namespace KancolleSniffer.Test
         public void FighterPowerOfLandBasedAttackAircraft()
         {
             var sniffer = new Sniffer();
-            SniffLogFile(sniffer, "baseaircorps_003");
-            PAssert.That(() => (int)sniffer.BaseAirCorps[1].AirCorps[0].CalcFighterPower()[0].AirCombat == 121);
+            SniffLogFile(sniffer, "airbase_003");
+            PAssert.That(() => (int)sniffer.AirBase[1].AirCorps[0].CalcFighterPower()[0].AirCombat == 121);
         }
 
         /// <summary>
         /// 基地航空隊の出撃コストを計算する
         /// </summary>
         [TestMethod]
-        public void CostForSortieOfBaseAirCorps()
+        public void CostForSortieOfAirBase()
         {
             var sniffer = new Sniffer();
-            SniffLogFile(sniffer, "baseaircorps_003");
-            PAssert.That(() => sniffer.BaseAirCorps[1].AirCorps[0].CostForSortie.SequenceEqual(new[] {99, 47}));
+            SniffLogFile(sniffer, "airbase_003");
+            PAssert.That(() => sniffer.AirBase[1].AirCorps[0].CostForSortie.SequenceEqual(new[] {99, 47}));
         }
 
         /// <summary>
@@ -158,8 +158,8 @@ namespace KancolleSniffer.Test
         public void FighterPowerOfLandBAseFighter()
         {
             var sniffer = new Sniffer();
-            SniffLogFile(sniffer, "baseaircorps_004");
-            PAssert.That(() => (int)sniffer.BaseAirCorps[1].AirCorps[0].CalcFighterPower()[0].AirCombat == 328);
+            SniffLogFile(sniffer, "airbase_004");
+            PAssert.That(() => (int)sniffer.AirBase[1].AirCorps[0].CalcFighterPower()[0].AirCombat == 328);
         }
 
         /// <summary>
