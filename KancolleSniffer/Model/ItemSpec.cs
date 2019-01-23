@@ -210,8 +210,9 @@ namespace KancolleSniffer.Model
                         return new AirBaseParams(1.0, LoS <= 7 ? 1.2 : 1.3);
                     case 10:
                     case 41:
-                        return new AirBaseParams(1.0, LoS <= 7 ? 1.1 :
-                            LoS <= 8 ? 1.13 : 1.16);
+                        return new AirBaseParams(1.0, LoS <= 7 ? 1.1 : LoS <= 8 ? 1.13 : 1.16);
+                    case 49:
+                        return new AirBaseParams(LoS <= 8 ? 1.15 : 1.18, LoS <= 8 ? 1.18 : 1.24);
                 }
                 return new AirBaseParams(1.0, 1.0);
             }

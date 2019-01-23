@@ -163,6 +163,26 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 陸上偵察機の効果を反映した制空値を計算する
+        /// </summary>
+        [TestMethod]
+        public void FighterPowerWithLandBaseReconBonus()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "airbase_005");
+
+            // 二式陸上偵察機(熟練)
+            var fp1 = sniffer.AirBase[0].AirCorps[0].CalcFighterPower();
+            PAssert.That(() => (int)fp1[0].AirCombat == 266);
+            PAssert.That(() => (int)fp1[0].Interception == 293);
+
+            // 二式陸上偵察機
+            var fp3 = sniffer.AirBase[0].AirCorps[2].CalcFighterPower();
+            PAssert.That(() => (int)fp3[0].AirCombat == 200);
+            PAssert.That(() => (int)fp3[0].Interception == 303);
+        }
+
+        /// <summary>
         /// マップ索敵の判定式(33)を正しく計算する
         /// </summary>
         [TestMethod]
