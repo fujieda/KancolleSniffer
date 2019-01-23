@@ -382,6 +382,8 @@ namespace KancolleSniffer.Model
         {
             var now = _nowFunc();
             var daily = now.Date.AddHours(5);
+            if (now.Hour < 5)
+                daily = daily.AddDays(-1);
             if (!(_lastReset < daily && daily <= now))
                 return;
             RemoveQuest(QuestInterval.Daily);

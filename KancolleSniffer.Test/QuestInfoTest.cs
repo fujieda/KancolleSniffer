@@ -151,6 +151,25 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void ResetFrom0To5OClock()
+        {
+            var queue = new Queue<DateTime>(new[]
+            {
+                new DateTime(2019, 1, 22, 4, 0, 0)
+            });
+            var questInfo = new QuestInfo(null, null, () => queue.Dequeue());
+            var status = new Status
+            {
+                QuestCountList = new[] {new QuestCount {Id = 213, Now = 1}},
+                QuestLastReset = new DateTime(2019, 1, 20, 5, 16, 22)
+            };
+            questInfo.LoadState(status);
+            questInfo.InspectQuestList(CreateQuestList(new[] {201}));
+            questInfo.SaveState(status);
+            PAssert.That(() => status.QuestCountList.Length == 0);
+        }
+
+        [TestMethod]
         public void ResetQuestList()
         {
             var queue = new Queue<DateTime>(new[]
