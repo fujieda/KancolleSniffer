@@ -490,7 +490,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_kaisou/slot_exchange_index"))
             {
-                _shipInfo.InspectSlotExchange(request, data);
+                _shipInfo.InspectSlotExchange(data);
                 return Update.Ship;
             }
             if (url.EndsWith("api_req_kaisou/slot_deprive"))

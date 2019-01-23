@@ -394,15 +394,15 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
-        /// 装備の交換を正しく反映する
+        /// 装備交換のAPIの仕様変更に対応する
         /// </summary>
         [TestMethod]
-        public void SlotExchange()
+        public void SlotExchangeVersion2()
         {
             var sniffer = new Sniffer();
-            SniffLogFile(sniffer, "slot_exchange_001");
+            SniffLogFile(sniffer, "slot_exchange_002");
             var result = sniffer.Fleets[0].Ships[0].Slot.Select(item => item.Id);
-            PAssert.That(() => new[] {26096, 30571, 77694, 61383, -1}.SequenceEqual(result));
+            PAssert.That(() => new[] {157798, 59001, 157804, -1, -1}.SequenceEqual(result));
         }
 
         /// <summary>

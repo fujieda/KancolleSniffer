@@ -236,7 +236,7 @@ namespace KancolleSniffer.Model
                 AntiSubmarine = (int)entry.api_taisen[0],
                 AntiAir = (int)entry.api_taiku[0],
                 Lucky = (int)entry.api_lucky[0],
-                Locked = entry.api_locked() && entry.api_locked == 1,
+                Locked = entry.api_locked() && entry.api_locked == 1
             };
         }
 
@@ -305,26 +305,27 @@ namespace KancolleSniffer.Model
                 return;
             _itemInventory.Remove(ships.SelectMany(id => _shipInventory[id].Slot));
             _shipInventory.Remove(ships);
-            FillShipData(new[]{json.api_ship}, json.api_deck);
+            FillShipData(new[] {json.api_ship}, json.api_deck);
         }
 
-        public void InspectSlotExchange(string request, dynamic json)
+        public void InspectSlotExchange(dynamic json)
         {
-            var values = HttpUtility.ParseQueryString(request);
-            var ship = int.Parse(values["api_id"]);
-            _shipInventory[ship].Slot = ((int[])json.api_slot).Select(id => new ItemStatus(id)).ToArray();
+            UpdateShips(new[] {json.api_ship_data});
         }
 
         public void InspectSlotDeprive(dynamic json)
         {
-            FillShips(new[] {json.api_ship_data.api_set_ship, json.api_ship_data.api_unset_ship});
-            foreach (var fleet in _fleets)
-                fleet.SetDeck(); // ShipStatusの差し替え
+            UpdateShips(new[] {json.api_ship_data.api_set_ship, json.api_ship_data.api_unset_ship});
         }
 
         public void InspectMarriage(dynamic json)
         {
-            FillShips(new[]{json});
+            UpdateShips(new[] {json});
+        }
+
+        private void UpdateShips(dynamic json)
+        {
+            FillShips(json);
             foreach (var fleet in _fleets)
                 fleet.SetDeck(); // ShipStatusの差し替え
         }
