@@ -27,6 +27,7 @@ namespace KancolleSniffer.Model
     {
         public int Id { get; set; }
         public int Category { get; set; }
+        public QuestInterval Interval { get; set; }
         public string Name { get; set; }
         public string Detail { get; set; }
         public int[] Material { get; set; }
@@ -243,7 +244,8 @@ namespace KancolleSniffer.Model
             return "";
         }
 
-        public bool Cleared => NowArray?.Zip(Spec.MaxArray, (n, m) => n >= m).All(x => x) ?? Spec.Max != 0 && Now >= Spec.Max;
+        public bool Cleared => NowArray?.Zip(Spec.MaxArray, (n, m) => n >= m).All(x => x) ??
+                               Spec.Max != 0 && Now >= Spec.Max;
     }
 
     public class QuestInfo : IHaveState
@@ -296,6 +298,12 @@ namespace KancolleSniffer.Model
             }
         }
 
+        private readonly QuestInterval[] _intervals =
+        {
+            QuestInterval.Daily, QuestInterval.Weekly, QuestInterval.Monthly,
+            QuestInterval.Other, QuestInterval.Quarterly
+        };
+
         public void InspectQuestList(dynamic json)
         {
             ResetQuests();
@@ -312,6 +320,7 @@ namespace KancolleSniffer.Model
                     var state = (int)entry.api_state;
                     var progress = (int)entry.api_progress_flag;
                     var cat = (int)entry.api_category;
+                    var interval = _intervals[(int)entry.api_type - 1];
                     var name = (string)entry.api_title;
                     var detail = ((string)entry.api_detail).Replace("<br>", "\r\n");
                     var material = (int[])entry.api_get_material;
@@ -337,7 +346,7 @@ namespace KancolleSniffer.Model
                             progress = 100;
                             goto case 2;
                         case 2:
-                            AddQuest(id, cat, name, detail, material, progress, true);
+                            AddQuest(id, cat, interval, name, detail, material, progress, true);
                             break;
                     }
                 }
@@ -351,7 +360,8 @@ namespace KancolleSniffer.Model
             }
         }
 
-        private void AddQuest(int id, int category, string name, string detail, int[] material, int progress,
+        private void AddQuest(int id, int category, QuestInterval interval, string name, string detail, int[] material,
+            int progress,
             bool adjustCount)
         {
             var count = _countList.GetCount(id);
@@ -364,6 +374,7 @@ namespace KancolleSniffer.Model
             {
                 Id = id,
                 Category = category,
+                Interval = interval,
                 Name = name,
                 Detail = detail,
                 Material = adjustCount ? material?.Concat(count.Spec.Material).ToArray() : material,
@@ -414,7 +425,10 @@ namespace KancolleSniffer.Model
         private void RemoveQuest(QuestInterval interval)
         {
             foreach (var id in
-                (from kv in _quests where kv.Value.Count.Spec.Interval == interval select kv.Key).ToArray())
+                (from kv in _quests
+                    where kv.Value.Count.Spec.Interval == interval || // 輸送5と空母3はカウンタを見ないとデイリーにならない
+                          kv.Value.Interval == interval
+                    select kv.Key).ToArray())
                 _quests.Remove(id);
         }
 
@@ -896,7 +910,7 @@ namespace KancolleSniffer.Model
             {
                 _quests.Clear();
                 foreach (var q in status.QuestList)
-                    AddQuest(q.Id, q.Category, q.Name, q.Detail, q.Material, q.Progress, false);
+                    AddQuest(q.Id, q.Category, q.Interval, q.Name, q.Detail, q.Material, q.Progress, false);
             }
         }
     }

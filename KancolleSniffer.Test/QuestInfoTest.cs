@@ -151,25 +151,6 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
-        public void ResetFrom0To5OClock()
-        {
-            var queue = new Queue<DateTime>(new[]
-            {
-                new DateTime(2019, 1, 22, 4, 0, 0)
-            });
-            var questInfo = new QuestInfo(null, null, () => queue.Dequeue());
-            var status = new Status
-            {
-                QuestCountList = new[] {new QuestCount {Id = 213, Now = 1}},
-                QuestLastReset = new DateTime(2019, 1, 20, 5, 16, 22)
-            };
-            questInfo.LoadState(status);
-            questInfo.InspectQuestList(CreateQuestList(new[] {201}));
-            questInfo.SaveState(status);
-            PAssert.That(() => status.QuestCountList.Length == 0);
-        }
-
-        [TestMethod]
         public void ResetQuestList()
         {
             var queue = new Queue<DateTime>(new[]
@@ -199,6 +180,62 @@ namespace KancolleSniffer.Test
             PAssert.That(() => status.QuestList.Length == 0); // クォータリーが消える
         }
 
+        [TestMethod]
+        public void ResetFrom0To5OClock()
+        {
+            var queue = new Queue<DateTime>(new[]
+            {
+                new DateTime(2019, 1, 22, 4, 0, 0)
+            });
+            var questInfo = new QuestInfo(null, null, () => queue.Dequeue());
+            var status = new Status
+            {
+                QuestCountList = new[] {new QuestCount {Id = 213, Now = 1}},
+                QuestLastReset = new DateTime(2019, 1, 20, 5, 16, 22)
+            };
+            questInfo.LoadState(status);
+            questInfo.InspectQuestList(CreateQuestList(new[] {201}));
+            questInfo.SaveState(status);
+            PAssert.That(() => status.QuestCountList.Length == 0);
+        }
+
+        [TestMethod]
+        public void ResetWeeklyWithoutCount()
+        {
+            var queue = new Queue<DateTime>(new[]
+            {
+                new DateTime(2019, 1, 27, 10, 0, 0),
+                new DateTime(2019, 1, 28, 5, 0, 0)
+            });
+            var questInfo = new QuestInfo(null, null, () => queue.Dequeue());
+            var status = new Status
+            {
+                QuestLastReset = new DateTime(2019, 1, 27, 5, 0, 0)
+            };
+            questInfo.LoadState(status);
+            questInfo.InspectQuestList( // 2019-1-27 10:00
+                Js(new
+                {
+                    api_list = new[]
+                    {
+                        new
+                        {
+                            api_no = 237,
+                            api_category = 2,
+                            api_type = 2,
+                            api_state = 2,
+                            api_title = "【節分拡張任務】南方海域 艦隊決戦",
+                            api_detail = "",
+                            api_get_material = new int[0],
+                            api_progress_flag = 0
+                        }
+                    }
+                }));
+            PAssert.That(() => questInfo.Quests[0].Id == 237);
+            questInfo.InspectQuestList(CreateQuestList(new[] {201})); // 2019-1-28 05:00
+            PAssert.That(() => questInfo.Quests[0].Id == 201);
+        }
+
         private JsonObject Js(object obj) => JsonObject.CreateJsonObject(obj);
 
         private object CreateQuestList(int[] ids) => Js(new
@@ -208,6 +245,7 @@ namespace KancolleSniffer.Test
                 {
                     api_no = id,
                     api_category = id / 100,
+                    api_type = 1,
                     api_state = 2,
                     api_title = "",
                     api_detail = "",
