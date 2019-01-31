@@ -646,7 +646,7 @@ namespace KancolleSniffer.Model
             }
             if (_quests.TryGetValue(893, out var q893))
             {
-                if (QuestSortie.CompareRank(rank, "S") != 0)
+                if (!_boss || QuestSortie.CompareRank(rank, "S") != 0)
                     return;
                 var count = q893.Count;
                 switch (_map)
