@@ -383,9 +383,8 @@ namespace KancolleSniffer.Test
                 api_event_id = 4
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
-            PAssert.That(() =>
-                questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
-                    .SequenceEqual(new[] {new {Id = 226, Now = 0}}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 2,
@@ -393,19 +392,9 @@ namespace KancolleSniffer.Test
                 api_event_id = 5
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
-            PAssert.That(() =>
-                questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
-                    .SequenceEqual(new[] {new {Id = 226, Now = 1}}));
-            questInfo.InspectMapStart(Js(new
-            {
-                api_maparea_id = 2,
-                api_mapinfo_no = 1,
-                api_event_id = 4
-            }));
-            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
-            PAssert.That(() =>
-                questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
-                    .SequenceEqual(new[] {new {Id = 226, Now = 1}}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
+            questInfo.InspectBattleResult(Js(new { api_win_rank = "B" }));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 2);
         }
 
         /// <summary>
@@ -421,23 +410,21 @@ namespace KancolleSniffer.Test
             {
                 api_maparea_id = 5,
                 api_mapinfo_no = 2,
-                api_event_id = 5
+                api_event_id = 4
             }));
-            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
-            PAssert.That(() =>
-                questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
-                    .SequenceEqual(new[] {new {Id = 243, Now = 0}}));
+            questInfo.InspectBattleResult(Js(new { api_win_rank = "S" }));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
 
-            questInfo.InspectMapNext(Js(new
+            questInfo.InspectMapStart(Js(new
             {
                 api_maparea_id = 5,
                 api_mapinfo_no = 2,
                 api_event_id = 5
             }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
-            PAssert.That(() =>
-                questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
-                    .SequenceEqual(new[] {new {Id = 243, Now = 1}}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
         }
 
         private ShipStatus ShipStatus(int shipType, int specId = 0) =>
@@ -459,6 +446,7 @@ namespace KancolleSniffer.Test
                 ShipStatus(5, 319), ShipStatus(5, 192), ShipStatus(5, 194),
                 ShipStatus(5, 193), ShipStatus(6, 189), ShipStatus(6, 188)
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 2,
@@ -466,6 +454,8 @@ namespace KancolleSniffer.Test
                 api_event_id = 4
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 2,
@@ -498,6 +488,7 @@ namespace KancolleSniffer.Test
                 ShipStatus(3), ShipStatus(2), ShipStatus(2),
                 ShipStatus(2), ShipStatus(2), ShipStatus(2)
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 1,
@@ -505,6 +496,8 @@ namespace KancolleSniffer.Test
                 api_event_id = 4
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 1,
@@ -560,6 +553,7 @@ namespace KancolleSniffer.Test
             battleInfo.InjectResultStatus(
                 org.ToArray(), new ShipStatus[0],
                 new ShipStatus[0], new ShipStatus[0]);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 5,
@@ -567,6 +561,8 @@ namespace KancolleSniffer.Test
                 api_event_id = 4
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 5,
@@ -614,6 +610,7 @@ namespace KancolleSniffer.Test
                 ShipStatus(7), ShipStatus(11), ShipStatus(3),
                 ShipStatus(3), ShipStatus(2), ShipStatus(2)
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 4,
@@ -621,6 +618,8 @@ namespace KancolleSniffer.Test
                 api_event_id = 4
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 4,
@@ -652,6 +651,7 @@ namespace KancolleSniffer.Test
                 ShipStatus(2), ShipStatus(5), ShipStatus(3),
                 ShipStatus(2), ShipStatus(2), ShipStatus(2)
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 2,
@@ -659,6 +659,8 @@ namespace KancolleSniffer.Test
                 api_event_id = 4
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 2,
@@ -696,6 +698,16 @@ namespace KancolleSniffer.Test
         {
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {822, 854}));
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 2,
+                api_mapinfo_no = 4,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new { api_win_rank = "S" }));
+            PAssert.That(() => questInfo.Quests[1].Count.NowArray.SequenceEqual(new[] { 0, 0, 0, 0 }));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
 
             questInfo.InspectMapNext(Js(new
             {
@@ -760,6 +772,8 @@ namespace KancolleSniffer.Test
                 api_mapinfo_no = 6,
                 api_event_id = 4
             }));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 1,
@@ -803,6 +817,7 @@ namespace KancolleSniffer.Test
                 ShipStatus(2), ShipStatus(3), ShipStatus(3),
                 ShipStatus(2), ShipStatus(2), ShipStatus(16)
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 6,
@@ -810,6 +825,8 @@ namespace KancolleSniffer.Test
                 api_event_id = 4
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 6,
@@ -847,6 +864,7 @@ namespace KancolleSniffer.Test
                 ShipStatus(3), ShipStatus(2), ShipStatus(2),
                 ShipStatus(2), ShipStatus(2), ShipStatus(2)
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 3,
@@ -854,6 +872,8 @@ namespace KancolleSniffer.Test
                 api_event_id = 4
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray[0] == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 3,
@@ -902,6 +922,7 @@ namespace KancolleSniffer.Test
                 ShipStatus(2, 543), ShipStatus(8, 360), ShipStatus(11, 545),
                 ShipStatus(18, 467), ShipStatus(11, 261), ShipStatus(2, 344)
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 5,
@@ -909,6 +930,8 @@ namespace KancolleSniffer.Test
                 api_event_id = 4
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 5,
@@ -954,6 +977,7 @@ namespace KancolleSniffer.Test
                 ShipStatus(5, 427), ShipStatus(5, 264), ShipStatus(5, 142),
                 ShipStatus(5, 417), ShipStatus(2, 144), ShipStatus(2, 195)
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 5,
@@ -961,6 +985,8 @@ namespace KancolleSniffer.Test
                 api_event_id = 4
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => count.NowArray[0] == 0);
+
             questInfo.InspectMapNext(Js(new
             {
                 api_maparea_id = 5,
@@ -1010,6 +1036,15 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {893}));
             var count = questInfo.Quests[0].Count;
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 5,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new { api_win_rank = "S" }));
+            PAssert.That(() => count.NowArray[0] == 0, "1-5");
 
             questInfo.InspectMapNext(Js(new
             {
@@ -1083,6 +1118,15 @@ namespace KancolleSniffer.Test
 
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => count.NowArray[0] == 1, "1-3");
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 4,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new { api_win_rank = "S" }));
+            PAssert.That(() => count.NowArray[1] == 0, "1-4");
 
             questInfo.InspectMapNext(Js(new
             {
