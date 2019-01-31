@@ -68,14 +68,8 @@ namespace KancolleSniffer.View
             if (!status.Empty)
             {
                 var slots = status.Slot.Take(status.Spec.SlotNum).ToArray();
-                if (slots.All(item => item.Empty))
-                {
-                    empty |= SlotStatus.NormalEmpty;
-                }
-                else if (slots.Any(item => item.Empty))
-                {
-                    empty |= SlotStatus.SemiEquipped;
-                }
+                if (slots.Any(item => item.Empty))
+                    empty |= slots.All(item => item.Empty) ? SlotStatus.NormalEmpty : SlotStatus.SemiEquipped;
                 if (status.SlotEx.Empty)
                     empty |= SlotStatus.ExtraEmpty;
             }
