@@ -84,6 +84,11 @@ namespace KancolleSniffer
             _notificationQueue.StopRepeat(key, subject);
         }
 
+        public void StopAllRepeat()
+        {
+            _notificationQueue.StopAllRepeat();
+        }
+
         public void SuspendRepeat(string exception = "")
         {
             _notificationQueue.SuspendRepeat(exception);
@@ -338,6 +343,11 @@ namespace KancolleSniffer
 
             private bool IsMatch(Notification n, string key) =>
                 n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Schedule != default;
+
+            public void StopAllRepeat()
+            {
+                _queue.RemoveAll(n => n.Schedule != default);
+            }
 
             public void SuspendRepeat(string exception = null)
             {

@@ -263,6 +263,7 @@ namespace KancolleSniffer
                 labelLogin.Visible = false;
                 linkLabelGuide.Visible = false;
                 _started = true;
+                _notificationManager.StopAllRepeat();
                 return;
             }
             if (!_started)
