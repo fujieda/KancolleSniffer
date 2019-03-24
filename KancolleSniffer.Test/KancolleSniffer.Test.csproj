@@ -83,6 +83,7 @@
     <Compile Include="BattleLogProcessorTest.cs" />
     <Compile Include="BattleBriefTest.cs" />
     <Compile Include="BattleTest.cs" />
+    <Compile Include="ShipStatusTest.cs" />
     <Compile Include="PrivacyTest.cs" />
     <Compile Include="FleetPanelTest.cs" />
     <Compile Include="JsonTest.cs" />

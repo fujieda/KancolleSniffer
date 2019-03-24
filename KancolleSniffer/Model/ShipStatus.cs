@@ -212,30 +212,49 @@ namespace KancolleSniffer.Model
         {
             get
             {
+                var specs = Slot.Select(item => item.Spec).ToArray();
                 switch (Name)
                 {
                     case "五十鈴改二":
                     case "龍田改二":
                     case "Jervis改":
                     case "Samuel B.Roberts改":
+                    case "Johnston":
+                    case "Johnston改":
                         return true;
                     case "大鷹改":
                     case "大鷹改二":
-                        return Slot.Any(item => item.Spec.IsAircraft && item.Spec.EffectiveAntiSubmarine > 0);
+                    case "神鷹改":
+                    case "神鷹改二":
+                        return specs.Any(spec => spec.IsTorpedoBomber && spec.AntiSubmarine >= 1 ||
+                                                 spec.IsArmyAircraft || spec.IsDiveBomber);
                     case "大鷹":
                     case "Gambier Bay":
                     case "Gambier Bay改":
                     case "瑞鳳改二乙":
                     case "神鷹":
-                    case "神鷹改":
-                    case "神鷹改二":
-                        return Slot.Any(item => item.Spec.IsAircraft && item.Spec.EffectiveAntiSubmarine >= 7) &&
-                               AntiSubmarine >= (HaveSonar ? 50 : 65);
+                        if (AntiSubmarine < 50)
+                            return false;
+                        if (AntiSubmarine >= 50 && AntiSubmarine < 100)
+                            return (AntiSubmarine >= 65 || HaveSonar) &&
+                                   specs.Any(spec => spec.IsTorpedoBomber && spec.AntiSubmarine >= 7 ||
+                                                     spec.IsArmyAircraft);
+                        return HaveSonar &&
+                               specs.Any(spec => spec.IsTorpedoBomber && spec.AntiSubmarine >= 1 ||
+                                                 spec.IsDiveBomber);
+                    case "瑞鳳改二":
+                        if (AntiSubmarine < 50)
+                            return false;
+                        return HaveSonar &&
+                               specs.Any(spec => spec.IsTorpedoBomber && spec.AntiSubmarine >= 7 ||
+                                                 spec.IsArmyAircraft);
                     default:
-                        return Spec.ShipType == 1
-                            ? Slot.Sum(item => item.Spec.AntiSubmarine) >= 4 && AntiSubmarine >= 75 ||
-                              HaveSonar && AntiSubmarine >= 60
-                            : HaveSonar && AntiSubmarine >= 100;
+                        if (HaveSonar && AntiSubmarine >= 100)
+                            return true;
+                        if (Spec.ShipType != 1)
+                            return false;
+                        return Slot.Sum(item => item.Spec.AntiSubmarine) >= 4 && AntiSubmarine >= 75 ||
+                               HaveSonar && AntiSubmarine >= 60;
                 }
             }
         }
