@@ -177,6 +177,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "sp_midnight_002");
             PAssert.That(() => !sniffer.IsBattleResultError);
+            PAssert.That(() => sniffer.Battle.SupportType == "砲支援");
         }
 
         /// <summary>

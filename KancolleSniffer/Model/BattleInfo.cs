@@ -224,11 +224,13 @@ namespace KancolleSniffer.Model
 
         private void SetSupportType(dynamic json)
         {
-            SupportType = "";
-            if (!json.api_support_flag())
-                return;
-            switch ((int)json.api_support_flag)
+            var support = json.api_support_flag() ? (int)json.api_support_flag :
+                json.api_n_support_flag() ? (int)json.api_n_support_flag : -1;
+            switch (support)
             {
+                case -1:
+                    SupportType = "";
+                    break;
                 case 1:
                     SupportType = "空支援";
                     break;
