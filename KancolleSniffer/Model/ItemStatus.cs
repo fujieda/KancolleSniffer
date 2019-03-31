@@ -149,6 +149,7 @@ namespace KancolleSniffer.Model
                         return 1.25 * Math.Sqrt(Level);
                     case 13: // 大型電探
                         return 1.4 * Math.Sqrt(Level);
+                    case 9: // 艦偵
                     case 94: // 艦上偵察機（II）
                         return 1.2 * Math.Sqrt(Level);
                     default:
