@@ -225,19 +225,14 @@ namespace KancolleSniffer
         private void ShipListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
-            if (!Visible)
-                return;
             var config = _config.ShipList;
             StoreShipGroupToConfig();
             var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
             config.Location = bounds.Location;
             config.Size = bounds.Size;
             config.Mode = (string)comboBoxGroup.SelectedItem;
-            if (e.CloseReason != CloseReason.FormOwnerClosing)
-            {
-                Hide();
-                _config.Save();
-            }
+            config.Visible = Visible && WindowState == FormWindowState.Normal;
+            Hide();
         }
 
         private void StoreShipGroupToConfig()

@@ -84,7 +84,7 @@ namespace KancolleSniffer
             _mainLabels.CreateNDockLabels(panelDock, labelNDock_Click);
             panelRepairList.CreateLabels(panelRepairList_Click);
             labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
-            _listForm = new ListForm(_sniffer, _config) {Owner = this};
+            _listForm = new ListForm(_sniffer, _config);
             _notificationManager = new NotificationManager(Alarm);
             _config.Load();
             _proxyManager = new ProxyManager(_config, this);
@@ -347,11 +347,10 @@ namespace KancolleSniffer
                     }
                 }
             }
-            e.Cancel = false;
+            _listForm.Close();
             _sniffer.FlashLog();
             _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             _config.ShowHpInPercent = _mainLabels.ShowHpInPercent;
-            _config.ShipList.Visible = _listForm.Visible && _listForm.WindowState == FormWindowState.Normal;
             _config.Save();
             _sniffer.SaveState();
             _proxyManager.Shutdown();
@@ -359,7 +358,8 @@ namespace KancolleSniffer
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            ShowInTaskbar = !(_config.HideOnMinimized && WindowState == FormWindowState.Minimized);
+            _listForm.WindowState = WindowState;
+            _listForm.ShowInTaskbar = ShowInTaskbar = !(_config.HideOnMinimized && WindowState == FormWindowState.Minimized);
         }
 
         private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
