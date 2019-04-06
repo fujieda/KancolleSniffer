@@ -84,11 +84,11 @@ namespace KancolleSniffer.Model
             }
             else if (url.Contains("ship2"))
             {
-                FillShipData(json.api_data, json.api_data_deck);
+                SetShipAndDeck(json.api_data, json.api_data_deck);
             }
             else if (url.Contains("ship3"))
             {
-                FillShipData(json.api_ship_data, json.api_deck_data);
+                SetShipAndDeck(json.api_ship_data, json.api_deck_data);
             }
             else if (url.Contains("ship_deck"))
             {
@@ -106,14 +106,14 @@ namespace KancolleSniffer.Model
             _shipInventory.Clear();
             for (var i = 0; i < FleetCount; i++)
                 _fleets[i].State = FleetState.Port;
-            FillPortShipData(json);
+            SetShipAndDeckForPort(json);
             InspectBasic(json.api_basic);
             if (json.api_combined_flag())
                 _fleets[0].CombinedType = _fleets[1].CombinedType = (CombinedType)(int)json.api_combined_flag;
             VerifyBattleResult();
         }
 
-        private void FillPortShipData(dynamic json)
+        private void SetShipAndDeckForPort(dynamic json)
         {
             foreach (var entry in json.api_ship)
             {
@@ -127,7 +127,7 @@ namespace KancolleSniffer.Model
 
         private void HandleShipDeck(dynamic json)
         {
-            FillShipDeckShipData(json);
+            SetShipAndDeckForShipDeck(json);
             VerifyBattleResult();
             // ドロップ艦を反映する
             if (DropShipId != -1)
@@ -139,7 +139,7 @@ namespace KancolleSniffer.Model
             }
         }
 
-        private void FillShipDeckShipData(dynamic json)
+        private void SetShipAndDeckForShipDeck(dynamic json)
         {
             foreach (var entry in json.api_ship_data)
             {
@@ -152,9 +152,9 @@ namespace KancolleSniffer.Model
             InspectDeck(json.api_deck_data);
         }
 
-        private void FillShipData(dynamic ship, dynamic deck)
+        private void SetShipAndDeck(dynamic ship, dynamic deck)
         {
-            FillShips(ship);
+            SetShips(ship);
             InspectDeck(deck); // FleetのDeckを設定した時点でShipStatusを取得するので必ずdeckが後
         }
 
@@ -166,7 +166,7 @@ namespace KancolleSniffer.Model
             _numEquipsChecker.MaxId = _shipInventory.MaxId;
         }
 
-        private void FillShips(dynamic json)
+        private void SetShips(dynamic json)
         {
             foreach (var entry in json)
                 _shipInventory.Add(CreateShipStatus(entry));
@@ -305,7 +305,7 @@ namespace KancolleSniffer.Model
                 return;
             _itemInventory.Remove(ships.SelectMany(id => _shipInventory[id].Slot));
             _shipInventory.Remove(ships);
-            FillShipData(new[] {json.api_ship}, json.api_deck);
+            SetShipAndDeck(new[] {json.api_ship}, json.api_deck);
         }
 
         public void InspectSlotExchange(dynamic json)
@@ -325,7 +325,7 @@ namespace KancolleSniffer.Model
 
         private void UpdateShips(dynamic json)
         {
-            FillShips(json);
+            SetShips(json);
             foreach (var fleet in _fleets)
                 fleet.SetDeck(); // ShipStatusの差し替え
         }
