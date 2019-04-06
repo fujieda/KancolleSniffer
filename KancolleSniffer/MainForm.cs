@@ -1082,6 +1082,7 @@ namespace KancolleSniffer
         private void UpdateRepairList()
         {
             panelRepairList.SetRepairList(_sniffer.RepairList);
+            _toolTip.SetToolTip(label31, new RepairShipCount(_sniffer.RepairList).ToString());
         }
 
         private void UpdateQuestList()
