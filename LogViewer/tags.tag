@@ -175,6 +175,7 @@ this.setHeaderAndFooter = function(table, header) {
 
 this.searchSetup = function(dTable) {
     self.setupCellSearch(dTable);
+    self.setupGlobalSearch(dTable);
 };
 
 this.setupCellSearch = function(dTable) {
@@ -185,6 +186,15 @@ this.setupCellSearch = function(dTable) {
             that.search(this.value, true, false).draw();
         });
     });
+};
+
+this.setupGlobalSearch = function(dTable) {
+    var searchLabel = $(dTable.table().container()).find(".dataTables_filter label").first();
+    searchLabel.html('Search: <input type="search">');
+    searchLabel.children("input").first().on("input search", function() {
+        dTable.search(this.value, true, false).draw();
+    });
+    dTable.search(""); // reset
 };
 
 this.show = function() {
