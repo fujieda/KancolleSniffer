@@ -74,6 +74,9 @@ this.rangeTabChange = function(e) {
 <thead>
 <tr></tr>
 </thead>
+<tfoot>
+<tr></tr>
+</toot>
 </table>
 </div>
 
@@ -99,9 +102,6 @@ this.jsons = [
 ];
 
 this.on("mount", function() {
-    var records = this.root.querySelectorAll("tr");
-    for (var i = 0; i < records.length; i++)
-        records[i].innerHTML = this.tables[i];
     this.init();
 });
 
@@ -119,34 +119,72 @@ opts.observable.on("logRangeChanged", function() {
 
 this.init = function() {
     for (var t = 0; t < this.tables.length; t++) {
-        var opts = {
-            destroy: true,
-            deferRender: true,
-            stateSave: true,
-            order: [[0, "desc"]],
-            pageLength: 50,
-            lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
-            drawCallback: function() {
-                $('#loading').hide();
-            }
-        };
-        if (t === 0) {
-            opts.columns = [{data: 0}, {data: 1}, {data: 39}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}];
-        } else if (t === 1) {
-            var entries = [];
-            for (var i = 0; i < 38; i++) {
-                if (i === 2)
-                    entries.push({data: 39});
-                if (i === 9 || i === 10)
-                    continue;
-                if (i === 23)
-                    entries.push({data: 38});
-                entries.push({data: i});
-            }
-            opts.columns = entries;
-        }
-        $('#log' + t).dataTable(opts);
+        var table = $('#log' + t);
+        self.setHeaderAndFooter(table, self.tables[t]);
+        var dTable = table.DataTable(self.tableOptions(t));
+        self.searchSetup(dTable);
     }
+};
+
+this.tableOptions = function(tableId) {
+    var opts = {
+        destroy: true,
+        deferRender: true,
+        stateSave: true,
+        order: [[0, "desc"]],
+        pageLength: 50,
+        lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
+        drawCallback: function() {
+            $('#loading').hide();
+        }
+    };
+    if (tableId === 0) {
+        opts.columns = self.dropColumns();
+    } else if (tableId === 1) {
+        opts.columns = self.sortieColumns();
+    }
+    return opts;
+};
+
+this.dropColumns = function() {
+    return [{data: 0}, {data: 1}, {data: 39}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}];
+};
+
+this.sortieColumns = function() {
+    var entries = [];
+    for (var i = 0; i < 38; i++) {
+        if (i === 2)
+            entries.push({data: 39});
+        if (i === 9 || i === 10)
+            continue;
+        if (i === 23)
+            entries.push({data: 38});
+        entries.push({data: i});
+    }
+    return entries;
+};
+
+this.setHeaderAndFooter = function(table, header) {
+    table.find("thead tr").first().html(header);
+    var footer = table.find("tfoot tr");
+    table.find("th").each(function(index) {
+        footer.append(
+            '<th><input type="search" placeholder="Search ' + $(this).text() + '"/></th>');
+    });
+};
+
+this.searchSetup = function(dTable) {
+    self.setupCellSearch(dTable);
+};
+
+this.setupCellSearch = function(dTable) {
+    dTable.columns().every(function() {
+        var that = this;
+        that.search(""); // reset
+        $('input', this.footer()).on("input search", function() {
+            that.search(this.value, true, false).draw();
+        });
+    });
 };
 
 this.show = function() {
