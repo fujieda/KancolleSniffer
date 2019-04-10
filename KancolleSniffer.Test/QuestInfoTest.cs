@@ -1170,7 +1170,7 @@ namespace KancolleSniffer.Test
         /// 303: 「演習」で練度向上！
         /// 304: 「演習」で他提督を圧倒せよ！
         /// 311: 精鋭艦隊演習
-        /// 318: 給糧艦「伊良湖」の支援
+        /// 315: 春季大演習
         /// </summary>
         [TestMethod]
         public void PracticeResult_303_304_302_311_315()
@@ -1194,6 +1194,9 @@ namespace KancolleSniffer.Test
                     }));
         }
 
+        /// <summary>
+        /// 318: 給糧艦「伊良湖」の支援
+        /// </summary>
         [TestMethod]
         public void PracticeResult_318()
         {
