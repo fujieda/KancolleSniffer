@@ -196,7 +196,7 @@ namespace KancolleSniffer.Model
 
         public override string ToString()
         {
-            if (Id == 426 || Id == 854 || Id == 873 || Id == 888 || Id == 894)
+            if (Id == 280 || Id == 426 || Id == 854 || Id == 873 || Id == 888 || Id == 894)
                 return $"{NowArray.Count(n => n >= 1)}/{Spec.MaxArray.Length}";
             return NowArray != null
                 ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
@@ -207,6 +207,10 @@ namespace KancolleSniffer.Model
         {
             switch (Id)
             {
+                case 280:
+                    return string.Join(" ",
+                        new[] {"1-2", "1-3", "1-4", "2-1"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
                 case 426:
                     return string.Join(" ",
                         new[] {"警備任務", "対潜警戒任務", "海上護衛任務", "強硬偵察任務"}
@@ -552,6 +556,27 @@ namespace KancolleSniffer.Model
                         .ToArray();
                     if (fleet[0] == 2 && fleet.OrderBy(x => x).SequenceEqual(new[] {2, 2, 2, 2, 3, 5}))
                         IncrementCount(q266.Count);
+                }
+            }
+            if (_quests.TryGetValue(280, out var q280))
+            {
+                if (!(_boss && QuestSortie.CompareRank(rank, "S") == 0))
+                    return;
+                var count = q280.Count;
+                switch (_map)
+                {
+                    case 12:
+                        IncrementNowArray(count, 0);
+                        break;
+                    case 13:
+                        IncrementNowArray(count, 1);
+                        break;
+                    case 14:
+                        IncrementNowArray(count, 2);
+                        break;
+                    case 21:
+                        IncrementNowArray(count, 3);
+                        break;
                 }
             }
             if (_quests.TryGetValue(854, out var opz) && _boss)

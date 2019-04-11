@@ -690,6 +690,56 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 280: 兵站線確保！海上警備を強化実施せよ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_280()
+        {
+            var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {280}));
+
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 2,
+                api_event_id = 4
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 2,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "A"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}));
+
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 3,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 1,
+                api_mapinfo_no = 4,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            questInfo.InspectMapNext(Js(new
+            {
+                api_maparea_id = 2,
+                api_mapinfo_no = 1,
+                api_event_id = 5
+            }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
+        }
+
+        /// <summary>
         /// 822: 沖ノ島海域迎撃戦
         /// 854: 戦果拡張任務！「Z作戦」前段作戦
         /// </summary>
@@ -1469,7 +1519,8 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 888, NowArray = new[] {1, 1, 1}},
                     new QuestCount {Id = 688, NowArray = new[] {2, 1, 2, 1}},
                     new QuestCount {Id = 893, NowArray = new[] {1, 1, 1, 1}},
-                    new QuestCount {Id = 894, NowArray = new[] {1, 1, 1, 1, 1}}
+                    new QuestCount {Id = 894, NowArray = new[] {1, 1, 1, 1, 1}},
+                    new QuestCount {Id = 280, NowArray = new[] {1, 1, 1, 1}}
                 }
             };
             questInfo.LoadState(status);
@@ -1500,6 +1551,9 @@ namespace KancolleSniffer.Test
             var q894 = status.QuestCountList[9];
             PAssert.That(() => q894.ToString() == "5/5");
             PAssert.That(() => q894.ToToolTip() == "1-3 1-4 2-1 2-2 2-3");
+            var q280 = status.QuestCountList[10];
+            PAssert.That(() => q280.ToString() == "4/4");
+            PAssert.That(() => q280.ToToolTip() == "1-2 1-3 1-4 2-1");
         }
 
         /// <summary>

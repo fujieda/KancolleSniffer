@@ -56,7 +56,8 @@ namespace KancolleSniffer.Model
             {261, new QuestSortie {Interval = Weekly, Max = 3, Rank = "A", Maps = new[] {15}, Material = new[] {0, 0, 0, 3}}}, // 261: 海上輸送路の安全確保に努めよ！
             {264, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {0, 0, 0, 2}}}, // 264: 「空母機動部隊」西へ！
             {265, new QuestSortie {Interval = Monthly, Max = 10, Rank = "A", Maps = new[] {15}, Material = new[] {0, 0, 5, 3}}}, // 265: 海上護衛強化月間
-            {266, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {0, 0, 4, 2}}}, // 266: 「水上反撃部隊」突入せよ！
+            {266, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {4, 4, 0, 2}}}, // 266: 「水上反撃部隊」突入せよ！
+            {280, new QuestSpec {Interval = Monthly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 4, 4, 2}}}, // 280: 兵站線確保！海上警備を強化実施せよ！
 
             {822, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "S", Maps = new[] {24}, Material = new[] {0, 0, 0, 5}}}, // 822: 沖ノ島海域迎撃戦
             {854, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 0, 0, 4}}}, // 854: 戦果拡張任務！「Z作戦」前段作戦
