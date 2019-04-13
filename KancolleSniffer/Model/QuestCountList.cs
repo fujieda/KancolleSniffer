@@ -75,6 +75,7 @@ namespace KancolleSniffer.Model
             {311, new QuestPractice {Interval = Daily, Max = 7, Win = true, Material = new[] {0, 2, 0, 0}}}, // 311: 精鋭艦隊演習
             {315, new QuestPractice {Interval = Daily, Max = 8, Win = true, Material = new[] {0, 0, 0, 0}}}, // 315: 春季大演習
             {318, new QuestSpec {Interval = Daily, Max = 3, Material = new[] {0, 2, 2, 0}, AdjustCount = false}}, // 318: 給糧艦「伊良湖」の支援
+            {330, new QuestSpec {Interval = Daily, Max = 4, Material = new[] {0, 0, 3, 0}}}, // 330: 空母機動部隊、演習始め！
 
             {402, new QuestMission {Interval = Daily, Max = 3, Material = new[] {0, 0, 1, 0}}}, // 402: 「遠征」を3回成功させよう！
             {403, new QuestMission {Interval = Daily, Max = 10, Material = new[] {0, 0, 0, 0}}}, // 403: 「遠征」を10回成功させよう！

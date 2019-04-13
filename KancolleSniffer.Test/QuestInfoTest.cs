@@ -1278,6 +1278,45 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 330: 空母機動部隊、演習始め！
+        /// </summary>
+        [TestMethod]
+        public void PracticeResult_330()
+        {
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
+            questInfo.InspectQuestList(CreateQuestList(new[] {330}));
+            var q330 = questInfo.Quests[0];
+
+            battleInfo.InjectResultStatus(new[]
+            {
+                ShipStatus(18), ShipStatus(7), ShipStatus(2), ShipStatus(2)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "B"}));
+            Assert.AreEqual(1, q330.Count.Now, "装甲空母、軽空母");
+
+            battleInfo.Result.Friend.Main = new[] { ShipStatus(11), ShipStatus(7), ShipStatus(2), ShipStatus(2) };
+            questInfo.InspectPracticeResult(Js(new { api_win_rank = "B" }));
+            Assert.AreEqual(2, q330.Count.Now, "正規空母、軽空母");
+
+            q330.Count.Now = 0;
+            questInfo.InspectPracticeResult(Js(new { api_win_rank = "C" }));
+            Assert.AreEqual(0, q330.Count.Now, "敗北");
+
+            battleInfo.Result.Friend.Main = new[] {ShipStatus(2), ShipStatus(7), ShipStatus(11), ShipStatus(2)};
+            questInfo.InspectPracticeResult(Js(new { api_win_rank = "B" }));
+            Assert.AreEqual(0, q330.Count.Now, "旗艦空母以外");
+
+            battleInfo.Result.Friend.Main = new[] { ShipStatus(11), ShipStatus(2), ShipStatus(2), ShipStatus(2) };
+            questInfo.InspectPracticeResult(Js(new { api_win_rank = "B" }));
+            Assert.AreEqual(0, q330.Count.Now, "空母一隻");
+
+            battleInfo.Result.Friend.Main = new[] { ShipStatus(11), ShipStatus(7), ShipStatus(3), ShipStatus(2) };
+            questInfo.InspectPracticeResult(Js(new { api_win_rank = "B" }));
+            Assert.AreEqual(0, q330.Count.Now, "駆逐一隻");
+        }
+
+        /// <summary>
         /// 402: 「遠征」を3回成功させよう！
         /// 403: 「遠征」を10回成功させよう！
         /// 404: 大規模遠征作戦、発令！

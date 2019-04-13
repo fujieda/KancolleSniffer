@@ -746,6 +746,17 @@ namespace KancolleSniffer.Model
                     IncrementCount(q318.Count);
                 }
             }
+            if (_quests.TryGetValue(330, out var q330))
+            {
+                var fleet = _battleInfo.Result.Friend.Main;
+                if (QuestSortie.CompareRank(json.api_win_rank, "B") <= 0 &&
+                    fleet.Count(s => s.Spec.IsAircraftCarrier) >= 2 &&
+                    fleet.Count(s => s.Spec.ShipType == 2) >= 2 &&
+                    fleet[0].Spec.IsAircraftCarrier)
+                {
+                    IncrementCount(q330.Count);
+                }
+            }
         }
 
         private readonly int[] _missionId = new int[ShipInfo.FleetCount];
