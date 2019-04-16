@@ -430,7 +430,8 @@ namespace KancolleSniffer
 
         private void ApplyConfig()
         {
-            _listForm.TopMost = TopMost = _config.TopMost;
+            if (TopMost != _config.TopMost)
+                TopMost = _listForm.TopMost = _config.TopMost;
             _sniffer.ShipCounter.Margin = _config.MarginShips;
             UpdateNumOfShips();
             _sniffer.ItemCounter.Margin = _config.MarginEquips;
