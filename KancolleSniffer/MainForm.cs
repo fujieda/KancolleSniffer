@@ -371,7 +371,7 @@ namespace KancolleSniffer
         {
             ShowInTaskbar = true;
             WindowState = FormWindowState.Normal;
-            TopMost = _config.TopMost; // 最前面に表示されなくなることがあるのを回避する
+            TopMost = _listForm.TopMost = _config.TopMost; // 最前面に表示されなくなることがあるのを回避する
             Activate();
         }
 
