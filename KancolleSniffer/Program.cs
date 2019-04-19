@@ -40,7 +40,8 @@ namespace KancolleSniffer
                                     : "\r\n" + inner.Message +
                                       (inner.InnerException == null
                                           ? ""
-                                          : "\r\n" + inner.InnerException.Message)),
+                                          : "\r\n" + inner.InnerException.Message))
+                                + "\r\n" + ex.StackTrace,
                     "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
