@@ -80,18 +80,8 @@ namespace KancolleSniffer
 
         public void UpdateList()
         {
-            panelItemHeader.Visible = InItemList || InAntiAir || InBattleResult || InMiscText;
-            panelGroupHeader.Visible = InGroupConfig;
-            panelRepairHeader.Visible = InRepairList;
-            panelFleetHeader.Visible = InFleetInfo;
-            // SwipeScrollifyが誤作動するのでEnabledも切り替える
-            shipListPanel.Visible = shipListPanel.Enabled = InShipStatus || InGroupConfig || InRepairList;
-            itemTreeView.Visible = itemTreeView.Enabled = InItemList;
-            fleetPanel.Visible = fleetPanel.Enabled = InFleetInfo;
-            antiAirPanel.Visible = antiAirPanel.Enabled = InAntiAir;
-            airBattleResultPanel.Visible = airBattleResultPanel.Enabled =
-                battleResultPanel.Visible = battleResultPanel.Enabled = InBattleResult;
-            richTextBoxMiscText.Visible = InMiscText;
+            SetHeaderVisibility();
+            SetPanelVisibility();
             if (InItemList)
             {
                 itemTreeView.SetNodes(_sniffer.ItemList);
@@ -119,6 +109,31 @@ namespace KancolleSniffer
                 _config.Save();
                 shipListPanel.GroupUpdated = false;
             }
+        }
+
+        private void SetHeaderVisibility()
+        {
+            panelItemHeader.Visible = InItemList || InAntiAir || InBattleResult || InMiscText;
+            panelGroupHeader.Visible = InGroupConfig;
+            panelRepairHeader.Visible = InRepairList;
+            panelFleetHeader.Visible = InFleetInfo;
+        }
+
+        private void SetPanelVisibility()
+        {
+            SetVisible(shipListPanel, InShipStatus || InGroupConfig || InRepairList);
+            SetVisible(itemTreeView, InItemList);
+            SetVisible(fleetPanel, InFleetInfo);
+            SetVisible(antiAirPanel, InAntiAir);
+            SetVisible(airBattleResultPanel, InBattleResult);
+            SetVisible(battleResultPanel, InBattleResult);
+            SetVisible(richTextBoxMiscText, InMiscText);
+        }
+
+        private void SetVisible(Control control, bool visible)
+        {
+            // SwipeScrollifyが誤作動するのでEnabledも切り替える
+            control.Visible = control.Enabled = visible;
         }
 
         public void UpdateAirBattleResult()
