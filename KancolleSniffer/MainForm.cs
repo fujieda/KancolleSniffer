@@ -358,6 +358,8 @@ namespace KancolleSniffer
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
+            if (_listForm == null) // DPIが100%でないときにInitializeComponentから呼ばれるので
+                return;
             _listForm.WindowState = WindowState;
             _listForm.ShowInTaskbar = ShowInTaskbar = !(_config.HideOnMinimized && WindowState == FormWindowState.Minimized);
         }
