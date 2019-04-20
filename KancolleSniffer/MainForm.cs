@@ -84,7 +84,7 @@ namespace KancolleSniffer
             _mainLabels.CreateNDockLabels(panelDock, labelNDock_Click);
             panelRepairList.CreateLabels(panelRepairList_Click);
             labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
-            _listForm = new ListForm(_sniffer, _config);
+            _listForm = new ListForm(_sniffer, _config, this);
             _notificationManager = new NotificationManager(Alarm);
             _config.Load();
             _proxyManager = new ProxyManager(_config, this);
@@ -336,6 +336,11 @@ namespace KancolleSniffer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (e.CloseReason == CloseReason.FormOwnerClosing)
+            {
+                e.Cancel = true;
+                return;
+            }
             if (!_config.ExitSilently)
             {
                 using (var dialog = new ConfirmDialog())
@@ -362,6 +367,22 @@ namespace KancolleSniffer
                 return;
             _listForm.WindowState = WindowState;
             _listForm.ShowInTaskbar = ShowInTaskbar = !(_config.HideOnMinimized && WindowState == FormWindowState.Minimized);
+        }
+
+        private bool _suppressActivate = true;
+
+        private void MainForm_Activated(object sender, EventArgs e)
+        {
+            if (_suppressActivate)
+            {
+                _suppressActivate = false;
+                return;
+            }
+            if (Owner == _listForm)
+                return;
+            _listForm.Owner = null;
+            Owner = _listForm;
+            BringToFront();
         }
 
         private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)

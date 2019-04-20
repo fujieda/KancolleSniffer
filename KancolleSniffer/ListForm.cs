@@ -26,6 +26,7 @@ namespace KancolleSniffer
     {
         private readonly Sniffer _sniffer;
         private readonly Config _config;
+        private readonly Form _main;
         private readonly CheckBox[] _shipTypeCheckBoxes;
         public const int PanelWidth = 217;
 
@@ -41,11 +42,12 @@ namespace KancolleSniffer
             Repair
         }
 
-        public ListForm(Sniffer sniffer, Config config)
+        public ListForm(Sniffer sniffer, Config config, Form main)
         {
             InitializeComponent();
             _sniffer = sniffer;
             _config = config;
+            _main = main;
             _shipTypeCheckBoxes = new[]
             {
                 checkBoxSTypeBattleShip,
@@ -240,6 +242,8 @@ namespace KancolleSniffer
         private void ShipListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
+            if (e.CloseReason == CloseReason.FormOwnerClosing)
+                return;
             var config = _config.ShipList;
             StoreShipGroupToConfig();
             var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
@@ -248,6 +252,22 @@ namespace KancolleSniffer
             config.Mode = (string)comboBoxGroup.SelectedItem;
             config.Visible = Visible && WindowState == FormWindowState.Normal;
             Hide();
+        }
+
+        private bool _suppressActivate = true;
+
+        private void ListForm_Activated(object sender, EventArgs e)
+        {
+            if (_suppressActivate)
+            {
+                _suppressActivate = false;
+                return;
+            }
+            if (Owner == _main)
+                return;
+            _main.Owner = null;
+            Owner = _main;
+            BringToFront();
         }
 
         private void StoreShipGroupToConfig()

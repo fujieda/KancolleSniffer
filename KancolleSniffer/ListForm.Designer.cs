@@ -659,6 +659,7 @@ namespace KancolleSniffer
             this.MaximizeBox = false;
             this.Name = "ListForm";
             this.Text = "一覧";
+            this.Activated += new System.EventHandler(this.ListForm_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ShipListForm_FormClosing);
             this.Load += new System.EventHandler(this.ShipListForm_Load);
             this.Shown += new System.EventHandler(this.ListForm_Shown);
