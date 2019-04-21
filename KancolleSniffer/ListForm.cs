@@ -242,6 +242,8 @@ namespace KancolleSniffer
         private void ShipListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
+            if (!Visible) // 非表示のときは保存すべき情報がないのでスキップする
+                return;
             if (e.CloseReason == CloseReason.FormOwnerClosing)
                 return;
             var config = _config.ShipList;
