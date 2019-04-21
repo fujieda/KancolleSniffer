@@ -33,8 +33,8 @@ using KancolleSniffer.Net;
 using KancolleSniffer.Util;
 using KancolleSniffer.View;
 using Microsoft.CSharp.RuntimeBinder;
-using Timer = System.Windows.Forms.Timer;
 using static System.Math;
+using Timer = System.Windows.Forms.Timer;
 
 namespace KancolleSniffer
 {
@@ -51,6 +51,7 @@ namespace KancolleSniffer
         private bool _combinedFleet;
         private readonly Label[] _labelCheckFleets;
         private MainFormLabels _mainLabels;
+        private NumberAndHistory _numberAndHistory;
         private readonly ListForm _listForm;
         private readonly NotificationManager _notificationManager;
         private bool _started;
@@ -79,6 +80,7 @@ namespace KancolleSniffer
             labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
             _listForm = new ListForm(_sniffer, _config, this);
             _notificationManager = new NotificationManager(Alarm);
+            CreateNumberAndHistory();
             _config.Load();
             _proxyManager = new ProxyManager(_config, this);
             _errorLog = new ErrorLog(_sniffer);
@@ -100,6 +102,43 @@ namespace KancolleSniffer
             });
             _mainLabels.CreateAllShipLabels(ShowShipOnShipList);
             _mainLabels.CreateNDockLabels(labelNDock_Click);
+        }
+
+        private void CreateNumberAndHistory()
+        {
+            _numberAndHistory = new NumberAndHistory(new NumberAndHistoryLabels
+            {
+                NumOfShips = labelNumOfShips,
+                NumOfEquips = labelNumOfEquips,
+                NumOfBuckets = labelNumOfBuckets,
+                BucketHistory = labelBucketHistory,
+                Achievement = labelAchievement,
+                FuelHistory = labelFuelHistory,
+                BulletHistory = labelBulletHistory,
+                SteelHistory = labelSteelHistory,
+                BauxiteHistory = labelBouxiteHistory,
+                ToolTip = _toolTip
+            }, _sniffer, new NotifySubmitter(_notificationManager));
+        }
+
+        private class NotifySubmitter : INotifySubmitter
+        {
+            private readonly NotificationManager _manager;
+
+            public NotifySubmitter(NotificationManager manager)
+            {
+                _manager = manager;
+            }
+
+            public void Flash()
+            {
+                _manager.Flash();
+            }
+
+            public void Enqueue(string key, string subject)
+            {
+                _manager.Enqueue(key, subject);
+            }
         }
 
         /// <summary>
@@ -439,7 +478,7 @@ namespace KancolleSniffer
             {
                 control.Font = new Font(control.Font.FontFamily, control.Font.Size * _config.Zoom / 100);
             }
-            foreach (var toolTip in new[]{_toolTip, _toolTipQuest, _tooltipCopy})
+            foreach (var toolTip in new[] {_toolTip, _toolTipQuest, _tooltipCopy})
             {
                 toolTip.Font = new Font(toolTip.Font.FontFamily, toolTip.Font.Size * _config.Zoom / 100);
             }
@@ -462,9 +501,9 @@ namespace KancolleSniffer
             if (TopMost != _config.TopMost)
                 TopMost = _listForm.TopMost = _config.TopMost;
             _sniffer.ShipCounter.Margin = _config.MarginShips;
-            UpdateNumOfShips();
+            _numberAndHistory.UpdateNumOfShips();
             _sniffer.ItemCounter.Margin = _config.MarginEquips;
-            UpdateNumOfEquips();
+            _numberAndHistory.UpdateNumOfEquips();
             _sniffer.Achievement.ResetHours = _config.ResetHours;
             labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible =
                 labelPresetAkashiTimer.Visible = _config.UsePresetAkashi;
@@ -558,80 +597,12 @@ namespace KancolleSniffer
                 _listForm.ShowShip(ship.Id);
         }
 
+
         private void UpdateItemInfo()
         {
-            UpdateNumOfShips();
-            UpdateNumOfEquips();
-            _notificationManager.Flash();
-            labelNumOfBuckets.Text = _sniffer.Material.MaterialHistory[(int)Material.Bucket].Now.ToString("D");
-            UpdateBucketHistory();
-            var ac = _sniffer.Achievement.Value;
-            if (ac >= 10000)
-                ac = 9999;
-            labelAchievement.Text = ac >= 1000 ? ((int)ac).ToString("D") : ac.ToString("F1");
-            _toolTip.SetToolTip(labelAchievement,
-                "今月 " + _sniffer.Achievement.ValueOfMonth.ToString("F1") + "\n" +
-                "EO " + _sniffer.ExMap.Achievement);
-            UpdateMaterialHistory();
+            _numberAndHistory.Update();
             if (_listForm.Visible)
                 _listForm.UpdateList();
-        }
-
-        private void UpdateNumOfShips()
-        {
-            var ship = _sniffer.ShipCounter;
-            labelNumOfShips.Text = $"{ship.Now:D}/{ship.Max:D}";
-            labelNumOfShips.ForeColor = ship.TooMany ? CUDColors.Red : Color.Black;
-            if (ship.Alarm)
-            {
-                var message = $"残り{ship.Rest:D}隻";
-                _notificationManager.Enqueue("艦娘数超過", message);
-                ship.Alarm = false;
-            }
-        }
-
-        private void UpdateNumOfEquips()
-        {
-            var item = _sniffer.ItemCounter;
-            labelNumOfEquips.Text = $"{item.Now:D}/{item.Max:D}";
-            labelNumOfEquips.ForeColor = item.TooMany ? CUDColors.Red : Color.Black;
-            if (item.Alarm)
-            {
-                var message = $"残り{item.Rest:D}個";
-                _notificationManager.Enqueue("装備数超過", message);
-                item.Alarm = false;
-            }
-        }
-
-        private void UpdateBucketHistory()
-        {
-            var count = _sniffer.Material.MaterialHistory[(int)Material.Bucket];
-            var day = CutOverflow(count.Now - count.BegOfDay, 999);
-            var week = CutOverflow(count.Now - count.BegOfWeek, 999);
-            labelBucketHistory.Text = $"{day:+#;-#;±0} 今日\n{week:+#;-#;±0} 今週";
-        }
-
-        private void UpdateMaterialHistory()
-        {
-            var labels = new[] {labelFuelHistory, labelBulletHistory, labelSteelHistory, labelBouxiteHistory};
-            var text = new[] {"燃料", "弾薬", "鋼材", "ボーキ"};
-            for (var i = 0; i < labels.Length; i++)
-            {
-                var count = _sniffer.Material.MaterialHistory[i];
-                var port = CutOverflow(count.Now - _sniffer.Material.PrevPort[i], 99999);
-                var day = CutOverflow(count.Now - count.BegOfDay, 99999);
-                var week = CutOverflow(count.Now - count.BegOfWeek, 99999);
-                labels[i].Text = $"{text[i]}\n{port:+#;-#;±0}\n{day:+#;-#;±0}\n{week:+#;-#;±0}";
-            }
-        }
-
-        private int CutOverflow(int value, int limit)
-        {
-            if (value > limit)
-                return limit;
-            if (value < -limit)
-                return -limit;
-            return value;
         }
 
         private void UpdateShipInfo()
