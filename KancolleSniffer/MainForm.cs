@@ -44,9 +44,8 @@ namespace KancolleSniffer
         private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
         private readonly ProxyManager _proxyManager;
-        private readonly ResizableToolTip _toolTip = new ResizableToolTip {ShowAlways = true};
-        private readonly ResizableToolTip _toolTipQuest = new ResizableToolTip {ShowAlways = true, AutoPopDelay = 10000};
-        private readonly ResizableToolTip _tooltipCopy = new ResizableToolTip {AutomaticDelay = 0};
+        private readonly ResizableToolTip _toolTip = new ResizableToolTip();
+        private readonly ResizableToolTip _tooltipCopy = new ResizableToolTip {ShowAlways = false, AutomaticDelay = 0};
         private int _currentFleet;
         private bool _combinedFleet;
         private readonly Label[] _labelCheckFleets;
@@ -478,7 +477,7 @@ namespace KancolleSniffer
             {
                 control.Font = new Font(control.Font.FontFamily, control.Font.Size * _config.Zoom / 100);
             }
-            foreach (var toolTip in new[] {_toolTip, _toolTipQuest, _tooltipCopy})
+            foreach (var toolTip in new[] {_toolTip, _tooltipCopy})
             {
                 toolTip.Font = new Font(toolTip.Font.FontFamily, toolTip.Font.Size * _config.Zoom / 100);
             }
@@ -1109,7 +1108,7 @@ namespace KancolleSniffer
                     category[i].BackColor = quests[i].Color;
                     name[i].Text = quests[i].Name;
                     progress[i].Text = $"{quests[i].Progress:D}%";
-                    _toolTipQuest.SetToolTip(name[i], quests[i].ToToolTip());
+                    _toolTip.SetToolTip(name[i], quests[i].ToToolTip());
                     var c = quests[i].Count;
                     if (c.Id == 0)
                     {
@@ -1126,7 +1125,7 @@ namespace KancolleSniffer
                 {
                     category[i].BackColor = DefaultBackColor;
                     name[i].Text = count[i].Text = progress[i].Text = "";
-                    _toolTipQuest.SetToolTip(name[i], "");
+                    _toolTip.SetToolTip(name[i], "");
                     _toolTip.SetToolTip(count[i], "");
                 }
             }

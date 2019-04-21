@@ -39,6 +39,8 @@ namespace KancolleSniffer.View
             Draw += OnDraw;
             DwmIsCompositionEnabled(out var aero);
             _backBrush = new SolidBrush(aero ? Color.White : BackColor);
+            ShowAlways = true;
+            AutoPopDelay = 30000;
         }
 
         private void OnPopup(object sender, PopupEventArgs e)
