@@ -41,6 +41,14 @@ namespace KancolleSniffer.View
         Max = int.MaxValue
     }
 
+    public class MainFormPanels
+    {
+        public Control PanelShipInfo { get; set; }
+        public Control Panel7Ships { get; set; }
+        public Control PanelCombinedFleet { get; set; }
+        public Control PanelNDock { get; set; }
+    }
+
     public class MainFormLabels
     {
         private readonly ShipLabel[][] _shipLabels = new ShipLabel[ShipInfo.MemberCount][];
@@ -50,19 +58,39 @@ namespace KancolleSniffer.View
         private readonly ShipLabel[] _akashiTimers7 = new ShipLabel[ShipInfo.MemberCount];
         private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
+        private readonly MainFormPanels _panels;
         public bool ShowHpInPercent { get; private set; }
 
-        public void CreateShipLabels(Control parent, EventHandler onClick)
+        public MainFormLabels(MainFormPanels panels)
+        {
+            _panels = panels;
+        }
+
+        public void CreateAllShipLabels(EventHandler onClick)
+        {
+            CreateAkashiTimers(_panels.PanelShipInfo);
+            CreateShipLabels(_panels.PanelShipInfo, onClick);
+            CreateAkashiTimers7(_panels.Panel7Ships);
+            CreateShipLabels7(_panels.Panel7Ships, onClick);
+            CreateCombinedShipLabels(_panels.PanelCombinedFleet, onClick);
+        }
+
+        public void CreateNDockLabels(EventHandler onClick)
+        {
+            CreateNDockLabels(_panels.PanelNDock, onClick);
+        }
+
+        private void CreateShipLabels(Control parent, EventHandler onClick)
         {
             CreateShipLabels(parent, onClick, _shipLabels, 16);
         }
 
-        public void CreateShipLabels7(Control parent, EventHandler onClick)
+        private void CreateShipLabels7(Control parent, EventHandler onClick)
         {
             CreateShipLabels(parent, onClick, _shipLabels7, 14);
         }
 
-        public void CreateShipLabels(Control parent, EventHandler onClick, ShipLabel[][] shipLabels, int lineHeight)
+        private void CreateShipLabels(Control parent, EventHandler onClick, ShipLabel[][] shipLabels, int lineHeight)
         {
             parent.SuspendLayout();
             const int top = 1, height = 12;
@@ -301,8 +329,8 @@ namespace KancolleSniffer.View
             }
         }
 
-        public void SetAkashiTimer(IReadOnlyList<ShipStatus> ships, AkashiTimer.RepairSpan[] timers, ShipLabel[] timerLabels,
-            ShipLabel[][] shipLabels)
+        public void SetAkashiTimer(IReadOnlyList<ShipStatus> ships, AkashiTimer.RepairSpan[] timers,
+            ShipLabel[] timerLabels, ShipLabel[][] shipLabels)
         {
             var shortest = -1;
             for (var i = 0; i < timers.Length; i++)

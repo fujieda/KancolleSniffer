@@ -50,7 +50,7 @@ namespace KancolleSniffer
         private int _currentFleet;
         private bool _combinedFleet;
         private readonly Label[] _labelCheckFleets;
-        private readonly MainFormLabels _mainLabels;
+        private MainFormLabels _mainLabels;
         private readonly ListForm _listForm;
         private readonly NotificationManager _notificationManager;
         private bool _started;
@@ -73,15 +73,8 @@ namespace KancolleSniffer
             // MainForm.Designer.csのAutoScaleDimensionsの6f,12fを使う。
             ShipLabel.ScaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / 6f,
                 CurrentAutoScaleDimensions.Height / 12f);
-
             SetupFleetClick();
-            _mainLabels = new MainFormLabels();
-            _mainLabels.CreateAkashiTimers(panelShipInfo);
-            _mainLabels.CreateShipLabels(panelShipInfo, ShowShipOnShipList);
-            _mainLabels.CreateAkashiTimers7(panel7Ships);
-            _mainLabels.CreateShipLabels7(panel7Ships, ShowShipOnShipList);
-            _mainLabels.CreateCombinedShipLabels(panelCombinedFleet, ShowShipOnShipList);
-            _mainLabels.CreateNDockLabels(panelDock, labelNDock_Click);
+            CreateMainLabels();
             panelRepairList.CreateLabels(panelRepairList_Click);
             labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
             _listForm = new ListForm(_sniffer, _config, this);
@@ -94,6 +87,19 @@ namespace KancolleSniffer
             _mainLabels.AdjustAkashiTimers();
             LoadData();
             _sniffer.RepeatingTimerController = new RepeatingTimerController(_notificationManager, _config);
+        }
+
+        private void CreateMainLabels()
+        {
+            _mainLabels = new MainFormLabels(new MainFormPanels
+            {
+                PanelShipInfo = panelShipInfo,
+                Panel7Ships = panel7Ships,
+                PanelCombinedFleet = panelCombinedFleet,
+                PanelNDock = panelDock
+            });
+            _mainLabels.CreateAllShipLabels(ShowShipOnShipList);
+            _mainLabels.CreateNDockLabels(labelNDock_Click);
         }
 
         /// <summary>
