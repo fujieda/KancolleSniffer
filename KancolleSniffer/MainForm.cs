@@ -77,6 +77,7 @@ namespace KancolleSniffer
             SetupFleetClick();
             CreateMainLabels();
             panelRepairList.CreateLabels(panelRepairList_Click);
+            questPanel.NameLabelDoubleClick += labelQuest_DoubleClick;
             labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
             _listForm = new ListForm(this);
             _notificationManager = new NotificationManager(Alarm);
@@ -1116,48 +1117,7 @@ namespace KancolleSniffer
 
         private void UpdateQuestList()
         {
-            var category = new[]
-            {
-                labelQuestColor1, labelQuestColor2, labelQuestColor3, labelQuestColor4, labelQuestColor5,
-                labelQuestColor6
-            };
-            var name = new[] {labelQuest1, labelQuest2, labelQuest3, labelQuest4, labelQuest5, labelQuest6};
-            var count = new[]
-            {
-                labelQuestCount1, labelQuestCount2, labelQuestCount3, labelQuestCount4, labelQuestCount5,
-                labelQuestCount6
-            };
-            var progress = new[]
-                {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5, labelProgress6};
-            var quests = Sniffer.Quests;
-            for (var i = 0; i < name.Length; i++)
-            {
-                if (i < quests.Length)
-                {
-                    category[i].BackColor = quests[i].Color;
-                    name[i].Text = quests[i].Name;
-                    progress[i].Text = $"{quests[i].Progress:D}%";
-                    _toolTip.SetToolTip(name[i], quests[i].ToToolTip());
-                    var c = quests[i].Count;
-                    if (c.Id == 0)
-                    {
-                        count[i].Text = "";
-                        count[i].ForeColor = Color.Black;
-                        _toolTip.SetToolTip(count[i], "");
-                        continue;
-                    }
-                    count[i].Text = " " + c;
-                    count[i].ForeColor = c.Cleared ? CUDColors.Red : Color.Black;
-                    _toolTip.SetToolTip(count[i], c.ToToolTip());
-                }
-                else
-                {
-                    category[i].BackColor = DefaultBackColor;
-                    name[i].Text = count[i].Text = progress[i].Text = "";
-                    _toolTip.SetToolTip(name[i], "");
-                    _toolTip.SetToolTip(count[i], "");
-                }
-            }
+            questPanel.Update(Sniffer.Quests);
             Sniffer.GetQuestNotifications(out var notify, out var stop);
             foreach (var questName in notify)
                 SetNotification("任務達成", 0, questName);

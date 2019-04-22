@@ -113,31 +113,6 @@ namespace KancolleSniffer
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.labelQuestCount1 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestCount2 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestCount3 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestCount4 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestCount5 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestCount6 = new KancolleSniffer.View.ShipLabel();
-            this.labelQuestColor6 = new System.Windows.Forms.Label();
-            this.labelQuestColor5 = new System.Windows.Forms.Label();
-            this.labelQuestColor4 = new System.Windows.Forms.Label();
-            this.labelQuestColor3 = new System.Windows.Forms.Label();
-            this.labelQuestColor2 = new System.Windows.Forms.Label();
-            this.labelQuestColor1 = new System.Windows.Forms.Label();
-            this.labelProgress6 = new System.Windows.Forms.Label();
-            this.labelQuest6 = new System.Windows.Forms.Label();
-            this.labelProgress5 = new System.Windows.Forms.Label();
-            this.labelProgress4 = new System.Windows.Forms.Label();
-            this.labelProgress3 = new System.Windows.Forms.Label();
-            this.labelProgress2 = new System.Windows.Forms.Label();
-            this.labelProgress1 = new System.Windows.Forms.Label();
-            this.labelQuest5 = new System.Windows.Forms.Label();
-            this.labelQuest4 = new System.Windows.Forms.Label();
-            this.labelQuest3 = new System.Windows.Forms.Label();
-            this.labelQuest2 = new System.Windows.Forms.Label();
-            this.labelQuest1 = new System.Windows.Forms.Label();
             this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStripNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.NotifyIconOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -174,6 +149,7 @@ namespace KancolleSniffer
             this.labelCheckFleet4 = new System.Windows.Forms.Label();
             this.labelCheckFleet1 = new System.Windows.Forms.Label();
             this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
+            this.questPanel = new KancolleSniffer.View.QuestPanel();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -181,7 +157,6 @@ namespace KancolleSniffer
             this.panelDock.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -841,242 +816,6 @@ namespace KancolleSniffer
             this.timerMain.Interval = 1000;
             this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
             // 
-            // panel3
-            // 
-            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3.Controls.Add(this.labelQuestCount1);
-            this.panel3.Controls.Add(this.labelQuestCount2);
-            this.panel3.Controls.Add(this.labelQuestCount3);
-            this.panel3.Controls.Add(this.labelQuestCount4);
-            this.panel3.Controls.Add(this.labelQuestCount5);
-            this.panel3.Controls.Add(this.labelQuestCount6);
-            this.panel3.Controls.Add(this.labelQuestColor6);
-            this.panel3.Controls.Add(this.labelQuestColor5);
-            this.panel3.Controls.Add(this.labelQuestColor4);
-            this.panel3.Controls.Add(this.labelQuestColor3);
-            this.panel3.Controls.Add(this.labelQuestColor2);
-            this.panel3.Controls.Add(this.labelQuestColor1);
-            this.panel3.Controls.Add(this.labelProgress6);
-            this.panel3.Controls.Add(this.labelQuest6);
-            this.panel3.Controls.Add(this.labelProgress5);
-            this.panel3.Controls.Add(this.labelProgress4);
-            this.panel3.Controls.Add(this.labelProgress3);
-            this.panel3.Controls.Add(this.labelProgress2);
-            this.panel3.Controls.Add(this.labelProgress1);
-            this.panel3.Controls.Add(this.labelQuest5);
-            this.panel3.Controls.Add(this.labelQuest4);
-            this.panel3.Controls.Add(this.labelQuest3);
-            this.panel3.Controls.Add(this.labelQuest2);
-            this.panel3.Controls.Add(this.labelQuest1);
-            this.panel3.Location = new System.Drawing.Point(6, 356);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(220, 94);
-            this.panel3.TabIndex = 13;
-            // 
-            // labelQuestCount1
-            // 
-            this.labelQuestCount1.AnchorRight = true;
-            this.labelQuestCount1.AutoSize = true;
-            this.labelQuestCount1.Location = new System.Drawing.Point(191, 3);
-            this.labelQuestCount1.Name = "labelQuestCount1";
-            this.labelQuestCount1.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount1.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount1.TabIndex = 54;
-            this.labelQuestCount1.UseMnemonic = false;
-            // 
-            // labelQuestCount2
-            // 
-            this.labelQuestCount2.AnchorRight = true;
-            this.labelQuestCount2.AutoSize = true;
-            this.labelQuestCount2.Location = new System.Drawing.Point(191, 18);
-            this.labelQuestCount2.Name = "labelQuestCount2";
-            this.labelQuestCount2.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount2.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount2.TabIndex = 53;
-            this.labelQuestCount2.UseMnemonic = false;
-            // 
-            // labelQuestCount3
-            // 
-            this.labelQuestCount3.AnchorRight = true;
-            this.labelQuestCount3.AutoSize = true;
-            this.labelQuestCount3.Location = new System.Drawing.Point(191, 33);
-            this.labelQuestCount3.Name = "labelQuestCount3";
-            this.labelQuestCount3.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount3.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount3.TabIndex = 52;
-            this.labelQuestCount3.UseMnemonic = false;
-            // 
-            // labelQuestCount4
-            // 
-            this.labelQuestCount4.AnchorRight = true;
-            this.labelQuestCount4.AutoSize = true;
-            this.labelQuestCount4.Location = new System.Drawing.Point(191, 48);
-            this.labelQuestCount4.Name = "labelQuestCount4";
-            this.labelQuestCount4.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount4.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount4.TabIndex = 51;
-            this.labelQuestCount4.UseMnemonic = false;
-            // 
-            // labelQuestCount5
-            // 
-            this.labelQuestCount5.AnchorRight = true;
-            this.labelQuestCount5.AutoSize = true;
-            this.labelQuestCount5.Location = new System.Drawing.Point(191, 63);
-            this.labelQuestCount5.Name = "labelQuestCount5";
-            this.labelQuestCount5.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount5.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount5.TabIndex = 50;
-            this.labelQuestCount5.UseMnemonic = false;
-            // 
-            // labelQuestCount6
-            // 
-            this.labelQuestCount6.AnchorRight = true;
-            this.labelQuestCount6.AutoSize = true;
-            this.labelQuestCount6.Location = new System.Drawing.Point(191, 78);
-            this.labelQuestCount6.Name = "labelQuestCount6";
-            this.labelQuestCount6.PresetColor = System.Drawing.Color.Empty;
-            this.labelQuestCount6.Size = new System.Drawing.Size(0, 12);
-            this.labelQuestCount6.TabIndex = 49;
-            this.labelQuestCount6.UseMnemonic = false;
-            // 
-            // labelQuestColor6
-            // 
-            this.labelQuestColor6.Location = new System.Drawing.Point(2, 79);
-            this.labelQuestColor6.Name = "labelQuestColor6";
-            this.labelQuestColor6.Size = new System.Drawing.Size(4, 10);
-            this.labelQuestColor6.TabIndex = 48;
-            // 
-            // labelQuestColor5
-            // 
-            this.labelQuestColor5.Location = new System.Drawing.Point(2, 64);
-            this.labelQuestColor5.Name = "labelQuestColor5";
-            this.labelQuestColor5.Size = new System.Drawing.Size(4, 10);
-            this.labelQuestColor5.TabIndex = 47;
-            // 
-            // labelQuestColor4
-            // 
-            this.labelQuestColor4.Location = new System.Drawing.Point(2, 49);
-            this.labelQuestColor4.Name = "labelQuestColor4";
-            this.labelQuestColor4.Size = new System.Drawing.Size(4, 10);
-            this.labelQuestColor4.TabIndex = 46;
-            // 
-            // labelQuestColor3
-            // 
-            this.labelQuestColor3.Location = new System.Drawing.Point(2, 34);
-            this.labelQuestColor3.Name = "labelQuestColor3";
-            this.labelQuestColor3.Size = new System.Drawing.Size(4, 10);
-            this.labelQuestColor3.TabIndex = 45;
-            // 
-            // labelQuestColor2
-            // 
-            this.labelQuestColor2.Location = new System.Drawing.Point(2, 19);
-            this.labelQuestColor2.Name = "labelQuestColor2";
-            this.labelQuestColor2.Size = new System.Drawing.Size(4, 10);
-            this.labelQuestColor2.TabIndex = 44;
-            // 
-            // labelQuestColor1
-            // 
-            this.labelQuestColor1.Location = new System.Drawing.Point(2, 4);
-            this.labelQuestColor1.Name = "labelQuestColor1";
-            this.labelQuestColor1.Size = new System.Drawing.Size(4, 10);
-            this.labelQuestColor1.TabIndex = 43;
-            // 
-            // labelProgress6
-            // 
-            this.labelProgress6.Location = new System.Drawing.Point(188, 78);
-            this.labelProgress6.Name = "labelProgress6";
-            this.labelProgress6.Size = new System.Drawing.Size(29, 12);
-            this.labelProgress6.TabIndex = 11;
-            this.labelProgress6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelQuest6
-            // 
-            this.labelQuest6.Location = new System.Drawing.Point(6, 78);
-            this.labelQuest6.Name = "labelQuest6";
-            this.labelQuest6.Size = new System.Drawing.Size(193, 12);
-            this.labelQuest6.TabIndex = 10;
-            this.labelQuest6.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
-            // 
-            // labelProgress5
-            // 
-            this.labelProgress5.Location = new System.Drawing.Point(188, 63);
-            this.labelProgress5.Name = "labelProgress5";
-            this.labelProgress5.Size = new System.Drawing.Size(29, 12);
-            this.labelProgress5.TabIndex = 9;
-            this.labelProgress5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelProgress4
-            // 
-            this.labelProgress4.Location = new System.Drawing.Point(188, 48);
-            this.labelProgress4.Name = "labelProgress4";
-            this.labelProgress4.Size = new System.Drawing.Size(29, 12);
-            this.labelProgress4.TabIndex = 8;
-            this.labelProgress4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelProgress3
-            // 
-            this.labelProgress3.Location = new System.Drawing.Point(188, 33);
-            this.labelProgress3.Name = "labelProgress3";
-            this.labelProgress3.Size = new System.Drawing.Size(29, 12);
-            this.labelProgress3.TabIndex = 7;
-            this.labelProgress3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelProgress2
-            // 
-            this.labelProgress2.Location = new System.Drawing.Point(188, 18);
-            this.labelProgress2.Name = "labelProgress2";
-            this.labelProgress2.Size = new System.Drawing.Size(29, 12);
-            this.labelProgress2.TabIndex = 6;
-            this.labelProgress2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelProgress1
-            // 
-            this.labelProgress1.Location = new System.Drawing.Point(188, 3);
-            this.labelProgress1.Name = "labelProgress1";
-            this.labelProgress1.Size = new System.Drawing.Size(29, 12);
-            this.labelProgress1.TabIndex = 5;
-            this.labelProgress1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelQuest5
-            // 
-            this.labelQuest5.Location = new System.Drawing.Point(6, 63);
-            this.labelQuest5.Name = "labelQuest5";
-            this.labelQuest5.Size = new System.Drawing.Size(193, 12);
-            this.labelQuest5.TabIndex = 4;
-            this.labelQuest5.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
-            // 
-            // labelQuest4
-            // 
-            this.labelQuest4.Location = new System.Drawing.Point(6, 48);
-            this.labelQuest4.Name = "labelQuest4";
-            this.labelQuest4.Size = new System.Drawing.Size(193, 12);
-            this.labelQuest4.TabIndex = 3;
-            this.labelQuest4.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
-            // 
-            // labelQuest3
-            // 
-            this.labelQuest3.Location = new System.Drawing.Point(6, 33);
-            this.labelQuest3.Name = "labelQuest3";
-            this.labelQuest3.Size = new System.Drawing.Size(193, 12);
-            this.labelQuest3.TabIndex = 2;
-            this.labelQuest3.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
-            // 
-            // labelQuest2
-            // 
-            this.labelQuest2.Location = new System.Drawing.Point(6, 18);
-            this.labelQuest2.Name = "labelQuest2";
-            this.labelQuest2.Size = new System.Drawing.Size(193, 12);
-            this.labelQuest2.TabIndex = 1;
-            this.labelQuest2.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
-            // 
-            // labelQuest1
-            // 
-            this.labelQuest1.Location = new System.Drawing.Point(6, 3);
-            this.labelQuest1.Name = "labelQuest1";
-            this.labelQuest1.Size = new System.Drawing.Size(193, 12);
-            this.labelQuest1.TabIndex = 0;
-            this.labelQuest1.DoubleClick += new System.EventHandler(this.labelQuest_DoubleClick);
-            // 
             // notifyIconMain
             // 
             this.notifyIconMain.ContextMenuStrip = this.contextMenuStripNotifyIcon;
@@ -1409,12 +1148,21 @@ namespace KancolleSniffer
             this.panelRepairList.Visible = false;
             this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
             // 
+            // questPanel
+            // 
+            this.questPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.questPanel.Location = new System.Drawing.Point(6, 356);
+            this.questPanel.Name = "questPanel";
+            this.questPanel.Size = new System.Drawing.Size(220, 94);
+            this.questPanel.TabIndex = 56;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.questPanel);
             this.Controls.Add(this.labelClearQuest);
             this.Controls.Add(this.labelAkashiRepair);
             this.Controls.Add(this.labelAkashiRepairTimer);
@@ -1440,7 +1188,6 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelCheckFleet4);
             this.Controls.Add(this.labelFleet4);
             this.Controls.Add(this.labelCheckFleet1);
-            this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.labelMission);
             this.Controls.Add(this.labelQuest);
@@ -1475,8 +1222,6 @@ namespace KancolleSniffer
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             this.contextMenuStripNotifyIcon.ResumeLayout(false);
             this.contextMenuStripMain.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -1523,17 +1268,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelMission1;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Timer timerMain;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Label labelQuest5;
-        private System.Windows.Forms.Label labelQuest4;
-        private System.Windows.Forms.Label labelQuest3;
-        private System.Windows.Forms.Label labelQuest2;
-        private System.Windows.Forms.Label labelQuest1;
-        private System.Windows.Forms.Label labelProgress5;
-        private System.Windows.Forms.Label labelProgress4;
-        private System.Windows.Forms.Label labelProgress3;
-        private System.Windows.Forms.Label labelProgress2;
-        private System.Windows.Forms.Label labelProgress1;
         private System.Windows.Forms.Label labelCondTimerTitle;
         private System.Windows.Forms.Label labelCondTimer;
         private System.Windows.Forms.NotifyIcon notifyIconMain;
@@ -1588,14 +1322,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelBullSq4;
         private System.Windows.Forms.Label labelFuelSq4;
         private System.Windows.Forms.ToolStripMenuItem LogToolStripMenuItem;
-        private System.Windows.Forms.Label labelProgress6;
-        private System.Windows.Forms.Label labelQuest6;
-        private System.Windows.Forms.Label labelQuestColor1;
-        private System.Windows.Forms.Label labelQuestColor6;
-        private System.Windows.Forms.Label labelQuestColor5;
-        private System.Windows.Forms.Label labelQuestColor4;
-        private System.Windows.Forms.Label labelQuestColor3;
-        private System.Windows.Forms.Label labelQuestColor2;
         private System.Windows.Forms.ToolStripMenuItem CaptureToolStripMenuItem;
         private System.Windows.Forms.Label labelAkashiRepairTimer;
         private System.Windows.Forms.Panel panelCombinedFleet;
@@ -1604,16 +1330,11 @@ namespace KancolleSniffer
         private RepairListForMain panelRepairList;
         private System.Windows.Forms.Panel panel7Ships;
         private System.Windows.Forms.LinkLabel linkLabelGuide;
-        private ShipLabel labelQuestCount1;
-        private ShipLabel labelQuestCount2;
-        private ShipLabel labelQuestCount3;
-        private ShipLabel labelQuestCount4;
-        private ShipLabel labelQuestCount5;
-        private ShipLabel labelQuestCount6;
         private System.Windows.Forms.Label labelClearQuest;
         private System.Windows.Forms.Label labelMissionParams1;
         private System.Windows.Forms.Label labelMissionParams3;
         private System.Windows.Forms.Label labelMissionParams2;
+        private QuestPanel questPanel;
     }
 }
 

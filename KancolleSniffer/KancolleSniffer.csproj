@@ -133,6 +133,7 @@
     <Compile Include="View\PanelWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="View\QuestPanel.cs" />
     <Compile Include="View\RepairListForMain.cs">
       <SubType>Component</SubType>
     </Compile>
