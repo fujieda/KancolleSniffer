@@ -31,18 +31,23 @@ namespace KancolleSniffer.View
 
     public class QuestPanel : PanelWithToolTip
     {
-        const int TopMargin = 5;
-        const int LeftMargin = 2;
-        const int LineHeight = 14;
+        private const int TopMargin = 5;
+        private const int LeftMargin = 2;
+        private const int LabelHeight = 12;
+        private const int LineHeight = 14;
         private const int Lines = 6;
         private readonly QuestLabels[] _labels = new QuestLabels[Lines];
         private QuestStatus[] _questList = new QuestStatus[0];
-        private int _listPosition;
+        private ListScroller _listScroller;
 
         public QuestPanel()
         {
-            const int height = 12;
+            CreateLabels();
+            SetupListScroller();
+        }
 
+        private void CreateLabels()
+        {
             SuspendLayout();
             for (var i = 0; i < Lines; i++)
             {
@@ -52,7 +57,7 @@ namespace KancolleSniffer.View
                     Color = new Label
                     {
                         Location = new Point(LeftMargin, y + 1),
-                        Size = new Size(4, height - 1)
+                        Size = new Size(4, LabelHeight - 1)
                     },
                     Name = new Label
                     {
@@ -68,7 +73,7 @@ namespace KancolleSniffer.View
                     Progress = new Label
                     {
                         Location = new Point(LeftMargin + 186, y),
-                        Size = new Size(29, height),
+                        Size = new Size(29, LabelHeight),
                         TextAlign = ContentAlignment.MiddleRight
                     }
                 };
@@ -77,65 +82,28 @@ namespace KancolleSniffer.View
                 Controls.AddRange(_labels[i].Labels);
             }
             ResumeLayout();
-            SetScrollEventHandlers();
         }
 
-        private void SetScrollEventHandlers()
+        private void SetupListScroller()
         {
-            foreach (var label in _labels[0].Labels)
+            _listScroller = new ListScroller(this, _labels[0].Labels, _labels[Lines - 1].Labels)
             {
-                label.MouseEnter += TopLineOnMouseEnter;
-                label.MouseLeave += TopLineOnMouseLeave;
-            }
-            foreach (var label in _labels[Lines - 1].Labels)
-            {
-                label.MouseEnter += BottomLineOnMouseEnter;
-                label.MouseLeave += BottomLineOnMouseLeave;
-            }
-            _topScrollRepeatTimer.Tick += TopLineOnMouseEnter;
-            _bottomScrollRepeatTimer.Tick += BottomLineOnMouseEnter;
-        }
-
-        private readonly Timer _topScrollRepeatTimer = new Timer {Interval = 100};
-        private readonly Timer _bottomScrollRepeatTimer = new Timer {Interval = 100};
-
-        private void TopLineOnMouseEnter(object sender, EventArgs e)
-        {
-            if (_listPosition == 0)
-                return;
-            _listPosition--;
-            ShowQuestList();
-            _topScrollRepeatTimer.Start();
-        }
-
-        private void TopLineOnMouseLeave(object sender, EventArgs e)
-        {
-            _topScrollRepeatTimer.Stop();
-        }
-
-        private void BottomLineOnMouseEnter(object sender, EventArgs e)
-        {
-            if (_listPosition + Lines >= _questList.Length)
-                return;
-            _listPosition++;
-            ShowQuestList();
-            _bottomScrollRepeatTimer.Start();
-        }
-
-        private void BottomLineOnMouseLeave(object sender, EventArgs e)
-        {
-            _bottomScrollRepeatTimer.Stop();
+                Lines = Lines,
+                Padding = TopMargin
+            };
+            _listScroller.Update += ShowQuestList;
         }
 
         public void Update(QuestStatus[] quests)
         {
             _questList = quests;
+            _listScroller.DataCount = quests.Length;
             if (quests.Length <= Lines)
-                _listPosition = 0;
+                _listScroller.Position = 0;
             ShowQuestList();
         }
 
-        public void ShowQuestList()
+        private void ShowQuestList()
         {
             SuspendLayout();
             for (var i = 0; i < Lines; i++)
@@ -147,7 +115,7 @@ namespace KancolleSniffer.View
                     ClearCount(labels.Count);
                     continue;
                 }
-                var quest = _questList[i + _listPosition];
+                var quest = _questList[i + _listScroller.Position];
                 SetQuest(labels, quest);
                 if (quest.Count.Id == 0)
                 {
@@ -157,7 +125,7 @@ namespace KancolleSniffer.View
                 SetCount(labels.Count, quest.Count);
             }
             ResumeLayout(true);
-            DrawMark();
+            _listScroller.DrawMark();
         }
 
         private void ClearQuest(QuestLabels labels)
@@ -194,35 +162,5 @@ namespace KancolleSniffer.View
         }
 
         public event EventHandler NameLabelDoubleClick;
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            DrawMark();
-        }
-
-        private void DrawMark()
-        {
-            using (var g = CreateGraphics())
-            {
-                var topBrush = _listPosition > 0 ? Brushes.Black : new SolidBrush(BackColor);
-                g.FillPolygon(topBrush,
-                    new[]
-                    {
-                        new PointF(Width * 0.45f, TopMargin), new PointF(Width * 0.55f, TopMargin),
-                        new PointF(Width * 0.5f, 0), new PointF(Width * 0.45f, TopMargin)
-                    });
-                var bottomBrush = _listPosition + Lines < _questList.Length
-                    ? Brushes.Black
-                    : new SolidBrush(BackColor);
-                g.FillPolygon(bottomBrush,
-                    new[]
-                    {
-                        new PointF(Width * 0.45f, Height - TopMargin - 2),
-                        new PointF(Width * 0.55f, Height - TopMargin - 2),
-                        new PointF(Width * 0.5f, Height - 2), new PointF(Width * 0.45f, Height - TopMargin - 2)
-                    });
-            }
-        }
     }
 }

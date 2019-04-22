@@ -13,13 +13,12 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
 using static System.Math;
+// ReSharper disable CoVariantArrayConversion
 
 namespace KancolleSniffer.View
 {
@@ -30,9 +29,9 @@ namespace KancolleSniffer.View
         private const int LineHeight = 16;
         private readonly RepairListLabels[] _repairLabels = new RepairListLabels[14];
         private ShipStatus[] _repairList = new ShipStatus[0];
-        private int _repairListPosition;
+        private ListScroller _listScroller;
 
-        private class RepairListLabels : IEnumerable<ShipLabel>
+        private class RepairListLabels
         {
             public ShipLabel Fleet { get; set; }
             public ShipLabel Name { get; set; }
@@ -40,16 +39,7 @@ namespace KancolleSniffer.View
             public ShipLabel Damage { get; set; }
             public ShipLabel BackGround { private get; set; }
 
-            public IEnumerator<ShipLabel> GetEnumerator()
-            {
-                foreach (var label in new[] {Fleet, Damage, Time, Name, BackGround})
-                    yield return label;
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
+            public ShipLabel[] Labels => new[] {Fleet, Damage, Time, Name, BackGround};
         }
 
         public void CreateLabels(EventHandler onClick)
@@ -71,68 +61,32 @@ namespace KancolleSniffer.View
                         Size = new Size(Width, height + LabelPadding + 1)
                     }
                 };
-                Controls.AddRange(_repairLabels[i].Cast<Control>().ToArray());
-                foreach (var label in _repairLabels[i])
+                Controls.AddRange(_repairLabels[i].Labels);
+                foreach (var label in _repairLabels[i].Labels)
                 {
                     label.Scale();
                     label.PresetColor = label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
                     label.Click += onClick;
                 }
             }
-            SetScrollEventHandler();
             ResumeLayout();
+            SetupListScroller();
         }
 
-        private void SetScrollEventHandler()
+        private void SetupListScroller()
         {
-            foreach (var label in _repairLabels.First())
+            _listScroller = new ListScroller(this, _repairLabels[0].Labels, _repairLabels.Last().Labels)
             {
-                label.MouseEnter += TopRepairLabelsOnMouseEnter;
-                label.MouseLeave += TopRepairLabelsOnMouseLeave;
-            }
-            foreach (var label in _repairLabels.Last())
-            {
-                label.MouseEnter += BottomRepairLabelsOnMouseEnter;
-                label.MouseLeave += BottomRepairLabelsOnMouseLeave;
-            }
-            _topScrollRepeatTimer.Tick += TopRepairLabelsOnMouseEnter;
-            _bottomScrollRepeatTimer.Tick += BottomRepairLabelsOnMouseEnter;
-        }
-
-        private readonly Timer _topScrollRepeatTimer = new Timer {Interval = 100};
-        private readonly Timer _bottomScrollRepeatTimer = new Timer {Interval = 100};
-
-        private void TopRepairLabelsOnMouseEnter(object sender, EventArgs e)
-        {
-            if (_repairListPosition == 0)
-                return;
-            _repairListPosition--;
-            ShowRepairList();
-            _topScrollRepeatTimer.Start();
-        }
-
-        private void TopRepairLabelsOnMouseLeave(object sender, EventArgs e)
-        {
-            _topScrollRepeatTimer.Stop();
-        }
-
-        private void BottomRepairLabelsOnMouseEnter(object sender, EventArgs e)
-        {
-            if (_repairListPosition + _repairLabels.Length >= _repairList.Length)
-                return;
-            _repairListPosition++;
-            ShowRepairList();
-            _bottomScrollRepeatTimer.Start();
-        }
-
-        private void BottomRepairLabelsOnMouseLeave(object sender, EventArgs e)
-        {
-            _bottomScrollRepeatTimer.Stop();
+                Lines = _repairLabels.Length,
+                Padding = PanelPadding
+            };
+            _listScroller.Update += ShowRepairList;
         }
 
         public void SetRepairList(ShipStatus[] list)
         {
             _repairList = list;
+            _listScroller.DataCount = list.Length;
             SetPanelHeight();
             if (list.Length == 0)
             {
@@ -142,7 +96,7 @@ namespace KancolleSniffer.View
                 _repairLabels[0].Name.SetName("なし");
                 return;
             }
-            _repairListPosition = Min(_repairListPosition, Max(0, _repairList.Length - _repairLabels.Length));
+            _listScroller.Position = Min(_listScroller.Position, Max(0, _repairList.Length - _repairLabels.Length));
             ShowRepairList();
         }
 
@@ -153,11 +107,11 @@ namespace KancolleSniffer.View
                 (int)Round(ShipLabel.ScaleFactor.Height * lines * LineHeight + PanelPadding * 2));
         }
 
-        public void ShowRepairList()
+        private void ShowRepairList()
         {
             for (var i = 0; i < Min(_repairList.Length, _repairLabels.Length); i++)
             {
-                var s = _repairList[i + _repairListPosition];
+                var s = _repairList[i + _listScroller.Position];
                 var labels = _repairLabels[i];
                 labels.Fleet.SetFleet(s);
                 labels.Name.SetName(s, ShipNameWidth.RepairList);
@@ -166,46 +120,16 @@ namespace KancolleSniffer.View
             }
             if (_repairList.Length < _repairLabels.Length)
                 ClearLabels(_repairList.Length);
-            DrawMark();
+            _listScroller.DrawMark();
         }
 
-        public void ClearLabels(int i)
+        private void ClearLabels(int i)
         {
             var labels = _repairLabels[i];
             labels.Fleet.Text = "";
             labels.Name.SetName("");
             labels.Time.Text = "";
             labels.Damage.BackColor = labels.Damage.PresetColor;
-        }
-
-        private void DrawMark()
-        {
-            using (var g = CreateGraphics())
-            {
-                var topBrush = _repairListPosition > 0 ? Brushes.Black : new SolidBrush(BackColor);
-                g.FillPolygon(topBrush,
-                    new[]
-                    {
-                        new PointF(Width * 0.45f, PanelPadding), new PointF(Width * 0.55f, PanelPadding),
-                        new PointF(Width * 0.5f, 0), new PointF(Width * 0.45f, PanelPadding)
-                    });
-                var bottomBrush = _repairLabels.Length + _repairListPosition < _repairList.Length
-                    ? Brushes.Black
-                    : new SolidBrush(BackColor);
-                g.FillPolygon(bottomBrush,
-                    new[]
-                    {
-                        new PointF(Width * 0.45f, Height - PanelPadding - 2),
-                        new PointF(Width * 0.55f, Height - PanelPadding - 2),
-                        new PointF(Width * 0.5f, Height - 2), new PointF(Width * 0.45f, Height - PanelPadding - 2)
-                    });
-            }
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            DrawMark();
         }
     }
 }
