@@ -199,7 +199,7 @@ namespace KancolleSniffer
 
         private bool InMiscText => comboBoxGroup.Text == "情報";
 
-        private void ShipListForm_Load(object sender, EventArgs e)
+        private void ListForm_Load(object sender, EventArgs e)
         {
             /* DPIではなくズームしたときにパネルは大きくなるがScrollBarはそのままなので隙間ができる。
                そこでScrollBarの幅に合わせて全体の横幅を設定し直す。*/
@@ -239,7 +239,7 @@ namespace KancolleSniffer
             checkBoxSTypeDetails.Checked = _config.ShipList.ShipType;
         }
 
-        private void ShipListForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void ListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
             if (!Visible) // 非表示のときは保存すべき情報がないのでスキップする
@@ -315,7 +315,7 @@ namespace KancolleSniffer
                 SetPanelSTypeState(false);
         }
 
-        private void ShipListForm_KeyPress(object sender, KeyPressEventArgs e)
+        private void ListForm_KeyPress(object sender, KeyPressEventArgs e)
         {
             var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'X', 'Y', 'S', 'I'},
                 x => x == char.ToUpper(e.KeyChar));
