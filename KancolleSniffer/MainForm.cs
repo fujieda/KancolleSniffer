@@ -335,6 +335,7 @@ namespace KancolleSniffer
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            SuppressActivate.Start();
             RestoreLocation();
             if (Config.HideOnMinimized && WindowState == FormWindowState.Minimized)
                 ShowInTaskbar = false;
@@ -381,11 +382,6 @@ namespace KancolleSniffer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.FormOwnerClosing)
-            {
-                e.Cancel = true;
-                return;
-            }
             if (!Config.ExitSilently)
             {
                 using (var dialog = new ConfirmDialog())
@@ -410,24 +406,57 @@ namespace KancolleSniffer
         {
             if (_listForm == null) // DPIが100%でないときにInitializeComponentから呼ばれるので
                 return;
-            _listForm.WindowState = WindowState;
-            _listForm.ShowInTaskbar = ShowInTaskbar = !(Config.HideOnMinimized && WindowState == FormWindowState.Minimized);
+            SuppressActivate.Start();
+            if (WindowState == FormWindowState.Minimized)
+            {
+                _listForm.WindowState = FormWindowState.Minimized;
+                if (Config.HideOnMinimized)
+                    _listForm.ShowInTaskbar = ShowInTaskbar = false;
+            }
+            else if (_listForm.WindowState == FormWindowState.Minimized)
+            {
+                DoPaint();
+                _listForm.ShowInTaskbar = true;
+                _listForm.WindowState = FormWindowState.Normal;
+            }
         }
 
-        private bool _suppressActivate = true;
+        private void DoPaint()
+        {
+            Application.DoEvents();
+        }
+
+        public TimeOutChecker SuppressActivate = new TimeOutChecker();
 
         private void MainForm_Activated(object sender, EventArgs e)
         {
-            if (_suppressActivate)
-            {
-                _suppressActivate = false;
+            if (SuppressActivate.Check())
                 return;
-            }
-            if (Owner == _listForm)
+            if (WindowState == FormWindowState.Minimized)
                 return;
             _listForm.Owner = null;
             Owner = _listForm;
             BringToFront();
+            Owner = null;
+        }
+
+        public class TimeOutChecker
+        {
+            private DateTime _lastCheck;
+            private readonly TimeSpan _timeout = TimeSpan.FromMilliseconds(500);
+
+            public void Start()
+            {
+                _lastCheck = DateTime.Now;
+            }
+
+            public bool Check()
+            {
+                var now = DateTime.Now;
+                var last = _lastCheck;
+                _lastCheck = now;
+                return now - last < _timeout;
+            }
         }
 
         private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -440,7 +469,6 @@ namespace KancolleSniffer
             ShowInTaskbar = true;
             WindowState = FormWindowState.Normal;
             TopMost = _listForm.TopMost = Config.TopMost; // 最前面に表示されなくなることがあるのを回避する
-            Activate();
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)

@@ -27,6 +27,7 @@ namespace KancolleSniffer
         private readonly Sniffer _sniffer;
         private readonly Config _config;
         private readonly MainForm _main;
+        private readonly MainForm.TimeOutChecker _suppressActivate;
         private readonly CheckBox[] _shipTypeCheckBoxes;
         public const int PanelWidth = 217;
 
@@ -48,6 +49,7 @@ namespace KancolleSniffer
             _main = main;
             _sniffer = main.Sniffer;
             _config = main.Config;
+            _suppressActivate = main.SuppressActivate;
             _shipTypeCheckBoxes = new[]
             {
                 checkBoxSTypeBattleShip,
@@ -244,8 +246,6 @@ namespace KancolleSniffer
             e.Cancel = true;
             if (!Visible) // 非表示のときは保存すべき情報がないのでスキップする
                 return;
-            if (e.CloseReason == CloseReason.FormOwnerClosing)
-                return;
             var config = _config.ShipList;
             StoreShipGroupToConfig();
             var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
@@ -256,20 +256,16 @@ namespace KancolleSniffer
             Hide();
         }
 
-        private bool _suppressActivate = true;
-
         private void ListForm_Activated(object sender, EventArgs e)
         {
-            if (_suppressActivate)
-            {
-                _suppressActivate = false;
+            if (_suppressActivate.Check())
                 return;
-            }
-            if (Owner == _main)
+            if (WindowState == FormWindowState.Minimized)
                 return;
             _main.Owner = null;
             Owner = _main;
             BringToFront();
+            Owner = null;
         }
 
         private void StoreShipGroupToConfig()
