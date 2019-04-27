@@ -25,8 +25,8 @@ namespace KancolleSniffer
 {
     public partial class ConfigDialog : Form
     {
-        private readonly Config _config;
         private readonly MainForm _main;
+        private readonly Config _config;
 
         private readonly Dictionary<string, NotificationSpec> _notificationSettings =
             new Dictionary<string, NotificationSpec>();
@@ -38,11 +38,11 @@ namespace KancolleSniffer
         public List<string> RepeatSettingsChanged { get; } = new List<string>();
         public NotificationConfigDialog NotificationConfigDialog { get; }
 
-        public ConfigDialog(Config config, MainForm main)
+        public ConfigDialog(MainForm main)
         {
             InitializeComponent();
-            _config = config;
             _main = main;
+            _config = main.Config;
             // ReSharper disable once CoVariantArrayConversion
             listBoxSoundFile.Items.AddRange(Config.NotificationNames);
             numericUpDownMaterialLogInterval.Maximum = 1440;

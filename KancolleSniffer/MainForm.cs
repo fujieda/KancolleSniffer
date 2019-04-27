@@ -40,8 +40,6 @@ namespace KancolleSniffer
 {
     public partial class MainForm : Form
     {
-        private readonly Sniffer _sniffer = new Sniffer();
-        private readonly Config _config = new Config();
         private readonly ConfigDialog _configDialog;
         private readonly ProxyManager _proxyManager;
         private readonly ResizableToolTip _toolTip = new ResizableToolTip();
@@ -62,11 +60,14 @@ namespace KancolleSniffer
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
         private readonly ErrorLog _errorLog;
 
+        public Sniffer Sniffer { get; } = new Sniffer();
+        public Config Config { get; } = new Config();
+
         public MainForm()
         {
             InitializeComponent();
             HttpProxy.AfterSessionComplete += HttpProxy_AfterSessionComplete;
-            _configDialog = new ConfigDialog(_config, this);
+            _configDialog = new ConfigDialog(this);
             _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
 
             // この時点でAutoScaleDimensions == CurrentAutoScaleDimensionsなので、
@@ -77,17 +78,17 @@ namespace KancolleSniffer
             CreateMainLabels();
             panelRepairList.CreateLabels(panelRepairList_Click);
             labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
-            _listForm = new ListForm(_sniffer, _config, this);
+            _listForm = new ListForm(this);
             _notificationManager = new NotificationManager(Alarm);
             CreateNumberAndHistory();
-            _config.Load();
-            _proxyManager = new ProxyManager(_config, this);
-            _errorLog = new ErrorLog(_sniffer);
+            Config.Load();
+            _proxyManager = new ProxyManager(this);
+            _errorLog = new ErrorLog(Sniffer);
             _proxyManager.UpdatePacFile();
             PerformZoom();
             _mainLabels.AdjustAkashiTimers();
             LoadData();
-            _sniffer.RepeatingTimerController = new RepeatingTimerController(_notificationManager, _config);
+            Sniffer.RepeatingTimerController = new RepeatingTimerController(this);
         }
 
         private void CreateMainLabels()
@@ -117,7 +118,7 @@ namespace KancolleSniffer
                 SteelHistory = labelSteelHistory,
                 BauxiteHistory = labelBouxiteHistory,
                 ToolTip = _toolTip
-            }, _sniffer, new NotifySubmitter(_notificationManager));
+            }, Sniffer, new NotifySubmitter(_notificationManager));
         }
 
         private class NotifySubmitter : INotifySubmitter
@@ -164,7 +165,7 @@ namespace KancolleSniffer
         private void LoadData()
         {
             var target = "";
-            _sniffer.LoadState();
+            Sniffer.LoadState();
             _watcher.SynchronizingObject = this;
             _watcherTimer.Tick += (sender, ev) =>
             {
@@ -172,10 +173,10 @@ namespace KancolleSniffer
                 switch (target)
                 {
                     case "status.xml":
-                        _sniffer.LoadState();
+                        Sniffer.LoadState();
                         break;
                     case "TP.csv":
-                        _sniffer.AdditionalData.LoadTpSpec();
+                        Sniffer.AdditionalData.LoadTpSpec();
                         break;
                 }
             };
@@ -193,10 +194,10 @@ namespace KancolleSniffer
             private readonly NotificationManager _manager;
             private readonly Config _config;
 
-            public RepeatingTimerController(NotificationManager manager, Config config)
+            public RepeatingTimerController(MainForm main)
             {
-                _manager = manager;
-                _config = config;
+                _manager = main._notificationManager;
+                _config = main.Config;
             }
 
             public void Stop(string key)
@@ -240,7 +241,7 @@ namespace KancolleSniffer
         {
             try
             {
-                UpdateInfo(_sniffer.Sniff(url, request, JsonParser.Parse(response)));
+                UpdateInfo(Sniffer.Sniff(url, request, JsonParser.Parse(response)));
                 _errorLog.CheckBattleApi(url, request, response);
             }
 
@@ -335,11 +336,11 @@ namespace KancolleSniffer
         private void MainForm_Load(object sender, EventArgs e)
         {
             RestoreLocation();
-            if (_config.HideOnMinimized && WindowState == FormWindowState.Minimized)
+            if (Config.HideOnMinimized && WindowState == FormWindowState.Minimized)
                 ShowInTaskbar = false;
-            if (_config.ShowHpInPercent)
+            if (Config.ShowHpInPercent)
                 _mainLabels.ToggleHpPercent();
-            if (_config.ShipList.Visible)
+            if (Config.ShipList.Visible)
                 _listForm.Show();
             ApplyConfig();
             ApplyDebugLogSetting();
@@ -385,7 +386,7 @@ namespace KancolleSniffer
                 e.Cancel = true;
                 return;
             }
-            if (!_config.ExitSilently)
+            if (!Config.ExitSilently)
             {
                 using (var dialog = new ConfirmDialog())
                 {
@@ -397,11 +398,11 @@ namespace KancolleSniffer
                 }
             }
             _listForm.Close();
-            _sniffer.FlashLog();
-            _config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
-            _config.ShowHpInPercent = _mainLabels.ShowHpInPercent;
-            _config.Save();
-            _sniffer.SaveState();
+            Sniffer.FlashLog();
+            Config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
+            Config.ShowHpInPercent = _mainLabels.ShowHpInPercent;
+            Config.Save();
+            Sniffer.SaveState();
             _proxyManager.Shutdown();
         }
 
@@ -410,7 +411,7 @@ namespace KancolleSniffer
             if (_listForm == null) // DPIが100%でないときにInitializeComponentから呼ばれるので
                 return;
             _listForm.WindowState = WindowState;
-            _listForm.ShowInTaskbar = ShowInTaskbar = !(_config.HideOnMinimized && WindowState == FormWindowState.Minimized);
+            _listForm.ShowInTaskbar = ShowInTaskbar = !(Config.HideOnMinimized && WindowState == FormWindowState.Minimized);
         }
 
         private bool _suppressActivate = true;
@@ -438,7 +439,7 @@ namespace KancolleSniffer
         {
             ShowInTaskbar = true;
             WindowState = FormWindowState.Normal;
-            TopMost = _listForm.TopMost = _config.TopMost; // 最前面に表示されなくなることがあるのを回避する
+            TopMost = _listForm.TopMost = Config.TopMost; // 最前面に表示されなくなることがあるのを回避する
             Activate();
         }
 
@@ -451,7 +452,7 @@ namespace KancolleSniffer
         {
             if (_configDialog.ShowDialog(this) == DialogResult.OK)
             {
-                _config.Save();
+                Config.Save();
                 ApplyConfig();
                 StopRepeatingTimer(_configDialog.RepeatSettingsChanged);
             }
@@ -465,7 +466,7 @@ namespace KancolleSniffer
 
         private void PerformZoom()
         {
-            if (_config.Zoom == 100)
+            if (Config.Zoom == 100)
                 return;
             var prev = CurrentAutoScaleDimensions;
             foreach (var control in new Control[]
@@ -475,13 +476,13 @@ namespace KancolleSniffer
                 contextMenuStripMain, _errorDialog
             })
             {
-                control.Font = new Font(control.Font.FontFamily, control.Font.Size * _config.Zoom / 100);
+                control.Font = new Font(control.Font.FontFamily, control.Font.Size * Config.Zoom / 100);
             }
             foreach (var toolTip in new[] {_toolTip, _tooltipCopy})
             {
-                toolTip.Font = new Font(toolTip.Font.FontFamily, toolTip.Font.Size * _config.Zoom / 100);
+                toolTip.Font = new Font(toolTip.Font.FontFamily, toolTip.Font.Size * Config.Zoom / 100);
             }
-            ShipLabel.LatinFont = new Font("Tahoma", 8f * _config.Zoom / 100);
+            ShipLabel.LatinFont = new Font("Tahoma", 8f * Config.Zoom / 100);
             var cur = CurrentAutoScaleDimensions;
             ShipLabel.ScaleFactor = new SizeF(ShipLabel.ScaleFactor.Width * cur.Width / prev.Width,
                 ShipLabel.ScaleFactor.Height * cur.Height / prev.Height);
@@ -489,28 +490,28 @@ namespace KancolleSniffer
 
         private void RestoreLocation()
         {
-            if (_config.Location.X == int.MinValue)
+            if (Config.Location.X == int.MinValue)
                 return;
-            if (IsTitleBarOnAnyScreen(_config.Location))
-                Location = _config.Location;
+            if (IsTitleBarOnAnyScreen(Config.Location))
+                Location = Config.Location;
         }
 
         private void ApplyConfig()
         {
-            if (TopMost != _config.TopMost)
-                TopMost = _listForm.TopMost = _config.TopMost;
-            _sniffer.ShipCounter.Margin = _config.MarginShips;
+            if (TopMost != Config.TopMost)
+                TopMost = _listForm.TopMost = Config.TopMost;
+            Sniffer.ShipCounter.Margin = Config.MarginShips;
             _numberAndHistory.UpdateNumOfShips();
-            _sniffer.ItemCounter.Margin = _config.MarginEquips;
+            Sniffer.ItemCounter.Margin = Config.MarginEquips;
             _numberAndHistory.UpdateNumOfEquips();
-            _sniffer.Achievement.ResetHours = _config.ResetHours;
+            Sniffer.Achievement.ResetHours = Config.ResetHours;
             labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible =
-                labelPresetAkashiTimer.Visible = _config.UsePresetAkashi;
+                labelPresetAkashiTimer.Visible = Config.UsePresetAkashi;
         }
 
         public void ApplyDebugLogSetting()
         {
-            _debugLogFile = _config.DebugLogging ? _config.DebugLogFile : null;
+            _debugLogFile = Config.DebugLogging ? Config.DebugLogFile : null;
         }
 
         public bool ApplyProxySetting()
@@ -520,11 +521,11 @@ namespace KancolleSniffer
 
         public void ApplyLogSetting()
         {
-            LogServer.OutputDir = _config.Log.OutputDir;
-            LogServer.LogProcessor = new LogProcessor(_sniffer.Material.MaterialHistory, _sniffer.MapDictionary);
-            _sniffer.EnableLog(_config.Log.On ? LogType.All : LogType.None);
-            _sniffer.MaterialLogInterval = _config.Log.MaterialLogInterval;
-            _sniffer.LogOutputDir = _config.Log.OutputDir;
+            LogServer.OutputDir = Config.Log.OutputDir;
+            LogServer.LogProcessor = new LogProcessor(Sniffer.Material.MaterialHistory, Sniffer.MapDictionary);
+            Sniffer.EnableLog(Config.Log.On ? LogType.All : LogType.None);
+            Sniffer.MaterialLogInterval = Config.Log.MaterialLogInterval;
+            Sniffer.LogOutputDir = Config.Log.OutputDir;
         }
 
         public static bool IsTitleBarOnAnyScreen(Point location)
@@ -590,8 +591,8 @@ namespace KancolleSniffer
                 return;
             var idx = (int)((Control)sender).Tag;
             var ship = (_combinedFleet
-                ? _sniffer.Fleets[0].Ships.Concat(_sniffer.Fleets[1].Ships).ToArray()
-                : _sniffer.Fleets[_currentFleet].Ships)[idx];
+                ? Sniffer.Fleets[0].Ships.Concat(Sniffer.Fleets[1].Ships).ToArray()
+                : Sniffer.Fleets[_currentFleet].Ships)[idx];
             if (!ship.Empty)
                 _listForm.ShowShip(ship.Id);
         }
@@ -621,7 +622,7 @@ namespace KancolleSniffer
 
         private void SetCurrentFleet()
         {
-            var states = _sniffer.Fleets.Select(fleet => fleet.State).ToArray();
+            var states = Sniffer.Fleets.Select(fleet => fleet.State).ToArray();
             var inSortie = states.Any(state => state >= FleetState.Sortie);
             if (_inSortie || !inSortie)
             {
@@ -645,21 +646,21 @@ namespace KancolleSniffer
 
         private void SetCombined()
         {
-            if (_sniffer.IsCombinedFleet && !_prevCombined)
+            if (Sniffer.IsCombinedFleet && !_prevCombined)
             {
                 _combinedFleet = true;
                 _currentFleet = 0;
             }
-            _prevCombined = _sniffer.IsCombinedFleet;
+            _prevCombined = Sniffer.IsCombinedFleet;
         }
 
         private void UpdatePanelShipInfo()
         {
-            var fleets = _sniffer.Fleets;
+            var fleets = Sniffer.Fleets;
             var ships = fleets[_currentFleet].ActualShips;
             panel7Ships.Visible = ships.Count == 7;
             _mainLabels.SetShipLabels(ships);
-            if (!_sniffer.IsCombinedFleet)
+            if (!Sniffer.IsCombinedFleet)
                 _combinedFleet = false;
             labelFleet1.Text = _combinedFleet ? CombinedName : "第一";
             panelCombinedFleet.Visible = _combinedFleet;
@@ -668,7 +669,7 @@ namespace KancolleSniffer
             for (var i = 0; i < _labelCheckFleets.Length; i++)
                 _labelCheckFleets[i].Visible = _currentFleet == i;
             UpdateAkashiTimer();
-            var battle = _sniffer.Battle;
+            var battle = Sniffer.Battle;
             UpdateFighterPower(_combinedFleet && (battle.BattleState == BattleState.None || battle.EnemyIsCombined));
             UpdateLoS();
             UpdateCondTimers();
@@ -678,7 +679,7 @@ namespace KancolleSniffer
         {
             get
             {
-                switch (_sniffer.Fleets[0].CombinedType)
+                switch (Sniffer.Fleets[0].CombinedType)
                 {
                     case CombinedType.Carrier:
                         return "機動";
@@ -694,16 +695,16 @@ namespace KancolleSniffer
 
         private void NotifyDamagedShip()
         {
-            if (!_sniffer.BadlyDamagedShips.Any())
+            if (!Sniffer.BadlyDamagedShips.Any())
                 return;
             _notificationManager.StopRepeat("大破警告");
-            SetNotification("大破警告", string.Join(" ", _sniffer.BadlyDamagedShips));
+            SetNotification("大破警告", string.Join(" ", Sniffer.BadlyDamagedShips));
             _notificationManager.Flash();
         }
 
         public void UpdateFighterPower(bool combined)
         {
-            var fleets = _sniffer.Fleets;
+            var fleets = Sniffer.Fleets;
             var fp = combined
                 ? fleets[0].FighterPower.Zip(fleets[1].FighterPower, (a, b) => a + b).ToArray()
                 : fleets[_currentFleet].FighterPower;
@@ -719,7 +720,7 @@ namespace KancolleSniffer
 
         private void UpdateLoS()
         {
-            var fleet = _sniffer.Fleets[_currentFleet];
+            var fleet = Sniffer.Fleets[_currentFleet];
             labelLoS.Text = RoundDown(fleet.GetLineOfSights(1)).ToString("F1");
             var text = $"係数2: {RoundDown(fleet.GetLineOfSights(2)):F1}\r\n" +
                        $"係数3: {RoundDown(fleet.GetLineOfSights(3)):F1}\r\n" +
@@ -738,13 +739,13 @@ namespace KancolleSniffer
             ResetBattleInfo();
             _listForm.UpdateBattleResult();
             _listForm.UpdateAirBattleResult();
-            if (_sniffer.Battle.BattleState == BattleState.None)
+            if (Sniffer.Battle.BattleState == BattleState.None)
                 return;
             panelBattleInfo.BringToFront();
-            var battle = _sniffer.Battle;
+            var battle = Sniffer.Battle;
             labelFormation.Text = new[] {"同航戦", "反航戦", "T字有利", "T字不利"}[battle.Formation[2] - 1];
             UpdateBattleFighterPower();
-            if ((_config.Spoilers & Spoiler.ResultRank) != 0)
+            if ((Config.Spoilers & Spoiler.ResultRank) != 0)
                 ShowResultRank();
         }
 
@@ -759,12 +760,12 @@ namespace KancolleSniffer
             labelEnemyFighterPower.Text = "";
             labelFighterPower.ForeColor = DefaultForeColor;
             labelResultRank.Text = "判定";
-            panelBattleInfo.Visible = _sniffer.Battle.BattleState != BattleState.None;
+            panelBattleInfo.Visible = Sniffer.Battle.BattleState != BattleState.None;
         }
 
         private void UpdateBattleFighterPower()
         {
-            var battle = _sniffer.Battle;
+            var battle = Sniffer.Battle;
             var power = battle.EnemyFighterPower;
             labelEnemyFighterPower.Text = power.AirCombat + power.UnknownMark;
             if (power.AirCombat != power.Interception)
@@ -778,7 +779,7 @@ namespace KancolleSniffer
                 _toolTip.SetToolTip(labelEnemyFighterPower, "");
                 _toolTip.SetToolTip(labelEnemyFighterPowerCaption, "");
             }
-            UpdateFighterPower(_sniffer.IsCombinedFleet && battle.EnemyIsCombined);
+            UpdateFighterPower(Sniffer.IsCombinedFleet && battle.EnemyIsCombined);
             labelFighterPower.ForeColor = new[]
                 {DefaultForeColor, DefaultForeColor, CUDColors.Blue, CUDColors.Green, CUDColors.Orange, CUDColors.Red}[
                 battle.AirControlLevel + 1];
@@ -787,7 +788,7 @@ namespace KancolleSniffer
         private void ShowResultRank()
         {
             var result = new[] {"完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E"};
-            labelResultRank.Text = result[(int)_sniffer.Battle.ResultRank];
+            labelResultRank.Text = result[(int)Sniffer.Battle.ResultRank];
         }
 
         private void labelResultRank_Click(object sender, EventArgs e)
@@ -802,7 +803,7 @@ namespace KancolleSniffer
 
             for (var i = 0; i < fuelSq.Length; i++)
             {
-                var stat = _sniffer.Fleets[i].ChargeStatus;
+                var stat = Sniffer.Fleets[i].ChargeStatus;
                 fuelSq[i].ImageIndex = stat.Fuel;
                 bullSq[i].ImageIndex = stat.Bull;
             }
@@ -810,18 +811,18 @@ namespace KancolleSniffer
 
         private void UpdateNDocLabels()
         {
-            _mainLabels.SetNDockLabels(_sniffer.NDock);
+            _mainLabels.SetNDockLabels(Sniffer.NDock);
             SetNDockLabel();
         }
 
         private void SetNDockLabel()
         {
-            labelNDock.Text = (_config.ShowEndTime & TimerKind.NDock) != 0 ? "入渠終了" : "入渠";
+            labelNDock.Text = (Config.ShowEndTime & TimerKind.NDock) != 0 ? "入渠終了" : "入渠";
         }
 
         private void labelNDock_Click(object sender, EventArgs e)
         {
-            _config.ShowEndTime ^= TimerKind.NDock;
+            Config.ShowEndTime ^= TimerKind.NDock;
             SetNDockLabel();
             UpdateTimers();
         }
@@ -830,7 +831,7 @@ namespace KancolleSniffer
         {
             var nameLabels = new[] {labelMissionName1, labelMissionName2, labelMissionName3};
             var paramsLabels = new[] {labelMissionParams1, labelMissionParams2, labelMissionParams3};
-            var names = _sniffer.Missions.Select(mission => mission.Name).ToArray();
+            var names = Sniffer.Missions.Select(mission => mission.Name).ToArray();
             for (var i = 0; i < ShipInfo.FleetCount - 1; i++)
             {
                 paramsLabels[i].Visible = false;
@@ -846,13 +847,13 @@ namespace KancolleSniffer
 
         private void SetMissionLabel()
         {
-            labelMission.Text = (_config.ShowEndTime & TimerKind.Mission) != 0 ? "遠征終了" : "遠征";
+            labelMission.Text = (Config.ShowEndTime & TimerKind.Mission) != 0 ? "遠征終了" : "遠征";
         }
 
         private string GenerateFleetParamsForMission(int fleetNumber)
         {
             var result = new List<string>();
-            var fleet = _sniffer.Fleets[fleetNumber];
+            var fleet = Sniffer.Fleets[fleetNumber];
             var kira = fleet.Ships.Count(ship => ship.Cond > 49);
             var plus = fleet.Ships[0].Cond > 49;
             if (kira > 0)
@@ -868,7 +869,7 @@ namespace KancolleSniffer
 
         private void labelMission_Click(object sender, EventArgs e)
         {
-            _config.ShowEndTime ^= TimerKind.Mission;
+            Config.ShowEndTime ^= TimerKind.Mission;
             SetMissionLabel();
             UpdateTimers();
         }
@@ -878,19 +879,19 @@ namespace KancolleSniffer
             var mission = new[] {labelMission1, labelMission2, labelMission3};
             for (var i = 0; i < mission.Length; i++)
             {
-                var entry = _sniffer.Missions[i];
+                var entry = Sniffer.Missions[i];
                 SetTimerColor(mission[i], entry.Timer, _now);
-                mission[i].Text = entry.Timer.ToString(_now, (_config.ShowEndTime & TimerKind.Mission) != 0);
+                mission[i].Text = entry.Timer.ToString(_now, (Config.ShowEndTime & TimerKind.Mission) != 0);
             }
-            for (var i = 0; i < _sniffer.NDock.Length; i++)
+            for (var i = 0; i < Sniffer.NDock.Length; i++)
             {
-                var entry = _sniffer.NDock[i];
-                _mainLabels.SetNDockTimer(i, entry.Timer, _now, (_config.ShowEndTime & TimerKind.NDock) != 0);
+                var entry = Sniffer.NDock[i];
+                _mainLabels.SetNDockTimer(i, entry.Timer, _now, (Config.ShowEndTime & TimerKind.NDock) != 0);
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
             for (var i = 0; i < kdock.Length; i++)
             {
-                var timer = _sniffer.KDock[i];
+                var timer = Sniffer.KDock[i];
                 SetTimerColor(kdock[i], timer, _now);
                 kdock[i].Text = timer.ToString(_now);
             }
@@ -901,21 +902,21 @@ namespace KancolleSniffer
 
         private void NotifyTimers()
         {
-            for (var i = 0; i < _sniffer.Missions.Length; i++)
+            for (var i = 0; i < Sniffer.Missions.Length; i++)
             {
-                var entry = _sniffer.Missions[i];
+                var entry = Sniffer.Missions[i];
                 if (entry.Name == "前衛支援任務" || entry.Name == "艦隊決戦支援任務")
                     continue;
                 CheckAlarm("遠征終了", entry.Timer, i + 1, entry.Name);
             }
-            for (var i = 0; i < _sniffer.NDock.Length; i++)
+            for (var i = 0; i < Sniffer.NDock.Length; i++)
             {
-                var entry = _sniffer.NDock[i];
+                var entry = Sniffer.NDock[i];
                 CheckAlarm("入渠終了", entry.Timer, i, entry.Name);
             }
-            for (var i = 0; i < _sniffer.KDock.Length; i++)
+            for (var i = 0; i < Sniffer.KDock.Length; i++)
             {
-                var timer = _sniffer.KDock[i];
+                var timer = Sniffer.KDock[i];
                 CheckAlarm("建造完了", timer, i, "");
             }
             NotifyCondTimers();
@@ -930,7 +931,7 @@ namespace KancolleSniffer
                 SetNotification(key, fleet, subject);
                 return;
             }
-            var pre = TimeSpan.FromSeconds(_config.Notifications[key].PreliminaryPeriod);
+            var pre = TimeSpan.FromSeconds(Config.Notifications[key].PreliminaryPeriod);
             if (pre == TimeSpan.Zero)
                 return;
             if (timer.CheckAlarm(_prev + pre, _now + pre))
@@ -947,13 +948,13 @@ namespace KancolleSniffer
             DateTime timer;
             if (_combinedFleet)
             {
-                var timer1 = _sniffer.GetConditionTimer(0);
-                var timer2 = _sniffer.GetConditionTimer(1);
+                var timer1 = Sniffer.GetConditionTimer(0);
+                var timer2 = Sniffer.GetConditionTimer(1);
                 timer = timer2 > timer1 ? timer2 : timer1;
             }
             else
             {
-                timer = _sniffer.GetConditionTimer(_currentFleet);
+                timer = Sniffer.GetConditionTimer(_currentFleet);
             }
             if (timer == DateTime.MinValue)
             {
@@ -978,18 +979,18 @@ namespace KancolleSniffer
 
         private void NotifyCondTimers()
         {
-            var notice = _sniffer.GetConditionNotice(_prev, _now);
-            var pre = TimeSpan.FromSeconds(_config.Notifications["疲労回復"].PreliminaryPeriod);
+            var notice = Sniffer.GetConditionNotice(_prev, _now);
+            var pre = TimeSpan.FromSeconds(Config.Notifications["疲労回復"].PreliminaryPeriod);
             var preNotice = pre == TimeSpan.Zero
                 ? new int[ShipInfo.FleetCount]
-                : _sniffer.GetConditionNotice(_prev + pre, _now + pre);
+                : Sniffer.GetConditionNotice(_prev + pre, _now + pre);
             for (var i = 0; i < ShipInfo.FleetCount; i++)
             {
-                if (_config.NotifyConditions.Contains(notice[i]))
+                if (Config.NotifyConditions.Contains(notice[i]))
                 {
                     SetNotification("疲労回復" + notice[i], i, "cond" + notice[i]);
                 }
-                else if (_config.NotifyConditions.Contains(preNotice[i]))
+                else if (Config.NotifyConditions.Contains(preNotice[i]))
                 {
                     SetPreNotification("疲労回復" + preNotice[i], i, "cond" + notice[i]);
                 }
@@ -998,15 +999,15 @@ namespace KancolleSniffer
 
         private void UpdateAkashiTimer()
         {
-            if (_config.UsePresetAkashi)
+            if (Config.UsePresetAkashi)
                 UpdatePresetAkashiTimer();
-            _mainLabels.SetAkashiTimer(_sniffer.Fleets[_currentFleet].ActualShips,
-                _sniffer.AkashiTimer.GetTimers(_currentFleet, _now));
+            _mainLabels.SetAkashiTimer(Sniffer.Fleets[_currentFleet].ActualShips,
+                Sniffer.AkashiTimer.GetTimers(_currentFleet, _now));
         }
 
         private void UpdatePresetAkashiTimer()
         {
-            var akashi = _sniffer.AkashiTimer;
+            var akashi = Sniffer.AkashiTimer;
             var span = akashi.GetPresetDeckTimer(_now);
             var color = span == TimeSpan.Zero && akashi.CheckPresetRepairing() ? CUDColors.Red : DefaultForeColor;
             var text = span == TimeSpan.MinValue ? "" : span.ToString(@"mm\:ss");
@@ -1026,14 +1027,14 @@ namespace KancolleSniffer
 
         private void NotifyAkashiTimer()
         {
-            var akashi = _sniffer.AkashiTimer;
+            var akashi = Sniffer.AkashiTimer;
             var msgs = akashi.GetNotice(_prev, _now);
             if (msgs.Length == 0)
             {
                 _notificationManager.StopRepeat("泊地修理");
                 return;
             }
-            if (!akashi.CheckRepairing(_now) && !(akashi.CheckPresetRepairing() && _config.UsePresetAkashi))
+            if (!akashi.CheckRepairing(_now) && !(akashi.CheckPresetRepairing() && Config.UsePresetAkashi))
             {
                 _notificationManager.StopRepeat("泊地修理");
                 return;
@@ -1053,7 +1054,7 @@ namespace KancolleSniffer
                 if (msgs[i].Completed != "")
                     SetNotification("泊地修理完了", i, msgs[i].Completed);
             }
-            var pre = TimeSpan.FromSeconds(_config.Notifications["泊地修理20分経過"].PreliminaryPeriod);
+            var pre = TimeSpan.FromSeconds(Config.Notifications["泊地修理20分経過"].PreliminaryPeriod);
             if (skipPreliminary || pre == TimeSpan.Zero)
                 return;
             if ((msgs = akashi.GetNotice(_prev + pre, _now + pre))[0].Proceeded == "20分経過しました。")
@@ -1067,22 +1068,22 @@ namespace KancolleSniffer
 
         private void SetNotification(string key, int fleet, string subject)
         {
-            var spec = _config.Notifications[_notificationManager.KeyToName(key)];
+            var spec = Config.Notifications[_notificationManager.KeyToName(key)];
             _notificationManager.Enqueue(key, fleet, subject,
-                (spec.Flags & _config.NotificationFlags & NotificationType.Repeat) == 0 ? 0 : spec.RepeatInterval);
+                (spec.Flags & Config.NotificationFlags & NotificationType.Repeat) == 0 ? 0 : spec.RepeatInterval);
         }
 
         private void SetPreNotification(string key, int fleet, string subject)
         {
-            var spec = _config.Notifications[_notificationManager.KeyToName(key)];
+            var spec = Config.Notifications[_notificationManager.KeyToName(key)];
             if ((spec.Flags & NotificationType.Preliminary) != 0)
                 _notificationManager.Enqueue(key, fleet, subject, 0, true);
         }
 
         private void UpdateRepairList()
         {
-            panelRepairList.SetRepairList(_sniffer.RepairList);
-            _toolTip.SetToolTip(label31, new RepairShipCount(_sniffer.RepairList).ToString());
+            panelRepairList.SetRepairList(Sniffer.RepairList);
+            _toolTip.SetToolTip(label31, new RepairShipCount(Sniffer.RepairList).ToString());
         }
 
         private void UpdateQuestList()
@@ -1100,7 +1101,7 @@ namespace KancolleSniffer
             };
             var progress = new[]
                 {labelProgress1, labelProgress2, labelProgress3, labelProgress4, labelProgress5, labelProgress6};
-            var quests = _sniffer.Quests;
+            var quests = Sniffer.Quests;
             for (var i = 0; i < name.Length; i++)
             {
                 if (i < quests.Length)
@@ -1129,7 +1130,7 @@ namespace KancolleSniffer
                     _toolTip.SetToolTip(count[i], "");
                 }
             }
-            _sniffer.GetQuestNotifications(out var notify, out var stop);
+            Sniffer.GetQuestNotifications(out var notify, out var stop);
             foreach (var questName in notify)
                 SetNotification("任務達成", 0, questName);
             foreach (var questName in stop)
@@ -1139,26 +1140,26 @@ namespace KancolleSniffer
 
         private void Alarm(string balloonTitle, string balloonMessage, string name)
         {
-            var flags = _config.Notifications[name].Flags;
-            var effective = _config.NotificationFlags & _config.Notifications[name].Flags;
+            var flags = Config.Notifications[name].Flags;
+            var effective = Config.NotificationFlags & Config.Notifications[name].Flags;
             if ((effective & NotificationType.FlashWindow) != 0)
                 Win32API.FlashWindow(Handle);
             if ((effective & NotificationType.ShowBaloonTip) != 0)
                 notifyIconMain.ShowBalloonTip(20000, balloonTitle, balloonMessage, ToolTipIcon.Info);
             if ((effective & NotificationType.PlaySound) != 0)
-                PlaySound(_config.Sounds[name], _config.Sounds.Volume);
-            if (_config.Pushbullet.On && (flags & NotificationType.Push) != 0)
+                PlaySound(Config.Sounds[name], Config.Sounds.Volume);
+            if (Config.Pushbullet.On && (flags & NotificationType.Push) != 0)
             {
                 Task.Run(() =>
                 {
-                    PushNotification.PushToPushbullet(_config.Pushbullet.Token, balloonTitle, balloonMessage);
+                    PushNotification.PushToPushbullet(Config.Pushbullet.Token, balloonTitle, balloonMessage);
                 });
             }
-            if (_config.Pushover.On && (flags & NotificationType.Push) != 0)
+            if (Config.Pushover.On && (flags & NotificationType.Push) != 0)
             {
                 Task.Run(() =>
                 {
-                    PushNotification.PushToPushover(_config.Pushover.ApiKey, _config.Pushover.UserKey,
+                    PushNotification.PushToPushover(Config.Pushover.ApiKey, Config.Pushover.UserKey,
                         balloonTitle, balloonMessage);
                 });
             }
@@ -1250,13 +1251,13 @@ namespace KancolleSniffer
             {
                 _clickSemaphore.Release();
             }
-            _combinedFleet = _sniffer.IsCombinedFleet && !_combinedFleet;
+            _combinedFleet = Sniffer.IsCombinedFleet && !_combinedFleet;
             UpdatePanelShipInfo();
         }
 
         private void labelFleet1_MouseHover(object sender, EventArgs e)
         {
-            labelFleet1.Text = _currentFleet == 0 && _sniffer.IsCombinedFleet && !_combinedFleet ? "連合" : "第一";
+            labelFleet1.Text = _currentFleet == 0 && Sniffer.IsCombinedFleet && !_combinedFleet ? "連合" : "第一";
         }
 
         private void labelFleet1_MouseLeave(object sender, EventArgs e)
@@ -1269,7 +1270,7 @@ namespace KancolleSniffer
             if (!_started)
                 return;
             var fleet = (int)((Label)sender).Tag;
-            var text = TextGenerator.GenerateFleetData(_sniffer, fleet);
+            var text = TextGenerator.GenerateFleetData(Sniffer, fleet);
             CopyFleetText(text, (Label)sender);
         }
 
@@ -1278,9 +1279,9 @@ namespace KancolleSniffer
             if (!_started)
                 return;
             _doubleClickSemaphore.Release();
-            var text = TextGenerator.GenerateFleetData(_sniffer, 0);
+            var text = TextGenerator.GenerateFleetData(Sniffer, 0);
             if (_combinedFleet)
-                text += TextGenerator.GenerateFleetData(_sniffer, 1);
+                text += TextGenerator.GenerateFleetData(Sniffer, 1);
             CopyFleetText(text, (Label)sender);
         }
 
@@ -1342,7 +1343,7 @@ namespace KancolleSniffer
 
         public void ResetAchievement()
         {
-            _sniffer.Achievement.Reset();
+            Sniffer.Achievement.Reset();
             UpdateItemInfo();
         }
 
@@ -1378,12 +1379,12 @@ namespace KancolleSniffer
 
         private void LogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("http://localhost:" + _config.Proxy.Listen + "/");
+            Process.Start("http://localhost:" + Config.Proxy.Listen + "/");
         }
 
         private void labelClearQuest_Click(object sender, EventArgs e)
         {
-            _sniffer.ClearQuests();
+            Sniffer.ClearQuests();
             UpdateQuestList();
         }
 

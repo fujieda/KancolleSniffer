@@ -26,7 +26,7 @@ namespace KancolleSniffer
     {
         private readonly Sniffer _sniffer;
         private readonly Config _config;
-        private readonly Form _main;
+        private readonly MainForm _main;
         private readonly CheckBox[] _shipTypeCheckBoxes;
         public const int PanelWidth = 217;
 
@@ -42,12 +42,12 @@ namespace KancolleSniffer
             Repair
         }
 
-        public ListForm(Sniffer sniffer, Config config, Form main)
+        public ListForm(MainForm main)
         {
             InitializeComponent();
-            _sniffer = sniffer;
-            _config = config;
             _main = main;
+            _sniffer = main.Sniffer;
+            _config = main.Config;
             _shipTypeCheckBoxes = new[]
             {
                 checkBoxSTypeBattleShip,

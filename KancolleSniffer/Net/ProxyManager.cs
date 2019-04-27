@@ -23,8 +23,8 @@ namespace KancolleSniffer.Net
 {
     public class ProxyManager
     {
-        private readonly Config _config;
         private readonly Control _parent;
+        private readonly Config _config;
         private readonly SystemProxy _systemProxy = new SystemProxy();
         private int _prevProxyPort;
         private int _autoConfigRetryCount;
@@ -32,10 +32,10 @@ namespace KancolleSniffer.Net
         private bool _initiated;
         private DateTime _pacFileTime;
 
-        public ProxyManager(Config config, Control parent)
+        public ProxyManager(MainForm main)
         {
-            _config = config;
-            _parent = parent;
+            _parent = main;
+            _config = main.Config;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
             _timer.Tick += CheckProxy;
         }
