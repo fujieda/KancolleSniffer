@@ -150,6 +150,7 @@ namespace KancolleSniffer
             this.labelCheckFleet1 = new System.Windows.Forms.Label();
             this.questPanel = new KancolleSniffer.View.QuestPanel();
             this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
+            this.labelQuestCount = new System.Windows.Forms.Label();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -1002,7 +1003,7 @@ namespace KancolleSniffer
             // 
             this.labelClearQuest.AutoSize = true;
             this.labelClearQuest.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelClearQuest.Location = new System.Drawing.Point(37, 340);
+            this.labelClearQuest.Location = new System.Drawing.Point(49, 340);
             this.labelClearQuest.Name = "labelClearQuest";
             this.labelClearQuest.Size = new System.Drawing.Size(15, 14);
             this.labelClearQuest.TabIndex = 55;
@@ -1156,12 +1157,22 @@ namespace KancolleSniffer
             this.panelRepairList.Visible = false;
             this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
             // 
+            // labelQuestCount
+            // 
+            this.labelQuestCount.AutoSize = true;
+            this.labelQuestCount.Location = new System.Drawing.Point(35, 342);
+            this.labelQuestCount.Name = "labelQuestCount";
+            this.labelQuestCount.Size = new System.Drawing.Size(11, 12);
+            this.labelQuestCount.TabIndex = 57;
+            this.labelQuestCount.Text = "0";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.labelQuestCount);
             this.Controls.Add(this.questPanel);
             this.Controls.Add(this.labelClearQuest);
             this.Controls.Add(this.labelAkashiRepair);
@@ -1335,6 +1346,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelMissionParams3;
         private System.Windows.Forms.Label labelMissionParams2;
         private QuestPanel questPanel;
+        private System.Windows.Forms.Label labelQuestCount;
     }
 }
 

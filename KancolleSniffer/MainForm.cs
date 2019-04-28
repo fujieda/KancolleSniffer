@@ -1144,6 +1144,12 @@ namespace KancolleSniffer
         private void UpdateQuestList()
         {
             questPanel.Update(Sniffer.Quests);
+            labelQuestCount.Text = Sniffer.Quests.Length.ToString();
+            SetQuestNotification();
+        }
+
+        private void SetQuestNotification()
+        {
             Sniffer.GetQuestNotifications(out var notify, out var stop);
             foreach (var questName in notify)
                 SetNotification("任務達成", 0, questName);
