@@ -66,28 +66,36 @@ namespace KancolleSniffer
         {
             InitializeComponent();
             HttpProxy.AfterSessionComplete += HttpProxy_AfterSessionComplete;
+            Config.Load();
             _configDialog = new ConfigDialog(this);
-
-            // この時点でAutoScaleDimensions == CurrentAutoScaleDimensionsなので、
-            // MainForm.Designer.csのAutoScaleDimensionsの6f,12fを使う。
-            ShipLabel.ScaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / 6f,
-                CurrentAutoScaleDimensions.Height / 12f);
-            SetupFleetClick();
-            CreateMainLabels();
-            panelRepairList.CreateLabels(panelRepairList_Click);
-            questPanel.NameLabelDoubleClick += labelQuest_DoubleClick;
-            labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
             _listForm = new ListForm(this);
             _notificationManager = new NotificationManager(Alarm);
-            CreateNumberAndHistory();
-            Config.Load();
+            SetupView(_notificationManager);
             _proxyManager = new ProxyManager(this);
-            _errorLog = new ErrorLog(Sniffer);
             _proxyManager.UpdatePacFile();
-            PerformZoom();
-            _mainLabels.AdjustAkashiTimers();
+            _errorLog = new ErrorLog(Sniffer);
             LoadData();
             Sniffer.RepeatingTimerController = new RepeatingTimerController(this);
+        }
+
+        private void SetupView(NotificationManager manager)
+        {
+            SetScaleFactorOfDpiScaling();
+            SetupFleetClick();
+            CreateMainLabels();
+            CreateNumberAndHistory(manager);
+            labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
+            panelRepairList.CreateLabels(panelRepairList_Click);
+            questPanel.NameLabelDoubleClick += labelQuest_DoubleClick;
+            PerformZoom();
+            _mainLabels.AdjustAkashiTimers();
+        }
+
+        private void SetScaleFactorOfDpiScaling()
+        {
+            var autoScaleDimensions = new SizeF(6f, 12f); // AutoScaleDimensionの初期値
+            ShipLabel.ScaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / autoScaleDimensions.Width,
+                CurrentAutoScaleDimensions.Height / autoScaleDimensions.Height);
         }
 
         private void CreateMainLabels()
@@ -103,7 +111,7 @@ namespace KancolleSniffer
             _mainLabels.CreateNDockLabels(labelNDock_Click);
         }
 
-        private void CreateNumberAndHistory()
+        private void CreateNumberAndHistory(NotificationManager manager)
         {
             _numberAndHistory = new NumberAndHistory(new NumberAndHistoryLabels
             {
@@ -117,7 +125,7 @@ namespace KancolleSniffer
                 SteelHistory = labelSteelHistory,
                 BauxiteHistory = labelBouxiteHistory,
                 ToolTip = _toolTip
-            }, Sniffer, new NotifySubmitter(_notificationManager));
+            }, Sniffer, new NotifySubmitter(manager));
         }
 
         private class NotifySubmitter : INotifySubmitter
