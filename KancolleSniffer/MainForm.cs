@@ -85,8 +85,8 @@ namespace KancolleSniffer
             CreateMainLabels();
             CreateNumberAndHistory(manager);
             labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
+            SetupQuestPanel();
             panelRepairList.CreateLabels(panelRepairList_Click);
-            questPanel.NameLabelDoubleClick += labelQuest_DoubleClick;
             PerformZoom();
             _mainLabels.AdjustAkashiTimers();
         }
@@ -96,6 +96,13 @@ namespace KancolleSniffer
             var autoScaleDimensions = new SizeF(6f, 12f); // AutoScaleDimensionの初期値
             ShipLabel.ScaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / autoScaleDimensions.Width,
                 CurrentAutoScaleDimensions.Height / autoScaleDimensions.Height);
+        }
+
+        private void SetupQuestPanel()
+        {
+            int prevHeight = questPanel.Height;
+            questPanel.CreateLabels(Config.QuestLines, labelQuest_DoubleClick);
+            Height += questPanel.Height - prevHeight;
         }
 
         private void CreateMainLabels()

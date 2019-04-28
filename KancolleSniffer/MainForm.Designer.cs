@@ -148,8 +148,8 @@ namespace KancolleSniffer
             this.labelCheckFleet3 = new System.Windows.Forms.Label();
             this.labelCheckFleet4 = new System.Windows.Forms.Label();
             this.labelCheckFleet1 = new System.Windows.Forms.Label();
-            this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
             this.questPanel = new KancolleSniffer.View.QuestPanel();
+            this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
@@ -1138,6 +1138,14 @@ namespace KancolleSniffer
             this.labelCheckFleet1.Size = new System.Drawing.Size(5, 14);
             this.labelCheckFleet1.TabIndex = 16;
             // 
+            // questPanel
+            // 
+            this.questPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.questPanel.Location = new System.Drawing.Point(6, 356);
+            this.questPanel.Name = "questPanel";
+            this.questPanel.Size = new System.Drawing.Size(220, 94);
+            this.questPanel.TabIndex = 56;
+            // 
             // panelRepairList
             // 
             this.panelRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1147,14 +1155,6 @@ namespace KancolleSniffer
             this.panelRepairList.TabIndex = 4;
             this.panelRepairList.Visible = false;
             this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
-            // 
-            // questPanel
-            // 
-            this.questPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.questPanel.Location = new System.Drawing.Point(6, 356);
-            this.questPanel.Name = "questPanel";
-            this.questPanel.Size = new System.Drawing.Size(220, 94);
-            this.questPanel.TabIndex = 56;
             // 
             // MainForm
             // 
