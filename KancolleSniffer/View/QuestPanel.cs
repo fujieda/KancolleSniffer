@@ -60,7 +60,7 @@ namespace KancolleSniffer.View
                     Name = new ShipLabel
                     {
                         Location = new Point(LeftMargin + 4, y),
-                        AutoSize = true
+                        Size = new Size(193, LabelHeight)
                     },
                     Count = new ShipLabel
                     {
