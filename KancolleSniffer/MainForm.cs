@@ -46,7 +46,6 @@ namespace KancolleSniffer
         private readonly ResizableToolTip _tooltipCopy = new ResizableToolTip {ShowAlways = false, AutomaticDelay = 0};
         private int _currentFleet;
         private bool _combinedFleet;
-        private readonly Label[] _labelCheckFleets;
         private MainFormLabels _mainLabels;
         private NumberAndHistory _numberAndHistory;
         private readonly ListForm _listForm;
@@ -68,7 +67,6 @@ namespace KancolleSniffer
             InitializeComponent();
             HttpProxy.AfterSessionComplete += HttpProxy_AfterSessionComplete;
             _configDialog = new ConfigDialog(this);
-            _labelCheckFleets = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
 
             // この時点でAutoScaleDimensions == CurrentAutoScaleDimensionsなので、
             // MainForm.Designer.csのAutoScaleDimensionsの6f,12fを使う。
@@ -685,24 +683,37 @@ namespace KancolleSniffer
 
         private void UpdatePanelShipInfo()
         {
-            var fleets = Sniffer.Fleets;
-            var ships = fleets[_currentFleet].ActualShips;
+            var ships = Sniffer.Fleets[_currentFleet].ActualShips;
             panel7Ships.Visible = ships.Count == 7;
             _mainLabels.SetShipLabels(ships);
+            ShowCombinedFleet();
+            ShowCurrentFleetNumber();
+            UpdateAkashiTimer();
+            UpdateFighterPower(IsCombinedFighterPower);
+            UpdateLoS();
+            UpdateCondTimers();
+        }
+
+        private void ShowCombinedFleet()
+        {
             if (!Sniffer.IsCombinedFleet)
                 _combinedFleet = false;
             labelFleet1.Text = _combinedFleet ? CombinedName : "第一";
             panelCombinedFleet.Visible = _combinedFleet;
             if (_combinedFleet)
-                _mainLabels.SetCombinedShipLabels(fleets[0].ActualShips, fleets[1].ActualShips);
-            for (var i = 0; i < _labelCheckFleets.Length; i++)
-                _labelCheckFleets[i].Visible = _currentFleet == i;
-            UpdateAkashiTimer();
-            var battle = Sniffer.Battle;
-            UpdateFighterPower(_combinedFleet && (battle.BattleState == BattleState.None || battle.EnemyIsCombined));
-            UpdateLoS();
-            UpdateCondTimers();
+                _mainLabels.SetCombinedShipLabels(Sniffer.Fleets[0].ActualShips, Sniffer.Fleets[1].ActualShips);
         }
+
+        private void ShowCurrentFleetNumber()
+        {
+            var labels = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
+            for (var i = 0; i < labels.Length; i++)
+                labels[i].Visible = _currentFleet == i;
+        }
+
+        private bool IsCombinedFighterPower => _combinedFleet &&
+                                               (Sniffer.Battle.BattleState == BattleState.None ||
+                                                Sniffer.Battle.EnemyIsCombined);
 
         private string CombinedName
         {
