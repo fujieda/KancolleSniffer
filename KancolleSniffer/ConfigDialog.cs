@@ -73,6 +73,7 @@ namespace KancolleSniffer
             checkBoxExitSilently.Checked = _config.ExitSilently;
             checkBoxLocationPerMachine.Checked = _config.SaveLocationPerMachine;
             comboBoxZoom.SelectedItem = _config.Zoom + "%";
+            numericUpDownQuest.Value = _config.QuestLines;
 
             checkBoxFlash.Checked = (_config.NotificationFlags & NotificationType.FlashWindow) != 0;
             checkBoxBalloon.Checked = (_config.NotificationFlags & NotificationType.ShowBaloonTip) != 0;
@@ -157,6 +158,7 @@ namespace KancolleSniffer
             _config.ExitSilently = checkBoxExitSilently.Checked;
             _config.SaveLocationPerMachine = checkBoxLocationPerMachine.Checked;
             _config.Zoom = int.Parse(comboBoxZoom.SelectedItem.ToString().Substring(0, 3));
+            _config.QuestLines = (int)numericUpDownQuest.Value;
             _config.NotificationFlags = (checkBoxFlash.Checked ? NotificationType.FlashWindow : 0) |
                                         (checkBoxBalloon.Checked ? NotificationType.ShowBaloonTip : 0) |
                                         (checkBoxSound.Checked ? NotificationType.PlaySound : 0) |

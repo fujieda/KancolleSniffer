@@ -69,6 +69,7 @@ namespace KancolleSniffer
             this.tabPageAchievement = new System.Windows.Forms.TabPage();
             this.checkBoxPresetAkashi = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.checkBoxNextCell = new System.Windows.Forms.CheckBox();
             this.checkBoxBattleResult = new System.Windows.Forms.CheckBox();
             this.checkBoxAirBattleResult = new System.Windows.Forms.CheckBox();
             this.checkBoxResultRank = new System.Windows.Forms.CheckBox();
@@ -132,7 +133,10 @@ namespace KancolleSniffer
             this.openSoundFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
-            this.checkBoxNextCell = new System.Windows.Forms.CheckBox();
+            this.numericUpDownQuest = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageWindow.SuspendLayout();
             this.tabPageNotification.SuspendLayout();
@@ -153,6 +157,7 @@ namespace KancolleSniffer
             this.groupBoxPushover.SuspendLayout();
             this.groupBoxPushbullet.SuspendLayout();
             this.tabPageDebug.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownQuest)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl
@@ -177,6 +182,10 @@ namespace KancolleSniffer
             // 
             // tabPageWindow
             // 
+            this.tabPageWindow.Controls.Add(this.label18);
+            this.tabPageWindow.Controls.Add(this.label17);
+            this.tabPageWindow.Controls.Add(this.label8);
+            this.tabPageWindow.Controls.Add(this.numericUpDownQuest);
             this.tabPageWindow.Controls.Add(this.checkBoxLocationPerMachine);
             this.tabPageWindow.Controls.Add(this.checkBoxExitSilently);
             this.tabPageWindow.Controls.Add(this.label15);
@@ -215,11 +224,11 @@ namespace KancolleSniffer
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(99, 100);
+            this.label15.Location = new System.Drawing.Point(99, 98);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(61, 12);
+            this.label15.Size = new System.Drawing.Size(11, 12);
             this.label15.TabIndex = 6;
-            this.label15.Text = "(要再起動)";
+            this.label15.Text = "*";
             // 
             // comboBoxZoom
             // 
@@ -467,6 +476,16 @@ namespace KancolleSniffer
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "ネタバレ";
+            // 
+            // checkBoxNextCell
+            // 
+            this.checkBoxNextCell.AutoSize = true;
+            this.checkBoxNextCell.Location = new System.Drawing.Point(174, 21);
+            this.checkBoxNextCell.Name = "checkBoxNextCell";
+            this.checkBoxNextCell.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxNextCell.TabIndex = 3;
+            this.checkBoxNextCell.Text = "進路";
+            this.checkBoxNextCell.UseVisualStyleBackColor = true;
             // 
             // checkBoxBattleResult
             // 
@@ -1097,15 +1116,55 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
-            // checkBoxNextCell
+            // numericUpDownQuest
             // 
-            this.checkBoxNextCell.AutoSize = true;
-            this.checkBoxNextCell.Location = new System.Drawing.Point(174, 21);
-            this.checkBoxNextCell.Name = "checkBoxNextCell";
-            this.checkBoxNextCell.Size = new System.Drawing.Size(48, 16);
-            this.checkBoxNextCell.TabIndex = 3;
-            this.checkBoxNextCell.Text = "進路";
-            this.checkBoxNextCell.UseVisualStyleBackColor = true;
+            this.numericUpDownQuest.Location = new System.Drawing.Point(87, 127);
+            this.numericUpDownQuest.Maximum = new decimal(new int[] {
+            7,
+            0,
+            0,
+            0});
+            this.numericUpDownQuest.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.numericUpDownQuest.Name = "numericUpDownQuest";
+            this.numericUpDownQuest.Size = new System.Drawing.Size(32, 19);
+            this.numericUpDownQuest.TabIndex = 9;
+            this.numericUpDownQuest.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericUpDownQuest.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(11, 130);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(75, 12);
+            this.label8.TabIndex = 10;
+            this.label8.Text = "任務欄の行数";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(186, 138);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(59, 12);
+            this.label17.TabIndex = 11;
+            this.label17.Text = "*要再起動";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(121, 127);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(11, 12);
+            this.label18.TabIndex = 12;
+            this.label18.Text = "*";
             // 
             // ConfigDialog
             // 
@@ -1156,6 +1215,7 @@ namespace KancolleSniffer
             this.groupBoxPushbullet.PerformLayout();
             this.tabPageDebug.ResumeLayout(false);
             this.tabPageDebug.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownQuest)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1253,5 +1313,9 @@ namespace KancolleSniffer
         private System.Windows.Forms.CheckBox checkBoxAirBattleResult;
         private System.Windows.Forms.CheckBox checkBoxResultRank;
         private System.Windows.Forms.CheckBox checkBoxNextCell;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.NumericUpDown numericUpDownQuest;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
     }
 }
