@@ -25,8 +25,7 @@ namespace KancolleSniffer.View
     public class RepairListForMain : Panel
     {
         private const int PanelPadding = 5;
-        private const int LabelPadding = 2;
-        private const int LineHeight = 16;
+        private const int LineHeight = 15;
         private RepairListLabels[] _repairLabels;
         private ShipStatus[] _repairList = new ShipStatus[0];
         private ListScroller _listScroller;
@@ -48,7 +47,7 @@ namespace KancolleSniffer.View
             SuspendLayout();
             for (var i = 0; i < _repairLabels.Length; i++)
             {
-                var y = PanelPadding + LabelPadding + i * LineHeight;
+                var y = PanelPadding + 1 + i * LineHeight;
                 const int height = 12;
                 _repairLabels[i] = new RepairListLabels
                 {
@@ -58,8 +57,8 @@ namespace KancolleSniffer.View
                     Name = new ShipLabel {Location = new Point(9, y), AutoSize = true},
                     BackGround = new ShipLabel
                     {
-                        Location = new Point(0, y - LabelPadding),
-                        Size = new Size(Width, height + LabelPadding)
+                        Location = new Point(0, y - 1),
+                        Size = new Size(Width, height + 2)
                     }
                 };
                 Controls.AddRange(_repairLabels[i].Labels);
