@@ -27,7 +27,7 @@ namespace KancolleSniffer.View
         private const int PanelPadding = 5;
         private const int LabelPadding = 2;
         private const int LineHeight = 16;
-        private readonly RepairListLabels[] _repairLabels = new RepairListLabels[14];
+        private RepairListLabels[] _repairLabels;
         private ShipStatus[] _repairList = new ShipStatus[0];
         private ListScroller _listScroller;
 
@@ -44,6 +44,7 @@ namespace KancolleSniffer.View
 
         public void CreateLabels(EventHandler onClick)
         {
+            _repairLabels = new RepairListLabels[Lines];
             SuspendLayout();
             for (var i = 0; i < _repairLabels.Length; i++)
             {
@@ -58,7 +59,7 @@ namespace KancolleSniffer.View
                     BackGround = new ShipLabel
                     {
                         Location = new Point(0, y - LabelPadding),
-                        Size = new Size(Width, height + LabelPadding + 1)
+                        Size = new Size(Width, height + LabelPadding)
                     }
                 };
                 Controls.AddRange(_repairLabels[i].Labels);
@@ -71,6 +72,15 @@ namespace KancolleSniffer.View
             }
             ResumeLayout();
             SetupListScroller();
+        }
+
+        private int Lines
+        {
+            get
+            {
+                var baseHeight = (Parent.ClientRectangle.Height - Location.Y) / ShipLabel.ScaleFactor.Height;
+                return (int)Round((baseHeight - PanelPadding * 2) / LineHeight);
+            }
         }
 
         private void SetupListScroller()
