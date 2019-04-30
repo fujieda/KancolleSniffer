@@ -407,6 +407,7 @@ namespace KancolleSniffer
                     }
                 }
             }
+            Config.ShipList.Visible = _listForm.Visible && _listForm.WindowState == FormWindowState.Normal;
             _listForm.Close();
             Sniffer.FlashLog();
             Config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;

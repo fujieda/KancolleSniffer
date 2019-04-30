@@ -252,7 +252,6 @@ namespace KancolleSniffer
             config.Location = bounds.Location;
             config.Size = bounds.Size;
             config.Mode = (string)comboBoxGroup.SelectedItem;
-            config.Visible = Visible && WindowState == FormWindowState.Normal;
             Hide();
         }
 
