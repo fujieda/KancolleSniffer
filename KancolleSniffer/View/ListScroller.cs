@@ -21,6 +21,7 @@ namespace KancolleSniffer.View
     public class ListScroller
     {
         private readonly Panel _panel;
+        private const int MarkWidth = 20;
 
         public int Padding { get; set; }
 
@@ -93,27 +94,42 @@ namespace KancolleSniffer.View
 
         public void DrawMark()
         {
+            var halfOfWidth = _panel.Width * 0.5f;
+            var halfOfMark = MarkWidth * 0.5f * ShipLabel.ScaleFactor.Width;
+            var left = halfOfWidth - halfOfMark;
+            var right = halfOfWidth + halfOfMark;
+            var center = halfOfWidth;
             using (var g = _panel.CreateGraphics())
             {
-                var topBrush = Position > 0 ? Brushes.Black : new SolidBrush(_panel.BackColor);
-                g.FillPolygon(topBrush,
-                    new[]
-                    {
-                        new PointF(_panel.Width * 0.45f, Padding), new PointF(_panel.Width * 0.55f, Padding),
-                        new PointF(_panel.Width * 0.5f, 0), new PointF(_panel.Width * 0.45f, Padding)
-                    });
-                var bottomBrush = Position + Lines < DataCount
-                    ? Brushes.Black
-                    : new SolidBrush(_panel.BackColor);
-                g.FillPolygon(bottomBrush,
-                    new[]
-                    {
-                        new PointF(_panel.Width * 0.45f, _panel.Height - Padding - 2),
-                        new PointF(_panel.Width * 0.55f, _panel.Height - Padding - 2),
-                        new PointF(_panel.Width * 0.5f, _panel.Height - 2),
-                        new PointF(_panel.Width * 0.45f, _panel.Height - Padding - 2)
-                    });
+                DrawTopMark(g, left, right, center);
+                DrawBottomMark(g, left, right, center);
             }
+        }
+
+        private void DrawTopMark(Graphics g, float left, float right, float center)
+        {
+            var brush = Position > 0 ? Brushes.Black : new SolidBrush(_panel.BackColor);
+            var top = -1;
+            var base_ = Padding - 1;
+            g.FillPolygon(brush,
+                new[]
+                {
+                    new PointF(left, base_), new PointF(right, base_), new PointF(center, top),
+                    new PointF(left, base_)
+                });
+        }
+
+        private void DrawBottomMark(Graphics g, float left, float right, float center)
+        {
+            var brush = Position + Lines < DataCount ? Brushes.Black : new SolidBrush(_panel.BackColor);
+            var top = _panel.Height - 2;
+            var base_ = _panel.Height - Padding - 1;
+            g.FillPolygon(brush,
+                new[]
+                {
+                    new PointF(left, base_), new PointF(right, base_), new PointF(center, top),
+                    new PointF(left, base_)
+                });
         }
     }
 }

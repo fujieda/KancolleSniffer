@@ -113,7 +113,7 @@ namespace KancolleSniffer.View
         {
             var lines = Min(Max(1, _repairList.Length), _repairLabels.Length);
             Size = new Size(Width,
-                (int)Round(ShipLabel.ScaleFactor.Height * lines * LineHeight + PanelPadding * 2));
+                (int)Round(ShipLabel.ScaleFactor.Height * (lines * LineHeight + PanelPadding * 2)));
         }
 
         private void ShowRepairList()
