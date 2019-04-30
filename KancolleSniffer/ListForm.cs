@@ -255,6 +255,29 @@ namespace KancolleSniffer
             Hide();
         }
 
+        public void ChangeWindowState(FormWindowState newState)
+        {
+            if (!Visible)
+                return;
+            if (newState == FormWindowState.Minimized)
+            {
+                if (WindowState == FormWindowState.Normal)
+                    WindowState = FormWindowState.Minimized;
+                if (_config.HideOnMinimized)
+                    ShowInTaskbar = false;
+            }
+            else
+            {
+                if (WindowState == FormWindowState.Minimized)
+                {
+                    Application.DoEvents();
+                    if (_config.HideOnMinimized)
+                        ShowInTaskbar = true;
+                    WindowState = FormWindowState.Normal;
+                }
+            }
+        }
+
         private void ListForm_Activated(object sender, EventArgs e)
         {
             if (_suppressActivate.Check())

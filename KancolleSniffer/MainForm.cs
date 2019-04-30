@@ -424,21 +424,10 @@ namespace KancolleSniffer
             SuppressActivate.Start();
             if (WindowState == FormWindowState.Minimized)
             {
-                _listForm.WindowState = FormWindowState.Minimized;
                 if (Config.HideOnMinimized)
-                    _listForm.ShowInTaskbar = ShowInTaskbar = false;
+                    ShowInTaskbar = false;
             }
-            else if (_listForm.WindowState == FormWindowState.Minimized)
-            {
-                DoPaint();
-                _listForm.ShowInTaskbar = true;
-                _listForm.WindowState = FormWindowState.Normal;
-            }
-        }
-
-        private void DoPaint()
-        {
-            Application.DoEvents();
+            _listForm.ChangeWindowState(WindowState);
         }
 
         public TimeOutChecker SuppressActivate = new TimeOutChecker();
