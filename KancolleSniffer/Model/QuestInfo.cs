@@ -308,6 +308,8 @@ namespace KancolleSniffer.Model
             QuestInterval.Other, QuestInterval.Quarterly
         };
 
+        private readonly int[] _progress = new[] {0, 50, 80};
+
         public void InspectQuestList(dynamic json)
         {
             ResetQuests();
@@ -319,38 +321,28 @@ namespace KancolleSniffer.Model
                 {
                     if (entry is double) // -1の場合がある。
                         continue;
-
-                    var id = (int)entry.api_no;
-                    var state = (int)entry.api_state;
-                    var progress = (int)entry.api_progress_flag;
-                    var cat = (int)entry.api_category;
-                    var interval = _intervals[(int)entry.api_type - 1];
-                    var name = (string)entry.api_title;
-                    var detail = ((string)entry.api_detail).Replace("<br>", "\r\n");
-                    var material = (int[])entry.api_get_material;
-
-                    switch (progress)
+                    var quest = new QuestStatus
                     {
-                        case 0:
-                            break;
-                        case 1:
-                            progress = 50;
-                            break;
-                        case 2:
-                            progress = 80;
-                            break;
-                    }
+                        Id = (int)entry.api_no,
+                        Category = (int)entry.api_category,
+                        Progress = _progress[(int)entry.api_progress_flag],
+                        Interval = _intervals[(int)entry.api_type - 1],
+                        Name = (string)entry.api_title,
+                        Detail = ((string)entry.api_detail).Replace("<br>", "\r\n"),
+                        Material = (int[])entry.api_get_material
+                    };
+                    var state = (int)entry.api_state;
                     switch (state)
                     {
                         case 1:
-                            if (_quests.Remove(id))
+                            if (_quests.Remove(quest.Id))
                                 NeedSave = true;
                             break;
                         case 3:
-                            progress = 100;
+                            quest.Progress = 100;
                             goto case 2;
                         case 2:
-                            AddQuest(id, cat, interval, name, detail, material, progress, true);
+                            AddQuest(quest, true);
                             break;
                     }
                 }
@@ -364,28 +356,18 @@ namespace KancolleSniffer.Model
             }
         }
 
-        private void AddQuest(int id, int category, QuestInterval interval, string name, string detail, int[] material,
-            int progress,
-            bool adjustCount)
+        private void AddQuest(QuestStatus quest, bool adjustCount)
         {
-            var count = _countList.GetCount(id);
+            var count = _countList.GetCount(quest.Id);
             if (adjustCount)
             {
-                if (count.AdjustCount(progress))
+                if (count.AdjustCount(quest.Progress))
                     NeedSave = true;
+                quest.Material = quest.Material.Concat(count.Spec.Material).ToArray();
             }
-            _quests[id] = new QuestStatus
-            {
-                Id = id,
-                Category = category,
-                Interval = interval,
-                Name = name,
-                Detail = detail,
-                Material = adjustCount ? material?.Concat(count.Spec.Material).ToArray() : material,
-                Count = count,
-                Progress = progress,
-                Color = category <= _color.Length ? _color[category - 1] : Control.DefaultBackColor
-            };
+            quest.Count = count;
+            quest.Color = quest.Category <= _color.Length ? _color[quest.Category - 1] : Control.DefaultBackColor;
+            _quests[quest.Id] = quest;
         }
 
         public void ClearQuests()
@@ -946,7 +928,7 @@ namespace KancolleSniffer.Model
             {
                 _quests.Clear();
                 foreach (var q in status.QuestList)
-                    AddQuest(q.Id, q.Category, q.Interval, q.Name, q.Detail, q.Material, q.Progress, false);
+                    AddQuest(q, false);
             }
         }
     }
