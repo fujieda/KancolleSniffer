@@ -481,26 +481,51 @@ namespace KancolleSniffer.Model
             var types = json.api_at_type() ? (int[])json.api_at_type : (int[])json.api_sp_list;
             var targets = (int[][])json.api_df_list;
             var damages = (int[][])json.api_damage;
-            var records = new[] {new Record[12], new Record[12]};
-            Array.Copy(_friend, records[1], _friend.Length);
-            Array.Copy(_guard, 0, records[1], 6, _guard.Length);
-            Array.Copy(_enemy, records[0], _enemy.Length);
-            Array.Copy(_enemyGuard, 0, records[0], 6, _enemyGuard.Length);
+            var records = new BothRecord(_friend, _guard, _enemy, _enemyGuard);
             for (var turn = 0; turn < eFlags.Length; turn++)
             {
                 if (ignoreFriendDamage && eFlags[turn] == 1)
                     continue;
                 if (types[turn] == 100 || types[turn] == 101) // Nelson Touchと長門一斉射
-                    records[eFlags[turn] ^ 1][sources[turn]].TriggerSpecialAttack();
+                    records.TriggerSpecialAttack(eFlags[turn] ^ 1, sources[turn]);
                 for (var shot = 0; shot < targets[turn].Length; shot++)
                 {
                     var target = targets[turn][shot];
                     var damage = damages[turn][shot];
                     if (target == -1 || damage == -1)
                         continue;
-                    records[eFlags[turn]][target].ApplyDamage(damage);
+                    records.ApplyDamage(eFlags[turn], target, damage);
                 }
-                foreach (var ship in records[1])
+                records.CheckDamageControl();
+            }
+        }
+
+        private class BothRecord
+        {
+            private readonly Record[][] _records;
+
+            public BothRecord(Record[] friend, Record[] guard, Record[] enemy, Record[] enemyGuard)
+            {
+                _records = new[] { new Record[12], new Record[12] };
+                Array.Copy(friend, _records[1], friend.Length);
+                Array.Copy(guard, 0, _records[1], 6, guard.Length);
+                Array.Copy(enemy, _records[0], enemy.Length);
+                Array.Copy(enemyGuard, 0, _records[0], 6, enemyGuard.Length);
+            }
+
+            public void TriggerSpecialAttack(int side, int index)
+            {
+                _records[side][index].TriggerSpecialAttack();
+            }
+
+            public void ApplyDamage(int side, int index, int damage)
+            {
+                _records[side][index].ApplyDamage(damage);
+            }
+
+            public void CheckDamageControl()
+            {
+                foreach (var ship in _records[1])
                     ship?.CheckDamageControl();
             }
         }
