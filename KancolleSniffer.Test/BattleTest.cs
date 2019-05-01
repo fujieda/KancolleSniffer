@@ -268,6 +268,9 @@ namespace KancolleSniffer.Test
             PAssert.That(() => night.Battle.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
         }
 
+        /// <summary>
+        /// 長門改二の一斉射に対応する
+        /// </summary>
         [TestMethod]
         // ReSharper disable once IdentifierTypo
         public void NagatoSpecial()
@@ -280,7 +283,21 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
-        /// レーザー射撃戦に対応する
+        /// 陸奥改二の一斉射に対応する
+        /// </summary>
+        [TestMethod]
+        // ReSharper disable once IdentifierTypo
+        public void MutsuSpecial()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "mutsuspecial_001");
+            PAssert.That(() => !sniffer.IsBattleResultError);
+            PAssert.That(() => sniffer.Battle.Result.Friend.Main[0].SpecialAttack == ShipStatus.Attack.Fire);
+            PAssert.That(() => sniffer.Fleets[0].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
+        }
+
+        /// <summary>
+        /// レーダー射撃戦に対応する
         /// </summary>
         [TestMethod]
         public void LdShooting()

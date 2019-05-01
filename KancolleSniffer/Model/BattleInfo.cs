@@ -486,7 +486,7 @@ namespace KancolleSniffer.Model
             {
                 if (ignoreFriendDamage && eFlags[turn] == 1)
                     continue;
-                if (types[turn] == 100 || types[turn] == 101) // Nelson Touchと長門一斉射
+                if (IsSpecialAttack(types[turn]))
                     records.TriggerSpecialAttack(eFlags[turn] ^ 1, sources[turn]);
                 for (var shot = 0; shot < targets[turn].Length; shot++)
                 {
@@ -498,6 +498,16 @@ namespace KancolleSniffer.Model
                 }
                 records.CheckDamageControl();
             }
+        }
+
+        private bool IsSpecialAttack(int type)
+        {
+            // 100: Nelson Touch
+            // 101: 長門一斉射
+            // 102: 陸奥一斉射
+            // 200: 瑞雲一体攻撃
+            // 201: 海陸立体攻撃
+            return type >= 100 && type < 200;
         }
 
         private class BothRecord
