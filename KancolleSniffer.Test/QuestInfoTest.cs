@@ -254,6 +254,17 @@ namespace KancolleSniffer.Test
                 })
         });
 
+        private ShipStatus[] ShipStatusList(params int[] shipTypes)
+        {
+            return shipTypes.Select(sType => ShipStatus(sType)).ToArray();
+        }
+
+        private ShipStatus ShipStatus(int shipType, int specId = 0)
+        {
+            return new ShipStatus {NowHp = 1, Spec = new ShipSpec {Id = specId, ShipType = shipType}};
+        }
+
+
         /// <summary>
         /// 201: 敵艦隊を撃滅せよ！
         /// 210: 敵艦隊を10回邀撃せよ！
@@ -393,7 +404,7 @@ namespace KancolleSniffer.Test
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
-            questInfo.InspectBattleResult(Js(new { api_win_rank = "B" }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "B"}));
             PAssert.That(() => questInfo.Quests[0].Count.Now == 2);
         }
 
@@ -412,7 +423,7 @@ namespace KancolleSniffer.Test
                 api_mapinfo_no = 2,
                 api_event_id = 4
             }));
-            questInfo.InspectBattleResult(Js(new { api_win_rank = "S" }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
 
             questInfo.InspectMapStart(Js(new
@@ -426,10 +437,6 @@ namespace KancolleSniffer.Test
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => questInfo.Quests[0].Count.Now == 1);
         }
-
-        private ShipStatus ShipStatus(int shipType, int specId = 0) =>
-            new ShipStatus {NowHp = 1, Spec = new ShipSpec {Id = specId, ShipType = shipType}};
-
 
         /// <summary>
         /// 249: 「第五戦隊」出撃せよ！
@@ -483,11 +490,9 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {257}));
 
-            battleInfo.InjectResultStatus(new[]
-            {
-                ShipStatus(3), ShipStatus(2), ShipStatus(2),
-                ShipStatus(2), ShipStatus(2), ShipStatus(2)
-            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            battleInfo.InjectResultStatus(
+                ShipStatusList(3, 2, 2, 2, 2, 2), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
 
             questInfo.InspectMapNext(Js(new
             {
@@ -605,11 +610,9 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {264}));
 
-            battleInfo.InjectResultStatus(new[]
-            {
-                ShipStatus(7), ShipStatus(11), ShipStatus(3),
-                ShipStatus(3), ShipStatus(2), ShipStatus(2)
-            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            battleInfo.InjectResultStatus(
+                ShipStatusList(7, 11, 3, 3, 2, 2), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
 
             questInfo.InspectMapNext(Js(new
             {
@@ -646,11 +649,9 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {266}));
 
-            battleInfo.InjectResultStatus(new[]
-            {
-                ShipStatus(2), ShipStatus(5), ShipStatus(3),
-                ShipStatus(2), ShipStatus(2), ShipStatus(2)
-            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            battleInfo.InjectResultStatus(
+                ShipStatusList(2, 5, 3, 2, 2, 2), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
 
             questInfo.InspectMapNext(Js(new
             {
@@ -755,8 +756,8 @@ namespace KancolleSniffer.Test
                 api_mapinfo_no = 4,
                 api_event_id = 4
             }));
-            questInfo.InspectBattleResult(Js(new { api_win_rank = "S" }));
-            PAssert.That(() => questInfo.Quests[1].Count.NowArray.SequenceEqual(new[] { 0, 0, 0, 0 }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[1].Count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}));
             PAssert.That(() => questInfo.Quests[0].Count.Now == 0);
 
             questInfo.InspectMapNext(Js(new
@@ -810,11 +811,9 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {861}));
 
-            battleInfo.InjectResultStatus(new[]
-            {
-                ShipStatus(10), ShipStatus(22), ShipStatus(2),
-                ShipStatus(2), ShipStatus(2), ShipStatus(2)
-            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            battleInfo.InjectResultStatus(
+                ShipStatusList(10, 22, 2, 2, 2, 2), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
 
             questInfo.InspectMapNext(Js(new
             {
@@ -862,11 +861,9 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {862}));
 
-            battleInfo.InjectResultStatus(new[]
-            {
-                ShipStatus(2), ShipStatus(3), ShipStatus(3),
-                ShipStatus(2), ShipStatus(2), ShipStatus(16)
-            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            battleInfo.InjectResultStatus(
+                ShipStatusList(2, 3, 3, 2, 2, 16), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
 
             questInfo.InspectMapNext(Js(new
             {
@@ -909,11 +906,9 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {873}));
 
-            battleInfo.InjectResultStatus(new[]
-            {
-                ShipStatus(3), ShipStatus(2), ShipStatus(2),
-                ShipStatus(2), ShipStatus(2), ShipStatus(2)
-            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            battleInfo.InjectResultStatus(
+                ShipStatusList(3, 2, 2, 2, 2, 2), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
 
             questInfo.InspectMapNext(Js(new
             {
@@ -1093,7 +1088,7 @@ namespace KancolleSniffer.Test
                 api_mapinfo_no = 5,
                 api_event_id = 4
             }));
-            questInfo.InspectBattleResult(Js(new { api_win_rank = "S" }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => count.NowArray[0] == 0, "1-5");
 
             questInfo.InspectMapNext(Js(new
@@ -1147,11 +1142,9 @@ namespace KancolleSniffer.Test
             var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {894}));
             var count = questInfo.Quests[0].Count;
-            battleInfo.InjectResultStatus(new[]
-            {
-                ShipStatus(2), ShipStatus(2), ShipStatus(2),
-                ShipStatus(2), ShipStatus(2), ShipStatus(2)
-            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            battleInfo.InjectResultStatus(
+                ShipStatusList(2, 2, 2, 2, 2, 2),
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             questInfo.InspectMapNext(Js(new
             {
@@ -1175,7 +1168,7 @@ namespace KancolleSniffer.Test
                 api_mapinfo_no = 4,
                 api_event_id = 4
             }));
-            questInfo.InspectBattleResult(Js(new { api_win_rank = "S" }));
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => count.NowArray[1] == 0, "1-4");
 
             questInfo.InspectMapNext(Js(new
@@ -1288,31 +1281,30 @@ namespace KancolleSniffer.Test
             questInfo.InspectQuestList(CreateQuestList(new[] {330}));
             var q330 = questInfo.Quests[0];
 
-            battleInfo.InjectResultStatus(new[]
-            {
-                ShipStatus(18), ShipStatus(7), ShipStatus(2), ShipStatus(2)
-            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            battleInfo.InjectResultStatus(
+                ShipStatusList(18, 7, 2, 2),
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
             questInfo.InspectPracticeResult(Js(new {api_win_rank = "B"}));
             Assert.AreEqual(1, q330.Count.Now, "装甲空母、軽空母");
 
-            battleInfo.Result.Friend.Main = new[] { ShipStatus(11), ShipStatus(7), ShipStatus(2), ShipStatus(2) };
-            questInfo.InspectPracticeResult(Js(new { api_win_rank = "B" }));
+            battleInfo.Result.Friend.Main = ShipStatusList(11, 7, 2, 2);
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "B"}));
             Assert.AreEqual(2, q330.Count.Now, "正規空母、軽空母");
 
             q330.Count.Now = 0;
-            questInfo.InspectPracticeResult(Js(new { api_win_rank = "C" }));
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "C"}));
             Assert.AreEqual(0, q330.Count.Now, "敗北");
 
-            battleInfo.Result.Friend.Main = new[] {ShipStatus(2), ShipStatus(7), ShipStatus(11), ShipStatus(2)};
-            questInfo.InspectPracticeResult(Js(new { api_win_rank = "B" }));
+            battleInfo.Result.Friend.Main = ShipStatusList(2, 7, 11, 2);
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "B"}));
             Assert.AreEqual(0, q330.Count.Now, "旗艦空母以外");
 
-            battleInfo.Result.Friend.Main = new[] { ShipStatus(11), ShipStatus(2), ShipStatus(2), ShipStatus(2) };
-            questInfo.InspectPracticeResult(Js(new { api_win_rank = "B" }));
+            battleInfo.Result.Friend.Main = ShipStatusList(11, 2, 2, 2);
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "B"}));
             Assert.AreEqual(0, q330.Count.Now, "空母一隻");
 
-            battleInfo.Result.Friend.Main = new[] { ShipStatus(11), ShipStatus(7), ShipStatus(3), ShipStatus(2) };
-            questInfo.InspectPracticeResult(Js(new { api_win_rank = "B" }));
+            battleInfo.Result.Friend.Main = ShipStatusList(11, 7, 3, 2);
+            questInfo.InspectPracticeResult(Js(new {api_win_rank = "B"}));
             Assert.AreEqual(0, q330.Count.Now, "駆逐一隻");
         }
 
