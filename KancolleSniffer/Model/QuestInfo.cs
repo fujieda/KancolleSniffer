@@ -308,7 +308,7 @@ namespace KancolleSniffer.Model
             QuestInterval.Other, QuestInterval.Quarterly
         };
 
-        private readonly int[] _progress = new[] {0, 50, 80};
+        private readonly int[] _progress = {0, 50, 80};
 
         public void InspectQuestList(dynamic json)
         {
@@ -543,6 +543,11 @@ namespace KancolleSniffer.Model
             if (_quests.TryGetValue(280, out var q280))
             {
                 if (!(_boss && QuestSortie.CompareRank(rank, "S") == 0))
+                    return;
+                var shipTypes = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.ShipType)
+                    .ToArray();
+                if (!(shipTypes.Count(type => type == 1 || type == 2) >= 3 &&
+                      shipTypes.Any(type => new[] {3, 4, 7, 21}.Contains(type))))
                     return;
                 var count = q280.Count;
                 switch (_map)

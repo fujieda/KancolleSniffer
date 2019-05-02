@@ -696,8 +696,13 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_280()
         {
-            var questInfo = new QuestInfo(null, null, () => new DateTime(2015, 1, 1));
+            var battleInfo = new BattleInfo(null, null);
+            var questInfo = new QuestInfo(null, battleInfo, () => new DateTime(2015, 1, 1));
             questInfo.InspectQuestList(CreateQuestList(new[] {280}));
+
+            battleInfo.InjectResultStatus(
+                ShipStatusList(7, 1, 1, 1, 8, 8), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
 
             questInfo.InspectMapNext(Js(new
             {
@@ -738,6 +743,26 @@ namespace KancolleSniffer.Test
             }));
             questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
             PAssert.That(() => questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
+
+            battleInfo.Result.Friend.Main = ShipStatusList(7, 1, 1, 8, 8, 8);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
+
+            battleInfo.Result.Friend.Main = ShipStatusList(8, 1, 1, 1, 8, 8);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
+
+            battleInfo.Result.Friend.Main = ShipStatusList(3, 2, 1, 1, 8, 8);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1, 2}));
+
+            battleInfo.Result.Friend.Main = ShipStatusList(2, 4, 2, 1, 8, 8);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1, 3}));
+
+            battleInfo.Result.Friend.Main = ShipStatusList(2, 2, 21, 2, 8, 8);
+            questInfo.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => questInfo.Quests[0].Count.NowArray.SequenceEqual(new[] {1, 1, 1, 4}));
         }
 
         /// <summary>
