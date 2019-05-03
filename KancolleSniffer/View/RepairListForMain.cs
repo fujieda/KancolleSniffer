@@ -125,7 +125,7 @@ namespace KancolleSniffer.View
                 labels.Fleet.SetFleet(s);
                 labels.Name.SetName(s, ShipNameWidth.RepairList);
                 labels.Time.SetRepairTime(s);
-                labels.Damage.BackColor = ShipLabel.DamageColor(s, labels.Damage.PresetColor);
+                labels.Damage.BackColor = labels.Damage.DamageColor(s);
             }
             if (_repairList.Length < _repairLabels.Length)
                 ClearLabels(_repairList.Length);

@@ -148,7 +148,7 @@ namespace KancolleSniffer.View
             Text = _hpPercent
                 ? $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}%"
                 : $"{status.NowHp:D}/{status.MaxHp:D}";
-            BackColor = DamageColor(status, PresetColor);
+            BackColor = DamageColor(status);
         }
 
         public void ToggleHpPercent()
@@ -162,7 +162,7 @@ namespace KancolleSniffer.View
             SetHp(new ShipStatus {NowHp = now, MaxHp = max});
         }
 
-        public static Color DamageColor(ShipStatus status, Color backColor)
+        public Color DamageColor(ShipStatus status)
         {
             switch (status.DamageLevel)
             {
@@ -175,7 +175,7 @@ namespace KancolleSniffer.View
                 case ShipStatus.Damage.Small:
                     return Color.FromArgb(240, 240, 0);
                 default:
-                    return backColor;
+                    return PresetColor;
             }
         }
 
