@@ -142,12 +142,14 @@ namespace KancolleSniffer.View
             if (status == null)
             {
                 Text = "";
+                ForeColor = DefaultForeColor;
                 BackColor = PresetColor;
                 return;
             }
             Text = _hpPercent
                 ? $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}%"
                 : $"{status.NowHp:D}/{status.MaxHp:D}";
+            ForeColor = status.DamageLevel == ShipStatus.Damage.Badly ? CUDColors.Yellow : DefaultForeColor;
             BackColor = DamageColor(status);
         }
 
