@@ -348,7 +348,6 @@ namespace KancolleSniffer.View
                 if (i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
                 {
                     label.Visible = false;
-                    labelHp.ForeColor = Control.DefaultForeColor;
                     continue;
                 }
                 var timer = timers[i];
@@ -358,14 +357,11 @@ namespace KancolleSniffer.View
                 label.ForeColor = Control.DefaultForeColor;
                 labelName.SetName(stat, ShipNameWidth.AkashiTimer);
                 if (timer.Diff == 0)
-                {
-                    labelHp.ForeColor = Control.DefaultForeColor;
                     continue;
-                }
                 if (i == shortest)
                     label.ForeColor = CUDColors.Red;
-                labelHp.ForeColor = Color.DimGray;
                 labelHp.SetHp(stat.NowHp + timer.Diff, stat.MaxHp);
+                labelHp.ForeColor = Color.DimGray;
             }
         }
 
