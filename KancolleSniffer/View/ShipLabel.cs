@@ -36,6 +36,11 @@ namespace KancolleSniffer.View
         private SlotStatus _slotStatus;
         private ShipStatus _status;
         private bool _hpPercent;
+        private Font _strongFont;
+
+        private Font BaseFont => Parent.Font;
+
+        private Font StrongFont => _strongFont ?? (_strongFont = new Font("Leelawadee", BaseFont.Size));
 
         public override Color BackColor
         {
@@ -106,15 +111,15 @@ namespace KancolleSniffer.View
             _slotStatus = slotStatus;
             var lu = new Regex(@"^\p{Lu}").IsMatch(name);
             var shift = (int)Round(ScaleFactor.Height);
-            if (lu && Font.Equals(Parent.Font))
+            if (lu && Font.Equals(BaseFont))
             {
                 Location += new Size(0, -shift);
                 Font = LatinFont;
             }
-            else if (!lu && !Font.Equals(Parent.Font))
+            else if (!lu && !Font.Equals(BaseFont))
             {
                 Location += new Size(0, shift);
-                Font = Parent.Font;
+                Font = BaseFont;
             }
             var result = prefix + name;
             var measured = TextRenderer.MeasureText(result, Font).Width;
@@ -144,12 +149,13 @@ namespace KancolleSniffer.View
                 Text = "";
                 ForeColor = DefaultForeColor;
                 BackColor = PresetColor;
+                Font = BaseFont;
                 return;
             }
             Text = _hpPercent
                 ? $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}%"
                 : $"{status.NowHp:D}/{status.MaxHp:D}";
-            ForeColor = status.DamageLevel == ShipStatus.Damage.Badly ? CUDColors.Yellow : DefaultForeColor;
+            Font = status.DamageLevel == ShipStatus.Damage.Badly ? StrongFont : BaseFont;
             BackColor = DamageColor(status);
         }
 
