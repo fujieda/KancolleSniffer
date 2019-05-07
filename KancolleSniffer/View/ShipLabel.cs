@@ -37,6 +37,7 @@ namespace KancolleSniffer.View
         private ShipStatus _status;
         private bool _hpPercent;
         private Font _strongFont;
+        private ShipLabel _hpStrongLabel;
 
         private Font BaseFont => Parent.Font;
 
@@ -144,20 +145,58 @@ namespace KancolleSniffer.View
         public void SetHp(ShipStatus status)
         {
             _status = status;
+            if (_hpStrongLabel != null)
+                _hpStrongLabel.Text = "";
+            Font = BaseFont;
             if (status == null)
             {
                 Text = "";
-                ForeColor = DefaultForeColor;
                 BackColor = PresetColor;
-                Font = BaseFont;
                 return;
             }
-            Text = _hpPercent
-                ? $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}%"
-                : $"{status.NowHp:D}/{status.MaxHp:D}";
-            Font = status.DamageLevel == ShipStatus.Damage.Badly ? StrongFont : BaseFont;
+            if (_hpPercent)
+            {
+                var percent = $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}";
+                if (status.DamageLevel == ShipStatus.Damage.Badly)
+                {
+                    Text = "%";
+                    if (_hpStrongLabel == null)
+                        CreateHpStrongLabel();
+                    _hpStrongLabel.Text = percent;
+                }
+                else
+                {
+                    Text = percent + "%";
+                }
+            }
+            else
+            {
+                Text = $"{status.NowHp:D}/{status.MaxHp:D}";
+                if (status.DamageLevel == ShipStatus.Damage.Badly)
+                    Font = StrongFont;
+            }
             BackColor = DamageColor(status);
         }
+
+        private void CreateHpStrongLabel()
+        {
+            _hpStrongLabel = new ShipLabel
+            {
+                Font = StrongFont,
+                BackColor = CUDColors.Red,
+                Location = new Point(Left + (int)Round(4 * ScaleFactor.Width), Top),
+                AutoSize = true,
+                AnchorRight = true,
+                MinimumSize = new Size(0, Height),
+                TextAlign = ContentAlignment.MiddleLeft,
+                Cursor = Cursors.Hand
+            };
+            _hpStrongLabel.DoubleClick += (sender, e) => { OnDoubleClick(e); };
+            Parent.Controls.Add(_hpStrongLabel);
+            var index = Parent.Controls.GetChildIndex(this);
+            Parent.Controls.SetChildIndex(_hpStrongLabel, index + 1);
+        }
+
 
         public void ToggleHpPercent()
         {
