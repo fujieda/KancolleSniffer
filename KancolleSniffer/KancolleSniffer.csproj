@@ -161,6 +161,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\ShipInfo.cs" />
+    <Compile Include="View\Scaler.cs" />
     <Compile Include="View\ShipLabel.cs" />
     <Compile Include="View\ShipListPanel.cs">
       <SubType>Component</SubType>

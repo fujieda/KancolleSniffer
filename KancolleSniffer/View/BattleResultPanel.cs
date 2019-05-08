@@ -253,8 +253,7 @@ namespace KancolleSniffer.View
                 var panel = _panelList[i];
                 if (panel.Visible)
                     continue;
-                panel.Location = new Point(AutoScrollPosition.X,
-                    (int)Round((int)panel.Tag * ShipLabel.ScaleFactor.Height) + AutoScrollPosition.Y);
+                panel.Location = Scaler.Move(AutoScrollPosition.X, AutoScrollPosition.Y, 0, (int)panel.Tag);
                 panel.Visible = true;
             }
             for (var i = lines; i < _panelList.Count; i++)
@@ -264,9 +263,7 @@ namespace KancolleSniffer.View
                 _enemyLabels[0][1].Location.X + _enemyLabels.Max(labels => labels[1].Size.Width) - 1); // 敵の名前の右端
             for (var i = 0; i < lines; i++)
                 _panelList[i].Width = panelWidth;
-            _informationPanel.Location = new Point(
-                (int)Round(0 * ShipLabel.ScaleFactor.Width) + AutoScrollPosition.X,
-                (int)Round(20 * ShipLabel.ScaleFactor.Height) + AutoScrollPosition.Y);
+            _informationPanel.Location = Scaler.Move(AutoScrollPosition.X, AutoScrollPosition.Y, 0, 20);
             _informationPanel.Visible = true;
             UpdateCellInfo(_cellInfo);
         }

@@ -18,7 +18,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.View;
-using static System.Math;
 
 namespace KancolleSniffer
 {
@@ -215,7 +214,7 @@ namespace KancolleSniffer
         {
             /* DPIではなくズームしたときにパネルは大きくなるがScrollBarはそのままなので隙間ができる。
                そこでScrollBarの幅に合わせて全体の横幅を設定し直す。*/
-            Width = (int)Round((PanelWidth + 12 /* PanelとFrameの内側 */) * ShipLabel.ScaleFactor.Width) +
+            Width = Scaler.ScaleWidth(PanelWidth + 12 /* PanelとFrameの内側 */) +
                     SystemInformation.VerticalScrollBarWidth + 2 /* 縁の幅 */ + Width - ClientSize.Width;
             MinimumSize = new Size(Width, 0);
             MaximumSize = new Size(Width, int.MaxValue);

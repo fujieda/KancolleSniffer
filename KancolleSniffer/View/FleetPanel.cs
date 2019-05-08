@@ -303,7 +303,7 @@ namespace KancolleSniffer.View
                 BackColor = ShipLabel.ColumnColors[(i + 1) % 2],
                 Visible = false
             };
-            lbp.Scale(ShipLabel.ScaleFactor);
+            Scaler.Scale(lbp);
             lbp.Tag = lbp.Location.Y;
             var labels = new FleetLabels
             {
@@ -319,7 +319,7 @@ namespace KancolleSniffer.View
             Controls.Add(lbp);
             foreach (var label in labels)
             {
-                label.Scale();
+                Scaler.Scale(label);
                 label.PresetColor =
                     label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
@@ -360,7 +360,7 @@ namespace KancolleSniffer.View
             var i = Array.FindIndex(_table, e => e.Id == id);
             if (i == -1)
                 return;
-            var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
+            var y = Scaler.ScaleHeight(LineHeight * i);
             AutoScrollPosition = new Point(0, y);
         }
 
@@ -369,7 +369,7 @@ namespace KancolleSniffer.View
             var i = Array.FindIndex(_table, e => e.Fleet.StartsWith(fn));
             if (i == -1)
                 return;
-            var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
+            var y = Scaler.ScaleHeight(LineHeight * i);
             AutoScrollPosition = new Point(0, y);
         }
     }

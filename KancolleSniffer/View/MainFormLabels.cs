@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
-using static System.Math;
 
 namespace KancolleSniffer.View
 {
@@ -105,7 +104,7 @@ namespace KancolleSniffer.View
             });
             foreach (var label in headings)
             {
-                label.Scale();
+                Scaler.Scale(label);
                 label.BackColor = ShipLabel.ColumnColors[1];
             }
             for (var i = 0; i < shipLabels.Length; i++)
@@ -145,7 +144,7 @@ namespace KancolleSniffer.View
                 });
                 foreach (var label in shipLabels[i])
                 {
-                    label.Scale();
+                    Scaler.Scale(label);
                     label.PresetColor = label.BackColor = ShipLabel.ColumnColors[i % 2];
                     label.Tag = i;
                     label.Click += onClick;
@@ -206,7 +205,7 @@ namespace KancolleSniffer.View
             });
             foreach (var label in headings)
             {
-                label.Scale();
+                Scaler.Scale(label);
                 label.BackColor = ShipLabel.ColumnColors[1];
             }
             for (var i = 0; i < _combinedLabels.Length; i++)
@@ -235,7 +234,7 @@ namespace KancolleSniffer.View
                 });
                 foreach (var label in _combinedLabels[i])
                 {
-                    label.Scale();
+                    Scaler.Scale(label);
                     label.PresetColor = label.BackColor = ShipLabel.ColumnColors[i % 2];
                     label.Tag = i;
                     label.Click += onClick;
@@ -293,7 +292,7 @@ namespace KancolleSniffer.View
                 label.BackColor = ShipLabel.ColumnColors[i % 2];
             }
             foreach (var label in timerLabels)
-                label.Scale();
+                Scaler.Scale(label);
             parent.ResumeLayout();
         }
 
@@ -305,15 +304,14 @@ namespace KancolleSniffer.View
 
         public void AdjustAkashiTimers(ShipLabel[] timers, int lineHeight)
         {
-            var scale = ShipLabel.ScaleFactor;
-            if (scale.Height < 1.2)
+            if (Scaler.ScaleHeight(1f) < 1.2)
                 return;
             for (var i = 0; i < timers.Length; i++)
             {
                 const int x = 55;
                 var y = 3 + lineHeight * (i + 1);
-                timers[i].Location = new Point((int)Round(x * scale.Width) - 3, (int)Round(y * scale.Height));
-                timers[i].Size = new Size((int)Round(31 * scale.Width) + 1, (int)Round(12 * scale.Height));
+                timers[i].Location = Scaler.Move(-3, 0, x, y);
+                timers[i].Size = new Size(Scaler.ScaleWidth(31) + 1, Scaler.ScaleWidth(12));
             }
         }
 
@@ -391,7 +389,7 @@ namespace KancolleSniffer.View
                     });
                 foreach (var label in _ndockLabels[i])
                 {
-                    label.Scale();
+                    Scaler.Scale(label);
                     label.Click += onClick;
                 }
             }

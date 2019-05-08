@@ -49,7 +49,7 @@ namespace KancolleSniffer.View
             _lines = LimitLines(lines);
             _labels = new QuestLabels[_lines];
             SuspendLayout();
-            Height = (int)Math.Round((TopMargin * 2 + LineHeight * lines) * ShipLabel.ScaleFactor.Height);
+            Height = Scaler.ScaleHeight(TopMargin * 2 + LineHeight * lines);
             for (var i = 0; i < _lines; i++)
             {
                 var y = TopMargin + i * LineHeight;
@@ -81,7 +81,7 @@ namespace KancolleSniffer.View
                 _labels[i].Name.DoubleClick += onDoubleClick;
                 Controls.AddRange(_labels[i].Labels);
                 foreach (var label in _labels[i].Labels)
-                    label.Scale();
+                    Scaler.Scale(label);
             }
             ResumeLayout();
             SetupListScroller();

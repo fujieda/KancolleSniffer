@@ -106,7 +106,7 @@ namespace KancolleSniffer.Test
         private void TruncateNameSub(Dictionary<string, string> dict, ShipNameWidth width)
         {
             var label = new ShipLabel {Parent = new Panel()};
-            ShipLabel.ScaleFactor = new SizeF(1,1);
+            Scaler.Factor = new SizeF(1,1);
             foreach (var entry in dict)
             {
                 label.SetName(entry.Key, width);
@@ -121,7 +121,7 @@ namespace KancolleSniffer.Test
         public void SetName()
         {
             var label = new ShipLabel {Parent = new Panel()};
-            ShipLabel.ScaleFactor = new SizeF(1, 1);
+            Scaler.Factor = new SizeF(1, 1);
             label.SetName(new ShipStatus
                 {
                     Spec = new ShipSpec {Name = "綾波改二"},

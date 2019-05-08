@@ -281,7 +281,7 @@ namespace KancolleSniffer.View
 
         private void SetupScrollBar()
         {
-            var needBar = _shipList.Length * LineHeight * ShipLabel.ScaleFactor.Height > Height;
+            var needBar = Scaler.ScaleHeight((float)_shipList.Length * LineHeight) > Height;
             if (!needBar)
             {
                 ScrollBar.Visible = false;
@@ -290,7 +290,7 @@ namespace KancolleSniffer.View
             }
             ScrollBar.Visible = true;
             ScrollBar.Minimum = 0;
-            var lines = Max(1, Height / (int)Round(LineHeight * ShipLabel.ScaleFactor.Height));
+            var lines = Max(1, Height / Scaler.ScaleHeight(LineHeight));
             var max = _shipList.Length - lines;
             var largeChange = Min(lines, max);
             ScrollBar.LargeChange = largeChange;
@@ -307,7 +307,7 @@ namespace KancolleSniffer.View
                 Size = new Size(ListForm.PanelWidth, LineHeight),
                 BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
             };
-            panel.Scale(ShipLabel.ScaleFactor);
+            Scaler.Scale(panel);
             panel.Tag = panel.Location.Y;
             var labels = new[]
             {
@@ -331,7 +331,7 @@ namespace KancolleSniffer.View
                     Size = new Size(12, 11),
                     Tag = i * 10 + j
                 };
-                cb[j].Scale(ShipLabel.ScaleFactor);
+                Scaler.Scale(cb[j]);
                 cb[j].CheckedChanged += checkboxGroup_CheckedChanged;
             }
             _groupingLabelList.Add(labels);
@@ -345,7 +345,7 @@ namespace KancolleSniffer.View
             var unused = panel.Handle; // create handle
             foreach (var label in labels)
             {
-                label.Scale();
+                Scaler.Scale(label);
                 label.PresetColor =
                     label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
@@ -377,7 +377,7 @@ namespace KancolleSniffer.View
                 Size = new Size(ListForm.PanelWidth, LineHeight),
                 BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
             };
-            panel.Scale(ShipLabel.ScaleFactor);
+            Scaler.Scale(panel);
             panel.Tag = panel.Location.Y;
             var labels = new[]
             {
@@ -409,7 +409,7 @@ namespace KancolleSniffer.View
             var unused = panel.Handle; // create handle
             foreach (var label in labels)
             {
-                label.Scale();
+                Scaler.Scale(label);
                 label.PresetColor =
                     label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
@@ -429,7 +429,7 @@ namespace KancolleSniffer.View
                 Size = new Size(ListForm.PanelWidth, LineHeight),
                 BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
             };
-            panel.Scale(ShipLabel.ScaleFactor);
+            Scaler.Scale(panel);
             var labels = new[]
             {
                 new ShipLabel
@@ -470,7 +470,7 @@ namespace KancolleSniffer.View
             var unused = panel.Handle; // create handle
             foreach (var label in labels)
             {
-                label.Scale();
+                Scaler.Scale(label);
                 label.PresetColor =
                     label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }

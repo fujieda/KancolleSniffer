@@ -27,7 +27,6 @@ namespace KancolleSniffer.View
     public class ShipLabel : Label
     {
         public static Color[] ColumnColors = {SystemColors.Control, Color.White};
-        public static SizeF ScaleFactor { get; set; }
         public static Font LatinFont { get; set; } = new Font("Tahoma", 8f);
         public Color PresetColor { get; set; }
         public bool AnchorRight { get; set; }
@@ -111,7 +110,7 @@ namespace KancolleSniffer.View
                 name = "";
             _slotStatus = slotStatus;
             var lu = new Regex(@"^\p{Lu}").IsMatch(name);
-            var shift = (int)Round(ScaleFactor.Height);
+            var shift = Scaler.ScaleHeight(1);
             if (lu && Font.Equals(BaseFont))
             {
                 Location += new Size(0, -shift);
@@ -134,7 +133,7 @@ namespace KancolleSniffer.View
             foreach (var ch in name)
             {
                 var tmp = truncated + ch;
-                if (TextRenderer.MeasureText(tmp, Font).Width > (int)width * ScaleFactor.Width)
+                if (TextRenderer.MeasureText(tmp, Font).Width > Scaler.ScaleWidth((float)width))
                     break;
                 truncated = tmp;
             }
@@ -184,7 +183,7 @@ namespace KancolleSniffer.View
             {
                 Font = StrongFont,
                 BackColor = CUDColors.Red,
-                Location = new Point(Left + (int)Round(4 * ScaleFactor.Width), Top),
+                Location = Scaler.Move(Left, Top, 4, 0),
                 AutoSize = true,
                 MinimumSize = new Size(0, Height),
                 AnchorRight = true,
@@ -308,30 +307,20 @@ namespace KancolleSniffer.View
             base.OnPaint(e);
             if ((_slotStatus & SlotStatus.NormalEmpty) != 0)
             {
-                e.Graphics.DrawRectangle(
-                    Pens.Black,
-                    ClientSize.Width - 3 * ScaleFactor.Width, 0,
-                    2 * ScaleFactor.Width, 5 * ScaleFactor.Height);
+                e.Graphics.DrawRectangle(Pens.Black,
+                    new Rectangle(Scaler.Move(ClientSize.Width, 0, -3, 0), Scaler.Scale(2, 5)));
             }
             else if ((_slotStatus & SlotStatus.SemiEquipped) != 0)
             {
-                e.Graphics.DrawLine(
-                    Pens.Black,
-                    ClientSize.Width - 1 * ScaleFactor.Width, 0,
-                    ClientSize.Width - 1 * ScaleFactor.Width, 5 * ScaleFactor.Height);
+                e.Graphics.DrawLine(Pens.Black,
+                    Scaler.Move(ClientSize.Width, 0, -1, 0),
+                    Scaler.Move(ClientSize.Width, 0, -1, 5));
             }
             if ((_slotStatus & SlotStatus.ExtraEmpty) != 0)
             {
-                e.Graphics.DrawRectangle(
-                    Pens.Black,
-                    ClientSize.Width - 3 * ScaleFactor.Width, 8 * ScaleFactor.Height,
-                    2 * ScaleFactor.Width, 3 * ScaleFactor.Height);
+                e.Graphics.DrawRectangle(Pens.Black,
+                    new Rectangle(Scaler.Move(ClientSize.Width, 0, -3, 8), Scaler.Scale(2, 3)));
             }
-        }
-
-        public void Scale()
-        {
-            Scale(ScaleFactor);
         }
     }
 }

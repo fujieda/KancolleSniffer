@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -98,7 +97,7 @@ namespace KancolleSniffer.View
                 BackColor = ShipLabel.ColumnColors[(i + 1) % 2],
                 Visible = false
             };
-            lbp.Scale(ShipLabel.ScaleFactor);
+            Scaler.Scale(lbp);
             lbp.Tag = lbp.Location.Y;
             var labels = new[]
             {
@@ -114,7 +113,7 @@ namespace KancolleSniffer.View
             Controls.Add(lbp);
             foreach (var label in labels)
             {
-                label.Scale();
+                Scaler.Scale(label);
                 label.PresetColor =
                     label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
@@ -147,7 +146,7 @@ namespace KancolleSniffer.View
             var i = _table.FindIndex(e => e.Id == id);
             if (i == -1)
                 return;
-            var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
+            var y = Scaler.ScaleHeight(LineHeight * i);
             AutoScrollPosition = new Point(0, y);
         }
     }

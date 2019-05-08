@@ -64,7 +64,7 @@ namespace KancolleSniffer.View
                 Controls.AddRange(_repairLabels[i].Labels);
                 foreach (var label in _repairLabels[i].Labels)
                 {
-                    label.Scale();
+                    Scaler.Scale(label);
                     label.PresetColor = label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
                     label.Click += onClick;
                 }
@@ -77,8 +77,8 @@ namespace KancolleSniffer.View
         {
             get
             {
-                var baseHeight = (Parent.ClientRectangle.Height - Location.Y) / ShipLabel.ScaleFactor.Height;
-                return (int)Round((baseHeight - PanelPadding * 2) / LineHeight);
+                var baseHeight = Parent.ClientRectangle.Height - Location.Y;
+                return (int)Round((baseHeight - Scaler.ScaleHeight((float)PanelPadding) * 2) / Scaler.ScaleHeight((float)LineHeight));
             }
         }
 
@@ -112,8 +112,7 @@ namespace KancolleSniffer.View
         private void SetPanelHeight()
         {
             var lines = Min(Max(1, _repairList.Length), _repairLabels.Length);
-            Size = new Size(Width,
-                (int)Round(ShipLabel.ScaleFactor.Height * (lines * LineHeight + PanelPadding * 2)));
+            Size = new Size(Width, Scaler.ScaleHeight(lines * LineHeight + PanelPadding * 2));
         }
 
         private void ShowRepairList()

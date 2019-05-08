@@ -119,7 +119,7 @@ namespace KancolleSniffer.View
         public void DrawMark()
         {
             var halfOfWidth = _panel.Width * 0.5f;
-            var halfOfMark = MarkWidth * 0.5f * ShipLabel.ScaleFactor.Width;
+            var halfOfMark = Scaler.ScaleWidth(MarkWidth * 0.5f);
             var left = halfOfWidth - halfOfMark;
             var right = halfOfWidth + halfOfMark;
             var center = halfOfWidth;
