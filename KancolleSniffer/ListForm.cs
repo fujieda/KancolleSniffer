@@ -238,7 +238,7 @@ namespace KancolleSniffer
         private void LoadShipGroupFromConfig()
         {
             var group = _config.ShipList.ShipGroup;
-            for (var i = 0; i < ShipListPanel.GroupCount; i++)
+            for (var i = 0; i < GroupConfigLabels.GroupCount; i++)
                 shipListPanel.GroupSettings[i] = i < group.Count ? new HashSet<int>(group[i]) : new HashSet<int>();
         }
 
@@ -309,7 +309,7 @@ namespace KancolleSniffer
             var all = _sniffer.ShipList.Select(s => s.Id).ToArray();
             var group = _config.ShipList.ShipGroup;
             group.Clear();
-            for (var i = 0; i < ShipListPanel.GroupCount; i++)
+            for (var i = 0; i < GroupConfigLabels.GroupCount; i++)
             {
                 if (all.Length > 0)
                     shipListPanel.GroupSettings[i].IntersectWith(all);

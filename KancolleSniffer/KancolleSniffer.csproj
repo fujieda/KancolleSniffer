@@ -110,6 +110,7 @@
     </Compile>
     <Compile Include="Net\HttpProxy.cs" />
     <Compile Include="Util\HttpUtility.cs" />
+    <Compile Include="View\GroupConfigLabels.cs" />
     <Compile Include="View\ListScroller.cs" />
     <Compile Include="View\NumberAndHistory.cs" />
     <Compile Include="View\ItemTreeView.cs">

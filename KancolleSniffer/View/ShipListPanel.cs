@@ -25,31 +25,39 @@ namespace KancolleSniffer.View
 {
     public class ShipListPanel : Panel
     {
-        private const int LabelHeight = 12;
+        public const int LabelHeight = 12;
         public const int LineHeight = 16;
         private ShipStatus[] _shipList;
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private readonly List<Panel> _labelPanelList = new List<Panel>();
-        private readonly List<CheckBox[]> _checkBoxesList = new List<CheckBox[]>();
-        private readonly List<ShipLabel[]> _groupingLabelList = new List<ShipLabel[]>();
-        private readonly List<Panel> _groupingPanelList = new List<Panel>();
         private readonly List<ShipLabel[]> _repairLabelList = new List<ShipLabel[]>();
         private readonly List<Panel> _repairPanelList = new List<Panel>();
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
+        private readonly GroupConfigLabels _groupConfigLabels;
         private string _mode;
         private bool _hpPercent;
 
-        public const int GroupCount = 4;
-        public HashSet<int>[] GroupSettings { get; } = new HashSet<int>[GroupCount];
-        public bool GroupUpdated { get; set; }
+        public HashSet<int>[] GroupSettings => _groupConfigLabels.GroupSettings;
+
+        public bool GroupUpdated
+        {
+            get => _groupConfigLabels.GroupUpdated;
+            set => _groupConfigLabels.GroupUpdated = value;
+        }
 
         public ScrollBar ScrollBar { get; }
+
+        public ShipStatus GetShip(int i)
+        {
+            return _shipList[i + ScrollBar.Value];
+        }
 
         public ShipListPanel()
         {
             ScrollBar = new VScrollBar {Dock = DockStyle.Right, Visible = false};
             ScrollBar.ValueChanged += ScrollBarOnValueChanged;
             Controls.Add(ScrollBar);
+            _groupConfigLabels = new GroupConfigLabels(this);
         }
 
         private void ScrollBarOnValueChanged(object sender, EventArgs eventArgs)
@@ -107,7 +115,7 @@ namespace KancolleSniffer.View
         private void CreateShipList(Sniffer sniffer, ShipListConfig config)
         {
             var ships = FilterByShipTypes(
-                _mode == "修復" ? sniffer.RepairList : FilterByGroup(sniffer.ShipList, _mode),
+                _mode == "修復" ? sniffer.RepairList : _groupConfigLabels.FilterByGroup(sniffer.ShipList, _mode),
                 config.ShipCategories).ToArray();
             var order = _mode == "修復" ? ListForm.SortOrder.Repair : config.SortOrder;
             if (!config.ShipType)
@@ -121,14 +129,6 @@ namespace KancolleSniffer.View
                     Spec = new ShipSpec { Name = type.Name, ShipType = type.Id},
                     Level = 1000,
                 }).Concat(ships).OrderBy(ship => ship, new CompareShip(true, order)).ToArray();
-        }
-
-        private IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships, string group)
-        {
-            var g = Array.FindIndex(new[] {"A", "B", "C", "D"}, x => x == group);
-            if (g == -1)
-                return ships;
-            return from s in ships where GroupSettings[g].Contains(s.Id) select s;
         }
 
         private static readonly int[][] ShipTypeIds =
@@ -272,7 +272,7 @@ namespace KancolleSniffer.View
         {
             for (var i = _labelList.Count; i * LineHeight < Height; i++)
             {
-                CreateGroupingComponents(i);
+                _groupConfigLabels.CreateComponents(i);
                 CreateRepairLabels(i);
                 CreateShipLabels(i);
             }
@@ -296,75 +296,6 @@ namespace KancolleSniffer.View
             ScrollBar.LargeChange = largeChange;
             ScrollBar.Maximum = Max(0, max + largeChange - 1); // ScrollBarを最大まで動かしてもmaxには届かない
             ScrollBar.Value = Min(ScrollBar.Value, max);
-        }
-
-        private void CreateGroupingComponents(int i)
-        {
-            var y = LineHeight * i + 1;
-            var panel = new Panel
-            {
-                Location = new Point(0, y),
-                Size = new Size(ListForm.PanelWidth, LineHeight),
-                BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
-            };
-            Scaler.Scale(panel);
-            panel.Tag = panel.Location.Y;
-            var labels = new[]
-            {
-                new ShipLabel
-                {
-                    Location = new Point(90, 2),
-                    Size = new Size(24, LabelHeight),
-                    TextAlign = ContentAlignment.MiddleRight
-                },
-                new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(1, 2), AutoSize = true}
-            };
-
-            var cb = new CheckBox[GroupCount];
-            for (var j = 0; j < cb.Length; j++)
-            {
-                cb[j] = new CheckBox
-                {
-                    Location = new Point(125 + j * 24, 2),
-                    FlatStyle = FlatStyle.Flat,
-                    Size = new Size(12, 11),
-                    Tag = i * 10 + j
-                };
-                Scaler.Scale(cb[j]);
-                cb[j].CheckedChanged += checkboxGroup_CheckedChanged;
-            }
-            _groupingLabelList.Add(labels);
-            _checkBoxesList.Add(cb);
-            _groupingPanelList.Add(panel);
-            // ReSharper disable CoVariantArrayConversion
-            panel.Controls.AddRange(labels);
-            panel.Controls.AddRange(cb);
-            // ReSharper restore CoVariantArrayConversion
-            Controls.Add(panel);
-            var unused = panel.Handle; // create handle
-            foreach (var label in labels)
-            {
-                Scaler.Scale(label);
-                label.PresetColor =
-                    label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
-            }
-        }
-
-        private void checkboxGroup_CheckedChanged(object sender, EventArgs e)
-        {
-            var cb = (CheckBox)sender;
-            var group = (int)cb.Tag % 10;
-            var idx = (int)cb.Tag / 10;
-            if (cb.Checked)
-            {
-                GroupSettings[group].Add(_shipList[idx + ScrollBar.Value].Id);
-            }
-            else
-            {
-                GroupSettings[group].Remove(_shipList[idx + ScrollBar.Value].Id);
-            }
-            GroupUpdated = true;
         }
 
         private void CreateRepairLabels(int i)
@@ -490,7 +421,7 @@ namespace KancolleSniffer.View
                 if (InShipStatus(_mode))
                     SetShipStatus(i);
                 if (_mode == "分類")
-                    SetGrouping(i);
+                    _groupConfigLabels.SetGrouping(i);
                 if (_mode == "修復")
                     SetRepairList(i);
             }
@@ -498,7 +429,8 @@ namespace KancolleSniffer.View
 
         private void HidePanels(int i)
         {
-            _labelPanelList[i].Visible = _groupingPanelList[i].Visible = _repairPanelList[i].Visible = false;
+            _labelPanelList[i].Visible = _repairPanelList[i].Visible = false;
+            _groupConfigLabels.HidePanel(i);
         }
 
         private bool InShipStatus(string mode) => Array.Exists(new[] {"全艦", "A", "B", "C", "D"}, x => mode == x);
@@ -521,7 +453,7 @@ namespace KancolleSniffer.View
             _labelPanelList[i].Visible = true;
         }
 
-        private void SetShipType(int i)
+        public void SetShipType(int i)
         {
             var s = _shipList[i + ScrollBar.Value];
             var labels = _labelList[i];
@@ -533,24 +465,6 @@ namespace KancolleSniffer.View
             labels[5].SetFleet(null);
             labels[5].Text = s.Name;
             _labelPanelList[i].Visible = true;
-        }
-
-        private void SetGrouping(int i)
-        {
-            var s = _shipList[i + ScrollBar.Value];
-            var labels = _groupingLabelList[i];
-            if (s.Level == 1000)
-            {
-                SetShipType(i);
-                return;
-            }
-            labels[0].SetLevel(s);
-            labels[1].SetName(s, ShipNameWidth.GroupConfig);
-            labels[2].SetFleet(s);
-            var cb = _checkBoxesList[i];
-            for (var j = 0; j < cb.Length; j++)
-                cb[j].Checked = GroupSettings[j].Contains(s.Id);
-            _groupingPanelList[i].Visible = true;
         }
 
         private void SetRepairList(int i)
