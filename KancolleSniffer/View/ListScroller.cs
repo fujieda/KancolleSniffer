@@ -94,7 +94,7 @@ namespace KancolleSniffer.View
 
         private void BottomLineOnMouseEnter(object sender, EventArgs e)
         {
-            if (IsBottom)
+            if (!NeedScroll)
                 return;
             StartScroll?.Invoke();
             _bottomScrollRepeatTimer.Start();
@@ -102,13 +102,13 @@ namespace KancolleSniffer.View
 
         private void ScrollDown()
         {
-            if (IsBottom)
+            if (!NeedScroll)
                 return;
             Position++;
             Update?.Invoke();
         }
 
-        private bool IsBottom => Position + Lines == DataCount;
+        private bool NeedScroll => Position + Lines < DataCount;
 
         private void BottomLineOnMouseLeave(object sender, EventArgs e)
         {
