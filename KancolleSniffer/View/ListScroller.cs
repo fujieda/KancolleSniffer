@@ -33,6 +33,10 @@ namespace KancolleSniffer.View
 
         public event Action Update;
 
+        public event Action StartScroll;
+
+        public event Action EndScroll;
+
         public ListScroller(Panel panel, Label[] topLabels, Label[] bottomLabels)
         {
             _panel = panel;
@@ -48,7 +52,7 @@ namespace KancolleSniffer.View
                 label.MouseEnter += TopLineOnMouseEnter;
                 label.MouseLeave += TopLineOnMouseLeave;
             }
-            _topScrollRepeatTimer.Tick += TopLineOnMouseEnter;
+            _topScrollRepeatTimer.Tick += (obj, e) => ScrollUp();
         }
 
         public void SetBottomEventHandler(Label[] bottom)
@@ -58,7 +62,7 @@ namespace KancolleSniffer.View
                 label.MouseEnter += BottomLineOnMouseEnter;
                 label.MouseLeave += BottomLineOnMouseLeave;
             }
-            _bottomScrollRepeatTimer.Tick += BottomLineOnMouseEnter;
+            _bottomScrollRepeatTimer.Tick += (obj, e) => ScrollDown();
         }
 
         private readonly Timer _topScrollRepeatTimer = new Timer {Interval = 100};
@@ -66,29 +70,49 @@ namespace KancolleSniffer.View
 
         private void TopLineOnMouseEnter(object sender, EventArgs e)
         {
-            if (Position == 0)
+            if (IsTop)
                 return;
-            Position--;
-            Update?.Invoke();
+            StartScroll?.Invoke();
             _topScrollRepeatTimer.Start();
         }
 
+        private void ScrollUp()
+        {
+            if (IsTop)
+                return;
+            Position--;
+            Update?.Invoke();
+        }
+
+        private bool IsTop => Position == 0;
+
         private void TopLineOnMouseLeave(object sender, EventArgs e)
         {
+            EndScroll?.Invoke();
             _topScrollRepeatTimer.Stop();
         }
 
         private void BottomLineOnMouseEnter(object sender, EventArgs e)
         {
-            if (Position + Lines >= DataCount)
+            if (IsBottom)
                 return;
-            Position++;
-            Update?.Invoke();
+            StartScroll?.Invoke();
             _bottomScrollRepeatTimer.Start();
         }
 
+        private void ScrollDown()
+        {
+            if (IsBottom)
+                return;
+            Position++;
+            Update?.Invoke();
+        }
+
+        private bool IsBottom => Position + Lines == DataCount;
+
         private void BottomLineOnMouseLeave(object sender, EventArgs e)
         {
+            EndScroll?.Invoke();
             _bottomScrollRepeatTimer.Stop();
         }
 

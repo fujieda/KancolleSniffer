@@ -43,6 +43,7 @@ namespace KancolleSniffer.View
         private ListScroller _listScroller;
         private int _lines;
 
+
         public void CreateLabels(int lines, EventHandler onDoubleClick)
         {
             _lines = LimitLines(lines);
@@ -101,6 +102,8 @@ namespace KancolleSniffer.View
                 Padding = TopMargin
             };
             _listScroller.Update += ShowQuestList;
+            _listScroller.StartScroll += () => { ToolTip.Active = false; };
+            _listScroller.EndScroll += () => { ToolTip.Active = true; };
         }
 
         public void Update(QuestStatus[] quests)
