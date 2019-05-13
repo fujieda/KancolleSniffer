@@ -47,6 +47,13 @@ namespace KancolleSniffer.Model
                       new[] {"燃", "弾", "鋼", "ボ", "建造", "修復", "開発", "改修"}
                           .Zip(Material, (m, num) => num == 0 ? "" : m + num)
                           .Where(s => !string.IsNullOrEmpty(s))));
+
+        public QuestStatus Clone()
+        {
+            var clone = (QuestStatus)MemberwiseClone();
+            clone.Count = Count.Clone();
+            return clone;
+        }
     }
 
     public enum QuestInterval
@@ -201,6 +208,23 @@ namespace KancolleSniffer.Model
             return NowArray != null
                 ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
                 : $"{Now}/{Spec.Max}";
+        }
+
+        public QuestCount Clone()
+        {
+            var clone = (QuestCount)MemberwiseClone();
+            if (NowArray != null)
+                clone.NowArray = (int[])NowArray.Clone();
+            return clone;
+        }
+
+        public bool Equals(QuestCount other)
+        {
+            if (Id != other.Id)
+                return false;
+            if (NowArray == null)
+                return Now == other.Now;
+            return NowArray.SequenceEqual(other.NowArray);
         }
 
         public string ToToolTip()

@@ -14,8 +14,10 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
+
 // ReSharper disable CoVariantArrayConversion
 
 namespace KancolleSniffer.View
@@ -103,11 +105,36 @@ namespace KancolleSniffer.View
 
         public void Update(QuestStatus[] quests)
         {
-            _questList = quests;
             _listScroller.DataCount = quests.Length;
-            if (quests.Length <= _lines)
-                _listScroller.Position = 0;
+            _listScroller.Position = CalcScrollPosition(quests);
+            _questList = quests.Select(q => q.Clone()).ToArray();
             ShowQuestList();
+        }
+
+        private int CalcScrollPosition(QuestStatus[] newQuests)
+        {
+            if (newQuests.Length <= _lines)
+                return 0;
+            var current = _listScroller.Position;
+            var bottomIndex = current + _lines - 1;
+            if (newQuests.Length < _questList.Length)
+                return bottomIndex >= newQuests.Length ? newQuests.Length - _lines : current;
+            var changedIndex = 0;
+            if (newQuests.Length > _questList.Length)
+            {
+                changedIndex = _questList.TakeWhile((q, i) => q.Id == newQuests[i].Id).Count();
+            }
+            else if (newQuests.Length == _questList.Length)
+            {
+                changedIndex = _questList.TakeWhile((q, i) => q.Count.Equals(newQuests[i].Count)).Count();
+                if (changedIndex == _questList.Length) // unchanged
+                    return current;
+            }
+            if (changedIndex < current)
+                return changedIndex;
+            if (changedIndex > bottomIndex)
+                return current + changedIndex - bottomIndex;
+            return current;
         }
 
         private void ShowQuestList()
