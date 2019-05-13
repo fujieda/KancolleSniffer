@@ -138,7 +138,8 @@ namespace KancolleSniffer.View
         private void ClearQuest(QuestLabels labels)
         {
             labels.Color.BackColor = DefaultBackColor;
-            labels.Name.Text = labels.Count.Text = labels.Progress.Text = "";
+            labels.Name.Text = labels.Progress.Text = "";
+            ToolTip.SetToolTip(labels.Name, "");
         }
 
         private void ClearCount(Label label)
