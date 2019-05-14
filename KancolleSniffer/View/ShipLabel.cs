@@ -186,8 +186,8 @@ namespace KancolleSniffer.View
                 BackColor = CUDColors.Red,
                 Location = new Point(Left + (int)Round(4 * ScaleFactor.Width), Top),
                 AutoSize = true,
-                AnchorRight = true,
                 MinimumSize = new Size(0, Height),
+                AnchorRight = true,
                 TextAlign = ContentAlignment.MiddleLeft,
                 Cursor = Cursors.Hand
             };
