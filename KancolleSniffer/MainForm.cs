@@ -436,8 +436,14 @@ namespace KancolleSniffer
         {
             if (SuppressActivate.Check())
                 return;
-            if (WindowState == FormWindowState.Minimized)
-                return;
+            if (NeedRaise)
+                RaiseBothWindows();
+        }
+
+        private bool NeedRaise => _listForm.Visible && WindowState != FormWindowState.Minimized;
+
+        private void RaiseBothWindows()
+        {
             _listForm.Owner = null;
             Owner = _listForm;
             BringToFront();

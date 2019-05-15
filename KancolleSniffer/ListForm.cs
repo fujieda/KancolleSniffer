@@ -284,6 +284,11 @@ namespace KancolleSniffer
                 return;
             if (WindowState == FormWindowState.Minimized)
                 return;
+            RaiseBothWindows();
+        }
+
+        private void RaiseBothWindows()
+        {
             _main.Owner = null;
             Owner = _main;
             BringToFront();
