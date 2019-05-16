@@ -14,7 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -28,11 +27,11 @@ namespace KancolleSniffer.View
         public const int LabelHeight = 12;
         public const int LineHeight = 16;
         private ShipStatus[] _shipList;
-        private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
-        private readonly List<Panel> _labelPanelList = new List<Panel>();
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
+        private readonly ShipListLabels _shipListLabels;
         private readonly GroupConfigLabels _groupConfigLabels;
         private readonly RepairListLabels _repairListLabels;
+        private int _labelCount;
         private string _mode;
         private bool _hpPercent;
 
@@ -56,6 +55,7 @@ namespace KancolleSniffer.View
             ScrollBar = new VScrollBar {Dock = DockStyle.Right, Visible = false};
             ScrollBar.ValueChanged += ScrollBarOnValueChanged;
             Controls.Add(ScrollBar);
+            _shipListLabels = new ShipListLabels(this);
             _groupConfigLabels = new GroupConfigLabels(this);
             _repairListLabels = new RepairListLabels(this);
         }
@@ -270,11 +270,11 @@ namespace KancolleSniffer.View
 
         private void SetupLabels()
         {
-            for (var i = _labelList.Count; i * LineHeight < Height; i++)
+            for (; _labelCount * LineHeight < Height; _labelCount++)
             {
-                _groupConfigLabels.CreateComponents(i);
-                _repairListLabels.CreateLabels(i);
-                CreateShipLabels(i);
+                _groupConfigLabels.CreateComponents(_labelCount);
+                _repairListLabels.CreateLabels(_labelCount);
+                _shipListLabels.CreateShipLabels(_labelCount);
             }
             SetupScrollBar();
         }
@@ -298,64 +298,6 @@ namespace KancolleSniffer.View
             ScrollBar.Value = Min(ScrollBar.Value, max);
         }
 
-        private void CreateShipLabels(int i)
-        {
-            var y = LineHeight * i + 1;
-            const int height = LabelHeight;
-            var panel = new Panel
-            {
-                Location = new Point(0, y),
-                Size = new Size(ListForm.PanelWidth, LineHeight),
-                BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
-            };
-            Scaler.Scale(panel);
-            var labels = new[]
-            {
-                new ShipLabel
-                {
-                    Location = new Point(126, 0),
-                    AutoSize = true,
-                    AnchorRight = true,
-                    MinimumSize = new Size(0, LineHeight),
-                    TextAlign = ContentAlignment.MiddleLeft,
-                    Cursor = Cursors.Hand
-                },
-                new ShipLabel
-                {
-                    Location = new Point(128, 0),
-                    Size = new Size(24, LineHeight),
-                    TextAlign = ContentAlignment.MiddleRight
-                },
-                new ShipLabel
-                {
-                    Location = new Point(154, 2),
-                    Size = new Size(24, height),
-                    TextAlign = ContentAlignment.MiddleRight
-                },
-                new ShipLabel
-                {
-                    Location = new Point(175, 2),
-                    Size = new Size(42, height),
-                    TextAlign = ContentAlignment.MiddleRight
-                },
-                new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(1, 2), AutoSize = true}
-            };
-            _labelList.Add(labels);
-            _labelPanelList.Add(panel);
-            // ReSharper disable once CoVariantArrayConversion
-            panel.Controls.AddRange(labels);
-            Controls.Add(panel);
-            var unused = panel.Handle; // create handle
-            foreach (var label in labels)
-            {
-                Scaler.Scale(label);
-                label.PresetColor =
-                    label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
-            }
-            SetHpPercent(labels[0]);
-        }
-
         public void SetHpPercent(ShipLabel label)
         {
             if (_hpPercent)
@@ -372,7 +314,7 @@ namespace KancolleSniffer.View
                 if (i + ScrollBar.Value >= _shipList.Length)
                     continue;
                 if (InShipStatus(_mode))
-                    SetShipStatus(i);
+                    _shipListLabels.SetShipStatus(i);
                 if (_mode == "分類")
                     _groupConfigLabels.SetGrouping(i);
                 if (_mode == "修復")
@@ -380,46 +322,19 @@ namespace KancolleSniffer.View
             }
         }
 
+        public void SetShipType(int i)
+        {
+            _shipListLabels.SetShipType(i);
+        }
+
         private void HidePanels(int i)
         {
-            _labelPanelList[i].Visible = false;
+            _shipListLabels.HidePanel(i);
             _repairListLabels.HidePanel(i);
             _groupConfigLabels.HidePanel(i);
         }
 
         private bool InShipStatus(string mode) => Array.Exists(new[] {"全艦", "A", "B", "C", "D"}, x => mode == x);
-
-        private void SetShipStatus(int i)
-        {
-            var s = _shipList[i + ScrollBar.Value];
-            var labels = _labelList[i];
-            if (s.Level == 1000) // 艦種の表示
-            {
-                SetShipType(i);
-                return;
-            }
-            labels[0].SetHp(s);
-            labels[1].SetCond(s);
-            labels[2].SetLevel(s);
-            labels[3].SetExpToNext(s);
-            labels[4].SetName(s, ShipNameWidth.ShipList);
-            labels[5].SetFleet(s);
-            _labelPanelList[i].Visible = true;
-        }
-
-        public void SetShipType(int i)
-        {
-            var s = _shipList[i + ScrollBar.Value];
-            var labels = _labelList[i];
-            labels[0].SetHp(null);
-            labels[1].SetCond(null);
-            labels[2].SetLevel(null);
-            labels[3].SetExpToNext(null);
-            labels[4].SetName(null);
-            labels[5].SetFleet(null);
-            labels[5].Text = s.Name;
-            _labelPanelList[i].Visible = true;
-        }
 
         public event Action HpLabelClick;
 
