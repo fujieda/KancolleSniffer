@@ -102,45 +102,52 @@ namespace KancolleSniffer
             }
         }
 
+        private class Visibility
+        {
+            public Control Control { get; }
+            public bool Visible { get; }
+
+            public Visibility(Control control, bool visible)
+            {
+                Control = control;
+                Visible = visible;
+            }
+        }
+
         private void SetHeaderVisibility()
         {
             var headers = new[]
             {
-                new {Header = panelItemHeader, Visible = InItemList || InAntiAir || InBattleResult || InMiscText},
-                new {Header = panelGroupHeader, Visible = InGroupConfig},
-                new {Header = panelRepairHeader, Visible = InRepairList},
-                new {Header = panelFleetHeader, Visible = InFleetInfo}
+                new Visibility(panelItemHeader, InItemList || InAntiAir || InBattleResult || InMiscText),
+                new Visibility(panelGroupHeader, InGroupConfig),
+                new Visibility(panelRepairHeader, InRepairList),
+                new Visibility(panelFleetHeader, InFleetInfo)
             };
             foreach (var header in headers)
             {
+                header.Control.Visible = header.Visible;
                 if (header.Visible)
-                {
-                    header.Header.Visible = true;
-                    header.Header.BringToFront();
-                }
-                else
-                {
-                    header.Header.Visible = false;
-                }
+                    header.Control.BringToFront();
             }
         }
 
-
         private void SetPanelVisibility()
         {
-            SetVisible(shipListPanel, InShipStatus || InGroupConfig || InRepairList);
-            SetVisible(itemTreeView, InItemList);
-            SetVisible(fleetPanel, InFleetInfo);
-            SetVisible(antiAirPanel, InAntiAir);
-            SetVisible(airBattleResultPanel, InBattleResult);
-            SetVisible(battleResultPanel, InBattleResult);
-            SetVisible(richTextBoxMiscText, InMiscText);
-        }
-
-        private void SetVisible(Control control, bool visible)
-        {
-            // SwipeScrollifyが誤作動するのでEnabledも切り替える
-            control.Visible = control.Enabled = visible;
+            var panels = new[]
+            {
+                new Visibility(shipListPanel, InShipStatus || InGroupConfig || InRepairList),
+                new Visibility(itemTreeView, InItemList),
+                new Visibility(fleetPanel, InFleetInfo),
+                new Visibility(antiAirPanel, InAntiAir),
+                new Visibility(airBattleResultPanel, InBattleResult),
+                new Visibility(battleResultPanel, InBattleResult),
+                new Visibility(richTextBoxMiscText, InMiscText)
+            };
+            foreach (var panel in panels)
+            {
+                // SwipeScrollifyが誤作動するのでEnabledも切り替える
+                panel.Control.Visible = panel.Control.Enabled = panel.Visible;
+            }
         }
 
         public void UpdateAirBattleResult()
