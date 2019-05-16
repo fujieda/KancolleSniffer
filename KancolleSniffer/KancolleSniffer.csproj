@@ -157,6 +157,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\QuestInfo.cs" />
     <Compile Include="Model\ConditionTimer.cs" />
+    <Compile Include="View\RepairListLabels.cs" />
     <Compile Include="View\RepairShipCount.cs" />
     <Compile Include="View\ResizableToolTip.cs">
       <SubType>Component</SubType>

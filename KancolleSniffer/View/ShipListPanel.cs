@@ -30,10 +30,9 @@ namespace KancolleSniffer.View
         private ShipStatus[] _shipList;
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private readonly List<Panel> _labelPanelList = new List<Panel>();
-        private readonly List<ShipLabel[]> _repairLabelList = new List<ShipLabel[]>();
-        private readonly List<Panel> _repairPanelList = new List<Panel>();
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private readonly GroupConfigLabels _groupConfigLabels;
+        private readonly RepairListLabels _repairListLabels;
         private string _mode;
         private bool _hpPercent;
 
@@ -58,6 +57,7 @@ namespace KancolleSniffer.View
             ScrollBar.ValueChanged += ScrollBarOnValueChanged;
             Controls.Add(ScrollBar);
             _groupConfigLabels = new GroupConfigLabels(this);
+            _repairListLabels = new RepairListLabels(this);
         }
 
         private void ScrollBarOnValueChanged(object sender, EventArgs eventArgs)
@@ -273,7 +273,7 @@ namespace KancolleSniffer.View
             for (var i = _labelList.Count; i * LineHeight < Height; i++)
             {
                 _groupConfigLabels.CreateComponents(i);
-                CreateRepairLabels(i);
+                _repairListLabels.CreateLabels(i);
                 CreateShipLabels(i);
             }
             SetupScrollBar();
@@ -296,58 +296,6 @@ namespace KancolleSniffer.View
             ScrollBar.LargeChange = largeChange;
             ScrollBar.Maximum = Max(0, max + largeChange - 1); // ScrollBarを最大まで動かしてもmaxには届かない
             ScrollBar.Value = Min(ScrollBar.Value, max);
-        }
-
-        private void CreateRepairLabels(int i)
-        {
-            var y = LineHeight * i + 1;
-            const int height = LabelHeight;
-            var panel = new Panel
-            {
-                Location = new Point(0, y),
-                Size = new Size(ListForm.PanelWidth, LineHeight),
-                BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
-            };
-            Scaler.Scale(panel);
-            panel.Tag = panel.Location.Y;
-            var labels = new[]
-            {
-                new ShipLabel
-                {
-                    Location = new Point(118, 0),
-                    AutoSize = true,
-                    AnchorRight = true,
-                    MinimumSize = new Size(0, LineHeight),
-                    TextAlign = ContentAlignment.MiddleLeft,
-                    Cursor = Cursors.Hand
-                },
-                new ShipLabel
-                {
-                    Location = new Point(116, 2),
-                    Size = new Size(24, height),
-                    TextAlign = ContentAlignment.MiddleRight
-                },
-                new ShipLabel {Location = new Point(141, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(186, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(1, 2), AutoSize = true}
-            };
-            _repairLabelList.Add(labels);
-            _repairPanelList.Add(panel);
-            // ReSharper disable once CoVariantArrayConversion
-            panel.Controls.AddRange(labels);
-            Controls.Add(panel);
-            var unused = panel.Handle; // create handle
-            foreach (var label in labels)
-            {
-                Scaler.Scale(label);
-                label.PresetColor =
-                    label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
-            }
-            if (_hpPercent)
-                labels[0].ToggleHpPercent();
-            _hpLabels.Add(labels[0]);
-            labels[0].DoubleClick += HpLabelClickHandler;
         }
 
         private void CreateShipLabels(int i)
@@ -405,10 +353,15 @@ namespace KancolleSniffer.View
                 label.PresetColor =
                     label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
+            SetHpPercent(labels[0]);
+        }
+
+        public void SetHpPercent(ShipLabel label)
+        {
             if (_hpPercent)
-                labels[0].ToggleHpPercent();
-            _hpLabels.Add(labels[0]);
-            labels[0].DoubleClick += HpLabelClickHandler;
+                label.ToggleHpPercent();
+            _hpLabels.Add(label);
+            label.DoubleClick += HpLabelClickHandler;
         }
 
         private void SetShipLabels()
@@ -423,13 +376,14 @@ namespace KancolleSniffer.View
                 if (_mode == "分類")
                     _groupConfigLabels.SetGrouping(i);
                 if (_mode == "修復")
-                    SetRepairList(i);
+                    _repairListLabels.SetRepairList(i);
             }
         }
 
         private void HidePanels(int i)
         {
-            _labelPanelList[i].Visible = _repairPanelList[i].Visible = false;
+            _labelPanelList[i].Visible = false;
+            _repairListLabels.HidePanel(i);
             _groupConfigLabels.HidePanel(i);
         }
 
@@ -465,24 +419,6 @@ namespace KancolleSniffer.View
             labels[5].SetFleet(null);
             labels[5].Text = s.Name;
             _labelPanelList[i].Visible = true;
-        }
-
-        private void SetRepairList(int i)
-        {
-            var s = _shipList[i + ScrollBar.Value];
-            if (s.Level == 1000)
-            {
-                SetShipType(i);
-                return;
-            }
-            var labels = _repairLabelList[i];
-            labels[0].SetHp(s);
-            labels[1].SetLevel(s);
-            labels[2].SetRepairTime(s);
-            labels[3].Text = s.RepairTimePerHp.ToString(@"mm\:ss");
-            labels[4].SetName(s, ShipNameWidth.RepairListFull);
-            labels[5].SetFleet(s);
-            _repairPanelList[i].Visible = true;
         }
 
         public event Action HpLabelClick;
