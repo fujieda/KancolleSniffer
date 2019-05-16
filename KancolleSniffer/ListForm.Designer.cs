@@ -662,7 +662,6 @@ namespace KancolleSniffer
             this.Activated += new System.EventHandler(this.ListForm_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ListForm_FormClosing);
             this.Load += new System.EventHandler(this.ListForm_Load);
-            this.Shown += new System.EventHandler(this.ListForm_Shown);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ListForm_KeyPress);
             this.contextMenuStripShipList.ResumeLayout(false);
             this.contextMenuStrip.ResumeLayout(false);

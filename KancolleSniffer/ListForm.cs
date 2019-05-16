@@ -69,19 +69,6 @@ namespace KancolleSniffer
             swipe.AddPanel(fleetPanel);
         }
 
-        /// <summary>
-        /// パネルのz-orderがくるうのを避ける
-        /// https://stackoverflow.com/a/5777090/1429506
-        /// </summary>
-        private void ListForm_Shown(object sender, EventArgs e)
-        {
-            // ReSharper disable once NotAccessedVariable
-            IntPtr handle;
-            foreach (Control panel in Controls)
-                // ReSharper disable once RedundantAssignment
-                handle = panel.Handle;
-        }
-
         public void UpdateList()
         {
             SetHeaderVisibility();
@@ -117,11 +104,27 @@ namespace KancolleSniffer
 
         private void SetHeaderVisibility()
         {
-            panelItemHeader.Visible = InItemList || InAntiAir || InBattleResult || InMiscText;
-            panelGroupHeader.Visible = InGroupConfig;
-            panelRepairHeader.Visible = InRepairList;
-            panelFleetHeader.Visible = InFleetInfo;
+            var headers = new[]
+            {
+                new {Header = panelItemHeader, Visible = InItemList || InAntiAir || InBattleResult || InMiscText},
+                new {Header = panelGroupHeader, Visible = InGroupConfig},
+                new {Header = panelRepairHeader, Visible = InRepairList},
+                new {Header = panelFleetHeader, Visible = InFleetInfo}
+            };
+            foreach (var header in headers)
+            {
+                if (header.Visible)
+                {
+                    header.Header.Visible = true;
+                    header.Header.BringToFront();
+                }
+                else
+                {
+                    header.Header.Visible = false;
+                }
+            }
         }
+
 
         private void SetPanelVisibility()
         {
