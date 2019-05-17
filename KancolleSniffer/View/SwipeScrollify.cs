@@ -38,7 +38,7 @@ namespace KancolleSniffer.View
             _filter.MouseUp += handler.MouseUp;
         }
 
-        public void AddShipListPanel(ShipListPanel panel)
+        public void AddShipListPanel(ShipListPanel.ShipListPanel panel)
         {
             var handler = new ShipListPanelHandler(panel);
             _filter.MouseDown += handler.MouseDown;
@@ -151,14 +151,14 @@ namespace KancolleSniffer.View
 
         private class ShipListPanelHandler
         {
-            private readonly ShipListPanel _panel;
+            private readonly ShipListPanel.ShipListPanel _panel;
             private bool _touch;
             private Point _mouseStart;
             private int _barStart = -1;
             private Point _scrollStart;
-            private const int ScrollCount = ShipListPanel.LineHeight;
+            private const int ScrollCount = ShipListPanel.ShipListPanel.LineHeight;
 
-            public ShipListPanelHandler(ShipListPanel panel)
+            public ShipListPanelHandler(ShipListPanel.ShipListPanel panel)
             {
                 _panel = panel;
             }

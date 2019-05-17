@@ -20,7 +20,7 @@ using System.Windows.Forms;
 using KancolleSniffer.Model;
 using static System.Math;
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.ShipListPanel
 {
     public class ShipListPanel : Panel
     {
@@ -126,8 +126,8 @@ namespace KancolleSniffer.View
             _shipList = ships.Select(ship => new {Id = ship.Spec.ShipType, Name = ship.Spec.ShipTypeName})
                 .Distinct().Select(type => new ShipStatus
                 {
-                    Spec = new ShipSpec { Name = type.Name, ShipType = type.Id},
-                    Level = 1000,
+                    Spec = new ShipSpec {Name = type.Name, ShipType = type.Id},
+                    Level = 1000
                 }).Concat(ships).OrderBy(ship => ship, new CompareShip(true, order)).ToArray();
         }
 

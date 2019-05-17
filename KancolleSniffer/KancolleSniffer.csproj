@@ -110,7 +110,7 @@
     </Compile>
     <Compile Include="Net\HttpProxy.cs" />
     <Compile Include="Util\HttpUtility.cs" />
-    <Compile Include="View\GroupConfigLabels.cs" />
+    <Compile Include="View\ShipListPanel\GroupConfigLabels.cs" />
     <Compile Include="View\ListScroller.cs" />
     <Compile Include="View\NumberAndHistory.cs" />
     <Compile Include="View\ItemTreeView.cs">
@@ -157,7 +157,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\QuestInfo.cs" />
     <Compile Include="Model\ConditionTimer.cs" />
-    <Compile Include="View\RepairListLabels.cs" />
+    <Compile Include="View\ShipListPanel\RepairListLabels.cs" />
     <Compile Include="View\RepairShipCount.cs" />
     <Compile Include="View\ResizableToolTip.cs">
       <SubType>Component</SubType>
@@ -165,8 +165,8 @@
     <Compile Include="Model\ShipInfo.cs" />
     <Compile Include="View\Scaler.cs" />
     <Compile Include="View\ShipLabel.cs" />
-    <Compile Include="View\ShipListLabels.cs" />
-    <Compile Include="View\ShipListPanel.cs">
+    <Compile Include="View\ShipListPanel\ShipListLabels.cs" />
+    <Compile Include="View\ShipListPanel\ShipListPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\ShipMaster.cs" />

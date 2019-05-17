@@ -12,35 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
-using KancolleSniffer.Model;
-// ReSharper disable CoVariantArrayConversion
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.ShipListPanel
 {
-    public class GroupConfigLabels
+    public class RepairListLabels
     {
         private readonly ShipListPanel _shipListPanel;
-        private readonly List<CheckBox[]> _checkBoxesList = new List<CheckBox[]>();
         private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
         private readonly List<Panel> _panelList = new List<Panel>();
 
-        public const int GroupCount = 4;
-        public HashSet<int>[] GroupSettings { get; } = new HashSet<int>[GroupCount];
-        public bool GroupUpdated { get; set; }
-
-        public GroupConfigLabels(ShipListPanel shipListPanel)
+        public RepairListLabels(ShipListPanel shipListPanel)
         {
             _shipListPanel = shipListPanel;
         }
 
-        public void CreateComponents(int i)
+        public void CreateLabels(int i)
         {
             var y = ShipListPanel.LineHeight * i + 1;
+            const int height = ShipListPanel.LabelHeight;
             var panel = new Panel
             {
                 Location = new Point(0, y),
@@ -53,32 +45,28 @@ namespace KancolleSniffer.View
             {
                 new ShipLabel
                 {
-                    Location = new Point(90, 2),
-                    Size = new Size(24, ShipListPanel.LabelHeight),
+                    Location = new Point(118, 0),
+                    AutoSize = true,
+                    AnchorRight = true,
+                    MinimumSize = new Size(0, ShipListPanel.LineHeight),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    Cursor = Cursors.Hand
+                },
+                new ShipLabel
+                {
+                    Location = new Point(116, 2),
+                    Size = new Size(24, height),
                     TextAlign = ContentAlignment.MiddleRight
                 },
+                new ShipLabel {Location = new Point(141, 2), AutoSize = true},
+                new ShipLabel {Location = new Point(186, 2), AutoSize = true},
                 new ShipLabel {Location = new Point(10, 2), AutoSize = true},
                 new ShipLabel {Location = new Point(1, 2), AutoSize = true}
             };
-
-            var cb = new CheckBox[GroupCount];
-            for (var j = 0; j < cb.Length; j++)
-            {
-                cb[j] = new CheckBox
-                {
-                    Location = new Point(125 + j * 24, 2),
-                    FlatStyle = FlatStyle.Flat,
-                    Size = new Size(12, 11),
-                    Tag = i * 10 + j
-                };
-                Scaler.Scale(cb[j]);
-                cb[j].CheckedChanged += checkboxGroup_CheckedChanged;
-            }
             _labelList.Add(labels);
-            _checkBoxesList.Add(cb);
             _panelList.Add(panel);
+            // ReSharper disable once CoVariantArrayConversion
             panel.Controls.AddRange(labels);
-            panel.Controls.AddRange(cb);
             _shipListPanel.Controls.Add(panel);
             var unused = panel.Handle; // create handle
             foreach (var label in labels)
@@ -87,53 +75,30 @@ namespace KancolleSniffer.View
                 label.PresetColor =
                     label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
+            _shipListPanel.SetHpPercent(labels[0]);
         }
 
-        private void checkboxGroup_CheckedChanged(object sender, EventArgs e)
-        {
-            var cb = (CheckBox)sender;
-            var group = (int)cb.Tag % 10;
-            var idx = (int)cb.Tag / 10;
-            if (cb.Checked)
-            {
-                GroupSettings[group].Add(_shipListPanel.GetShip(idx).Id);
-            }
-            else
-            {
-                GroupSettings[group].Remove(_shipListPanel.GetShip(idx).Id);
-            }
-            GroupUpdated = true;
-        }
-
-        public void SetGrouping(int i)
+        public void SetRepairList(int i)
         {
             var s = _shipListPanel.GetShip(i);
-            var labels = _labelList[i];
             if (s.Level == 1000)
             {
                 _shipListPanel.SetShipType(i);
                 return;
             }
-            labels[0].SetLevel(s);
-            labels[1].SetName(s, ShipNameWidth.GroupConfig);
-            labels[2].SetFleet(s);
-            var cb = _checkBoxesList[i];
-            for (var j = 0; j < cb.Length; j++)
-                cb[j].Checked = GroupSettings[j].Contains(s.Id);
+            var labels = _labelList[i];
+            labels[0].SetHp(s);
+            labels[1].SetLevel(s);
+            labels[2].SetRepairTime(s);
+            labels[3].Text = s.RepairTimePerHp.ToString(@"mm\:ss");
+            labels[4].SetName(s, ShipNameWidth.RepairListFull);
+            labels[5].SetFleet(s);
             _panelList[i].Visible = true;
         }
 
         public void HidePanel(int i)
         {
             _panelList[i].Visible = false;
-        }
-
-        public IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships, string group)
-        {
-            var g = Array.FindIndex(new[] {"A", "B", "C", "D"}, x => x == group);
-            if (g == -1)
-                return ships;
-            return from s in ships where GroupSettings[g].Contains(s.Id) select s;
         }
     }
 }
