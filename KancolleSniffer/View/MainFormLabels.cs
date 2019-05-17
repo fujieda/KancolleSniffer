@@ -145,7 +145,7 @@ namespace KancolleSniffer.View
                 foreach (var label in shipLabels[i])
                 {
                     Scaler.Scale(label);
-                    label.PresetColor = label.BackColor = ShipLabel.ColumnColors[i % 2];
+                    label.BackColor = ShipLabel.ColumnColors[i % 2];
                     label.Tag = i;
                     label.Click += onClick;
                 }
@@ -235,7 +235,7 @@ namespace KancolleSniffer.View
                 foreach (var label in _combinedLabels[i])
                 {
                     Scaler.Scale(label);
-                    label.PresetColor = label.BackColor = ShipLabel.ColumnColors[i % 2];
+                    label.BackColor = ShipLabel.ColumnColors[i % 2];
                     label.Tag = i;
                     label.Click += onClick;
                 }

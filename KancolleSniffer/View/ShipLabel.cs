@@ -28,8 +28,8 @@ namespace KancolleSniffer.View
     {
         public static Color[] ColumnColors = {SystemColors.Control, Color.White};
         public static Font LatinFont { get; set; } = new Font("Tahoma", 8f);
-        public Color PresetColor { get; set; }
         public bool AnchorRight { get; set; }
+        private Color _initialBackColor;
         private int _right = Int32.MinValue;
         private int _left;
         private SlotStatus _slotStatus;
@@ -45,7 +45,12 @@ namespace KancolleSniffer.View
         public override Color BackColor
         {
             get => base.BackColor;
-            set => base.BackColor = value == DefaultBackColor ? PresetColor : value;
+            set
+            {
+                if (_initialBackColor == Color.Empty)
+                    _initialBackColor = value;
+                base.BackColor = value;
+            }
         }
 
         [Flags]
@@ -150,7 +155,7 @@ namespace KancolleSniffer.View
             if (status == null)
             {
                 Text = "";
-                BackColor = PresetColor;
+                BackColor = _initialBackColor;
                 return;
             }
             if (_hpPercent)
@@ -221,7 +226,7 @@ namespace KancolleSniffer.View
                 case ShipStatus.Damage.Small:
                     return Color.FromArgb(240, 240, 0);
                 default:
-                    return PresetColor;
+                    return _initialBackColor;
             }
         }
 
@@ -230,7 +235,7 @@ namespace KancolleSniffer.View
             if (status == null)
             {
                 Text = "";
-                BackColor = PresetColor;
+                BackColor = _initialBackColor;
                 return;
             }
             var cond = status.Cond;
@@ -238,7 +243,7 @@ namespace KancolleSniffer.View
             BackColor = cond >= 50
                 ? CUDColors.Yellow
                 : cond >= 30
-                    ? PresetColor
+                    ? _initialBackColor
                     : cond >= 20
                         ? CUDColors.Orange
                         : CUDColors.Red;

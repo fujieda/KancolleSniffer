@@ -373,7 +373,7 @@ namespace KancolleSniffer.View
                 foreach (var label in friend.Concat(enemy))
                 {
                     panel.Controls.Add(label);
-                    label.BackColor = label.PresetColor = ShipLabel.ColumnColors[i % 2];
+                    label.BackColor = ShipLabel.ColumnColors[i % 2];
                 }
                 Controls.Add(panel);
             }

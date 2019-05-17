@@ -72,8 +72,7 @@ namespace KancolleSniffer.View.ShipListPanel
             foreach (var label in labels)
             {
                 Scaler.Scale(label);
-                label.PresetColor =
-                    label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
+                label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
             }
             _shipListPanel.SetHpPercent(labels[0]);
         }

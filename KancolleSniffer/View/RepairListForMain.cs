@@ -65,7 +65,7 @@ namespace KancolleSniffer.View
                 foreach (var label in _repairLabels[i].Labels)
                 {
                     Scaler.Scale(label);
-                    label.PresetColor = label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
+                    label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
                     label.Click += onClick;
                 }
             }
@@ -137,7 +137,7 @@ namespace KancolleSniffer.View
             labels.Fleet.Text = "";
             labels.Name.SetName("");
             labels.Time.Text = "";
-            labels.Damage.BackColor = labels.Damage.PresetColor;
+            labels.Damage.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
         }
     }
 }
