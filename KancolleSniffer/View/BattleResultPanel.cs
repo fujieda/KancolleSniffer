@@ -70,10 +70,10 @@ namespace KancolleSniffer.View
                 case BattleState.None:
                     if (_result[0] == null && _result[1] == null)
                         return;
-                        ClearResult();
-                        SetPhase("結果");
-                        UpdateCellInfo(_cellInfo);
-                        return;
+                    ClearResult();
+                    SetPhase("結果");
+                    UpdateCellInfo(_cellInfo);
+                    return;
                 case BattleState.Day:
                 case BattleState.SpNight:
                     _result[0] = _result[1] = null;
@@ -271,12 +271,13 @@ namespace KancolleSniffer.View
         private string GetEquipString(ShipStatus ship)
         {
             var result =
-            (from i in Enumerable.Range(0, ship.Slot.Count)
-                let item = ship.Slot[i]
-                where !item.Empty
-                select item.Spec.Name + (item.Spec.IsAircraft && ship.OnSlot.Length > 0 && ship.Spec.MaxEq.Length > 0
-                           ? $"{ship.OnSlot[i]}/{ship.Spec.MaxEq[i]}"
-                           : ""));
+                (from i in Enumerable.Range(0, ship.Slot.Count)
+                    let item = ship.Slot[i]
+                    where !item.Empty
+                    select item.Spec.Name +
+                           (item.Spec.IsAircraft && ship.OnSlot.Length > 0 && ship.Spec.MaxEq.Length > 0
+                               ? $"{ship.OnSlot[i]}/{ship.Spec.MaxEq[i]}"
+                               : ""));
             if (ship.SlotEx.Id > 0)
                 result = result.Concat(new[] {ship.SlotEx.Spec.Name});
             return string.Join("\r\n", result);
