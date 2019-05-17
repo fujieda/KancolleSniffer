@@ -46,7 +46,7 @@ namespace KancolleSniffer.View.ShipListPanel
             {
                 Location = new Point(0, y),
                 Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight),
-                BackColor = ShipLabel.ColumnColors[(i + 1) % 2]
+                BackColor = CustomColors.ColumnColors.BrightFirst(i)
             };
             Scaler.Scale(panel);
             panel.Tag = panel.Location.Y;
@@ -85,7 +85,7 @@ namespace KancolleSniffer.View.ShipListPanel
             foreach (var label in labels)
             {
                 Scaler.Scale(label);
-                label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
+                label.BackColor = CustomColors.ColumnColors.BrightFirst(i);
             }
         }
 

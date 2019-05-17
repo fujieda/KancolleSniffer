@@ -105,7 +105,7 @@ namespace KancolleSniffer.View
             foreach (var label in headings)
             {
                 Scaler.Scale(label);
-                label.BackColor = ShipLabel.ColumnColors[1];
+                label.BackColor = CustomColors.ColumnColors.Bright;
             }
             for (var i = 0; i < shipLabels.Length; i++)
             {
@@ -145,7 +145,7 @@ namespace KancolleSniffer.View
                 foreach (var label in shipLabels[i])
                 {
                     Scaler.Scale(label);
-                    label.BackColor = ShipLabel.ColumnColors[i % 2];
+                    label.BackColor = CustomColors.ColumnColors.DarkFirst(i);
                     label.Tag = i;
                     label.Click += onClick;
                 }
@@ -206,7 +206,7 @@ namespace KancolleSniffer.View
             foreach (var label in headings)
             {
                 Scaler.Scale(label);
-                label.BackColor = ShipLabel.ColumnColors[1];
+                label.BackColor = CustomColors.ColumnColors.Bright;
             }
             for (var i = 0; i < _combinedLabels.Length; i++)
             {
@@ -235,7 +235,7 @@ namespace KancolleSniffer.View
                 foreach (var label in _combinedLabels[i])
                 {
                     Scaler.Scale(label);
-                    label.BackColor = ShipLabel.ColumnColors[i % 2];
+                    label.BackColor = CustomColors.ColumnColors.DarkFirst(i);
                     label.Tag = i;
                     label.Click += onClick;
                 }
@@ -289,7 +289,7 @@ namespace KancolleSniffer.View
                             Size = new Size(31, 12),
                             TextAlign = ContentAlignment.TopRight
                         });
-                label.BackColor = ShipLabel.ColumnColors[i % 2];
+                label.BackColor = CustomColors.ColumnColors.DarkFirst(i);
             }
             foreach (var label in timerLabels)
                 Scaler.Scale(label);

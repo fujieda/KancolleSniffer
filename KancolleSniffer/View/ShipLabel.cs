@@ -26,7 +26,6 @@ namespace KancolleSniffer.View
     [DesignerCategory("Code")]
     public class ShipLabel : Label
     {
-        public static Color[] ColumnColors = {SystemColors.Control, Color.White};
         public static Font LatinFont { get; set; } = new Font("Tahoma", 8f);
         public bool AnchorRight { get; set; }
         private Color _initialBackColor;

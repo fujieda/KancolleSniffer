@@ -84,7 +84,7 @@ namespace KancolleSniffer
             SetupFleetClick();
             CreateMainLabels();
             CreateNumberAndHistory(manager);
-            labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
+            labelPresetAkashiTimer.BackColor = CustomColors.ColumnColors.Bright;
             SetupQuestPanel();
             panelRepairList.CreateLabels(panelRepairList_Click);
             PerformZoom();
