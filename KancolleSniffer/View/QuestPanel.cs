@@ -18,18 +18,16 @@ using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
 
-// ReSharper disable CoVariantArrayConversion
-
 namespace KancolleSniffer.View
 {
-    public class QuestLabels
+    public class QuestLabels : ControlsArranger
     {
         public ShipLabel Color { get; set; }
         public ShipLabel Name { get; set; }
         public ShipLabel Count { get; set; }
         public ShipLabel Progress { get; set; }
 
-        public ShipLabel[] Labels => new[] {Color, Count, Progress, Name};
+        public override Control[] Controls => new Control[] {Color, Count, Progress, Name};
     }
 
     public class QuestPanel : PanelWithToolTip
@@ -79,9 +77,7 @@ namespace KancolleSniffer.View
                     }
                 };
                 _labels[i].Name.DoubleClick += onDoubleClick;
-                Controls.AddRange(_labels[i].Labels);
-                foreach (var label in _labels[i].Labels)
-                    Scaler.Scale(label);
+                _labels[i].Arrange(this);
             }
             ResumeLayout();
             SetupListScroller();
@@ -96,7 +92,7 @@ namespace KancolleSniffer.View
 
         private void SetupListScroller()
         {
-            _listScroller = new ListScroller(this, _labels[0].Labels, _labels[_lines - 1].Labels)
+            _listScroller = new ListScroller(this, _labels[0].Controls, _labels[_lines - 1].Controls)
             {
                 Lines = _lines,
                 Padding = TopMargin

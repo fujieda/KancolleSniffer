@@ -37,7 +37,7 @@ namespace KancolleSniffer.View
 
         public event Action EndScroll;
 
-        public ListScroller(Panel panel, Label[] topLabels, Label[] bottomLabels)
+        public ListScroller(Panel panel, Control[] topLabels, Control[] bottomLabels)
         {
             _panel = panel;
             panel.Paint += (obj, ev) => DrawMark();
@@ -45,7 +45,7 @@ namespace KancolleSniffer.View
             SetBottomEventHandler(bottomLabels);
         }
 
-        public void SetTopEventHandler(Label[] top)
+        public void SetTopEventHandler(Control[] top)
         {
             foreach (var label in top)
             {
@@ -55,7 +55,7 @@ namespace KancolleSniffer.View
             _topScrollRepeatTimer.Tick += (obj, e) => ScrollUp();
         }
 
-        public void SetBottomEventHandler(Label[] bottom)
+        public void SetBottomEventHandler(Control[] bottom)
         {
             foreach (var label in bottom)
             {

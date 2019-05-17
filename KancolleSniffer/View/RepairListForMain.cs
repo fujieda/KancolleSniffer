@@ -26,11 +26,11 @@ namespace KancolleSniffer.View
     {
         private const int PanelPadding = 5;
         private const int LineHeight = 15;
-        private RepairListLabels[] _repairLabels;
+        private RepairLabels[] _repairLabels;
         private ShipStatus[] _repairList = new ShipStatus[0];
         private ListScroller _listScroller;
 
-        private class RepairListLabels
+        private class RepairLabels : ControlsArranger
         {
             public ShipLabel Fleet { get; set; }
             public ShipLabel Name { get; set; }
@@ -38,18 +38,18 @@ namespace KancolleSniffer.View
             public ShipLabel Damage { get; set; }
             public ShipLabel BackGround { private get; set; }
 
-            public ShipLabel[] Labels => new[] {Fleet, Damage, Time, Name, BackGround};
+            public override Control[] Controls => new[] {Fleet, Damage, Time, Name, BackGround};
         }
 
         public void CreateLabels(EventHandler onClick)
         {
-            _repairLabels = new RepairListLabels[Lines];
+            _repairLabels = new RepairLabels[Lines];
             SuspendLayout();
             for (var i = 0; i < _repairLabels.Length; i++)
             {
                 var y = PanelPadding + 1 + i * LineHeight;
                 const int height = 12;
-                _repairLabels[i] = new RepairListLabels
+                _repairLabels[i] = new RepairLabels
                 {
                     Fleet = new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
                     Damage = new ShipLabel {Location = new Point(119, y), Size = new Size(5, height - 1)},
@@ -61,13 +61,8 @@ namespace KancolleSniffer.View
                         Size = new Size(Width, height + 2)
                     }
                 };
-                Controls.AddRange(_repairLabels[i].Labels);
-                foreach (var label in _repairLabels[i].Labels)
-                {
-                    Scaler.Scale(label);
-                    label.BackColor = CustomColors.ColumnColors.BrightFirst(i);
-                    label.Click += onClick;
-                }
+                _repairLabels[i].Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
+                _repairLabels[i].SetClickHandler(onClick);
             }
             ResumeLayout();
             SetupListScroller();
@@ -84,7 +79,7 @@ namespace KancolleSniffer.View
 
         private void SetupListScroller()
         {
-            _listScroller = new ListScroller(this, _repairLabels[0].Labels, _repairLabels.Last().Labels)
+            _listScroller = new ListScroller(this, _repairLabels[0].Controls, _repairLabels.Last().Controls)
             {
                 Lines = _repairLabels.Length,
                 Padding = PanelPadding

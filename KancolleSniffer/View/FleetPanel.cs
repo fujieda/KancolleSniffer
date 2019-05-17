@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -279,7 +278,7 @@ namespace KancolleSniffer.View
                 CreateLabels(i);
         }
 
-        private class FleetLabels : IEnumerable<ShipLabel>
+        private class FleetLabels : ControlsArranger
         {
             public ShipLabel Fleet { get; set; }
             public ShipLabel Name { get; set; }
@@ -287,10 +286,7 @@ namespace KancolleSniffer.View
             public ShipLabel EquipColor { get; set; }
             public ShipLabel Spec { get; set; }
 
-            public IEnumerator<ShipLabel> GetEnumerator() =>
-                ((IEnumerable<ShipLabel>)new[] {Fleet, Name, Equip, EquipColor, Spec}).GetEnumerator();
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            public override Control[] Controls => new Control[] {Fleet, Name, Equip, EquipColor, Spec};
         }
 
         private void CreateLabels(int i)
@@ -315,13 +311,8 @@ namespace KancolleSniffer.View
             };
             _labelList.Add(labels);
             _panelList.Add(lbp);
-            lbp.Controls.AddRange(labels.Cast<Control>().ToArray());
+            labels.Arrange(lbp, CustomColors.ColumnColors.BrightFirst(i));
             Controls.Add(lbp);
-            foreach (var label in labels)
-            {
-                Scaler.Scale(label);
-                label.BackColor = CustomColors.ColumnColors.BrightFirst(i);
-            }
         }
 
         private void SetRecords()

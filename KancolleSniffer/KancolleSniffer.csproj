@@ -94,6 +94,7 @@
     <Compile Include="ConfirmDialog.Designer.cs">
       <DependentUpon>ConfirmDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\ControlsArranger.cs" />
     <Compile Include="View\CUDColors.cs" />
     <Compile Include="Model\DockInfo.cs" />
     <Compile Include="Model\Fleet.cs" />
