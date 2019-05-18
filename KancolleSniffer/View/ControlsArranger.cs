@@ -13,7 +13,9 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace KancolleSniffer.View
@@ -39,22 +41,28 @@ namespace KancolleSniffer.View
             parent.Controls.AddRange(Controls);
         }
 
-        private void SetBackColor(Color color)
-        {
-            foreach (var control in Controls)
-                control.BackColor = color;
-        }
-
         private void Scale()
         {
             foreach (var control in Controls)
                 Scaler.Scale(control);
         }
 
+        private void SetBackColor(Color color)
+        {
+            foreach (var control in Controls)
+                control.BackColor = color;
+        }
+
         public void SetClickHandler(EventHandler onClick)
         {
             foreach (var control in Controls)
                 control.Click += onClick;
+        }
+
+        public void SetTag(int index)
+        {
+            foreach (var control in Controls)
+                control.Tag = index;
         }
     }
 }
