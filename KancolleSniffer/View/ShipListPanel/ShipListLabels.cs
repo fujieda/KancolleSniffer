@@ -21,8 +21,7 @@ namespace KancolleSniffer.View.ShipListPanel
     public class ShipListLabels
     {
         private readonly ShipListPanel _shipListPanel;
-        private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
-        private readonly List<Panel> _panelList = new List<Panel>();
+        private readonly List<ShipLabels> _labelList = new List<ShipLabels>();
 
         public ShipListLabels(ShipListPanel shipListPanel)
         {
@@ -33,16 +32,11 @@ namespace KancolleSniffer.View.ShipListPanel
         {
             var y = ShipListPanel.LineHeight * i + 1;
             const int height = ShipListPanel.LabelHeight;
-            var panel = new Panel
+            var labels = new ShipLabels
             {
-                Location = new Point(0, y),
-                Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight),
-                BackColor = CustomColors.ColumnColors.BrightFirst(i)
-            };
-            Scaler.Scale(panel);
-            var labels = new[]
-            {
-                new ShipLabel
+                Fleet = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
+                Name = new ShipLabel {Location = new Point(10, 2), AutoSize = true},
+                Hp = new ShipLabel
                 {
                     Location = new Point(126, 0),
                     AutoSize = true,
@@ -51,39 +45,33 @@ namespace KancolleSniffer.View.ShipListPanel
                     TextAlign = ContentAlignment.MiddleLeft,
                     Cursor = Cursors.Hand
                 },
-                new ShipLabel
+                Cond = new ShipLabel
                 {
                     Location = new Point(128, 0),
                     Size = new Size(24, ShipListPanel.LineHeight),
                     TextAlign = ContentAlignment.MiddleRight
                 },
-                new ShipLabel
+                Level = new ShipLabel
                 {
                     Location = new Point(154, 2),
                     Size = new Size(24, height),
                     TextAlign = ContentAlignment.MiddleRight
                 },
-                new ShipLabel
+                Exp = new ShipLabel
                 {
                     Location = new Point(175, 2),
                     Size = new Size(42, height),
                     TextAlign = ContentAlignment.MiddleRight
                 },
-                new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(1, 2), AutoSize = true}
+                BackPanel =  new Panel
+                {
+                    Location = new Point(0, y),
+                    Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight),
+                }
             };
             _labelList.Add(labels);
-            _panelList.Add(panel);
-            // ReSharper disable once CoVariantArrayConversion
-            panel.Controls.AddRange(labels);
-            _shipListPanel.Controls.Add(panel);
-            var unused = panel.Handle; // create handle
-            foreach (var label in labels)
-            {
-                Scaler.Scale(label);
-                label.BackColor = CustomColors.ColumnColors.BrightFirst(i);
-            }
-            _shipListPanel.SetHpPercent(labels[0]);
+            labels.Arrange(_shipListPanel, CustomColors.ColumnColors.BrightFirst(i));
+            _shipListPanel.SetHpPercent(labels.Hp);
         }
 
         public void SetShipStatus(int i)
@@ -95,32 +83,32 @@ namespace KancolleSniffer.View.ShipListPanel
                 SetShipType(i);
                 return;
             }
-            labels[0].SetHp(s);
-            labels[1].SetCond(s);
-            labels[2].SetLevel(s);
-            labels[3].SetExpToNext(s);
-            labels[4].SetName(s, ShipNameWidth.ShipList);
-            labels[5].SetFleet(s);
-            _panelList[i].Visible = true;
+            labels.Fleet.SetFleet(s);
+            labels.Name.SetName(s, ShipNameWidth.ShipList);
+            labels.Hp.SetHp(s);
+            labels.Cond.SetCond(s);
+            labels.Level.SetLevel(s);
+            labels.Exp.SetExpToNext(s);
+            labels.BackPanel.Visible = true;
         }
 
         public void SetShipType(int i)
         {
             var s = _shipListPanel.GetShip(i);
             var labels = _labelList[i];
-            labels[0].SetHp(null);
-            labels[1].SetCond(null);
-            labels[2].SetLevel(null);
-            labels[3].SetExpToNext(null);
-            labels[4].SetName(null);
-            labels[5].SetFleet(null);
-            labels[5].Text = s.Name;
-            _panelList[i].Visible = true;
+            labels.Fleet.SetFleet(null);
+            labels.Fleet.Text = s.Name;
+            labels.Name.SetName(null);
+            labels.Hp.SetHp(null);
+            labels.Cond.SetCond(null);
+            labels.Level.SetLevel(null);
+            labels.Exp.SetExpToNext(null);
+            labels.BackPanel.Visible = true;
         }
 
         public void HidePanel(int i)
         {
-            _panelList[i].Visible = false;
+            _labelList[i].BackPanel.Visible = false;
         }
     }
 }

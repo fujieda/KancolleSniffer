@@ -24,6 +24,8 @@ namespace KancolleSniffer.View
     {
         public abstract Control[] Controls { get; }
 
+        public Panel BackPanel;
+
         public void Arrange(Control parent)
         {
             SetParent(parent);
@@ -32,8 +34,20 @@ namespace KancolleSniffer.View
 
         public void Arrange(Control parent, Color color)
         {
+            if (BackPanel != null)
+            {
+                ArrangeBackPanel(parent, color);
+                parent = BackPanel;
+            }
             Arrange(parent);
             SetBackColor(color);
+        }
+
+        private void ArrangeBackPanel(Control parent, Color color)
+        {
+            parent.Controls.Add(BackPanel);
+            BackPanel.BackColor = color;
+            Scaler.Scale(BackPanel);
         }
 
         private void SetParent(Control parent)

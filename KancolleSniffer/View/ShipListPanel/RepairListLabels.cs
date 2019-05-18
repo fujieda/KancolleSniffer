@@ -14,6 +14,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace KancolleSniffer.View.ShipListPanel
@@ -21,8 +22,15 @@ namespace KancolleSniffer.View.ShipListPanel
     public class RepairListLabels
     {
         private readonly ShipListPanel _shipListPanel;
-        private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
-        private readonly List<Panel> _panelList = new List<Panel>();
+        private readonly List<RepairLabels> _labelList = new List<RepairLabels>();
+
+        private class RepairLabels : ShipLabels
+        {
+            public ShipLabel Time { get; set; }
+            public ShipLabel PerHp { get; set; }
+
+            public override Control[] Controls => base.Controls.Concat(new[] {Time, PerHp}).ToArray();
+        }
 
         public RepairListLabels(ShipListPanel shipListPanel)
         {
@@ -33,17 +41,11 @@ namespace KancolleSniffer.View.ShipListPanel
         {
             var y = ShipListPanel.LineHeight * i + 1;
             const int height = ShipListPanel.LabelHeight;
-            var panel = new Panel
+            var labels = new RepairLabels
             {
-                Location = new Point(0, y),
-                Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight),
-                BackColor = CustomColors.ColumnColors.BrightFirst(i)
-            };
-            Scaler.Scale(panel);
-            panel.Tag = panel.Location.Y;
-            var labels = new[]
-            {
-                new ShipLabel
+                Fleet = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
+                Name = new ShipLabel {Location = new Point(10, 2), AutoSize = true},
+                Hp = new ShipLabel
                 {
                     Location = new Point(118, 0),
                     AutoSize = true,
@@ -52,29 +54,23 @@ namespace KancolleSniffer.View.ShipListPanel
                     TextAlign = ContentAlignment.MiddleLeft,
                     Cursor = Cursors.Hand
                 },
-                new ShipLabel
+                Level = new ShipLabel
                 {
                     Location = new Point(116, 2),
                     Size = new Size(24, height),
                     TextAlign = ContentAlignment.MiddleRight
                 },
-                new ShipLabel {Location = new Point(141, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(186, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(1, 2), AutoSize = true}
+                Time = new ShipLabel {Location = new Point(141, 2), AutoSize = true},
+                PerHp = new ShipLabel {Location = new Point(186, 2), AutoSize = true},
+                BackPanel = new Panel
+                {
+                    Location = new Point(0, y),
+                    Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight)
+                }
             };
             _labelList.Add(labels);
-            _panelList.Add(panel);
-            // ReSharper disable once CoVariantArrayConversion
-            panel.Controls.AddRange(labels);
-            _shipListPanel.Controls.Add(panel);
-            var unused = panel.Handle; // create handle
-            foreach (var label in labels)
-            {
-                Scaler.Scale(label);
-                label.BackColor = CustomColors.ColumnColors.BrightFirst(i);
-            }
-            _shipListPanel.SetHpPercent(labels[0]);
+            labels.Arrange(_shipListPanel, CustomColors.ColumnColors.BrightFirst(i));
+            _shipListPanel.SetHpPercent(labels.Hp);
         }
 
         public void SetRepairList(int i)
@@ -86,18 +82,18 @@ namespace KancolleSniffer.View.ShipListPanel
                 return;
             }
             var labels = _labelList[i];
-            labels[0].SetHp(s);
-            labels[1].SetLevel(s);
-            labels[2].SetRepairTime(s);
-            labels[3].Text = s.RepairTimePerHp.ToString(@"mm\:ss");
-            labels[4].SetName(s, ShipNameWidth.RepairListFull);
-            labels[5].SetFleet(s);
-            _panelList[i].Visible = true;
+            labels.Fleet.SetFleet(s);
+            labels.Name.SetName(s, ShipNameWidth.RepairListFull);
+            labels.Hp.SetHp(s);
+            labels.Level.SetLevel(s);
+            labels.Time.SetRepairTime(s);
+            labels.PerHp.Text = s.RepairTimePerHp.ToString(@"mm\:ss");
+            labels.BackPanel.Visible = true;
         }
 
         public void HidePanel(int i)
         {
-            _panelList[i].Visible = false;
+            _labelList[i].BackPanel.Visible = false;
         }
     }
 }

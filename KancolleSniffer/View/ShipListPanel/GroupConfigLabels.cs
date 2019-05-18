@@ -27,8 +27,7 @@ namespace KancolleSniffer.View.ShipListPanel
     {
         private readonly ShipListPanel _shipListPanel;
         private readonly List<CheckBox[]> _checkBoxesList = new List<CheckBox[]>();
-        private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
-        private readonly List<Panel> _panelList = new List<Panel>();
+        private readonly List<ShipLabels> _labelList = new List<ShipLabels>();
 
         public const int GroupCount = 4;
         public HashSet<int>[] GroupSettings { get; } = new HashSet<int>[GroupCount];
@@ -42,26 +41,22 @@ namespace KancolleSniffer.View.ShipListPanel
         public void CreateComponents(int i)
         {
             var y = ShipListPanel.LineHeight * i + 1;
-            var panel = new Panel
+            var labels = new ShipLabels
             {
-                Location = new Point(0, y),
-                Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight),
-                BackColor = CustomColors.ColumnColors.BrightFirst(i)
-            };
-            Scaler.Scale(panel);
-            panel.Tag = panel.Location.Y;
-            var labels = new[]
-            {
-                new ShipLabel
+                Fleet = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
+                Name = new ShipLabel {Location = new Point(10, 2), AutoSize = true},
+                Level = new ShipLabel
                 {
                     Location = new Point(90, 2),
                     Size = new Size(24, ShipListPanel.LabelHeight),
                     TextAlign = ContentAlignment.MiddleRight
                 },
-                new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                new ShipLabel {Location = new Point(1, 2), AutoSize = true}
+                BackPanel = new Panel
+                {
+                    Location = new Point(0, y),
+                    Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight),
+                }
             };
-
             var cb = new CheckBox[GroupCount];
             for (var j = 0; j < cb.Length; j++)
             {
@@ -77,16 +72,8 @@ namespace KancolleSniffer.View.ShipListPanel
             }
             _labelList.Add(labels);
             _checkBoxesList.Add(cb);
-            _panelList.Add(panel);
-            panel.Controls.AddRange(labels);
-            panel.Controls.AddRange(cb);
-            _shipListPanel.Controls.Add(panel);
-            var unused = panel.Handle; // create handle
-            foreach (var label in labels)
-            {
-                Scaler.Scale(label);
-                label.BackColor = CustomColors.ColumnColors.BrightFirst(i);
-            }
+            labels.Arrange(_shipListPanel, CustomColors.ColumnColors.BrightFirst(i));
+            labels.BackPanel.Controls.AddRange(cb);
         }
 
         private void checkboxGroup_CheckedChanged(object sender, EventArgs e)
@@ -114,18 +101,18 @@ namespace KancolleSniffer.View.ShipListPanel
                 _shipListPanel.SetShipType(i);
                 return;
             }
-            labels[0].SetLevel(s);
-            labels[1].SetName(s, ShipNameWidth.GroupConfig);
-            labels[2].SetFleet(s);
+            labels.Fleet.SetFleet(s);
+            labels.Name.SetName(s, ShipNameWidth.GroupConfig);
+            labels.Level.SetLevel(s);
             var cb = _checkBoxesList[i];
             for (var j = 0; j < cb.Length; j++)
                 cb[j].Checked = GroupSettings[j].Contains(s.Id);
-            _panelList[i].Visible = true;
+            labels.BackPanel.Visible = true;
         }
 
         public void HidePanel(int i)
         {
-            _panelList[i].Visible = false;
+            _labelList[i].BackPanel.Visible = false;
         }
 
         public IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships, string group)

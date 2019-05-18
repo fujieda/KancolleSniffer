@@ -49,19 +49,6 @@ namespace KancolleSniffer.View
         public Control PanelNDock { get; set; }
     }
 
-    public class ShipLabels : ControlsArranger
-    {
-        public ShipLabel Name { get; set; }
-        public ShipLabel Hp { get; set; }
-        public ShipLabel Cond { get; set; }
-        public ShipLabel Level { get; set; }
-        public ShipLabel Exp { get; set; }
-        public ShipLabel BackGround { get; set; }
-
-        public override Control[] Controls =>
-            new Control[] {Hp, Cond, Level, Exp, Name, BackGround}.Where(c => c != null).ToArray(); // 名前のZ-orderを下に
-    }
-
     public class MainFormLabels
     {
         private readonly ShipLabels[] _shipLabels = new ShipLabels[ShipInfo.MemberCount];

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -20,16 +21,6 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View
 {
-    public class QuestLabels : ControlsArranger
-    {
-        public ShipLabel Color { get; set; }
-        public ShipLabel Name { get; set; }
-        public ShipLabel Count { get; set; }
-        public ShipLabel Progress { get; set; }
-
-        public override Control[] Controls => new Control[] {Color, Count, Progress, Name};
-    }
-
     public class QuestPanel : PanelWithToolTip
     {
         private const int TopMargin = 5;
@@ -41,6 +32,15 @@ namespace KancolleSniffer.View
         private ListScroller _listScroller;
         private int _lines;
 
+        private class QuestLabels : ControlsArranger
+        {
+            public ShipLabel Color { get; set; }
+            public ShipLabel Name { get; set; }
+            public ShipLabel Count { get; set; }
+            public ShipLabel Progress { get; set; }
+
+            public override Control[] Controls => new Control[] {Color, Count, Progress, Name};
+        }
 
         public void CreateLabels(int lines, EventHandler onDoubleClick)
         {
@@ -189,5 +189,7 @@ namespace KancolleSniffer.View
             label.ForeColor = count.Cleared ? CUDColors.Red : Color.Black;
             ToolTip.SetToolTip(label, count.ToToolTip());
         }
+
+        public IEnumerable<string> QuestNameList => _labels.Select(l => l.Name.Text); // for testing
     }
 }

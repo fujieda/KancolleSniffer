@@ -232,8 +232,7 @@ namespace KancolleSniffer.Test
 
         private bool CheckResult(IEnumerable<QuestStatus> expected)
         {
-            var labels = (QuestLabels[])new PrivateObject(_panel).GetField("_labels");
-            var result = labels.Select(ql => ql.Name.Text);
+            var result = _panel.QuestNameList;
             return expected.Select(q => q.Name).Concat(Enumerable.Repeat("", Lines)).Take(Lines).SequenceEqual(result);
         }
 

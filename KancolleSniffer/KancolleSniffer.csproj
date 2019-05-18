@@ -111,6 +111,7 @@
     </Compile>
     <Compile Include="Net\HttpProxy.cs" />
     <Compile Include="Util\HttpUtility.cs" />
+    <Compile Include="View\ShipLabels.cs" />
     <Compile Include="View\ShipListPanel\GroupConfigLabels.cs" />
     <Compile Include="View\ListScroller.cs" />
     <Compile Include="View\NumberAndHistory.cs" />
@@ -136,7 +137,9 @@
     <Compile Include="View\PanelWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\QuestPanel.cs" />
+    <Compile Include="View\QuestPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\RepairListForMain.cs">
       <SubType>Component</SubType>
     </Compile>
