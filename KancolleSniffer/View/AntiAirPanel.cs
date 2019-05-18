@@ -22,9 +22,16 @@ namespace KancolleSniffer.View
     public class AntiAirPanel : Panel
     {
         private const int LineHeight = 16;
-        private readonly List<ShipLabel[]> _labelList = new List<ShipLabel[]>();
-        private readonly List<Panel> _panelList = new List<Panel>();
+        private readonly List<AntiAirLabels> _labelList = new List<AntiAirLabels>();
         private readonly List<Record> _table = new List<Record>();
+
+        private class AntiAirLabels : ShipLabels
+        {
+            public ShipLabel Rate { get; set; }
+            public ShipLabel Diff { get; set; }
+
+            public override Control[] Controls => base.Controls.Concat(new Control[] {Rate, Diff}).ToArray();
+        }
 
         public void Update(Sniffer sniffer)
         {
@@ -90,53 +97,39 @@ namespace KancolleSniffer.View
         private void CreateLabels(int i)
         {
             var y = 1 + LineHeight * i;
-            var lbp = new Panel
+            var labels = new AntiAirLabels
             {
-                Location = new Point(0, y),
-                Size = new Size(ListForm.PanelWidth, LineHeight),
-                BackColor = CustomColors.ColumnColors.BrightFirst(i),
-                Visible = false
-            };
-            Scaler.Scale(lbp);
-            lbp.Tag = lbp.Location.Y;
-            var labels = new[]
-            {
-                new ShipLabel {Location = new Point(1, 3), AutoSize = true},
-                new ShipLabel {Location = new Point(10, 3), AutoSize = true},
-                new ShipLabel {Location = new Point(35, 3), AutoSize = true},
-                new ShipLabel {Location = new Point(100, 3), AutoSize = true}
+                Fleet = new ShipLabel {Location = new Point(1, 3), AutoSize = true},
+                Name = new ShipLabel {Location = new Point(10, 3), AutoSize = true},
+                Rate = new ShipLabel {Location = new Point(35, 3), AutoSize = true},
+                Diff = new ShipLabel {Location = new Point(100, 3), AutoSize = true},
+                BackPanel = new Panel
+                {
+                    Location = new Point(0, y),
+                    Size = new Size(ListForm.PanelWidth, LineHeight),
+                }
             };
             _labelList.Add(labels);
-            _panelList.Add(lbp);
-            // ReSharper disable once CoVariantArrayConversion
-            lbp.Controls.AddRange(labels);
-            Controls.Add(lbp);
-            foreach (var label in labels)
-            {
-                Scaler.Scale(label);
-                label.BackColor = CustomColors.ColumnColors.BrightFirst(i);
-            }
+            labels.Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
         }
 
         private void SetRecords()
         {
             for (var i = 0; i < _table.Count; i++)
                 SetRecord(i);
-            for (var i = _table.Count; i < _panelList.Count; i++)
-                _panelList[i].Visible = false;
+            for (var i = _table.Count; i < _labelList.Count; i++)
+                _labelList[i].BackPanel.Visible = false;
         }
 
         private void SetRecord(int i)
         {
-            var lbp = _panelList[i];
-            if (!lbp.Visible)
-                lbp.Location = new Point(lbp.Left, (int)lbp.Tag + AutoScrollPosition.Y);
+            var lbp = _labelList[i].BackPanel;
             var column = _table[i];
             var labels = _labelList[i];
-            labels[0].Text = column.Fleet;
-            labels[1].SetName(column.Ship);
-            labels[2].Text = column.Rate;
-            labels[3].Text = column.Diff;
+            labels.Fleet.Text = column.Fleet;
+            labels.Name.SetName(column.Ship);
+            labels.Rate.Text = column.Rate;
+            labels.Diff.Text = column.Diff;
             lbp.Visible = true;
         }
 
