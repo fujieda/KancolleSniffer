@@ -19,12 +19,12 @@ namespace KancolleSniffer.View
 {
     public class ShipLabels : ControlsArranger
     {
-        public ShipLabel Fleet { get; set; }
+        public ShipLabel.Fleet Fleet { get; set; }
         public ShipLabel.Name Name { get; set; }
         public ShipLabel.Hp Hp { get; set; }
         public ShipLabel.Cond Cond { get; set; }
-        public ShipLabel Level { get; set; }
-        public ShipLabel Exp { get; set; }
+        public ShipLabel.Level Level { get; set; }
+        public ShipLabel.Exp Exp { get; set; }
         public Label BackGround { get; set; }
 
         public override Control[] Controls =>

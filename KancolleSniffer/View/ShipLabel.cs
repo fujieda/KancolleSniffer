@@ -47,16 +47,6 @@ namespace KancolleSniffer.View
             UseMnemonic = false;
         }
 
-        public void SetLevel(ShipStatus status)
-        {
-            Text = status?.Level.ToString("D");
-        }
-
-        public void SetExpToNext(ShipStatus status)
-        {
-            Text = status?.ExpToNext.ToString("D");
-        }
-
         public void SetRepairTime(ShipStatus status)
         {
             if (status == null)
@@ -70,11 +60,6 @@ namespace KancolleSniffer.View
         public void SetRepairTime(TimeSpan span)
         {
             Text = $@"{(int)span.TotalHours:d2}:{span:mm\:ss}";
-        }
-
-        public void SetFleet(ShipStatus status)
-        {
-            Text = status?.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
         }
 
         public new sealed class Name : ShipLabel
@@ -329,6 +314,50 @@ namespace KancolleSniffer.View
                         : cond >= 20
                             ? CUDColors.Orange
                             : CUDColors.Red;
+            }
+        }
+
+        public sealed class Level : ShipLabel
+        {
+            public Level(Point location, int height)
+            {
+                Location = location;
+                Size = new Size(24, height);
+                TextAlign = ContentAlignment.MiddleRight;
+            }
+
+            public void SetLevel(ShipStatus status)
+            {
+                Text = status?.Level.ToString("D");
+            }
+        }
+
+        public sealed class Exp : ShipLabel
+        {
+            public Exp(Point location, int height)
+            {
+                Location = location;
+                Size = new Size(42, height);
+                TextAlign = ContentAlignment.MiddleRight;
+            }
+
+            public void SetExpToNext(ShipStatus status)
+            {
+                Text = status?.ExpToNext.ToString("D");
+            }
+        }
+
+        public sealed class Fleet : ShipLabel
+        {
+            public Fleet(Point location)
+            {
+                Location = location;
+                AutoSize = true;
+            }
+
+            public void SetFleet(ShipStatus status)
+            {
+                Text = status?.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
             }
         }
     }

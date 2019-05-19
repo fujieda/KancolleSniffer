@@ -43,15 +43,10 @@ namespace KancolleSniffer.View.ShipListPanel
             const int height = ShipListPanel.LabelHeight;
             var labels = new RepairLabels
             {
-                Fleet = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
+                Fleet = new ShipLabel.Fleet(new Point(1, 2)),
                 Name = new ShipLabel.Name(new Point(10, 2)),
                 Hp = new ShipLabel.Hp(new Point(118, 0), ShipListPanel.LineHeight),
-                Level = new ShipLabel
-                {
-                    Location = new Point(116, 2),
-                    Size = new Size(24, height),
-                    TextAlign = ContentAlignment.MiddleRight
-                },
+                Level = new ShipLabel.Level(new Point(116, 2), height),
                 Time = new ShipLabel {Location = new Point(141, 2), AutoSize = true},
                 PerHp = new Label {Location = new Point(186, 2), AutoSize = true},
                 BackPanel = new Panel
