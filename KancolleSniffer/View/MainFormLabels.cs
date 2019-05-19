@@ -117,12 +117,7 @@ namespace KancolleSniffer.View
                 {
                     Name = new ShipLabel.Name(new Point(2, y + 2)),
                     Hp = new ShipLabel.Hp(new Point(129, y), lineHeight),
-                    Cond = new ShipLabel
-                    {
-                        Location = new Point(131, y),
-                        Size = new Size(24, lineHeight),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
+                    Cond = new ShipLabel.Cond(new Point(131, y), lineHeight),
                     Level = new ShipLabel
                     {
                         Location = new Point(155, y + 2),
@@ -205,12 +200,7 @@ namespace KancolleSniffer.View
                 {
                     Name = new ShipLabel.Name(new Point(x + 2, y + 2)),
                     Hp = new ShipLabel.Hp(new Point(x + 88, y), lh),
-                    Cond = new ShipLabel
-                    {
-                        Location = new Point(x + 85, y),
-                        Size = new Size(24, lh),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
+                    Cond = new ShipLabel.Cond(new Point(x + 85, y), lh),
                     BackGround = new Label {Location = new Point(x, y), Size = new Size(parentWidth / 2, lh)}
                 };
                 _combinedLabels[i].Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));

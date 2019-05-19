@@ -47,25 +47,6 @@ namespace KancolleSniffer.View
             UseMnemonic = false;
         }
 
-        public void SetCond(ShipStatus status)
-        {
-            if (status == null)
-            {
-                Text = "";
-                BackColor = InitialBackColor;
-                return;
-            }
-            var cond = status.Cond;
-            Text = cond.ToString("D");
-            BackColor = cond >= 50
-                ? CUDColors.Yellow
-                : cond >= 30
-                    ? InitialBackColor
-                    : cond >= 20
-                        ? CUDColors.Orange
-                        : CUDColors.Red;
-        }
-
         public void SetLevel(ShipStatus status)
         {
             Text = status?.Level.ToString("D");
@@ -319,6 +300,35 @@ namespace KancolleSniffer.View
             public void SetColor(ShipStatus status)
             {
                 BackColor = DamageColor(status);
+            }
+        }
+
+        public sealed class Cond : ShipLabel
+        {
+            public Cond(Point location, int height)
+            {
+                Location = location;
+                Size = new Size(24, height);
+                TextAlign = ContentAlignment.MiddleRight;
+            }
+
+            public void SetCond(ShipStatus status)
+            {
+                if (status == null)
+                {
+                    Text = "";
+                    BackColor = InitialBackColor;
+                    return;
+                }
+                var cond = status.Cond;
+                Text = cond.ToString("D");
+                BackColor = cond >= 50
+                    ? CUDColors.Yellow
+                    : cond >= 30
+                        ? InitialBackColor
+                        : cond >= 20
+                            ? CUDColors.Orange
+                            : CUDColors.Red;
             }
         }
     }
