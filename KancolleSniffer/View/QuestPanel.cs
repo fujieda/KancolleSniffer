@@ -34,10 +34,10 @@ namespace KancolleSniffer.View
 
         private class QuestLabels : ControlsArranger
         {
-            public ShipLabel Color { get; set; }
-            public ShipLabel Name { get; set; }
-            public ShipLabel Count { get; set; }
-            public ShipLabel Progress { get; set; }
+            public Label Color { get; set; }
+            public Label Name { get; set; }
+            public Label Count { get; set; }
+            public Label Progress { get; set; }
 
             public override Control[] Controls => new Control[] {Color, Count, Progress, Name};
         }
@@ -53,22 +53,22 @@ namespace KancolleSniffer.View
                 var y = TopMargin + i * LineHeight;
                 _labels[i] = new QuestLabels
                 {
-                    Color = new ShipLabel
+                    Color = new Label
                     {
                         Location = new Point(LeftMargin, y + 1),
                         Size = new Size(4, LabelHeight - 1)
                     },
-                    Name = new ShipLabel
+                    Name = new Label
                     {
                         Location = new Point(LeftMargin + 4, y),
                         Size = new Size(193, LabelHeight)
                     },
-                    Count = new ShipLabel
+                    Count = new GrowLeftLabel
                     {
                         Location = new Point(LeftMargin + 189, y),
                         GrowLeft = true
                     },
-                    Progress = new ShipLabel
+                    Progress = new Label
                     {
                         Location = new Point(LeftMargin + 186, y),
                         Size = new Size(29, LabelHeight),

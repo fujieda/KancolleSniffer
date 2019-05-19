@@ -25,7 +25,7 @@ namespace KancolleSniffer.View
         public ShipLabel Cond { get; set; }
         public ShipLabel Level { get; set; }
         public ShipLabel Exp { get; set; }
-        public ShipLabel BackGround { get; set; }
+        public Label BackGround { get; set; }
 
         public override Control[] Controls =>
             new Control[] {Hp, Cond, Level, Exp, Name, Fleet, BackGround}.Where(c => c != null)

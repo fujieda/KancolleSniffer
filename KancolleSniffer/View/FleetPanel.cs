@@ -193,8 +193,8 @@ namespace KancolleSniffer.View
                         if (i >= name.Length)
                             break;
                         var corpsFp = airCorps.CalcFighterPower();
-                        var airCombat = new[] { (int)corpsFp[0].AirCombat, (int)corpsFp[1].AirCombat };
-                        var interception = new[] { (int)corpsFp[0].Interception, (int)corpsFp[1].Interception };
+                        var airCombat = new[] {(int)corpsFp[0].AirCombat, (int)corpsFp[1].AirCombat};
+                        var interception = new[] {(int)corpsFp[0].Interception, (int)corpsFp[1].Interception};
                         var different = interception[0] != airCombat[0];
                         string spec;
                         string spec2;
@@ -220,7 +220,7 @@ namespace KancolleSniffer.View
                         {
                             var planeFp = plane.FighterPower;
                             airCombat = new[] {(int)planeFp[0].AirCombat, (int)planeFp[1].AirCombat};
-                            interception = new[] {(int) planeFp[0].Interception, (int)planeFp[1].Interception };
+                            interception = new[] {(int)planeFp[0].Interception, (int)planeFp[1].Interception};
                             different = interception[0] != airCombat[0];
                             return new Record
                             {
@@ -280,11 +280,11 @@ namespace KancolleSniffer.View
 
         private class FleetLabels : ControlsArranger
         {
-            public ShipLabel Fleet { get; set; }
+            public Label Fleet { get; set; }
             public ShipLabel Name { get; set; }
-            public ShipLabel Equip { get; set; }
-            public ShipLabel EquipColor { get; set; }
-            public ShipLabel Spec { get; set; }
+            public Label Equip { get; set; }
+            public Label EquipColor { get; set; }
+            public Label Spec { get; set; }
 
             public override Control[] Controls => new Control[] {Fleet, Name, Equip, EquipColor, Spec};
         }
@@ -303,11 +303,11 @@ namespace KancolleSniffer.View
             lbp.Tag = lbp.Location.Y;
             var labels = new FleetLabels
             {
-                Fleet = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
+                Fleet = new Label {Location = new Point(1, 2), AutoSize = true},
                 Name = new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                Equip = new ShipLabel {Location = new Point(38, 2), AutoSize = true},
-                EquipColor = new ShipLabel {Location = new Point(35, 2), Size = new Size(4, LabelHeight - 2)},
-                Spec = new ShipLabel {Location = new Point(217, 2), GrowLeft = true}
+                Equip = new Label {Location = new Point(38, 2), AutoSize = true},
+                EquipColor = new Label {Location = new Point(35, 2), Size = new Size(4, LabelHeight - 2)},
+                Spec = new GrowLeftLabel {Location = new Point(217, 2), GrowLeft = true}
             };
             _labelList.Add(labels);
             _panelList.Add(lbp);

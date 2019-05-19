@@ -36,7 +36,7 @@ namespace KancolleSniffer.View
             public ShipLabel Name { get; set; }
             public ShipLabel Time { get; set; }
             public ShipLabel Damage { get; set; }
-            public ShipLabel BackGround { private get; set; }
+            public Label BackGround { private get; set; }
 
             public override Control[] Controls => new[] {Fleet, Damage, Time, Name, BackGround};
         }
@@ -52,10 +52,10 @@ namespace KancolleSniffer.View
                 _repairLabels[i] = new RepairLabels
                 {
                     Fleet = new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
+                    Name = new ShipLabel {Location = new Point(9, y), AutoSize = true},
                     Damage = new ShipLabel {Location = new Point(119, y), Size = new Size(5, height - 1)},
                     Time = new ShipLabel {Location = new Point(75, y), AutoSize = true},
-                    Name = new ShipLabel {Location = new Point(9, y), AutoSize = true},
-                    BackGround = new ShipLabel
+                    BackGround = new Label
                     {
                         Location = new Point(0, y - 1),
                         Size = new Size(Width, height + 2)

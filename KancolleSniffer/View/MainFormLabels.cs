@@ -54,8 +54,8 @@ namespace KancolleSniffer.View
         private readonly ShipLabels[] _shipLabels = new ShipLabels[ShipInfo.MemberCount];
         private readonly ShipLabels[] _shipLabels7 = new ShipLabels[7];
         private readonly ShipLabels[] _combinedLabels = new ShipLabels[ShipInfo.MemberCount * 2];
-        private readonly ShipLabel[] _akashiTimers = new ShipLabel[ShipInfo.MemberCount];
-        private readonly ShipLabel[] _akashiTimers7 = new ShipLabel[ShipInfo.MemberCount];
+        private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
+        private readonly Label[] _akashiTimers7 = new Label[ShipInfo.MemberCount];
         private readonly NDockLabels[] _ndockLabels = new NDockLabels[DockInfo.DockCount];
         private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
         private readonly MainFormPanels _panels;
@@ -94,15 +94,22 @@ namespace KancolleSniffer.View
         {
             parent.SuspendLayout();
             const int top = 1, height = 12;
-            var headings = new ShipLabels
+            var headings = new Control[]
             {
-                Hp = new ShipLabel {Location = new Point(109, top), Text = "HP", AutoSize = true},
-                Cond = new ShipLabel {Location = new Point(128, top), Text = "cond", AutoSize = true},
-                Level = new ShipLabel {Location = new Point(162, top), Text = "Lv", AutoSize = true},
-                Exp = new ShipLabel {Location = new Point(194, top), Text = "Exp", AutoSize = true},
-                BackGround = new ShipLabel {Location = new Point(0, 1), Size = new Size(parent.Width, lineHeight - 1)}
+                new Label {Location = new Point(109, top), Text = "HP", AutoSize = true},
+                new Label {Location = new Point(128, top), Text = "cond", AutoSize = true},
+                new Label {Location = new Point(162, top), Text = "Lv", AutoSize = true},
+                new Label {Location = new Point(194, top), Text = "Exp", AutoSize = true},
+                new Label {Location = new Point(0, 1), Size = new Size(parent.Width, lineHeight - 1)}
             };
-            headings.Arrange(parent, CustomColors.ColumnColors.Bright);
+            parent.Controls.AddRange(headings);
+            foreach (var control in headings)
+            {
+                Scaler.Scale(control);
+                control.BackColor = CustomColors.ColumnColors.Bright;
+            }
+            headings[0].Cursor = Cursors.Hand;
+            headings[0].Click += HpLabelClickHandler;
             for (var i = 0; i < shipLabels.Length; i++)
             {
                 var y = top + lineHeight * (i + 1);
@@ -135,7 +142,7 @@ namespace KancolleSniffer.View
                         Size = new Size(42, height),
                         TextAlign = ContentAlignment.MiddleRight
                     },
-                    BackGround = new ShipLabel {Location = new Point(0, y), Size = new Size(parent.Width, lineHeight)}
+                    BackGround = new Label {Location = new Point(0, y), Size = new Size(parent.Width, lineHeight)}
                 };
                 shipLabels[i].Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));
                 shipLabels[i].SetClickHandler(onClick);
@@ -144,8 +151,6 @@ namespace KancolleSniffer.View
                 _hpLabels.Add(hpLabel);
                 hpLabel.DoubleClick += HpLabelClickHandler;
             }
-            headings.Hp.Cursor = Cursors.Hand;
-            headings.Hp.Click += HpLabelClickHandler;
             parent.ResumeLayout();
         }
 
@@ -185,19 +190,19 @@ namespace KancolleSniffer.View
             parent.SuspendLayout();
             const int top = 1, lh = 16;
             const int parentWidth = 220; // parent.Widthを使うとDPIスケーリング時に計算がくるうので
-            ShipLabel[] headings;
-            parent.Controls.AddRange(headings = new[]
+            var headings = new Control[]
             {
-                new ShipLabel {Location = new Point(68, top), Text = "HP", AutoSize = true},
-                new ShipLabel {Location = new Point(86, top), Text = "cnd", AutoSize = true},
-                new ShipLabel {Location = new Point(177, top), Text = "HP", AutoSize = true},
-                new ShipLabel {Location = new Point(195, top), Text = "cnd", AutoSize = true},
-                new ShipLabel {Location = new Point(0, 1), Size = new Size(parentWidth, lh - 1)}
-            });
-            foreach (var label in headings)
+                new Label {Location = new Point(68, top), Text = "HP", AutoSize = true},
+                new Label {Location = new Point(86, top), Text = "cnd", AutoSize = true},
+                new Label {Location = new Point(177, top), Text = "HP", AutoSize = true},
+                new Label {Location = new Point(195, top), Text = "cnd", AutoSize = true},
+                new Label {Location = new Point(0, 1), Size = new Size(parentWidth, lh - 1)}
+            };
+            parent.Controls.AddRange(headings);
+            foreach (var control in headings)
             {
-                Scaler.Scale(label);
-                label.BackColor = CustomColors.ColumnColors.Bright;
+                Scaler.Scale(control);
+                control.BackColor = CustomColors.ColumnColors.Bright;
             }
             for (var i = 0; i < _combinedLabels.Length; i++)
             {
@@ -220,7 +225,7 @@ namespace KancolleSniffer.View
                         Size = new Size(24, lh),
                         TextAlign = ContentAlignment.MiddleRight
                     },
-                    BackGround = new ShipLabel {Location = new Point(x, y), Size = new Size(parentWidth / 2, lh)}
+                    BackGround = new Label {Location = new Point(x, y), Size = new Size(parentWidth / 2, lh)}
                 };
                 _combinedLabels[i].Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));
                 _combinedLabels[i].SetTag(i);
@@ -258,17 +263,17 @@ namespace KancolleSniffer.View
             CreateAkashiTimers(parent, _akashiTimers7, 14);
         }
 
-        public void CreateAkashiTimers(Control parent, ShipLabel[] timerLabels, int lineHeight)
+        public void CreateAkashiTimers(Control parent, Label[] timerLabels, int lineHeight)
         {
             parent.SuspendLayout();
             for (var i = 0; i < timerLabels.Length; i++)
             {
                 const int x = 55;
                 var y = 3 + lineHeight * (i + 1);
-                ShipLabel label;
+                Label label;
                 parent.Controls.Add(
                     label = timerLabels[i] =
-                        new ShipLabel
+                        new Label
                         {
                             Location = new Point(x, y),
                             Size = new Size(31, 12),
@@ -287,7 +292,7 @@ namespace KancolleSniffer.View
             AdjustAkashiTimers(_akashiTimers7, 14);
         }
 
-        public void AdjustAkashiTimers(ShipLabel[] timers, int lineHeight)
+        public void AdjustAkashiTimers(Label[] timers, int lineHeight)
         {
             if (Scaler.ScaleHeight(1f) < 1.2)
                 return;
@@ -313,7 +318,7 @@ namespace KancolleSniffer.View
         }
 
         public void SetAkashiTimer(IReadOnlyList<ShipStatus> ships, AkashiTimer.RepairSpan[] timers,
-            ShipLabel[] timerLabels, ShipLabels[] shipLabels)
+            Label[] timerLabels, ShipLabels[] shipLabels)
         {
             var shortest = -1;
             for (var i = 0; i < timers.Length; i++)
@@ -355,7 +360,7 @@ namespace KancolleSniffer.View
         private class NDockLabels : ControlsArranger
         {
             public ShipLabel Name { get; set; }
-            public ShipLabel Timer { get; set; }
+            public Label Timer { get; set; }
 
             public override Control[] Controls => new Control[] {Timer, Name};
         }
@@ -368,15 +373,15 @@ namespace KancolleSniffer.View
                 var y = i * lh;
                 _ndockLabels[i] = new NDockLabels
                 {
-                    Timer = new ShipLabel
+                    Name = new ShipLabel {Location = new Point(29, y + 3), AutoSize = true},
+                    Timer = new GrowLeftLabel
                     {
                         Location = new Point(138, y + 2),
                         GrowLeft = true,
                         MinimumSize = new Size(0, lh),
                         TextAlign = ContentAlignment.MiddleLeft,
                         Cursor = Cursors.Hand
-                    },
-                    Name = new ShipLabel {Location = new Point(29, y + 3), AutoSize = true}
+                    }
                 };
                 _ndockLabels[i].Arrange(parent);
                 _ndockLabels[i].SetClickHandler(onClick);

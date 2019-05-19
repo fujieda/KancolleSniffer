@@ -27,8 +27,8 @@ namespace KancolleSniffer.View
 
         private class AntiAirLabels : ShipLabels
         {
-            public ShipLabel Rate { get; set; }
-            public ShipLabel Diff { get; set; }
+            public Label Rate { get; set; }
+            public Label Diff { get; set; }
 
             public override Control[] Controls => base.Controls.Concat(new Control[] {Rate, Diff}).ToArray();
         }
@@ -101,8 +101,8 @@ namespace KancolleSniffer.View
             {
                 Fleet = new ShipLabel {Location = new Point(1, 3), AutoSize = true},
                 Name = new ShipLabel {Location = new Point(10, 3), AutoSize = true},
-                Rate = new ShipLabel {Location = new Point(35, 3), AutoSize = true},
-                Diff = new ShipLabel {Location = new Point(100, 3), AutoSize = true},
+                Rate = new Label {Location = new Point(35, 3), AutoSize = true},
+                Diff = new Label {Location = new Point(100, 3), AutoSize = true},
                 BackPanel = new Panel
                 {
                     Location = new Point(0, y),
