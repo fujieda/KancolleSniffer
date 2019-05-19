@@ -54,7 +54,7 @@ namespace KancolleSniffer.View
         private readonly Label[][][] _resultLabels = new Label[2][][];
         private AirBattleResult[] _resultList;
         private int _resultIndex;
-        private readonly ShipLabel _ciShipName;
+        private readonly ShipLabel.Name _ciShipName;
         private readonly Label _ciKind;
 
         public bool ShowResultAutomatic { get; set; }
@@ -113,11 +113,7 @@ namespace KancolleSniffer.View
                     });
                 }
             }
-            Controls.Add(_ciShipName = new ShipLabel
-            {
-                Location = new Point(ci, top),
-                Size = new Size((int)ShipNameWidth.CiShipName, 12)
-            });
+            Controls.Add(_ciShipName = new ShipLabel.Name(new Point(ci, top)));
             Controls.Add(_ciKind = new Label
             {
                 Location = new Point(ci, top + 14),

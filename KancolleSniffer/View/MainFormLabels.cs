@@ -115,7 +115,7 @@ namespace KancolleSniffer.View
                 var y = top + lineHeight * (i + 1);
                 shipLabels[i] = new ShipLabels
                 {
-                    Name = new ShipLabel {Location = new Point(2, y + 2), AutoSize = true},
+                    Name = new ShipLabel.Name(new Point(2, y + 2)),
                     Hp = new ShipLabel.Hp(new Point(129, y), lineHeight),
                     Cond = new ShipLabel
                     {
@@ -203,7 +203,7 @@ namespace KancolleSniffer.View
                 var y = top + lh * (i % ShipInfo.MemberCount + 1);
                 _combinedLabels[i] = new ShipLabels
                 {
-                    Name = new ShipLabel {Location = new Point(x + 2, y + 2), AutoSize = true},
+                    Name = new ShipLabel.Name(new Point(x + 2, y + 2)),
                     Hp = new ShipLabel.Hp(new Point(x + 88, y), lh),
                     Cond = new ShipLabel
                     {
@@ -345,7 +345,7 @@ namespace KancolleSniffer.View
 
         private class NDockLabels : ControlsArranger
         {
-            public ShipLabel Name { get; set; }
+            public ShipLabel.Name Name { get; set; }
             public Label Timer { get; set; }
 
             public override Control[] Controls => new Control[] {Timer, Name};
@@ -359,7 +359,7 @@ namespace KancolleSniffer.View
                 var y = i * lh;
                 _ndockLabels[i] = new NDockLabels
                 {
-                    Name = new ShipLabel {Location = new Point(29, y + 3), AutoSize = true},
+                    Name = new ShipLabel.Name(new Point(29, y + 3)),
                     Timer = new GrowLeftLabel
                     {
                         Location = new Point(138, y + 2),

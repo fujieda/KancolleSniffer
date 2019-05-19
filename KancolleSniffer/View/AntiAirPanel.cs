@@ -100,7 +100,7 @@ namespace KancolleSniffer.View
             var labels = new AntiAirLabels
             {
                 Fleet = new ShipLabel {Location = new Point(1, 3), AutoSize = true},
-                Name = new ShipLabel {Location = new Point(10, 3), AutoSize = true},
+                Name = new ShipLabel.Name(new Point(10, 3)),
                 Rate = new Label {Location = new Point(35, 3), AutoSize = true},
                 Diff = new Label {Location = new Point(100, 3), AutoSize = true},
                 BackPanel = new Panel

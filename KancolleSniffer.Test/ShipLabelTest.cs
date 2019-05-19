@@ -105,7 +105,7 @@ namespace KancolleSniffer.Test
 
         private void TruncateNameSub(Dictionary<string, string> dict, ShipNameWidth width)
         {
-            var label = new ShipLabel {Parent = new Panel()};
+            var label = new ShipLabel.Name(Point.Empty) {Parent = new Panel()};
             Scaler.Factor = new SizeF(1,1);
             foreach (var entry in dict)
             {
@@ -120,7 +120,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void SetName()
         {
-            var label = new ShipLabel {Parent = new Panel()};
+            var label = new ShipLabel.Name(Point.Empty) {Parent = new Panel()};
             Scaler.Factor = new SizeF(1, 1);
             label.SetName(new ShipStatus
                 {

@@ -20,7 +20,7 @@ namespace KancolleSniffer.View
     public class ShipLabels : ControlsArranger
     {
         public ShipLabel Fleet { get; set; }
-        public ShipLabel Name { get; set; }
+        public ShipLabel.Name Name { get; set; }
         public ShipLabel.Hp Hp { get; set; }
         public ShipLabel Cond { get; set; }
         public ShipLabel Level { get; set; }

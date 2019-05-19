@@ -33,7 +33,7 @@ namespace KancolleSniffer.View
         private class RepairLabels : ControlsArranger
         {
             public ShipLabel Fleet { get; set; }
-            public ShipLabel Name { get; set; }
+            public ShipLabel.Name Name { get; set; }
             public ShipLabel Time { get; set; }
             public ShipLabel.Hp Damage { get; set; }
             public Label BackGround { private get; set; }
@@ -52,7 +52,7 @@ namespace KancolleSniffer.View
                 _repairLabels[i] = new RepairLabels
                 {
                     Fleet = new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
-                    Name = new ShipLabel {Location = new Point(9, y), AutoSize = true},
+                    Name = new ShipLabel.Name(new Point(9, y)),
                     Damage = new ShipLabel.Hp {Location = new Point(119, y), Size = new Size(5, height - 1)},
                     Time = new ShipLabel {Location = new Point(75, y), AutoSize = true},
                     BackGround = new Label

@@ -330,7 +330,7 @@ namespace KancolleSniffer.View
                 var y = LineHeight * i + 38;
                 var friend = new ShipLabels
                 {
-                    Name = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
+                    Name = new ShipLabel.Name(new Point(1, 2)),
                     Hp = new ShipLabel.Hp(new Point(101, 0), LineHeight),
                     BackPanel = new Panel
                     {
@@ -345,7 +345,7 @@ namespace KancolleSniffer.View
                 friend.Hp.Click += HpLabelClickHandler;
                 var enemy = new ShipLabels
                 {
-                    Name = new ShipLabel {Location = new Point(164, 2), AutoSize = true},
+                    Name = new ShipLabel.Name(new Point(164, 2)),
                     Hp = new ShipLabel.Hp
                     {
                         Location = new Point(119, 0),

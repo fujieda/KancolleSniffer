@@ -520,7 +520,7 @@ namespace KancolleSniffer
             {
                 toolTip.Font = new Font(toolTip.Font.FontFamily, toolTip.Font.Size * Config.Zoom / 100);
             }
-            ShipLabel.LatinFont = new Font("Tahoma", 8f * Config.Zoom / 100);
+            ShipLabel.Name.LatinFont = new Font("Tahoma", 8f * Config.Zoom / 100);
             var cur = CurrentAutoScaleDimensions;
             Scaler.Factor = Scaler.Scale(cur.Width / prev.Width, cur.Height / prev.Height);
         }

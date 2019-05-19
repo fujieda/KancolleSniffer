@@ -44,7 +44,7 @@ namespace KancolleSniffer.View.ShipListPanel
             var labels = new ShipLabels
             {
                 Fleet = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
-                Name = new ShipLabel {Location = new Point(10, 2), AutoSize = true},
+                Name = new ShipLabel.Name(new Point(10, 2)),
                 Level = new ShipLabel
                 {
                     Location = new Point(90, 2),
