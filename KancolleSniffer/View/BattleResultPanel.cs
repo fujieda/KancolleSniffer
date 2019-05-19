@@ -334,8 +334,7 @@ namespace KancolleSniffer.View
                     Hp = new ShipLabel
                     {
                         Location = new Point(101, 0),
-                        AutoSize = true,
-                        AnchorRight = true,
+                        GrowLeft = true,
                         MinimumSize = new Size(0, LineHeight),
                         TextAlign = ContentAlignment.MiddleLeft,
                         Cursor = Cursors.Hand

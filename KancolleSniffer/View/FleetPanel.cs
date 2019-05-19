@@ -307,7 +307,7 @@ namespace KancolleSniffer.View
                 Name = new ShipLabel {Location = new Point(10, 2), AutoSize = true},
                 Equip = new ShipLabel {Location = new Point(38, 2), AutoSize = true},
                 EquipColor = new ShipLabel {Location = new Point(35, 2), Size = new Size(4, LabelHeight - 2)},
-                Spec = new ShipLabel {Location = new Point(217, 2), AutoSize = true, AnchorRight = true}
+                Spec = new ShipLabel {Location = new Point(217, 2), GrowLeft = true}
             };
             _labelList.Add(labels);
             _panelList.Add(lbp);

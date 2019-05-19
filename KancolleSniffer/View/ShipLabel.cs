@@ -24,13 +24,11 @@ using static System.Math;
 namespace KancolleSniffer.View
 {
     [DesignerCategory("Code")]
-    public class ShipLabel : Label
+    public class ShipLabel : GrowLeftLabel
     {
         public static Font LatinFont { get; set; } = new Font("Tahoma", 8f);
-        public bool AnchorRight { get; set; }
+
         private Color _initialBackColor;
-        private int _right = Int32.MinValue;
-        private int _left;
         private SlotStatus _slotStatus;
         private ShipStatus _status;
         private bool _hpPercent;
@@ -166,6 +164,8 @@ namespace KancolleSniffer.View
                     if (_hpStrongLabel == null)
                         CreateHpStrongLabel();
                     _hpStrongLabel.Text = percent;
+                    ForeColor = Color.DarkGray;
+                    _hpStrongLabel.ForeColor = Color.DarkGray;
                 }
                 else
                 {
@@ -190,7 +190,7 @@ namespace KancolleSniffer.View
                 Location = Scaler.Move(Left, Top, 4, 0),
                 AutoSize = true,
                 MinimumSize = new Size(0, Height),
-                AnchorRight = true,
+                GrowLeft = true,
                 TextAlign = ContentAlignment.MiddleLeft,
                 Cursor = Cursors.Hand
             };
@@ -276,34 +276,6 @@ namespace KancolleSniffer.View
         public void SetFleet(ShipStatus status)
         {
             Text = status?.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
-        }
-
-        protected override void OnSizeChanged(EventArgs args)
-        {
-            base.OnSizeChanged(args);
-            KeepAnchorRight();
-        }
-
-        protected override void OnLayout(LayoutEventArgs args)
-        {
-            base.OnLayout(args);
-            KeepAnchorRight();
-        }
-
-        private void KeepAnchorRight()
-        {
-            if (!AnchorRight)
-                return;
-            if (_right == int.MinValue || _left != Left)
-            {
-                _right = Right;
-                _left = Left;
-                return;
-            }
-            if (_right == Right)
-                return;
-            _left -= Right - _right;
-            Location = new Point(_left, Top);
         }
 
         protected override void OnPaint(PaintEventArgs e)

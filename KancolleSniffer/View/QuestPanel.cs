@@ -66,8 +66,7 @@ namespace KancolleSniffer.View
                     Count = new ShipLabel
                     {
                         Location = new Point(LeftMargin + 189, y),
-                        AutoSize = true,
-                        AnchorRight = true
+                        GrowLeft = true
                     },
                     Progress = new ShipLabel
                     {

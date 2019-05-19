@@ -112,8 +112,7 @@ namespace KancolleSniffer.View
                     Hp = new ShipLabel
                     {
                         Location = new Point(129, y),
-                        AutoSize = true,
-                        AnchorRight = true,
+                        GrowLeft = true,
                         MinimumSize = new Size(0, lineHeight),
                         TextAlign = ContentAlignment.MiddleLeft,
                         Cursor = Cursors.Hand
@@ -210,8 +209,7 @@ namespace KancolleSniffer.View
                     Hp = new ShipLabel
                     {
                         Location = new Point(x + 88, y),
-                        AutoSize = true,
-                        AnchorRight = true,
+                        GrowLeft = true,
                         MinimumSize = new Size(0, lh),
                         TextAlign = ContentAlignment.MiddleLeft,
                         Cursor = Cursors.Hand
@@ -373,8 +371,7 @@ namespace KancolleSniffer.View
                     Timer = new ShipLabel
                     {
                         Location = new Point(138, y + 2),
-                        AutoSize = true,
-                        AnchorRight = true,
+                        GrowLeft = true,
                         MinimumSize = new Size(0, lh),
                         TextAlign = ContentAlignment.MiddleLeft,
                         Cursor = Cursors.Hand
