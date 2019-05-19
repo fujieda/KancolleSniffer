@@ -182,7 +182,7 @@ namespace KancolleSniffer.View
             var result = _resultList[_resultIndex];
             if (result.AirFire == null)
             {
-                _ciShipName.SetName(null);
+                _ciShipName.Reset();
                 _ciKind.Text = "";
                 ToolTip.SetToolTip(_ciKind, "");
             }
@@ -208,7 +208,7 @@ namespace KancolleSniffer.View
                     }
                 }
             }
-            _ciShipName.SetName(null);
+            _ciShipName.Reset();
             _ciKind.Text = "";
             ToolTip.SetToolTip(_ciKind, "");
         }

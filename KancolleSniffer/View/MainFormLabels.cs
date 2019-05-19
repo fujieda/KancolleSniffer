@@ -154,9 +154,13 @@ namespace KancolleSniffer.View
             for (var i = 0; i < shipLabels.Length; i++)
             {
                 var labels = shipLabels[i];
-                var ship = i < ships.Count ? ships[i] : null;
-                labels.Name.SetName(ship, ShipNameWidth.MainPanel);
-                labels.Set(ship);
+                if (i >= ships.Count)
+                {
+                    labels.Reset();
+                    continue;
+                }
+                labels.Name.SetName(ships[i], ShipNameWidth.MainPanel);
+                labels.Set(ships[i]);
             }
         }
 
@@ -209,9 +213,13 @@ namespace KancolleSniffer.View
                 var idx = i % ShipInfo.MemberCount;
                 var ships = i < ShipInfo.MemberCount ? first : second;
                 var labels = _combinedLabels[i];
-                var s = idx < ships.Count ? ships[idx] : null;
-                labels.Name.SetName(s, ShipNameWidth.Combined);
-                labels.Set(s);
+                if (idx >= ships.Count)
+                {
+                    labels.Reset();
+                    continue;
+                }
+                labels.Name.SetName(ships[idx], ShipNameWidth.Combined);
+                labels.Set(ships[idx]);
             }
         }
 

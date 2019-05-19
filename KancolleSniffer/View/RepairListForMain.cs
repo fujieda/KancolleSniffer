@@ -18,6 +18,7 @@ using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
 using static System.Math;
+
 // ReSharper disable CoVariantArrayConversion
 
 namespace KancolleSniffer.View
@@ -30,20 +31,24 @@ namespace KancolleSniffer.View
         private ShipStatus[] _repairList = new ShipStatus[0];
         private ListScroller _listScroller;
 
-        private class RepairLabels : ControlsArranger
+        private class RepairLabels : ShipLabels
         {
-            public ShipLabel.Fleet Fleet { private get; set; }
-            public ShipLabel.Name Name { get; set; }
             public ShipLabel.RepairTime Time { private get; set; }
             public ShipLabel.Hp Damage { get; set; }
-            public Label BackGround { private get; set; }
 
-            public override Control[] Controls => new[] {Fleet, Damage, Time, Name, BackGround};
+            public override Control[] Controls => base.Controls.Concat(new Control[] {Time, Damage}).ToArray();
 
-            public void Set(ShipStatus status)
+            public override void Set(ShipStatus status)
             {
-                foreach (var label in new ShipLabel[] {Fleet, Time})
-                    label?.Set(status);
+                base.Set(status);
+                Time.Set(status);
+            }
+
+            public override void Reset()
+            {
+                base.Reset();
+                Time.Reset();
+                Damage.Reset();
             }
         }
 
@@ -79,7 +84,8 @@ namespace KancolleSniffer.View
             get
             {
                 var baseHeight = Parent.ClientRectangle.Height - Location.Y;
-                return (int)Round((baseHeight - Scaler.ScaleHeight((float)PanelPadding) * 2) / Scaler.ScaleHeight((float)LineHeight));
+                return (int)Round((baseHeight - Scaler.ScaleHeight((float)PanelPadding) * 2) /
+                                  Scaler.ScaleHeight((float)LineHeight));
             }
         }
 
@@ -134,9 +140,7 @@ namespace KancolleSniffer.View
         private void ClearLabels(int i)
         {
             var labels = _repairLabels[i];
-            labels.Set(null);
-            labels.Name.SetName(null);
-            labels.Damage.BackColor = CustomColors.ColumnColors.BrightFirst(i);
+            labels.Reset();
         }
     }
 }

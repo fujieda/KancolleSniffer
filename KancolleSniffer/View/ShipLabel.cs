@@ -49,6 +49,8 @@ namespace KancolleSniffer.View
 
         public abstract void Set(ShipStatus status);
 
+        public abstract void Reset();
+
         public new sealed class Name : ShipLabel
         {
             private SlotStatus _slotStatus;
@@ -75,13 +77,13 @@ namespace KancolleSniffer.View
                 SetName(status);
             }
 
+            public override void Reset()
+            {
+                SetName("");
+            }
+
             public void SetName(ShipStatus status, ShipNameWidth width = ShipNameWidth.Max)
             {
-                if (status == null)
-                {
-                    SetName("");
-                    return;
-                }
                 var empty = SlotStatus.Equipped;
                 if (!status.Empty)
                 {
@@ -197,18 +199,20 @@ namespace KancolleSniffer.View
                 Cursor = Cursors.Hand;
             }
 
+            public override void Reset()
+            {
+                if (_hpStrongLabel != null)
+                    _hpStrongLabel.Text = "";
+                Text = "";
+                BackColor = InitialBackColor;
+            }
+
             public override void Set(ShipStatus status)
             {
                 Status = status;
                 if (_hpStrongLabel != null)
                     _hpStrongLabel.Text = "";
                 Font = BaseFont;
-                if (status == null)
-                {
-                    Text = "";
-                    BackColor = InitialBackColor;
-                    return;
-                }
                 if (_hpPercent)
                 {
                     var percent = $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}";
@@ -249,7 +253,8 @@ namespace KancolleSniffer.View
             public void ToggleHpPercent()
             {
                 _hpPercent = !_hpPercent;
-                Set(Status);
+                if (Status != null)
+                    Set(Status);
             }
 
             public void SetHp(int now, int max)
@@ -289,14 +294,14 @@ namespace KancolleSniffer.View
                 TextAlign = ContentAlignment.MiddleRight;
             }
 
+            public override void Reset()
+            {
+                Text = "";
+                BackColor = InitialBackColor;
+            }
+
             public override void Set(ShipStatus status)
             {
-                if (status == null)
-                {
-                    Text = "";
-                    BackColor = InitialBackColor;
-                    return;
-                }
                 var cond = status.Cond;
                 Text = cond.ToString("D");
                 BackColor = cond >= 50
@@ -318,9 +323,14 @@ namespace KancolleSniffer.View
                 TextAlign = ContentAlignment.MiddleRight;
             }
 
+            public override void Reset()
+            {
+                Text = "";
+            }
+
             public override void Set(ShipStatus status)
             {
-                Text = status?.Level.ToString("D");
+                Text = status.Level.ToString("D");
             }
         }
 
@@ -333,9 +343,14 @@ namespace KancolleSniffer.View
                 TextAlign = ContentAlignment.MiddleRight;
             }
 
+            public override void Reset()
+            {
+                Text = "";
+            }
+
             public override void Set(ShipStatus status)
             {
-                Text = status?.ExpToNext.ToString("D");
+                Text = status.ExpToNext.ToString("D");
             }
         }
 
@@ -347,9 +362,14 @@ namespace KancolleSniffer.View
                 AutoSize = true;
             }
 
+            public override void Reset()
+            {
+                Text = "";
+            }
+
             public override void Set(ShipStatus status)
             {
-                Text = status?.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
+                Text = status.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
             }
         }
 
@@ -361,13 +381,13 @@ namespace KancolleSniffer.View
                 AutoSize = true;
             }
 
+            public override void Reset()
+            {
+                Text = "";
+            }
+
             public override void Set(ShipStatus status)
             {
-                if (status == null)
-                {
-                    Text = "";
-                    return;
-                }
                 SetRepairTime(status.RepairTime);
             }
 

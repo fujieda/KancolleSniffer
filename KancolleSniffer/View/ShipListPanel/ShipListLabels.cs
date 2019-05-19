@@ -69,9 +69,8 @@ namespace KancolleSniffer.View.ShipListPanel
         {
             var s = _shipListPanel.GetShip(i);
             var labels = _labelList[i];
-            labels.Set(null);
+            labels.Reset();
             labels.Fleet.Text = s.Name;
-            labels.Name.SetName(null);
             labels.BackPanel.Visible = true;
         }
 

@@ -203,7 +203,7 @@ namespace KancolleSniffer.View
             if (friend.Guard.Length > 0)
             {
                 _friendLabels[friend.Main.Length].Name.Text = "護衛";
-                _friendLabels[friend.Main.Length].Hp.Set(null);
+                _friendLabels[friend.Main.Length].Hp.Reset();
                 for (var i = 0; i < friend.Guard.Length; i++)
                 {
                     var labels = _friendLabels[friend.Main.Length + 1 + i];
@@ -216,8 +216,7 @@ namespace KancolleSniffer.View
             var friendLines = friend.Main.Length + (friend.Guard.Length > 0 ? friend.Guard.Length + 1 : 0);
             for (var i = friendLines; i < _friendLabels.Count; i++)
             {
-                _friendLabels[i].Name.SetName("");
-                _friendLabels[i].Hp.Set(null);
+                _friendLabels[i].Reset();
             }
             for (var i = 0; i < enemy.Main.Length; i++)
             {
@@ -230,7 +229,7 @@ namespace KancolleSniffer.View
             if (enemy.Guard.Length > 0)
             {
                 _enemyLabels[enemy.Main.Length].Name.Text = "護衛";
-                _enemyLabels[enemy.Main.Length].Hp.Set(null);
+                _enemyLabels[enemy.Main.Length].Hp.Reset();
                 for (var i = 0; i < enemy.Guard.Length; i++)
                 {
                     var labels = _enemyLabels[enemy.Main.Length + 1 + i];
@@ -243,8 +242,7 @@ namespace KancolleSniffer.View
             var enemyLines = enemy.Main.Length + (enemy.Guard.Length > 0 ? enemy.Guard.Length + 1 : 0);
             for (var i = enemyLines; i < _enemyLabels.Count; i++)
             {
-                _enemyLabels[i].Name.SetName("");
-                _enemyLabels[i].Hp.Set(null);
+                _enemyLabels[i].Reset();
             }
             var lines = Max(friendLines, enemyLines);
             for (var i = 0; i < lines; i++)

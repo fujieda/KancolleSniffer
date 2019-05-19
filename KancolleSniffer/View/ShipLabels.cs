@@ -37,5 +37,11 @@ namespace KancolleSniffer.View
             foreach (var label in new ShipLabel[] {Fleet, Hp, Cond, Level, Exp})
                 label?.Set(status);
         }
+
+        public virtual void Reset()
+        {
+            foreach (var label in new ShipLabel[] {Fleet, Name, Hp, Cond, Level, Exp})
+                label?.Reset();
+        }
     }
 }
