@@ -57,7 +57,7 @@ namespace KancolleSniffer.View
         private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
         private readonly Label[] _akashiTimers7 = new Label[ShipInfo.MemberCount];
         private readonly NDockLabels[] _ndockLabels = new NDockLabels[DockInfo.DockCount];
-        private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
+        private readonly List<ShipLabel.Hp> _hpLabels = new List<ShipLabel.Hp>();
         private readonly MainFormPanels _panels;
         public bool ShowHpInPercent { get; private set; }
 
@@ -116,14 +116,7 @@ namespace KancolleSniffer.View
                 shipLabels[i] = new ShipLabels
                 {
                     Name = new ShipLabel {Location = new Point(2, y + 2), AutoSize = true},
-                    Hp = new ShipLabel
-                    {
-                        Location = new Point(129, y),
-                        GrowLeft = true,
-                        MinimumSize = new Size(0, lineHeight),
-                        TextAlign = ContentAlignment.MiddleLeft,
-                        Cursor = Cursors.Hand
-                    },
+                    Hp = new ShipLabel.Hp(new Point(129, y), lineHeight),
                     Cond = new ShipLabel
                     {
                         Location = new Point(131, y),
@@ -211,14 +204,7 @@ namespace KancolleSniffer.View
                 _combinedLabels[i] = new ShipLabels
                 {
                     Name = new ShipLabel {Location = new Point(x + 2, y + 2), AutoSize = true},
-                    Hp = new ShipLabel
-                    {
-                        Location = new Point(x + 88, y),
-                        GrowLeft = true,
-                        MinimumSize = new Size(0, lh),
-                        TextAlign = ContentAlignment.MiddleLeft,
-                        Cursor = Cursors.Hand
-                    },
+                    Hp = new ShipLabel.Hp(new Point(x + 88, y), lh),
                     Cond = new ShipLabel
                     {
                         Location = new Point(x + 85, y),

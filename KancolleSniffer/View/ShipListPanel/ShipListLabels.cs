@@ -36,14 +36,7 @@ namespace KancolleSniffer.View.ShipListPanel
             {
                 Fleet = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
                 Name = new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                Hp = new ShipLabel
-                {
-                    Location = new Point(126, 0),
-                    GrowLeft = true,
-                    MinimumSize = new Size(0, ShipListPanel.LineHeight),
-                    TextAlign = ContentAlignment.MiddleLeft,
-                    Cursor = Cursors.Hand
-                },
+                Hp = new ShipLabel.Hp(new Point(126, 0), ShipListPanel.LineHeight),
                 Cond = new ShipLabel
                 {
                     Location = new Point(128, 0),

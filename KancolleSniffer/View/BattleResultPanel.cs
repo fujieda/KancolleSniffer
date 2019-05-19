@@ -28,7 +28,7 @@ namespace KancolleSniffer.View
         private const int LineHeight = 16;
         private readonly List<ShipLabels> _friendLabels = new List<ShipLabels>();
         private readonly List<ShipLabels> _enemyLabels = new List<ShipLabels>();
-        private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
+        private readonly List<ShipLabel.Hp> _hpLabels = new List<ShipLabel.Hp>();
         private readonly BattleInfo.BattleResult[] _result = new BattleInfo.BattleResult[2];
         private Label _phaseLabel, _rankLabel, _supportLabel, _cellLabel;
         private readonly BattleResultRank[] _rank = new BattleResultRank[2];
@@ -331,14 +331,7 @@ namespace KancolleSniffer.View
                 var friend = new ShipLabels
                 {
                     Name = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
-                    Hp = new ShipLabel
-                    {
-                        Location = new Point(101, 0),
-                        GrowLeft = true,
-                        MinimumSize = new Size(0, LineHeight),
-                        TextAlign = ContentAlignment.MiddleLeft,
-                        Cursor = Cursors.Hand
-                    },
+                    Hp = new ShipLabel.Hp(new Point(101, 0), LineHeight),
                     BackPanel = new Panel
                     {
                         Location = new Point(0, y),
@@ -353,7 +346,7 @@ namespace KancolleSniffer.View
                 var enemy = new ShipLabels
                 {
                     Name = new ShipLabel {Location = new Point(164, 2), AutoSize = true},
-                    Hp = new ShipLabel
+                    Hp = new ShipLabel.Hp
                     {
                         Location = new Point(119, 0),
                         AutoSize = true,

@@ -35,7 +35,7 @@ namespace KancolleSniffer.View
             public ShipLabel Fleet { get; set; }
             public ShipLabel Name { get; set; }
             public ShipLabel Time { get; set; }
-            public ShipLabel Damage { get; set; }
+            public ShipLabel.Hp Damage { get; set; }
             public Label BackGround { private get; set; }
 
             public override Control[] Controls => new[] {Fleet, Damage, Time, Name, BackGround};
@@ -53,7 +53,7 @@ namespace KancolleSniffer.View
                 {
                     Fleet = new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
                     Name = new ShipLabel {Location = new Point(9, y), AutoSize = true},
-                    Damage = new ShipLabel {Location = new Point(119, y), Size = new Size(5, height - 1)},
+                    Damage = new ShipLabel.Hp {Location = new Point(119, y), Size = new Size(5, height - 1)},
                     Time = new ShipLabel {Location = new Point(75, y), AutoSize = true},
                     BackGround = new Label
                     {
@@ -119,7 +119,7 @@ namespace KancolleSniffer.View
                 labels.Fleet.SetFleet(s);
                 labels.Name.SetName(s, ShipNameWidth.RepairList);
                 labels.Time.SetRepairTime(s);
-                labels.Damage.BackColor = labels.Damage.DamageColor(s);
+                labels.Damage.SetColor(s);
             }
             if (_repairList.Length < _repairLabels.Length)
                 ClearLabels(_repairList.Length);

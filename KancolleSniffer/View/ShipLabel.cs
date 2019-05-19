@@ -28,24 +28,19 @@ namespace KancolleSniffer.View
     {
         public static Font LatinFont { get; set; } = new Font("Tahoma", 8f);
 
-        private Color _initialBackColor;
+        protected Color InitialBackColor;
         private SlotStatus _slotStatus;
-        private ShipStatus _status;
-        private bool _hpPercent;
-        private Font _strongFont;
-        private ShipLabel _hpStrongLabel;
+        protected ShipStatus Status;
 
-        private Font BaseFont => Parent.Font;
-
-        private Font StrongFont => _strongFont ?? (_strongFont = new Font("Leelawadee", BaseFont.Size));
+        protected Font BaseFont => Parent.Font;
 
         public override Color BackColor
         {
             get => base.BackColor;
             set
             {
-                if (_initialBackColor == Color.Empty)
-                    _initialBackColor = value;
+                if (InitialBackColor == Color.Empty)
+                    InitialBackColor = value;
                 base.BackColor = value;
             }
         }
@@ -143,98 +138,12 @@ namespace KancolleSniffer.View
             Invalidate();
         }
 
-        public void SetHp(ShipStatus status)
-        {
-            _status = status;
-            if (_hpStrongLabel != null)
-                _hpStrongLabel.Text = "";
-            Font = BaseFont;
-            if (status == null)
-            {
-                Text = "";
-                BackColor = _initialBackColor;
-                return;
-            }
-            if (_hpPercent)
-            {
-                var percent = $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}";
-                if (status.DamageLevel == ShipStatus.Damage.Badly)
-                {
-                    Text = "%";
-                    if (_hpStrongLabel == null)
-                        CreateHpStrongLabel();
-                    _hpStrongLabel.Text = percent;
-                    ForeColor = Color.DarkGray;
-                    _hpStrongLabel.ForeColor = Color.DarkGray;
-                }
-                else
-                {
-                    Text = percent + "%";
-                }
-            }
-            else
-            {
-                Text = $"{status.NowHp:D}/{status.MaxHp:D}";
-                if (status.DamageLevel == ShipStatus.Damage.Badly)
-                    Font = StrongFont;
-            }
-            BackColor = DamageColor(status);
-        }
-
-        private void CreateHpStrongLabel()
-        {
-            _hpStrongLabel = new ShipLabel
-            {
-                Font = StrongFont,
-                BackColor = CUDColors.Red,
-                Location = Scaler.Move(Left, Top, 4, 0),
-                AutoSize = true,
-                MinimumSize = new Size(0, Height),
-                GrowLeft = true,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Cursor = Cursors.Hand
-            };
-            _hpStrongLabel.DoubleClick += (sender, e) => { OnDoubleClick(e); };
-            Parent.Controls.Add(_hpStrongLabel);
-            var index = Parent.Controls.GetChildIndex(this);
-            Parent.Controls.SetChildIndex(_hpStrongLabel, index + 1);
-        }
-
-
-        public void ToggleHpPercent()
-        {
-            _hpPercent = !_hpPercent;
-            SetHp(_status);
-        }
-
-        public void SetHp(int now, int max)
-        {
-            SetHp(new ShipStatus {NowHp = now, MaxHp = max});
-        }
-
-        public Color DamageColor(ShipStatus status)
-        {
-            switch (status.DamageLevel)
-            {
-                case ShipStatus.Damage.Sunk:
-                    return Color.CornflowerBlue;
-                case ShipStatus.Damage.Badly:
-                    return CUDColors.Red;
-                case ShipStatus.Damage.Half:
-                    return CUDColors.Orange;
-                case ShipStatus.Damage.Small:
-                    return Color.FromArgb(240, 240, 0);
-                default:
-                    return _initialBackColor;
-            }
-        }
-
         public void SetCond(ShipStatus status)
         {
             if (status == null)
             {
                 Text = "";
-                BackColor = _initialBackColor;
+                BackColor = InitialBackColor;
                 return;
             }
             var cond = status.Cond;
@@ -242,7 +151,7 @@ namespace KancolleSniffer.View
             BackColor = cond >= 50
                 ? CUDColors.Yellow
                 : cond >= 30
-                    ? _initialBackColor
+                    ? InitialBackColor
                     : cond >= 20
                         ? CUDColors.Orange
                         : CUDColors.Red;
@@ -296,6 +205,109 @@ namespace KancolleSniffer.View
             {
                 e.Graphics.DrawRectangle(Pens.Black,
                     new Rectangle(Scaler.Move(ClientSize.Width, 0, -3, 8), Scaler.Scale(2, 3)));
+            }
+        }
+
+        public sealed class Hp : ShipLabel
+        {
+            private bool _hpPercent;
+            private Font _strongFont;
+            private ShipLabel _hpStrongLabel;
+            private Font StrongFont => _strongFont ?? (_strongFont = new Font("Leelawadee", BaseFont.Size));
+
+            public Hp()
+            {
+            }
+
+            public Hp(Point location, int height)
+            {
+                Location = location;
+                MinimumSize = new Size(0, height);
+                TextAlign = ContentAlignment.MiddleLeft;
+                GrowLeft = true;
+                Cursor = Cursors.Hand;
+            }
+
+            public void SetHp(ShipStatus status)
+            {
+                Status = status;
+                if (_hpStrongLabel != null)
+                    _hpStrongLabel.Text = "";
+                Font = BaseFont;
+                if (status == null)
+                {
+                    Text = "";
+                    BackColor = InitialBackColor;
+                    return;
+                }
+                if (_hpPercent)
+                {
+                    var percent = $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}";
+                    if (status.DamageLevel == ShipStatus.Damage.Badly)
+                    {
+                        Text = "%";
+                        if (_hpStrongLabel == null)
+                            CreateHpStrongLabel();
+                        _hpStrongLabel.Text = percent;
+                    }
+                    else
+                    {
+                        Text = percent + "%";
+                    }
+                }
+                else
+                {
+                    Text = $"{status.NowHp:D}/{status.MaxHp:D}";
+                    if (status.DamageLevel == ShipStatus.Damage.Badly)
+                        Font = StrongFont;
+                }
+                BackColor = DamageColor(status);
+            }
+
+            private void CreateHpStrongLabel()
+            {
+                _hpStrongLabel = new Hp(Scaler.Move(Left, Top, 4, 0), Height)
+                {
+                    Font = StrongFont,
+                    BackColor = CUDColors.Red
+                };
+                _hpStrongLabel.DoubleClick += (sender, e) => { OnDoubleClick(e); };
+                Parent.Controls.Add(_hpStrongLabel);
+                var index = Parent.Controls.GetChildIndex(this);
+                Parent.Controls.SetChildIndex(_hpStrongLabel, index + 1);
+            }
+
+            public void ToggleHpPercent()
+            {
+                _hpPercent = !_hpPercent;
+                SetHp(Status);
+            }
+
+            public void SetHp(int now, int max)
+            {
+                SetHp(new ShipStatus {NowHp = now, MaxHp = max});
+            }
+
+            public Color DamageColor(ShipStatus status)
+            {
+                switch (status.DamageLevel)
+                {
+                    case ShipStatus.Damage.Sunk:
+                        return Color.CornflowerBlue;
+                    case ShipStatus.Damage.Badly:
+                        return CUDColors.Red;
+                    case ShipStatus.Damage.Half:
+                        return CUDColors.Orange;
+                    case ShipStatus.Damage.Small:
+                        return Color.FromArgb(240, 240, 0);
+                    default:
+                        return InitialBackColor;
+                }
+            }
+
+            public void SetColor(ShipStatus status)
+            {
+                BackColor = DamageColor(status);
             }
         }
     }

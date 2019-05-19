@@ -21,7 +21,7 @@ namespace KancolleSniffer.View
     {
         public ShipLabel Fleet { get; set; }
         public ShipLabel Name { get; set; }
-        public ShipLabel Hp { get; set; }
+        public ShipLabel.Hp Hp { get; set; }
         public ShipLabel Cond { get; set; }
         public ShipLabel Level { get; set; }
         public ShipLabel Exp { get; set; }

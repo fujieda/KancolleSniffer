@@ -144,7 +144,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void RoundOffFractionOfPercent()
         {
-            var label = new ShipLabel {Parent = new Panel()};
+            var label = new ShipLabel.Hp {Parent = new Panel()};
             label.SetHp(104, 105);
             label.ToggleHpPercent();
             PAssert.That(() => label.Text == "99%");

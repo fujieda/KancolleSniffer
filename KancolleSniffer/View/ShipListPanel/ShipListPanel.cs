@@ -27,7 +27,7 @@ namespace KancolleSniffer.View.ShipListPanel
         public const int LabelHeight = 12;
         public const int LineHeight = 16;
         private ShipStatus[] _shipList;
-        private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
+        private readonly List<ShipLabel.Hp> _hpLabels = new List<ShipLabel.Hp>();
         private readonly ShipListLabels _shipListLabels;
         private readonly GroupConfigLabels _groupConfigLabels;
         private readonly RepairListLabels _repairListLabels;
@@ -298,7 +298,7 @@ namespace KancolleSniffer.View.ShipListPanel
             ScrollBar.Value = Min(ScrollBar.Value, max);
         }
 
-        public void SetHpPercent(ShipLabel label)
+        public void SetHpPercent(ShipLabel.Hp label)
         {
             if (_hpPercent)
                 label.ToggleHpPercent();
