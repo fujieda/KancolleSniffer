@@ -47,21 +47,6 @@ namespace KancolleSniffer.View
             UseMnemonic = false;
         }
 
-        public void SetRepairTime(ShipStatus status)
-        {
-            if (status == null)
-            {
-                Text = "";
-                return;
-            }
-            SetRepairTime(status.RepairTime);
-        }
-
-        public void SetRepairTime(TimeSpan span)
-        {
-            Text = $@"{(int)span.TotalHours:d2}:{span:mm\:ss}";
-        }
-
         public new sealed class Name : ShipLabel
         {
             private SlotStatus _slotStatus;
@@ -358,6 +343,30 @@ namespace KancolleSniffer.View
             public void SetFleet(ShipStatus status)
             {
                 Text = status?.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
+            }
+        }
+
+        public sealed class RepairTime : ShipLabel
+        {
+            public RepairTime(Point location)
+            {
+                Location = location;
+                AutoSize = true;
+            }
+
+            public void SetRepairTime(ShipStatus status)
+            {
+                if (status == null)
+                {
+                    Text = "";
+                    return;
+                }
+                SetRepairTime(status.RepairTime);
+            }
+
+            public void SetRepairTime(TimeSpan span)
+            {
+                Text = $@"{(int)span.TotalHours:d2}:{span:mm\:ss}";
             }
         }
     }

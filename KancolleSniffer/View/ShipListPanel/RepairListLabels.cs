@@ -26,7 +26,7 @@ namespace KancolleSniffer.View.ShipListPanel
 
         private class RepairLabels : ShipLabels
         {
-            public ShipLabel Time { get; set; }
+            public ShipLabel.RepairTime Time { get; set; }
             public Label PerHp { get; set; }
 
             public override Control[] Controls => base.Controls.Concat(new[] {Time, PerHp}).ToArray();
@@ -47,7 +47,7 @@ namespace KancolleSniffer.View.ShipListPanel
                 Name = new ShipLabel.Name(new Point(10, 2)),
                 Hp = new ShipLabel.Hp(new Point(118, 0), ShipListPanel.LineHeight),
                 Level = new ShipLabel.Level(new Point(116, 2), height),
-                Time = new ShipLabel {Location = new Point(141, 2), AutoSize = true},
+                Time = new ShipLabel.RepairTime(new Point(141, 2)),
                 PerHp = new Label {Location = new Point(186, 2), AutoSize = true},
                 BackPanel = new Panel
                 {
