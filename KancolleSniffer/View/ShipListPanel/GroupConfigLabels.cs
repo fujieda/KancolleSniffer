@@ -96,9 +96,9 @@ namespace KancolleSniffer.View.ShipListPanel
                 _shipListPanel.SetShipType(i);
                 return;
             }
-            labels.Fleet.SetFleet(s);
+            labels.Fleet.Set(s);
             labels.Name.SetName(s, ShipNameWidth.GroupConfig);
-            labels.Level.SetLevel(s);
+            labels.Level.Set(s);
             var cb = _checkBoxesList[i];
             for (var j = 0; j < cb.Length; j++)
                 cb[j].Checked = GroupSettings[j].Contains(s.Id);

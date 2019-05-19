@@ -24,7 +24,7 @@ using static System.Math;
 namespace KancolleSniffer.View
 {
     [DesignerCategory("Code")]
-    public class ShipLabel : GrowLeftLabel
+    public abstract class ShipLabel : GrowLeftLabel
     {
         protected Color InitialBackColor;
         protected ShipStatus Status;
@@ -42,10 +42,12 @@ namespace KancolleSniffer.View
             }
         }
 
-        public ShipLabel()
+        protected ShipLabel()
         {
             UseMnemonic = false;
         }
+
+        public abstract void Set(ShipStatus status);
 
         public new sealed class Name : ShipLabel
         {
@@ -66,6 +68,11 @@ namespace KancolleSniffer.View
                 SemiEquipped = 1,
                 NormalEmpty = 2,
                 ExtraEmpty = 4
+            }
+
+            public override void Set(ShipStatus status)
+            {
+                SetName(status);
             }
 
             public void SetName(ShipStatus status, ShipNameWidth width = ShipNameWidth.Max)
@@ -190,7 +197,7 @@ namespace KancolleSniffer.View
                 Cursor = Cursors.Hand;
             }
 
-            public void SetHp(ShipStatus status)
+            public override void Set(ShipStatus status)
             {
                 Status = status;
                 if (_hpStrongLabel != null)
@@ -242,12 +249,12 @@ namespace KancolleSniffer.View
             public void ToggleHpPercent()
             {
                 _hpPercent = !_hpPercent;
-                SetHp(Status);
+                Set(Status);
             }
 
             public void SetHp(int now, int max)
             {
-                SetHp(new ShipStatus {NowHp = now, MaxHp = max});
+                Set(new ShipStatus {NowHp = now, MaxHp = max});
             }
 
             public Color DamageColor(ShipStatus status)
@@ -282,7 +289,7 @@ namespace KancolleSniffer.View
                 TextAlign = ContentAlignment.MiddleRight;
             }
 
-            public void SetCond(ShipStatus status)
+            public override void Set(ShipStatus status)
             {
                 if (status == null)
                 {
@@ -311,7 +318,7 @@ namespace KancolleSniffer.View
                 TextAlign = ContentAlignment.MiddleRight;
             }
 
-            public void SetLevel(ShipStatus status)
+            public override void Set(ShipStatus status)
             {
                 Text = status?.Level.ToString("D");
             }
@@ -326,7 +333,7 @@ namespace KancolleSniffer.View
                 TextAlign = ContentAlignment.MiddleRight;
             }
 
-            public void SetExpToNext(ShipStatus status)
+            public override void Set(ShipStatus status)
             {
                 Text = status?.ExpToNext.ToString("D");
             }
@@ -340,7 +347,7 @@ namespace KancolleSniffer.View
                 AutoSize = true;
             }
 
-            public void SetFleet(ShipStatus status)
+            public override void Set(ShipStatus status)
             {
                 Text = status?.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
             }
@@ -354,7 +361,7 @@ namespace KancolleSniffer.View
                 AutoSize = true;
             }
 
-            public void SetRepairTime(ShipStatus status)
+            public override void Set(ShipStatus status)
             {
                 if (status == null)
                 {

@@ -32,13 +32,19 @@ namespace KancolleSniffer.View
 
         private class RepairLabels : ControlsArranger
         {
-            public ShipLabel.Fleet Fleet { get; set; }
+            public ShipLabel.Fleet Fleet { private get; set; }
             public ShipLabel.Name Name { get; set; }
-            public ShipLabel.RepairTime Time { get; set; }
+            public ShipLabel.RepairTime Time { private get; set; }
             public ShipLabel.Hp Damage { get; set; }
             public Label BackGround { private get; set; }
 
             public override Control[] Controls => new[] {Fleet, Damage, Time, Name, BackGround};
+
+            public void Set(ShipStatus status)
+            {
+                foreach (var label in new ShipLabel[] {Fleet, Time})
+                    label?.Set(status);
+            }
         }
 
         public void CreateLabels(EventHandler onClick)
@@ -116,9 +122,8 @@ namespace KancolleSniffer.View
             {
                 var s = _repairList[i + _listScroller.Position];
                 var labels = _repairLabels[i];
-                labels.Fleet.SetFleet(s);
+                labels.Set(s);
                 labels.Name.SetName(s, ShipNameWidth.RepairList);
-                labels.Time.SetRepairTime(s);
                 labels.Damage.SetColor(s);
             }
             if (_repairList.Length < _repairLabels.Length)
@@ -129,9 +134,8 @@ namespace KancolleSniffer.View
         private void ClearLabels(int i)
         {
             var labels = _repairLabels[i];
-            labels.Fleet.Text = "";
-            labels.Name.SetName("");
-            labels.Time.Text = "";
+            labels.Set(null);
+            labels.Name.SetName(null);
             labels.Damage.BackColor = CustomColors.ColumnColors.BrightFirst(i);
         }
     }

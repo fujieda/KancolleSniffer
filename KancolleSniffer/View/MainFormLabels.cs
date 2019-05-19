@@ -156,10 +156,7 @@ namespace KancolleSniffer.View
                 var labels = shipLabels[i];
                 var ship = i < ships.Count ? ships[i] : null;
                 labels.Name.SetName(ship, ShipNameWidth.MainPanel);
-                labels.Hp.SetHp(ship);
-                labels.Cond.SetCond(ship);
-                labels.Level.SetLevel(ship);
-                labels.Exp.SetExpToNext(ship);
+                labels.Set(ship);
             }
         }
 
@@ -214,8 +211,7 @@ namespace KancolleSniffer.View
                 var labels = _combinedLabels[i];
                 var s = idx < ships.Count ? ships[idx] : null;
                 labels.Name.SetName(s, ShipNameWidth.Combined);
-                labels.Hp.SetHp(s);
-                labels.Cond.SetCond(s);
+                labels.Set(s);
             }
         }
 

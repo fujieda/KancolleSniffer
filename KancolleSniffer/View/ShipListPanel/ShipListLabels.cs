@@ -60,12 +60,8 @@ namespace KancolleSniffer.View.ShipListPanel
                 SetShipType(i);
                 return;
             }
-            labels.Fleet.SetFleet(s);
+            labels.Set(s);
             labels.Name.SetName(s, ShipNameWidth.ShipList);
-            labels.Hp.SetHp(s);
-            labels.Cond.SetCond(s);
-            labels.Level.SetLevel(s);
-            labels.Exp.SetExpToNext(s);
             labels.BackPanel.Visible = true;
         }
 
@@ -73,13 +69,9 @@ namespace KancolleSniffer.View.ShipListPanel
         {
             var s = _shipListPanel.GetShip(i);
             var labels = _labelList[i];
-            labels.Fleet.SetFleet(null);
+            labels.Set(null);
             labels.Fleet.Text = s.Name;
             labels.Name.SetName(null);
-            labels.Hp.SetHp(null);
-            labels.Cond.SetCond(null);
-            labels.Level.SetLevel(null);
-            labels.Exp.SetExpToNext(null);
             labels.BackPanel.Visible = true;
         }
 

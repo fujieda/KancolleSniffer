@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View.ShipListPanel
 {
@@ -30,6 +31,12 @@ namespace KancolleSniffer.View.ShipListPanel
             public Label PerHp { get; set; }
 
             public override Control[] Controls => base.Controls.Concat(new[] {Time, PerHp}).ToArray();
+
+            public override void Set(ShipStatus status)
+            {
+                base.Set(status);
+                Time.Set(status);
+            }
         }
 
         public RepairListLabels(ShipListPanel shipListPanel)
@@ -69,11 +76,8 @@ namespace KancolleSniffer.View.ShipListPanel
                 return;
             }
             var labels = _labelList[i];
-            labels.Fleet.SetFleet(s);
+            labels.Set(s);
             labels.Name.SetName(s, ShipNameWidth.RepairListFull);
-            labels.Hp.SetHp(s);
-            labels.Level.SetLevel(s);
-            labels.Time.SetRepairTime(s);
             labels.PerHp.Text = s.RepairTimePerHp.ToString(@"mm\:ss");
             labels.BackPanel.Visible = true;
         }

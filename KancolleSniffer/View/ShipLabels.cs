@@ -14,6 +14,7 @@
 
 using System.Linq;
 using System.Windows.Forms;
+using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View
 {
@@ -30,5 +31,11 @@ namespace KancolleSniffer.View
         public override Control[] Controls =>
             new Control[] {Hp, Cond, Level, Exp, Name, Fleet, BackGround}.Where(c => c != null)
                 .ToArray(); // 名前のZ-orderを下に
+
+        public virtual void Set(ShipStatus status)
+        {
+            foreach (var label in new ShipLabel[] {Fleet, Hp, Cond, Level, Exp})
+                label?.Set(status);
+        }
     }
 }

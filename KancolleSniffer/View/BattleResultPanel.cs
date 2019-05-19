@@ -197,19 +197,19 @@ namespace KancolleSniffer.View
                 var labels = _friendLabels[i];
                 var ship = friend.Main[i];
                 labels.Name.SetName(ship, ShipNameWidth.BattleResult);
-                labels.Hp.SetHp(ship);
+                labels.Hp.Set(ship);
                 ToolTip.SetToolTip(labels.Name, GetEquipString(ship));
             }
             if (friend.Guard.Length > 0)
             {
                 _friendLabels[friend.Main.Length].Name.Text = "護衛";
-                _friendLabels[friend.Main.Length].Hp.SetHp(null);
+                _friendLabels[friend.Main.Length].Hp.Set(null);
                 for (var i = 0; i < friend.Guard.Length; i++)
                 {
                     var labels = _friendLabels[friend.Main.Length + 1 + i];
                     var ship = friend.Guard[i];
                     labels.Name.SetName(ship, ShipNameWidth.BattleResult);
-                    labels.Hp.SetHp(ship);
+                    labels.Hp.Set(ship);
                     ToolTip.SetToolTip(labels.Name, GetEquipString(ship));
                 }
             }
@@ -217,26 +217,26 @@ namespace KancolleSniffer.View
             for (var i = friendLines; i < _friendLabels.Count; i++)
             {
                 _friendLabels[i].Name.SetName("");
-                _friendLabels[i].Hp.SetHp(null);
+                _friendLabels[i].Hp.Set(null);
             }
             for (var i = 0; i < enemy.Main.Length; i++)
             {
                 var labels = _enemyLabels[i];
                 var ship = enemy.Main[i];
                 labels.Name.SetName(ShortenName(ship.Name));
-                labels.Hp.SetHp(ship);
+                labels.Hp.Set(ship);
                 ToolTip.SetToolTip(labels.Name, GetEquipString(ship));
             }
             if (enemy.Guard.Length > 0)
             {
                 _enemyLabels[enemy.Main.Length].Name.Text = "護衛";
-                _enemyLabels[enemy.Main.Length].Hp.SetHp(null);
+                _enemyLabels[enemy.Main.Length].Hp.Set(null);
                 for (var i = 0; i < enemy.Guard.Length; i++)
                 {
                     var labels = _enemyLabels[enemy.Main.Length + 1 + i];
                     var ship = enemy.Guard[i];
                     labels.Name.SetName(ShortenName(ship.Name));
-                    labels.Hp.SetHp(ship);
+                    labels.Hp.Set(ship);
                     ToolTip.SetToolTip(labels.Name, GetEquipString(ship));
                 }
             }
@@ -244,7 +244,7 @@ namespace KancolleSniffer.View
             for (var i = enemyLines; i < _enemyLabels.Count; i++)
             {
                 _enemyLabels[i].Name.SetName("");
-                _enemyLabels[i].Hp.SetHp(null);
+                _enemyLabels[i].Hp.Set(null);
             }
             var lines = Max(friendLines, enemyLines);
             for (var i = 0; i < lines; i++)
