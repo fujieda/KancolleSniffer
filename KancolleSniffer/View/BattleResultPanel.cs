@@ -196,7 +196,7 @@ namespace KancolleSniffer.View
             {
                 var labels = _friendLabels[i];
                 var ship = friend.Main[i];
-                labels.Name.SetName(ship, ShipNameWidth.BattleResult);
+                labels.Name.Set(ship);
                 labels.Hp.Set(ship);
                 ToolTip.SetToolTip(labels.Name, GetEquipString(ship));
             }
@@ -208,7 +208,7 @@ namespace KancolleSniffer.View
                 {
                     var labels = _friendLabels[friend.Main.Length + 1 + i];
                     var ship = friend.Guard[i];
-                    labels.Name.SetName(ship, ShipNameWidth.BattleResult);
+                    labels.Name.Set(ship);
                     labels.Hp.Set(ship);
                     ToolTip.SetToolTip(labels.Name, GetEquipString(ship));
                 }
@@ -328,7 +328,7 @@ namespace KancolleSniffer.View
                 var y = LineHeight * i + 38;
                 var friend = new ShipLabels
                 {
-                    Name = new ShipLabel.Name(new Point(1, 2)),
+                    Name = new ShipLabel.Name(new Point(1, 2), ShipNameWidth.BattleResult),
                     Hp = new ShipLabel.Hp(new Point(101, 0), LineHeight),
                     BackPanel = new Panel
                     {
@@ -343,7 +343,7 @@ namespace KancolleSniffer.View
                 friend.Hp.Click += HpLabelClickHandler;
                 var enemy = new ShipLabels
                 {
-                    Name = new ShipLabel.Name(new Point(164, 2)),
+                    Name = new ShipLabel.Name(new Point(164, 2), ShipNameWidth.Max),
                     Hp = new ShipLabel.Hp
                     {
                         Location = new Point(119, 0),

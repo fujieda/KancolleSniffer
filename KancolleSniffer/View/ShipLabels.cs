@@ -34,7 +34,7 @@ namespace KancolleSniffer.View
 
         public virtual void Set(ShipStatus status)
         {
-            foreach (var label in new ShipLabel[] {Fleet, Hp, Cond, Level, Exp})
+            foreach (var label in new ShipLabel[] {Fleet, Name, Hp, Cond, Level, Exp})
                 label?.Set(status);
         }
 

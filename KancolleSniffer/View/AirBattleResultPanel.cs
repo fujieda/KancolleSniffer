@@ -113,7 +113,7 @@ namespace KancolleSniffer.View
                     });
                 }
             }
-            Controls.Add(_ciShipName = new ShipLabel.Name(new Point(ci, top)));
+            Controls.Add(_ciShipName = new ShipLabel.Name(new Point(ci, top), ShipNameWidth.CiShipName));
             Controls.Add(_ciKind = new Label
             {
                 Location = new Point(ci, top + 14),
@@ -188,7 +188,7 @@ namespace KancolleSniffer.View
             }
             else
             {
-                _ciShipName.SetName(result.AirFire.ShipName, ShipNameWidth.CiShipName);
+                _ciShipName.SetName(result.AirFire.ShipName);
                 _ciKind.Text = result.AirFire.Kind.ToString();
                 ToolTip.SetToolTip(_ciKind, string.Join("\r\n", result.AirFire.Items));
             }

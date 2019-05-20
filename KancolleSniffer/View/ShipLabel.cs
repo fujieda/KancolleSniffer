@@ -54,11 +54,13 @@ namespace KancolleSniffer.View
         public new sealed class Name : ShipLabel
         {
             private SlotStatus _slotStatus;
+            private readonly ShipNameWidth _defaultWidth;
 
             public static Font LatinFont { get; set; } = new Font("Tahoma", 8f);
 
-            public Name(Point location)
+            public Name(Point location, ShipNameWidth defaultWidth)
             {
+                _defaultWidth = defaultWidth;
                 Location = location;
                 AutoSize = true;
             }
@@ -74,7 +76,7 @@ namespace KancolleSniffer.View
 
             public override void Set(ShipStatus status)
             {
-                SetName(status);
+                SetName(status, _defaultWidth);
             }
 
             public override void Reset()
@@ -82,7 +84,7 @@ namespace KancolleSniffer.View
                 SetName("");
             }
 
-            public void SetName(ShipStatus status, ShipNameWidth width = ShipNameWidth.Max)
+            public void SetName(ShipStatus status, ShipNameWidth width)
             {
                 var empty = SlotStatus.Equipped;
                 if (!status.Empty)
@@ -111,7 +113,7 @@ namespace KancolleSniffer.View
 
             public void SetName(string name)
             {
-                SetName("", name, SlotStatus.Equipped);
+                SetName(name, _defaultWidth);
             }
 
             public void SetName(string name, ShipNameWidth width)
@@ -119,8 +121,7 @@ namespace KancolleSniffer.View
                 SetName("", name, SlotStatus.Equipped, width);
             }
 
-            private void SetName(string prefix, string name, SlotStatus slotStatus,
-                ShipNameWidth width = ShipNameWidth.Max)
+            private void SetName(string prefix, string name, SlotStatus slotStatus, ShipNameWidth width)
             {
                 if (name == null)
                     name = "";

@@ -21,26 +21,6 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View
 {
-    /// <summary>
-    /// 艦娘名の横幅
-    /// 艦娘名のラベルのZ-orderは最下なので名前が長すぎると右隣のラベルの下に隠れるが、
-    /// 空装備マークはラベルの右端に表示するので右端が見えるように縮める必要がある。
-    /// </summary>
-    public enum ShipNameWidth
-    {
-        MainPanel = 92, // 左端2 HP右端129幅35 129-2-35=92
-        AkashiTimer = 53, // 左端2 タイマー左端55 55-2=53 漢字4文字
-        NDock = 65, // 左端29 終了時刻右端138幅47 138-47-29=62 空装備マークなし漢字5文字65
-        RepairList = 65, // 左端9 時間左端75 75-9=66 漢字5文字65
-        RepairListFull = 73, // 左端10 HP右端118幅35 118-10-35=73
-        ShipList = 81, // 左端10 HP右端126幅35 126-10-35=81
-        GroupConfig = 80, // 左端10 レベル左端90 90-10=80
-        Combined = 53, // 左端2 HP右端88幅35 88-2-35=51 空装備マーク犠牲 漢字4文字53
-        BattleResult = 65, // 左端2 HP右端101幅35 101-1-35=65
-        CiShipName = 65, // 左端168幅236 236-168=68 漢字5文字65
-        Max = int.MaxValue
-    }
-
     public class MainFormPanels
     {
         public Control PanelShipInfo { get; set; }
@@ -115,7 +95,7 @@ namespace KancolleSniffer.View
                 var y = top + lineHeight * (i + 1);
                 shipLabels[i] = new ShipLabels
                 {
-                    Name = new ShipLabel.Name(new Point(2, y + 2)),
+                    Name = new ShipLabel.Name(new Point(2, y + 2), ShipNameWidth.MainPanel),
                     Hp = new ShipLabel.Hp(new Point(129, y), lineHeight),
                     Cond = new ShipLabel.Cond(new Point(131, y), lineHeight),
                     Level = new ShipLabel.Level(new Point(155, y + 2), height),
@@ -159,7 +139,6 @@ namespace KancolleSniffer.View
                     labels.Reset();
                     continue;
                 }
-                labels.Name.SetName(ships[i], ShipNameWidth.MainPanel);
                 labels.Set(ships[i]);
             }
         }
@@ -189,7 +168,7 @@ namespace KancolleSniffer.View
                 var y = top + lh * (i % ShipInfo.MemberCount + 1);
                 _combinedLabels[i] = new ShipLabels
                 {
-                    Name = new ShipLabel.Name(new Point(x + 2, y + 2)),
+                    Name = new ShipLabel.Name(new Point(x + 2, y + 2), ShipNameWidth.Combined),
                     Hp = new ShipLabel.Hp(new Point(x + 88, y), lh),
                     Cond = new ShipLabel.Cond(new Point(x + 85, y), lh),
                     BackGround = new Label {Location = new Point(x, y), Size = new Size(parentWidth / 2, lh)}
@@ -218,7 +197,6 @@ namespace KancolleSniffer.View
                     labels.Reset();
                     continue;
                 }
-                labels.Name.SetName(ships[idx], ShipNameWidth.Combined);
                 labels.Set(ships[idx]);
             }
         }
@@ -343,7 +321,7 @@ namespace KancolleSniffer.View
                 var y = i * lh;
                 _ndockLabels[i] = new NDockLabels
                 {
-                    Name = new ShipLabel.Name(new Point(29, y + 3)),
+                    Name = new ShipLabel.Name(new Point(29, y + 3), ShipNameWidth.NDock),
                     Timer = new GrowLeftLabel
                     {
                         Location = new Point(138, y + 2),
@@ -361,7 +339,7 @@ namespace KancolleSniffer.View
         public void SetNDockLabels(NameAndTimer[] ndock)
         {
             for (var i = 0; i < _ndockLabels.Length; i++)
-                _ndockLabels[i].Name.SetName(ndock[i].Name, ShipNameWidth.NDock);
+                _ndockLabels[i].Name.SetName(ndock[i].Name);
         }
 
         public void SetNDockTimer(int dock, AlarmTimer timer, DateTime now, bool finishTime)

@@ -304,7 +304,7 @@ namespace KancolleSniffer.View
             var labels = new FleetLabels
             {
                 Fleet = new Label {Location = new Point(1, 2), AutoSize = true},
-                Name = new ShipLabel.Name(new Point(10, 2)),
+                Name = new ShipLabel.Name(new Point(10, 2), ShipNameWidth.Max),
                 Equip = new Label {Location = new Point(38, 2), AutoSize = true},
                 EquipColor = new Label {Location = new Point(35, 2), Size = new Size(4, LabelHeight - 2)},
                 Spec = new GrowLeftLabel {Location = new Point(217, 2), GrowLeft = true}

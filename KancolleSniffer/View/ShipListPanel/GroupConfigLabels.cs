@@ -44,7 +44,7 @@ namespace KancolleSniffer.View.ShipListPanel
             var labels = new ShipLabels
             {
                 Fleet = new ShipLabel.Fleet(new Point(1, 2)),
-                Name = new ShipLabel.Name(new Point(10, 2)),
+                Name = new ShipLabel.Name(new Point(10, 2), ShipNameWidth.GroupConfig),
                 Level = new ShipLabel.Level(new Point(90, 2), ShipListPanel.LabelHeight),
                 BackPanel = new Panel
                 {
@@ -97,7 +97,6 @@ namespace KancolleSniffer.View.ShipListPanel
                 return;
             }
             labels.Set(s);
-            labels.Name.SetName(s, ShipNameWidth.GroupConfig);
             var cb = _checkBoxesList[i];
             for (var j = 0; j < cb.Length; j++)
                 cb[j].Checked = GroupSettings[j].Contains(s.Id);

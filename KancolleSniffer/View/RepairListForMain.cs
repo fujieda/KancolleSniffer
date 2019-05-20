@@ -63,7 +63,7 @@ namespace KancolleSniffer.View
                 _repairLabels[i] = new RepairLabels
                 {
                     Fleet = new ShipLabel.Fleet(new Point(0, y)),
-                    Name = new ShipLabel.Name(new Point(9, y)),
+                    Name = new ShipLabel.Name(new Point(9, y), ShipNameWidth.RepairList),
                     Damage = new ShipLabel.Hp {Location = new Point(119, y), Size = new Size(5, height - 1)},
                     Time = new ShipLabel.RepairTime(new Point(75, y)),
                     BackGround = new Label
@@ -129,7 +129,6 @@ namespace KancolleSniffer.View
                 var s = _repairList[i + _listScroller.Position];
                 var labels = _repairLabels[i];
                 labels.Set(s);
-                labels.Name.SetName(s, ShipNameWidth.RepairList);
                 labels.Damage.SetColor(s);
             }
             if (_repairList.Length < _repairLabels.Length)

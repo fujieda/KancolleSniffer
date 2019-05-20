@@ -35,7 +35,7 @@ namespace KancolleSniffer.View.ShipListPanel
             var labels = new ShipLabels
             {
                 Fleet = new ShipLabel.Fleet(new Point(1, 2)),
-                Name = new ShipLabel.Name(new Point(10, 2)),
+                Name = new ShipLabel.Name(new Point(10, 2), ShipNameWidth.ShipList),
                 Hp = new ShipLabel.Hp(new Point(126, 0), ShipListPanel.LineHeight),
                 Cond = new ShipLabel.Cond(new Point(128, 0), ShipListPanel.LineHeight),
                 Level = new ShipLabel.Level(new Point(154, 2), height),
@@ -61,7 +61,6 @@ namespace KancolleSniffer.View.ShipListPanel
                 return;
             }
             labels.Set(s);
-            labels.Name.SetName(s, ShipNameWidth.ShipList);
             labels.BackPanel.Visible = true;
         }
 

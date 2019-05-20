@@ -105,11 +105,11 @@ namespace KancolleSniffer.Test
 
         private void TruncateNameSub(Dictionary<string, string> dict, ShipNameWidth width)
         {
-            var label = new ShipLabel.Name(Point.Empty) {Parent = new Panel()};
+            var label = new ShipLabel.Name(Point.Empty, width) {Parent = new Panel()};
             Scaler.Factor = new SizeF(1,1);
             foreach (var entry in dict)
             {
-                label.SetName(entry.Key, width);
+                label.SetName(entry.Key);
                 PAssert.That(() => label.Text == entry.Value, entry.Key);
             }
         }
@@ -120,21 +120,19 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void SetName()
         {
-            var label = new ShipLabel.Name(Point.Empty) {Parent = new Panel()};
+            var label = new ShipLabel.Name(Point.Empty, ShipNameWidth.AkashiTimer) {Parent = new Panel()};
             Scaler.Factor = new SizeF(1, 1);
-            label.SetName(new ShipStatus
-                {
-                    Spec = new ShipSpec {Name = "綾波改二"},
-                    Escaped = true
-                },
-                ShipNameWidth.AkashiTimer);
+            label.Set(new ShipStatus
+            {
+                Spec = new ShipSpec {Name = "綾波改二"},
+                Escaped = true
+            });
             PAssert.That(() => label.Text == "[避]綾波改二");
-            label.SetName(new ShipStatus
-                {
-                    Spec = new ShipSpec {Name = "朝潮改二丁"},
-                    Escaped = true
-                },
-                ShipNameWidth.AkashiTimer);
+            label.Set(new ShipStatus
+            {
+                Spec = new ShipSpec {Name = "朝潮改二丁"},
+                Escaped = true
+            });
             PAssert.That(() => label.Text == "[避]朝潮改二");
         }
 

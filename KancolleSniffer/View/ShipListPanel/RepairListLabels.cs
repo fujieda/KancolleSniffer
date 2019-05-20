@@ -51,7 +51,7 @@ namespace KancolleSniffer.View.ShipListPanel
             var labels = new RepairLabels
             {
                 Fleet = new ShipLabel.Fleet(new Point(1, 2)),
-                Name = new ShipLabel.Name(new Point(10, 2)),
+                Name = new ShipLabel.Name(new Point(10, 2), ShipNameWidth.RepairListFull),
                 Hp = new ShipLabel.Hp(new Point(118, 0), ShipListPanel.LineHeight),
                 Level = new ShipLabel.Level(new Point(116, 2), height),
                 Time = new ShipLabel.RepairTime(new Point(141, 2)),
@@ -77,7 +77,6 @@ namespace KancolleSniffer.View.ShipListPanel
             }
             var labels = _labelList[i];
             labels.Set(s);
-            labels.Name.SetName(s, ShipNameWidth.RepairListFull);
             labels.PerHp.Text = s.RepairTimePerHp.ToString(@"mm\:ss");
             labels.BackPanel.Visible = true;
         }
