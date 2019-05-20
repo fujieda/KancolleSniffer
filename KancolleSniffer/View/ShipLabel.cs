@@ -86,29 +86,51 @@ namespace KancolleSniffer.View
 
             public void SetName(ShipStatus status, ShipNameWidth width)
             {
-                var empty = SlotStatus.Equipped;
-                if (!status.Empty)
+                var slotStatus = GetSlotStatus(status);
+                var dcName = DameConName(status);
+                var sp = SpecialAttack(status);
+                SetName((status.Escaped ? "[避]" : dcName) + sp, status.Name, slotStatus, width);
+            }
+
+            private SlotStatus GetSlotStatus(ShipStatus status)
+            {
+                if (status.Empty)
+                    return SlotStatus.Equipped;
+                var slots = status.Slot.Take(status.Spec.SlotNum).ToArray();
+                var normal =
+                    slots.All(item => item.Empty)
+                        ? SlotStatus.NormalEmpty
+                        : slots.Any(item => item.Empty)
+                            ? SlotStatus.SemiEquipped
+                            : SlotStatus.Equipped;
+                var extra = status.SlotEx.Empty ? SlotStatus.ExtraEmpty : SlotStatus.Equipped;
+                return normal | extra;
+            }
+
+            private string DameConName(ShipStatus status)
+            {
+                switch (status.PreparedDamageControl)
                 {
-                    var slots = status.Slot.Take(status.Spec.SlotNum).ToArray();
-                    if (slots.Any(item => item.Empty))
-                        empty |= slots.All(item => item.Empty) ? SlotStatus.NormalEmpty : SlotStatus.SemiEquipped;
-                    if (status.SlotEx.Empty)
-                        empty |= SlotStatus.ExtraEmpty;
+                    case 42:
+                        return "[ダ]";
+                    case 43:
+                        return "[メ]";
+                    default:
+                        return "";
                 }
-                var dc = status.PreparedDamageControl;
-                var dcName = dc == 42 ? "[ダ]" :
-                    dc == 43 ? "[メ]" : "";
-                var sp = "";
+            }
+
+            private string SpecialAttack(ShipStatus status)
+            {
                 switch (status.SpecialAttack)
                 {
                     case ShipStatus.Attack.Fire:
-                        sp = "+";
-                        break;
+                        return "+";
                     case ShipStatus.Attack.Fired:
-                        sp = "-";
-                        break;
+                        return "-";
+                    default:
+                        return "";
                 }
-                SetName((status.Escaped ? "[避]" : dcName) + sp, status.Name, empty, width);
             }
 
             public void SetName(string name)
@@ -123,9 +145,14 @@ namespace KancolleSniffer.View
 
             private void SetName(string prefix, string name, SlotStatus slotStatus, ShipNameWidth width)
             {
-                if (name == null)
-                    name = "";
                 _slotStatus = slotStatus;
+                ChangeFont(name);
+                Text = prefix + TruncateString(name, width);
+                Invalidate();  // 必ずOnPaintを実行させるため
+            }
+
+            private void ChangeFont(string name)
+            {
                 var lu = new Regex(@"^\p{Lu}").IsMatch(name);
                 var shift = Scaler.ScaleHeight(1);
                 if (lu && Font.Equals(BaseFont))
@@ -138,14 +165,12 @@ namespace KancolleSniffer.View
                     Location += new Size(0, shift);
                     Font = BaseFont;
                 }
-                var result = prefix + name;
-                var measured = TextRenderer.MeasureText(result, Font).Width;
-                if (measured <= (int)width)
-                {
-                    Text = result;
-                    Invalidate(); // 必ずOnPaintを実行させるため
-                    return;
-                }
+            }
+
+            private string TruncateString(string name, ShipNameWidth width)
+            {
+                if (TextRenderer.MeasureText(name, Font).Width <= (int)width)
+                    return name;
                 var truncated = "";
                 foreach (var ch in name)
                 {
@@ -154,8 +179,7 @@ namespace KancolleSniffer.View
                         break;
                     truncated = tmp;
                 }
-                Text = prefix + truncated.TrimEnd(' ');
-                Invalidate();
+                return truncated.TrimEnd(' ');
             }
 
             protected override void OnPaint(PaintEventArgs e)
