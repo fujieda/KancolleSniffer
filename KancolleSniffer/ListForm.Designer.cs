@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using KancolleSniffer.View;
+using KancolleSniffer.View.ShipListPanel;
 
 namespace KancolleSniffer
 {
@@ -95,7 +96,7 @@ namespace KancolleSniffer
             this.antiAirPanel = new KancolleSniffer.View.AntiAirPanel();
             this.fleetPanel = new KancolleSniffer.View.FleetPanel();
             this.itemTreeView = new KancolleSniffer.View.ItemTreeView();
-            this.shipListPanel = new KancolleSniffer.View.ShipListPanel();
+            this.shipListPanel = new ShipListPanel();
             this.contextMenuStripShipList.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();

@@ -24,314 +24,402 @@ using static System.Math;
 namespace KancolleSniffer.View
 {
     [DesignerCategory("Code")]
-    public class ShipLabel : Label
+    public abstract class ShipLabel : GrowLeftLabel
     {
-        public static Color[] ColumnColors = {SystemColors.Control, Color.White};
-        public static SizeF ScaleFactor { get; set; }
-        public static Font LatinFont { get; set; } = new Font("Tahoma", 8f);
-        public Color PresetColor { get; set; }
-        public bool AnchorRight { get; set; }
-        private int _right = Int32.MinValue;
-        private int _left;
-        private SlotStatus _slotStatus;
-        private ShipStatus _status;
-        private bool _hpPercent;
-        private Font _strongFont;
-        private ShipLabel _hpStrongLabel;
+        protected Color InitialBackColor;
+        protected ShipStatus Status;
 
-        private Font BaseFont => Parent.Font;
-
-        private Font StrongFont => _strongFont ?? (_strongFont = new Font("Leelawadee", BaseFont.Size));
+        protected Font BaseFont => Parent.Font;
 
         public override Color BackColor
         {
             get => base.BackColor;
-            set => base.BackColor = value == DefaultBackColor ? PresetColor : value;
+            set
+            {
+                if (InitialBackColor == Color.Empty)
+                    InitialBackColor = value;
+                base.BackColor = value;
+            }
         }
 
-        [Flags]
-        private enum SlotStatus
-        {
-            Equipped = 0,
-            SemiEquipped = 1,
-            NormalEmpty = 2,
-            ExtraEmpty = 4
-        }
-
-        public ShipLabel()
+        protected ShipLabel()
         {
             UseMnemonic = false;
         }
 
-        public void SetName(ShipStatus status, ShipNameWidth width = ShipNameWidth.Max)
+        public abstract void Set(ShipStatus status);
+
+        public abstract void Reset();
+
+        public new sealed class Name : ShipLabel
         {
-            if (status == null)
+            private SlotStatus _slotStatus;
+            private readonly ShipNameWidth _defaultWidth;
+
+            public static Font LatinFont { get; set; } = new Font("Tahoma", 8f);
+
+            public Name(Point location, ShipNameWidth defaultWidth)
+            {
+                _defaultWidth = defaultWidth;
+                Location = location;
+                AutoSize = true;
+            }
+
+            [Flags]
+            private enum SlotStatus
+            {
+                Equipped = 0,
+                SemiEquipped = 1,
+                NormalEmpty = 2,
+                ExtraEmpty = 4
+            }
+
+            public override void Set(ShipStatus status)
+            {
+                SetName(status, _defaultWidth);
+            }
+
+            public override void Reset()
             {
                 SetName("");
-                return;
             }
-            var empty = SlotStatus.Equipped;
-            if (!status.Empty)
+
+            public void SetName(ShipStatus status, ShipNameWidth width)
             {
+                var slotStatus = GetSlotStatus(status);
+                var dcName = DameConName(status);
+                var sp = SpecialAttack(status);
+                SetName((status.Escaped ? "[避]" : dcName) + sp, status.Name, slotStatus, width);
+            }
+
+            private SlotStatus GetSlotStatus(ShipStatus status)
+            {
+                if (status.Empty)
+                    return SlotStatus.Equipped;
                 var slots = status.Slot.Take(status.Spec.SlotNum).ToArray();
-                if (slots.Any(item => item.Empty))
-                    empty |= slots.All(item => item.Empty) ? SlotStatus.NormalEmpty : SlotStatus.SemiEquipped;
-                if (status.SlotEx.Empty)
-                    empty |= SlotStatus.ExtraEmpty;
+                var normal =
+                    slots.All(item => item.Empty)
+                        ? SlotStatus.NormalEmpty
+                        : slots.Any(item => item.Empty)
+                            ? SlotStatus.SemiEquipped
+                            : SlotStatus.Equipped;
+                var extra = status.SlotEx.Empty ? SlotStatus.ExtraEmpty : SlotStatus.Equipped;
+                return normal | extra;
             }
-            var dc = status.PreparedDamageControl;
-            var dcName = dc == 42 ? "[ダ]" :
-                dc == 43 ? "[メ]" : "";
-            var sp = "";
-            switch (status.SpecialAttack)
-            {
-                case ShipStatus.Attack.Fire:
-                    sp = "+";
-                    break;
-                case ShipStatus.Attack.Fired:
-                    sp = "-";
-                    break;
-            }
-            SetName((status.Escaped ? "[避]" : dcName) + sp, status.Name, empty, width);
-        }
 
-        public void SetName(string name)
-        {
-            SetName("", name, SlotStatus.Equipped);
-        }
-
-        public void SetName(string name, ShipNameWidth width)
-        {
-            SetName("", name, SlotStatus.Equipped, width);
-        }
-
-        private void SetName(string prefix, string name, SlotStatus slotStatus, ShipNameWidth width = ShipNameWidth.Max)
-        {
-            if (name == null)
-                name = "";
-            _slotStatus = slotStatus;
-            var lu = new Regex(@"^\p{Lu}").IsMatch(name);
-            var shift = (int)Round(ScaleFactor.Height);
-            if (lu && Font.Equals(BaseFont))
+            private string DameConName(ShipStatus status)
             {
-                Location += new Size(0, -shift);
-                Font = LatinFont;
-            }
-            else if (!lu && !Font.Equals(BaseFont))
-            {
-                Location += new Size(0, shift);
-                Font = BaseFont;
-            }
-            var result = prefix + name;
-            var measured = TextRenderer.MeasureText(result, Font).Width;
-            if (measured <= (int)width)
-            {
-                Text = result;
-                Invalidate(); // 必ずOnPaintを実行させるため
-                return;
-            }
-            var truncated = "";
-            foreach (var ch in name)
-            {
-                var tmp = truncated + ch;
-                if (TextRenderer.MeasureText(tmp, Font).Width > (int)width * ScaleFactor.Width)
-                    break;
-                truncated = tmp;
-            }
-            Text = prefix + truncated.TrimEnd(' ');
-            Invalidate();
-        }
-
-        public void SetHp(ShipStatus status)
-        {
-            _status = status;
-            if (_hpStrongLabel != null)
-                _hpStrongLabel.Text = "";
-            Font = BaseFont;
-            if (status == null)
-            {
-                Text = "";
-                BackColor = PresetColor;
-                return;
-            }
-            if (_hpPercent)
-            {
-                var percent = $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}";
-                if (status.DamageLevel == ShipStatus.Damage.Badly)
+                switch (status.PreparedDamageControl)
                 {
-                    Text = "%";
-                    if (_hpStrongLabel == null)
-                        CreateHpStrongLabel();
-                    _hpStrongLabel.Text = percent;
+                    case 42:
+                        return "[ダ]";
+                    case 43:
+                        return "[メ]";
+                    default:
+                        return "";
+                }
+            }
+
+            private string SpecialAttack(ShipStatus status)
+            {
+                switch (status.SpecialAttack)
+                {
+                    case ShipStatus.Attack.Fire:
+                        return "+";
+                    case ShipStatus.Attack.Fired:
+                        return "-";
+                    default:
+                        return "";
+                }
+            }
+
+            public void SetName(string name)
+            {
+                SetName(name, _defaultWidth);
+            }
+
+            public void SetName(string name, ShipNameWidth width)
+            {
+                SetName("", name, SlotStatus.Equipped, width);
+            }
+
+            private void SetName(string prefix, string name, SlotStatus slotStatus, ShipNameWidth width)
+            {
+                _slotStatus = slotStatus;
+                ChangeFont(name);
+                Text = prefix + TruncateString(name, width);
+                Invalidate();  // 必ずOnPaintを実行させるため
+            }
+
+            private void ChangeFont(string name)
+            {
+                var lu = new Regex(@"^\p{Lu}").IsMatch(name);
+                var shift = Scaler.ScaleHeight(1);
+                if (lu && Font.Equals(BaseFont))
+                {
+                    Location += new Size(0, -shift);
+                    Font = LatinFont;
+                }
+                else if (!lu && !Font.Equals(BaseFont))
+                {
+                    Location += new Size(0, shift);
+                    Font = BaseFont;
+                }
+            }
+
+            private string TruncateString(string name, ShipNameWidth width)
+            {
+                if (TextRenderer.MeasureText(name, Font).Width <= (int)width)
+                    return name;
+                var truncated = "";
+                foreach (var ch in name)
+                {
+                    var tmp = truncated + ch;
+                    if (TextRenderer.MeasureText(tmp, Font).Width > Scaler.ScaleWidth((float)width))
+                        break;
+                    truncated = tmp;
+                }
+                return truncated.TrimEnd(' ');
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                base.OnPaint(e);
+                if ((_slotStatus & SlotStatus.NormalEmpty) != 0)
+                {
+                    e.Graphics.DrawRectangle(Pens.Black,
+                        new Rectangle(Scaler.Move(ClientSize.Width, 0, -3, 0), Scaler.Scale(2, 5)));
+                }
+                else if ((_slotStatus & SlotStatus.SemiEquipped) != 0)
+                {
+                    e.Graphics.DrawLine(Pens.Black,
+                        Scaler.Move(ClientSize.Width, 0, -1, 0),
+                        Scaler.Move(ClientSize.Width, 0, -1, 5));
+                }
+                if ((_slotStatus & SlotStatus.ExtraEmpty) != 0)
+                {
+                    e.Graphics.DrawRectangle(Pens.Black,
+                        new Rectangle(Scaler.Move(ClientSize.Width, 0, -3, 8), Scaler.Scale(2, 3)));
+                }
+            }
+        }
+
+        public sealed class Hp : ShipLabel
+        {
+            private bool _hpPercent;
+            private Font _strongFont;
+            private ShipLabel _hpStrongLabel;
+            private Font StrongFont => _strongFont ?? (_strongFont = new Font("Leelawadee", BaseFont.Size));
+
+            public Hp()
+            {
+            }
+
+            public Hp(Point location, int height)
+            {
+                Location = location;
+                MinimumSize = new Size(0, height);
+                TextAlign = ContentAlignment.MiddleLeft;
+                GrowLeft = true;
+                Cursor = Cursors.Hand;
+            }
+
+            public override void Reset()
+            {
+                if (_hpStrongLabel != null)
+                    _hpStrongLabel.Text = "";
+                Text = "";
+                BackColor = InitialBackColor;
+            }
+
+            public override void Set(ShipStatus status)
+            {
+                Status = status;
+                if (_hpStrongLabel != null)
+                    _hpStrongLabel.Text = "";
+                Font = BaseFont;
+                if (_hpPercent)
+                {
+                    var percent = $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}";
+                    if (status.DamageLevel == ShipStatus.Damage.Badly)
+                    {
+                        Text = "%";
+                        if (_hpStrongLabel == null)
+                            CreateHpStrongLabel();
+                        _hpStrongLabel.Text = percent;
+                    }
+                    else
+                    {
+                        Text = percent + "%";
+                    }
                 }
                 else
                 {
-                    Text = percent + "%";
+                    Text = $"{status.NowHp:D}/{status.MaxHp:D}";
+                    if (status.DamageLevel == ShipStatus.Damage.Badly)
+                        Font = StrongFont;
+                }
+                BackColor = DamageColor(status);
+            }
+
+            private void CreateHpStrongLabel()
+            {
+                _hpStrongLabel = new Hp(Scaler.Move(Left, Top, 4, 0), Height)
+                {
+                    Font = StrongFont,
+                    BackColor = CUDColors.Red
+                };
+                _hpStrongLabel.DoubleClick += (sender, e) => { OnDoubleClick(e); };
+                Parent.Controls.Add(_hpStrongLabel);
+                var index = Parent.Controls.GetChildIndex(this);
+                Parent.Controls.SetChildIndex(_hpStrongLabel, index + 1);
+            }
+
+            public void ToggleHpPercent()
+            {
+                _hpPercent = !_hpPercent;
+                if (Status != null)
+                    Set(Status);
+            }
+
+            public void SetHp(int now, int max)
+            {
+                Set(new ShipStatus {NowHp = now, MaxHp = max});
+            }
+
+            public Color DamageColor(ShipStatus status)
+            {
+                switch (status.DamageLevel)
+                {
+                    case ShipStatus.Damage.Sunk:
+                        return Color.CornflowerBlue;
+                    case ShipStatus.Damage.Badly:
+                        return CUDColors.Red;
+                    case ShipStatus.Damage.Half:
+                        return CUDColors.Orange;
+                    case ShipStatus.Damage.Small:
+                        return Color.FromArgb(240, 240, 0);
+                    default:
+                        return InitialBackColor;
                 }
             }
-            else
+
+            public void SetColor(ShipStatus status)
             {
-                Text = $"{status.NowHp:D}/{status.MaxHp:D}";
-                if (status.DamageLevel == ShipStatus.Damage.Badly)
-                    Font = StrongFont;
-            }
-            BackColor = DamageColor(status);
-        }
-
-        private void CreateHpStrongLabel()
-        {
-            _hpStrongLabel = new ShipLabel
-            {
-                Font = StrongFont,
-                BackColor = CUDColors.Red,
-                Location = new Point(Left + (int)Round(4 * ScaleFactor.Width), Top),
-                AutoSize = true,
-                MinimumSize = new Size(0, Height),
-                AnchorRight = true,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Cursor = Cursors.Hand
-            };
-            _hpStrongLabel.DoubleClick += (sender, e) => { OnDoubleClick(e); };
-            Parent.Controls.Add(_hpStrongLabel);
-            var index = Parent.Controls.GetChildIndex(this);
-            Parent.Controls.SetChildIndex(_hpStrongLabel, index + 1);
-        }
-
-
-        public void ToggleHpPercent()
-        {
-            _hpPercent = !_hpPercent;
-            SetHp(_status);
-        }
-
-        public void SetHp(int now, int max)
-        {
-            SetHp(new ShipStatus {NowHp = now, MaxHp = max});
-        }
-
-        public Color DamageColor(ShipStatus status)
-        {
-            switch (status.DamageLevel)
-            {
-                case ShipStatus.Damage.Sunk:
-                    return Color.CornflowerBlue;
-                case ShipStatus.Damage.Badly:
-                    return CUDColors.Red;
-                case ShipStatus.Damage.Half:
-                    return CUDColors.Orange;
-                case ShipStatus.Damage.Small:
-                    return Color.FromArgb(240, 240, 0);
-                default:
-                    return PresetColor;
+                BackColor = DamageColor(status);
             }
         }
 
-        public void SetCond(ShipStatus status)
+        public sealed class Cond : ShipLabel
         {
-            if (status == null)
+            public Cond(Point location, int height)
+            {
+                Location = location;
+                Size = new Size(24, height);
+                TextAlign = ContentAlignment.MiddleRight;
+            }
+
+            public override void Reset()
             {
                 Text = "";
-                BackColor = PresetColor;
-                return;
+                BackColor = InitialBackColor;
             }
-            var cond = status.Cond;
-            Text = cond.ToString("D");
-            BackColor = cond >= 50
-                ? CUDColors.Yellow
-                : cond >= 30
-                    ? PresetColor
-                    : cond >= 20
-                        ? CUDColors.Orange
-                        : CUDColors.Red;
+
+            public override void Set(ShipStatus status)
+            {
+                var cond = status.Cond;
+                Text = cond.ToString("D");
+                BackColor = cond >= 50
+                    ? CUDColors.Yellow
+                    : cond >= 30
+                        ? InitialBackColor
+                        : cond >= 20
+                            ? CUDColors.Orange
+                            : CUDColors.Red;
+            }
         }
 
-        public void SetLevel(ShipStatus status)
+        public sealed class Level : ShipLabel
         {
-            Text = status?.Level.ToString("D");
-        }
+            public Level(Point location, int height)
+            {
+                Location = location;
+                Size = new Size(24, height);
+                TextAlign = ContentAlignment.MiddleRight;
+            }
 
-        public void SetExpToNext(ShipStatus status)
-        {
-            Text = status?.ExpToNext.ToString("D");
-        }
-
-        public void SetRepairTime(ShipStatus status)
-        {
-            if (status == null)
+            public override void Reset()
             {
                 Text = "";
-                return;
             }
-            SetRepairTime(status.RepairTime);
-        }
 
-        public void SetRepairTime(TimeSpan span)
-        {
-            Text = $@"{(int)span.TotalHours:d2}:{span:mm\:ss}";
-        }
-
-        public void SetFleet(ShipStatus status)
-        {
-            Text = status?.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
-        }
-
-        protected override void OnSizeChanged(EventArgs args)
-        {
-            base.OnSizeChanged(args);
-            KeepAnchorRight();
-        }
-
-        protected override void OnLayout(LayoutEventArgs args)
-        {
-            base.OnLayout(args);
-            KeepAnchorRight();
-        }
-
-        private void KeepAnchorRight()
-        {
-            if (!AnchorRight)
-                return;
-            if (_right == int.MinValue || _left != Left)
+            public override void Set(ShipStatus status)
             {
-                _right = Right;
-                _left = Left;
-                return;
-            }
-            if (_right == Right)
-                return;
-            _left -= Right - _right;
-            Location = new Point(_left, Top);
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            if ((_slotStatus & SlotStatus.NormalEmpty) != 0)
-            {
-                e.Graphics.DrawRectangle(
-                    Pens.Black,
-                    ClientSize.Width - 3 * ScaleFactor.Width, 0,
-                    2 * ScaleFactor.Width, 5 * ScaleFactor.Height);
-            }
-            else if ((_slotStatus & SlotStatus.SemiEquipped) != 0)
-            {
-                e.Graphics.DrawLine(
-                    Pens.Black,
-                    ClientSize.Width - 1 * ScaleFactor.Width, 0,
-                    ClientSize.Width - 1 * ScaleFactor.Width, 5 * ScaleFactor.Height);
-            }
-            if ((_slotStatus & SlotStatus.ExtraEmpty) != 0)
-            {
-                e.Graphics.DrawRectangle(
-                    Pens.Black,
-                    ClientSize.Width - 3 * ScaleFactor.Width, 8 * ScaleFactor.Height,
-                    2 * ScaleFactor.Width, 3 * ScaleFactor.Height);
+                Text = status.Level.ToString("D");
             }
         }
 
-        public void Scale()
+        public sealed class Exp : ShipLabel
         {
-            Scale(ScaleFactor);
+            public Exp(Point location, int height)
+            {
+                Location = location;
+                Size = new Size(42, height);
+                TextAlign = ContentAlignment.MiddleRight;
+            }
+
+            public override void Reset()
+            {
+                Text = "";
+            }
+
+            public override void Set(ShipStatus status)
+            {
+                Text = status.ExpToNext.ToString("D");
+            }
+        }
+
+        public sealed class Fleet : ShipLabel
+        {
+            public Fleet(Point location)
+            {
+                Location = location;
+                AutoSize = true;
+            }
+
+            public override void Reset()
+            {
+                Text = "";
+            }
+
+            public override void Set(ShipStatus status)
+            {
+                Text = status.Fleet == null ? "" : new[] {"1", "2", "3", "4"}[status.Fleet.Number];
+            }
+        }
+
+        public sealed class RepairTime : ShipLabel
+        {
+            public RepairTime(Point location)
+            {
+                Location = location;
+                AutoSize = true;
+            }
+
+            public override void Reset()
+            {
+                Text = "";
+            }
+
+            public override void Set(ShipStatus status)
+            {
+                SetRepairTime(status.RepairTime);
+            }
+
+            public void SetRepairTime(TimeSpan span)
+            {
+                Text = $@"{(int)span.TotalHours:d2}:{span:mm\:ss}";
+            }
         }
     }
 }

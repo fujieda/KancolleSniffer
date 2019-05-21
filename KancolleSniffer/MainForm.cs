@@ -84,7 +84,7 @@ namespace KancolleSniffer
             SetupFleetClick();
             CreateMainLabels();
             CreateNumberAndHistory(manager);
-            labelPresetAkashiTimer.BackColor = ShipLabel.ColumnColors[1];
+            labelPresetAkashiTimer.BackColor = CustomColors.ColumnColors.Bright;
             SetupQuestPanel();
             panelRepairList.CreateLabels(panelRepairList_Click);
             PerformZoom();
@@ -94,7 +94,7 @@ namespace KancolleSniffer
         private void SetScaleFactorOfDpiScaling()
         {
             var autoScaleDimensions = new SizeF(6f, 12f); // AutoScaleDimensionの初期値
-            ShipLabel.ScaleFactor = new SizeF(CurrentAutoScaleDimensions.Width / autoScaleDimensions.Width,
+            Scaler.Factor = new SizeF(CurrentAutoScaleDimensions.Width / autoScaleDimensions.Width,
                 CurrentAutoScaleDimensions.Height / autoScaleDimensions.Height);
         }
 
@@ -520,10 +520,9 @@ namespace KancolleSniffer
             {
                 toolTip.Font = new Font(toolTip.Font.FontFamily, toolTip.Font.Size * Config.Zoom / 100);
             }
-            ShipLabel.LatinFont = new Font("Tahoma", 8f * Config.Zoom / 100);
+            ShipLabel.Name.LatinFont = new Font("Tahoma", 8f * Config.Zoom / 100);
             var cur = CurrentAutoScaleDimensions;
-            ShipLabel.ScaleFactor = new SizeF(ShipLabel.ScaleFactor.Width * cur.Width / prev.Width,
-                ShipLabel.ScaleFactor.Height * cur.Height / prev.Height);
+            Scaler.Factor = Scaler.Scale(cur.Width / prev.Width, cur.Height / prev.Height);
         }
 
         private void RestoreLocation()

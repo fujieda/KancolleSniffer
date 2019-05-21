@@ -18,6 +18,7 @@ using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
 using static System.Math;
+
 // ReSharper disable CoVariantArrayConversion
 
 namespace KancolleSniffer.View
@@ -26,48 +27,53 @@ namespace KancolleSniffer.View
     {
         private const int PanelPadding = 5;
         private const int LineHeight = 15;
-        private RepairListLabels[] _repairLabels;
+        private RepairLabels[] _repairLabels;
         private ShipStatus[] _repairList = new ShipStatus[0];
         private ListScroller _listScroller;
 
-        private class RepairListLabels
+        private class RepairLabels : ShipLabels
         {
-            public ShipLabel Fleet { get; set; }
-            public ShipLabel Name { get; set; }
-            public ShipLabel Time { get; set; }
-            public ShipLabel Damage { get; set; }
-            public ShipLabel BackGround { private get; set; }
+            public ShipLabel.RepairTime Time { private get; set; }
+            public ShipLabel.Hp Damage { get; set; }
 
-            public ShipLabel[] Labels => new[] {Fleet, Damage, Time, Name, BackGround};
+            public override Control[] Controls => base.Controls.Concat(new Control[] {Time, Damage}).ToArray();
+
+            public override void Set(ShipStatus status)
+            {
+                base.Set(status);
+                Time.Set(status);
+            }
+
+            public override void Reset()
+            {
+                base.Reset();
+                Time.Reset();
+                Damage.Reset();
+            }
         }
 
         public void CreateLabels(EventHandler onClick)
         {
-            _repairLabels = new RepairListLabels[Lines];
+            _repairLabels = new RepairLabels[Lines];
             SuspendLayout();
             for (var i = 0; i < _repairLabels.Length; i++)
             {
                 var y = PanelPadding + 1 + i * LineHeight;
                 const int height = 12;
-                _repairLabels[i] = new RepairListLabels
+                _repairLabels[i] = new RepairLabels
                 {
-                    Fleet = new ShipLabel {Location = new Point(0, y), Size = new Size(11, height)},
-                    Damage = new ShipLabel {Location = new Point(119, y), Size = new Size(5, height - 1)},
-                    Time = new ShipLabel {Location = new Point(75, y), AutoSize = true},
-                    Name = new ShipLabel {Location = new Point(9, y), AutoSize = true},
-                    BackGround = new ShipLabel
+                    Fleet = new ShipLabel.Fleet(new Point(0, y)),
+                    Name = new ShipLabel.Name(new Point(9, y), ShipNameWidth.RepairList),
+                    Damage = new ShipLabel.Hp {Location = new Point(119, y), Size = new Size(5, height - 1)},
+                    Time = new ShipLabel.RepairTime(new Point(75, y)),
+                    BackGround = new Label
                     {
                         Location = new Point(0, y - 1),
                         Size = new Size(Width, height + 2)
                     }
                 };
-                Controls.AddRange(_repairLabels[i].Labels);
-                foreach (var label in _repairLabels[i].Labels)
-                {
-                    label.Scale();
-                    label.PresetColor = label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
-                    label.Click += onClick;
-                }
+                _repairLabels[i].Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
+                _repairLabels[i].SetClickHandler(onClick);
             }
             ResumeLayout();
             SetupListScroller();
@@ -77,14 +83,15 @@ namespace KancolleSniffer.View
         {
             get
             {
-                var baseHeight = (Parent.ClientRectangle.Height - Location.Y) / ShipLabel.ScaleFactor.Height;
-                return (int)Round((baseHeight - PanelPadding * 2) / LineHeight);
+                var baseHeight = Parent.ClientRectangle.Height - Location.Y;
+                return (int)Round((baseHeight - Scaler.ScaleHeight((float)PanelPadding) * 2) /
+                                  Scaler.ScaleHeight((float)LineHeight));
             }
         }
 
         private void SetupListScroller()
         {
-            _listScroller = new ListScroller(this, _repairLabels[0].Labels, _repairLabels.Last().Labels)
+            _listScroller = new ListScroller(this, _repairLabels[0].Controls, _repairLabels.Last().Controls)
             {
                 Lines = _repairLabels.Length,
                 Padding = PanelPadding
@@ -112,8 +119,7 @@ namespace KancolleSniffer.View
         private void SetPanelHeight()
         {
             var lines = Min(Max(1, _repairList.Length), _repairLabels.Length);
-            Size = new Size(Width,
-                (int)Round(ShipLabel.ScaleFactor.Height * (lines * LineHeight + PanelPadding * 2)));
+            Size = new Size(Width, Scaler.ScaleHeight(lines * LineHeight + PanelPadding * 2));
         }
 
         private void ShowRepairList()
@@ -122,10 +128,8 @@ namespace KancolleSniffer.View
             {
                 var s = _repairList[i + _listScroller.Position];
                 var labels = _repairLabels[i];
-                labels.Fleet.SetFleet(s);
-                labels.Name.SetName(s, ShipNameWidth.RepairList);
-                labels.Time.SetRepairTime(s);
-                labels.Damage.BackColor = labels.Damage.DamageColor(s);
+                labels.Set(s);
+                labels.Damage.SetColor(s);
             }
             if (_repairList.Length < _repairLabels.Length)
                 ClearLabels(_repairList.Length);
@@ -135,10 +139,7 @@ namespace KancolleSniffer.View
         private void ClearLabels(int i)
         {
             var labels = _repairLabels[i];
-            labels.Fleet.Text = "";
-            labels.Name.SetName("");
-            labels.Time.Text = "";
-            labels.Damage.BackColor = labels.Damage.PresetColor;
+            labels.Reset();
         }
     }
 }

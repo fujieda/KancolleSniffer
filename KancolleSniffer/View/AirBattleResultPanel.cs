@@ -54,7 +54,7 @@ namespace KancolleSniffer.View
         private readonly Label[][][] _resultLabels = new Label[2][][];
         private AirBattleResult[] _resultList;
         private int _resultIndex;
-        private readonly ShipLabel _ciShipName;
+        private readonly ShipLabel.Name _ciShipName;
         private readonly Label _ciKind;
 
         public bool ShowResultAutomatic { get; set; }
@@ -113,11 +113,7 @@ namespace KancolleSniffer.View
                     });
                 }
             }
-            Controls.Add(_ciShipName = new ShipLabel
-            {
-                Location = new Point(ci, top),
-                Size = new Size((int)ShipNameWidth.CiShipName, 12)
-            });
+            Controls.Add(_ciShipName = new ShipLabel.Name(new Point(ci, top), ShipNameWidth.CiShipName));
             Controls.Add(_ciKind = new Label
             {
                 Location = new Point(ci, top + 14),
@@ -186,13 +182,13 @@ namespace KancolleSniffer.View
             var result = _resultList[_resultIndex];
             if (result.AirFire == null)
             {
-                _ciShipName.SetName(null);
+                _ciShipName.Reset();
                 _ciKind.Text = "";
                 ToolTip.SetToolTip(_ciKind, "");
             }
             else
             {
-                _ciShipName.SetName(result.AirFire.ShipName, ShipNameWidth.CiShipName);
+                _ciShipName.SetName(result.AirFire.ShipName);
                 _ciKind.Text = result.AirFire.Kind.ToString();
                 ToolTip.SetToolTip(_ciKind, string.Join("\r\n", result.AirFire.Items));
             }
@@ -212,7 +208,7 @@ namespace KancolleSniffer.View
                     }
                 }
             }
-            _ciShipName.SetName(null);
+            _ciShipName.Reset();
             _ciKind.Text = "";
             ToolTip.SetToolTip(_ciKind, "");
         }

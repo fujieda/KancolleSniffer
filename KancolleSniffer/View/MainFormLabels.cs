@@ -15,32 +15,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
-using static System.Math;
 
 namespace KancolleSniffer.View
 {
-    /// <summary>
-    /// 艦娘名の横幅
-    /// 艦娘名のラベルのZ-orderは最下なので名前が長すぎると右隣のラベルの下に隠れるが、
-    /// 空装備マークはラベルの右端に表示するので右端が見えるように縮める必要がある。
-    /// </summary>
-    public enum ShipNameWidth
-    {
-        MainPanel = 92, // 左端2 HP右端129幅35 129-2-35=92
-        AkashiTimer = 53, // 左端2 タイマー左端55 55-2=53 漢字4文字
-        NDock = 65, // 左端29 終了時刻右端138幅47 138-47-29=62 空装備マークなし漢字5文字65
-        RepairList = 65, // 左端9 時間左端75 75-9=66 漢字5文字65
-        RepairListFull = 73, // 左端10 HP右端118幅35 118-10-35=73
-        ShipList = 81, // 左端10 HP右端126幅35 126-10-35=81
-        GroupConfig = 80, // 左端10 レベル左端90 90-10=80
-        Combined = 53, // 左端2 HP右端88幅35 88-2-35=51 空装備マーク犠牲 漢字4文字53
-        BattleResult = 65, // 左端2 HP右端101幅35 101-1-35=65
-        CiShipName = 65, // 左端168幅236 236-168=68 漢字5文字65
-        Max = int.MaxValue
-    }
-
     public class MainFormPanels
     {
         public Control PanelShipInfo { get; set; }
@@ -51,13 +31,13 @@ namespace KancolleSniffer.View
 
     public class MainFormLabels
     {
-        private readonly ShipLabel[][] _shipLabels = new ShipLabel[ShipInfo.MemberCount][];
-        private readonly ShipLabel[][] _shipLabels7 = new ShipLabel[7][];
-        private readonly ShipLabel[][] _combinedLabels = new ShipLabel[ShipInfo.MemberCount * 2][];
-        private readonly ShipLabel[] _akashiTimers = new ShipLabel[ShipInfo.MemberCount];
-        private readonly ShipLabel[] _akashiTimers7 = new ShipLabel[ShipInfo.MemberCount];
-        private readonly ShipLabel[][] _ndockLabels = new ShipLabel[DockInfo.DockCount][];
-        private readonly List<ShipLabel> _hpLabels = new List<ShipLabel>();
+        private readonly ShipLabels[] _shipLabels = new ShipLabels[ShipInfo.MemberCount];
+        private readonly ShipLabels[] _shipLabels7 = new ShipLabels[7];
+        private readonly ShipLabels[] _combinedLabels = new ShipLabels[ShipInfo.MemberCount * 2];
+        private readonly Label[] _akashiTimers = new Label[ShipInfo.MemberCount];
+        private readonly Label[] _akashiTimers7 = new Label[ShipInfo.MemberCount];
+        private readonly NDockLabels[] _ndockLabels = new NDockLabels[DockInfo.DockCount];
+        private readonly List<ShipLabel.Hp> _hpLabels = new List<ShipLabel.Hp>();
         private readonly MainFormPanels _panels;
         public bool ShowHpInPercent { get; private set; }
 
@@ -90,72 +70,45 @@ namespace KancolleSniffer.View
             CreateShipLabels(parent, onClick, _shipLabels7, 14);
         }
 
-        private void CreateShipLabels(Control parent, EventHandler onClick, ShipLabel[][] shipLabels, int lineHeight)
+        private void CreateShipLabels(Control parent, EventHandler onClick, ShipLabels[] shipLabels, int lineHeight)
         {
             parent.SuspendLayout();
             const int top = 1, height = 12;
-            ShipLabel[] headings;
-            parent.Controls.AddRange(headings = new[]
+            var headings = new Control[]
             {
-                new ShipLabel {Location = new Point(109, top), Text = "HP", AutoSize = true},
-                new ShipLabel {Location = new Point(128, top), Text = "cond", AutoSize = true},
-                new ShipLabel {Location = new Point(162, top), Text = "Lv", AutoSize = true},
-                new ShipLabel {Location = new Point(194, top), Text = "Exp", AutoSize = true},
-                new ShipLabel {Location = new Point(0, 1), Size = new Size(parent.Width, lineHeight - 1)}
-            });
-            foreach (var label in headings)
+                new Label {Location = new Point(109, top), Text = "HP", AutoSize = true},
+                new Label {Location = new Point(128, top), Text = "cond", AutoSize = true},
+                new Label {Location = new Point(162, top), Text = "Lv", AutoSize = true},
+                new Label {Location = new Point(194, top), Text = "Exp", AutoSize = true},
+                new Label {Location = new Point(0, 1), Size = new Size(parent.Width, lineHeight - 1)}
+            };
+            parent.Controls.AddRange(headings);
+            foreach (var control in headings)
             {
-                label.Scale();
-                label.BackColor = ShipLabel.ColumnColors[1];
-            }
-            for (var i = 0; i < shipLabels.Length; i++)
-            {
-                var y = top + lineHeight * (i + 1);
-                parent.Controls.AddRange(shipLabels[i] = new[]
-                {
-                    new ShipLabel
-                    {
-                        Location = new Point(129, y),
-                        AutoSize = true,
-                        AnchorRight = true,
-                        MinimumSize = new Size(0, lineHeight),
-                        TextAlign = ContentAlignment.MiddleLeft,
-                        Cursor = Cursors.Hand
-                    },
-                    new ShipLabel
-                    {
-                        Location = new Point(131, y),
-                        Size = new Size(24, lineHeight),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new ShipLabel
-                    {
-                        Location = new Point(155, y + 2),
-                        Size = new Size(24, height),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new ShipLabel
-                    {
-                        Location = new Point(176, y + 2),
-                        Size = new Size(42, height),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new ShipLabel {Location = new Point(2, y + 2), AutoSize = true}, // 名前のZ-orderを下に
-                    new ShipLabel {Location = new Point(0, y), Size = new Size(parent.Width, lineHeight)}
-                });
-                foreach (var label in shipLabels[i])
-                {
-                    label.Scale();
-                    label.PresetColor = label.BackColor = ShipLabel.ColumnColors[i % 2];
-                    label.Tag = i;
-                    label.Click += onClick;
-                }
-                var hpLabel = shipLabels[i][0];
-                _hpLabels.Add(hpLabel);
-                hpLabel.DoubleClick += HpLabelClickHandler;
+                Scaler.Scale(control);
+                control.BackColor = CustomColors.ColumnColors.Bright;
             }
             headings[0].Cursor = Cursors.Hand;
             headings[0].Click += HpLabelClickHandler;
+            for (var i = 0; i < shipLabels.Length; i++)
+            {
+                var y = top + lineHeight * (i + 1);
+                shipLabels[i] = new ShipLabels
+                {
+                    Name = new ShipLabel.Name(new Point(2, y + 2), ShipNameWidth.MainPanel),
+                    Hp = new ShipLabel.Hp(new Point(129, y), lineHeight),
+                    Cond = new ShipLabel.Cond(new Point(131, y), lineHeight),
+                    Level = new ShipLabel.Level(new Point(155, y + 2), height),
+                    Exp = new ShipLabel.Exp(new Point(176, y + 2), height),
+                    BackGround = new Label {Location = new Point(0, y), Size = new Size(parent.Width, lineHeight)}
+                };
+                shipLabels[i].Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));
+                shipLabels[i].SetClickHandler(onClick);
+                shipLabels[i].SetTag(i);
+                var hpLabel = shipLabels[i].Hp;
+                _hpLabels.Add(hpLabel);
+                hpLabel.DoubleClick += HpLabelClickHandler;
+            }
             parent.ResumeLayout();
         }
 
@@ -176,17 +129,17 @@ namespace KancolleSniffer.View
             SetShipLabels(ships, ships.Count == 7 ? _shipLabels7 : _shipLabels);
         }
 
-        public void SetShipLabels(IReadOnlyList<ShipStatus> ships, ShipLabel[][] shipLabels)
+        public void SetShipLabels(IReadOnlyList<ShipStatus> ships, ShipLabels[] shipLabels)
         {
             for (var i = 0; i < shipLabels.Length; i++)
             {
                 var labels = shipLabels[i];
-                var ship = i < ships.Count ? ships[i] : null;
-                labels[0].SetHp(ship);
-                labels[1].SetCond(ship);
-                labels[2].SetLevel(ship);
-                labels[3].SetExpToNext(ship);
-                labels[4].SetName(ship, ShipNameWidth.MainPanel);
+                if (i >= ships.Count)
+                {
+                    labels.Reset();
+                    continue;
+                }
+                labels.Set(ships[i]);
             }
         }
 
@@ -195,52 +148,34 @@ namespace KancolleSniffer.View
             parent.SuspendLayout();
             const int top = 1, lh = 16;
             const int parentWidth = 220; // parent.Widthを使うとDPIスケーリング時に計算がくるうので
-            ShipLabel[] headings;
-            parent.Controls.AddRange(headings = new[]
+            var headings = new Control[]
             {
-                new ShipLabel {Location = new Point(68, top), Text = "HP", AutoSize = true},
-                new ShipLabel {Location = new Point(86, top), Text = "cnd", AutoSize = true},
-                new ShipLabel {Location = new Point(177, top), Text = "HP", AutoSize = true},
-                new ShipLabel {Location = new Point(195, top), Text = "cnd", AutoSize = true},
-                new ShipLabel {Location = new Point(0, 1), Size = new Size(parentWidth, lh - 1)}
-            });
-            foreach (var label in headings)
+                new Label {Location = new Point(68, top), Text = "HP", AutoSize = true},
+                new Label {Location = new Point(86, top), Text = "cnd", AutoSize = true},
+                new Label {Location = new Point(177, top), Text = "HP", AutoSize = true},
+                new Label {Location = new Point(195, top), Text = "cnd", AutoSize = true},
+                new Label {Location = new Point(0, 1), Size = new Size(parentWidth, lh - 1)}
+            };
+            parent.Controls.AddRange(headings);
+            foreach (var control in headings)
             {
-                label.Scale();
-                label.BackColor = ShipLabel.ColumnColors[1];
+                Scaler.Scale(control);
+                control.BackColor = CustomColors.ColumnColors.Bright;
             }
             for (var i = 0; i < _combinedLabels.Length; i++)
             {
                 var x = parentWidth / 2 * (i / ShipInfo.MemberCount);
                 var y = top + lh * (i % ShipInfo.MemberCount + 1);
-                parent.Controls.AddRange(_combinedLabels[i] = new[]
+                _combinedLabels[i] = new ShipLabels
                 {
-                    new ShipLabel
-                    {
-                        Location = new Point(x + 88, y),
-                        AutoSize = true,
-                        AnchorRight = true,
-                        MinimumSize = new Size(0, lh),
-                        TextAlign = ContentAlignment.MiddleLeft,
-                        Cursor = Cursors.Hand
-                    },
-                    new ShipLabel
-                    {
-                        Location = new Point(x + 85, y),
-                        Size = new Size(24, lh),
-                        TextAlign = ContentAlignment.MiddleRight
-                    },
-                    new ShipLabel {Location = new Point(x + 2, y + 2), AutoSize = true}, // 名前のZ-orderを下に
-                    new ShipLabel {Location = new Point(x, y), Size = new Size(parentWidth / 2, lh)}
-                });
-                foreach (var label in _combinedLabels[i])
-                {
-                    label.Scale();
-                    label.PresetColor = label.BackColor = ShipLabel.ColumnColors[i % 2];
-                    label.Tag = i;
-                    label.Click += onClick;
-                }
-                var hpLabel = _combinedLabels[i][0];
+                    Name = new ShipLabel.Name(new Point(x + 2, y + 2), ShipNameWidth.Combined),
+                    Hp = new ShipLabel.Hp(new Point(x + 88, y), lh),
+                    Cond = new ShipLabel.Cond(new Point(x + 85, y), lh),
+                    BackGround = new Label {Location = new Point(x, y), Size = new Size(parentWidth / 2, lh)}
+                };
+                _combinedLabels[i].Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));
+                _combinedLabels[i].SetTag(i);
+                var hpLabel = _combinedLabels[i].Hp;
                 _hpLabels.Add(hpLabel);
                 hpLabel.DoubleClick += HpLabelClickHandler;
             }
@@ -257,10 +192,12 @@ namespace KancolleSniffer.View
                 var idx = i % ShipInfo.MemberCount;
                 var ships = i < ShipInfo.MemberCount ? first : second;
                 var labels = _combinedLabels[i];
-                var s = idx < ships.Count ? ships[idx] : null;
-                labels[0].SetHp(s);
-                labels[1].SetCond(s);
-                labels[2].SetName(s, ShipNameWidth.Combined);
+                if (idx >= ships.Count)
+                {
+                    labels.Reset();
+                    continue;
+                }
+                labels.Set(ships[idx]);
             }
         }
 
@@ -274,26 +211,26 @@ namespace KancolleSniffer.View
             CreateAkashiTimers(parent, _akashiTimers7, 14);
         }
 
-        public void CreateAkashiTimers(Control parent, ShipLabel[] timerLabels, int lineHeight)
+        public void CreateAkashiTimers(Control parent, Label[] timerLabels, int lineHeight)
         {
             parent.SuspendLayout();
             for (var i = 0; i < timerLabels.Length; i++)
             {
                 const int x = 55;
                 var y = 3 + lineHeight * (i + 1);
-                ShipLabel label;
+                Label label;
                 parent.Controls.Add(
                     label = timerLabels[i] =
-                        new ShipLabel
+                        new Label
                         {
                             Location = new Point(x, y),
                             Size = new Size(31, 12),
                             TextAlign = ContentAlignment.TopRight
                         });
-                label.BackColor = ShipLabel.ColumnColors[i % 2];
+                label.BackColor = CustomColors.ColumnColors.DarkFirst(i);
             }
             foreach (var label in timerLabels)
-                label.Scale();
+                Scaler.Scale(label);
             parent.ResumeLayout();
         }
 
@@ -303,17 +240,16 @@ namespace KancolleSniffer.View
             AdjustAkashiTimers(_akashiTimers7, 14);
         }
 
-        public void AdjustAkashiTimers(ShipLabel[] timers, int lineHeight)
+        public void AdjustAkashiTimers(Label[] timers, int lineHeight)
         {
-            var scale = ShipLabel.ScaleFactor;
-            if (scale.Height < 1.2)
+            if (Scaler.ScaleHeight(1f) < 1.2)
                 return;
             for (var i = 0; i < timers.Length; i++)
             {
                 const int x = 55;
                 var y = 3 + lineHeight * (i + 1);
-                timers[i].Location = new Point((int)Round(x * scale.Width) - 3, (int)Round(y * scale.Height));
-                timers[i].Size = new Size((int)Round(31 * scale.Width) + 1, (int)Round(12 * scale.Height));
+                timers[i].Location = Scaler.Move(-3, 0, x, y);
+                timers[i].Size = new Size(Scaler.ScaleWidth(31) + 1, Scaler.ScaleWidth(12));
             }
         }
 
@@ -330,7 +266,7 @@ namespace KancolleSniffer.View
         }
 
         public void SetAkashiTimer(IReadOnlyList<ShipStatus> ships, AkashiTimer.RepairSpan[] timers,
-            ShipLabel[] timerLabels, ShipLabel[][] shipLabels)
+            Label[] timerLabels, ShipLabels[] shipLabels)
         {
             var shortest = -1;
             for (var i = 0; i < timers.Length; i++)
@@ -343,8 +279,8 @@ namespace KancolleSniffer.View
             for (var i = 0; i < timerLabels.Length; i++)
             {
                 var label = timerLabels[i];
-                var labelHp = shipLabels[i][0];
-                var labelName = shipLabels[i][4];
+                var labelHp = shipLabels[i].Hp;
+                var labelName = shipLabels[i].Name;
                 if (i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
                 {
                     label.Visible = false;
@@ -369,43 +305,46 @@ namespace KancolleSniffer.View
             }
         }
 
+        private class NDockLabels : ControlsArranger
+        {
+            public ShipLabel.Name Name { get; set; }
+            public Label Timer { get; set; }
+
+            public override Control[] Controls => new Control[] {Timer, Name};
+        }
+
         public void CreateNDockLabels(Control parent, EventHandler onClick)
         {
             const int lh = 15;
             for (var i = 0; i < _ndockLabels.Length; i++)
             {
                 var y = i * lh;
-                parent.Controls.AddRange(
-                    _ndockLabels[i] = new[]
-                    {
-                        new ShipLabel
-                        {
-                            Location = new Point(138, y + 2),
-                            AutoSize = true,
-                            AnchorRight = true,
-                            MinimumSize = new Size(0, lh),
-                            TextAlign = ContentAlignment.MiddleLeft,
-                            Cursor = Cursors.Hand
-                        },
-                        new ShipLabel {Location = new Point(29, y + 3), AutoSize = true} // 名前のZ-orderを下に
-                    });
-                foreach (var label in _ndockLabels[i])
+                _ndockLabels[i] = new NDockLabels
                 {
-                    label.Scale();
-                    label.Click += onClick;
-                }
+                    Name = new ShipLabel.Name(new Point(29, y + 3), ShipNameWidth.NDock),
+                    Timer = new GrowLeftLabel
+                    {
+                        Location = new Point(138, y + 2),
+                        GrowLeft = true,
+                        MinimumSize = new Size(0, lh),
+                        TextAlign = ContentAlignment.MiddleLeft,
+                        Cursor = Cursors.Hand
+                    }
+                };
+                _ndockLabels[i].Arrange(parent);
+                _ndockLabels[i].SetClickHandler(onClick);
             }
         }
 
         public void SetNDockLabels(NameAndTimer[] ndock)
         {
             for (var i = 0; i < _ndockLabels.Length; i++)
-                _ndockLabels[i][1].SetName(ndock[i].Name, ShipNameWidth.NDock);
+                _ndockLabels[i].Name.SetName(ndock[i].Name);
         }
 
         public void SetNDockTimer(int dock, AlarmTimer timer, DateTime now, bool finishTime)
         {
-            var label = _ndockLabels[dock][0];
+            var label = _ndockLabels[dock].Timer;
             label.ForeColor = timer.IsFinished(now) ? CUDColors.Red : Color.Black;
             label.Text = timer.ToString(now, finishTime);
         }

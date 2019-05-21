@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -28,7 +27,6 @@ namespace KancolleSniffer.View
         private const int LabelHeight = 12;
         private Record[] _table = new Record[0];
         private readonly List<FleetLabels> _labelList = new List<FleetLabels>();
-        private readonly List<Panel> _panelList = new List<Panel>();
 
         public FleetPanel()
         {
@@ -194,8 +192,8 @@ namespace KancolleSniffer.View
                         if (i >= name.Length)
                             break;
                         var corpsFp = airCorps.CalcFighterPower();
-                        var airCombat = new[] { (int)corpsFp[0].AirCombat, (int)corpsFp[1].AirCombat };
-                        var interception = new[] { (int)corpsFp[0].Interception, (int)corpsFp[1].Interception };
+                        var airCombat = new[] {(int)corpsFp[0].AirCombat, (int)corpsFp[1].AirCombat};
+                        var interception = new[] {(int)corpsFp[0].Interception, (int)corpsFp[1].Interception};
                         var different = interception[0] != airCombat[0];
                         string spec;
                         string spec2;
@@ -221,7 +219,7 @@ namespace KancolleSniffer.View
                         {
                             var planeFp = plane.FighterPower;
                             airCombat = new[] {(int)planeFp[0].AirCombat, (int)planeFp[1].AirCombat};
-                            interception = new[] {(int) planeFp[0].Interception, (int)planeFp[1].Interception };
+                            interception = new[] {(int)planeFp[0].Interception, (int)planeFp[1].Interception};
                             different = interception[0] != airCombat[0];
                             return new Record
                             {
@@ -279,50 +277,36 @@ namespace KancolleSniffer.View
                 CreateLabels(i);
         }
 
-        private class FleetLabels : IEnumerable<ShipLabel>
+        private class FleetLabels : ControlsArranger
         {
-            public ShipLabel Fleet { get; set; }
-            public ShipLabel Name { get; set; }
-            public ShipLabel Equip { get; set; }
-            public ShipLabel EquipColor { get; set; }
-            public ShipLabel Spec { get; set; }
+            public Label Fleet { get; set; }
+            public ShipLabel.Name Name { get; set; }
+            public Label Equip { get; set; }
+            public Label EquipColor { get; set; }
+            public Label Spec { get; set; }
 
-            public IEnumerator<ShipLabel> GetEnumerator() =>
-                ((IEnumerable<ShipLabel>)new[] {Fleet, Name, Equip, EquipColor, Spec}).GetEnumerator();
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            public override Control[] Controls => new Control[] {Fleet, Name, Equip, EquipColor, Spec};
         }
 
         private void CreateLabels(int i)
         {
             var y = 1 + LineHeight * i;
-            var lbp = new Panel
-            {
-                Location = new Point(0, y),
-                Size = new Size(ListForm.PanelWidth, LineHeight),
-                BackColor = ShipLabel.ColumnColors[(i + 1) % 2],
-                Visible = false
-            };
-            lbp.Scale(ShipLabel.ScaleFactor);
-            lbp.Tag = lbp.Location.Y;
             var labels = new FleetLabels
             {
-                Fleet = new ShipLabel {Location = new Point(1, 2), AutoSize = true},
-                Name = new ShipLabel {Location = new Point(10, 2), AutoSize = true},
-                Equip = new ShipLabel {Location = new Point(38, 2), AutoSize = true},
-                EquipColor = new ShipLabel {Location = new Point(35, 2), Size = new Size(4, LabelHeight - 2)},
-                Spec = new ShipLabel {Location = new Point(217, 2), AutoSize = true, AnchorRight = true}
+                Fleet = new Label {Location = new Point(1, 2), AutoSize = true},
+                Name = new ShipLabel.Name(new Point(10, 2), ShipNameWidth.Max),
+                Equip = new Label {Location = new Point(38, 2), AutoSize = true},
+                EquipColor = new Label {Location = new Point(35, 2), Size = new Size(4, LabelHeight - 2)},
+                Spec = new GrowLeftLabel {Location = new Point(217, 2), GrowLeft = true},
+                BackPanel = new Panel
+                {
+                    Location = new Point(0, y),
+                    Size = new Size(ListForm.PanelWidth, LineHeight),
+                    BackColor = CustomColors.ColumnColors.BrightFirst(i)
+                }
             };
             _labelList.Add(labels);
-            _panelList.Add(lbp);
-            lbp.Controls.AddRange(labels.Cast<Control>().ToArray());
-            Controls.Add(lbp);
-            foreach (var label in labels)
-            {
-                label.Scale();
-                label.PresetColor =
-                    label.BackColor = ShipLabel.ColumnColors[(i + 1) % 2];
-            }
+            labels.Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
         }
 
         private void SetRecords()
@@ -330,14 +314,11 @@ namespace KancolleSniffer.View
             for (var i = 0; i < _table.Length; i++)
                 SetRecord(i);
             for (var i = _table.Length; i < _labelList.Count; i++)
-                _panelList[i].Visible = false;
+                _labelList[i].BackPanel.Visible = false;
         }
 
         private void SetRecord(int i)
         {
-            var lbp = _panelList[i];
-            if (!lbp.Visible)
-                lbp.Location = new Point(lbp.Left, (int)lbp.Tag + AutoScrollPosition.Y);
             var e = _table[i];
             var labels = _labelList[i];
             labels.Fleet.Text = e.Fleet;
@@ -352,7 +333,7 @@ namespace KancolleSniffer.View
                 ToolTip.SetToolTip(labels.Fleet, e.Fleet2);
             ToolTip.SetToolTip(labels.Equip, e.AircraftSpec != "" ? e.AircraftSpec : "");
             ToolTip.SetToolTip(labels.Spec, e.Spec2 != "" ? e.Spec2 : "");
-            lbp.Visible = true;
+            labels.BackPanel.Visible = true;
         }
 
         public void ShowShip(int id)
@@ -360,7 +341,7 @@ namespace KancolleSniffer.View
             var i = Array.FindIndex(_table, e => e.Id == id);
             if (i == -1)
                 return;
-            var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
+            var y = Scaler.ScaleHeight(LineHeight * i);
             AutoScrollPosition = new Point(0, y);
         }
 
@@ -369,7 +350,7 @@ namespace KancolleSniffer.View
             var i = Array.FindIndex(_table, e => e.Fleet.StartsWith(fn));
             if (i == -1)
                 return;
-            var y = (int)Math.Round(ShipLabel.ScaleFactor.Height * LineHeight * i);
+            var y = Scaler.ScaleHeight(LineHeight * i);
             AutoScrollPosition = new Point(0, y);
         }
     }

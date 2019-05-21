@@ -18,7 +18,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.View;
-using static System.Math;
+using KancolleSniffer.View.ShipListPanel;
 
 namespace KancolleSniffer
 {
@@ -215,7 +215,7 @@ namespace KancolleSniffer
         {
             /* DPIではなくズームしたときにパネルは大きくなるがScrollBarはそのままなので隙間ができる。
                そこでScrollBarの幅に合わせて全体の横幅を設定し直す。*/
-            Width = (int)Round((PanelWidth + 12 /* PanelとFrameの内側 */) * ShipLabel.ScaleFactor.Width) +
+            Width = Scaler.ScaleWidth(PanelWidth + 12 /* PanelとFrameの内側 */) +
                     SystemInformation.VerticalScrollBarWidth + 2 /* 縁の幅 */ + Width - ClientSize.Width;
             MinimumSize = new Size(Width, 0);
             MaximumSize = new Size(Width, int.MaxValue);
@@ -239,7 +239,7 @@ namespace KancolleSniffer
         private void LoadShipGroupFromConfig()
         {
             var group = _config.ShipList.ShipGroup;
-            for (var i = 0; i < ShipListPanel.GroupCount; i++)
+            for (var i = 0; i < GroupConfigLabels.GroupCount; i++)
                 shipListPanel.GroupSettings[i] = i < group.Count ? new HashSet<int>(group[i]) : new HashSet<int>();
         }
 
@@ -310,7 +310,7 @@ namespace KancolleSniffer
             var all = _sniffer.ShipList.Select(s => s.Id).ToArray();
             var group = _config.ShipList.ShipGroup;
             group.Clear();
-            for (var i = 0; i < ShipListPanel.GroupCount; i++)
+            for (var i = 0; i < GroupConfigLabels.GroupCount; i++)
             {
                 if (all.Length > 0)
                     shipListPanel.GroupSettings[i].IntersectWith(all);

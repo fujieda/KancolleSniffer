@@ -13,25 +13,14 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
 
-// ReSharper disable CoVariantArrayConversion
-
 namespace KancolleSniffer.View
 {
-    public class QuestLabels
-    {
-        public ShipLabel Color { get; set; }
-        public ShipLabel Name { get; set; }
-        public ShipLabel Count { get; set; }
-        public ShipLabel Progress { get; set; }
-
-        public ShipLabel[] Labels => new[] {Color, Count, Progress, Name};
-    }
-
     public class QuestPanel : PanelWithToolTip
     {
         private const int TopMargin = 5;
@@ -43,35 +32,43 @@ namespace KancolleSniffer.View
         private ListScroller _listScroller;
         private int _lines;
 
+        private class QuestLabels : ControlsArranger
+        {
+            public Label Color { get; set; }
+            public Label Name { get; set; }
+            public Label Count { get; set; }
+            public Label Progress { get; set; }
+
+            public override Control[] Controls => new Control[] {Color, Count, Progress, Name};
+        }
 
         public void CreateLabels(int lines, EventHandler onDoubleClick)
         {
             _lines = LimitLines(lines);
             _labels = new QuestLabels[_lines];
             SuspendLayout();
-            Height = (int)Math.Round((TopMargin * 2 + LineHeight * lines) * ShipLabel.ScaleFactor.Height);
+            Height = Scaler.ScaleHeight(TopMargin * 2 + LineHeight * lines);
             for (var i = 0; i < _lines; i++)
             {
                 var y = TopMargin + i * LineHeight;
                 _labels[i] = new QuestLabels
                 {
-                    Color = new ShipLabel
+                    Color = new Label
                     {
                         Location = new Point(LeftMargin, y + 1),
                         Size = new Size(4, LabelHeight - 1)
                     },
-                    Name = new ShipLabel
+                    Name = new Label
                     {
                         Location = new Point(LeftMargin + 4, y),
                         Size = new Size(193, LabelHeight)
                     },
-                    Count = new ShipLabel
+                    Count = new GrowLeftLabel
                     {
                         Location = new Point(LeftMargin + 189, y),
-                        AutoSize = true,
-                        AnchorRight = true
+                        GrowLeft = true
                     },
-                    Progress = new ShipLabel
+                    Progress = new Label
                     {
                         Location = new Point(LeftMargin + 186, y),
                         Size = new Size(29, LabelHeight),
@@ -79,9 +76,7 @@ namespace KancolleSniffer.View
                     }
                 };
                 _labels[i].Name.DoubleClick += onDoubleClick;
-                Controls.AddRange(_labels[i].Labels);
-                foreach (var label in _labels[i].Labels)
-                    label.Scale();
+                _labels[i].Arrange(this);
             }
             ResumeLayout();
             SetupListScroller();
@@ -96,7 +91,7 @@ namespace KancolleSniffer.View
 
         private void SetupListScroller()
         {
-            _listScroller = new ListScroller(this, _labels[0].Labels, _labels[_lines - 1].Labels)
+            _listScroller = new ListScroller(this, _labels[0].Controls, _labels[_lines - 1].Controls)
             {
                 Lines = _lines,
                 Padding = TopMargin
@@ -193,5 +188,7 @@ namespace KancolleSniffer.View
             label.ForeColor = count.Cleared ? CUDColors.Red : Color.Black;
             ToolTip.SetToolTip(label, count.ToToolTip());
         }
+
+        public IEnumerable<string> QuestNameList => _labels.Select(l => l.Name.Text); // for testing
     }
 }
