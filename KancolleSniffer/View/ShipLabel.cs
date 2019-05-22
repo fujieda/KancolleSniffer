@@ -207,9 +207,6 @@ namespace KancolleSniffer.View
         public sealed class Hp : ShipLabel
         {
             private bool _hpPercent;
-            private Font _strongFont;
-            private ShipLabel _hpStrongLabel;
-            private Font StrongFont => _strongFont ?? (_strongFont = new Font("Leelawadee", BaseFont.Size));
 
             public Hp()
             {
@@ -226,8 +223,6 @@ namespace KancolleSniffer.View
 
             public override void Reset()
             {
-                if (_hpStrongLabel != null)
-                    _hpStrongLabel.Text = "";
                 Text = "";
                 BackColor = InitialBackColor;
             }
@@ -235,44 +230,9 @@ namespace KancolleSniffer.View
             public override void Set(ShipStatus status)
             {
                 Status = status;
-                if (_hpStrongLabel != null)
-                    _hpStrongLabel.Text = "";
                 Font = BaseFont;
-                if (_hpPercent)
-                {
-                    var percent = $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}";
-                    if (status.DamageLevel == ShipStatus.Damage.Badly)
-                    {
-                        Text = "%";
-                        if (_hpStrongLabel == null)
-                            CreateHpStrongLabel();
-                        _hpStrongLabel.Text = percent;
-                    }
-                    else
-                    {
-                        Text = percent + "%";
-                    }
-                }
-                else
-                {
-                    Text = $"{status.NowHp:D}/{status.MaxHp:D}";
-                    if (status.DamageLevel == ShipStatus.Damage.Badly)
-                        Font = StrongFont;
-                }
+                Text = _hpPercent ? $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}%" : $"{status.NowHp:D}/{status.MaxHp:D}";
                 BackColor = DamageColor(status);
-            }
-
-            private void CreateHpStrongLabel()
-            {
-                _hpStrongLabel = new Hp(Scaler.Move(Left, Top, 4, 0), Height)
-                {
-                    Font = StrongFont,
-                    BackColor = CUDColors.Red
-                };
-                _hpStrongLabel.DoubleClick += (sender, e) => { OnDoubleClick(e); };
-                Parent.Controls.Add(_hpStrongLabel);
-                var index = Parent.Controls.GetChildIndex(this);
-                Parent.Controls.SetChildIndex(_hpStrongLabel, index + 1);
             }
 
             public void ToggleHpPercent()
