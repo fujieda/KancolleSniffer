@@ -111,6 +111,7 @@
     </Compile>
     <Compile Include="Net\HttpProxy.cs" />
     <Compile Include="Util\HttpUtility.cs" />
+    <Compile Include="View\FleetSpec.cs" />
     <Compile Include="View\GrowLeftLabel.cs" />
     <Compile Include="View\ShipLabels.cs" />
     <Compile Include="View\ShipListPanel\GroupConfigLabels.cs" />

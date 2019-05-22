@@ -22,7 +22,7 @@ namespace KancolleSniffer.Test
     using Sniffer = SnifferTest.TestingSniffer;
 
     [TestClass]
-    public class FleetPanelTest
+    public class FleetSpecTest
     {
         /// <summary>
         /// 編成で艦隊をまたがって艦娘を交換する
@@ -31,8 +31,7 @@ namespace KancolleSniffer.Test
         public void ExchangeFleetMember()
         {
             var sniffer = new Sniffer();
-            var panel = new FleetPanel();
-            var expected = new FleetPanel.Record
+            var expected = new FleetSpec.Record()
             {
                 AircraftSpec = "",
                 Color = SystemColors.Control,
@@ -48,13 +47,13 @@ namespace KancolleSniffer.Test
 
             SnifferTest.SniffLogFile(sniffer, "deck_002");
             SnifferTest.SniffLogFile(sniffer, "deck_003");
-            var table = panel.CreateTable(sniffer);
-            PAssert.That(() => CompareFleetRecord(table[13], expected));
+            var spec = FleetSpec.Create(sniffer);
+            PAssert.That(() => CompareFleetRecord(spec[13], expected));
         }
 
-        private bool CompareFleetRecord(FleetPanel.Record a, FleetPanel.Record b)
+        private bool CompareFleetRecord(FleetSpec.Record a, FleetSpec.Record b)
         {
-            foreach (var property in typeof(FleetPanel.Record).GetProperties())
+            foreach (var property in typeof(FleetSpec.Record).GetProperties())
             {
                 var aVal = property.GetValue(a);
                 var bVal = property.GetValue(b);
@@ -76,7 +75,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SnifferTest.SniffLogFile(sniffer, "speed_001");
-            var table = new FleetPanel().CreateTable(sniffer);
+            var table = FleetSpec.Create(sniffer);
             PAssert.That(() => table[0].Fleet == "第一 高速+" && table[37].Fleet == "第二 高速");
         }
     }
