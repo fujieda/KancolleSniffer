@@ -1013,7 +1013,7 @@ namespace KancolleSniffer
                 return;
             }
             var span = TimeSpan.FromSeconds(Ceiling((timer - _now).TotalSeconds));
-            if (span >= TimeSpan.FromMinutes(9))
+            if (span >= TimeSpan.FromMinutes(9) && Config.NotifyConditions.Contains(40))
             {
                 labelCondTimerTitle.Text = "cond40まで";
                 labelCondTimer.Text = (span - TimeSpan.FromMinutes(9)).ToString(@"mm\:ss");
