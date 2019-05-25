@@ -45,7 +45,7 @@ namespace KancolleSniffer.Test
                 {"Prinz Eugen改", "Prinz Eug"},
                 {"Graf Zeppelin", "Graf Zep"},
                 {"Graf Zeppelin改", "Graf Zep"},
-                {"Libeccio改", "Libeccio"},
+                {"Libeccio改", "Libeccio"}
             };
             TruncateNameSub(dict, ShipNameWidth.AkashiTimer);
         }
@@ -108,7 +108,7 @@ namespace KancolleSniffer.Test
         private void TruncateNameSub(Dictionary<string, string> dict, ShipNameWidth width)
         {
             var label = new ShipLabel.Name(Point.Empty, width) {Parent = new Panel()};
-            Scaler.Factor = new SizeF(1,1);
+            Scaler.Factor = new SizeF(1, 1);
             foreach (var entry in dict)
             {
                 label.SetName(entry.Key);

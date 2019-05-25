@@ -145,7 +145,7 @@ namespace KancolleSniffer.View
                 _slotStatus = slotStatus;
                 ChangeFont(name);
                 Text = prefix + TruncateString(name, width);
-                Invalidate();  // 必ずOnPaintを実行させるため
+                Invalidate(); // 必ずOnPaintを実行させるため
             }
 
             private void ChangeFont(string name)
@@ -228,7 +228,9 @@ namespace KancolleSniffer.View
             {
                 Status = status;
                 Font = BaseFont;
-                Text = _hpPercent ? $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}%" : $"{status.NowHp:D}/{status.MaxHp:D}";
+                Text = _hpPercent
+                    ? $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}%"
+                    : $"{status.NowHp:D}/{status.MaxHp:D}";
                 BackColor = DamageColor(status);
             }
 
