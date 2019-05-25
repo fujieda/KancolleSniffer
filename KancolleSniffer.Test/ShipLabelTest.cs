@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using ExpressionToCodeLib;
 using KancolleSniffer.Model;
@@ -146,6 +148,42 @@ namespace KancolleSniffer.Test
             label.SetHp(104, 105);
             label.ToggleHpPercent();
             PAssert.That(() => label.Text == "99%");
+        }
+
+
+        /// <summary>
+        /// 装備スロットの状況を調べる
+        /// </summary>
+        [TestMethod]
+        public void SlotStatus()
+        {
+            var ship = new ShipStatus
+            {
+                Id = 1,
+                Slot = new[] {new ItemStatus(), new ItemStatus(), new ItemStatus()}, SlotEx = new ItemStatus(0),
+                Spec = new ShipSpec {SlotNum = 3}
+            };
+            Assert.AreEqual(2, GetSlotStatus(ship)); // NormalEmpty
+            ship.SlotEx.Id = -1;
+            Assert.AreEqual(2 | 4, GetSlotStatus(ship)); // | ExtraEmpty
+            ship.SlotEx.Id = 1;
+            Assert.AreEqual(2, GetSlotStatus(ship)); // NormalEmpty
+            ship.Slot[0].Id = ship.Slot[1].Id = ship.Slot[2].Id = 1;
+            Assert.AreEqual(0, GetSlotStatus(ship)); // Equipped
+            ship.Slot[2].Id = -1;
+            Assert.AreEqual(1, GetSlotStatus(ship)); // SemiEquipped
+            ship.Spec.SlotNum = 2;
+            Assert.AreEqual(0, GetSlotStatus(ship)); // Equipped
+            ship.Spec.SlotNum = 0;
+            Assert.AreEqual(0, GetSlotStatus(ship)); // Equipped (まるゆ)
+        }
+
+        private static int GetSlotStatus(ShipStatus ship)
+        {
+            var method =
+                typeof(ShipLabel.Name).GetMethod("GetSlotStatus", BindingFlags.NonPublic | BindingFlags.Static);
+            // ReSharper disable once PossibleNullReferenceException
+            return (int)Convert.ChangeType(method.Invoke(null, new object[] {ship}), TypeCode.Int32);
         }
     }
 }

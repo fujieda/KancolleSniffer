@@ -92,17 +92,14 @@ namespace KancolleSniffer.View
                 SetName((status.Escaped ? "[避]" : dcName) + sp, status.Name, slotStatus, width);
             }
 
-            private SlotStatus GetSlotStatus(ShipStatus status)
+            private static SlotStatus GetSlotStatus(ShipStatus status)
             {
                 if (status.Empty)
                     return SlotStatus.Equipped;
                 var slots = status.Slot.Take(status.Spec.SlotNum).ToArray();
-                var normal =
-                    slots.All(item => item.Empty)
-                        ? SlotStatus.NormalEmpty
-                        : slots.Any(item => item.Empty)
-                            ? SlotStatus.SemiEquipped
-                            : SlotStatus.Equipped;
+                var normal = slots.Any(item => item.Empty)
+                    ? slots.All(item => item.Empty) ? SlotStatus.NormalEmpty : SlotStatus.SemiEquipped
+                    : SlotStatus.Equipped;
                 var extra = status.SlotEx.Empty ? SlotStatus.ExtraEmpty : SlotStatus.Equipped;
                 return normal | extra;
             }
