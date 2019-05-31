@@ -76,6 +76,7 @@ namespace KancolleSniffer.View
             };
             _labelList.Add(labels);
             labels.Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
+            labels.Move(AutoScrollPosition);
         }
 
         private void SetRecords()

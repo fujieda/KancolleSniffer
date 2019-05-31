@@ -106,11 +106,12 @@ namespace KancolleSniffer.View
                 BackPanel = new Panel
                 {
                     Location = new Point(0, y),
-                    Size = new Size(ListForm.PanelWidth, LineHeight),
+                    Size = new Size(ListForm.PanelWidth, LineHeight)
                 }
             };
             _labelList.Add(labels);
             labels.Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
+            labels.Move(AutoScrollPosition);
         }
 
         private void SetRecords()

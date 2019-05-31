@@ -76,5 +76,15 @@ namespace KancolleSniffer.View
             foreach (var control in Controls)
                 control.Tag = index;
         }
+
+        public void Move(Point offset)
+        {
+            if (BackPanel == null)
+                return;
+            var pos = BackPanel.Location;
+            pos.Offset(offset);
+            // 単にLocation.Offsetではだめで代入する必要がある
+            BackPanel.Location = pos;
+        }
     }
 }
