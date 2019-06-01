@@ -43,7 +43,7 @@ namespace KancolleSniffer.View
             public int[] FighterPower;
             public EnemyFighterPower EnemyFighterPower;
             public int AirControlLevel;
-            public string SupportType;
+            public int SupportType;
             public bool HaveDay => _day != null;
             public bool HaveNight => _night != null;
 
@@ -222,7 +222,7 @@ namespace KancolleSniffer.View
             ShowDamage(result.Damage);
             ShowResultRank(result.Rank);
             _information.Show(_data);
-            _supportLabel.Text = _data.SupportType;
+            ShowSupportType(_data.SupportType);
             UpdateCellInfo(_cellInfo);
             AutoScrollPosition = new Point(-_scrollPosition.X, -_scrollPosition.Y);
         }
@@ -298,6 +298,11 @@ namespace KancolleSniffer.View
         {
             var result = new[] {"完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E"};
             _rankLabel.Text = result[(int)rank];
+        }
+
+        private void ShowSupportType(int support)
+        {
+            _supportLabel.Text = new[] {"", "空支援", "砲支援", "雷支援", "潜支援"}[support];
         }
 
         public void UpdateCellInfo(CellInfo cellInfo)

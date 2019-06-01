@@ -72,7 +72,7 @@ namespace KancolleSniffer.Model
         public BattleResult Result { get; set; }
         public bool EnemyIsCombined => _enemyGuard.Length > 0;
         public List<AirBattleResult> AirBattleResults { get; } = new List<AirBattleResult>();
-        public string SupportType { get; private set; }
+        public int SupportType { get; private set; }
 
         public class RankPair
         {
@@ -224,26 +224,8 @@ namespace KancolleSniffer.Model
 
         private void SetSupportType(dynamic json)
         {
-            var support = json.api_support_flag() ? (int)json.api_support_flag :
-                json.api_n_support_flag() ? (int)json.api_n_support_flag : -1;
-            switch (support)
-            {
-                case -1:
-                    SupportType = "";
-                    break;
-                case 1:
-                    SupportType = "空支援";
-                    break;
-                case 2:
-                    SupportType = "砲支援";
-                    break;
-                case 3:
-                    SupportType = "雷支援";
-                    break;
-                case 4:
-                    SupportType = "潜支援";
-                    break;
-            }
+            SupportType = json.api_support_flag() ? (int)json.api_support_flag :
+                json.api_n_support_flag() ? (int)json.api_n_support_flag : 0;
         }
 
         private int[] CalcFighterPower()
