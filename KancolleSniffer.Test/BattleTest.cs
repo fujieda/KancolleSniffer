@@ -317,5 +317,17 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "enemy_combined_001");
             PAssert.That(() => sniffer.Battle.Result.Enemy.Guard[0].Slot[0].Spec.Id == 506);
         }
+
+        /// <summary>
+        /// 敵連合艦隊の制空値を計算する
+        /// </summary>
+        [TestMethod]
+        public void EnemyFighterPower()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "enemy_combined_001");
+            var fp = sniffer.Battle.EnemyFighterPower;
+            PAssert.That(() => fp.AirCombat == 209 && fp.Interception == 212);
+        }
     }
 }

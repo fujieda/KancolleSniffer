@@ -101,15 +101,14 @@ namespace KancolleSniffer.Model
 
         public void InspectBattle(string url, string request, dynamic json)
         {
-            if (json.api_formation())
-                Formation = ((dynamic[])json.api_formation).Select(f => f is string ? (int)int.Parse(f) : (int)f)
-                    .ToArray();
-            AirControlLevel = CheckAirControlLevel(json);
+            SetFormation(json);
+            SetAirControlLevel(json);
             SetSupportType(json);
-            ShowResult(false); // 昼戦の結果を夜戦のときに表示する
-            SetupResult(request, json, url.Contains("practice"));
-            FighterPower = CalcFighterPower();
-            EnemyFighterPower = CalcEnemyFighterPower(json);
+            ClearDamagedShipWarning();
+            ShowResult(); // 昼戦の結果を夜戦のときに表示する
+            SetupDamageRecord(request, json, url.Contains("practice"));
+            SetFighterPower();
+            SetEnemyFighterPower();
             BattleState = url.Contains("sp_midnight") ? BattleState.SpNight :
                 url.Contains("midnight") ? BattleState.Night : BattleState.Day;
             CalcDamage(json);
@@ -117,37 +116,68 @@ namespace KancolleSniffer.Model
             SetResult();
         }
 
-        public static int DeckId(dynamic json)
+        private void SetFormation(dynamic json)
         {
-            if (json.api_dock_id()) // 昼戦はtypoしている
-                return (int)json.api_dock_id - 1;
-            if (json.api_deck_id is string) // 通常の夜戦と連合艦隊(味方のみ)では文字列
-                return int.Parse(json.api_deck_id) - 1;
-            return (int)json.api_deck_id - 1;
+            if (json.api_formation())
+                Formation = (int[])json.api_formation;
         }
 
-        private void SetupResult(string request, dynamic json, bool practice)
+        private void SetAirControlLevel(dynamic json)
+        {
+            AirControlLevel = -1;
+            if (!json.api_kouku())
+                return;
+            var stage1 = json.api_kouku.api_stage1;
+            if (stage1 == null || stage1.api_f_count == 0 && stage1.api_e_count == 0)
+                return;
+            AirControlLevel = (int)stage1.api_disp_seiku;
+        }
+
+        private void SetSupportType(dynamic json)
+        {
+            SupportType = json.api_support_flag() ? (int)json.api_support_flag :
+                json.api_n_support_flag() ? (int)json.api_n_support_flag : 0;
+        }
+
+        private void SetupDamageRecord(string request, dynamic json, bool practice)
         {
             if (_friend != null)
                 return;
             _shipInfo.SaveBattleStartStatus();
-            var fleets = _shipInfo.Fleets;
-            _fleet = fleets[DeckId(json)];
+            SetupFriendDamageRecord(request, json, practice);
+            SetupEnemyDamageRecord(json, practice);
+        }
+
+        private void SetupFriendDamageRecord(string request, dynamic json, bool practice)
+        {
+            _fleet = _shipInfo.Fleets[(int)json.api_deck_id - 1];
             FlagshipRecovery(request, _fleet.ActualShips[0]);
             _friend = Record.Setup(_fleet.ActualShips, practice);
             _guard = json.api_f_nowhps_combined()
-                ? Record.Setup(fleets[1].ActualShips, practice)
+                ? Record.Setup(_shipInfo.Fleets[1].ActualShips, practice)
                 : new Record[0];
+        }
+
+        private void SetupEnemyDamageRecord(dynamic json, bool practice)
+        {
             _enemy = Record.Setup((int[])json.api_e_nowhps,
-                ((int[])json.api_ship_ke).Select(_shipInfo.GetSpec).ToArray(),
-                ((int[][])json.api_eSlot).Select(slot => slot.Select(_itemInfo.GetSpecByItemId).ToArray()).ToArray(),
-                practice);
+                EnemyShipSpecs(json.api_ship_ke),
+                EnemySlots(json.api_eSlot), practice);
             _enemyGuard = json.api_ship_ke_combined()
                 ? Record.Setup((int[])json.api_e_nowhps_combined,
-                    ((int[])json.api_ship_ke_combined).Select(_shipInfo.GetSpec).ToArray(),
-                    ((int[][])json.api_eSlot_combined).Select(slot => slot.Select(_itemInfo.GetSpecByItemId).ToArray())
-                    .ToArray(), practice)
+                    EnemyShipSpecs(json.api_ship_ke_combined),
+                    EnemySlots(json.api_eSlot_combined), practice)
                 : new Record[0];
+        }
+
+        private ShipSpec[] EnemyShipSpecs(dynamic ships)
+        {
+            return ((int[])ships).Select(_shipInfo.GetSpec).ToArray();
+        }
+
+        private ItemSpec[][] EnemySlots(dynamic slots)
+        {
+            return ((int[][])slots).Select(slot => slot.Select(_itemInfo.GetSpecByItemId).ToArray()).ToArray();
         }
 
         private void SetResult()
@@ -210,60 +240,34 @@ namespace KancolleSniffer.Model
             _lastCell = false;
         }
 
-        private int CheckAirControlLevel(dynamic json)
-        {
-            if (!json.api_kouku())
-                return -1;
-            var stage1 = json.api_kouku.api_stage1;
-            if (stage1 == null)
-                return -1;
-            if (stage1.api_f_count == 0 && stage1.api_e_count == 0)
-                return -1;
-            return (int)stage1.api_disp_seiku;
-        }
-
-        private void SetSupportType(dynamic json)
-        {
-            SupportType = json.api_support_flag() ? (int)json.api_support_flag :
-                json.api_n_support_flag() ? (int)json.api_n_support_flag : 0;
-        }
-
-        private int[] CalcFighterPower()
+        private void SetFighterPower()
         {
             var fleets = _shipInfo.Fleets;
-            if (_guard.Length > 0 && _enemyGuard.Length > 0)
-                return fleets[0].FighterPower.Zip(fleets[1].FighterPower, (a, b) => a + b).ToArray();
-            return _fleet.FighterPower;
+            FighterPower = _guard.Length > 0 && _enemyGuard.Length > 0
+                ? fleets[0].FighterPower.Zip(fleets[1].FighterPower, (a, b) => a + b).ToArray()
+                : _fleet.FighterPower;
         }
 
-        private EnemyFighterPower CalcEnemyFighterPower(dynamic json)
+        private void SetEnemyFighterPower()
         {
-            var result = new EnemyFighterPower();
-            var ships = (int[])json.api_ship_ke;
-            if (json.api_ship_ke_combined() && _guard.Length > 0)
-                ships = ships.Concat((int[])json.api_ship_ke_combined).ToArray();
-            var maxEq = ships.SelectMany(id =>
+            EnemyFighterPower = new EnemyFighterPower();
+            foreach (var record in _guard.Length == 0 ? _enemy : _enemy.Concat(_enemyGuard))
             {
-                var r = _shipInfo.GetSpec(id).MaxEq;
-                if (r != null)
-                    return r;
-                result.HasUnknown = true;
-                return new int[5];
-            });
-            var equips = ((int[][])json.api_eSlot).SelectMany(x => x);
-            if (json.api_eSlot_combined() && _guard.Length > 0)
-                equips = equips.Concat(((int[][])json.api_eSlot_combined).SelectMany(x => x));
-            foreach (var entry in from slot in equips.Zip(maxEq, (id, max) => new {id, max})
-                let spec = _itemInfo.GetSpecByItemId(slot.id)
-                let perSlot = (int)Floor(spec.AntiAir * Sqrt(slot.max))
-                select new {spec, perSlot})
-            {
-                if (entry.spec.CanAirCombat)
-                    result.AirCombat += entry.perSlot;
-                if (entry.spec.IsAircraft)
-                    result.Interception += entry.perSlot;
+                var ship = record.SnapShot;
+                if (ship.Spec.MaxEq == null)
+                {
+                    EnemyFighterPower.HasUnknown = true;
+                    continue;
+                }
+                foreach (var entry in ship.Slot.Zip(ship.Spec.MaxEq, (item, maxEq) => new {item.Spec, maxEq}))
+                {
+                    var perSlot = (int)Floor(entry.Spec.AntiAir * Sqrt(entry.maxEq));
+                    if (entry.Spec.CanAirCombat)
+                        EnemyFighterPower.AirCombat += perSlot;
+                    if (entry.Spec.IsAircraft)
+                        EnemyFighterPower.Interception += perSlot;
+                }
             }
-            return result;
         }
 
         private void CalcDamage(dynamic json)
@@ -370,41 +374,38 @@ namespace KancolleSniffer.Model
             {
                 PhaseName = phaseName,
                 AirControlLevel = json.api_stage1.api_disp_seiku() ? (int)json.api_stage1.api_disp_seiku : 0,
-                Stage1 = new AirBattleResult.StageResult
-                {
-                    FriendCount = (int)json.api_stage1.api_f_count,
-                    FriendLost = (int)json.api_stage1.api_f_lostcount,
-                    EnemyCount = (int)json.api_stage1.api_e_count,
-                    EnemyLost = (int)json.api_stage1.api_e_lostcount
-                },
+                Stage1 = CreateStageResult(json.api_stage1),
                 Stage2 = json.api_stage2 == null
-                    ? new AirBattleResult.StageResult
-                    {
-                        FriendCount = 0,
-                        FriendLost = 0,
-                        EnemyCount = 0,
-                        EnemyLost = 0
-                    }
-                    : new AirBattleResult.StageResult
-                    {
-                        FriendCount = (int)json.api_stage2.api_f_count,
-                        FriendLost = (int)json.api_stage2.api_f_lostcount,
-                        EnemyCount = (int)json.api_stage2.api_e_count,
-                        EnemyLost = (int)json.api_stage2.api_e_lostcount
-                    }
+                    ? new AirBattleResult.StageResult()
+                    : CreateStageResult(json.api_stage2),
+                AirFire = CreateAirFireResult(json)
             };
-            if (json.api_stage2 != null && json.api_stage2.api_air_fire())
-            {
-                var airFire = json.api_stage2.api_air_fire;
-                var idx = (int)airFire.api_idx;
-                result.AirFire = new AirBattleResult.AirFireResult
-                {
-                    ShipName = idx < _friend.Length ? _friend[idx].Name : _guard[idx - 6].Name,
-                    Kind = (int)airFire.api_kind,
-                    Items = ((int[])airFire.api_use_items).Select(id => _itemInfo.GetSpecByItemId(id).Name).ToArray()
-                };
-            }
             AirBattleResults.Add(result);
+        }
+
+        private AirBattleResult.StageResult CreateStageResult(dynamic stage)
+        {
+            return new AirBattleResult.StageResult
+            {
+                FriendCount = (int)stage.api_f_count,
+                FriendLost = (int)stage.api_f_lostcount,
+                EnemyCount = (int)stage.api_e_count,
+                EnemyLost = (int)stage.api_e_lostcount
+            };
+        }
+
+        private AirBattleResult.AirFireResult CreateAirFireResult(dynamic json)
+        {
+            if (json.api_stage2 == null || !json.api_stage2.api_air_fire())
+                return null;
+            var airFire = json.api_stage2.api_air_fire;
+            var idx = (int)airFire.api_idx;
+            return new AirBattleResult.AirFireResult
+            {
+                ShipName = idx < _friend.Length ? _friend[idx].Name : _guard[idx - 6].Name,
+                Kind = (int)airFire.api_kind,
+                Items = ((int[])airFire.api_use_items).Select(id => _itemInfo.GetSpecByItemId(id).Name).ToArray()
+            };
         }
 
         private void CalcKoukuDamage(dynamic json)
@@ -498,7 +499,7 @@ namespace KancolleSniffer.Model
 
             public BothRecord(Record[] friend, Record[] guard, Record[] enemy, Record[] enemyGuard)
             {
-                _records = new[] { new Record[12], new Record[12] };
+                _records = new[] {new Record[12], new Record[12]};
                 Array.Copy(friend, _records[1], friend.Length);
                 Array.Copy(guard, 0, _records[1], 6, guard.Length);
                 Array.Copy(enemy, _records[0], enemy.Length);
@@ -537,7 +538,9 @@ namespace KancolleSniffer.Model
             BattleState = BattleState.Result;
             if (_friend == null)
                 return;
-            ShowResult(!_lastCell);
+            ShowResult();
+            if (!_lastCell)
+                SetDamagedShipWarning();
             _shipInfo.SaveBattleResult();
             _shipInfo.DropShipId = json.api_get_ship() ? (int)json.api_get_ship.api_ship_id : -1;
             VerifyResultRank(json);
@@ -550,12 +553,12 @@ namespace KancolleSniffer.Model
             BattleState = BattleState.Result;
             if (_friend == null)
                 return;
-            ShowResult(false);
+            ShowResult();
             VerifyResultRank(json);
             CleanupResult();
         }
 
-        private void ShowResult(bool warnDamagedShip = true)
+        private void ShowResult()
         {
             if (_friend == null)
                 return;
@@ -565,10 +568,16 @@ namespace KancolleSniffer.Model
                 : _fleet.ActualShips;
             foreach (var entry in ships.Zip(_friend.Concat(_guard), (ship, now) => new {ship, now}))
                 entry.now.UpdateShipStatus(entry.ship);
-            if (warnDamagedShip)
-                _shipInfo.SetBadlyDamagedShips();
-            else
-                _shipInfo.ClearBadlyDamagedShips();
+        }
+
+        private void SetDamagedShipWarning()
+        {
+            _shipInfo.SetBadlyDamagedShips();
+        }
+
+        private void ClearDamagedShipWarning()
+        {
+            _shipInfo.ClearBadlyDamagedShips();
         }
 
         private void VerifyResultRank(dynamic json)
@@ -619,8 +628,9 @@ namespace KancolleSniffer.Model
             public int StartHp { get; private set; }
 
             public static Record[] Setup(IEnumerable<ShipStatus> ships, bool practice) =>
-            (from s in ships
-                select new Record {_status = (ShipStatus)s.Clone(), _practice = practice, StartHp = s.NowHp}).ToArray();
+                (from s in ships
+                    select new Record {_status = (ShipStatus)s.Clone(), _practice = practice, StartHp = s.NowHp})
+                .ToArray();
 
             public static Record[] Setup(int[] nowHps, ShipSpec[] specs, ItemSpec[][] slots, bool practice)
             {
@@ -685,68 +695,61 @@ namespace KancolleSniffer.Model
 
         private BattleResultRank CalcLdResultRank()
         {
-            var combined = _friend.Concat(_guard).Where(r => !r.Escaped).ToArray();
-            var friendGauge = combined.Sum(r => r.StartHp - r.NowHp);
-            var friendGaugeRate = Floor((double)friendGauge / combined.Sum(r => r.StartHp) * 100);
+            var friend = new ResultRankParams(_friend.Concat(_guard).ToArray());
 
-            if (friendGauge <= 0)
+            if (friend.Gauge <= 0)
                 return BattleResultRank.P;
-            if (friendGaugeRate < 10)
+            if (friend.GaugeRate < 10)
                 return BattleResultRank.A;
-            if (friendGaugeRate < 20)
+            if (friend.GaugeRate < 20)
                 return BattleResultRank.B;
-            if (friendGaugeRate < 50)
+            if (friend.GaugeRate < 50)
                 return BattleResultRank.C;
-            if (friendGaugeRate < 80)
+            if (friend.GaugeRate < 80)
                 return BattleResultRank.D;
             return BattleResultRank.E;
         }
 
         private BattleResultRank CalcResultRank()
         {
-            var friend = _friend.Concat(_guard).ToArray();
-            var enemy = _enemy.Concat(_enemyGuard).ToArray();
-
-            var friendCount = friend.Length;
-            var friendStartHpTotal = 0;
-            var friendNowHpTotal = 0;
-            var friendSunk = 0;
-            foreach (var ship in friend)
+            var friend = new ResultRankParams(_friend.Concat(_guard).ToArray());
+            var enemy = new ResultRankParams(_enemy.Concat(_enemyGuard).ToArray());
+            if (friend.Sunk == 0 && enemy.Sunk == enemy.Count)
             {
-                if (ship.Escaped)
-                    continue;
-                friendStartHpTotal += ship.StartHp;
-                friendNowHpTotal += ship.NowHp;
-                if (ship.NowHp == 0)
-                    friendSunk++;
-            }
-            var friendGaugeRate = (int)((double)(friendStartHpTotal - friendNowHpTotal) / friendStartHpTotal * 100);
-
-            var enemyCount = enemy.Length;
-            var enemyStartHpTotal = enemy.Sum(r => r.StartHp);
-            var enemyNowHpTotal = enemy.Sum(r => r.NowHp);
-            var enemySunk = enemy.Count(r => r.NowHp == 0);
-            var enemyGaugeRate = (int)((double)(enemyStartHpTotal - enemyNowHpTotal) / enemyStartHpTotal * 100);
-
-            if (friendSunk == 0 && enemySunk == enemyCount)
-            {
-                if (friendNowHpTotal >= friendStartHpTotal)
+                if (friend.Gauge <= 0)
                     return BattleResultRank.P;
                 return BattleResultRank.S;
             }
-            if (friendSunk == 0 && enemySunk >= (int)(enemyCount * 0.7) && enemyCount > 1)
+            if (friend.Sunk == 0 && enemy.Sunk >= (int)(enemy.Count * 0.7) && enemy.Count > 1)
                 return BattleResultRank.A;
-            if (friendSunk < enemySunk && enemy[0].NowHp == 0)
+            if (friend.Sunk < enemy.Sunk && _enemy[0].NowHp == 0)
                 return BattleResultRank.B;
-            if (friendCount == 1 && friend[0].DamageLevel == ShipStatus.Damage.Badly)
+            if (friend.Count == 1 && _friend[0].DamageLevel == ShipStatus.Damage.Badly)
                 return BattleResultRank.D;
-            if (enemyGaugeRate > friendGaugeRate * 2.5)
+            if (enemy.GaugeRate > friend.GaugeRate * 2.5)
                 return BattleResultRank.B;
-            if (enemyGaugeRate > friendGaugeRate * 0.9)
+            if (enemy.GaugeRate > friend.GaugeRate * 0.9)
                 return BattleResultRank.C;
-            if (friendCount > 1 && friendCount - 1 == friendSunk)
+            if (friend.Count > 1 && friend.Count - 1 == friend.Sunk)
                 return BattleResultRank.E;
             return BattleResultRank.D;
+        }
+
+        private class ResultRankParams
+        {
+            public readonly int Count;
+            public readonly int Sunk;
+            public readonly int Gauge;
+            public readonly int GaugeRate;
+
+            public ResultRankParams(Record[] records)
+            {
+                var staying = records.Where(r => !r.Escaped).ToArray();
+                Count = records.Length;
+                Sunk = staying.Count(r => r.NowHp == 0);
+                Gauge = staying.Sum(r => r.StartHp - r.NowHp);
+                GaugeRate = (int)((double)Gauge / records.Sum(r => r.StartHp) * 100);
+            }
         }
 
         /// <summary>

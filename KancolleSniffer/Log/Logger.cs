@@ -216,7 +216,7 @@ namespace KancolleSniffer.Log
                 else
                     dropName += "+" + itemName;
             }
-            var fp = _shipInfo.Fleets[BattleInfo.DeckId(_battle)].FighterPower;
+            var fp = _shipInfo.Fleets[(int)_battle.api_deck_id - 1].FighterPower;
             var fPower = fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1];
             _writer("海戦・ドロップ報告書", string.Join(",", FormatDateTime(_nowFunc()),
                     result.api_quest_name,
@@ -243,7 +243,6 @@ namespace KancolleSniffer.Log
 
         private IEnumerable<string> GenerateFriendShipList()
         {
-            int deckId = BattleInfo.DeckId(_battle);
             if (_battle.api_f_nowhps_combined())
             {
                 var mainShips = _shipInfo.Fleets[0].Ships;
@@ -269,7 +268,7 @@ namespace KancolleSniffer.Log
                     return name + "," + hp;
                 }).ToList();
             }
-            var ships = _shipInfo.Fleets[deckId].Ships;
+            var ships = _shipInfo.Fleets[(int)_battle.api_deck_id - 1].Ships;
             if (ships.Count > 6)
             {
                 var result = new List<string>();
