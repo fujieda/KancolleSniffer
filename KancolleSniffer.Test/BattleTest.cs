@@ -14,8 +14,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using KancolleSniffer.Model;
 using ExpressionToCodeLib;
+using KancolleSniffer.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test
@@ -305,6 +305,17 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "ld_shooting_001");
             PAssert.That(() => !sniffer.IsBattleResultError);
+        }
+
+        /// <summary>
+        /// 敵連合艦隊の護衛の装備を正しく読み取る
+        /// </summary>
+        [TestMethod]
+        public void EnemyGuardSlot()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "enemy_combined_001");
+            PAssert.That(() => sniffer.Battle.Result.Enemy.Guard[0].Slot[0].Spec.Id == 506);
         }
     }
 }

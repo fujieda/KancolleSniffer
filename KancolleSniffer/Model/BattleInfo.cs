@@ -145,7 +145,7 @@ namespace KancolleSniffer.Model
             _enemyGuard = json.api_ship_ke_combined()
                 ? Record.Setup((int[])json.api_e_nowhps_combined,
                     ((int[])json.api_ship_ke_combined).Select(_shipInfo.GetSpec).ToArray(),
-                    ((int[][])json.api_eSlot).Select(slot => slot.Select(_itemInfo.GetSpecByItemId).ToArray())
+                    ((int[][])json.api_eSlot_combined).Select(slot => slot.Select(_itemInfo.GetSpecByItemId).ToArray())
                     .ToArray(), practice)
                 : new Record[0];
         }
