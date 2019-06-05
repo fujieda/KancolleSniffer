@@ -83,6 +83,7 @@
     <Compile Include="BattleLogProcessorTest.cs" />
     <Compile Include="BattleBriefTest.cs" />
     <Compile Include="BattleTest.cs" />
+    <Compile Include="QuestCounterTest.cs" />
     <Compile Include="QuestPanelTest.cs" />
     <Compile Include="RepairShipCountTest.cs" />
     <Compile Include="ShipStatusTest.cs" />

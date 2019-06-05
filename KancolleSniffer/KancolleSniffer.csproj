@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\AirBaseParams.cs" />
+    <Compile Include="Model\QuestCounter.cs" />
     <Compile Include="Model\QuestCountList.cs" />
     <Compile Include="Privacy.cs" />
     <Compile Include="Log\LogProcessor.cs" />
