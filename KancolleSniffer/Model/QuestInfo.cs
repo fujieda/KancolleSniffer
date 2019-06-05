@@ -283,6 +283,7 @@ namespace KancolleSniffer.Model
         private readonly ItemInfo _itemInfo;
         private readonly BattleInfo _battleInfo;
         private readonly Func<DateTime> _nowFunc = () => DateTime.Now;
+        private DateTime _now;
         private DateTime _lastReset;
         private IEnumerable<QuestStatus> _clearedQuest = new List<QuestStatus>();
 
@@ -401,35 +402,54 @@ namespace KancolleSniffer.Model
 
         private void ResetQuests()
         {
-            var now = _nowFunc();
-            var daily = now.Date.AddHours(5);
-            if (now.Hour < 5)
-                daily = daily.AddDays(-1);
-            if (!(_lastReset < daily && daily <= now))
+            _now = _nowFunc();
+            if (!CrossBoundary(LastMorning))
                 return;
             RemoveQuest(QuestInterval.Daily);
             _countList.Remove(QuestInterval.Daily);
-            var weekly = now.Date.AddDays(-((6 + (int)now.DayOfWeek) % 7)).AddHours(5);
-            if (_lastReset < weekly && weekly <= now)
-            {
-                RemoveQuest(QuestInterval.Weekly);
-                _countList.Remove(QuestInterval.Weekly);
-            }
-            var monthly = new DateTime(now.Year, now.Month, 1, 5, 0, 0);
-            if (_lastReset < monthly && monthly <= now)
-            {
-                RemoveQuest(QuestInterval.Monthly);
-                _countList.Remove(QuestInterval.Monthly);
-            }
-            var season = now.Month / 3;
-            var quarterly = new DateTime(now.Year - (season == 0 ? 1 : 0), (season == 0 ? 12 : season * 3), 1, 5, 0, 0);
-            if (_lastReset < quarterly && quarterly <= now)
-            {
-                RemoveQuest(QuestInterval.Quarterly);
-                _countList.Remove(QuestInterval.Quarterly);
-            }
-            _lastReset = now;
+            ResetWeekly();
+            ResetMonthly();
+            ResetQuarterly();
+            _lastReset = _now;
             NeedSave = true;
+        }
+
+        private DateTime LastMorning => _now.Date.AddDays(_now.Hour < 5 ? -1 : 0).AddHours(5);
+
+        private void ResetWeekly()
+        {
+            if (!CrossBoundary(LastMonday.AddHours(5)))
+                return;
+            RemoveQuest(QuestInterval.Weekly);
+            _countList.Remove(QuestInterval.Weekly);
+        }
+
+        private DateTime LastMonday => _now.Date.AddDays(-((6 + (int)_now.DayOfWeek) % 7));
+
+        private void ResetMonthly()
+        {
+            if (!CrossBoundary(new DateTime(_now.Year, _now.Month, 1, 5, 0, 0)))
+                return;
+            RemoveQuest(QuestInterval.Monthly);
+            _countList.Remove(QuestInterval.Monthly);
+        }
+
+        private void ResetQuarterly()
+        {
+            if (!CrossBoundary(QuarterlyBoundary.AddHours(5)))
+                return;
+            RemoveQuest(QuestInterval.Quarterly);
+            _countList.Remove(QuestInterval.Quarterly);
+        }
+
+        private DateTime QuarterlyBoundary =>
+            _now.Month / 3 == 0
+                ? new DateTime(_now.Year - 1, 12, 1)
+                : new DateTime(_now.Year, _now.Month / 3 * 3, 1);
+
+        private bool CrossBoundary(DateTime boundary)
+        {
+            return _lastReset < boundary && boundary <= _now;
         }
 
         private void RemoveQuest(QuestInterval interval)
