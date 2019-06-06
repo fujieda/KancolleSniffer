@@ -37,34 +37,58 @@ namespace KancolleSniffer.Model
             Id = id;
         }
 
-        public int[] CalcFighterPower(int slot)
+        public Range CalcFighterPower(int slot)
         {
             if (!Spec.CanAirCombat || slot == 0)
-                return new[] {0, 0};
-            var unskilled = (Spec.AntiAir + FighterPowerLevelBonus) * Math.Sqrt(slot);
-            return AlvBonus.Select(bonus => (int)(unskilled + bonus)).ToArray();
+                return new Range();
+            var withoutAlv = (Spec.AntiAir + FighterPowerLevelBonus) * Math.Sqrt(slot);
+            return new Range(withoutAlv, AlvBonus);
         }
 
-        public AirBaseParams[] CalcFighterPowerInBase(int slot)
+        private RangeD AlvBonus
+        {
+            get
+            {
+                var table = AlvTypeBonusTable;
+                if (table == null)
+                    return new RangeD();
+                return _alvBonus[Alv] + table[Alv];
+            }
+        }
+
+        public AirBaseParams.Range CalcFighterPowerInBase(int slot)
         {
             if (!Spec.IsAircraft || slot == 0)
-                return new[] {new AirBaseParams(), new AirBaseParams()};
-            var baseFighterPower = (new AirBaseParams(Spec.Interception * 1.5, Spec.AntiBomber * 2 + Spec.Interception) +
-                                   Spec.AntiAir  + FighterPowerLevelBonus) * Math.Sqrt(slot);
-            return AlvBonusInBase.Select(bonus => (baseFighterPower + bonus).Floor()).ToArray();
+                return new AirBaseParams.Range();
+            var withoutAlv =
+                (new AirBaseParams(Spec.Interception * 1.5, Spec.AntiBomber * 2 + Spec.Interception) +
+                 Spec.AntiAir + FighterPowerLevelBonus) * Math.Sqrt(slot);
+            return new AirBaseParams.Range(withoutAlv, AlvBonusInBase);
         }
 
-        private readonly double[] _alvBonusMin =
+        private RangeD AlvBonusInBase
         {
-            Math.Sqrt(0.0), Math.Sqrt(1.0), Math.Sqrt(2.5), Math.Sqrt(4.0), Math.Sqrt(5.5), Math.Sqrt(7.0),
-            Math.Sqrt(8.5), Math.Sqrt(10.0)
-        };
+            get
+            {
+                switch (Spec.Type)
+                {
+                    case 9: // 艦偵
+                    case 10: // 水偵
+                    case 41: // 大艇
+                        return _alvBonus[Alv];
+                    default:
+                        return AlvBonus;
+                }
+            }
+        }
 
-        private readonly double[] _alvBonusMax =
-        {
-            Math.Sqrt(0.9), Math.Sqrt(2.4), Math.Sqrt(3.9), Math.Sqrt(5.4), Math.Sqrt(6.9), Math.Sqrt(8.4),
-            Math.Sqrt(9.9), Math.Sqrt(12.0)
-        };
+        private readonly RangeD[] _alvBonus =
+            new[]
+            {
+                new RangeD(0.0, 0.9), new RangeD(1.0, 2.4), new RangeD(2.5, 3.9), new RangeD(4.0, 5.4),
+                new RangeD(5.5, 6.9), new RangeD(7.0, 8.4), new RangeD(8.5, 9.9), new RangeD(10.0, 12.0)
+            }.Select(range => range.Sqrt()).ToArray();
+
 
         private int[] AlvTypeBonusTable
         {
@@ -87,33 +111,6 @@ namespace KancolleSniffer.Model
                         return new[] {0, 0, 1, 1, 1, 3, 3, 6};
                     default:
                         return null;
-                }
-            }
-        }
-
-        private double[] AlvBonus
-        {
-            get
-            {
-                var table = AlvTypeBonusTable;
-                if (table == null)
-                    return new[] {0.0, 0.0};
-                return new[] {table[Alv] + _alvBonusMin[Alv], table[Alv] + _alvBonusMax[Alv]};
-            }
-        }
-
-        private double[] AlvBonusInBase
-        {
-            get
-            {
-                switch (Spec.Type)
-                {
-                    case 9: // 艦偵
-                    case 10: // 水偵
-                    case 41: // 大艇
-                        return new[] {_alvBonusMin[Alv], _alvBonusMax[Alv]};
-                    default:
-                        return AlvBonus;
                 }
             }
         }

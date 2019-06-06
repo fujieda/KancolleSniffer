@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KancolleSniffer.Util;
 using static System.Math;
 
 namespace KancolleSniffer.Model
@@ -158,10 +159,10 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public int[] FighterPower
+        public Range FighterPower
             => ActualShips.Where(ship => !ship.Escaped).SelectMany(ship =>
                     ship.Slot.Zip(ship.OnSlot, (slot, onSlot) => slot.CalcFighterPower(onSlot)))
-                .Aggregate(new[] {0, 0}, (prev, cur) => new[] {prev[0] + cur[0], prev[1] + cur[1]});
+                .Aggregate(new Range(0, 0), (prev, cur) => prev + cur);
 
         public double ContactTriggerRate
             => ActualShips.Where(ship => !ship.Escaped).SelectMany(ship =>

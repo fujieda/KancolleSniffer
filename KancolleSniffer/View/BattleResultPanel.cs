@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
+using KancolleSniffer.Util;
 using static System.Math;
 
 namespace KancolleSniffer.View
@@ -40,7 +41,7 @@ namespace KancolleSniffer.View
             private Result _day;
             private Result _night;
             public int[] Formation;
-            public int[] FighterPower;
+            public Range FighterPower;
             public EnemyFighterPower EnemyFighterPower;
             public int AirControlLevel;
             public int SupportType;
@@ -535,11 +536,10 @@ namespace KancolleSniffer.View
                     SetAirControlLevel(data.AirControlLevel);
                 }
 
-                private void SetFriend(int[] fighterPower)
+                private void SetFriend(Range fighterPower)
                 {
-                    var fp = fighterPower;
-                    Friend.Text = fp[0].ToString("D");
-                    ToolTip.SetToolTip(Friend, fp[0] == fp[1] ? "" : $"{fp[0]}～{fp[1]}");
+                    Friend.Text = fighterPower.Min.ToString();
+                    ToolTip.SetToolTip(Friend, fighterPower.Diff ? fighterPower.RangeString : "");
                 }
 
                 private void SetEnemy(EnemyFighterPower enemy)

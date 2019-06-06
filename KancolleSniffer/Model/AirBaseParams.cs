@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using KancolleSniffer.Util;
 
 namespace KancolleSniffer.Model
 {
@@ -56,6 +57,39 @@ namespace KancolleSniffer.Model
         public AirBaseParams Floor()
         {
             return new AirBaseParams((int)AirCombat, (int)Interception);
+        }
+
+        public struct Range
+        {
+            public AirBaseParams Min { get; }
+            public AirBaseParams Max { get; }
+
+            public Range(AirBaseParams min, AirBaseParams max)
+            {
+                Min = min;
+                Max = max;
+            }
+
+            public Range(AirBaseParams base_, RangeD range)
+            {
+                Min = (base_ + range.Min).Floor();
+                Max = (base_ + range.Max).Floor();
+            }
+
+            public static Range operator +(Range lhs, Range rhs)
+            {
+                return new Range(lhs.Min + rhs.Min, lhs.Max + rhs.Max);
+            }
+
+            public static Range operator *(Range lhs, AirBaseParams rhs)
+            {
+                return new Range(lhs.Min * rhs, lhs.Max * rhs);
+            }
+
+            public Range Floor()
+            {
+                return new Range(Min.Floor(), Max.Floor());
+            }
         }
     }
 }

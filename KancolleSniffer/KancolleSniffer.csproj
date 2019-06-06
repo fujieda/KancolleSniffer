@@ -70,6 +70,7 @@
     <Compile Include="Model\PracticeExp.cs" />
     <Compile Include="Model\ShipSpec.cs" />
     <Compile Include="Log\BattleLogProcessor.cs" />
+    <Compile Include="Model\Range.cs" />
     <Compile Include="View\AntiAirPanel.cs">
       <SubType>Component</SubType>
     </Compile>

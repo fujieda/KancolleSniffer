@@ -64,7 +64,7 @@ namespace KancolleSniffer.Model
 
         public BattleState BattleState { get; set; }
         public int[] Formation { get; private set; }
-        public int[] FighterPower { get; private set; }
+        public Range FighterPower { get; private set; }
         public EnemyFighterPower EnemyFighterPower { get; private set; }
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
@@ -244,7 +244,7 @@ namespace KancolleSniffer.Model
         {
             var fleets = _shipInfo.Fleets;
             FighterPower = _guard.Length > 0 && _enemyGuard.Length > 0
-                ? fleets[0].FighterPower.Zip(fleets[1].FighterPower, (a, b) => a + b).ToArray()
+                ? fleets[0].FighterPower + fleets[1].FighterPower
                 : _fleet.FighterPower;
         }
 

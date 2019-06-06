@@ -86,8 +86,7 @@ namespace KancolleSniffer
                             where !item.Empty
                             select dict[item.Spec.Name] + ItemStatusString(item))).TrimEnd(' ') + "\r\n"));
             var fp = target.FighterPower;
-            sb.Append($"制空: {(fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1])} " +
-                      $"索敵: {target.GetLineOfSights(1):F1}\r\n");
+            sb.Append($"制空: {(fp.Diff ? fp.RangeString : fp.Min.ToString())} 索敵: {target.GetLineOfSights(1):F1}\r\n");
             return sb;
         }
 

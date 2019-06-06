@@ -75,24 +75,20 @@ namespace KancolleSniffer.Model
                 }
             }
 
-            public AirBaseParams[] CalcFighterPower()
+            public AirBaseParams.Range CalcFighterPower()
             {
                 var reconPlaneBonus = Planes.Aggregate(new AirBaseParams(), (max, plane) =>
                 {
                     var bonus = plane.Slot.Spec.ReconPlaneAirBaseBonus;
                     return AirBaseParams.Max(max, bonus);
                 });
-                return Planes.Aggregate(new[] {new AirBaseParams(), new AirBaseParams()}, (previous, plane) =>
+                return (Planes.Aggregate(new AirBaseParams.Range(), (previous, plane) =>
                 {
                     if (plane.State != 1)
                         return previous;
                     var current = plane.Slot.CalcFighterPowerInBase(plane.Count);
-                    return new[]
-                    {
-                        previous[0] + current[0],
-                        previous[1] + current[1]
-                    };
-                }).Select(param => (param * reconPlaneBonus).Floor()).ToArray();
+                    return previous + current;
+                }) * reconPlaneBonus).Floor();
             }
 
             public int[] CostForSortie => Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
@@ -139,7 +135,7 @@ namespace KancolleSniffer.Model
                 }
             }
 
-            public AirBaseParams[] FighterPower => Slot.CalcFighterPowerInBase(Count);
+            public AirBaseParams.Range FighterPower => Slot.CalcFighterPowerInBase(Count);
         }
 
         public void Inspect(dynamic json)

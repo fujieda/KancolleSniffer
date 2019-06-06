@@ -319,7 +319,7 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
-        /// 敵連合艦隊の制空値を計算する
+        /// 敵艦隊の制空値を計算する
         /// </summary>
         [TestMethod]
         public void EnemyFighterPower()

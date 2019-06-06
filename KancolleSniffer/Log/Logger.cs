@@ -217,7 +217,7 @@ namespace KancolleSniffer.Log
                     dropName += "+" + itemName;
             }
             var fp = _shipInfo.Fleets[(int)_battle.api_deck_id - 1].FighterPower;
-            var fPower = fp[0] == fp[1] ? fp[0].ToString() : fp[0] + "～" + fp[1];
+            var fPower = fp.Diff ? fp.RangeString : fp.Min.ToString();
             _writer("海戦・ドロップ報告書", string.Join(",", FormatDateTime(_nowFunc()),
                     result.api_quest_name,
                     cell, boss,

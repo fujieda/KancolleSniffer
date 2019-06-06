@@ -304,19 +304,19 @@ namespace KancolleSniffer.View
 
             private class AirCorpsFp
             {
-                public readonly int[] AirCombat;
-                public readonly int[] Interception;
+                public readonly Range AirCombat;
+                public readonly Range Interception;
                 public readonly bool Difference;
 
-                public AirCorpsFp(IReadOnlyList<AirBaseParams> fighterPower)
+                public AirCorpsFp(AirBaseParams.Range fighterPower)
                 {
-                    AirCombat = new[] {(int)fighterPower[0].AirCombat, (int)fighterPower[1].AirCombat};
-                    Interception = new[] {(int)fighterPower[0].Interception, (int)fighterPower[1].Interception};
-                    Difference = Interception[0] != AirCombat[0];
+                    AirCombat = new Range(fighterPower.Min.AirCombat, fighterPower.Max.AirCombat);
+                    Interception = new Range(fighterPower.Min.Interception, fighterPower.Min.Interception);
+                    Difference = Interception.Min != AirCombat.Min;
                 }
             }
 
-            private static string RangeString(int[] fp) => fp[0] == fp[1] ? fp[0].ToString() : $"{fp[0]}～{fp[1]}";
+            private static string RangeString(Range range) => range.Diff ? range.RangeString : range.Min.ToString();
         }
     }
 }

@@ -756,13 +756,13 @@ namespace KancolleSniffer
         {
             var fleets = Sniffer.Fleets;
             var fp = combined
-                ? fleets[0].FighterPower.Zip(fleets[1].FighterPower, (a, b) => a + b).ToArray()
+                ? fleets[0].FighterPower + fleets[1].FighterPower
                 : fleets[_currentFleet].FighterPower;
-            labelFighterPower.Text = fp[0].ToString("D");
+            labelFighterPower.Text = fp.Min.ToString("D");
             var cr = combined
                 ? fleets[0].ContactTriggerRate + fleets[1].ContactTriggerRate
                 : fleets[_currentFleet].ContactTriggerRate;
-            var text = "制空: " + (fp[0] == fp[1] ? $"{fp[0]}" : $"{fp[0]}～{fp[1]}") +
+            var text = "制空: " + (fp.Diff ? fp.RangeString : fp.Min.ToString()) +
                        $" 触接: {cr * 100:f1}";
             _toolTip.SetToolTip(labelFighterPower, text);
             _toolTip.SetToolTip(labelFighterPowerCaption, text);
