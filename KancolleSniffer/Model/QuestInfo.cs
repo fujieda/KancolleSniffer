@@ -234,7 +234,7 @@ namespace KancolleSniffer.Model
                             quest.Progress = 100;
                             goto case 2;
                         case 2:
-                            AddQuest(quest, true);
+                            SetProcessedQuest(quest);
                             break;
                     }
                 }
@@ -248,16 +248,20 @@ namespace KancolleSniffer.Model
             }
         }
 
-        private void AddQuest(QuestStatus quest, bool adjustCount)
+        private void SetProcessedQuest(QuestStatus quest)
         {
             var count = _countList.GetCount(quest.Id);
-            if (adjustCount)
-            {
-                if (count.AdjustCount(quest.Progress))
-                    NeedSave = true;
-                quest.Material = quest.Material.Concat(count.Spec.Material).ToArray();
-            }
-            quest.Count = count;
+            if (count.AdjustCount(quest.Progress))
+                NeedSave = true;
+            quest.Material = quest.Material.Concat(count.Spec.Material).ToArray();
+            if (!_quests.ContainsKey(quest.Id))
+                NeedSave = true;
+            SetQuest(quest);
+        }
+
+        private void SetQuest(QuestStatus quest)
+        {
+            quest.Count = _countList.GetCount(quest.Id);
             quest.Color = quest.Category <= _color.Length ? _color[quest.Category - 1] : Control.DefaultBackColor;
             _quests[quest.Id] = quest;
         }
@@ -365,8 +369,8 @@ namespace KancolleSniffer.Model
             if (status.QuestList != null)
             {
                 _quests.Clear();
-                foreach (var q in status.QuestList)
-                    AddQuest(q, false);
+                foreach (var quest in status.QuestList)
+                    SetQuest(quest);
             }
         }
     }

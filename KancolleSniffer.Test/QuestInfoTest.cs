@@ -123,23 +123,7 @@ namespace KancolleSniffer.Test
             };
             questInfo.LoadState(status);
             questInfo.InspectQuestList( // 2019-1-27 10:00
-                Js(new
-                {
-                    api_list = new[]
-                    {
-                        new
-                        {
-                            api_no = 237,
-                            api_category = 2,
-                            api_type = 2,
-                            api_state = 2,
-                            api_title = "【節分拡張任務】南方海域 艦隊決戦",
-                            api_detail = "",
-                            api_get_material = new int[0],
-                            api_progress_flag = 0
-                        }
-                    }
-                }));
+                CreateQuestList(new[] {237})); // 【節分拡張任務】南方海域 艦隊決戦
             PAssert.That(() => questInfo.Quests[0].Id == 237);
             questInfo.InspectQuestList(CreateQuestList(new[] {201})); // 2019-1-28 05:00
             PAssert.That(() => questInfo.Quests[0].Id == 201);
@@ -149,19 +133,23 @@ namespace KancolleSniffer.Test
 
         private object CreateQuestList(int[] ids) => Js(new
         {
-            api_list =
-                ids.Select(id => new
-                {
-                    api_no = id,
-                    api_category = id / 100,
-                    api_type = 1,
-                    api_state = 2,
-                    api_title = "",
-                    api_detail = "",
-                    api_get_material = new int[0],
-                    api_progress_flag = 0
-                })
+            api_list = ids.Select(id => CreateQuest(id, 2))
         });
+
+        private object CreateQuest(int id, int state)
+        {
+            return new
+            {
+                api_no = id,
+                api_category = id / 100,
+                api_type = 1,
+                api_state = state,
+                api_title = "",
+                api_detail = "",
+                api_get_material = new int[0],
+                api_progress_flag = 0
+            };
+        }
 
         [TestMethod]
         public void NotImplemented()
@@ -198,6 +186,36 @@ namespace KancolleSniffer.Test
             };
             questInfo.LoadState(status);
             PAssert.That(() => questInfo.Quests[0].Material.Length == 8);
+        }
+
+        /// <summary>
+        /// 任務を受領したときにNeedSaveを設定する
+        /// </summary>
+        [TestMethod]
+        public void SetNeedSaveOnStartQuest()
+        {
+            var questInfo = new QuestInfo(() => new DateTime(2019, 1, 1));
+            // _lastResetが未設定だと必ずResetQuestsが動いてNeedSaveがtrueになる
+            questInfo.LoadState(new Status {QuestLastReset = new DateTime(2019, 1, 1)});
+            questInfo.InspectQuestList(Js(
+                new
+                {
+                    api_list = new[]
+                    {
+                        CreateQuest(213, 1),
+                        CreateQuest(214, 1)
+                    }
+                }));
+            Assert.IsFalse(questInfo.NeedSave);
+            questInfo.InspectQuestList(Js(new
+            {
+                api_list = new[]
+                {
+                    CreateQuest(213, 1),
+                    CreateQuest(214, 2)
+                }
+            }));
+            Assert.IsTrue(questInfo.NeedSave);
         }
     }
 }
