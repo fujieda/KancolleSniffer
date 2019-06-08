@@ -149,11 +149,13 @@ namespace KancolleSniffer
                 return Update.None;
 
             if (url.EndsWith("api_port/port"))
-                return ApiPort(url, data);
+                return ApiPort(data);
             if (url.Contains("member"))
                 return ApiMember(url, json);
             if (url.Contains("kousyou"))
                 return ApiKousyou(url, request, data);
+            if (url.Contains("practice"))
+                return ApiPractice(url, request, data);
             if (url.Contains("battle") || url.Contains("sortie"))
                 return ApiBattle(url, request, data);
             if (url.Contains("hensei"))
@@ -189,7 +191,7 @@ namespace KancolleSniffer
             void Port();
         }
 
-        private Update ApiPort(string url, dynamic data)
+        private Update ApiPort(dynamic data)
         {
             _itemInfo.InspectBasic(data.api_basic);
             _materialInfo.InspectMaterialPort(data.api_material);
@@ -374,6 +376,30 @@ namespace KancolleSniffer
             return Update.None;
         }
 
+        private Update ApiPractice(string url, string request, dynamic data)
+        {
+            if (url.EndsWith("api_req_practice/battle_result"))
+            {
+                _battleInfo.InspectPracticeResult(data);
+                _questCounter.InspectPracticeResult(data);
+                return Update.Ship | Update.QuestList;
+            }
+            if (url.EndsWith("api_req_practice/battle"))
+            {
+                _shipInfo.StartPractice(request);
+                _questCounter.StartPractice(request);
+                _cellInfo.StartPractice();
+                _conditionTimer.InvalidateCond();
+                RepeatingTimerController?.Suspend();
+            }
+            if (url.EndsWith("api_req_practice/battle") || url.EndsWith("api_req_practice/midnight_battle"))
+            {
+                _battleInfo.InspectBattle(url, request, data);
+                return Update.Ship | Update.Battle | Update.Timer;
+            }
+            return Update.None;
+        }
+
         private Update ApiBattle(string url, string request, dynamic data)
         {
             if (IsNormalBattleAPI(url) || IsCombinedBattleAPI(url))
@@ -385,19 +411,6 @@ namespace KancolleSniffer
                 _cellInfo.StartBattle();
                 return Update.Ship | Update.Battle;
             }
-            if (url.EndsWith("api_req_practice/battle") || url.EndsWith("api_req_practice/midnight_battle"))
-            {
-                if (url.EndsWith("/battle"))
-                {
-                    _shipInfo.StartPractice(request);
-                    _questCounter.StartPractice(request);
-                    _cellInfo.StartPractice();
-                    _conditionTimer.InvalidateCond();
-                    RepeatingTimerController?.Suspend();
-                }
-                _battleInfo.InspectBattle(url, request, data);
-                return Update.Ship | Update.Battle | Update.Timer;
-            }
             if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_combined_battle/battleresult"))
             {
                 _battleInfo.InspectBattleResult(data);
@@ -405,12 +418,6 @@ namespace KancolleSniffer
                 _logger.InspectBattleResult(data);
                 _questCounter.InspectBattleResult(data);
                 _miscTextInfo.InspectBattleResult(data);
-                return Update.Ship | Update.QuestList;
-            }
-            if (url.EndsWith("api_req_practice/battle_result"))
-            {
-                _battleInfo.InspectPracticeResult(data);
-                _questCounter.InspectPracticeResult(data);
                 return Update.Ship | Update.QuestList;
             }
             if (url.EndsWith("/goback_port"))
