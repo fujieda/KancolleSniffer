@@ -156,7 +156,7 @@ namespace KancolleSniffer
                 return ApiKousyou(url, request, data);
             if (url.Contains("practice"))
                 return ApiPractice(url, request, data);
-            if (url.Contains("battle") || url.Contains("sortie"))
+            if (IsBattleAPI(url))
                 return ApiBattle(url, request, data);
             if (url.Contains("hensei"))
                 return ApiHensei(url, request, data);
@@ -165,6 +165,13 @@ namespace KancolleSniffer
             if (url.Contains("air_corps"))
                 return ApiAirCorps(url, request, data);
             return ApiOthers(url, request, data);
+        }
+
+        private static bool IsBattleAPI(string url)
+        {
+            return url.Contains("api_req_sortie/") ||
+                   url.Contains("api_req_battle_midnight/") ||
+                   url.Contains("api_req_combined_battle/");
         }
 
         private Update ApiStart(dynamic data)
@@ -402,16 +409,7 @@ namespace KancolleSniffer
 
         private Update ApiBattle(string url, string request, dynamic data)
         {
-            if (IsNormalBattleAPI(url) || IsCombinedBattleAPI(url))
-            {
-                _shipInfo.ClearBadlyDamagedShips();
-                RepeatingTimerController?.Stop("大破警告");
-                _battleInfo.InspectBattle(url, request, data);
-                _logger.InspectBattle(data);
-                _cellInfo.StartBattle();
-                return Update.Ship | Update.Battle;
-            }
-            if (url.EndsWith("api_req_sortie/battleresult") || url.EndsWith("api_req_combined_battle/battleresult"))
+            if (url.EndsWith("/battleresult"))
             {
                 _battleInfo.InspectBattleResult(data);
                 _exMapInfo.InspectBattleResult(data);
@@ -425,33 +423,12 @@ namespace KancolleSniffer
                 _battleInfo.CauseEscape();
                 return Update.Ship;
             }
-            _battleInfo.BattleState = BattleState.Unknown;
-            return Update.None;
-        }
-
-        private bool IsNormalBattleAPI(string url)
-        {
-            return url.EndsWith("api_req_sortie/battle") ||
-                   url.EndsWith("api_req_sortie/airbattle") ||
-                   url.EndsWith("api_req_sortie/ld_airbattle") ||
-                   url.EndsWith("api_req_sortie/ld_shooting") ||
-                   url.EndsWith("api_req_battle_midnight/battle") ||
-                   url.EndsWith("api_req_battle_midnight/sp_midnight");
-        }
-
-        private bool IsCombinedBattleAPI(string url)
-        {
-            return url.EndsWith("api_req_combined_battle/battle") ||
-                   url.EndsWith("api_req_combined_battle/airbattle") ||
-                   url.EndsWith("api_req_combined_battle/ld_airbattle") ||
-                   url.EndsWith("api_req_combined_battle/battle_water") ||
-                   url.EndsWith("api_req_combined_battle/midnight_battle") ||
-                   url.EndsWith("api_req_combined_battle/sp_midnight") ||
-                   url.EndsWith("api_req_combined_battle/ec_battle") ||
-                   url.EndsWith("api_req_combined_battle/ec_midnight_battle") ||
-                   url.EndsWith("api_req_combined_battle/ec_night_to_day") ||
-                   url.EndsWith("api_req_combined_battle/each_battle") ||
-                   url.EndsWith("api_req_combined_battle/each_battle_water");
+            _shipInfo.ClearBadlyDamagedShips();
+            RepeatingTimerController?.Stop("大破警告");
+            _battleInfo.InspectBattle(url, request, data);
+            _logger.InspectBattle(data);
+            _cellInfo.StartBattle();
+            return Update.Ship | Update.Battle;
         }
 
         private Update ApiHensei(string url, string request, dynamic data)
