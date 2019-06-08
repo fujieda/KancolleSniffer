@@ -76,13 +76,14 @@ namespace KancolleSniffer.Model
             _shipInventory.Clear();
         }
 
+        public void Port(dynamic json)
+        {
+            HandlePort(json);
+        }
+
         public void InspectShip(string url, dynamic json)
         {
-            if (url.Contains("port"))
-            {
-                HandlePort(json);
-            }
-            else if (url.Contains("ship2"))
+            if (url.Contains("ship2"))
             {
                 SetShipAndDeck(json.api_data, json.api_data_deck);
             }
@@ -103,7 +104,6 @@ namespace KancolleSniffer.Model
 
         private void HandlePort(dynamic json)
         {
-            _shipInventory.Clear();
             for (var i = 0; i < FleetCount; i++)
                 _fleets[i].State = FleetState.Port;
             SetShipAndDeckForPort(json);
@@ -111,10 +111,12 @@ namespace KancolleSniffer.Model
             if (json.api_combined_flag())
                 _fleets[0].CombinedType = _fleets[1].CombinedType = (CombinedType)(int)json.api_combined_flag;
             VerifyBattleResult();
+            ClearBadlyDamagedShips();
         }
 
         private void SetShipAndDeckForPort(dynamic json)
         {
+            _shipInventory.Clear();
             foreach (var entry in json.api_ship)
             {
                 var ship = (ShipStatus)CreateShipStatus(entry);

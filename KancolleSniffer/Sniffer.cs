@@ -184,19 +184,21 @@ namespace KancolleSniffer
                 MapDictionary[map.api_name] = $"{map.api_maparea_id}-{map.api_no}";
         }
 
+        public interface IPort
+        {
+            void Port();
+        }
+
         private Update ApiPort(string url, dynamic data)
         {
             _itemInfo.InspectBasic(data.api_basic);
             _materialInfo.InspectMaterialPort(data.api_material);
             _logger.InspectBasic(data.api_basic);
             _logger.InspectMaterial(data.api_material);
-            _shipInfo.InspectShip(url, data);
-            _shipInfo.ClearBadlyDamagedShips();
-            _conditionTimer.CalcRegainTime();
+            _shipInfo.Port(data);
             _missionInfo.InspectDeck(data.api_deck_port);
             _questCounter.InspectDeck(data.api_deck_port);
             _dockInfo.InspectNDock(data.api_ndock);
-            _akashiTimer.Port();
             _achievement.InspectBasic(data.api_basic);
             if (data.api_parallel_quest_count()) // 昔のログにはないので
                 _questInfo.AcceptMax = (int)data.api_parallel_quest_count;
@@ -204,10 +206,8 @@ namespace KancolleSniffer
                 _airBase.InspectEventObject(data.api_event_object);
             if (data.api_plane_info())
                 _airBase.InspectPlaneInfo(data.api_plane_info);
-            _battleInfo.CleanupResult();
-            _battleInfo.BattleState = BattleState.None;
-            _miscTextInfo.Port();
-            _cellInfo.Port();
+            foreach (var receiver in new IPort[]{_conditionTimer, _akashiTimer, _battleInfo, _miscTextInfo, _cellInfo})
+                receiver.Port();
             SaveState();
             RepeatingTimerController?.Resume();
             foreach (var s in new[] {"遠征終了", "入渠終了", "疲労回復", "泊地修理", "大破警告"})

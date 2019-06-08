@@ -17,7 +17,7 @@ using System.Linq;
 
 namespace KancolleSniffer.Model
 {
-    public class ConditionTimer : IHaveState
+    public class ConditionTimer : IHaveState, Sniffer.IPort
     {
         private readonly ShipInfo _shipInfo;
         private const int Interval = 180;
@@ -32,7 +32,12 @@ namespace KancolleSniffer.Model
             _shipInfo = shipInfo;
         }
 
-        public void CalcRegainTime()
+        public void Port()
+        {
+            CalcRegainTime();
+        }
+
+        private void CalcRegainTime()
         {
             var now = DateTime.Now;
             var prevTime = _lastUpdate;

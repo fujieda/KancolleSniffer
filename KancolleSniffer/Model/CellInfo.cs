@@ -14,7 +14,7 @@
 
 namespace KancolleSniffer.Model
 {
-    public class CellInfo
+    public class CellInfo : Sniffer.IPort
     {
         private int _battleCount;
 

@@ -19,7 +19,7 @@ using KancolleSniffer.Util;
 
 namespace KancolleSniffer.Model
 {
-    public class AkashiTimer
+    public class AkashiTimer : Sniffer.IPort
     {
         private readonly ShipInfo _shipInfo;
         private readonly DockInfo _dockInfo;

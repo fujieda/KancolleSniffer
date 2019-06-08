@@ -50,7 +50,7 @@ namespace KancolleSniffer.Model
         public int Interception { get; set; }
     }
 
-    public class BattleInfo
+    public class BattleInfo : Sniffer.IPort
     {
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
@@ -97,6 +97,12 @@ namespace KancolleSniffer.Model
         {
             _shipInfo = shipInfo;
             _itemInfo = itemInfo;
+        }
+
+        public void Port()
+        {
+            CleanupResult();
+            BattleState = BattleState.None;
         }
 
         public void InspectBattle(string url, string request, dynamic json)
@@ -234,7 +240,7 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public void CleanupResult()
+        private void CleanupResult()
         {
             _friend = null;
             _lastCell = false;

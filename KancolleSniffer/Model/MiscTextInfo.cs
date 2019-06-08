@@ -17,7 +17,7 @@ using System.Linq;
 
 namespace KancolleSniffer.Model
 {
-    public class MiscTextInfo
+    public class MiscTextInfo : Sniffer.IPort
     {
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
