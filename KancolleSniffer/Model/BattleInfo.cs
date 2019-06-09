@@ -76,7 +76,7 @@ namespace KancolleSniffer.Model
 
         public class RankPair
         {
-            public char Assumed { get; set; }
+            public char Assumed { get; set; } = 'X';
             public char Actual { get; set; }
             public bool IsError => Assumed != Actual;
         }
