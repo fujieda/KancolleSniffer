@@ -79,6 +79,7 @@ var mixin = {
     initPicker: function(from, to, updatePicker) {
         [$(from), $(to)].forEach(function(input) {
             var prev, ignore;
+            input.attr('autocomplete', 'off');
             input.datetimepicker({
                 onSelectDate: function() {
                     ignore = true;
