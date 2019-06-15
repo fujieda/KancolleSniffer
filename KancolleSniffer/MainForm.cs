@@ -884,13 +884,12 @@ namespace KancolleSniffer
             var names = Sniffer.Missions.Select(mission => mission.Name).ToArray();
             for (var i = 0; i < ShipInfo.FleetCount - 1; i++)
             {
-                paramsLabels[i].Visible = false;
-                if (string.IsNullOrEmpty(names[i]))
-                {
-                    paramsLabels[i].Text = GenerateFleetParamsForMission(i + 1);
-                    paramsLabels[i].Visible = true;
-                }
+                var fleetParams = GenerateFleetParamsForMission(i + 1);
+                var inPort = string.IsNullOrEmpty(names[i]);
+                paramsLabels[i].Visible = inPort;
+                paramsLabels[i].Text = fleetParams;
                 nameLabels[i].Text = names[i];
+                _toolTip.SetToolTip(nameLabels[i], inPort ? "" : fleetParams);
             }
             SetMissionLabel();
         }
