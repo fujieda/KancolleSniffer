@@ -75,6 +75,7 @@ namespace KancolleSniffer.Model
                     case 9: // 艦偵
                     case 10: // 水偵
                     case 41: // 大艇
+                    case 49: // 陸偵
                         return _alvBonus[Alv];
                     default:
                         return AlvBonus;

@@ -173,13 +173,13 @@ namespace KancolleSniffer.Test
 
             // 二式陸上偵察機(熟練)
             var fp1 = sniffer.AirBase[0].AirCorps[0].CalcFighterPower();
-            PAssert.That(() => (int)fp1.Min.AirCombat == 266);
-            PAssert.That(() => (int)fp1.Min.Interception == 293);
+            PAssert.That(() => (int)fp1.Min.AirCombat == 274);
+            PAssert.That(() => (int)fp1.Min.Interception == 302);
 
             // 二式陸上偵察機
             var fp3 = sniffer.AirBase[0].AirCorps[2].CalcFighterPower();
-            PAssert.That(() => (int)fp3.Min.AirCombat == 200);
-            PAssert.That(() => (int)fp3.Min.Interception == 303);
+            PAssert.That(() => (int)fp3.Min.AirCombat == 206);
+            PAssert.That(() => (int)fp3.Min.Interception == 310);
         }
 
         /// <summary>

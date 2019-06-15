@@ -100,6 +100,7 @@ namespace KancolleSniffer.Model
                     case 45:
                     case 47: // 陸上攻撃機
                     case 48: // 局地戦闘機
+                    case 49: // 陸上偵察機
                     case 56:
                     case 57:
                     case 58:
@@ -160,6 +161,7 @@ namespace KancolleSniffer.Model
                     case 9: // 艦偵
                     case 10: // 水偵
                     case 41: // 大艇
+                    case 49: // 陸偵
                         return 0.04;
                     default:
                         return 0;
