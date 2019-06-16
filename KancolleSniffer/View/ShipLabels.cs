@@ -28,9 +28,13 @@ namespace KancolleSniffer.View
         public ShipLabel.Exp Exp { get; set; }
         public Label BackGround { get; set; }
 
-        public override Control[] Controls =>
-            new Control[] {Hp, Cond, Level, Exp, Name, Fleet, BackGround}.Where(c => c != null)
-                .ToArray(); // 名前のZ-orderを下に
+        // Nameが長すぎる場合は他のラベルの下に隠れてほしいのでのZ-orderを下にする。
+        // サブクラスで追加するラベルはBackGroundで隠れないようにZ-orderを上にする。
+        public sealed override Control[] Controls =>
+            AddedControls.Concat(new Control[] {Fleet, Hp, Cond, Level, Exp, Name, BackGround}.Where(c => c != null))
+                .ToArray();
+
+        public virtual Control[] AddedControls => new Control[0];
 
         public virtual void Set(ShipStatus status)
         {

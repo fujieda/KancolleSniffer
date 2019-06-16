@@ -30,7 +30,7 @@ namespace KancolleSniffer.View.ShipListPanel
             public ShipLabel.RepairTime Time { get; set; }
             public Label PerHp { get; set; }
 
-            public override Control[] Controls => base.Controls.Concat(new[] {Time, PerHp}).ToArray();
+            public override Control[] AddedControls => new Control[] {Time, PerHp};
 
             public override void Set(ShipStatus status)
             {

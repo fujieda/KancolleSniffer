@@ -30,7 +30,7 @@ namespace KancolleSniffer.View
             public Label Rate { get; set; }
             public Label Diff { get; set; }
 
-            public override Control[] Controls => base.Controls.Concat(new Control[] {Rate, Diff}).ToArray();
+            public override Control[] AddedControls => new Control[] {Rate, Diff};
         }
 
         public void Update(Sniffer sniffer)
