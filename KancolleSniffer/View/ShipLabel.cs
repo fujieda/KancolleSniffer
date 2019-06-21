@@ -27,7 +27,6 @@ namespace KancolleSniffer.View
     public abstract class ShipLabel : GrowLeftLabel
     {
         protected Color InitialBackColor;
-        protected ShipStatus Status;
 
         protected Font BaseFont => Parent.Font;
 
@@ -204,6 +203,7 @@ namespace KancolleSniffer.View
         public sealed class Hp : ShipLabel
         {
             private bool _hpPercent;
+            private ShipStatus _status;
 
             public Hp()
             {
@@ -220,13 +220,14 @@ namespace KancolleSniffer.View
 
             public override void Reset()
             {
+                _status = null;
                 Text = "";
                 BackColor = InitialBackColor;
             }
 
             public override void Set(ShipStatus status)
             {
-                Status = status;
+                _status = status;
                 Font = BaseFont;
                 Text = _hpPercent
                     ? $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}%"
@@ -237,8 +238,8 @@ namespace KancolleSniffer.View
             public void ToggleHpPercent()
             {
                 _hpPercent = !_hpPercent;
-                if (Status != null)
-                    Set(Status);
+                if (_status != null)
+                    Set(_status);
             }
 
             public void SetHp(int now, int max)
