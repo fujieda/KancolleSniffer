@@ -251,6 +251,7 @@ namespace KancolleSniffer.Model
                     case 3: // 大口径
                     case 5: // 魚雷
                     case 19: // 徹甲弾
+                    case 22: // 特殊潜航艇
                     case 24: // 上陸用舟艇
                     case 29: // 探照灯
                     case 36: // 高射装置

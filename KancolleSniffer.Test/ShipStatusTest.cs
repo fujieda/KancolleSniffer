@@ -360,5 +360,34 @@ namespace KancolleSniffer.Test
                 Assert.IsFalse(ship.CanOpeningAntiSubmarineAttack);
             }
         }
+
+        [TestClass]
+        public class NightBattlePower
+        {
+            [TestMethod]
+            public void 甲標的の改修効果()
+            {
+                var ship = new ShipStatus
+                {
+                    Torpedo = 102,
+                    Slot = new[]
+                    {
+                        new ItemStatus
+                        {
+                            Id = 1,
+                            Spec = new ItemSpec
+                            {
+                                Id = 309,
+                                Name = "甲標的 丙型",
+                                AntiSubmarine = 14,
+                                Type = 22
+                            },
+                            Level = 4
+                        }
+                    }
+                };
+                Assert.AreEqual(104, ship.NightBattlePower);
+            }
+        }
     }
 }
