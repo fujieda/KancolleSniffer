@@ -329,5 +329,16 @@ namespace KancolleSniffer.Test
             var fp = sniffer.Battle.EnemyFighterPower;
             PAssert.That(() => fp.AirCombat == 209 && fp.Interception == 212);
         }
+
+        /// <summary>
+        /// ダメコン進撃する
+        /// </summary>
+        [TestMethod]
+        public void NotWarnDamagedShipWithDamageControl()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "damecon_advance_001");
+            PAssert.That(() => sniffer.BadlyDamagedShips.Length == 0);
+        }
     }
 }

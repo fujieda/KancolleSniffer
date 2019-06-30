@@ -65,7 +65,8 @@ namespace KancolleSniffer.Model
         {
             _shipMaster = shipMaster;
             _shipInventory = shipInventory;
-            _fleets = Enumerable.Range(0, FleetCount).Select((x, i) => new Fleet(_shipInventory, i, () => _hqLevel)).ToArray();
+            _fleets = Enumerable.Range(0, FleetCount).Select((x, i) => new Fleet(_shipInventory, i, () => _hqLevel))
+                .ToArray();
             _itemInventory = itemInventory;
             Counter = new AlarmCounter(() => _shipInventory.Count) {Margin = 5};
         }
@@ -403,13 +404,16 @@ namespace KancolleSniffer.Model
         public void SetBadlyDamagedShips()
         {
             BadlyDamagedShips =
-            (from s in _fleets.Where(fleet => fleet.State == FleetState.Sortie)
-                    .SelectMany(fleet => fleet.CombinedType != 0 && fleet.Number == 1
-                        ? fleet.ActualShips.Skip(1) // 第二艦隊の旗艦を除く
-                        : fleet.ActualShips)
-                where !s.Escaped && s.DamageLevel == ShipStatus.Damage.Badly
-                select s.Name).ToArray();
+                (from s in ShipsInSortie
+                    where !s.Escaped && s.PreparedDamageControl == -1 && s.DamageLevel == ShipStatus.Damage.Badly
+                    select s.Name).ToArray();
         }
+
+        private IEnumerable<ShipStatus> ShipsInSortie =>
+            _fleets.Where(fleet => fleet.State == FleetState.Sortie)
+                .SelectMany(fleet => fleet.CombinedType != 0 && fleet.Number == 1
+                    ? fleet.ActualShips.Skip(1) // 連合艦隊の護衛の旗艦をのぞく
+                    : fleet.ActualShips);
 
         public void ClearBadlyDamagedShips()
         {
