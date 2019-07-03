@@ -149,18 +149,16 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public IEnumerable<QuestCount> CountList
+        public IEnumerable<QuestCount> NonZeroCountList => _countDict.Values.Where(c => c.Now > 0 || (c.NowArray?.Any(n => n > 0) ?? false));
+
+        public void SetCountList(IEnumerable<QuestCount> questCountList)
         {
-            get => _countDict.Values.Where(c => c.Now > 0 || (c.NowArray?.Any(n => n > 0) ?? false));
-            set
+            if (questCountList == null)
+                return;
+            foreach (var count in questCountList)
             {
-                if (value == null)
-                    return;
-                foreach (var count in value)
-                {
-                    count.Spec = QuestSpecs[count.Id];
-                    _countDict[count.Id] = count;
-                }
+                count.Spec = QuestSpecs[count.Id];
+                _countDict[count.Id] = count;
             }
         }
     }

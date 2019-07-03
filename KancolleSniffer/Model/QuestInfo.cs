@@ -358,14 +358,14 @@ namespace KancolleSniffer.Model
             if (_quests != null)
                 status.QuestList = _quests.Values.ToArray();
             if (_countList != null)
-                status.QuestCountList = _countList.CountList.ToArray();
+                status.QuestCountList = _countList.NonZeroCountList.ToArray();
         }
 
         public void LoadState(Status status)
         {
             _lastReset = status.QuestLastReset;
             if (status.QuestCountList != null)
-                _countList.CountList = status.QuestCountList;
+                _countList.SetCountList(status.QuestCountList);
             if (status.QuestList != null)
             {
                 _quests.Clear();
