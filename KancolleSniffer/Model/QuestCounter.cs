@@ -160,6 +160,26 @@ namespace KancolleSniffer.Model
         private int _cell;
         private bool _boss;
 
+        private class ResultShipSpecs
+        {
+            public ResultShipSpecs(BattleInfo battleInfo)
+            {
+                Specs = battleInfo.Result?.Friend.Main.Where(s => s.NowHp > 0).Select(ship => ship.Spec).ToArray() ?? new ShipSpec[0];
+                Ids = Specs.Select(spec => spec.Id).ToArray();
+                Types = Specs.Select(spec => spec.ShipType).ToArray();
+                Classes = Specs.Select(spec => spec.ShipClass).ToArray();
+                Flagship = Specs.FirstOrDefault();
+                FlagshipType = Types.FirstOrDefault();
+            }
+
+            public ShipSpec[] Specs { get; }
+            public int[] Ids { get; }
+            public int[] Types { get; }
+            public int[] Classes { get; }
+            public ShipSpec Flagship { get; }
+            public int FlagshipType { get; }
+        }
+
         public QuestCounter(QuestInfo questInfo, ItemInfo itemInfo, BattleInfo battleInfo)
         {
             _questInfo = questInfo;
@@ -186,272 +206,253 @@ namespace KancolleSniffer.Model
             _cell = json.api_no() ? (int)json.api_no : 0;
             _boss = (int)json.api_event_id == 5;
 
-            if (_quests.TryGetValue(861, out var q861))
+            if (_quests.TryGetValue(861, out var q861) && _map == 16 && (int)json.api_event_id == 8)
             {
-                if (_map == 16 && (int)json.api_event_id == 8)
-                {
-                    var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.ShipType)
-                        .ToArray();
-                    if (fleet.Count(s => s == 10 || s == 22) == 2)
-                        Increment(q861.Count);
-                }
+                if (new ResultShipSpecs(_battleInfo).Types.Count(s => s == 10 || s == 22) == 2)
+                    Increment(q861.Count);
             }
+        }
+
+        private class Rank
+        {
+            private readonly string _rank;
+
+            public Rank(string rank)
+            {
+                _rank = rank;
+            }
+
+            public bool S => QuestSortie.CompareRank(_rank, "S") == 0;
+            public bool A => QuestSortie.CompareRank(_rank, "A") <= 0;
+            public bool B => QuestSortie.CompareRank(_rank, "B") <= 0;
         }
 
         public void InspectBattleResult(dynamic json)
         {
-            var rank = json.api_win_rank;
+            var rawRak = json.api_win_rank;
+            var rank = new Rank(rawRak);
+            var specs = new ResultShipSpecs(_battleInfo);
             foreach (var quest in _quests.Values)
             {
                 var count = quest.Count;
                 switch (count.Spec)
                 {
                     case QuestSortie sortie:
-                        if (count.Id == 216 && !_boss || sortie.Check(rank, _map, _boss))
+                        if (count.Id == 216 && !_boss || sortie.Check(rawRak, _map, _boss))
                             Increment(count);
-                        break;
+                        continue;
                     case QuestEnemyType enemyType:
                         var num = enemyType.CountResult(
                             _battleInfo.Result.Enemy.Main.Concat(_battleInfo.Result.Enemy.Guard));
                         if (num > 0)
                             Add(count, num);
-                        break;
+                        continue;
                 }
-            }
-            if (_quests.TryGetValue(214, out var ago))
-            {
-                var count = ago.Count;
-                if (_boss)
+                switch (quest.Id)
                 {
-                    IncrementNth(count, 2);
-                    if (QuestSortie.CompareRank(rank, "B") <= 0)
-                        IncrementNth(count, 3);
-                }
-                if (rank == "S")
-                    IncrementNth(count, 1);
-            }
-            if (_quests.TryGetValue(249, out var q249))
-            {
-                if (_map == 25 && _boss && QuestSortie.CompareRank(rank, "S") == 0)
-                {
-                    var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.Id)
-                        .ToArray();
-                    if (fleet.Intersect(new[] {62, 63, 64, 265, 266, 268, 319, 192, 194}).Count() == 3)
-                        Increment(q249.Count);
-                }
-            }
-            if (_quests.TryGetValue(257, out var q257))
-            {
-                if (_map == 14 && _boss && QuestSortie.CompareRank(rank, "S") == 0)
-                {
-                    var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.ShipType)
-                        .ToArray();
-                    if (fleet[0] == 3 && fleet.Count(s => s == 3) <= 3 && fleet.All(s => s == 2 || s == 3))
-                        Increment(q257.Count);
-                }
-            }
-            if (_quests.TryGetValue(259, out var q259))
-            {
-                if (_map == 51 && _boss && QuestSortie.CompareRank(rank, "S") == 0)
-                {
-                    var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec).ToArray();
-                    // ReSharper disable once IdentifierTypo
-                    var ctype = new[]
-                    {
-                        2, // 伊勢型
-                        19, // 長門型
-                        26, // 扶桑型
-                        37 // 大和型
-                    };
-                    if (fleet.Select(s => s.ShipClass).Count(c => ctype.Contains(c)) == 3 &&
-                        fleet.Count(s => s.ShipType == 3) > 0)
-                    {
-                        Increment(q259.Count);
-                    }
-                }
-            }
-            if (_quests.TryGetValue(264, out var q264))
-            {
-                if (_map == 42 && _boss && QuestSortie.CompareRank(rank, "S") == 0)
-                {
-                    var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec)
-                        .ToArray();
-                    if (fleet.Count(spec => spec.ShipType == 2) >= 2 &&
-                        fleet.Count(spec => spec.IsAircraftCarrier) >= 2)
-                        Increment(q264.Count);
-                }
-            }
-            if (_quests.TryGetValue(266, out var q266))
-            {
-                if (_map == 25 && _boss && QuestSortie.CompareRank(rank, "S") == 0)
-                {
-                    var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.ShipType)
-                        .ToArray();
-                    if (fleet[0] == 2 && fleet.OrderBy(x => x).SequenceEqual(new[] {2, 2, 2, 2, 3, 5}))
-                        Increment(q266.Count);
-                }
-            }
-            if (_quests.TryGetValue(280, out var q280))
-            {
-                if (!(_boss && QuestSortie.CompareRank(rank, "S") == 0))
-                    return;
-                var shipTypes = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.ShipType)
-                    .ToArray();
-                if (!(shipTypes.Count(type => type == 1 || type == 2) >= 3 &&
-                      shipTypes.Any(type => new[] {3, 4, 7, 21}.Contains(type))))
-                    return;
-                var count = q280.Count;
-                switch (_map)
-                {
-                    case 12:
-                        IncrementNth(count, 0);
-                        break;
-                    case 13:
-                        IncrementNth(count, 1);
-                        break;
-                    case 14:
-                        IncrementNth(count, 2);
-                        break;
-                    case 21:
-                        IncrementNth(count, 3);
-                        break;
-                }
-            }
-            if (_quests.TryGetValue(854, out var opz) && _boss)
-            {
-                var count = opz.Count;
-                switch (_map)
-                {
-                    case 24 when QuestSortie.CompareRank(rank, "A") <= 0:
-                        IncrementNth(count, 0);
-                        break;
-                    case 61 when QuestSortie.CompareRank(rank, "A") <= 0:
-                        IncrementNth(count, 1);
-                        break;
-                    case 63 when QuestSortie.CompareRank(rank, "A") <= 0:
-                        IncrementNth(count, 2);
-                        break;
-                    case 64 when QuestSortie.CompareRank(rank, "S") <= 0:
-                        IncrementNth(count, 3);
-                        break;
-                }
-            }
-            if (_quests.TryGetValue(862, out var q862))
-            {
-                if (_map == 63 && _boss && QuestSortie.CompareRank(rank, "A") <= 0)
-                {
-                    var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.ShipType)
-                        .ToArray();
-                    if (fleet.Count(s => s == 3) >= 2 && fleet.Count(s => s == 16) >= 1)
-                        Increment(q862.Count);
-                }
-            }
-            if (_quests.TryGetValue(873, out var q873))
-            {
-                if (_battleInfo.Result.Friend.Main.Count(s => s.NowHp > 0 && s.Spec.ShipType == 3) >= 1 &&
-                    _boss && QuestSortie.CompareRank(rank, "A") <= 0)
-                {
-                    var count = q873.Count;
-                    switch (_map)
-                    {
-                        case 31:
-                            IncrementNth(count, 0);
-                            break;
-                        case 32:
+                    case 214:
+                        if (rank.S)
                             IncrementNth(count, 1);
-                            break;
-                        case 33:
-                            IncrementNth(count, 2);
-                            break;
-                    }
-                }
-            }
-            if (_quests.TryGetValue(875, out var q875))
-            {
-                if (_map == 54 && _boss && QuestSortie.CompareRank(rank, "S") == 0)
-                {
-                    var fleet = _battleInfo.Result.Friend.Main.Where(s => s.NowHp > 0).Select(s => s.Spec.Id).ToArray();
-                    if (fleet.Contains(543) && fleet.Intersect(new[] {344, 345, 359}).Any())
-                        Increment(q875.Count);
-                }
-            }
-            if (_quests.TryGetValue(888, out var q888))
-            {
-                if (!_boss || QuestSortie.CompareRank(rank, "S") != 0)
-                    return;
-                var fleet = from ship in _battleInfo.Result.Friend.Main where ship.NowHp > 0 select ship.Spec.Id;
-                var member = new[]
-                {
-                    69, 272, 427, // 鳥海
-                    61, 264, // 青葉
-                    123, 295, 142, // 衣笠
-                    59, 262, 416, // 古鷹
-                    60, 263, 417, // 加古
-                    51, 213, 477, // 天龍
-                    115, 293 // 夕張
-                };
-                if (fleet.Intersect(member).Count() < 4)
-                    return;
-                var count = q888.Count;
-                switch (_map)
-                {
-                    case 51:
-                        IncrementNth(count, 0);
-                        break;
-                    case 53:
-                        IncrementNth(count, 1);
-                        break;
-                    case 54:
-                        IncrementNth(count, 2);
-                        break;
-                }
-            }
-            if (_quests.TryGetValue(893, out var q893))
-            {
-                if (!_boss || QuestSortie.CompareRank(rank, "S") != 0)
-                    return;
-                var count = q893.Count;
-                switch (_map)
-                {
-                    case 15:
-                        IncrementNth(count, 0);
-                        break;
-                    case 71:
-                        IncrementNth(count, 1);
-                        break;
-                    case 72:
-                        if (_cell == 7)
+                        if (_boss)
                         {
                             IncrementNth(count, 2);
-                            break;
+                            if (rank.B)
+                                IncrementNth(count, 3);
                         }
-                        IncrementNth(count, 3);
                         break;
-                }
-            }
-            if (_quests.TryGetValue(894, out var q894))
-            {
-                if (!_boss ||
-                    QuestSortie.CompareRank(rank, "S") != 0 ||
-                    !_battleInfo.Result.Friend.Main.Any(s => s.Spec.IsAircraftCarrier && s.NowHp > 0))
-                    return;
-                var count = q894.Count;
-                switch (_map)
-                {
-                    case 13:
-                        IncrementNth(count, 0);
+                    case 249:
+                        if (_map == 25 && _boss && rank.S &&
+                            specs.Ids.Intersect(new[] {62, 63, 64, 265, 266, 268, 319, 192, 194}).Count() == 3)
+                        {
+                            Increment(count);
+                        }
                         break;
-                    case 14:
-                        IncrementNth(count, 1);
+                    case 257:
+                        if (_map == 14 && _boss && rank.S &&
+                            specs.FlagshipType == 3 &&
+                            specs.Types.Count(s => s == 3) <= 3 &&
+                            specs.Types.All(s => s == 2 || s == 3))
+                        {
+                            Increment(count);
+                        }
                         break;
-                    case 21:
-                        IncrementNth(count, 2);
+                    case 259:
+                        if (_map == 51 && _boss && rank.S &&
+                            specs.Types.Count(type => type == 3) > 0 &&
+                            specs.Classes.Count(c => new[]
+                            {
+                                2, // 伊勢型
+                                19, // 長門型
+                                26, // 扶桑型
+                                37 // 大和型
+                            }.Contains(c)) == 3)
+                        {
+                            Increment(count);
+                        }
                         break;
-                    case 22:
-                        IncrementNth(count, 3);
+                    case 264:
+                        if (_map == 42 && _boss && rank.S &&
+                            specs.Types.Count(type => type == 2) >= 2 &&
+                            specs.Specs.Count(spec => spec.IsAircraftCarrier) >= 2)
+                        {
+                            Increment(count);
+                        }
                         break;
-                    case 23:
-                        IncrementNth(count, 4);
+                    case 266:
+                        if (_map == 25 && _boss && rank.S &&
+                            specs.FlagshipType == 2 &&
+                            specs.Types.OrderBy(x => x).SequenceEqual(new[] {2, 2, 2, 2, 3, 5}))
+                        {
+                            Increment(count);
+                        }
+                        break;
+                    case 280:
+                        if (!(_boss && rank.S))
+                            return;
+                        if (!(specs.Types.Count(type => type == 1 || type == 2) >= 3 &&
+                              specs.Types.Any(type => new[] {3, 4, 7, 21}.Contains(type))))
+                            return;
+                        switch (_map)
+                        {
+                            case 12:
+                                IncrementNth(count, 0);
+                                break;
+                            case 13:
+                                IncrementNth(count, 1);
+                                break;
+                            case 14:
+                                IncrementNth(count, 2);
+                                break;
+                            case 21:
+                                IncrementNth(count, 3);
+                                break;
+                        }
+                        break;
+                    case 854:
+                        if (_boss)
+                        {
+                            switch (_map)
+                            {
+                                case 24 when rank.A:
+                                    IncrementNth(count, 0);
+                                    break;
+                                case 61 when rank.A:
+                                    IncrementNth(count, 1);
+                                    break;
+                                case 63 when rank.A:
+                                    IncrementNth(count, 2);
+                                    break;
+                                case 64 when rank.S:
+                                    IncrementNth(count, 3);
+                                    break;
+                            }
+                        }
+                        break;
+                    case 862:
+                        if (_map == 63 && _boss && rank.A &&
+                            specs.Types.Count(s => s == 3) >= 2 &&
+                            specs.Types.Count(s => s == 16) >= 1)
+                        {
+                            Increment(count);
+                        }
+                        break;
+                    case 873:
+                        if (_boss && rank.A &&
+                            specs.Types.Count(type => type == 3) >= 1)
+                        {
+                            switch (_map)
+                            {
+                                case 31:
+                                    IncrementNth(count, 0);
+                                    break;
+                                case 32:
+                                    IncrementNth(count, 1);
+                                    break;
+                                case 33:
+                                    IncrementNth(count, 2);
+                                    break;
+                            }
+                        }
+                        break;
+                    case 875:
+                        if (_map == 54 && _boss && rank.S &&
+                            specs.Ids.Contains(543) &&
+                            specs.Ids.Intersect(new[] {344, 345, 359}).Any())
+                        {
+                            Increment(count);
+                        }
+                        break;
+                    case 888:
+                        if (!_boss || !rank.S)
+                            return;
+                        var member = new[]
+                        {
+                            69, 272, 427, // 鳥海
+                            61, 264, // 青葉
+                            123, 295, 142, // 衣笠
+                            59, 262, 416, // 古鷹
+                            60, 263, 417, // 加古
+                            51, 213, 477, // 天龍
+                            115, 293 // 夕張
+                        };
+                        if (specs.Ids.Intersect(member).Count() < 4)
+                            return;
+                        switch (_map)
+                        {
+                            case 51:
+                                IncrementNth(count, 0);
+                                break;
+                            case 53:
+                                IncrementNth(count, 1);
+                                break;
+                            case 54:
+                                IncrementNth(count, 2);
+                                break;
+                        }
+                        break;
+                    case 893:
+                        if (!_boss || !rank.S)
+                            return;
+                        switch (_map)
+                        {
+                            case 15:
+                                IncrementNth(count, 0);
+                                break;
+                            case 71:
+                                IncrementNth(count, 1);
+                                break;
+                            case 72:
+                                if (_cell == 7)
+                                {
+                                    IncrementNth(count, 2);
+                                    break;
+                                }
+                                IncrementNth(count, 3);
+                                break;
+                        }
+                        break;
+                    case 894:
+                        if (!_boss || !rank.S ||
+                            !specs.Specs.Any(spec => spec.IsAircraftCarrier))
+                            return;
+                        switch (_map)
+                        {
+                            case 13:
+                                IncrementNth(count, 0);
+                                break;
+                            case 14:
+                                IncrementNth(count, 1);
+                                break;
+                            case 21:
+                                IncrementNth(count, 2);
+                                break;
+                            case 22:
+                                IncrementNth(count, 3);
+                                break;
+                            case 23:
+                                IncrementNth(count, 4);
+                                break;
+                        }
                         break;
                 }
             }
@@ -467,31 +468,35 @@ namespace KancolleSniffer.Model
 
         public void InspectPracticeResult(dynamic json)
         {
+            var rank = new Rank(json.api_win_rank);
+            var specs = new ResultShipSpecs(_battleInfo);
             foreach (var quest in _quests.Values)
             {
                 var count = quest.Count;
-                if (!(count.Spec is QuestPractice practice))
+                if (count.Spec is QuestPractice practice)
+                {
+                    if (practice.Check(json.api_win_rank))
+                        Increment(count);
                     continue;
-                if (practice.Check(json.api_win_rank))
-                    Increment(count);
-            }
-            if (_quests.TryGetValue(318, out var q318))
-            {
-                if (_questFleet == 0 && QuestSortie.CompareRank(json.api_win_rank, "B") <= 0 &&
-                    _battleInfo.Result.Friend.Main.Count(s => s.Spec.ShipType == 3) >= 2)
-                {
-                    Increment(q318.Count);
                 }
-            }
-            if (_quests.TryGetValue(330, out var q330))
-            {
-                var fleet = _battleInfo.Result.Friend.Main;
-                if (QuestSortie.CompareRank(json.api_win_rank, "B") <= 0 &&
-                    fleet.Count(s => s.Spec.IsAircraftCarrier) >= 2 &&
-                    fleet.Count(s => s.Spec.ShipType == 2) >= 2 &&
-                    fleet[0].Spec.IsAircraftCarrier)
+                switch (quest.Id)
                 {
-                    Increment(q330.Count);
+                    case 318:
+                        if (_questFleet == 0 && rank.B &&
+                            specs.Types.Count(type => type == 3) >= 2)
+                        {
+                            Increment(count);
+                        }
+                        break;
+                    case 330:
+                        if (rank.B &&
+                            specs.Flagship.IsAircraftCarrier &&
+                            specs.Specs.Count(spec => spec.IsAircraftCarrier) >= 2 &&
+                            specs.Types.Count(type => type == 2) >= 2)
+                        {
+                            Increment(count);
+                        }
+                        break;
                 }
             }
         }
@@ -514,43 +519,44 @@ namespace KancolleSniffer.Model
             foreach (var quest in _quests.Values)
             {
                 var count = quest.Count;
-                if (!(count.Spec is QuestMission mission))
+                if (count.Spec is QuestMission mission)
+                {
+                    if (mission.Check(mid))
+                        Increment(count);
                     continue;
-                if (mission.Check(mid))
-                    Increment(count);
-            }
-            if (_quests.TryGetValue(426, out var q426))
-            {
-                var count = q426.Count;
-                switch (mid)
-                {
-                    case 3:
-                        IncrementNth(count, 0);
-                        break;
-                    case 4:
-                        IncrementNth(count, 1);
-                        break;
-                    case 5:
-                        IncrementNth(count, 2);
-                        break;
-                    case 10:
-                        IncrementNth(count, 3);
-                        break;
                 }
-            }
-            if (_quests.TryGetValue(428, out var q428))
-            {
-                var count = q428.Count;
-                switch (mid)
+                switch (quest.Id)
                 {
-                    case 4:
-                        IncrementNth(count, 0);
+                    case 426:
+                        switch (mid)
+                        {
+                            case 3:
+                                IncrementNth(count, 0);
+                                break;
+                            case 4:
+                                IncrementNth(count, 1);
+                                break;
+                            case 5:
+                                IncrementNth(count, 2);
+                                break;
+                            case 10:
+                                IncrementNth(count, 3);
+                                break;
+                        }
                         break;
-                    case 101:
-                        IncrementNth(count, 1);
-                        break;
-                    case 102:
-                        IncrementNth(count, 2);
+                    case 428:
+                        switch (mid)
+                        {
+                            case 4:
+                                IncrementNth(count, 0);
+                                break;
+                            case 101:
+                                IncrementNth(count, 1);
+                                break;
+                            case 102:
+                                IncrementNth(count, 2);
+                                break;
+                        }
                         break;
                 }
             }
@@ -588,16 +594,18 @@ namespace KancolleSniffer.Model
             foreach (var quest in _quests.Values)
             {
                 var count = quest.Count;
-                if (!(count.Spec is QuestDestroyItem destroy))
+                if (count.Spec is QuestDestroyItem destroy)
+                {
+                    if (destroy.Count(count, items))
+                        NeedSave = true;
                     continue;
-                if (destroy.Count(count, items))
+                }
+                if (quest.Id == 680)
+                {
+                    count.NowArray[0] += items.Count(spec => spec.Type == 21);
+                    count.NowArray[1] += items.Count(spec => spec.Type == 12 || spec.Type == 13);
                     NeedSave = true;
-            }
-            if (_quests.TryGetValue(680, out var q680))
-            {
-                q680.Count.NowArray[0] += items.Count(spec => spec.Type == 21);
-                q680.Count.NowArray[1] += items.Count(spec => spec.Type == 12 || spec.Type == 13);
-                NeedSave = true;
+                }
             }
         }
 
