@@ -307,25 +307,25 @@ namespace KancolleSniffer.Model
                         }
                         break;
                     case 280:
-                        if (!(_boss && rank.S))
-                            return;
-                        if (!(specs.Types.Count(type => type == 1 || type == 2) >= 3 &&
-                              specs.Types.Any(type => new[] {3, 4, 7, 21}.Contains(type))))
-                            return;
-                        switch (_map)
+                        if (_boss && rank.S &&
+                            specs.Types.Count(type => type == 1 || type == 2) >= 3 &&
+                            specs.Types.Intersect(new[] {3, 4, 7, 21}).Any())
                         {
-                            case 12:
-                                IncrementNth(count, 0);
-                                break;
-                            case 13:
-                                IncrementNth(count, 1);
-                                break;
-                            case 14:
-                                IncrementNth(count, 2);
-                                break;
-                            case 21:
-                                IncrementNth(count, 3);
-                                break;
+                            switch (_map)
+                            {
+                                case 12:
+                                    IncrementNth(count, 0);
+                                    break;
+                                case 13:
+                                    IncrementNth(count, 1);
+                                    break;
+                                case 14:
+                                    IncrementNth(count, 2);
+                                    break;
+                                case 21:
+                                    IncrementNth(count, 3);
+                                    break;
+                            }
                         }
                         break;
                     case 854:
@@ -383,75 +383,77 @@ namespace KancolleSniffer.Model
                         }
                         break;
                     case 888:
-                        if (!_boss || !rank.S)
-                            return;
-                        var member = new[]
+                        if (_boss && rank.S &&
+                            specs.Ids.Intersect(new[]
+                            {
+                                69, 272, 427, // 鳥海
+                                61, 264, // 青葉
+                                123, 295, 142, // 衣笠
+                                59, 262, 416, // 古鷹
+                                60, 263, 417, // 加古
+                                51, 213, 477, // 天龍
+                                115, 293 // 夕張
+                            }).Count() >= 4)
                         {
-                            69, 272, 427, // 鳥海
-                            61, 264, // 青葉
-                            123, 295, 142, // 衣笠
-                            59, 262, 416, // 古鷹
-                            60, 263, 417, // 加古
-                            51, 213, 477, // 天龍
-                            115, 293 // 夕張
-                        };
-                        if (specs.Ids.Intersect(member).Count() < 4)
-                            return;
-                        switch (_map)
-                        {
-                            case 51:
-                                IncrementNth(count, 0);
-                                break;
-                            case 53:
-                                IncrementNth(count, 1);
-                                break;
-                            case 54:
-                                IncrementNth(count, 2);
-                                break;
+                            switch (_map)
+                            {
+                                case 51:
+                                    IncrementNth(count, 0);
+                                    break;
+                                case 53:
+                                    IncrementNth(count, 1);
+                                    break;
+                                case 54:
+                                    IncrementNth(count, 2);
+                                    break;
+                            }
                         }
                         break;
                     case 893:
-                        if (!_boss || !rank.S)
-                            return;
-                        switch (_map)
+                        if (_boss && rank.S)
                         {
-                            case 15:
-                                IncrementNth(count, 0);
-                                break;
-                            case 71:
-                                IncrementNth(count, 1);
-                                break;
-                            case 72:
-                                if (_cell == 7)
-                                {
+                            switch (_map)
+                            {
+                                case 15:
+                                    IncrementNth(count, 0);
+                                    break;
+                                case 71:
+                                    IncrementNth(count, 1);
+                                    break;
+                                case 72:
+                                    if (_cell == 7)
+                                    {
+                                        IncrementNth(count, 2);
+                                        break;
+                                    }
+                                    IncrementNth(count, 3);
+                                    break;
+                            }
+                            break;
+                        }
+                        return;
+                    case 894:
+                        if (_boss && rank.S &&
+                            specs.Specs.Any(spec => spec.IsAircraftCarrier))
+                        {
+                            switch (_map)
+                            {
+                                case 13:
+                                    IncrementNth(count, 0);
+                                    break;
+                                case 14:
+                                    IncrementNth(count, 1);
+                                    break;
+                                case 21:
                                     IncrementNth(count, 2);
                                     break;
-                                }
-                                IncrementNth(count, 3);
-                                break;
-                        }
-                        break;
-                    case 894:
-                        if (!_boss || !rank.S ||
-                            !specs.Specs.Any(spec => spec.IsAircraftCarrier))
-                            return;
-                        switch (_map)
-                        {
-                            case 13:
-                                IncrementNth(count, 0);
-                                break;
-                            case 14:
-                                IncrementNth(count, 1);
-                                break;
-                            case 21:
-                                IncrementNth(count, 2);
-                                break;
-                            case 22:
-                                IncrementNth(count, 3);
-                                break;
-                            case 23:
-                                IncrementNth(count, 4);
-                                break;
+                                case 22:
+                                    IncrementNth(count, 3);
+                                    break;
+                                case 23:
+                                    IncrementNth(count, 4);
+                                    break;
+                            }
                         }
                         break;
                 }

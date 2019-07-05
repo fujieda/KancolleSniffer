@@ -1153,6 +1153,51 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 280と854以降を同時に遂行していると854以降がカウントされないことがある
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_280_854()
+        {
+            _questInfo.InspectQuestList(CreateQuestList(new[] {280, 854}));
+
+            _battleInfo.InjectResultStatus(
+                ShipStatusList(1, 1, 1, 1, 1, 1), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
+
+            _questCounter.InspectMapNext(Js(new
+            {
+                api_maparea_id = 2,
+                api_mapinfo_no = 4,
+                api_event_id = 5
+            }));
+            _questCounter.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => _questInfo.Quests[1].Count.NowArray[0] == 1);
+        }
+
+        /// <summary>
+        /// 888と893以降を同時に遂行していると893以降がカウントされないことがある
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_888_893()
+        {
+            _questInfo.InspectQuestList(CreateQuestList(new []{888, 893}));
+
+            _battleInfo.InjectResultStatus(
+                ShipStatusList(1, 1, 1, 1, 1, 1), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
+
+            _questCounter.InspectMapNext(Js(new
+            {
+                api_maparea_id = 7,
+                api_mapinfo_no = 1,
+                api_event_id = 5
+
+            }));
+            _questCounter.InspectBattleResult(Js(new {api_win_rank = "S"}));
+            PAssert.That(() => _questInfo.Quests[1].Count.NowArray[1] == 1);
+        }
+
+        /// <summary>
         /// 302: 大規模演習
         /// 303: 「演習」で練度向上！
         /// 304: 「演習」で他提督を圧倒せよ！
