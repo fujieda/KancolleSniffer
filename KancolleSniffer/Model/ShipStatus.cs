@@ -161,48 +161,57 @@ namespace KancolleSniffer.Model
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (Spec.IsAircraftCarrier && EffectiveFirepower == 0 && !CanOpeningAntiSubmarineAttack)
                     return 0;
-                var sonar = false;
-                var dct = false;
-                var dc = false;
-                var special = false;
-                var aircraft = false;
-                var all = 0.0;
-                foreach (var spec in Slot.Select(item => item.Spec))
+                var check = new AntiSubmarineChecker(Slot);
+                var vanilla = ShipAntiSubmarine;
+                if (vanilla == 0 && !check.Aircraft) // 素対潜0で航空機なしは対潜攻撃なし
+                    return 0;
+                var bonus = 1.0;
+                if (check.DCT && check.DC)
+                    bonus = 1.1;
+                if (check.Sonar && (check.DCT || check.DC || check.SpecialDCT))
+                    bonus = 1.15;
+                if (check.Sonar && check.DCT && check.DC)
+                    bonus = 1.15 * 1.25;
+                var levelBonus = Slot.Sum(item => item.AntiSubmarineLevelBonus);
+                return bonus * (Sqrt(vanilla) * 2 + check.All * 1.5 + levelBonus + (check.Aircraft ? 8 : 13));
+            }
+        }
+
+        private class AntiSubmarineChecker
+        {
+            public readonly bool Sonar;
+            public readonly bool DCT;
+            public readonly bool DC;
+            public readonly bool SpecialDCT;
+            public readonly bool Aircraft;
+            public readonly double All;
+
+            public AntiSubmarineChecker(IEnumerable<ItemStatus> items)
+            {
+                foreach (var spec in items.Select(item => item.Spec))
                 {
                     if (spec.IsSonar)
                     {
-                        sonar = true;
+                        Sonar = true;
                     }
                     else if (spec.IsDCT)
                     {
-                        dct = true;
+                        DCT = true;
                     }
                     else if (spec.IsDC)
                     {
-                        dc = true;
+                        DC = true;
                     }
                     else if (spec.IsSpecialDCT)
                     {
-                        special = true;
+                        SpecialDCT = true;
                     }
                     else if (spec.IsAircraft)
                     {
-                        aircraft = true;
+                        Aircraft = true;
                     }
-                    all += spec.EffectiveAntiSubmarine;
+                    All += spec.EffectiveAntiSubmarine;
                 }
-                var vanilla = ShipAntiSubmarine;
-                if (vanilla == 0 && !aircraft) // 素対潜0で航空機なしは対潜攻撃なし
-                    return 0;
-                var bonus = 1.0;
-                if (dct && dc)
-                    bonus = 1.1;
-                if (sonar && (dct || dc || special))
-                    bonus = 1.15;
-                if (sonar && dct && dc)
-                    bonus = 1.15 * 1.25;
-                var levelBonus = Slot.Sum(item => item.AntiSubmarineLevelBonus);
-                return bonus * (Sqrt(vanilla) * 2 + all * 1.5 + levelBonus + (aircraft ? 8 : 13));
             }
         }
 
