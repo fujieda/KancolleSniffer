@@ -363,6 +363,19 @@ namespace KancolleSniffer.Model
 
         public int EffectiveAntiAirForFleet => (int)AllSlot.Sum(item => item.EffectiveAntiAirForFleet);
 
+        public double AntiAirPropellantBarrageChance
+        {
+            get
+            {
+                var launcherCount = Slot.Count(item => item.Spec.Id == 274);
+                if (launcherCount == 0)
+                    return 0;
+                var iseClass = Spec.ShipClass == 2;
+                var baseChance = (EffectiveAntiAirForShip + Lucky) / 282.0;
+                return (baseChance + 0.15 * (launcherCount - 1) + (iseClass ? 0.25 : 0)) * 100;
+            }
+        }
+
         public int EffectiveFuelMax => Max((int)(Spec.FuelMax * (Level >= 100 ? 0.85 : 1.0)), 1);
 
         public int EffectiveBullMax => Max((int)(Spec.BullMax * (Level >= 100 ? 0.85 : 1.0)), 1);

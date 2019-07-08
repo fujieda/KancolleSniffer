@@ -614,5 +614,105 @@ namespace KancolleSniffer.Test
                 Assert.AreEqual("83.8", ship.EffectiveAntiSubmarine.ToString("f1"), "三種コンビネーションにならない");
             }
         }
+
+        // ReSharper disable once InconsistentNaming
+        private static readonly ItemStatus A12cm30連装噴進砲改二 = new ItemStatus
+        {
+            Id = 1,
+            Spec = new ItemSpec
+            {
+                Id = 274,
+                Type = 21,
+                IconType = 15,
+                AntiAir = 8
+            }
+        };
+
+        // ReSharper disable once InconsistentNaming
+        private static readonly ItemStatus A25mm三連装機銃集中配備 = new ItemStatus
+        {
+            Id = 1,
+            Spec = new ItemSpec{
+                Id = 131,
+                Type = 21,
+                IconType = 15,
+                AntiAir = 9
+            }
+        };
+
+        [TestClass]
+        public class AntiAirPropellantBarrageChance
+        {
+            private ShipStatus _ship;
+
+            [TestInitialize]
+            public void Initialize()
+            {
+                _ship =new ShipStatus
+                {
+                    AntiAir = 93,
+                    Lucky = 46,
+                    Spec = new ShipSpec
+                    {
+                        ShipType = 4,
+                    },
+                    Slot = new ItemStatus[0]
+                };
+            }
+
+            [TestMethod]
+            public void 噴進砲改二なし()
+            {
+                Assert.AreEqual(0, _ship.AntiAirPropellantBarrageChance);
+            }
+
+            [TestMethod]
+            public void 噴進砲改二1つ()
+            {
+                _ship.AntiAir = 85 + 8;
+                _ship.Slot = new[]
+                {
+                    A12cm30連装噴進砲改二
+                };
+                Assert.AreEqual("63.1", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
+            }
+
+            [TestMethod]
+            public void 噴進砲改二2つ()
+            {
+                _ship.AntiAir = 85 + 16;
+                _ship.Slot = new[]
+                {
+                    A12cm30連装噴進砲改二,
+                    A12cm30連装噴進砲改二
+                };
+                Assert.AreEqual("95.1", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
+            }
+
+            [TestMethod]
+            public void 噴進砲改二2つと機銃()
+            {
+                _ship.AntiAir = 85 + 25;
+                _ship.Slot = new[]
+                {
+                    A12cm30連装噴進砲改二,
+                    A12cm30連装噴進砲改二,
+                    A25mm三連装機銃集中配備
+                };
+                Assert.AreEqual("114.3", _ship.AntiAirPropellantBarrageChance.ToString("f1"), "噴進砲改二2+機銃");
+            }
+
+            [TestMethod]
+            public void 伊勢型()
+            {
+                _ship.AntiAir = 85 + 8;
+                _ship.Slot = new[]
+                {
+                    A12cm30連装噴進砲改二
+                };
+                _ship.Spec.ShipClass = 2;
+                Assert.AreEqual("88.1", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
+            }
+        }
     }
 }
