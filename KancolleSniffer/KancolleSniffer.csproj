@@ -184,6 +184,7 @@
     <Compile Include="Model\ItemInfo.cs" />
     <Compile Include="Model\Status.cs" />
     <Compile Include="View\ShipNameWidth.cs" />
+    <Compile Include="View\StringTruncator.cs" />
     <Compile Include="View\SwipeScrollify.cs" />
     <Compile Include="Net\SystemProxy.cs" />
     <Compile Include="TextGenerator.cs" />

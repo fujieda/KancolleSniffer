@@ -23,8 +23,6 @@ namespace KancolleSniffer.View
 {
     public class FleetSpec
     {
-        private static readonly Font Font = new Control().Font;
-
         public static Record[] Create(Sniffer sniffer)
         {
             var list = new List<Record>();
@@ -146,22 +144,8 @@ namespace KancolleSniffer.View
 
             private static string GenEquipString(ItemStatus item)
             {
-                var name = item.Spec.Name;
-                var attr = item.Level == 0 ? "" : "★" + item.Level;
-                var proposed = new Size(int.MaxValue, int.MaxValue);
-                var maxWidth = item.Spec.IsAircraft ? 132 : 180;
-                var result = name + attr;
-                if (TextRenderer.MeasureText(result, Font, proposed).Width <= maxWidth)
-                    return result;
-                var truncated = "";
-                foreach (var ch in name)
-                {
-                    var tmp = truncated + ch;
-                    if (TextRenderer.MeasureText(tmp + attr, Font, proposed).Width > maxWidth)
-                        break;
-                    truncated = tmp;
-                }
-                return truncated + attr;
+                var level = item.Level == 0 ? "" : "★" + item.Level;
+                return StringTruncator.Truncate(item.Spec.Name, level, item.Spec.IsAircraft ? 132 : 180) + level;
             }
 
             public static Record CreateFleetRecord(IReadOnlyList<Fleet> fleets, int number)

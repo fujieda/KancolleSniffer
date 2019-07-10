@@ -14,6 +14,7 @@
 
 using System.Drawing;
 using ExpressionToCodeLib;
+using KancolleSniffer.Model;
 using KancolleSniffer.View;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -31,7 +32,7 @@ namespace KancolleSniffer.Test
         public void ExchangeFleetMember()
         {
             var sniffer = new Sniffer();
-            var expected = new FleetSpec.Record()
+            var expected = new FleetSpec.Record
             {
                 AircraftSpec = "",
                 Color = SystemColors.Control,
@@ -77,6 +78,33 @@ namespace KancolleSniffer.Test
             SnifferTest.SniffLogFile(sniffer, "speed_001");
             var table = FleetSpec.Create(sniffer);
             PAssert.That(() => table[0].Fleet == "第一 高速+" && table[37].Fleet == "第二 高速");
+        }
+
+        [TestMethod]
+        public void ItemString()
+        {
+            var item = new ItemStatus
+            {
+                Spec = new ItemSpec
+                {
+                    Name = "大発動艇(八九式中戦車&陸戦隊)"
+                }
+            };
+            Assert.AreEqual(item.Spec.Name, FleetSpec.Record.CreateItemRecord(item, 7, 7).Equip);
+            item.Level = 10;
+            Assert.AreEqual("大発動艇(八九式中戦車&陸戦★10", FleetSpec.Record.CreateItemRecord(item, 7, 7).Equip);
+
+            var aircraft = new ItemStatus
+            {
+                Spec = new ItemSpec
+                {
+                    Name = "零式艦戦53型(岩本隊)",
+                    Type = 6
+                }
+            };
+            Assert.AreEqual(aircraft.Spec.Name, FleetSpec.Record.CreateItemRecord(aircraft, 7, 7).Equip);
+            aircraft.Level = 10;
+            Assert.AreEqual("零式艦戦53型(岩本★10", FleetSpec.Record.CreateItemRecord(aircraft, 7, 7).Equip);
         }
     }
 }

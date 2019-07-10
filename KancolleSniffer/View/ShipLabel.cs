@@ -143,7 +143,7 @@ namespace KancolleSniffer.View
             {
                 _slotStatus = slotStatus;
                 ChangeFont(name);
-                Text = prefix + TruncateString(name, width);
+                Text = prefix + StringTruncator.Truncate(name, "", Scaler.ScaleWidth((int)width), Font);
                 Invalidate(); // 必ずOnPaintを実行させるため
             }
 
@@ -161,21 +161,6 @@ namespace KancolleSniffer.View
                     Location += new Size(0, shift);
                     Font = BaseFont;
                 }
-            }
-
-            private string TruncateString(string name, ShipNameWidth width)
-            {
-                if (TextRenderer.MeasureText(name, Font).Width <= (int)width)
-                    return name;
-                var truncated = "";
-                foreach (var ch in name)
-                {
-                    var tmp = truncated + ch;
-                    if (TextRenderer.MeasureText(tmp, Font).Width > Scaler.ScaleWidth((float)width))
-                        break;
-                    truncated = tmp;
-                }
-                return truncated.TrimEnd(' ');
             }
 
             protected override void OnPaint(PaintEventArgs e)
