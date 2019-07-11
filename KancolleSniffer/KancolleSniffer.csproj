@@ -116,6 +116,7 @@
     <Compile Include="Util\HttpUtility.cs" />
     <Compile Include="View\FleetSpec.cs" />
     <Compile Include="View\GrowLeftLabel.cs" />
+    <Compile Include="View\MainNDockLabels.cs" />
     <Compile Include="View\ShipLabels.cs" />
     <Compile Include="View\ShipListPanel\GroupConfigLabels.cs" />
     <Compile Include="View\ListScroller.cs" />
@@ -148,7 +149,7 @@
     <Compile Include="View\RepairListForMain.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\MainFormLabels.cs" />
+    <Compile Include="View\MainShipLabels.cs" />
     <Compile Include="ListForm.cs">
       <SubType>Form</SubType>
     </Compile>

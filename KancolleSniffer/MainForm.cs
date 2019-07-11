@@ -46,7 +46,8 @@ namespace KancolleSniffer
         private readonly ResizableToolTip _tooltipCopy = new ResizableToolTip {ShowAlways = false, AutomaticDelay = 0};
         private int _currentFleet;
         private bool _combinedFleet;
-        private MainFormLabels _mainLabels;
+        private readonly MainShipLabels _mainLabels = new MainShipLabels();
+        private readonly MainNDockLabels _ndockLabels = new MainNDockLabels();
         private NumberAndHistory _numberAndHistory;
         private readonly ListForm _listForm;
         private readonly NotificationManager _notificationManager;
@@ -107,15 +108,13 @@ namespace KancolleSniffer
 
         private void CreateMainLabels()
         {
-            _mainLabels = new MainFormLabels(new MainFormPanels
+            _mainLabels.CreateAllShipLabels(new MainShipPanels
             {
                 PanelShipInfo = panelShipInfo,
                 Panel7Ships = panel7Ships,
                 PanelCombinedFleet = panelCombinedFleet,
-                PanelNDock = panelDock
-            });
-            _mainLabels.CreateAllShipLabels(ShowShipOnShipList);
-            _mainLabels.CreateNDockLabels(labelNDock_Click);
+            }, ShowShipOnShipList);
+            _ndockLabels.Create(panelDock, labelNDock_Click);
         }
 
         private void CreateNumberAndHistory(NotificationManager manager)
@@ -861,7 +860,7 @@ namespace KancolleSniffer
 
         private void UpdateNDocLabels()
         {
-            _mainLabels.SetNDockLabels(Sniffer.NDock);
+            _ndockLabels.SetName(Sniffer.NDock);
             SetNDockLabel();
         }
 
@@ -935,7 +934,7 @@ namespace KancolleSniffer
             for (var i = 0; i < Sniffer.NDock.Length; i++)
             {
                 var entry = Sniffer.NDock[i];
-                _mainLabels.SetNDockTimer(i, entry.Timer, _now, (Config.ShowEndTime & TimerKind.NDock) != 0);
+                _ndockLabels.SetTimer(i, entry.Timer, _now, (Config.ShowEndTime & TimerKind.NDock) != 0);
             }
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
             for (var i = 0; i < kdock.Length; i++)
