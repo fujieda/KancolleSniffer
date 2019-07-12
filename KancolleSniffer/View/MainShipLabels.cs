@@ -295,6 +295,7 @@ namespace KancolleSniffer.View
                         BackGround = new Label {Location = new Point(x, y), Size = new Size(ParentWidth / 2, LineHeight)}
                     };
                     labels.Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));
+                    labels.SetClickHandler(onClick);
                     labels.SetTag(i);
                     var hpLabel = _combinedLines[i].Hp;
                     hpDisplay.AddHpLabel(hpLabel);
