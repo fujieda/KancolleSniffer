@@ -93,12 +93,6 @@ namespace KancolleSniffer.View
             _combinedLines.Set(first, second);
         }
 
-        public void AdjustAkashiTimers()
-        {
-            _shipLines.AdjustAkashiTimers();
-            _shipLines7.AdjustAkashiTimers();
-        }
-
         public void SetAkashiTimer(IReadOnlyList<ShipStatus> ships, AkashiTimer.RepairSpan[] timers)
         {
             (ships.Count == 7 ? _shipLines7 : _shipLines).SetAkashiTimer(ships, timers);
@@ -180,8 +174,6 @@ namespace KancolleSniffer.View
                 }
             }
 
-            public void AdjustAkashiTimers() => _akashiTimerLines.AdjustAkashiTimers();
-
             public void SetAkashiTimer(IReadOnlyList<ShipStatus> ships, AkashiTimer.RepairSpan[] timers) =>
                 _akashiTimerLabels.SetAkashiTimer(ships, timers);
         }
@@ -191,6 +183,7 @@ namespace KancolleSniffer.View
             private readonly ShipLabels[] _shipLines;
             private readonly Label[] _timerLabels = new Label[ShipInfo.MemberCount];
             private readonly int _lineHeight;
+            private int _originalLeft;
 
             public AkashiTimerLabels(int lineHeight, ShipLabels[] shipLabels)
             {
@@ -200,9 +193,9 @@ namespace KancolleSniffer.View
 
             public void Create(Control parent)
             {
+                const int x = 55;
                 for (var i = 0; i < _timerLabels.Length; i++)
                 {
-                    const int x = 55;
                     var y = 3 + _lineHeight * (i + 1);
                     Label label;
                     parent.Controls.Add(
@@ -210,7 +203,7 @@ namespace KancolleSniffer.View
                             new Label
                             {
                                 Location = new Point(x, y),
-                                Size = new Size(31, 12),
+                                AutoSize = true,
                                 TextAlign = ContentAlignment.TopRight
                             });
                     label.BackColor = CustomColors.ColumnColors.DarkFirst(i);
@@ -219,29 +212,9 @@ namespace KancolleSniffer.View
                     Scaler.Scale(label);
             }
 
-            public void AdjustAkashiTimers()
-            {
-                if (Scaler.ScaleHeight(1f) < 1.2)
-                    return;
-                for (var i = 0; i < _timerLabels.Length; i++)
-                {
-                    const int x = 55;
-                    var y = 3 + _lineHeight * (i + 1);
-                    _timerLabels[i].Location = Scaler.Move(-3, 0, x, y);
-                    _timerLabels[i].Size = new Size(Scaler.ScaleWidth(31) + 1, Scaler.ScaleWidth(12));
-                }
-            }
-
             public void SetAkashiTimer(IReadOnlyList<ShipStatus> ships, AkashiTimer.RepairSpan[] timers)
             {
-                var shortest = -1;
-                for (var i = 0; i < timers.Length; i++)
-                {
-                    if (timers[i].Span <= TimeSpan.Zero)
-                        continue;
-                    if (shortest == -1 || timers[i].Span < timers[shortest].Span)
-                        shortest = i;
-                }
+                var shortest = ShortestSpanIndex(timers);
                 for (var i = 0; i < _timerLabels.Length; i++)
                 {
                     var label = _timerLabels[i];
@@ -249,6 +222,7 @@ namespace KancolleSniffer.View
                     if (i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
                     {
                         label.Visible = false;
+                        label.Left = _originalLeft;
                         shipLabels.Hp.ForeColor = Control.DefaultForeColor;
                         continue;
                     }
@@ -261,13 +235,38 @@ namespace KancolleSniffer.View
                     if (timer.Diff == 0)
                     {
                         shipLabels.Hp.ForeColor = Control.DefaultForeColor;
-                        continue;
                     }
-                    if (i == shortest)
-                        label.ForeColor = CUDColors.Red;
-                    shipLabels.Hp.SetHp(ship.NowHp + timer.Diff, ship.MaxHp);
-                    shipLabels.Hp.ForeColor = Color.DimGray;
+                    else
+                    {
+                        if (i == shortest)
+                            label.ForeColor = CUDColors.Red;
+                        shipLabels.Hp.SetHp(ship.NowHp + timer.Diff, ship.MaxHp);
+                        shipLabels.Hp.ForeColor = Color.DimGray;
+                    }
+                    AdjustAkashiTimer(label, shipLabels.Hp);
                 }
+            }
+
+            private void AdjustAkashiTimer(Control timer, Control hp)
+            {
+                if (_originalLeft == 0)
+                    _originalLeft = timer.Left;
+                const int labelMargin = 3;
+                var overlap = timer.Right - hp.Left - labelMargin;
+                timer.Left = overlap < 0 ? _originalLeft : timer.Left - overlap;
+            }
+
+            private static int ShortestSpanIndex(AkashiTimer.RepairSpan[] timers)
+            {
+                var index = -1; // Spanが全部MinValueかZeroなら-1
+                for (var i = 0; i < timers.Length; i++)
+                {
+                    if (timers[i].Span <= TimeSpan.Zero)
+                        continue;
+                    if (index == -1 || timers[i].Span < timers[index].Span)
+                        index = i;
+                }
+                return index;
             }
         }
 

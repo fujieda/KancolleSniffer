@@ -89,7 +89,6 @@ namespace KancolleSniffer
             SetupQuestPanel();
             panelRepairList.CreateLabels(panelRepairList_Click);
             PerformZoom();
-            _mainLabels.AdjustAkashiTimers();
         }
 
         private void SetScaleFactorOfDpiScaling()
