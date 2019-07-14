@@ -27,92 +27,235 @@ namespace KancolleSniffer.Test
     [TestClass]
     public class ShipLabelTest
     {
-        /// <summary>
-        /// 明石タイマー表示中の艦娘の名前を縮める
-        /// </summary>
-        [TestMethod]
-        public void TruncateNameForAkashiTimer()
+        [TestClass]
+        public class TruncateTest
         {
-            var dict = new Dictionary<string, string>
+            private class TestData : Dictionary<int, Pair[]>
             {
-                {"夕立改二", "夕立改二"},
-                {"千代田航改", "千代田航"},
-                {"千代田航改二", "千代田航"},
-                {"Bismarck改", "Bismarck"},
-                {"Bismarck twei", "Bismarck"},
-                {"Bismarck drei", "Bismarck"},
-                {"Prinz Eugen", "Prinz Eug"},
-                {"Prinz Eugen改", "Prinz Eug"},
-                {"Graf Zeppelin", "Graf Zep"},
-                {"Graf Zeppelin改", "Graf Zep"},
-                {"Libeccio改", "Libeccio"}
-            };
-            TruncateNameSub(dict, ShipNameWidth.AkashiTimer);
-        }
+            }
 
-        /// <summary>
-        /// 入渠中の艦娘名の名前を縮める
-        /// </summary>
-        [TestMethod]
-        public void TruncateNameForNDock()
-        {
-            var dict = new Dictionary<string, string>
+            private class Pair
             {
-                {"千歳航改二", "千歳航改二"},
-                {"Graf Zeppelin", "Graf Zeppeli"},
-                {"Graf Zeppelin改", "Graf Zeppeli"},
-                {"千代田航改二", "千代田航改"}
-            };
-            TruncateNameSub(dict, ShipNameWidth.NDock);
-        }
+                public readonly string Origin;
+                public readonly string Result;
 
-        /// <summary>
-        /// 一覧ウィンドウの要修復一覧の艦娘の名前を縮める
-        /// </summary>
-        [TestMethod]
-        public void TruncateNameForRepairListFull()
-        {
-            var dict = new Dictionary<string, string>
-            {
-                {"Graf Zeppelin", "Graf Zeppelin"},
-                {"Graf Zeppelin改", "Graf Zeppelin"},
-                {"千代田航改二", "千代田航改"}
-            };
-            TruncateNameSub(dict, ShipNameWidth.RepairListFull);
-        }
+                public Pair()
+                {
+                    Origin = "";
+                    Result = "";
+                }
 
-        /// <summary>
-        /// メインパネルの艦娘の名前を縮める
-        /// </summary>
-        [TestMethod]
-        public void TruncateNameForMainPanel()
-        {
-            var dict = new Dictionary<string, string>
-            {
-                {"Commandant Teste", "Commandant Tes"}
-            };
-            TruncateNameSub(dict, ShipNameWidth.MainPanel);
-        }
+                public Pair(string origin, string result)
+                {
+                    Origin = origin;
+                    Result = result;
+                }
+            }
 
-        [TestMethod]
-        public void TruncateNameForShipList()
-        {
-            var dict = new Dictionary<string, string>
+            /// <summary>
+            /// 明石タイマー表示中の艦娘の名前を縮める
+            /// </summary>
+            [TestMethod]
+            public void ForAkashiTimer()
             {
-                {"Commandant Test", "Commandant T"},
-                {"Graf Zeppelin改", "Graf Zeppelin"}
-            };
-            TruncateNameSub(dict, ShipNameWidth.ShipList);
-        }
+                var data = new TestData
+                {
+                    {
+                        100,
+                        new[]
+                        {
+                            new Pair("夕立改二", "夕立改二"),
+                            new Pair("千代田航改", "千代田航"),
+                            new Pair("千代田航改二", "千代田航"),
+                            new Pair("Bismarck改", "Bismarck"),
+                            new Pair("Bismarck zwei", "Bismarck"),
+                            new Pair("Bismarck drei", "Bismarck"),
+                            new Pair("Prinz Eugen", "Prinz Eug"),
+                            new Pair("Prinz Eugen改", "Prinz Eug"),
+                            new Pair("Graf Zeppelin", "Graf Zep"),
+                            new Pair("Graf Zeppelin改", "Graf Zep"),
+                            new Pair("Libeccio改", "Libeccio")
+                        }
+                    },
+                    {
+                        125,
+                        new[]
+                        {
+                            new Pair(),
+                            new Pair(),
+                            new Pair(),
+                            new Pair(),
+                            new Pair(),
+                            new Pair(),
+                            new Pair(),
+                            new Pair(),
+                            new Pair("Graf Zeppelin", "Graf Zepp"),
+                            new Pair("Graf Zeppelin改", "Graf Zepp"),
+                            new Pair("Libeccio改", "Libeccio改")
+                        }
+                    }
+                };
+                TestTruncate(data, ShipNameWidth.AkashiTimer);
+            }
 
-        private void TruncateNameSub(Dictionary<string, string> dict, ShipNameWidth width)
-        {
-            var label = new ShipLabel.Name(Point.Empty, width) {Parent = new Panel()};
-            Scaler.Factor = new SizeF(1, 1);
-            foreach (var entry in dict)
+            /// <summary>
+            /// 入渠中の艦娘名の名前を縮める
+            /// </summary>
+            [TestMethod]
+            public void ForNDock()
             {
-                label.SetName(entry.Key);
-                PAssert.That(() => label.Text == entry.Value, entry.Key);
+                var data = new TestData
+                {
+                    {
+                        100, new[]
+                        {
+                            new Pair("千歳航改二", "千歳航改二"),
+                            new Pair("千代田航改二", "千代田航改"),
+                            new Pair("Graf Zeppelin", "Graf Zeppeli"),
+                            new Pair("Graf Zeppelin改", "Graf Zeppeli")
+                        }
+                    },
+                    {
+                        125, new[]
+                        {
+                            new Pair(),
+                            new Pair(),
+                            new Pair("Graf Zeppelin", "Graf Zeppelin"),
+                            new Pair("Graf Zeppelin改", "Graf Zeppelin")
+                        }
+                    }
+                };
+                TestTruncate(data, ShipNameWidth.NDock);
+            }
+
+            /// <summary>
+            /// 一覧ウィンドウの要修復一覧の艦娘の名前を縮める
+            /// </summary>
+            [TestMethod]
+            public void ForRepairListFull()
+            {
+                var data = new TestData
+                {
+                    {
+                        100,
+                        new[]
+                        {
+                            new Pair("Graf Zeppelin", "Graf Zeppelin"),
+                            new Pair("Graf Zeppelin改", "Graf Zeppelin"),
+                            new Pair("千代田航改二", "千代田航改")
+                        }
+                    },
+                    {
+                        125,
+                        new[]
+                        {
+                            new Pair(),
+                            new Pair(),
+                            new Pair("千代田航改二", "千代田航改二")
+                        }
+                    }
+                };
+                TestTruncate(data, ShipNameWidth.RepairListFull);
+            }
+
+            /// <summary>
+            /// メインパネルの艦娘の名前を縮める
+            /// </summary>
+            [TestMethod]
+            public void ForMainPanel()
+            {
+                var data = new TestData
+                {
+                    {
+                        100,
+                        new[]
+                        {
+                            new Pair("Commandant Teste", "Commandant Tes")
+                        }
+                    },
+                    {
+                        125,
+                        new[]
+                        {
+                            new Pair("Commandant Teste", "Commandant Test")
+                        }
+                    }
+                };
+                TestTruncate(data, ShipNameWidth.MainPanel);
+            }
+
+            /// <summary>
+            /// 一覧ウィンドウの艦娘一覧の名前を縮める
+            /// </summary>
+            [TestMethod]
+            public void ForShipList()
+            {
+                var data = new TestData
+                {
+                    {
+                        100,
+                        new[]
+                        {
+                            new Pair("Commandant Teste", "Commandant T"),
+                            new Pair("Graf Zeppelin改", "Graf Zeppelin")
+                        }
+                    },
+                    {
+                        125,
+                        new[]
+                        {
+                            new Pair(),
+                            new Pair("Graf Zeppelin改", "Graf Zeppelin改")
+                        }
+                    }
+                };
+                TestTruncate(data, ShipNameWidth.ShipList);
+            }
+
+            private static readonly Font LatinFont = new Font("Tahoma", 8f);
+
+            private static void TestTruncate(TestData data, ShipNameWidth width)
+            {
+                foreach (var zoom in data.Keys)
+                {
+                    SetScaleFactor(zoom);
+                    var label = CreateLabel(zoom, width);
+                    for (var i = 0; i < data[zoom].Length; i++)
+                    {
+                        var entry = data[zoom][i];
+                        if (string.IsNullOrEmpty(entry.Origin))
+                            entry = data[100][i];
+                        label.SetName(entry.Origin);
+                        Assert.AreEqual(entry.Result, label.Text, $"{entry.Origin}: scale {zoom}");
+                    }
+                }
+            }
+
+            private static ShipLabel.Name CreateLabel(int zoom, ShipNameWidth width)
+            {
+                var label = new ShipLabel.Name(Point.Empty, width) {Parent = new Panel()};
+                label.Parent.Font = ZoomFont(label.Parent.Font, zoom);
+                ShipLabel.Name.LatinFont = ZoomFont(LatinFont, zoom);
+                return label;
+            }
+
+            private static void SetScaleFactor(int zoom)
+            {
+                if (zoom == 100)
+                {
+                    Scaler.Factor = new SizeF(1, 1);
+                    return;
+                }
+                var form = new Form {AutoScaleMode = AutoScaleMode.Font};
+                var prev = form.CurrentAutoScaleDimensions;
+                form.Font = ZoomFont(form.Font, zoom);
+                var cur = form.CurrentAutoScaleDimensions;
+                Scaler.Factor = new SizeF(cur.Width / prev.Width, cur.Height / prev.Height);
+            }
+
+            private static Font ZoomFont(Font font, int zoom)
+            {
+                return zoom == 100 ? font : new Font(font.FontFamily, font.Size * zoom / 100);
             }
         }
 
