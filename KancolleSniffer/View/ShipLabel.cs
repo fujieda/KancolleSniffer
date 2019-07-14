@@ -143,7 +143,8 @@ namespace KancolleSniffer.View
             {
                 _slotStatus = slotStatus;
                 ChangeFont(name);
-                Text = prefix + StringTruncator.Truncate(name, "", Scaler.ScaleWidth((int)width), Font);
+                var realWidth = width == ShipNameWidth.Max ? (int)width : Scaler.ScaleWidth((int)width);
+                Text = prefix + StringTruncator.Truncate(name, "", realWidth, Font);
                 Invalidate(); // 必ずOnPaintを実行させるため
             }
 

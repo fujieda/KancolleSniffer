@@ -53,6 +53,18 @@ namespace KancolleSniffer.Test
             }
 
             /// <summary>
+            /// 文字数制限がない
+            /// </summary>
+            [TestMethod]
+            public void Unlimited()
+            {
+                var label = new ShipLabel.Name(Point.Empty, ShipNameWidth.Max){Parent = new Panel()};
+                var str = "一二三四五六七八九〇一二三四五六七八九〇一二三四五六七八九〇";
+                label.SetName(str);
+                Assert.AreEqual(str, label.Text);
+            }
+
+            /// <summary>
             /// 明石タイマー表示中の艦娘の名前を縮める
             /// </summary>
             [TestMethod]
