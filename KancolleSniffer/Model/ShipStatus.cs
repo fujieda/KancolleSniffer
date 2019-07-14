@@ -367,7 +367,7 @@ namespace KancolleSniffer.Model
         {
             get
             {
-                var launcherCount = Slot.Count(item => item.Spec.Id == 274);
+                var launcherCount = AllSlot.Count(item => item.Spec.Id == 274);
                 if (launcherCount == 0)
                     return 0;
                 var iseClass = Spec.ShipClass == 2;

@@ -678,6 +678,14 @@ namespace KancolleSniffer.Test
             }
 
             [TestMethod]
+            public void 補強増設に噴進砲改二()
+            {
+                _ship.AntiAir = 85 + 8;
+                _ship.SlotEx = A12cm30連装噴進砲改二;
+                Assert.AreEqual("63.1", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
+            }
+
+            [TestMethod]
             public void 噴進砲改二2つ()
             {
                 _ship.AntiAir = 85 + 16;
