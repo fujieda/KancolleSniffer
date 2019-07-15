@@ -503,7 +503,11 @@ namespace KancolleSniffer
         private void PerformZoom()
         {
             if (Config.Zoom == 100)
+            {
+                ShipLabel.Name.BaseFont = Font;
+                ShipLabel.Name.LatinFont = LatinFont();
                 return;
+            }
             var prev = CurrentAutoScaleDimensions;
             foreach (var control in new Control[]
             {
@@ -512,15 +516,26 @@ namespace KancolleSniffer
                 contextMenuStripMain, _errorDialog
             })
             {
-                control.Font = new Font(control.Font.FontFamily, control.Font.Size * Config.Zoom / 100);
+                control.Font = ZoomFont(control.Font);
             }
             foreach (var toolTip in new[] {_toolTip, _tooltipCopy})
             {
-                toolTip.Font = new Font(toolTip.Font.FontFamily, toolTip.Font.Size * Config.Zoom / 100);
+                toolTip.Font = ZoomFont(toolTip.Font);
             }
-            ShipLabel.Name.LatinFont = new Font("Tahoma", 8f * Config.Zoom / 100);
+            ShipLabel.Name.BaseFont = Font;
+            ShipLabel.Name.LatinFont = LatinFont();
             var cur = CurrentAutoScaleDimensions;
             Scaler.Factor = Scaler.Scale(cur.Width / prev.Width, cur.Height / prev.Height);
+        }
+
+        private Font ZoomFont(Font font)
+        {
+            return new Font(font.FontFamily, font.Size * Config.Zoom / 100);
+        }
+
+        private Font LatinFont()
+        {
+            return new Font("Tahoma", 8f * Config.Zoom / 100);
         }
 
         private void RestoreLocation()

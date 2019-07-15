@@ -28,8 +28,6 @@ namespace KancolleSniffer.View
     {
         protected Color InitialBackColor;
 
-        protected Font BaseFont => Parent.Font;
-
         public override Color BackColor
         {
             get => base.BackColor;
@@ -55,7 +53,8 @@ namespace KancolleSniffer.View
             private SlotStatus _slotStatus;
             private readonly ShipNameWidth _defaultWidth;
 
-            public static Font LatinFont { get; set; } = new Font("Tahoma", 8f);
+            public static Font LatinFont { get; set; }
+            public static Font BaseFont { get; set; }
 
             public Name(Point location, ShipNameWidth defaultWidth)
             {
@@ -152,12 +151,12 @@ namespace KancolleSniffer.View
             {
                 var lu = new Regex(@"^\p{Lu}").IsMatch(name);
                 var shift = Scaler.ScaleHeight(1);
-                if (lu && Font.Equals(BaseFont))
+                if (lu && !Font.Equals(LatinFont))
                 {
                     Location += new Size(0, -shift);
                     Font = LatinFont;
                 }
-                else if (!lu && !Font.Equals(BaseFont))
+                else if (!lu && Font.Equals(LatinFont))
                 {
                     Location += new Size(0, shift);
                     Font = BaseFont;
@@ -214,7 +213,6 @@ namespace KancolleSniffer.View
             public override void Set(ShipStatus status)
             {
                 _status = status;
-                Font = BaseFont;
                 Text = _hpPercent
                     ? $"{(int)Floor(status.NowHp * 100.0 / status.MaxHp):D}%"
                     : $"{status.NowHp:D}/{status.MaxHp:D}";

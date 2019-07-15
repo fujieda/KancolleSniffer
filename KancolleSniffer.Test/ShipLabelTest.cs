@@ -224,14 +224,13 @@ namespace KancolleSniffer.Test
                 TestTruncate(data, ShipNameWidth.ShipList);
             }
 
-            private static readonly Font LatinFont = new Font("Tahoma", 8f);
-
             private static void TestTruncate(TestData data, ShipNameWidth width)
             {
                 foreach (var zoom in data.Keys)
                 {
                     SetScaleFactor(zoom);
-                    var label = CreateLabel(zoom, width);
+                    var label = new ShipLabel.Name(Point.Empty, width);
+                    label.Font = ShipLabel.Name.BaseFont;
                     for (var i = 0; i < data[zoom].Length; i++)
                     {
                         var entry = data[zoom][i];
@@ -243,31 +242,27 @@ namespace KancolleSniffer.Test
                 }
             }
 
-            private static ShipLabel.Name CreateLabel(int zoom, ShipNameWidth width)
-            {
-                var label = new ShipLabel.Name(Point.Empty, width) {Parent = new Panel()};
-                label.Parent.Font = ZoomFont(label.Parent.Font, zoom);
-                ShipLabel.Name.LatinFont = ZoomFont(LatinFont, zoom);
-                return label;
-            }
-
             private static void SetScaleFactor(int zoom)
             {
+                var form = new Form {AutoScaleMode = AutoScaleMode.Font};
                 if (zoom == 100)
                 {
                     Scaler.Factor = new SizeF(1, 1);
+                    ShipLabel.Name.BaseFont = form.Font;
+                    ShipLabel.Name.LatinFont = LatinFont(100);
                     return;
                 }
-                var form = new Form {AutoScaleMode = AutoScaleMode.Font};
                 var prev = form.CurrentAutoScaleDimensions;
-                form.Font = ZoomFont(form.Font, zoom);
+                form.Font = new Font(form.Font.FontFamily, form.Font.Size * zoom / 100);
+                ShipLabel.Name.BaseFont = form.Font;
+                ShipLabel.Name.LatinFont = LatinFont(zoom);
                 var cur = form.CurrentAutoScaleDimensions;
                 Scaler.Factor = new SizeF(cur.Width / prev.Width, cur.Height / prev.Height);
             }
 
-            private static Font ZoomFont(Font font, int zoom)
+            private static Font LatinFont(int zoom)
             {
-                return zoom == 100 ? font : new Font(font.FontFamily, font.Size * zoom / 100);
+                return new Font("Tahoma", 8f * zoom / 100);
             }
         }
 
