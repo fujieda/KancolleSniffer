@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View
 {
@@ -67,25 +68,55 @@ namespace KancolleSniffer.View
                 var forFleet = new[] {1.0, 1.2, 1.6}.Select(r => (int)(rawForFleet * r) * 2 / 1.3).ToArray();
                 _table.Add(new Record
                 {
-                    Fleet = fn[fleet.Number] + " : " + string.Join("/", forFleet.Select(x => x.ToString("f1")))
+                    Fleet = fn[fleet.Number] + " 防空" + string.Join("/", forFleet.Select(x => x.ToString("f1")))
                 });
                 foreach (var ship in ships)
                 {
-                    var rate = ship.EffectiveAntiAirForShip / 4.0;
-                    var diff = forFleet.Select(x => (x + ship.EffectiveAntiAirForShip) / 10.0);
-                    _table.Add(new Record
-                    {
-                        Ship = ship.Name + " Lv" + ship.Level +
-                               " : " + ship.EffectiveAntiAirForShip.ToString("d"),
-                        Id = ship.Id
-                    });
-                    _table.Add(new Record
-                    {
-                        Rate = "割合: " + rate.ToString("f1") + "% ",
-                        Diff = "固定: " + string.Join("/", diff.Select(d => d.ToString("f1")))
-                    });
+                    _table.Add(CreateShipRecord(ship));
+                    _table.Add(CreateAntiAirRecord(forFleet, ship));
                 }
             }
+        }
+
+        private Record CreateShipRecord(ShipStatus ship)
+        {
+            var param = " Lv" + ship.Level +
+                        " 加重" + ship.EffectiveAntiAirForShip.ToString("d") +
+                        AntiAirPropellantBarrageChange(ship);
+            var name = ship.Name;
+            var realWidth = Scaler.ScaleWidth(ListForm.PanelWidth - 10);
+            return new Record
+            {
+                Ship = StringTruncator.Truncate(name, param, realWidth, GetFont(name)) + param,
+                Id = ship.Id
+            };
+        }
+
+        private Record CreateAntiAirRecord(double[] forFleet, ShipStatus ship)
+        {
+            var rate = ship.EffectiveAntiAirForShip / 4.0;
+            var diff = forFleet.Select(x => (x + ship.EffectiveAntiAirForShip) / 10.0);
+            return new Record
+            {
+                Rate = "割合" + rate.ToString("f1") + "% ",
+                Diff = "固定" + string.Join("/", diff.Select(d => d.ToString("f1")))
+            };
+        }
+
+        private static Font GetFont(string name)
+        {
+            return ShipLabel.Name.StartWithLetter(name)
+                ? ShipLabel.Name.LatinFont
+                : ShipLabel.Name.BaseFont;
+        }
+
+        private static string AntiAirPropellantBarrageChange(ShipStatus ship)
+        {
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (ship.AntiAirPropellantBarrageChance == 0)
+                return "";
+            var chance = ship.AntiAirPropellantBarrageChance;
+            return " 弾幕" + chance.ToString(chance >= 100 ? "d" : "f1");
         }
 
         private void CreateLabels()

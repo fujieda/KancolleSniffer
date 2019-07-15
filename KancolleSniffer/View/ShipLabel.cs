@@ -149,7 +149,7 @@ namespace KancolleSniffer.View
 
             private void ChangeFont(string name)
             {
-                var lu = new Regex(@"^\p{Lu}").IsMatch(name);
+                var lu = StartWithLetter(name);
                 var shift = Scaler.ScaleHeight(1);
                 if (lu && !Font.Equals(LatinFont))
                 {
@@ -161,6 +161,11 @@ namespace KancolleSniffer.View
                     Location += new Size(0, shift);
                     Font = BaseFont;
                 }
+            }
+
+            public static bool StartWithLetter(string name)
+            {
+                return Regex.IsMatch(name, @"^\p{Lu}");
             }
 
             protected override void OnPaint(PaintEventArgs e)
