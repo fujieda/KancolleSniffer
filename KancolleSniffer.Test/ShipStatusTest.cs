@@ -674,7 +674,7 @@ namespace KancolleSniffer.Test
                 {
                     A12cm30連装噴進砲改二
                 };
-                Assert.AreEqual("63.1", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
+                Assert.AreEqual("61.7", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
             }
 
             [TestMethod]
@@ -682,7 +682,7 @@ namespace KancolleSniffer.Test
             {
                 _ship.AntiAir = 85 + 8;
                 _ship.SlotEx = A12cm30連装噴進砲改二;
-                Assert.AreEqual("63.1", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
+                Assert.AreEqual("61.7", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
             }
 
             [TestMethod]
@@ -694,7 +694,7 @@ namespace KancolleSniffer.Test
                     A12cm30連装噴進砲改二,
                     A12cm30連装噴進砲改二
                 };
-                Assert.AreEqual("95.1", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
+                Assert.AreEqual("93.8", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
             }
 
             [TestMethod]
@@ -707,7 +707,7 @@ namespace KancolleSniffer.Test
                     A12cm30連装噴進砲改二,
                     A25mm三連装機銃集中配備
                 };
-                Assert.AreEqual("114.3", _ship.AntiAirPropellantBarrageChance.ToString("f1"), "噴進砲改二2+機銃");
+                Assert.AreEqual("113.0", _ship.AntiAirPropellantBarrageChance.ToString("f1"), "噴進砲改二2+機銃");
             }
 
             [TestMethod]
@@ -719,7 +719,7 @@ namespace KancolleSniffer.Test
                     A12cm30連装噴進砲改二
                 };
                 _ship.Spec.ShipClass = 2;
-                Assert.AreEqual("88.1", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
+                Assert.AreEqual("86.7", _ship.AntiAirPropellantBarrageChance.ToString("f1"));
             }
         }
     }

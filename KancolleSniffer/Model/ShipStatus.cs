@@ -371,7 +371,7 @@ namespace KancolleSniffer.Model
                 if (launcherCount == 0)
                     return 0;
                 var iseClass = Spec.ShipClass == 2;
-                var baseChance = (EffectiveAntiAirForShip + Lucky) / 282.0;
+                var baseChance = (EffectiveAntiAirForShip + 0.9 * Lucky) / 281.0;
                 return (baseChance + 0.15 * (launcherCount - 1) + (iseClass ? 0.25 : 0)) * 100;
             }
         }
