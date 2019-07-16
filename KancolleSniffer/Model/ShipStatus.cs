@@ -292,6 +292,7 @@ namespace KancolleSniffer.Model
 
                 if (Slot.Any(item => item.Spec.IconType == 45 || item.Spec.IconType == 46) && // 夜戦か夜攻
                     (Spec.Id == 545 || // Saratoga Mk.II
+                     Spec.Id == 599 || // 赤城改二戊
                      Slot.Any(item => item.Spec.Id == 258 || item.Spec.Id == 259))) // 夜間作戦航空要員
                 {
                     return Firepower + Slot.Zip(OnSlot, (item, onSlot) =>
@@ -304,6 +305,7 @@ namespace KancolleSniffer.Model
                             case 242: // Swordfish
                             case 243: // Swordfish Mk.II(熟練)
                             case 244: // Swordfish Mk.III(熟練)
+                            case 320: // 彗星一二型(三一号光電管爆弾搭載機)
                                 a = 0.0;
                                 b = 0.3;
                                 break;
