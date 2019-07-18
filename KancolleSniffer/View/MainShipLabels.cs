@@ -222,7 +222,6 @@ namespace KancolleSniffer.View
                     if (i >= timers.Length || timers[i].Span == TimeSpan.MinValue)
                     {
                         label.Visible = false;
-                        label.Left = _originalLeft;
                         shipLabels.Hp.ForeColor = Control.DefaultForeColor;
                         continue;
                     }
