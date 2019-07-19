@@ -56,14 +56,14 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public AirBaseParams.Range CalcFighterPowerInBase(int slot)
+        public AirCorpsFighterPower.Range CalcFighterPowerInBase(int slot)
         {
             if (!Spec.IsAircraft || slot == 0)
-                return new AirBaseParams.Range();
+                return new AirCorpsFighterPower.Range();
             var withoutAlv =
-                (new AirBaseParams(Spec.Interception * 1.5, Spec.AntiBomber * 2 + Spec.Interception) +
+                (new AirCorpsFighterPower.Pair(Spec.Interception * 1.5, Spec.AntiBomber * 2 + Spec.Interception) +
                  Spec.AntiAir + FighterPowerLevelBonus) * Math.Sqrt(slot);
-            return new AirBaseParams.Range(withoutAlv, AlvBonusInBase);
+            return new AirCorpsFighterPower.Range(withoutAlv, AlvBonusInBase);
         }
 
         private RangeD AlvBonusInBase

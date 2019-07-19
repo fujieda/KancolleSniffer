@@ -657,7 +657,7 @@ namespace KancolleSniffer
 
         public string MiscText => _miscTextInfo.Text;
 
-        public AirBase.BaseInfo[] AirBase => _airBase.AllAirCorps;
+        public AirBase.BaseInfo[] AirBase => _airBase.AllBase;
 
         public CellInfo CellInfo => _cellInfo;
 

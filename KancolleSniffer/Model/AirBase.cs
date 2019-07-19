@@ -30,7 +30,7 @@ namespace KancolleSniffer.Model
             _itemInfo = item;
         }
 
-        public BaseInfo[] AllAirCorps { get; set; }
+        public BaseInfo[] AllBase { get; set; }
 
         public class BaseInfo
         {
@@ -75,20 +75,21 @@ namespace KancolleSniffer.Model
                 }
             }
 
-            public AirBaseParams.Range CalcFighterPower()
+            public AirCorpsFighterPower CalcFighterPower()
             {
-                var reconPlaneBonus = Planes.Aggregate(new AirBaseParams(), (max, plane) =>
+                var reconPlaneBonus = Planes.Aggregate(new AirCorpsFighterPower.Pair(), (max, plane) =>
                 {
                     var bonus = plane.Slot.Spec.ReconPlaneAirBaseBonus;
-                    return AirBaseParams.Max(max, bonus);
+                    return AirCorpsFighterPower.Pair.Max(max, bonus);
                 });
-                return (Planes.Aggregate(new AirBaseParams.Range(), (previous, plane) =>
+                var range = (Planes.Aggregate(new AirCorpsFighterPower.Range(), (previous, plane) =>
                 {
                     if (plane.State != 1)
                         return previous;
                     var current = plane.Slot.CalcFighterPowerInBase(plane.Count);
                     return previous + current;
                 }) * reconPlaneBonus).Floor();
+                return new AirCorpsFighterPower(range);
             }
 
             public int[] CostForSortie => Planes.Aggregate(new[] {0, 0}, (prev, plane) =>
@@ -135,12 +136,12 @@ namespace KancolleSniffer.Model
                 }
             }
 
-            public AirBaseParams.Range FighterPower => Slot.CalcFighterPowerInBase(Count);
+            public AirCorpsFighterPower FighterPower => new AirCorpsFighterPower(Slot.CalcFighterPowerInBase(Count));
         }
 
         public void Inspect(dynamic json)
         {
-            AllAirCorps = (from entry in (dynamic[])json
+            AllBase = (from entry in (dynamic[])json
                 group
                     new AirCorpsInfo
                     {
@@ -161,7 +162,7 @@ namespace KancolleSniffer.Model
 
         public void InspectSetPlane(string request, dynamic json)
         {
-            if (AllAirCorps == null)
+            if (AllBase == null)
                 return;
             var values = HttpUtility.ParseQueryString(request);
             var airCorps = GetBaseInfo(values).AirCorps[int.Parse(values["api_base_id"]) - 1];
@@ -195,7 +196,7 @@ namespace KancolleSniffer.Model
 
         public void InspectSetAction(string request)
         {
-            if (AllAirCorps == null)
+            if (AllBase == null)
                 return;
             var values = HttpUtility.ParseQueryString(request);
             var airCorps = GetBaseInfo(values).AirCorps;
@@ -224,7 +225,7 @@ namespace KancolleSniffer.Model
         private BaseInfo GetBaseInfo(NameValueCollection values)
         {
             var areaId = int.Parse(values["api_area_id"] ?? "0"); // 古いAPIに対応するため
-            return AllAirCorps.First(b => b.AreaId == areaId);
+            return AllBase.First(b => b.AreaId == areaId);
         }
 
         public void InspectPlaneInfo(dynamic json)
@@ -241,10 +242,10 @@ namespace KancolleSniffer.Model
 
         public void SetItemHolder()
         {
-            if (AllAirCorps == null)
+            if (AllBase == null)
                 return;
             var name = new[] {"第一", "第二", "第三"};
-            foreach (var baseInfo in AllAirCorps.Select((data, i) => new {data, i}))
+            foreach (var baseInfo in AllBase.Select((data, i) => new {data, i}))
             {
                 var areaName = baseInfo.data.AreaName;
                 foreach (var airCorps in baseInfo.data.AirCorps.Select((data, i) => new {data, i}))

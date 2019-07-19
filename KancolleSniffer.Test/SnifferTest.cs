@@ -113,9 +113,9 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "airbase_001");
-            PAssert.That(() => (int)sniffer.AirBase[0].AirCorps[0].CalcFighterPower().Max.AirCombat == 301);
+            PAssert.That(() => sniffer.AirBase[0].AirCorps[0].CalcFighterPower().AirCombat.Max == 301);
             sniffer.AirBase[0].AirCorps[0].Action = 2; // 防空
-            PAssert.That(() => (int)sniffer.AirBase[0].AirCorps[0].CalcFighterPower().Max.Interception == 320);
+            PAssert.That(() => sniffer.AirBase[0].AirCorps[0].CalcFighterPower().Interception.Max == 320);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "airbase_002");
-            PAssert.That(() => (int)sniffer.AirBase[0].AirCorps[2].CalcFighterPower().Min.Interception == 353);
+            PAssert.That(() => sniffer.AirBase[0].AirCorps[2].CalcFighterPower().Interception.Min == 353);
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "airbase_003");
-            PAssert.That(() => (int)sniffer.AirBase[1].AirCorps[0].CalcFighterPower().Min.AirCombat == 121);
+            PAssert.That(() => sniffer.AirBase[1].AirCorps[0].CalcFighterPower().AirCombat.Min == 121);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "airbase_004");
-            PAssert.That(() => (int)sniffer.AirBase[1].AirCorps[0].CalcFighterPower().Min.AirCombat == 328);
+            PAssert.That(() => sniffer.AirBase[1].AirCorps[0].CalcFighterPower().AirCombat.Min == 328);
         }
 
         /// <summary>
@@ -173,13 +173,13 @@ namespace KancolleSniffer.Test
 
             // 二式陸上偵察機(熟練)
             var fp1 = sniffer.AirBase[0].AirCorps[0].CalcFighterPower();
-            PAssert.That(() => (int)fp1.Min.AirCombat == 274);
-            PAssert.That(() => (int)fp1.Min.Interception == 302);
+            PAssert.That(() => fp1.AirCombat.Min == 274);
+            PAssert.That(() => fp1.Interception.Min == 302);
 
             // 二式陸上偵察機
             var fp3 = sniffer.AirBase[0].AirCorps[2].CalcFighterPower();
-            PAssert.That(() => (int)fp3.Min.AirCombat == 206);
-            PAssert.That(() => (int)fp3.Min.Interception == 310);
+            PAssert.That(() => fp3.AirCombat.Min == 206);
+            PAssert.That(() => fp3.Interception.Min == 310);
         }
 
         /// <summary>

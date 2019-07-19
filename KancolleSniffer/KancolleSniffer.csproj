@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\AirBaseParams.cs" />
+    <Compile Include="Model\AirCorpsFighterPower.cs" />
     <Compile Include="Model\QuestCounter.cs" />
     <Compile Include="Model\QuestCountList.cs" />
     <Compile Include="Model\QuestSpec.cs" />

@@ -246,7 +246,7 @@ namespace KancolleSniffer.View
             {
                 public AirCorpsRecord(AirBase.AirCorpsInfo airCorps, int number)
                 {
-                    var corpsFp = new AirCorpsFp(airCorps.CalcFighterPower());
+                    var corpsFp = airCorps.CalcFighterPower();
                     string spec;
                     string spec2;
                     if (airCorps.Action == 2)
@@ -276,27 +276,13 @@ namespace KancolleSniffer.View
             {
                 public CorpsPlaneRecord(AirBase.PlaneInfo plane)
                 {
-                    var planeFp = new AirCorpsFp(plane.FighterPower);
+                    var planeFp = plane.FighterPower;
                     Equip = plane.State != 1 ? plane.StateName : GenEquipString(plane.Slot);
                     Spec = plane.State != 1 ? "" : $"+{plane.Slot.Alv} {plane.Count}/{plane.MaxCount}";
                     AircraftSpec =
                         $"距離:{plane.Slot.Spec.Distance} 制空:{RangeString(planeFp.AirCombat)}" +
                         (planeFp.Difference ? $" 防空:{RangeString(planeFp.Interception)}" : "");
                     Color = plane.Slot.Spec.Color;
-                }
-            }
-
-            private class AirCorpsFp
-            {
-                public readonly Range AirCombat;
-                public readonly Range Interception;
-                public readonly bool Difference;
-
-                public AirCorpsFp(AirBaseParams.Range fighterPower)
-                {
-                    AirCombat = new Range(fighterPower.Min.AirCombat, fighterPower.Max.AirCombat);
-                    Interception = new Range(fighterPower.Min.Interception, fighterPower.Min.Interception);
-                    Difference = Interception.Min != AirCombat.Min;
                 }
             }
 
