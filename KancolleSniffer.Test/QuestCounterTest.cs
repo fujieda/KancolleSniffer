@@ -211,7 +211,7 @@ namespace KancolleSniffer.Test
         [TestInitialize]
         public void Initialize()
         {
-            _battleInfo = new BattleInfo(null, null);
+            _battleInfo = new BattleInfo(null, null, null);
             _itemInfo = new ItemInfo(new ItemMaster(), new ItemInventory());
             _questInfo = new QuestInfo(() => new DateTime(2015, 1, 1)) {AcceptMax = 10};
             _questCounter = new QuestCounter(_questInfo, _itemInfo, _battleInfo);

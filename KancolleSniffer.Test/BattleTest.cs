@@ -340,5 +340,45 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "damecon_advance_001");
             PAssert.That(() => sniffer.BadlyDamagedShips.Length == 0);
         }
+
+        /// <summary>
+        /// 迎撃機ありの基地空襲戦
+        /// </summary>
+        [TestMethod]
+        public void AirRaidBattleWithInterceptor()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "airraid_battle_001");
+            var battle = sniffer.Battle;
+            Assert.AreEqual(BattleState.Day, battle.BattleState);
+            Assert.AreEqual(2, battle.AirControlLevel);
+            Assert.AreEqual(425, battle.FighterPower.Min);
+            Assert.AreEqual(231, battle.EnemyFighterPower.AirCombat);
+            Assert.AreEqual(BattleResultRank.P, battle.ResultRank);
+            var ships = battle.Result.Friend.Main;
+            Assert.IsTrue(new[] {200, 200, 200}.SequenceEqual(ships.Select(ship => ship.NowHp)));
+            Assert.IsTrue(new[] {"基地航空隊1", "基地航空隊2", "基地航空隊3"}.SequenceEqual(ships.Select(ship => ship.Name)));
+            Assert.IsTrue(
+                new[] {"烈風改(三五二空/熟練)", "雷電", "雷電", "烈風改"}.SequenceEqual(ships[2].Slot.Select(item => item.Spec.Name)));
+            Assert.IsTrue(new[]{18, 18, 18, 18}.SequenceEqual(ships[2].OnSlot));
+        }
+
+        /// <summary>
+        /// 迎撃機なしの基地航空戦
+        /// </summary>
+        [TestMethod]
+        public void AirRaidBattleWithoutInterceptor()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "airraid_battle_002");
+            var battle = sniffer.Battle;
+            Assert.AreEqual(BattleState.Day, battle.BattleState);
+            Assert.AreEqual(4, battle.AirControlLevel);
+            Assert.AreEqual(0, battle.FighterPower.Min);
+            Assert.AreEqual(231, battle.EnemyFighterPower.AirCombat);
+            Assert.AreEqual(BattleResultRank.C, battle.ResultRank);
+            var ships = battle.Result.Friend.Main;
+            Assert.IsTrue(new[] {82, 174, 147}.SequenceEqual(ships.Select(ship => ship.NowHp)));
+        }
     }
 }

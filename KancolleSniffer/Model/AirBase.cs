@@ -32,11 +32,22 @@ namespace KancolleSniffer.Model
 
         public BaseInfo[] AllBase { get; set; }
 
+        public BaseInfo GetAirBase(int areaId)
+        {
+            return AllBase.FirstOrDefault(b => b.AreaId == areaId);
+        }
+
         public class BaseInfo
         {
             public int AreaId { get; set; }
             public string AreaName => AreaId == 6 ? "中部海域" : "限定海域";
             public AirCorpsInfo[] AirCorps { get; set; }
+
+            public Range CalcInterceptionFighterPower()
+            {
+                return AirCorps.Where(airCorps => airCorps.Action == 2).Aggregate(new Range(0, 0),
+                    (all, cur) => all + cur.CalcFighterPower().Interception);
+            }
         }
 
         public class Distance

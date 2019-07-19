@@ -94,10 +94,10 @@ namespace KancolleSniffer
             _conditionTimer = new ConditionTimer(_shipInfo);
             _dockInfo = new DockInfo(_shipInventory, _materialInfo);
             _akashiTimer = new AkashiTimer(_shipInfo, _dockInfo, _presetDeck);
-            _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
+            _airBase = new AirBase(_itemInfo);
+            _battleInfo = new BattleInfo(_shipInfo, _itemInfo, _airBase);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
             _questCounter = new QuestCounter(_questInfo, _itemInfo, _battleInfo);
-            _airBase = new AirBase(_itemInfo);
             _miscTextInfo = new MiscTextInfo(_shipInfo, _itemInfo);
             _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo, _questInfo};
             AdditionalData = new AdditionalData();

@@ -81,7 +81,7 @@ namespace KancolleSniffer.Test
             _shipInventory = new ShipInventory();
             _shipMaster = new ShipMaster();
             _shipInfo = new ShipInfo(_shipMaster, _shipInventory, _itemInventory);
-            _battleInfo = new BattleInfo(_shipInfo, _itemInfo);
+            _battleInfo = new BattleInfo(_shipInfo, _itemInfo, new AirBase(_itemInfo));
         }
 
         /// <summary>

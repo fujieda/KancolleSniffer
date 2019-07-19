@@ -54,6 +54,7 @@ namespace KancolleSniffer.Model
     {
         private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
+        private readonly AirBase _airBase;
         private Fleet _fleet;
         private Record[] _friend;
         private Record[] _guard;
@@ -93,10 +94,11 @@ namespace KancolleSniffer.Model
             public Combined Enemy { get; set; }
         }
 
-        public BattleInfo(ShipInfo shipInfo, ItemInfo itemInfo)
+        public BattleInfo(ShipInfo shipInfo, ItemInfo itemInfo, AirBase airBase)
         {
             _shipInfo = shipInfo;
             _itemInfo = itemInfo;
+            _airBase = airBase;
         }
 
         public void Port()
@@ -121,6 +123,7 @@ namespace KancolleSniffer.Model
             ResultRank = url.Contains("/ld_") ? CalcLdResultRank() : CalcResultRank();
             SetResult();
         }
+
 
         private void SetFormation(dynamic json)
         {
@@ -273,6 +276,89 @@ namespace KancolleSniffer.Model
                     if (entry.Spec.IsAircraft)
                         EnemyFighterPower.Interception += perSlot;
                 }
+            }
+        }
+
+        public void InspectMapStart(dynamic json)
+        {
+            InspectMapNext(json);
+        }
+
+        public void InspectMapNext(dynamic json)
+        {
+            _lastCell = (int)json.api_next == 0;
+
+            if (!json.api_destruction_battle())
+                return;
+            InspectAirRaidBattle((int)json.api_maparea_id, json.api_destruction_battle);
+        }
+
+        public void InspectAirRaidBattle(int areaId, dynamic json)
+        {
+            SetFormation(json);
+            var attack = json.api_air_base_attack;
+            var stage1 = attack.api_stage1;
+            AirControlLevel = (int)stage1.api_disp_seiku;
+            var ships = (ShipStatus[])CreateShipsForAirBase(json);
+            _friend = Record.Setup(ships, false);
+            _guard = new Record[0];
+            FighterPower = _airBase.GetAirBase(areaId).CalcInterceptionFighterPower();
+            SetupEnemyDamageRecord(json, false);
+            SetEnemyFighterPower();
+            BattleState = BattleState.Day;
+            AddAirBattleResult(json.api_air_base_attack, "空襲");
+            CalcKoukuDamage(json.api_air_base_attack);
+            SetAirRaidResultRank(json);
+            SetResult();
+            CleanupResult();
+        }
+
+        private ShipStatus[] CreateShipsForAirBase(dynamic json)
+        {
+            var nowHps = (int[])json.api_f_nowhps;
+            var maxHps = (int[])json.api_f_maxhps;
+            var maxEq = new[] {18, 18, 18, 18};
+            var ships = nowHps.Select((hp, n) => new ShipStatus
+            {
+                Spec = new ShipSpec {Name = "基地航空隊" + (n + 1), GetMaxEq = () => maxEq},
+                NowHp = nowHps[n],
+                MaxHp = maxHps[n]
+            }).ToArray();
+            var planes = json.api_air_base_attack.api_map_squadron_plane;
+            if (planes == null)
+                return ships;
+            foreach (KeyValuePair<string, dynamic> entry in planes)
+            {
+                var num = int.Parse(entry.Key) - 1;
+                var slot = new List<ItemStatus>();
+                var onSlot = new List<int>();
+                foreach (var plane in entry.Value)
+                {
+                    slot.Add(new ItemStatus {Id = 1, Spec = _itemInfo.GetSpecByItemId((int)plane.api_mst_id)});
+                    onSlot.Add((int)plane.api_count);
+                }
+                ships[num].Slot = slot;
+                ships[num].OnSlot = onSlot.ToArray();
+            }
+            return ships;
+        }
+
+        private void SetAirRaidResultRank(dynamic json)
+        {
+            switch ((int)json.api_lost_kind)
+            {
+                case 1:
+                    ResultRank = BattleResultRank.A;
+                    break;
+                case 2:
+                    ResultRank = BattleResultRank.C;
+                    break;
+                case 3:
+                    ResultRank = BattleResultRank.D;
+                    break;
+                case 4:
+                    ResultRank = BattleResultRank.P;
+                    break;
             }
         }
 
@@ -527,16 +613,6 @@ namespace KancolleSniffer.Model
                 foreach (var ship in _records[1])
                     ship?.CheckDamageControl();
             }
-        }
-
-        public void InspectMapStart(dynamic json)
-        {
-            InspectMapNext(json);
-        }
-
-        public void InspectMapNext(dynamic json)
-        {
-            _lastCell = (int)json.api_next == 0;
         }
 
         public void InspectBattleResult(dynamic json)
