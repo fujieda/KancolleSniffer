@@ -92,7 +92,12 @@ namespace KancolleSniffer.Log
 
         private void WriteNow(string name, string log, string header)
         {
-            _writer(name, FormatDateTime(_nowFunc()) + "," + log, header);
+            Write(name, _nowFunc(), log, header);
+        }
+
+        private void Write(string name, DateTime time, string log, string header)
+        {
+            _writer(name, FormatDateTime(time) + "," + log, header);
         }
 
         public void FlashLog()
@@ -123,8 +128,8 @@ namespace KancolleSniffer.Log
             }
             if ((_logType & LogType.Mission) != 0)
             {
-                _writer("遠征報告書",
-                    string.Join(",", FormatDateTime(_nowFunc()),
+                WriteNow("遠征報告書",
+                    string.Join(",",
                         resStr, json.api_quest_name, string.Join(",", material)),
                     "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材");
             }
@@ -141,9 +146,7 @@ namespace KancolleSniffer.Log
         {
             if ((_logType & LogType.Achievement) != 0 && json.api_get_eo_rate() && (int)json.api_get_eo_rate != 0)
             {
-                _writer("戦果",
-                    FormatDateTime(_nowFunc()) + "," + _lastExp + "," + (int)json.api_get_eo_rate,
-                    "日付,経験値,EO");
+                WriteNow("戦果", _lastExp + "," + (int)json.api_get_eo_rate, "日付,経験値,EO");
             }
             _battleLogger.InspectMapNext(json);
         }
@@ -158,9 +161,7 @@ namespace KancolleSniffer.Log
             {
                 if (entry.api_type != 18)
                     continue;
-                _writer("戦果",
-                    FormatDateTime(_nowFunc()) + "," + _lastExp + "," + (int)entry.api_count,
-                    "日付,経験値,EO");
+                WriteNow("戦果", _lastExp + "," + (int)entry.api_count, "日付,経験値,EO");
                 break;
             }
         }
@@ -179,8 +180,7 @@ namespace KancolleSniffer.Log
                     : (int)result.api_get_exmap_rate;
                 if (rate != 0)
                 {
-                    _writer("戦果", FormatDateTime(_nowFunc()) + "," + _lastExp + "," + rate,
-                        "日付,経験値,EO");
+                    WriteNow("戦果", _lastExp + "," + rate, "日付,経験値,EO");
                 }
             }
             if ((_logType & LogType.Battle) == 0)
@@ -201,9 +201,9 @@ namespace KancolleSniffer.Log
             {
                 if (_lastDate != DateTime.MinValue)
                 {
-                    _writer("戦果", FormatDateTime(_lastDate) + "," + _lastExp + ",0", "日付,経験値,EO");
+                    Write("戦果", _lastDate, _lastExp + ",0", "日付,経験値,EO");
                 }
-                _writer("戦果", FormatDateTime(now) + "," + exp + ",0", "日付,経験値,EO");
+                Write("戦果", now, exp + ",0", "日付,経験値,EO");
                 if (isNewMonth)
                 {
                     _endOfMonth = new DateTime(now.Year, now.Month, DateTime.DaysInMonth(now.Year, now.Month),
@@ -232,7 +232,7 @@ namespace KancolleSniffer.Log
                 return;
             if (_lastDate != DateTime.MinValue)
             {
-                _writer("戦果", FormatDateTime(_lastDate) + "," + _lastExp + ",0", "日付,経験値,EO");
+                Write("戦果", _lastDate, _lastExp + ",0", "日付,経験値,EO");
             }
         }
 
@@ -249,8 +249,7 @@ namespace KancolleSniffer.Log
                 name = spec.Name;
                 type = spec.TypeName;
             }
-            _writer("開発報告書",
-                FormatDateTime(_nowFunc()) + "," +
+            WriteNow("開発報告書",
                 string.Join(",", name, type,
                     values["api_item1"], values["api_item2"], values["api_item3"], values["api_item4"],
                     Secretary(), _basic.api_level),
@@ -271,8 +270,7 @@ namespace KancolleSniffer.Log
             var material = Enumerable.Range(1, 5).Select(i => (int)kdock["api_item" + i]).ToArray();
             var ship = _shipInfo.GetSpec((int)kdock.api_created_ship_id);
             var avail = ((dynamic[])json).Count(e => (int)e.api_state == 0);
-            _writer("建造報告書",
-                FormatDateTime(_nowFunc()) + "," +
+            WriteNow("建造報告書",
                 string.Join(",", material.First() >= 1500 ? "大型艦建造" : "通常艦建造",
                     ship.Name, ship.ShipTypeName, string.Join(",", material), avail, Secretary(), _basic.api_level),
                 "日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv");
@@ -300,8 +298,7 @@ namespace KancolleSniffer.Log
         public void WriteMaterialLog(DateTime now)
         {
             _prevTime = now;
-            _writer("資材ログ",
-                FormatDateTime(now) + "," +
+            Write("資材ログ", now,
                 string.Join(",", _currentMaterial),
                 "日付,燃料,弾薬,鋼材,ボーキ,高速建造材,高速修復材,開発資材,改修資材");
         }
@@ -315,7 +312,6 @@ namespace KancolleSniffer.Log
         {
             if ((_logType & LogType.RemodelSlot) == 0)
                 return;
-            var now = _nowFunc();
             var values = HttpUtility.ParseQueryString(request);
             var id = int.Parse(values["api_slot_id"]);
             var name = _itemInfo.GetName(id);
@@ -339,8 +335,7 @@ namespace KancolleSniffer.Log
             var ships = _shipInfo.Fleets[0].Ships;
             if (!ships[1].Empty)
                 ship2 = ships[1].Name + "(" + ships[1].Level + ")";
-            _writer("改修報告書",
-                FormatDateTime(now) + "," +
+            WriteNow("改修報告書",
                 string.Join(",", name, level, success, certain, useName, useNum,
                     diff[(int)Material.Fuel], diff[(int)Material.Bullet], diff[(int)Material.Steal],
                     diff[(int)Material.Bauxite],
