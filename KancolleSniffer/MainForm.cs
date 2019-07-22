@@ -843,9 +843,18 @@ namespace KancolleSniffer
                 _toolTip.SetToolTip(labelEnemyFighterPowerCaption, "");
             }
             UpdateFighterPower(Sniffer.IsCombinedFleet && battle.EnemyIsCombined);
-            labelFighterPower.ForeColor = new[]
-                {DefaultForeColor, DefaultForeColor, CUDColors.Blue, CUDColors.Green, CUDColors.Orange, CUDColors.Red}[
-                battle.AirControlLevel + 1];
+            labelFighterPower.ForeColor = battle.BattleState != BattleState.Day
+                ? DefaultForeColor
+                : AirControlLevelColor(battle.AirControlLevel);
+        }
+
+        private static Color AirControlLevelColor(int level)
+        {
+            var colors = new[]
+            {
+                DefaultForeColor, DefaultForeColor, CUDColors.Blue, CUDColors.Green, CUDColors.Orange, CUDColors.Red
+            };
+            return colors[level + 1];
         }
 
         private void ShowResultRank()

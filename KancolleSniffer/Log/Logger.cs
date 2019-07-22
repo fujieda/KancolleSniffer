@@ -74,7 +74,7 @@ namespace KancolleSniffer.Log
         {
             _shipInfo = shipInfo;
             _itemInfo = itemInfo;
-            _battleLogger = new BattleLogger(shipInfo, itemInfo, battleInfo, WriteNow);
+            _battleLogger = new BattleLogger(itemInfo, battleInfo, WriteNow);
             _writer = new LogWriter().Write;
             _nowFunc = () => DateTime.Now;
         }
@@ -103,6 +103,11 @@ namespace KancolleSniffer.Log
         public void FlashLog()
         {
             FlashAchievementLog();
+        }
+
+        public void InspectMapInfoMaster(dynamic json)
+        {
+            _battleLogger.InspectMapInfoMaster(json);
         }
 
         public void InspectMissionResult(dynamic json)
@@ -164,11 +169,6 @@ namespace KancolleSniffer.Log
                 WriteNow("戦果", _lastExp + "," + (int)entry.api_count, "日付,経験値,EO");
                 break;
             }
-        }
-
-        public void InspectBattle(dynamic json)
-        {
-            _battleLogger.InspectBattle(json);
         }
 
         public void InspectBattleResult(dynamic result)

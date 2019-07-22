@@ -133,7 +133,6 @@ namespace KancolleSniffer.Model
 
         private void SetAirControlLevel(dynamic json)
         {
-            AirControlLevel = -1;
             if (!json.api_kouku())
                 return;
             var stage1 = json.api_kouku.api_stage1;

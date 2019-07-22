@@ -21,19 +21,23 @@ namespace KancolleSniffer.Log
 {
     public class BattleLogger
     {
-        private readonly ShipInfo _shipInfo;
         private readonly ItemInfo _itemInfo;
         private readonly BattleInfo _battleInfo;
         private readonly Action<string, string, string> _writer;
-        private dynamic _battle;
+        private readonly Dictionary<int, string> _mapName = new Dictionary<int, string>();
         private readonly CellData _cell = new CellData();
 
-        public BattleLogger(ShipInfo shipInfo, ItemInfo itemInfo, BattleInfo battleInfo, Action<string, string, string> writer)
+        public BattleLogger(ItemInfo itemInfo, BattleInfo battleInfo, Action<string, string, string> writer)
         {
-            _shipInfo = shipInfo;
             _itemInfo = itemInfo;
             _battleInfo = battleInfo;
             _writer = writer;
+        }
+
+        public void InspectMapInfoMaster(dynamic json)
+        {
+            foreach (var entry in json)
+                _mapName[(int)entry.api_id] = entry.api_name;
         }
 
         private class CellData
@@ -59,7 +63,6 @@ namespace KancolleSniffer.Log
         {
             _cell.Start = true;
             _cell.Set(json);
-            _battle = null;
         }
 
         public void InspectMapNext(dynamic json)
@@ -67,20 +70,10 @@ namespace KancolleSniffer.Log
             _cell.Set(json);
         }
 
-        public void InspectBattle(dynamic json)
-        {
-            if (_battle != null) // 通常の夜戦は無視する
-                return;
-            _battle = json;
-        }
-
         public void InspectBattleResult(dynamic result)
         {
-            if (result.disabled() || _battle == null)
-            {
-                _battle = null;
+            if (result.disabled())
                 return;
-            }
             var fShips = GenerateFriendShipList();
             var eShips = GenerateEnemyShipList();
             var boss = "";
@@ -105,37 +98,36 @@ namespace KancolleSniffer.Log
                 else
                     dropName += "+" + itemName;
             }
-            var fp = _shipInfo.Fleets[(int)_battle.api_deck_id - 1].FighterPower;
+            var fp = _battleInfo.FighterPower;
             var fPower = fp.Diff ? fp.RangeString : fp.Min.ToString();
             _writer("海戦・ドロップ報告書", string.Join(",",
-                    result.api_quest_name,
+                    _mapName[_cell.Id],
                     _cell.Cell, boss,
                     result.api_win_rank,
-                    BattleFormationName((int)_battle.api_formation[2]),
-                    FormationName(_battle.api_formation[0]),
-                    FormationName(_battle.api_formation[1]),
+                    BattleFormationName(_battleInfo.Formation[2]),
+                    FormationName(_battleInfo.Formation[0]),
+                    FormationName(_battleInfo.Formation[1]),
                     result.api_enemy_info.api_deck_name,
                     dropType, dropName,
                     string.Join(",", fShips),
                     string.Join(",", eShips),
                     fPower, _battleInfo.EnemyFighterPower.AirCombat + _battleInfo.EnemyFighterPower.UnknownMark,
-                    AirControlLevelName(_battle),
+                    AirControlLevelName(_battleInfo.AirControlLevel),
                     $"{_cell.Area}-{_cell.Map}"),
                 "日付,海域,マス,ボス,ランク,艦隊行動,味方陣形,敵陣形,敵艦隊,ドロップ艦種,ドロップ艦娘," +
                 "味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP," +
                 "敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP," +
                 "味方制空値,敵制空値,制空状態,マップ"
             );
-            _battle = null;
             _cell.Start = false;
         }
 
         private IEnumerable<string> GenerateFriendShipList()
         {
-            if (_battle.api_f_nowhps_combined())
+            if (_battleInfo.Result.Friend.Guard.Length > 0)
             {
-                var mainShips = _shipInfo.Fleets[0].Ships;
-                var guardShips = _shipInfo.Fleets[1].Ships;
+                var mainShips = _battleInfo.Result.Friend.Main;
+                var guardShips = _battleInfo.Result.Friend.Guard;
                 return mainShips.Zip(guardShips, (main, guard) =>
                 {
                     if (main.Empty && guard.Empty)
@@ -157,18 +149,18 @@ namespace KancolleSniffer.Log
                     return name + "," + hp;
                 }).ToList();
             }
-            var ships = _shipInfo.Fleets[(int)_battle.api_deck_id - 1].Ships;
-            if (ships.Count > 6)
+            var ships = _battleInfo.Result.Friend.Main;
+            if (ships.Length > 6)
             {
                 var result = new List<string>();
-                for (var i = 0; i < 12 - ships.Count; i++)
+                for (var i = 0; i < 12 - ships.Length; i++)
                 {
                     var ship = ships[i];
                     result.Add($"{ship.Name}(Lv{ship.Level}),{ship.NowHp}/{ship.MaxHp}");
                 }
-                for (var i = 0; i < ships.Count - 6; i++)
+                for (var i = 0; i < ships.Length - 6; i++)
                 {
-                    var s1 = ships[12 - ships.Count + i];
+                    var s1 = ships[12 - ships.Length + i];
                     var s2 = ships[6 + i];
                     result.Add(
                         $"{s1.Name}(Lv{s1.Level})・{s2.Name}(Lv{s2.Level})," +
@@ -263,17 +255,9 @@ namespace KancolleSniffer.Log
             }
         }
 
-        private string AirControlLevelName(dynamic json)
+        private string AirControlLevelName(int level)
         {
-            // BattleInfo.AirControlLevelは夜戦で消されているかもしれないので、こちらで改めて調べる。
-            if (!json.api_kouku())
-                return "";
-            var stage1 = json.api_kouku.api_stage1;
-            if (stage1 == null)
-                return "";
-            if (stage1.api_f_count == 0 && stage1.api_e_count == 0)
-                return "";
-            switch ((int)stage1.api_disp_seiku)
+            switch (level)
             {
                 case 0:
                     return "航空均衡";

@@ -182,6 +182,7 @@ namespace KancolleSniffer
             _itemInfo.InspectMaster(data);
             _exMapInfo.ResetIfNeeded();
             _miscTextInfo.InspectMaster(data);
+            _logger.InspectMapInfoMaster(data.api_mst_mapinfo);
             SetMapDictionary(data.api_mst_mapinfo);
             _start = true;
             return Update.Start;
@@ -426,7 +427,6 @@ namespace KancolleSniffer
             _shipInfo.ClearBadlyDamagedShips();
             RepeatingTimerController?.Stop("大破警告");
             _battleInfo.InspectBattle(url, request, data);
-            _logger.InspectBattle(data);
             _cellInfo.StartBattle();
             return Update.Ship | Update.Battle;
         }
