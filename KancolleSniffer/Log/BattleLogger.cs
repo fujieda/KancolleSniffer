@@ -26,8 +26,7 @@ namespace KancolleSniffer.Log
         private readonly BattleInfo _battleInfo;
         private readonly Action<string, string, string> _writer;
         private dynamic _battle;
-        private dynamic _map;
-        private bool _start;
+        private readonly CellData _cell = new CellData();
 
         public BattleLogger(ShipInfo shipInfo, ItemInfo itemInfo, BattleInfo battleInfo, Action<string, string, string> writer)
         {
@@ -37,16 +36,35 @@ namespace KancolleSniffer.Log
             _writer = writer;
         }
 
+        private class CellData
+        {
+            public bool Start;
+            public bool Boss;
+            public int Id;
+            public int Area;
+            public int Map;
+            public int Cell;
+
+            public void Set(dynamic json)
+            {
+                Area = (int)json.api_maparea_id;
+                Map = (int)json.api_mapinfo_no;
+                Cell = json.api_no() ? (int)json.api_no : 0;
+                Boss = (int)json.api_event_id == 5;
+                Id = Area * 10 + Map;
+            }
+        }
+
         public void InspectMapStart(dynamic json)
         {
-            _start = true;
-            _map = json;
+            _cell.Start = true;
+            _cell.Set(json);
             _battle = null;
         }
 
         public void InspectMapNext(dynamic json)
         {
-            _map = json;
+            _cell.Set(json);
         }
 
         public void InspectBattle(dynamic json)
@@ -58,19 +76,18 @@ namespace KancolleSniffer.Log
 
         public void InspectBattleResult(dynamic result)
         {
-            if (result.disabled() || _map == null || _battle == null)
+            if (result.disabled() || _battle == null)
             {
-                _map = _battle = null;
+                _battle = null;
                 return;
             }
             var fShips = GenerateFriendShipList();
             var eShips = GenerateEnemyShipList();
-            var cell = (int)_map.api_no;
             var boss = "";
-            if (_start)
+            if (_cell.Start)
                 boss = "出撃";
-            if (cell == (int)_map.api_bosscell_no || (int)_map.api_event_id == 5)
-                boss = _start ? "出撃&ボス" : "ボス";
+            if (_cell.Boss)
+                boss = _cell.Start ? "出撃&ボス" : "ボス";
             var dropType = result.api_get_ship() ? result.api_get_ship.api_ship_type : "";
             if (result.api_get_useitem())
             {
@@ -92,7 +109,7 @@ namespace KancolleSniffer.Log
             var fPower = fp.Diff ? fp.RangeString : fp.Min.ToString();
             _writer("海戦・ドロップ報告書", string.Join(",",
                     result.api_quest_name,
-                    cell, boss,
+                    _cell.Cell, boss,
                     result.api_win_rank,
                     BattleFormationName((int)_battle.api_formation[2]),
                     FormationName(_battle.api_formation[0]),
@@ -103,14 +120,14 @@ namespace KancolleSniffer.Log
                     string.Join(",", eShips),
                     fPower, _battleInfo.EnemyFighterPower.AirCombat + _battleInfo.EnemyFighterPower.UnknownMark,
                     AirControlLevelName(_battle),
-                    $"{(int)_map.api_maparea_id}-{(int)_map.api_mapinfo_no}"),
+                    $"{_cell.Area}-{_cell.Map}"),
                 "日付,海域,マス,ボス,ランク,艦隊行動,味方陣形,敵陣形,敵艦隊,ドロップ艦種,ドロップ艦娘," +
                 "味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP," +
                 "敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP," +
                 "味方制空値,敵制空値,制空状態,マップ"
             );
-            _map = _battle = null;
-            _start = false;
+            _battle = null;
+            _cell.Start = false;
         }
 
         private IEnumerable<string> GenerateFriendShipList()

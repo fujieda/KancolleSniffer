@@ -214,6 +214,8 @@ namespace KancolleSniffer.Test
                                == result);
         }
 
+        private JsonObject Js(object obj) => JsonObject.CreateJsonObject(obj);
+
         [TestMethod]
         public void Achievement()
         {
@@ -238,9 +240,9 @@ namespace KancolleSniffer.Test
                 return (DateTime)dateEnum.Current;
             });
             for (var i = 0; i < 6; i++)
-                logger.InspectBasic(JsonParser.Parse($"{{\"api_experience\": {i * 1000}}}"));
-            logger.InspectBattleResult(JsonParser.Parse("{\"api_get_exmap_rate\": \"100\"}"));
-            logger.InspectMapNext(JsonParser.Parse("{\"api_get_eo_rate\": 75}"));
+                logger.InspectBasic(Js(new{api_experience = i * 1000}));
+            logger.InspectBattleResult(Js(new {api_get_exmap_rate = "100"}));
+            logger.InspectMapNext(Js(new {api_maparea_id = 0, api_mapinfo_no = 0, api_no = 0, api_event_id = 0, api_get_eo_rate = 75}));
             PAssert.That(() =>
                 "2017-03-31 21:00:00,0,0|2017-03-31 21:00:00,0,0|2017-03-31 22:00:00,1000,0|" +
                 "2017-04-01 03:00:00,4000,0|2017-04-02 02:00:00,5000,0|" +
