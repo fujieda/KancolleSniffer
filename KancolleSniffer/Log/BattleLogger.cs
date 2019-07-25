@@ -72,8 +72,23 @@ namespace KancolleSniffer.Log
 
         public void InspectBattleResult(dynamic result)
         {
-            if (result.disabled())
-                return;
+            WriteLog(result);
+            _cell.Start = false;
+        }
+
+        private void WriteLog(dynamic result)
+        {
+            var log = CreateLog(result);
+            _writer("海戦・ドロップ報告書", log,
+                "日付,海域,マス,ボス,ランク,艦隊行動,味方陣形,敵陣形,敵艦隊,ドロップ艦種,ドロップ艦娘," +
+                "味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP," +
+                "敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP," +
+                "味方制空値,敵制空値,制空状態,マップ"
+            );
+        }
+
+        private string CreateLog(dynamic result)
+        {
             var fShips = GenerateFriendShipList();
             var eShips = GenerateEnemyShipList();
             var boss = "";
@@ -81,45 +96,43 @@ namespace KancolleSniffer.Log
                 boss = "出撃";
             if (_cell.Boss)
                 boss = _cell.Start ? "出撃&ボス" : "ボス";
-            var dropType = result.api_get_ship() ? result.api_get_ship.api_ship_type : "";
-            if (result.api_get_useitem())
-            {
-                if (dropType == "")
-                    dropType = "アイテム";
-                else
-                    dropType += "+アイテム";
-            }
-            var dropName = result.api_get_ship() ? result.api_get_ship.api_ship_name : "";
-            if (result.api_get_useitem())
-            {
-                var itemName = _itemInfo.GetUseItemName((int)result.api_get_useitem.api_useitem_id);
-                if (dropName == "")
-                    dropName = itemName;
-                else
-                    dropName += "+" + itemName;
-            }
+            var dropType = CreateDropType(result);
+            var dropName = CreateDropName(result);
+            var enemyName = result.api_enemy_info.api_deck_name;
+            var rank = result.api_win_rank;
             var fp = _battleInfo.FighterPower;
             var fPower = fp.Diff ? fp.RangeString : fp.Min.ToString();
-            _writer("海戦・ドロップ報告書", string.Join(",",
-                    _mapName[_cell.Id],
-                    _cell.Cell, boss,
-                    result.api_win_rank,
-                    BattleFormationName(_battleInfo.Formation[2]),
-                    FormationName(_battleInfo.Formation[0]),
-                    FormationName(_battleInfo.Formation[1]),
-                    result.api_enemy_info.api_deck_name,
-                    dropType, dropName,
-                    string.Join(",", fShips),
-                    string.Join(",", eShips),
-                    fPower, _battleInfo.EnemyFighterPower.AirCombat + _battleInfo.EnemyFighterPower.UnknownMark,
-                    AirControlLevelName(_battleInfo.AirControlLevel),
-                    $"{_cell.Area}-{_cell.Map}"),
-                "日付,海域,マス,ボス,ランク,艦隊行動,味方陣形,敵陣形,敵艦隊,ドロップ艦種,ドロップ艦娘," +
-                "味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP," +
-                "敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP," +
-                "味方制空値,敵制空値,制空状態,マップ"
-            );
-            _cell.Start = false;
+            return string.Join(",",
+                _mapName[_cell.Id],
+                _cell.Cell, boss,
+                rank,
+                BattleFormationName(_battleInfo.Formation[2]),
+                FormationName(_battleInfo.Formation[0]),
+                FormationName(_battleInfo.Formation[1]),
+                enemyName,
+                dropType, dropName,
+                string.Join(",", fShips),
+                string.Join(",", eShips),
+                fPower, _battleInfo.EnemyFighterPower.AirCombat + _battleInfo.EnemyFighterPower.UnknownMark,
+                AirControlLevelName(_battleInfo.AirControlLevel),
+                $"{_cell.Area}-{_cell.Map}");
+        }
+
+        private static string CreateDropType(dynamic result)
+        {
+            var type = result.api_get_ship() ? (string)result.api_get_ship.api_ship_type : "";
+            if (!result.api_get_useitem())
+                return type;
+            return type == "" ? "アイテム" : type + "+アイテム";
+        }
+
+        private string CreateDropName(dynamic result)
+        {
+            var name = result.api_get_ship() ? (string)result.api_get_ship.api_ship_name : "";
+            if (!result.api_get_useitem())
+                return name;
+            var itemName = _itemInfo.GetUseItemName((int)result.api_get_useitem.api_useitem_id);
+            return name == "" ? itemName : name + "+" + itemName;
         }
 
         private IEnumerable<string> GenerateFriendShipList()

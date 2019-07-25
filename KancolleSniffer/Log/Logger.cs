@@ -142,7 +142,8 @@ namespace KancolleSniffer.Log
 
         public void InspectMapStart(dynamic json)
         {
-            _battleLogger.InspectMapStart(json);
+            if ((_logType & LogType.Battle) != 0)
+                _battleLogger.InspectMapStart(json);
             if ((_logType & LogType.Material) != 0)
                 WriteMaterialLog(_nowFunc());
         }
@@ -153,7 +154,8 @@ namespace KancolleSniffer.Log
             {
                 WriteNow("戦果", _lastExp + "," + (int)json.api_get_eo_rate, "日付,経験値,EO");
             }
-            _battleLogger.InspectMapNext(json);
+            if ((_logType & LogType.Battle) != 0)
+                _battleLogger.InspectMapNext(json);
         }
 
         public void InspectClearItemGet(dynamic json)
@@ -183,9 +185,8 @@ namespace KancolleSniffer.Log
                     WriteNow("戦果", _lastExp + "," + rate, "日付,経験値,EO");
                 }
             }
-            if ((_logType & LogType.Battle) == 0)
-                result.disabled = true;
-            _battleLogger.InspectBattleResult(result);
+            if ((_logType & LogType.Battle) != 0)
+                _battleLogger.InspectBattleResult(result);
         }
 
         public void InspectBasic(dynamic json)
