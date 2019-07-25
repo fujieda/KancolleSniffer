@@ -68,6 +68,10 @@ namespace KancolleSniffer.Log
         public void InspectMapNext(dynamic json)
         {
             _cell.Set(json);
+            if (!json.api_destruction_battle())
+                return;
+            WriteLog(null);
+            _cell.Start = false;
         }
 
         public void InspectBattleResult(dynamic result)
@@ -98,8 +102,8 @@ namespace KancolleSniffer.Log
                 boss = _cell.Start ? "出撃&ボス" : "ボス";
             var dropType = CreateDropType(result);
             var dropName = CreateDropName(result);
-            var enemyName = result.api_enemy_info.api_deck_name;
-            var rank = result.api_win_rank;
+            var enemyName = result?.api_enemy_info.api_deck_name ?? "";
+            var rank = result?.api_win_rank ?? _battleInfo.ResultRank;
             var fp = _battleInfo.FighterPower;
             var fPower = fp.Diff ? fp.RangeString : fp.Min.ToString();
             return string.Join(",",
@@ -120,6 +124,8 @@ namespace KancolleSniffer.Log
 
         private static string CreateDropType(dynamic result)
         {
+            if (result == null)
+                return "";
             var type = result.api_get_ship() ? (string)result.api_get_ship.api_ship_type : "";
             if (!result.api_get_useitem())
                 return type;
@@ -128,6 +134,8 @@ namespace KancolleSniffer.Log
 
         private string CreateDropName(dynamic result)
         {
+            if (result == null)
+                return "";
             var name = result.api_get_ship() ? (string)result.api_get_ship.api_ship_name : "";
             if (!result.api_get_useitem())
                 return name;

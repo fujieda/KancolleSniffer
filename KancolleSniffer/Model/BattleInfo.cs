@@ -319,6 +319,7 @@ namespace KancolleSniffer.Model
             var maxEq = new[] {18, 18, 18, 18};
             var ships = nowHps.Select((hp, n) => new ShipStatus
             {
+                Id = 1,
                 Spec = new ShipSpec {Name = "基地航空隊" + (n + 1), GetMaxEq = () => maxEq},
                 NowHp = nowHps[n],
                 MaxHp = maxHps[n]

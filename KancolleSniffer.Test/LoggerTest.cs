@@ -156,6 +156,23 @@ namespace KancolleSniffer.Test
                 == result);
         }
 
+        /// <summary>
+        /// 基地空襲戦
+        /// </summary>
+        [TestMethod]
+        public void InspectAirRaidBattle()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2019, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "airraid_battle_001");
+            Assert.AreEqual("2019-01-01 00:00:00,アリューシャン列島沖,12,出撃,S,同航戦,単縦陣,輪形陣,,,," +
+                            "基地航空隊1(Lv0),200/200,基地航空隊2(Lv0),200/200,基地航空隊3(Lv0),200/200," +
+                            "北方棲妹,790/790,砲台小鬼,130/130,砲台小鬼,130/130,飛行場姫,500/500,飛行場姫,500/500,集積地棲姫,600/600,425～426,231,航空優勢,44-3|",
+                result);
+        }
+
         [TestMethod]
         public void InspectMaterial()
         {
