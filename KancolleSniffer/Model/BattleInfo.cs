@@ -350,13 +350,13 @@ namespace KancolleSniffer.Model
                     ResultRank = BattleResultRank.A;
                     break;
                 case 2:
-                    ResultRank = BattleResultRank.C;
+                    ResultRank = BattleResultRank.B;
                     break;
                 case 3:
-                    ResultRank = BattleResultRank.D;
+                    ResultRank = BattleResultRank.C;
                     break;
                 case 4:
-                    ResultRank = BattleResultRank.P;
+                    ResultRank = BattleResultRank.S;
                     break;
             }
         }

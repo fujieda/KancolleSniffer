@@ -354,7 +354,7 @@ namespace KancolleSniffer.Test
             Assert.AreEqual(2, battle.AirControlLevel);
             Assert.AreEqual(425, battle.FighterPower.Min);
             Assert.AreEqual(231, battle.EnemyFighterPower.AirCombat);
-            Assert.AreEqual(BattleResultRank.P, battle.ResultRank);
+            Assert.AreEqual(BattleResultRank.S, battle.ResultRank);
             var ships = battle.Result.Friend.Main;
             Assert.IsTrue(new[] {200, 200, 200}.SequenceEqual(ships.Select(ship => ship.NowHp)));
             Assert.IsTrue(new[] {"基地航空隊1", "基地航空隊2", "基地航空隊3"}.SequenceEqual(ships.Select(ship => ship.Name)));
@@ -376,7 +376,7 @@ namespace KancolleSniffer.Test
             Assert.AreEqual(4, battle.AirControlLevel);
             Assert.AreEqual(0, battle.FighterPower.Min);
             Assert.AreEqual(231, battle.EnemyFighterPower.AirCombat);
-            Assert.AreEqual(BattleResultRank.C, battle.ResultRank);
+            Assert.AreEqual(BattleResultRank.B, battle.ResultRank);
             var ships = battle.Result.Friend.Main;
             Assert.IsTrue(new[] {82, 174, 147}.SequenceEqual(ships.Select(ship => ship.NowHp)));
         }
