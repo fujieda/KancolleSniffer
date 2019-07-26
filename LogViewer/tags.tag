@@ -169,7 +169,8 @@ this.setHeaderAndFooter = function(table, header) {
     var footer = table.find("tfoot tr");
     table.find("th").each(function(index) {
         footer.append(
-            '<th><input type="search" placeholder="Search ' + $(this).text() + '"/></th>');
+            '<th style="padding: 1px"><input style="min-width: 100%" size="1" type="search" placeholder="Search ' +
+            $(this).text() + '"/></th>');
     });
 };
 
