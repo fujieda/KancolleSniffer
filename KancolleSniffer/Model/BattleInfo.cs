@@ -110,7 +110,8 @@ namespace KancolleSniffer.Model
         public void InspectBattle(string url, string request, dynamic json)
         {
             SetFormation(json);
-            SetAirControlLevel(json);
+            if (BattleState == BattleState.None)
+                SetAirControlLevel(json);
             SetSupportType(json);
             ClearDamagedShipWarning();
             ShowResult(); // 昼戦の結果を夜戦のときに表示する
@@ -133,6 +134,7 @@ namespace KancolleSniffer.Model
 
         private void SetAirControlLevel(dynamic json)
         {
+            AirControlLevel = -1;
             if (!json.api_kouku())
                 return;
             var stage1 = json.api_kouku.api_stage1;
