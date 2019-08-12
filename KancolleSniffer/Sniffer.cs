@@ -565,7 +565,7 @@ namespace KancolleSniffer
                 _questCounter.InspectMapNext(data);
                 _miscTextInfo.InspectMapNext(data);
                 _cellInfo.InspectMapNext(data);
-                return Update.Cell;
+                return Update.Cell | (data.api_destruction_battle() ? Update.Battle : 0);
             }
             if (url.EndsWith("api_req_mission/start"))
             {
