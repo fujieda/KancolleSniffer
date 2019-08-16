@@ -258,8 +258,9 @@ namespace KancolleSniffer.View
                 }
                 else
                 {
-                    labels.Hp.Set(ship);
-                    labels.Name.SetName(ShortenAirBaseName(ship.Name));
+                    labels.Set(ship);
+                    if (ship.Name.StartsWith("基地航空隊"))
+                        labels.Name.SetName(ship.Name.Substring(2));
                 }
                 ToolTip.SetToolTip(labels.Name, GetEquipString(ship));
             }
@@ -293,11 +294,6 @@ namespace KancolleSniffer.View
         {
             return new Regex(@"\(elite\)|\(flagship\)").Replace(name,
                 match => match.Value == "(elite)" ? "(e)" : "(f)");
-        }
-
-        private static string ShortenAirBaseName(string name)
-        {
-            return Regex.Replace(name, "^基地航空隊", "航空隊");
         }
 
         private void ShowResultRank(BattleResultRank rank)
