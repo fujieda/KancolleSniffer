@@ -93,8 +93,8 @@ namespace KancolleSniffer.Log
 
         private string CreateLog(dynamic result)
         {
-            var fShips = GenerateFriendShipList();
-            var eShips = GenerateEnemyShipList();
+            var fShips = GenerateShipList(_battleInfo.Result.Friend, s => $"{s.Name}(Lv{s.Level})");
+            var eShips = GenerateShipList(_battleInfo.Result.Enemy, s => $"{s.Name}");
             var boss = "";
             if (_cell.Start)
                 boss = "出撃";
@@ -143,13 +143,13 @@ namespace KancolleSniffer.Log
             return name == "" ? itemName : name + "+" + itemName;
         }
 
-        private IEnumerable<string> GenerateFriendShipList()
+        private static IEnumerable<string> GenerateShipList(BattleInfo.BattleResult.Combined fleet,
+            Func<ShipStatus, string> toName)
         {
-            if (_battleInfo.Result.Friend.Guard.Length > 0)
+            fleet = FillEmpty(fleet);
+            if (fleet.Guard.Length > 0)
             {
-                var mainShips = _battleInfo.Result.Friend.Main;
-                var guardShips = _battleInfo.Result.Friend.Guard;
-                return mainShips.Zip(guardShips, (main, guard) =>
+                return fleet.Main.Zip(fleet.Guard, (main, guard) =>
                 {
                     if (main.Empty && guard.Empty)
                         return ",";
@@ -157,75 +157,58 @@ namespace KancolleSniffer.Log
                     var hp = "";
                     if (!main.Empty)
                     {
-                        name = $"{main.Name}(Lv{main.Level})";
+                        name = toName(main);
                         hp = $"{main.NowHp}/{main.MaxHp}";
                     }
                     name += "・";
                     hp += "・";
                     if (!guard.Empty)
                     {
-                        name += $"{guard.Name}(Lv{guard.Level})";
+                        name += toName(guard);
                         hp += $"{guard.NowHp}/{guard.MaxHp}";
                     }
                     return name + "," + hp;
                 }).ToList();
             }
-            var ships = _battleInfo.Result.Friend.Main;
-            if (ships.Length > 6)
+            var ships = fleet.Main;
+            if (fleet.Main.Length > 6)
             {
                 var result = new List<string>();
                 for (var i = 0; i < 12 - ships.Length; i++)
                 {
-                    var ship = ships[i];
-                    result.Add($"{ship.Name}(Lv{ship.Level}),{ship.NowHp}/{ship.MaxHp}");
+                    var ship = fleet.Main[i];
+                    result.Add($"{toName(ship)},{ship.NowHp}/{ship.MaxHp}");
                 }
                 for (var i = 0; i < ships.Length - 6; i++)
                 {
                     var s1 = ships[12 - ships.Length + i];
                     var s2 = ships[6 + i];
                     result.Add(
-                        $"{s1.Name}(Lv{s1.Level})・{s2.Name}(Lv{s2.Level})," +
+                        $"{toName(s1)}・{toName(s2)}," +
                         $"{s1.NowHp}/{s1.MaxHp}・{s2.NowHp}/{s2.MaxHp}");
                 }
                 return result;
             }
-            return ships.Select(ship =>
-            {
-                if (ship.Empty)
-                    return ",";
-                return $"{ship.Name}(Lv{ship.Level}),{ship.NowHp}/{ship.MaxHp}";
-            }).ToList();
+            return ships.Select(ship => ship.Empty ? "," : $"{toName(ship)},{ship.NowHp}/{ship.MaxHp}");
         }
 
-        private IEnumerable<string> GenerateEnemyShipList()
+        private static BattleInfo.BattleResult.Combined FillEmpty(BattleInfo.BattleResult.Combined fleet)
         {
-            var result = _battleInfo.Result.Enemy.Main.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
-            if (_battleInfo.Result.Enemy.Guard.Length == 0)
+            return new BattleInfo.BattleResult.Combined
             {
-                return result.Select(s => s.Empty ? "," : $"{s.Name},{s.NowHp}/{s.MaxHp}").ToList();
-            }
-            var mainShips = result;
-            var guardShips = _battleInfo.Result.Enemy.Guard.Concat(Enumerable.Repeat(new ShipStatus(), 6)).Take(6);
-            return mainShips.Zip(guardShips, (main, guard) =>
-            {
-                if (main.Empty && guard.Empty)
-                    return ",";
-                var name = "";
-                var hp = "";
-                if (!main.Empty)
-                {
-                    name = $"{main.Name}";
-                    hp = $"{main.NowHp}/{main.MaxHp}";
-                }
-                name += "・";
-                hp += "・";
-                if (!guard.Empty)
-                {
-                    name += $"{guard.Name}";
-                    hp += $"{guard.NowHp}/{guard.MaxHp}";
-                }
-                return name + "," + hp;
-            }).ToList();
+                Main = FillEmpty(fleet.Main),
+                Guard = FillEmpty(fleet.Guard)
+            };
+        }
+
+        private static readonly ShipStatus[] Padding =
+            Enumerable.Repeat(new ShipStatus(), ShipInfo.MemberCount).ToArray();
+
+        private static ShipStatus[] FillEmpty(ShipStatus[] ships)
+        {
+            return ships.Length > ShipInfo.MemberCount || ships.Length == 0
+                ? ships
+                : ships.Concat(Padding).Take(ShipInfo.MemberCount).ToArray();
         }
 
         private string FormationName(dynamic f)

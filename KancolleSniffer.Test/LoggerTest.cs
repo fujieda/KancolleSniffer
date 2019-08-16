@@ -157,6 +157,23 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 6隻未満の場合
+        /// </summary>
+        [TestMethod]
+        public void InspectShip2BattleResult()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2019, 1, 1));
+            sniffer.EnableLog(LogType.Battle);
+            SnifferTest.SniffLogFile(sniffer, "battle_003");
+            Assert.IsFalse(sniffer.IsBattleResultError);
+            Assert.AreEqual("2019-01-01 00:00:00,鎮守府正面海域,1,出撃,S,反航戦,単縦陣,単縦陣,敵偵察艦,駆逐艦,睦月," +
+                            "早波改(Lv54),32/32,五月雨(Lv20),16/16,,,,,,,,,駆逐ハ級,0/24,,,,,,,,,,,0,0,,1-1|",
+                result);
+        }
+
+        /// <summary>
         /// 基地空襲戦
         /// </summary>
         [TestMethod]
@@ -168,7 +185,7 @@ namespace KancolleSniffer.Test
             sniffer.EnableLog(LogType.Battle);
             SnifferTest.SniffLogFile(sniffer, "airraid_battle_001");
             Assert.AreEqual("2019-01-01 00:00:00,アリューシャン列島沖,12,出撃,S,同航戦,単縦陣,輪形陣,,,," +
-                            "基地航空隊1(Lv0),200/200,基地航空隊2(Lv0),200/200,基地航空隊3(Lv0),200/200," +
+                            "基地航空隊1(Lv0),200/200,基地航空隊2(Lv0),200/200,基地航空隊3(Lv0),200/200,,,,,,," +
                             "北方棲妹,790/790,砲台小鬼,130/130,砲台小鬼,130/130,飛行場姫,500/500,飛行場姫,500/500,集積地棲姫,600/600,425～426,231,航空優勢,44-3|",
                 result);
         }
