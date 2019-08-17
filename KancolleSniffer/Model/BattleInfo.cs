@@ -316,6 +316,7 @@ namespace KancolleSniffer.Model
             SetupEnemyDamageRecord(json, false);
             SetEnemyFighterPower();
             BattleState = BattleState.Day;
+            AirBattleResult.Clear();
             AirBattleResult.Add(json.api_air_base_attack, "空襲");
             CalcKoukuDamage(json.api_air_base_attack);
             SetAirRaidResultRank(json);
