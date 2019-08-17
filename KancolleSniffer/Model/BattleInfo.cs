@@ -130,6 +130,8 @@ namespace KancolleSniffer.Model
             SetEnemyFighterPower();
             BattleState = url.Contains("sp_midnight") ? BattleState.SpNight :
                 url.Contains("midnight") ? BattleState.Night : BattleState.Day;
+            if (BattleState != BattleState.Night)
+                AirBattleResult.Clear();
             CalcDamage(json);
             ResultRank = url.Contains("/ld_") ? CalcLdResultRank() : CalcResultRank();
             SetResult();
@@ -376,7 +378,6 @@ namespace KancolleSniffer.Model
 
         private void CalcDamage(dynamic json)
         {
-            AirBattleResult.Clear();
             foreach (KeyValuePair<string, dynamic> kv in json)
             {
                 if (kv.Value == null)

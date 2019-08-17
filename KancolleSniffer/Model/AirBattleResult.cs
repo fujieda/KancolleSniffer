@@ -21,6 +21,7 @@ namespace KancolleSniffer.Model
     {
         public List<AirBattleRecord> Result = new List<AirBattleRecord>();
 
+        private bool _updated;
         private readonly Func<int, string> _getShipName;
         private readonly Func<int[], string[]> _getItemNames;
 
@@ -39,9 +40,18 @@ namespace KancolleSniffer.Model
             public AirFireResult AirFire { get; set; }
         }
 
+        public bool CheckUpdate()
+        {
+            if (!_updated)
+                return false;
+            _updated = false;
+            return true;
+        }
+
         public void Clear()
         {
             Result.Clear();
+            _updated = true;
         }
 
         public class StageResult

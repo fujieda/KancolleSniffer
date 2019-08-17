@@ -100,10 +100,10 @@ namespace KancolleSniffer.View
 
         public void SetResult(Sniffer sniffer)
         {
-            var state = sniffer.Battle.BattleState;
-            if (state != BattleState.Day && state != BattleState.SpNight)
+            var battleResult = sniffer.Battle.AirBattleResult;
+            if (!battleResult.CheckUpdate())
                 return;
-            _resultList = sniffer.Battle.AirBattleResult.Result.ToArray();
+            _resultList = battleResult.Result.ToArray();
             if (_resultList.Length == 0)
             {
                 ResultRemained = false;
