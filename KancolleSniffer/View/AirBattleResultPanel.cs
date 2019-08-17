@@ -22,37 +22,13 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View
 {
-    public class AirBattleResult
-    {
-        public class StageResult
-        {
-            public int FriendCount { get; set; }
-            public int FriendLost { get; set; }
-            public int EnemyCount { get; set; }
-            public int EnemyLost { get; set; }
-        }
-
-        public class AirFireResult
-        {
-            public string ShipName { get; set; }
-            public int Kind { get; set; }
-            public string[] Items { get; set; }
-        }
-
-        public string PhaseName { get; set; }
-        public int AirControlLevel { get; set; }
-        public StageResult Stage1 { get; set;  }
-        public StageResult Stage2 { get; set;  }
-        public AirFireResult AirFire { get; set; }
-    }
-
     [DesignerCategory("Code")]
     public class AirBattleResultPanel : PanelWithToolTip
     {
         private readonly Label _phaseName;
         private readonly Label _stage1;
         private readonly Label[][][] _resultLabels = new Label[2][][];
-        private AirBattleResult[] _resultList;
+        private AirBattleResult.AirBattleRecord[] _resultList;
         private int _resultIndex;
         private readonly ShipLabel.Name _ciShipName;
         private readonly Label _ciKind;
@@ -127,7 +103,7 @@ namespace KancolleSniffer.View
             var state = sniffer.Battle.BattleState;
             if (state != BattleState.Day && state != BattleState.SpNight)
                 return;
-            _resultList = sniffer.Battle.AirBattleResults.ToArray();
+            _resultList = sniffer.Battle.AirBattleResult.Result.ToArray();
             if (_resultList.Length == 0)
             {
                 ResultRemained = false;

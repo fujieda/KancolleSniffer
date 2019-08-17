@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Log\BattleLogger.cs" />
+    <Compile Include="Model\AirBattleResult.cs" />
     <Compile Include="Model\AirCorpsFighterPower.cs" />
     <Compile Include="Model\QuestCounter.cs" />
     <Compile Include="Model\QuestCountList.cs" />

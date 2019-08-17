@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using KancolleSniffer.Util;
-using KancolleSniffer.View;
 using static System.Math;
 
 namespace KancolleSniffer.Model
@@ -72,7 +71,7 @@ namespace KancolleSniffer.Model
         public RankPair DisplayedResultRank { get; } = new RankPair();
         public BattleResult Result { get; set; }
         public bool EnemyIsCombined => _enemyGuard.Length > 0;
-        public List<AirBattleResult> AirBattleResults { get; } = new List<AirBattleResult>();
+        public AirBattleResult AirBattleResult;
         public int SupportType { get; private set; }
 
         public class RankPair
@@ -99,6 +98,17 @@ namespace KancolleSniffer.Model
             _shipInfo = shipInfo;
             _itemInfo = itemInfo;
             _airBase = airBase;
+            AirBattleResult = new AirBattleResult(GetAirFireShipName, GetItemNames);
+        }
+
+        private string GetAirFireShipName(int idx)
+        {
+            return idx < _friend.Length ? _friend[idx].Name : _guard[idx - 6].Name;
+        }
+
+        private string[] GetItemNames(int[] ids)
+        {
+            return ids.Select(id => _itemInfo.GetSpecByItemId(id).Name).ToArray();
         }
 
         public void Port()
@@ -124,7 +134,6 @@ namespace KancolleSniffer.Model
             ResultRank = url.Contains("/ld_") ? CalcLdResultRank() : CalcResultRank();
             SetResult();
         }
-
 
         private void SetFormation(dynamic json)
         {
@@ -307,7 +316,7 @@ namespace KancolleSniffer.Model
             SetupEnemyDamageRecord(json, false);
             SetEnemyFighterPower();
             BattleState = BattleState.Day;
-            AddAirBattleResult(json.api_air_base_attack, "空襲");
+            AirBattleResult.Add(json.api_air_base_attack, "空襲");
             CalcKoukuDamage(json.api_air_base_attack);
             SetAirRaidResultRank(json);
             SetResult();
@@ -366,7 +375,7 @@ namespace KancolleSniffer.Model
 
         private void CalcDamage(dynamic json)
         {
-            AirBattleResults.Clear();
+            AirBattleResult.Clear();
             foreach (KeyValuePair<string, dynamic> kv in json)
             {
                 if (kv.Value == null)
@@ -374,11 +383,11 @@ namespace KancolleSniffer.Model
                 switch (kv.Key)
                 {
                     case "api_air_base_injection":
-                        AddAirBattleResult(kv.Value, "AB噴式");
+                        AirBattleResult.Add(kv.Value, "AB噴式");
                         CalcKoukuDamage(kv.Value);
                         break;
                     case "api_injection_kouku":
-                        AddAirBattleResult(kv.Value, "噴式");
+                        AirBattleResult.Add(kv.Value, "噴式");
                         CalcKoukuDamage(kv.Value);
                         break;
                     case "api_air_base_attack":
@@ -394,11 +403,11 @@ namespace KancolleSniffer.Model
                         CalcDamageByTurn(kv.Value);
                         break;
                     case "api_kouku":
-                        AddAirBattleResult(kv.Value, "航空戦");
+                        AirBattleResult.Add(kv.Value, "航空戦");
                         CalcKoukuDamage(kv.Value);
                         break;
                     case "api_kouku2":
-                        AddAirBattleResult(kv.Value, "航空戦2");
+                        AirBattleResult.Add(kv.Value, "航空戦2");
                         CalcKoukuDamage(kv.Value);
                         break;
                     case "api_support_info":
@@ -449,7 +458,7 @@ namespace KancolleSniffer.Model
             var i = 1;
             foreach (var entry in json)
             {
-                AddAirBattleResult(entry, "基地" + i++);
+                AirBattleResult.Add(entry, "基地" + i++);
                 CalcKoukuDamage(entry);
             }
         }
@@ -457,49 +466,6 @@ namespace KancolleSniffer.Model
         private void CalcFriendAttackDamage(dynamic json)
         {
             CalcDamageByTurn(json.api_hougeki, true);
-        }
-
-        private void AddAirBattleResult(dynamic json, string phaseName)
-        {
-            var stage1 = json.api_stage1;
-            if (stage1 == null || (stage1.api_f_count == 0 && stage1.api_e_count == 0))
-                return;
-            var result = new AirBattleResult
-            {
-                PhaseName = phaseName,
-                AirControlLevel = json.api_stage1.api_disp_seiku() ? (int)json.api_stage1.api_disp_seiku : 0,
-                Stage1 = CreateStageResult(json.api_stage1),
-                Stage2 = json.api_stage2 == null
-                    ? new AirBattleResult.StageResult()
-                    : CreateStageResult(json.api_stage2),
-                AirFire = CreateAirFireResult(json)
-            };
-            AirBattleResults.Add(result);
-        }
-
-        private AirBattleResult.StageResult CreateStageResult(dynamic stage)
-        {
-            return new AirBattleResult.StageResult
-            {
-                FriendCount = (int)stage.api_f_count,
-                FriendLost = (int)stage.api_f_lostcount,
-                EnemyCount = (int)stage.api_e_count,
-                EnemyLost = (int)stage.api_e_lostcount
-            };
-        }
-
-        private AirBattleResult.AirFireResult CreateAirFireResult(dynamic json)
-        {
-            if (json.api_stage2 == null || !json.api_stage2.api_air_fire())
-                return null;
-            var airFire = json.api_stage2.api_air_fire;
-            var idx = (int)airFire.api_idx;
-            return new AirBattleResult.AirFireResult
-            {
-                ShipName = idx < _friend.Length ? _friend[idx].Name : _guard[idx - 6].Name,
-                Kind = (int)airFire.api_kind,
-                Items = ((int[])airFire.api_use_items).Select(id => _itemInfo.GetSpecByItemId(id).Name).ToArray()
-            };
         }
 
         private void CalcKoukuDamage(dynamic json)
