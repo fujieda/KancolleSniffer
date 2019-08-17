@@ -828,24 +828,37 @@ namespace KancolleSniffer
 
         private void UpdateBattleFighterPower()
         {
+            UpdateEnemyFighterPower();
             var battle = Sniffer.Battle;
-            var power = battle.EnemyFighterPower;
-            labelEnemyFighterPower.Text = power.AirCombat + power.UnknownMark;
-            if (power.AirCombat != power.Interception)
+            labelFighterPower.ForeColor = battle.BattleState == BattleState.Night
+                ? DefaultForeColor
+                : AirControlLevelColor(battle.AirControlLevel);
+            if (battle.BattleState == BattleState.AirRaid)
             {
-                var text = "防空: " + power.Interception + power.UnknownMark;
-                _toolTip.SetToolTip(labelEnemyFighterPower, text);
-                _toolTip.SetToolTip(labelEnemyFighterPowerCaption, text);
+                UpdateAirRaidFighterPower();
             }
             else
             {
-                _toolTip.SetToolTip(labelEnemyFighterPower, "");
-                _toolTip.SetToolTip(labelEnemyFighterPowerCaption, "");
+                UpdateFighterPower(Sniffer.IsCombinedFleet && battle.EnemyIsCombined);
             }
-            UpdateFighterPower(Sniffer.IsCombinedFleet && battle.EnemyIsCombined);
-            labelFighterPower.ForeColor = battle.BattleState != BattleState.Day
-                ? DefaultForeColor
-                : AirControlLevelColor(battle.AirControlLevel);
+        }
+
+        private void UpdateEnemyFighterPower()
+        {
+            var fp = Sniffer.Battle.EnemyFighterPower;
+            labelEnemyFighterPower.Text = fp.AirCombat + fp.UnknownMark;
+            var toolTip = fp.AirCombat == fp.Interception ? "" : "防空: " + fp.Interception + fp.UnknownMark;
+            _toolTip.SetToolTip(labelEnemyFighterPower, toolTip);
+            _toolTip.SetToolTip(labelEnemyFighterPowerCaption, toolTip);
+        }
+
+        private void UpdateAirRaidFighterPower()
+        {
+            var fp = Sniffer.Battle.FighterPower;
+            labelFighterPower.Text = fp.Min.ToString();
+            var toolTop = fp.Diff ? fp.RangeString : "";
+            _toolTip.SetToolTip(labelFighterPower, toolTop);
+            _toolTip.SetToolTip(labelFighterPowerCaption, toolTop);
         }
 
         private static Color AirControlLevelColor(int level)

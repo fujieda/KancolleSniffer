@@ -58,6 +58,7 @@ namespace KancolleSniffer.View
                 switch (state)
                 {
                     case BattleState.Day:
+                    case BattleState.AirRaid:
                         return _day;
                     case BattleState.SpNight:
                     case BattleState.Night:
@@ -72,6 +73,7 @@ namespace KancolleSniffer.View
                 switch (battle.BattleState)
                 {
                     case BattleState.Day:
+                    case BattleState.AirRaid:
                         _day = new Result {Damage = battle.Result, Rank = battle.ResultRank};
                         _night = null;
                         break;
@@ -142,6 +144,7 @@ namespace KancolleSniffer.View
                 switch (state)
                 {
                     case BattleState.Day:
+                    case BattleState.AirRaid:
                         SetPhase("昼戦");
                         break;
                     case BattleState.Night:

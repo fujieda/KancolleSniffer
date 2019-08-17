@@ -37,6 +37,7 @@ namespace KancolleSniffer.Model
         Day,
         Night,
         SpNight,
+        AirRaid,
         Result,
         Unknown
     }
@@ -318,7 +319,7 @@ namespace KancolleSniffer.Model
             FighterPower = _airBase.GetAirBase(areaId).CalcInterceptionFighterPower();
             SetupEnemyDamageRecord(json, false);
             SetEnemyFighterPower();
-            BattleState = BattleState.Day;
+            BattleState = BattleState.AirRaid;
             AirBattleResult.Clear();
             AirBattleResult.Add(json.api_air_base_attack, "空襲");
             CalcKoukuDamage(json.api_air_base_attack);

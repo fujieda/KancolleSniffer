@@ -350,7 +350,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "airraid_battle_001");
             var battle = sniffer.Battle;
-            Assert.AreEqual(BattleState.Day, battle.BattleState);
+            Assert.AreEqual(BattleState.AirRaid, battle.BattleState);
             Assert.AreEqual(2, battle.AirControlLevel);
             Assert.AreEqual(425, battle.FighterPower.Min);
             Assert.AreEqual(231, battle.EnemyFighterPower.AirCombat);
@@ -372,7 +372,7 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "airraid_battle_002");
             var battle = sniffer.Battle;
-            Assert.AreEqual(BattleState.Day, battle.BattleState);
+            Assert.AreEqual(BattleState.AirRaid, battle.BattleState);
             Assert.AreEqual(4, battle.AirControlLevel);
             Assert.AreEqual(0, battle.FighterPower.Min);
             Assert.AreEqual(231, battle.EnemyFighterPower.AirCombat);
