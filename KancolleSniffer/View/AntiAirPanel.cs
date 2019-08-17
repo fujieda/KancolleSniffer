@@ -82,7 +82,7 @@ namespace KancolleSniffer.View
         {
             var param = " Lv" + ship.Level +
                         " 加重" + ship.EffectiveAntiAirForShip.ToString("d") +
-                        AntiAirPropellantBarrageChange(ship);
+                        AntiAirPropellantBarrageChance(ship);
             var name = ship.Name;
             var realWidth = Scaler.ScaleWidth(ListForm.PanelWidth - 10);
             return new Record
@@ -110,13 +110,13 @@ namespace KancolleSniffer.View
                 : ShipLabel.Name.BaseFont;
         }
 
-        private static string AntiAirPropellantBarrageChange(ShipStatus ship)
+        private static string AntiAirPropellantBarrageChance(ShipStatus ship)
         {
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (ship.AntiAirPropellantBarrageChance == 0)
                 return "";
             var chance = ship.AntiAirPropellantBarrageChance;
-            return " 弾幕" + chance.ToString(chance >= 100 ? "d" : "f1");
+            return " 弾幕" + (chance < 100 ? chance.ToString("f1") : ((int)chance).ToString());
         }
 
         private void CreateLabels()
