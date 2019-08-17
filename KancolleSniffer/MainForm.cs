@@ -557,6 +557,7 @@ namespace KancolleSniffer
             Sniffer.Achievement.ResetHours = Config.ResetHours;
             labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible =
                 labelPresetAkashiTimer.Visible = Config.UsePresetAkashi;
+            Sniffer.WarnBadDamageWithDameCon = Config.WarnBadDamageWithDameCon;
         }
 
         public void ApplyDebugLogSetting()

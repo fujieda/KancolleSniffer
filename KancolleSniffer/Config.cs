@@ -272,6 +272,7 @@ namespace KancolleSniffer
         public bool AlwaysShowResultRank { get; set; }
         public Spoiler Spoilers { get; set; }
         public bool UsePresetAkashi { get; set; }
+        public bool WarnBadDamageWithDameCon { get; set; }
         public SoundConfig Sounds { get; set; } = new SoundConfig();
         public bool DebugLogging { get; set; }
         public string DebugLogFile { get; set; } = "log.txt";

@@ -44,6 +44,10 @@ namespace KancolleSniffer
         {
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageWindow = new System.Windows.Forms.TabPage();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.numericUpDownQuest = new System.Windows.Forms.NumericUpDown();
             this.checkBoxLocationPerMachine = new System.Windows.Forms.CheckBox();
             this.checkBoxExitSilently = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
@@ -67,6 +71,7 @@ namespace KancolleSniffer
             this.checkBoxBalloon = new System.Windows.Forms.CheckBox();
             this.checkBoxFlash = new System.Windows.Forms.CheckBox();
             this.tabPageAchievement = new System.Windows.Forms.TabPage();
+            this.checkBoxWarnBadDamageWithDamecon = new System.Windows.Forms.CheckBox();
             this.checkBoxPresetAkashi = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.checkBoxNextCell = new System.Windows.Forms.CheckBox();
@@ -133,12 +138,9 @@ namespace KancolleSniffer
             this.openSoundFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
-            this.numericUpDownQuest = new System.Windows.Forms.NumericUpDown();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageWindow.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownQuest)).BeginInit();
             this.tabPageNotification.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginEquips)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginShips)).BeginInit();
@@ -157,7 +159,6 @@ namespace KancolleSniffer
             this.groupBoxPushover.SuspendLayout();
             this.groupBoxPushbullet.SuspendLayout();
             this.tabPageDebug.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownQuest)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl
@@ -200,6 +201,56 @@ namespace KancolleSniffer
             this.tabPageWindow.TabIndex = 0;
             this.tabPageWindow.Text = "ウィンドウ";
             this.tabPageWindow.UseVisualStyleBackColor = true;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(121, 127);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(11, 12);
+            this.label18.TabIndex = 12;
+            this.label18.Text = "*";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(186, 138);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(59, 12);
+            this.label17.TabIndex = 11;
+            this.label17.Text = "*要再起動";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(11, 130);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(75, 12);
+            this.label8.TabIndex = 10;
+            this.label8.Text = "任務欄の行数";
+            // 
+            // numericUpDownQuest
+            // 
+            this.numericUpDownQuest.Location = new System.Drawing.Point(87, 127);
+            this.numericUpDownQuest.Maximum = new decimal(new int[] {
+            7,
+            0,
+            0,
+            0});
+            this.numericUpDownQuest.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.numericUpDownQuest.Name = "numericUpDownQuest";
+            this.numericUpDownQuest.Size = new System.Drawing.Size(32, 19);
+            this.numericUpDownQuest.TabIndex = 9;
+            this.numericUpDownQuest.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericUpDownQuest.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
             // 
             // checkBoxLocationPerMachine
             // 
@@ -442,6 +493,7 @@ namespace KancolleSniffer
             // 
             // tabPageAchievement
             // 
+            this.tabPageAchievement.Controls.Add(this.checkBoxWarnBadDamageWithDamecon);
             this.tabPageAchievement.Controls.Add(this.checkBoxPresetAkashi);
             this.tabPageAchievement.Controls.Add(this.groupBox3);
             this.tabPageAchievement.Controls.Add(this.groupBox2);
@@ -453,10 +505,20 @@ namespace KancolleSniffer
             this.tabPageAchievement.Text = "機能";
             this.tabPageAchievement.UseVisualStyleBackColor = true;
             // 
+            // checkBoxWarnBadDamageWithDamecon
+            // 
+            this.checkBoxWarnBadDamageWithDamecon.AutoSize = true;
+            this.checkBoxWarnBadDamageWithDamecon.Location = new System.Drawing.Point(20, 114);
+            this.checkBoxWarnBadDamageWithDamecon.Name = "checkBoxWarnBadDamageWithDamecon";
+            this.checkBoxWarnBadDamageWithDamecon.Size = new System.Drawing.Size(168, 16);
+            this.checkBoxWarnBadDamageWithDamecon.TabIndex = 20;
+            this.checkBoxWarnBadDamageWithDamecon.Text = "ダメコン装備でも大破警告する";
+            this.checkBoxWarnBadDamageWithDamecon.UseVisualStyleBackColor = true;
+            // 
             // checkBoxPresetAkashi
             // 
             this.checkBoxPresetAkashi.AutoSize = true;
-            this.checkBoxPresetAkashi.Location = new System.Drawing.Point(20, 124);
+            this.checkBoxPresetAkashi.Location = new System.Drawing.Point(20, 135);
             this.checkBoxPresetAkashi.Name = "checkBoxPresetAkashi";
             this.checkBoxPresetAkashi.Size = new System.Drawing.Size(141, 16);
             this.checkBoxPresetAkashi.TabIndex = 19;
@@ -469,10 +531,10 @@ namespace KancolleSniffer
             this.groupBox3.Controls.Add(this.checkBoxBattleResult);
             this.groupBox3.Controls.Add(this.checkBoxAirBattleResult);
             this.groupBox3.Controls.Add(this.checkBoxResultRank);
-            this.groupBox3.Location = new System.Drawing.Point(11, 65);
+            this.groupBox3.Location = new System.Drawing.Point(11, 59);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox3.Size = new System.Drawing.Size(234, 48);
+            this.groupBox3.Size = new System.Drawing.Size(234, 44);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "ネタバレ";
@@ -480,7 +542,7 @@ namespace KancolleSniffer
             // checkBoxNextCell
             // 
             this.checkBoxNextCell.AutoSize = true;
-            this.checkBoxNextCell.Location = new System.Drawing.Point(174, 21);
+            this.checkBoxNextCell.Location = new System.Drawing.Point(174, 18);
             this.checkBoxNextCell.Name = "checkBoxNextCell";
             this.checkBoxNextCell.Size = new System.Drawing.Size(48, 16);
             this.checkBoxNextCell.TabIndex = 3;
@@ -490,7 +552,7 @@ namespace KancolleSniffer
             // checkBoxBattleResult
             // 
             this.checkBoxBattleResult.AutoSize = true;
-            this.checkBoxBattleResult.Location = new System.Drawing.Point(123, 21);
+            this.checkBoxBattleResult.Location = new System.Drawing.Point(123, 18);
             this.checkBoxBattleResult.Name = "checkBoxBattleResult";
             this.checkBoxBattleResult.Size = new System.Drawing.Size(48, 16);
             this.checkBoxBattleResult.TabIndex = 2;
@@ -500,7 +562,7 @@ namespace KancolleSniffer
             // checkBoxAirBattleResult
             // 
             this.checkBoxAirBattleResult.AutoSize = true;
-            this.checkBoxAirBattleResult.Location = new System.Drawing.Point(60, 21);
+            this.checkBoxAirBattleResult.Location = new System.Drawing.Point(60, 18);
             this.checkBoxAirBattleResult.Name = "checkBoxAirBattleResult";
             this.checkBoxAirBattleResult.Size = new System.Drawing.Size(60, 16);
             this.checkBoxAirBattleResult.TabIndex = 1;
@@ -510,7 +572,7 @@ namespace KancolleSniffer
             // checkBoxResultRank
             // 
             this.checkBoxResultRank.AutoSize = true;
-            this.checkBoxResultRank.Location = new System.Drawing.Point(9, 21);
+            this.checkBoxResultRank.Location = new System.Drawing.Point(9, 18);
             this.checkBoxResultRank.Name = "checkBoxResultRank";
             this.checkBoxResultRank.Size = new System.Drawing.Size(48, 16);
             this.checkBoxResultRank.TabIndex = 0;
@@ -522,10 +584,10 @@ namespace KancolleSniffer
             this.groupBox2.Controls.Add(this.checkBoxReset02);
             this.groupBox2.Controls.Add(this.buttonResetAchievement);
             this.groupBox2.Controls.Add(this.checkBoxReset14);
-            this.groupBox2.Location = new System.Drawing.Point(11, 11);
+            this.groupBox2.Location = new System.Drawing.Point(11, 10);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox2.Size = new System.Drawing.Size(234, 48);
+            this.groupBox2.Size = new System.Drawing.Size(234, 44);
             this.groupBox2.TabIndex = 17;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "戦果のリセット";
@@ -533,7 +595,7 @@ namespace KancolleSniffer
             // checkBoxReset02
             // 
             this.checkBoxReset02.AutoSize = true;
-            this.checkBoxReset02.Location = new System.Drawing.Point(9, 21);
+            this.checkBoxReset02.Location = new System.Drawing.Point(9, 18);
             this.checkBoxReset02.Name = "checkBoxReset02";
             this.checkBoxReset02.Size = new System.Drawing.Size(42, 16);
             this.checkBoxReset02.TabIndex = 13;
@@ -542,7 +604,7 @@ namespace KancolleSniffer
             // 
             // buttonResetAchievement
             // 
-            this.buttonResetAchievement.Location = new System.Drawing.Point(111, 18);
+            this.buttonResetAchievement.Location = new System.Drawing.Point(111, 15);
             this.buttonResetAchievement.Name = "buttonResetAchievement";
             this.buttonResetAchievement.Size = new System.Drawing.Size(44, 20);
             this.buttonResetAchievement.TabIndex = 16;
@@ -553,7 +615,7 @@ namespace KancolleSniffer
             // checkBoxReset14
             // 
             this.checkBoxReset14.AutoSize = true;
-            this.checkBoxReset14.Location = new System.Drawing.Point(57, 21);
+            this.checkBoxReset14.Location = new System.Drawing.Point(57, 18);
             this.checkBoxReset14.Name = "checkBoxReset14";
             this.checkBoxReset14.Size = new System.Drawing.Size(48, 16);
             this.checkBoxReset14.TabIndex = 14;
@@ -1116,56 +1178,6 @@ namespace KancolleSniffer
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
-            // numericUpDownQuest
-            // 
-            this.numericUpDownQuest.Location = new System.Drawing.Point(87, 127);
-            this.numericUpDownQuest.Maximum = new decimal(new int[] {
-            7,
-            0,
-            0,
-            0});
-            this.numericUpDownQuest.Minimum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.numericUpDownQuest.Name = "numericUpDownQuest";
-            this.numericUpDownQuest.Size = new System.Drawing.Size(32, 19);
-            this.numericUpDownQuest.TabIndex = 9;
-            this.numericUpDownQuest.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.numericUpDownQuest.Value = new decimal(new int[] {
-            6,
-            0,
-            0,
-            0});
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(11, 130);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(75, 12);
-            this.label8.TabIndex = 10;
-            this.label8.Text = "任務欄の行数";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(186, 138);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(59, 12);
-            this.label17.TabIndex = 11;
-            this.label17.Text = "*要再起動";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(121, 127);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(11, 12);
-            this.label18.TabIndex = 12;
-            this.label18.Text = "*";
-            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1185,6 +1197,7 @@ namespace KancolleSniffer
             this.tabControl.ResumeLayout(false);
             this.tabPageWindow.ResumeLayout(false);
             this.tabPageWindow.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownQuest)).EndInit();
             this.tabPageNotification.ResumeLayout(false);
             this.tabPageNotification.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMarginEquips)).EndInit();
@@ -1215,7 +1228,6 @@ namespace KancolleSniffer
             this.groupBoxPushbullet.PerformLayout();
             this.tabPageDebug.ResumeLayout(false);
             this.tabPageDebug.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownQuest)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1317,5 +1329,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.NumericUpDown numericUpDownQuest;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.CheckBox checkBoxWarnBadDamageWithDamecon;
     }
 }

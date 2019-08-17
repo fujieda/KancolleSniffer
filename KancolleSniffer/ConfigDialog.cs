@@ -93,6 +93,7 @@ namespace KancolleSniffer
             checkBoxBattleResult.Checked = (_config.Spoilers & Spoiler.BattleResult) != 0;
             checkBoxNextCell.Checked = (_config.Spoilers & Spoiler.NextCell) != 0;
             checkBoxPresetAkashi.Checked = _config.UsePresetAkashi;
+            checkBoxWarnBadDamageWithDamecon.Checked = _config.WarnBadDamageWithDameCon;
 
             numericUpDownSoundVolume.Value = _config.Sounds.Volume;
             foreach (var name in Config.NotificationNames)
@@ -198,6 +199,7 @@ namespace KancolleSniffer
                                (checkBoxBattleResult.Checked ? Spoiler.BattleResult : 0) |
                                (checkBoxNextCell.Checked ? Spoiler.NextCell : 0);
             _config.UsePresetAkashi = checkBoxPresetAkashi.Checked;
+            _config.WarnBadDamageWithDameCon = checkBoxWarnBadDamageWithDamecon.Checked;
 
             _config.Sounds.Volume = (int)numericUpDownSoundVolume.Value;
             foreach (var name in Config.NotificationNames)

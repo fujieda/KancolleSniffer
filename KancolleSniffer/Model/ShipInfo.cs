@@ -34,6 +34,7 @@ namespace KancolleSniffer.Model
         public ShipStatusPair[] BattleResultDiff { get; private set; } = new ShipStatusPair[0];
         public bool IsBattleResultError => BattleResultDiff.Length > 0;
         public ShipStatus[] BattleStartStatus { get; private set; } = new ShipStatus[0];
+        public bool WarnBadDamageWithDameCon;
         public int DropShipId { private get; set; } = -1;
 
         private class NumEquipsChecker
@@ -405,7 +406,8 @@ namespace KancolleSniffer.Model
         {
             BadlyDamagedShips =
                 (from s in ShipsInSortie
-                    where !s.Escaped && s.PreparedDamageControl == -1 && s.DamageLevel == ShipStatus.Damage.Badly
+                    where !s.Escaped && (s.PreparedDamageControl == -1 || WarnBadDamageWithDameCon) &&
+                          s.DamageLevel == ShipStatus.Damage.Badly
                     select s.Name).ToArray();
         }
 

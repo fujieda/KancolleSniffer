@@ -636,6 +636,11 @@ namespace KancolleSniffer
 
         public string[] BadlyDamagedShips => _shipInfo.BadlyDamagedShips;
 
+        public bool WarnBadDamageWithDameCon
+        {
+            set => _shipInfo.WarnBadDamageWithDameCon = value;
+        }
+
         public ItemStatus[] ItemList
         {
             get
