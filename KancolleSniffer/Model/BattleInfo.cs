@@ -120,8 +120,6 @@ namespace KancolleSniffer.Model
         public void InspectBattle(string url, string request, dynamic json)
         {
             SetFormation(json);
-            if (BattleState == BattleState.None)
-                SetAirControlLevel(json);
             SetSupportType(json);
             ClearDamagedShipWarning();
             ShowResult(); // 昼戦の結果を夜戦のときに表示する
@@ -131,7 +129,10 @@ namespace KancolleSniffer.Model
             BattleState = url.Contains("sp_midnight") ? BattleState.SpNight :
                 url.Contains("midnight") ? BattleState.Night : BattleState.Day;
             if (BattleState != BattleState.Night)
+            {
                 AirBattleResult.Clear();
+                SetAirControlLevel(json);
+            }
             CalcDamage(json);
             ResultRank = url.Contains("/ld_") ? CalcLdResultRank() : CalcResultRank();
             SetResult();
