@@ -96,10 +96,13 @@ namespace KancolleSniffer.Log
             var fShips = GenerateShipList(_battleInfo.Result.Friend, s => $"{s.Name}(Lv{s.Level})");
             var eShips = GenerateShipList(_battleInfo.Result.Enemy, s => $"{s.Name}");
             var boss = "";
-            if (_cell.Start)
-                boss = "出撃";
-            if (_cell.Boss)
-                boss = _cell.Start ? "出撃&ボス" : "ボス";
+            if (_battleInfo.BattleState != BattleState.AirRaid)
+            {
+                if (_cell.Start)
+                    boss = "出撃";
+                if (_cell.Boss)
+                    boss = _cell.Start ? "出撃&ボス" : "ボス";
+            }
             var dropType = CreateDropType(result);
             var dropName = CreateDropName(result);
             var enemyName = result?.api_enemy_info.api_deck_name ?? "";
