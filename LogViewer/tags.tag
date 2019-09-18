@@ -1227,6 +1227,9 @@ this.gatherData = function(data) {
     var r = this.initResult();
     for (var i = 0; i < data.length; i++) {
         var row = data[i];
+        if (/^基地航空隊/.test(row[11])) {
+            continue;
+        }
         var date = moment(row[0]);
         var map = row[1];
         var isBoss = row[3].indexOf("ボス") !== -1;
