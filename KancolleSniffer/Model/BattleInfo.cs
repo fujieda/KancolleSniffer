@@ -115,6 +115,7 @@ namespace KancolleSniffer.Model
         public void Port()
         {
             CleanupResult();
+            _lastCell = false;
             BattleState = BattleState.None;
         }
 
@@ -260,7 +261,6 @@ namespace KancolleSniffer.Model
         private void CleanupResult()
         {
             _friend = null;
-            _lastCell = false;
         }
 
         private void SetFighterPower()

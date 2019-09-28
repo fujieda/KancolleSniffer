@@ -380,5 +380,18 @@ namespace KancolleSniffer.Test
             var ships = battle.Result.Friend.Main;
             Assert.IsTrue(new[] {82, 174, 147}.SequenceEqual(ships.Select(ship => ship.NowHp)));
         }
+
+        /// <summary>
+        /// 基地航空戦直後のボス戦
+        /// </summary>
+        [TestMethod]
+        public void AirRaidBattleBeforeBoss()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "airraid_battle_004");
+            var battle = sniffer.Battle;
+            Assert.AreEqual(BattleState.Result, battle.BattleState);
+            Assert.AreEqual(0, sniffer.BadlyDamagedShips.Length);
+        }
     }
 }
