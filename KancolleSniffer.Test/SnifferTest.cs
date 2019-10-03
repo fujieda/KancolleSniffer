@@ -456,12 +456,16 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void CountItem()
         {
-            var sniffer1 = new Sniffer();
-            SniffLogFile(sniffer1, "createitem_001");
-            PAssert.That(() => sniffer1.ItemCounter.Now == 900);
-            var sniffer2 = new Sniffer();
-            SniffLogFile(sniffer2, "createship_001");
-            PAssert.That(() => sniffer2.ItemCounter.Now == 904);
+            var createItems = new Sniffer();
+            SniffLogFile(createItems, "createitem_001");
+            Assert.AreEqual(900, createItems.ItemCounter.Now);
+            PAssert.That(() => createItems.ItemCounter.Now == 900);
+            var createShips = new Sniffer();
+            SniffLogFile(createShips, "createship_001");
+            Assert.AreEqual(904, createShips.ItemCounter.Now);
+            var multiItems = new Sniffer();
+            SniffLogFile(multiItems, "createitem_002");
+            Assert.AreEqual(1307, multiItems.ItemCounter.Now);
         }
 
         /// <summary>

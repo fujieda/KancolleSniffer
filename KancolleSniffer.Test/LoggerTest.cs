@@ -238,6 +238,20 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void InspectCreateItemMulti()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2019, 1, 1));
+            sniffer.EnableLog(LogType.CreateItem);
+            SnifferTest.SniffLogFile(sniffer, "createitem_002");
+            Assert.AreEqual("2019-01-01 00:00:00,失敗,,10,10,30,10,大淀改(167),120|" +
+                               "2019-01-01 00:00:00,,,10,10,30,10,大淀改(167),120|" +
+                               "2019-01-01 00:00:00,失敗,,10,10,30,10,大淀改(167),120|",
+                result);
+        }
+
+        [TestMethod]
         public void InspectGetShip()
         {
             var sniffer = new Sniffer();

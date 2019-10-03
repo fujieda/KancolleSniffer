@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace KancolleSniffer.Log
     public enum LogType
     {
         None = 0,
-        Mission = 1 << 0,
+        Mission = 1,
         Battle = 1 << 1,
         Material = 1 << 2,
         CreateItem = 1 << 3,
@@ -242,19 +243,34 @@ namespace KancolleSniffer.Log
             if ((_logType & LogType.CreateItem) == 0)
                 return;
             var values = HttpUtility.ParseQueryString(request);
-            var name = "失敗";
-            var type = "";
-            if (json.api_slot_item())
+            foreach (var spec in CreateSpecList(json))
             {
-                var spec = _itemInfo.GetSpecByItemId((int)json.api_slot_item.api_slotitem_id);
-                name = spec.Name;
-                type = spec.TypeName;
+                WriteNow("開発報告書",
+                    string.Join(",", spec.Name, spec.TypeName,
+                        values["api_item1"], values["api_item2"], values["api_item3"], values["api_item4"],
+                        Secretary(), _basic.api_level),
+                    "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv");
             }
-            WriteNow("開発報告書",
-                string.Join(",", name, type,
-                    values["api_item1"], values["api_item2"], values["api_item3"], values["api_item4"],
-                    Secretary(), _basic.api_level),
-                "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv");
+        }
+
+        private IEnumerable<ItemSpec> CreateSpecList(dynamic json)
+        {
+            var fail = new ItemSpec
+            {
+                Name = "失敗",
+                TypeName = ""
+            };
+            if (json.api_get_items())
+            {
+                return ((dynamic[])json.api_get_items).Select(entry =>
+                    entry.api_id != -1 ? _itemInfo.GetSpecByItemId((int)entry.api_id) : fail);
+            }
+            return new[]
+            {
+                json.api_slot_item()
+                    ? _itemInfo.GetSpecByItemId((int)json.api_slot_item.api_slotitem_id)
+                    : fail
+            };
         }
 
         public void InspectCreateShip(string request)

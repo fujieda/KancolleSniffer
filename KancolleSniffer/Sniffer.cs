@@ -333,7 +333,7 @@ namespace KancolleSniffer
                 _itemInfo.InspectCreateItem(data);
                 _materialInfo.InspectCreateIem(data);
                 _logger.InspectCreateItem(request, data);
-                _questCounter.CountCreateItem();
+                _questCounter.InspectCreateItem(request);
                 return Update.Item | Update.QuestList;
             }
             if (url.EndsWith("api_req_kousyou/getship"))

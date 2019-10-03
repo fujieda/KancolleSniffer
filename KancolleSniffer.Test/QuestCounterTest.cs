@@ -1403,7 +1403,8 @@ namespace KancolleSniffer.Test
         {
             _questInfo.InspectQuestList(CreateQuestList(new[] {605, 606, 607, 608, 609, 619}));
 
-            _questCounter.CountCreateItem();
+            _questCounter.InspectCreateItem("api_verno=1&api_item1=10&api_item2=10&api_item3=30&api_item4=10&api_multiple_flag=0");
+            _questCounter.InspectCreateItem("api_verno=1&api_item1=10&api_item2=10&api_item3=30&api_item4=10&api_multiple_flag=1");
             _questCounter.CountCreateShip();
             _questCounter.InspectDestroyShip("api%5Fship%5Fid=98159%2C98166%2C98168&api%5Fverno=1");
             _questCounter.CountRemodelSlot();
@@ -1411,7 +1412,7 @@ namespace KancolleSniffer.Test
                 _questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
                     .SequenceEqual(new[]
                     {
-                        new {Id = 605, Now = 1}, new {Id = 606, Now = 1}, new {Id = 607, Now = 1},
+                        new {Id = 605, Now = 4}, new {Id = 606, Now = 1}, new {Id = 607, Now = 4},
                         new {Id = 608, Now = 1}, new {Id = 609, Now = 3}, new {Id = 619, Now = 1}
                     }));
         }

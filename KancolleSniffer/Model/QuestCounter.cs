@@ -568,10 +568,12 @@ namespace KancolleSniffer.Model
 
         public void CountCharge() => Increment(504);
 
-        public void CountCreateItem()
+        public void InspectCreateItem(string request)
         {
-            Increment(605);
-            Increment(607);
+            var values = HttpUtility.ParseQueryString(request);
+            var count = values["api_multiple_flag"] == "1" ? 3 : 1;
+            Add(605, count);
+            Add(607, count);
         }
 
         public void CountCreateShip()

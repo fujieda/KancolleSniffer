@@ -50,6 +50,8 @@ namespace KancolleSniffer.Model
             foreach (var entry in json)
             {
                 var id = (int)entry.api_id;
+                if (id == -1)
+                    continue;
                 _itemInventory[id] = new ItemStatus(id)
                 {
                     Spec = _itemMaster[(int)entry.api_slotitem_id],
@@ -61,9 +63,15 @@ namespace KancolleSniffer.Model
 
         public void InspectCreateItem(dynamic json)
         {
-            if (!json.IsDefined("api_slot_item"))
-                return;
-            InspectSlotItem(json.api_slot_item);
+
+            if (json.api_slot_item())
+            {
+                InspectSlotItem(json.api_slot_item);
+            }
+            else if (json.api_get_items())
+            {
+                InspectSlotItem(json.api_get_items);
+            }
         }
 
         public void InspectGetShip(dynamic json)
