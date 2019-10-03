@@ -657,8 +657,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer(true);
             SniffLogFile(sniffer, "twofleets_001");
-            var expected = Enumerable.Repeat(new ChargeStatus(5, 5), ShipInfo.FleetCount);
-            PAssert.That(() => expected.SequenceEqual(sniffer.Fleets.Select(f => f.ChargeStatus)));
+            PAssert.That(() => new[]{5, 5, 5, 5}.SequenceEqual(sniffer.Fleets.Select(f => f.ChargeStatus.Fuel)));
         }
 
         /// <summary>

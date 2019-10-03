@@ -15,33 +15,36 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using KancolleSniffer.Util;
 using static System.Math;
 
 namespace KancolleSniffer.Model
 {
-    public struct ChargeStatus
+    public class ChargeStatus
     {
-        public int Fuel { get; set; }
-        public int Bull { get; set; }
+        public double FuelRatio { get; set; }
+        public int Fuel => CalcChargeState(FuelRatio) + (Others ? 5 : 0);
 
-        public ChargeStatus(ShipStatus status) : this()
+        public double BullRatio { get; set; }
+        public int Bull => CalcChargeState(BullRatio) + (Others ? 5 : 0);
+
+        public bool Others;
+
+        public ChargeStatus()
         {
-            Fuel = CalcChargeState(status.Fuel, status.Spec.FuelMax);
-            Bull = CalcChargeState(status.Bull, status.Spec.BullMax);
         }
 
-        public ChargeStatus(int fuel, int bull) : this()
+        public ChargeStatus(ShipStatus status)
         {
-            Fuel = fuel;
-            Bull = bull;
+            FuelRatio = status.Spec.FuelMax == 0 ? 0 : (double)status.Fuel / status.Spec.FuelMax;
+            BullRatio = status.Spec.BullMax == 0 ? 0 : (double)status.Bull / status.Spec.BullMax;
         }
 
-        private int CalcChargeState(int now, int full)
+        private int CalcChargeState(double ratio)
         {
-            if (full == 0 || now == full)
+            // ReSharper disable CompareOfFloatsByEqualityOperator
+            if (ratio == 0.0 || ratio == 1.0)
                 return 0;
-            var ratio = (double)now / full;
+            // ReSharper restore CompareOfFloatsByEqualityOperator
             if (ratio >= 7.0 / 9)
                 return 1;
             if (ratio >= 3.0 / 9)
@@ -49,6 +52,15 @@ namespace KancolleSniffer.Model
             if (ratio > 0)
                 return 3;
             return 4;
+        }
+
+        public static ChargeStatus Min(ChargeStatus a, ChargeStatus b)
+        {
+            return new ChargeStatus
+            {
+                FuelRatio = Math.Min(a.FuelRatio, b.FuelRatio),
+                BullRatio = Math.Min(a.BullRatio, b.BullRatio)
+            };
         }
     }
 
@@ -152,10 +164,9 @@ namespace KancolleSniffer.Model
             get
             {
                 var fs = new ChargeStatus(Ships[0]);
-                var others = (from ship in Ships.Skip(1) select new ChargeStatus(ship)).Aggregate(
-                    (result, next) => new ChargeStatus(Max(result.Fuel, next.Fuel), Max(result.Bull, next.Bull)));
-                return new ChargeStatus(fs.Fuel != 0 ? fs.Fuel : others.Fuel + 5,
-                    fs.Bull != 0 ? fs.Bull : others.Bull + 5);
+                var others = (from ship in Ships.Skip(1) select new ChargeStatus(ship)).Aggregate(ChargeStatus.Min);
+                others.Others = true;
+                return fs.Fuel != 0 ? fs : others;
             }
         }
 
