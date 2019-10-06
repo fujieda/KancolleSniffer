@@ -657,7 +657,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer(true);
             SniffLogFile(sniffer, "twofleets_001");
-            PAssert.That(() => new[]{5, 5, 5, 5}.SequenceEqual(sniffer.Fleets.Select(f => f.ChargeStatus.Fuel)));
+            PAssert.That(() => new[]{5, 5, 0, 0}.SequenceEqual(sniffer.Fleets.Select(f => f.ChargeStatus.Fuel)));
         }
 
         /// <summary>

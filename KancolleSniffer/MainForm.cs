@@ -892,7 +892,7 @@ namespace KancolleSniffer
                 var stat = Sniffer.Fleets[i].ChargeStatus;
                 fuelSq[i].ImageIndex = stat.Fuel;
                 bullSq[i].ImageIndex = stat.Bull;
-                var text = $"燃{stat.FuelRatio * 100:f1}% 弾{stat.BullRatio * 100:f1}%";
+                var text = stat.Empty ? "" : $"燃{stat.FuelRatio * 100:f1}% 弾{stat.BullRatio * 100:f1}%";
                 _toolTip.SetToolTip(fuelSq[i], text);
                 _toolTip.SetToolTip(bullSq[i], text);
             }

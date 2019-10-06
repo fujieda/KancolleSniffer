@@ -16,18 +16,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static System.Math;
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace KancolleSniffer.Model
 {
     public class ChargeStatus
     {
+        public bool Empty => FuelRatio > 1.0;
+
         public double FuelRatio { get; set; }
-        public int Fuel => CalcChargeState(FuelRatio) + (Others ? 5 : 0);
+        public int Fuel { get; set; }
 
         public double BullRatio { get; set; }
-        public int Bull => CalcChargeState(BullRatio) + (Others ? 5 : 0);
-
-        public bool Others;
+        public int Bull { get; set; }
 
         public ChargeStatus()
         {
@@ -35,16 +36,35 @@ namespace KancolleSniffer.Model
 
         public ChargeStatus(ShipStatus status)
         {
-            FuelRatio = status.Spec.FuelMax == 0 ? 0 : (double)status.Fuel / status.Spec.FuelMax;
-            BullRatio = status.Spec.BullMax == 0 ? 0 : (double)status.Bull / status.Spec.BullMax;
+            if (status.Spec.FuelMax == 0)
+            {
+                FuelRatio = 2.0;
+                BullRatio = 2.0;
+                return;
+            }
+            FuelRatio = (double)status.Fuel / status.Spec.FuelMax;
+            BullRatio = (double)status.Bull / status.Spec.BullMax;
         }
 
-        private int CalcChargeState(double ratio)
+        public void SetState()
         {
-            // ReSharper disable CompareOfFloatsByEqualityOperator
-            if (ratio == 0.0 || ratio == 1.0)
+            Fuel = CalcChargeState(FuelRatio);
+            Bull = CalcChargeState(BullRatio);
+        }
+
+        public void SetOthersState()
+        {
+            SetState();
+            Fuel += 5;
+            Bull += 5;
+        }
+
+        private static int CalcChargeState(double ratio)
+        {
+            if (ratio > 1.0)
                 return 0;
-            // ReSharper restore CompareOfFloatsByEqualityOperator
+            if (ratio == 1.0)
+                return 0;
             if (ratio >= 7.0 / 9)
                 return 1;
             if (ratio >= 3.0 / 9)
@@ -165,8 +185,21 @@ namespace KancolleSniffer.Model
             {
                 var fs = new ChargeStatus(Ships[0]);
                 var others = (from ship in Ships.Skip(1) select new ChargeStatus(ship)).Aggregate(ChargeStatus.Min);
-                others.Others = true;
-                return fs.Fuel != 0 ? fs : others;
+                fs.SetState();
+                others.SetOthersState();
+                if (others.Empty)
+                    return fs;
+                if (fs.Fuel == 0)
+                {
+                    fs.Fuel = others.Fuel;
+                    fs.FuelRatio = others.FuelRatio;
+                }
+                if (fs.Bull == 0)
+                {
+                    fs.Bull = others.Bull;
+                    fs.BullRatio = others.BullRatio;
+                }
+                return fs;
             }
         }
 
