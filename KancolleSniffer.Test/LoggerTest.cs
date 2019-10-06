@@ -49,11 +49,30 @@ namespace KancolleSniffer.Test
             sniffer.SkipMaster();
             sniffer.EnableLog(LogType.Mission);
             SnifferTest.SniffLogFile(sniffer, "mission_result_001");
-            PAssert.That(() => "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材" == header);
-            PAssert.That(() => "2015-01-01 00:00:00,成功,長距離練習航海,0,100,30,0,0,0,0|" +
-                               "2015-01-01 00:00:00,成功,長距離練習航海,0,100,30,0,0,1,0|" +
-                               "2015-01-01 00:00:00,大成功,MO作戦,0,0,360,420,1,0,0|" +
-                               "2015-01-01 00:00:00,失敗,東京急行(弐),0,0,0,0,0,0,0|"
+            PAssert.That(() => "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材,改修資材" == header);
+            PAssert.That(() => "2015-01-01 00:00:00,成功,長距離練習航海,0,100,30,0,0,0,0,0|" +
+                               "2015-01-01 00:00:00,成功,長距離練習航海,0,100,30,0,0,1,0,0|" +
+                               "2015-01-01 00:00:00,大成功,MO作戦,0,0,360,420,1,0,0,0|" +
+                               "2015-01-01 00:00:00,失敗,東京急行(弐),0,0,0,0,0,0,0,0|"
+                               == result);
+        }
+
+        [TestMethod]
+        public void MissionResultGetScrew()
+        {
+            var sniffer = new Sniffer();
+            var result = "";
+            var header = "";
+            sniffer.SetLogWriter((path, s, h) =>
+            {
+                result += s + "|";
+                header = h;
+            }, () => new DateTime(2019, 1, 1));
+            sniffer.SkipMaster();
+            sniffer.EnableLog(LogType.Mission);
+            SnifferTest.SniffLogFile(sniffer, "mission_result_002");
+            PAssert.That(() => "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材,改修資材" == header);
+            PAssert.That(() => "2019-01-01 00:00:00,大成功,南西諸島離島防衛作戦,0,0,1800,975,0,0,0,1|"
                                == result);
         }
 

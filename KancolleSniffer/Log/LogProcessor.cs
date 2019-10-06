@@ -36,12 +36,14 @@ namespace KancolleSniffer.Log
             bool number, DateTime now = default)
         {
             var fields = 0;
+            var mission = false;
             var battle = false;
             var material = false;
             switch (Path.GetFileNameWithoutExtension(path))
             {
                 case "遠征報告書":
-                    fields = 10;
+                    mission = true;
+                    fields = 11;
                     break;
                 case "改修報告書":
                     fields = 15;
@@ -77,6 +79,8 @@ namespace KancolleSniffer.Log
                     continue;
                 data[0] = Logger.FormatDateTime(date);
                 var entries = data;
+                if (mission)
+                    entries = data.Concat(new[] {"0"}).Take(fields).ToArray();
                 if (material)
                     entries = data.Take(fields).ToArray();
                 if (battle)

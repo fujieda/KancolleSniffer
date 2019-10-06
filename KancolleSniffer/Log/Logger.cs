@@ -115,29 +115,39 @@ namespace KancolleSniffer.Log
         {
             var r = (int)json.api_clear_result;
             var resStr = r == 2 ? "大成功" : r == 1 ? "成功" : "失敗";
-            var material = new int[7];
+            var material = new int[8];
             if (r != 0)
                 ((int[])json.api_get_material).CopyTo(material, 0);
             foreach (var i in new[] {1, 2})
             {
                 var attr = "api_get_item" + i;
-                if (!json.IsDefined(attr) || json[attr].api_useitem_id != -1)
+                if (!json.IsDefined(attr))
                     continue;
                 var count = (int)json[attr].api_useitem_count;
                 var flag = ((int[])json.api_useitem_flag)[i - 1];
-                if (flag == 1)
-                    material[(int)Material.Bucket] = count;
-                else if (flag == 2)
-                    material[(int)Material.Burner + 2] = count; // 高速建造材と開発資材が反対なのでいつか直す
-                else if (flag == 3)
-                    material[(int)Material.Development - 2] = count;
+                switch (flag)
+                {
+                    case 1:
+                        material[(int)Material.Bucket] = count;
+                        break;
+                    case 2:
+                        material[(int)Material.Burner + 2] = count; // 高速建造材と開発資材が反対なのでいつか直す
+                        break;
+                    case 3:
+                        material[(int)Material.Development - 2] = count;
+                        break;
+                    case 4:
+                        if ((int)json[attr].api_useitem_id == 4)
+                            material[(int)Material.Screw] = count;
+                        break;
+                }
             }
             if ((_logType & LogType.Mission) != 0)
             {
                 WriteNow("遠征報告書",
                     string.Join(",",
                         resStr, json.api_quest_name, string.Join(",", material)),
-                    "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材");
+                    "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材,改修資材");
             }
         }
 
