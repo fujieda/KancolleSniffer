@@ -393,5 +393,16 @@ namespace KancolleSniffer.Test
             Assert.AreEqual(BattleState.Result, battle.BattleState);
             Assert.AreEqual(0, sniffer.BadlyDamagedShips.Length);
         }
+
+        /// <summary>
+        /// 緊急泊地修理
+        /// </summary>
+        [TestMethod]
+        public void AnchorageRepair()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "anchorage_repair_001");
+            PAssert.That(() => !sniffer.IsBattleResultError);
+        }
     }
 }

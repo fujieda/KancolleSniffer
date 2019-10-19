@@ -369,6 +369,11 @@ namespace KancolleSniffer.Model
             SetBadlyDamagedShips();
         }
 
+        public void InspectAnchorageRepair(dynamic json)
+        {
+            UpdateShips(json.api_ship_data);
+        }
+
         public void StartPractice(string request)
         {
             var values = HttpUtility.ParseQueryString(request);

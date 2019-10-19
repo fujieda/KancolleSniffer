@@ -164,6 +164,8 @@ namespace KancolleSniffer
                 return ApiKaisou(url, request, data);
             if (url.Contains("air_corps"))
                 return ApiAirCorps(url, request, data);
+            if (url.Contains("map"))
+                return ApiMap(url, request, data);
             return ApiOthers(url, request, data);
         }
 
@@ -518,6 +520,39 @@ namespace KancolleSniffer
             return Update.None;
         }
 
+        private Update ApiMap(string url, string request, dynamic data)
+        {
+            if (url.EndsWith("api_req_map/start"))
+            {
+                _shipInfo.InspectMapStart(request); // 出撃中判定が必要なので_conditionTimerより前
+                _conditionTimer.InvalidateCond();
+                _exMapInfo.InspectMapStart(data);
+                _battleInfo.InspectMapStart(data);
+                _logger.InspectMapStart(data);
+                _miscTextInfo.InspectMapStart(data);
+                _questCounter.InspectMapStart(data);
+                _cellInfo.InspectMapStart(data);
+                RepeatingTimerController?.Suspend("大破警告");
+                return Update.Timer | Update.Ship | Update.Cell;
+            }
+            if (url.EndsWith("api_req_map/next"))
+            {
+                _exMapInfo.InspectMapNext(data);
+                _battleInfo.InspectMapNext(data);
+                _logger.InspectMapNext(data);
+                _questCounter.InspectMapNext(data);
+                _miscTextInfo.InspectMapNext(data);
+                _cellInfo.InspectMapNext(data);
+                return Update.Battle;
+            }
+            if (url.EndsWith("api_req_map/anchorage_repair"))
+            {
+                _shipInfo.InspectAnchorageRepair(data);
+                return Update.Ship;
+            }
+            return Update.None;
+        }
+
         private Update ApiOthers(string url, string request, dynamic data)
         {
             if (url.EndsWith("api_req_hokyu/charge"))
@@ -543,29 +578,6 @@ namespace KancolleSniffer
                 _dockInfo.InspectSpeedChange(request);
                 _conditionTimer.CheckCond();
                 return Update.NDock | Update.Timer | Update.Item | Update.Ship;
-            }
-            if (url.EndsWith("api_req_map/start"))
-            {
-                _shipInfo.InspectMapStart(request); // 出撃中判定が必要なので_conditionTimerより前
-                _conditionTimer.InvalidateCond();
-                _exMapInfo.InspectMapStart(data);
-                _battleInfo.InspectMapStart(data);
-                _logger.InspectMapStart(data);
-                _miscTextInfo.InspectMapStart(data);
-                _questCounter.InspectMapStart(data);
-                _cellInfo.InspectMapStart(data);
-                RepeatingTimerController?.Suspend("大破警告");
-                return Update.Timer | Update.Ship | Update.Cell;
-            }
-            if (url.EndsWith("api_req_map/next"))
-            {
-                _exMapInfo.InspectMapNext(data);
-                _battleInfo.InspectMapNext(data);
-                _logger.InspectMapNext(data);
-                _questCounter.InspectMapNext(data);
-                _miscTextInfo.InspectMapNext(data);
-                _cellInfo.InspectMapNext(data);
-                return Update.Battle;
             }
             if (url.EndsWith("api_req_mission/start"))
             {
