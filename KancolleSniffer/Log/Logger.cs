@@ -273,7 +273,7 @@ namespace KancolleSniffer.Log
             if (json.api_get_items())
             {
                 return ((dynamic[])json.api_get_items).Select(entry =>
-                    entry.api_id != -1 ? _itemInfo.GetSpecByItemId((int)entry.api_id) : fail);
+                    (int)entry.api_slotitem_id != -1 ? _itemInfo.GetSpecByItemId((int)entry.api_slotitem_id) : fail);
             }
             return new[]
             {

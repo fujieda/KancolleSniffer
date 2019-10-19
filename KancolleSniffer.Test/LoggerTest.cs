@@ -265,7 +265,7 @@ namespace KancolleSniffer.Test
             sniffer.EnableLog(LogType.CreateItem);
             SnifferTest.SniffLogFile(sniffer, "createitem_002");
             Assert.AreEqual("2019-01-01 00:00:00,失敗,,10,10,30,10,大淀改(167),120|" +
-                               "2019-01-01 00:00:00,,,10,10,30,10,大淀改(167),120|" +
+                               "2019-01-01 00:00:00,61cm三連装魚雷,魚雷,10,10,30,10,大淀改(167),120|" +
                                "2019-01-01 00:00:00,失敗,,10,10,30,10,大淀改(167),120|",
                 result);
         }
