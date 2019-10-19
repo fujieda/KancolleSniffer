@@ -301,7 +301,7 @@ namespace KancolleSniffer.Model
         public void InspectMapNext(dynamic json)
         {
             _lastCell = (int)json.api_next == 0;
-
+            BattleState = BattleState.None;
             if (!json.api_destruction_battle())
                 return;
             InspectAirRaidBattle((int)json.api_maparea_id, json.api_destruction_battle);

@@ -279,14 +279,14 @@ namespace KancolleSniffer
                 _shipInfo.InspectShip(url, json);
                 _akashiTimer.CheckFleet();
                 _battleInfo.BattleState = BattleState.None;
-                return Update.Item | Update.Ship | Update.Battle;
+                return Update.Item | Update.Ship;
             }
             if (url.EndsWith("api_get_member/ship_deck"))
             {
                 _shipInfo.InspectShip(url, data);
                 _akashiTimer.CheckFleet();
                 _battleInfo.BattleState = BattleState.None;
-                return Update.Ship | Update.Battle | Update.Item;
+                return Update.Ship | Update.Item;
             }
             if (url.EndsWith("api_get_member/ship3"))
             {
@@ -565,7 +565,7 @@ namespace KancolleSniffer
                 _questCounter.InspectMapNext(data);
                 _miscTextInfo.InspectMapNext(data);
                 _cellInfo.InspectMapNext(data);
-                return Update.Cell | (data.api_destruction_battle() ? Update.Battle : 0);
+                return Update.Battle;
             }
             if (url.EndsWith("api_req_mission/start"))
             {
