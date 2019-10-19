@@ -313,5 +313,27 @@ namespace KancolleSniffer.Model
         }
 
         public int CombinedTorpedoPenalty => CombinedType != 0 && Number == 1 ? -5 : 0;
+
+        public string MissionParameter
+        {
+            get
+            {
+                var result = new List<string>();
+                var kira = Ships.Count(ship => ship.Cond > 49);
+                if (kira > 0)
+                {
+                    var min = Ships.Where(ship => ship.Cond > 49).Min(ship => ship.Cond);
+                    var mark = Ships[0].Cond > 49 ? "+" : "";
+                    result.Add($"ｷﾗ{kira}{mark}≥{min}");
+                }
+                var drums = Ships.SelectMany(ship => ship.Slot).Count(item => item.Spec.IsDrum);
+                var drumShips = Ships.Count(ship => ship.Slot.Any(item => item.Spec.IsDrum));
+                if (drums > 0)
+                    result.Add($"ド{drums}({drumShips}隻)");
+                if (DaihatsuBonus > 0)
+                    result.Add($"ﾀﾞ{DaihatsuBonus * 100:f1}%");
+                return string.Join(" ", result);
+            }
+        }
     }
 }

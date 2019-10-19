@@ -923,7 +923,7 @@ namespace KancolleSniffer
             var names = Sniffer.Missions.Select(mission => mission.Name).ToArray();
             for (var i = 0; i < ShipInfo.FleetCount - 1; i++)
             {
-                var fleetParams = GenerateFleetParamsForMission(i + 1);
+                var fleetParams = Sniffer.Fleets[i + 1].MissionParameter;
                 var inPort = string.IsNullOrEmpty(names[i]);
                 paramsLabels[i].Visible = inPort;
                 paramsLabels[i].Text = fleetParams;
@@ -936,23 +936,6 @@ namespace KancolleSniffer
         private void SetMissionLabel()
         {
             labelMission.Text = (Config.ShowEndTime & TimerKind.Mission) != 0 ? "遠征終了" : "遠征";
-        }
-
-        private string GenerateFleetParamsForMission(int fleetNumber)
-        {
-            var result = new List<string>();
-            var fleet = Sniffer.Fleets[fleetNumber];
-            var kira = fleet.Ships.Count(ship => ship.Cond > 49);
-            var plus = fleet.Ships[0].Cond > 49;
-            if (kira > 0)
-                result.Add($"ｷﾗ{kira}{(plus ? "+" : "")}");
-            var drums = fleet.Ships.SelectMany(ship => ship.Slot).Count(item => item.Spec.IsDrum);
-            var drumShips = fleet.Ships.Count(ship => ship.Slot.Any(item => item.Spec.IsDrum));
-            if (drums > 0)
-                result.Add($"ド{drums}({drumShips}隻)");
-            if (fleet.DaihatsuBonus > 0)
-                result.Add($"ﾀﾞ{fleet.DaihatsuBonus * 100:f1}%");
-            return string.Join(" ", result);
         }
 
         private void labelMission_Click(object sender, EventArgs e)
