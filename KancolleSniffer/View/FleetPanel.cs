@@ -75,6 +75,7 @@ namespace KancolleSniffer.View
                 }
             };
             _labelList.Add(labels);
+            labels.Fleet.DoubleClick += (obj, ev) => { Clipboard.SetText((string)labels.Fleet.Tag); };
             labels.Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
             labels.Move(AutoScrollPosition);
         }
@@ -92,6 +93,7 @@ namespace KancolleSniffer.View
             var e = _spec[i];
             var labels = _labelList[i];
             labels.Fleet.Text = e.Fleet;
+            labels.Fleet.Tag = "";
             labels.Name.SetName(e.Ship);
             if (e.Ship2 != "")
                 ToolTip.SetToolTip(labels.Name, e.Ship2);
@@ -100,7 +102,10 @@ namespace KancolleSniffer.View
             labels.EquipColor.BackColor = e.Color;
             labels.Spec.Text = e.Spec;
             if (e.Fleet != "" && e.Fleet2 != "")
+            {
                 ToolTip.SetToolTip(labels.Fleet, e.Fleet2);
+                labels.Fleet.Tag = e.Fleet2;
+            }
             ToolTip.SetToolTip(labels.Equip, e.AircraftSpec != "" ? e.AircraftSpec : "");
             ToolTip.SetToolTip(labels.Spec, e.Spec2 != "" ? e.Spec2 : "");
             labels.BackPanel.Visible = true;
