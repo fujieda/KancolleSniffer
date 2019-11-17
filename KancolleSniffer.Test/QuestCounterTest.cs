@@ -1278,7 +1278,7 @@ namespace KancolleSniffer.Test
         /// 688: 航空戦力の強化
         /// </summary>
         [TestMethod]
-        public void DestroyItem_613_638_643_645_663_673_674_675_676_677_678_680_688()
+        public void DestroyItem_613_638_643_645_663_673_674_675_676_677_678_680_686_688()
         {
             _itemInfo.InjectItemSpec(new[]
             {
@@ -1296,11 +1296,13 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 31, Name = "32号水上電探", Type = 13},
                 new ItemSpec {Id = 35, Name = "三式弾", Type = 18},
                 new ItemSpec {Id = 23, Name = "九九式艦爆", Type = 7},
-                new ItemSpec {Id = 16, Name = "九七式艦攻", Type = 8}
+                new ItemSpec {Id = 16, Name = "九七式艦攻", Type = 8},
+                new ItemSpec {Id = 3, Name = "10cm連装高角砲", Type = 1},
+                new ItemSpec {Id = 121, Name = "94式高射装置", Type = 36}
             });
-            var items = new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31, 35, 23, 16};
+            var items = new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31, 35, 23, 16, 3, 121};
             _itemInfo.InjectItems(items);
-            var questList = new[] {613, 638, 643, 645, 663, 673, 674, 675, 676, 677, 678, 680, 688};
+            var questList = new[] {613, 638, 643, 645, 663, 673, 674, 675, 676, 677, 678, 680, 686, 688};
             _questInfo.AcceptMax = questList.Length;
             _questInfo.InspectQuestList(CreateQuestList(questList));
             _questCounter.InspectDestroyItem(
@@ -1308,7 +1310,7 @@ namespace KancolleSniffer.Test
             var scalar = new[]
             {
                 new {Id = 613, Now = 1}, new {Id = 638, Now = 1}, new {Id = 643, Now = 1}, new {Id = 645, Now = 1},
-                new {Id = 663, Now = 1}, new {Id = 673, Now = 1}, new {Id = 674, Now = 1}
+                new {Id = 663, Now = 1}, new {Id = 673, Now = 2}, new {Id = 674, Now = 1}
             };
             foreach (var e in scalar)
             {
@@ -1319,7 +1321,8 @@ namespace KancolleSniffer.Test
             {
                 new {Id = 675, NowArray = new[] {2, 1}}, new {Id = 676, NowArray = new[] {1, 1, 1}},
                 new {Id = 677, NowArray = new[] {1, 1, 1}}, new {Id = 678, NowArray = new[] {1, 1}},
-                new {Id = 680, NowArray = new[] {1, 2}}, new {Id = 688, NowArray = new[] {2, 1, 1, 1}}
+                new {Id = 680, NowArray = new[] {1, 2}}, new {Id = 686, NowArray = new[] {1, 1}},
+                new {Id = 688, NowArray = new[] {2, 1, 1, 1}}
             };
             foreach (var e in array)
             {
