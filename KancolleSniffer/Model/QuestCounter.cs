@@ -77,7 +77,7 @@ namespace KancolleSniffer.Model
 
         public override string ToString()
         {
-            if (Id == 280 || Id == 426 || Id == 854 || Id == 872 || Id == 873 || Id == 888 || Id == 894)
+            if (Id == 280 || Id == 284 || Id == 426 || Id == 854 || Id == 872 || Id == 873 || Id == 888 || Id == 894)
                 return $"{NowArray.Count(n => n >= 1)}/{Spec.MaxArray.Length}";
             return NowArray != null
                 ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
@@ -108,6 +108,10 @@ namespace KancolleSniffer.Model
                 case 280:
                     return string.Join(" ",
                         new[] {"1-2", "1-3", "1-4", "2-1"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
+                case 284:
+                    return string.Join(" ",
+                        new[] {"1-4", "2-1", "2-2", "2-3"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
                             .Where(s => !string.IsNullOrEmpty(s)));
                 case 426:
                     return string.Join(" ",
@@ -328,6 +332,28 @@ namespace KancolleSniffer.Model
                                     IncrementNth(count, 2);
                                     break;
                                 case 21:
+                                    IncrementNth(count, 3);
+                                    break;
+                            }
+                        }
+                        break;
+                    case 284:
+                        if (_boss && rank.S &&
+                            specs.Types.Count(type => type == 1 || type == 2) >= 3 &&
+                            specs.Types.Intersect(new[] {3, 4, 7, 21}).Any())
+                        {
+                            switch (_map)
+                            {
+                                case 14:
+                                    IncrementNth(count, 0);
+                                    break;
+                                case 21:
+                                    IncrementNth(count, 1);
+                                    break;
+                                case 22:
+                                    IncrementNth(count, 2);
+                                    break;
+                                case 23:
                                     IncrementNth(count, 3);
                                     break;
                             }

@@ -136,7 +136,8 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 893, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 894, NowArray = new[] {1, 1, 1, 1, 1}},
                     new QuestCount {Id = 280, NowArray = new[] {1, 1, 1, 1}},
-                    new QuestCount {Id = 872, NowArray = new[] {1, 1, 1, 1}}
+                    new QuestCount {Id = 872, NowArray = new[] {1, 1, 1, 1}},
+                    new QuestCount {Id = 284, NowArray = new[] {1, 1, 1, 1}}
                 }
             };
             new QuestInfo().LoadState(status);
@@ -173,6 +174,9 @@ namespace KancolleSniffer.Test
             var q872 = status.QuestCountList.First(q => q.Id == 872);
             Assert.IsTrue(q872.ToString() == "4/4");
             Assert.IsTrue(q872.ToToolTip() == "7-2M 5-5 6-2 6-5");
+            var q284 = status.QuestCountList.First(q => q.Id == 284);
+            Assert.IsTrue(q284.ToString() == "4/4");
+            Assert.IsTrue(q284.ToToolTip() == "1-4 2-1 2-2 2-3");
         }
     }
 
@@ -603,7 +607,7 @@ namespace KancolleSniffer.Test
             var quest = InjectQuest(280);
 
             _battleInfo.InjectResultStatus(
-                ShipStatusList(7, 1, 1, 1, 8, 8), new ShipStatus[0],
+                ShipStatusList(7, 2, 1, 1, 8, 8), new ShipStatus[0],
                 new ShipStatus[0], new ShipStatus[0]);
 
             InjectMapNext(12, 4);
@@ -640,6 +644,36 @@ namespace KancolleSniffer.Test
             _battleInfo.Result.Friend.Main = ShipStatusList(2, 2, 21, 2, 8, 8);
             InjectBattleResult("S");
             Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 4}));
+        }
+
+        /// <summary>
+        ///  // 284: 南西諸島方面「海上警備行動」発令！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_284()
+        {
+            var quest = InjectQuest(284);
+
+            _battleInfo.InjectResultStatus(
+                ShipStatusList(7, 2, 1, 1, 8, 8), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
+
+            InjectMapNext(14, 4);
+            InjectBattleResult("S");
+            InjectMapNext(14, 5);
+            InjectBattleResult("A");
+            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0}));
+
+            InjectBattleResult("S");
+            InjectMapNext(21, 5);
+            InjectBattleResult("S");
+            InjectMapNext(22, 5);
+            InjectBattleResult("S");
+            InjectMapNext(23, 5);
+            InjectBattleResult("S");
+            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1}));
+
+            // 艦種チェックは280と共通
         }
 
         /// <summary>
