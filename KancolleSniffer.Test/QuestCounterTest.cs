@@ -135,7 +135,8 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 688, NowArray = new[] {2, 1, 2, 1}},
                     new QuestCount {Id = 893, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 894, NowArray = new[] {1, 1, 1, 1, 1}},
-                    new QuestCount {Id = 280, NowArray = new[] {1, 1, 1, 1}}
+                    new QuestCount {Id = 280, NowArray = new[] {1, 1, 1, 1}},
+                    new QuestCount {Id = 872, NowArray = new[] {1, 1, 1, 1}}
                 }
             };
             new QuestInfo().LoadState(status);
@@ -169,6 +170,9 @@ namespace KancolleSniffer.Test
             var q280 = status.QuestCountList[10];
             Assert.IsTrue(q280.ToString() == "4/4");
             Assert.IsTrue(q280.ToToolTip() == "1-2 1-3 1-4 2-1");
+            var q872 = status.QuestCountList.First(q => q.Id == 872);
+            Assert.IsTrue(q872.ToString() == "4/4");
+            Assert.IsTrue(q872.ToToolTip() == "7-2M 5-5 6-2 6-5");
         }
     }
 
@@ -731,6 +735,40 @@ namespace KancolleSniffer.Test
             _battleInfo.Result.Friend.Main[4].Spec.ShipType = 16;
             InjectBattleResult("A");
             Assert.IsTrue(CheckCount(quest, 2), "軽巡3隻水母2隻");
+        }
+
+        /// <summary>
+        /// 872: 戦果拡張任務！「Z作戦」後段作戦
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_872()
+        {
+            var quest = InjectQuest(872);
+
+            InjectMapNext(55, 4);
+            InjectBattleResult("A");
+            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0}));
+            InjectBattleResult("S");
+            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0}));
+            InjectMapNext(55, 5);
+            InjectBattleResult("S");
+            Assert.IsTrue(CheckCount(quest, new[] {0, 1, 0, 0}));
+
+            InjectMapNext(62, 5);
+            InjectBattleResult("S");
+            Assert.IsTrue(CheckCount(quest, new[] {0, 1, 1, 0}));
+            InjectMapNext(65, 5);
+            InjectBattleResult("S");
+            Assert.IsTrue(CheckCount(quest, new[] {0, 1, 1, 1}));
+            _questCounter.InspectMapNext(Js(new
+            {
+                api_maparea_id = 7,
+                api_mapinfo_no = 2,
+                api_no = 15,
+                api_event_id = 5
+            }));
+            InjectBattleResult("S");
+            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1}), "7-2M");
         }
 
         /// <summary>

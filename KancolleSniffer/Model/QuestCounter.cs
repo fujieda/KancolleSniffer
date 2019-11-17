@@ -77,7 +77,7 @@ namespace KancolleSniffer.Model
 
         public override string ToString()
         {
-            if (Id == 280 || Id == 426 || Id == 854 || Id == 873 || Id == 888 || Id == 894)
+            if (Id == 280 || Id == 426 || Id == 854 || Id == 872 || Id == 873 || Id == 888 || Id == 894)
                 return $"{NowArray.Count(n => n >= 1)}/{Spec.MaxArray.Length}";
             return NowArray != null
                 ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
@@ -122,6 +122,10 @@ namespace KancolleSniffer.Model
                     return string.Join(" ",
                         new[] {"2-4", "6-1", "6-3", "6-4"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
                             .Where(s => !string.IsNullOrEmpty(s)));
+                case 872:
+                    return string.Join(" ",
+                        new[] {"7-2M", "5-5", "6-2", "6-5"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
                 case 873:
                     return string.Join(" ",
                         new[] {"3-1", "3-2", "3-3"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
@@ -164,7 +168,8 @@ namespace KancolleSniffer.Model
         {
             public ResultShipSpecs(BattleInfo battleInfo)
             {
-                Specs = battleInfo.Result?.Friend.Main.Where(s => s.NowHp > 0).Select(ship => ship.Spec).ToArray() ?? new ShipSpec[0];
+                Specs = battleInfo.Result?.Friend.Main.Where(s => s.NowHp > 0).Select(ship => ship.Spec).ToArray() ??
+                        new ShipSpec[0];
                 Ids = Specs.Select(spec => spec.Id).ToArray();
                 Types = Specs.Select(spec => spec.ShipType).ToArray();
                 Classes = Specs.Select(spec => spec.ShipClass).ToArray();
@@ -354,6 +359,27 @@ namespace KancolleSniffer.Model
                             specs.Types.Count(s => s == 16) >= 1)
                         {
                             Increment(count);
+                        }
+                        break;
+                    case 872:
+                        if (_boss && rank.S)
+                        {
+                            switch (_map)
+                            {
+                                case 72:
+                                    if (_cell != 7)
+                                        IncrementNth(count, 0);
+                                    break;
+                                case 55:
+                                    IncrementNth(count, 1);
+                                    break;
+                                case 62:
+                                    IncrementNth(count, 2);
+                                    break;
+                                case 65:
+                                    IncrementNth(count, 3);
+                                    break;
+                            }
                         }
                         break;
                     case 873:

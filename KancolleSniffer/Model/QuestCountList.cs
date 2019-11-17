@@ -63,6 +63,7 @@ namespace KancolleSniffer.Model
             {854, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 0, 0, 4}}}, // 854: 戦果拡張任務！「Z作戦」前段作戦
             {861, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 4, 0, 0}}}, // 861: 強行輸送艦隊、抜錨！
             {862, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 0, 8, 4}}}, // 862: 前線の航空偵察を実施せよ！
+            {872, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 0, 0, 4}}}, // 872: 戦果拡張任務！「Z作戦」後段作戦
             {873, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 873: 北方海域警備を実施せよ！
             {875, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 0, 0, 0}}}, // 875: 精鋭「三一駆」、鉄底海域に突入せよ！
             {888, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 888: 新編成「三川艦隊」、鉄底海峡に突入せよ！
