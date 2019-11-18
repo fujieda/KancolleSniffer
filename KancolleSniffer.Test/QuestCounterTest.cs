@@ -879,6 +879,9 @@ namespace KancolleSniffer.Test
             _battleInfo.Result.Friend.Main[5].Spec.Id = 359;
             InjectBattleResult("S");
             Assert.IsTrue(CheckCount(quest, 3), "沖波改");
+            _battleInfo.Result.Friend.Main[5].Spec.Id = 578;
+            InjectBattleResult("S");
+            Assert.IsTrue(CheckCount(quest, 4), "朝霜改二");
         }
 
         /// <summary>

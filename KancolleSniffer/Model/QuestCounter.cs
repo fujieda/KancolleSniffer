@@ -304,7 +304,13 @@ namespace KancolleSniffer.Model
                     return specs.Types.Count(type => type == 3) >= 1;
                 case 875:
                     return specs.Ids.Contains(543) &&
-                           specs.Ids.Intersect(new[] {344, 345, 359}).Any();
+                           specs.Ids.Intersect(new[]
+                           {
+                               344, // 朝霜改
+                               345, // 高波改
+                               359, // 沖波改
+                               578 // 朝霜改二
+                           }).Any();
                 case 888:
                     return specs.Ids.Intersect(new[]
                     {
