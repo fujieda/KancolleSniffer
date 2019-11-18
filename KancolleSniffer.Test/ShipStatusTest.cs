@@ -193,9 +193,12 @@ namespace KancolleSniffer.Test
             [DataRow("五十鈴改二")]
             [DataRow("龍田改二")]
             [DataRow("Jervis改")]
+            [DataRow("Janus改")]
             [DataRow("Samuel B.Roberts改")]
             [DataRow("Johnston")]
             [DataRow("Johnston改")]
+            [DataRow("Fletcher")]
+            [DataRow("Fletcher改")]
             public void CheckNonConditional(string name)
             {
                 var ship = new ShipStatus

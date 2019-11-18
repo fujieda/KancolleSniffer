@@ -227,9 +227,12 @@ namespace KancolleSniffer.Model
                     case "五十鈴改二":
                     case "龍田改二":
                     case "Jervis改":
+                    case "Janus改":
                     case "Samuel B.Roberts改":
                     case "Johnston":
                     case "Johnston改":
+                    case "Fletcher":
+                    case "Fletcher改":
                         return true;
                     case "大鷹改":
                     case "大鷹改二":
