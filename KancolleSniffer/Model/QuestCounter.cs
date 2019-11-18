@@ -165,7 +165,6 @@ namespace KancolleSniffer.Model
         private readonly BattleInfo _battleInfo;
         private readonly SortedDictionary<int, QuestStatus> _quests;
         private int _map;
-        private int _cell;
         private bool _boss;
 
         private class ResultShipSpecs
@@ -212,7 +211,15 @@ namespace KancolleSniffer.Model
         public void InspectMapNext(dynamic json)
         {
             _map = (int)json.api_maparea_id * 10 + (int)json.api_mapinfo_no;
-            _cell = json.api_no() ? (int)json.api_no : 0;
+            if (_map == 72)
+            {
+                var cell = json.api_no() ? (int)json.api_no : 0;
+                _map *= 10;
+                if (cell == 7)
+                    _map++;
+                if (cell == 15)
+                    _map += 2;
+            }
             _boss = (int)json.api_event_id == 5;
 
             if (_quests.TryGetValue(861, out var q861) && _map == 16 && (int)json.api_event_id == 8)
@@ -222,33 +229,23 @@ namespace KancolleSniffer.Model
             }
         }
 
-        private class Rank
-        {
-            private readonly string _rank;
-
-            public Rank(string rank)
-            {
-                _rank = rank;
-            }
-
-            public bool S => QuestSortie.CompareRank(_rank, "S") == 0;
-            public bool A => QuestSortie.CompareRank(_rank, "A") <= 0;
-            public bool B => QuestSortie.CompareRank(_rank, "B") <= 0;
-        }
-
         public void InspectBattleResult(dynamic json)
         {
-            var rawRak = json.api_win_rank;
-            var rank = new Rank(rawRak);
-            var specs = new ResultShipSpecs(_battleInfo);
-            foreach (var quest in _quests.Values)
+            var rank = json.api_win_rank;
+            foreach (var count in _quests.Values.Select(q => q.Count))
             {
-                var count = quest.Count;
                 switch (count.Spec)
                 {
                     case QuestSortie sortie:
-                        if (count.Id == 216 && !_boss || sortie.Check(rawRak, _map, _boss))
+                        if (!FleetCheck(count.Id))
+                            continue;
+                        if (!_boss && count.Id == 216)
+                        {
                             Increment(count);
+                            continue;
+                        }
+                        if (sortie.Count(count, rank, _map, _boss))
+                            NeedSave = true;
                         continue;
                     case QuestEnemyType enemyType:
                         var num = enemyType.CountResult(
@@ -257,258 +254,78 @@ namespace KancolleSniffer.Model
                             Add(count, num);
                         continue;
                 }
-                switch (quest.Id)
-                {
-                    case 214:
-                        if (rank.S)
-                            IncrementNth(count, 1);
-                        if (_boss)
-                        {
-                            IncrementNth(count, 2);
-                            if (rank.B)
-                                IncrementNth(count, 3);
-                        }
-                        break;
-                    case 249:
-                        if (_map == 25 && _boss && rank.S &&
-                            specs.Ids.Intersect(new[] {62, 63, 64, 265, 266, 268, 319, 192, 194}).Count() == 3)
-                        {
-                            Increment(count);
-                        }
-                        break;
-                    case 257:
-                        if (_map == 14 && _boss && rank.S &&
-                            specs.FlagshipType == 3 &&
-                            specs.Types.Count(s => s == 3) <= 3 &&
-                            specs.Types.All(s => s == 2 || s == 3))
-                        {
-                            Increment(count);
-                        }
-                        break;
-                    case 259:
-                        if (_map == 51 && _boss && rank.S &&
-                            specs.Types.Count(type => type == 3) > 0 &&
-                            specs.Classes.Count(c => new[]
-                            {
-                                2, // 伊勢型
-                                19, // 長門型
-                                26, // 扶桑型
-                                37 // 大和型
-                            }.Contains(c)) == 3)
-                        {
-                            Increment(count);
-                        }
-                        break;
-                    case 264:
-                        if (_map == 42 && _boss && rank.S &&
-                            specs.Types.Count(type => type == 2) >= 2 &&
-                            specs.Specs.Count(spec => spec.IsAircraftCarrier) >= 2)
-                        {
-                            Increment(count);
-                        }
-                        break;
-                    case 266:
-                        if (_map == 25 && _boss && rank.S &&
-                            specs.FlagshipType == 2 &&
-                            specs.Types.OrderBy(x => x).SequenceEqual(new[] {2, 2, 2, 2, 3, 5}))
-                        {
-                            Increment(count);
-                        }
-                        break;
-                    case 280:
-                        if (_boss && rank.S &&
-                            specs.Types.Count(type => type == 1 || type == 2) >= 3 &&
-                            specs.Types.Intersect(new[] {3, 4, 7, 21}).Any())
-                        {
-                            switch (_map)
-                            {
-                                case 12:
-                                    IncrementNth(count, 0);
-                                    break;
-                                case 13:
-                                    IncrementNth(count, 1);
-                                    break;
-                                case 14:
-                                    IncrementNth(count, 2);
-                                    break;
-                                case 21:
-                                    IncrementNth(count, 3);
-                                    break;
-                            }
-                        }
-                        break;
-                    case 284:
-                        if (_boss && rank.S &&
-                            specs.Types.Count(type => type == 1 || type == 2) >= 3 &&
-                            specs.Types.Intersect(new[] {3, 4, 7, 21}).Any())
-                        {
-                            switch (_map)
-                            {
-                                case 14:
-                                    IncrementNth(count, 0);
-                                    break;
-                                case 21:
-                                    IncrementNth(count, 1);
-                                    break;
-                                case 22:
-                                    IncrementNth(count, 2);
-                                    break;
-                                case 23:
-                                    IncrementNth(count, 3);
-                                    break;
-                            }
-                        }
-                        break;
-                    case 854:
-                        if (_boss)
-                        {
-                            switch (_map)
-                            {
-                                case 24 when rank.A:
-                                    IncrementNth(count, 0);
-                                    break;
-                                case 61 when rank.A:
-                                    IncrementNth(count, 1);
-                                    break;
-                                case 63 when rank.A:
-                                    IncrementNth(count, 2);
-                                    break;
-                                case 64 when rank.S:
-                                    IncrementNth(count, 3);
-                                    break;
-                            }
-                        }
-                        break;
-                    case 862:
-                        if (_map == 63 && _boss && rank.A &&
-                            specs.Types.Count(s => s == 3) >= 2 &&
-                            specs.Types.Count(s => s == 16) >= 1)
-                        {
-                            Increment(count);
-                        }
-                        break;
-                    case 872:
-                        if (_boss && rank.S)
-                        {
-                            switch (_map)
-                            {
-                                case 72:
-                                    if (_cell != 7)
-                                        IncrementNth(count, 0);
-                                    break;
-                                case 55:
-                                    IncrementNth(count, 1);
-                                    break;
-                                case 62:
-                                    IncrementNth(count, 2);
-                                    break;
-                                case 65:
-                                    IncrementNth(count, 3);
-                                    break;
-                            }
-                        }
-                        break;
-                    case 873:
-                        if (_boss && rank.A &&
-                            specs.Types.Count(type => type == 3) >= 1)
-                        {
-                            switch (_map)
-                            {
-                                case 31:
-                                    IncrementNth(count, 0);
-                                    break;
-                                case 32:
-                                    IncrementNth(count, 1);
-                                    break;
-                                case 33:
-                                    IncrementNth(count, 2);
-                                    break;
-                            }
-                        }
-                        break;
-                    case 875:
-                        if (_map == 54 && _boss && rank.S &&
-                            specs.Ids.Contains(543) &&
-                            specs.Ids.Intersect(new[] {344, 345, 359}).Any())
-                        {
-                            Increment(count);
-                        }
-                        break;
-                    case 888:
-                        if (_boss && rank.S &&
-                            specs.Ids.Intersect(new[]
-                            {
-                                69, 272, 427, // 鳥海
-                                61, 264, // 青葉
-                                123, 295, 142, // 衣笠
-                                59, 262, 416, // 古鷹
-                                60, 263, 417, // 加古
-                                51, 213, 477, // 天龍
-                                115, 293 // 夕張
-                            }).Count() >= 4)
-                        {
-                            switch (_map)
-                            {
-                                case 51:
-                                    IncrementNth(count, 0);
-                                    break;
-                                case 53:
-                                    IncrementNth(count, 1);
-                                    break;
-                                case 54:
-                                    IncrementNth(count, 2);
-                                    break;
-                            }
-                        }
-                        break;
-                    case 893:
-                        if (_boss && rank.S)
-                        {
-                            switch (_map)
-                            {
-                                case 15:
-                                    IncrementNth(count, 0);
-                                    break;
-                                case 71:
-                                    IncrementNth(count, 1);
-                                    break;
-                                case 72:
-                                    if (_cell == 7)
-                                    {
-                                        IncrementNth(count, 2);
-                                        break;
-                                    }
-                                    IncrementNth(count, 3);
-                                    break;
-                            }
-                            break;
-                        }
-                        return;
-                    case 894:
-                        if (_boss && rank.S &&
-                            specs.Specs.Any(spec => spec.IsAircraftCarrier))
-                        {
-                            switch (_map)
-                            {
-                                case 13:
-                                    IncrementNth(count, 0);
-                                    break;
-                                case 14:
-                                    IncrementNth(count, 1);
-                                    break;
-                                case 21:
-                                    IncrementNth(count, 2);
-                                    break;
-                                case 22:
-                                    IncrementNth(count, 3);
-                                    break;
-                                case 23:
-                                    IncrementNth(count, 4);
-                                    break;
-                            }
-                        }
-                        break;
-                }
+                if (count.Id == 214)
+                    CountAgo(count, rank);
+            }
+        }
+
+        private void CountAgo(QuestCount count, string rank)
+        {
+            if (QuestSortie.CompareRank(rank, "S") == 0)
+                IncrementNth(count, 1);
+            if (!_boss)
+                return;
+            IncrementNth(count, 2);
+            if (QuestSortie.CompareRank(rank, "B") <= 0)
+                IncrementNth(count, 3);
+        }
+
+        private bool FleetCheck(int id)
+        {
+            var specs = new ResultShipSpecs(_battleInfo);
+            switch (id)
+            {
+                case 249:
+                    return specs.Ids.Intersect(new[] {62, 63, 64, 265, 266, 268, 319, 192, 194}).Count() == 3;
+                case 257:
+                    return specs.FlagshipType == 3 && specs.Types.Count(s => s == 3) <= 3 &&
+                           specs.Types.All(s => s == 2 || s == 3);
+                case 259:
+                    return specs.Types.Count(type => type == 3) > 0 && specs.Classes.Count(c => new[]
+                    {
+                        2, // 伊勢型
+                        19, // 長門型
+                        26, // 扶桑型
+                        37 // 大和型
+                    }.Contains(c)) == 3;
+                case 264:
+                    return specs.Types.Count(type => type == 2) >= 2 &&
+                           specs.Specs.Count(spec => spec.IsAircraftCarrier) >= 2;
+                case 266:
+                    return specs.FlagshipType == 2 &&
+                           specs.Types.OrderBy(x => x).SequenceEqual(new[] {2, 2, 2, 2, 3, 5});
+                case 280:
+                case 284:
+                    return specs.Types.Count(type => type == 1 || type == 2) >= 3 &&
+                           specs.Types.Intersect(new[] {3, 4, 7, 21}).Any();
+                case 862:
+                    return specs.Types.Count(s => s == 3) >= 2 && specs.Types.Count(s => s == 16) >= 1;
+                case 873:
+                    return specs.Types.Count(type => type == 3) >= 1;
+                case 875:
+                    return specs.Ids.Contains(543) &&
+                           specs.Ids.Intersect(new[] {344, 345, 359}).Any();
+                case 888:
+                    return specs.Ids.Intersect(new[]
+                    {
+                        69, 272, 427, // 鳥海
+                        61, 264, // 青葉
+                        123, 295, 142, // 衣笠
+                        59, 262, 416, // 古鷹
+                        60, 263, 417, // 加古
+                        51, 213, 477, // 天龍
+                        115, 293 // 夕張
+                    }).Count() >= 4;
+                case 894:
+                    return specs.Specs.Any(spec => spec.IsAircraftCarrier);
+                case 318:
+                    return specs.Types.Count(type => type == 3) >= 2;
+                case 330:
+                    return specs.Flagship.IsAircraftCarrier &&
+                           specs.Specs.Count(spec => spec.IsAircraftCarrier) >= 2 &&
+                           specs.Types.Count(type => type == 2) >= 2;
+                default:
+                    return true;
             }
         }
 
@@ -522,36 +339,16 @@ namespace KancolleSniffer.Model
 
         public void InspectPracticeResult(dynamic json)
         {
-            var rank = new Rank(json.api_win_rank);
-            var specs = new ResultShipSpecs(_battleInfo);
-            foreach (var quest in _quests.Values)
+            foreach (var count in _quests.Values.Select(q => q.Count))
             {
-                var count = quest.Count;
-                if (count.Spec is QuestPractice practice)
-                {
-                    if (practice.Check(json.api_win_rank))
-                        Increment(count);
+                if (!FleetCheck(count.Id))
                     continue;
-                }
-                switch (quest.Id)
-                {
-                    case 318:
-                        if (_questFleet == 0 && rank.B &&
-                            specs.Types.Count(type => type == 3) >= 2)
-                        {
-                            Increment(count);
-                        }
-                        break;
-                    case 330:
-                        if (rank.B &&
-                            specs.Flagship.IsAircraftCarrier &&
-                            specs.Specs.Count(spec => spec.IsAircraftCarrier) >= 2 &&
-                            specs.Types.Count(type => type == 2) >= 2)
-                        {
-                            Increment(count);
-                        }
-                        break;
-                }
+                if (count.Id == 318 && _questFleet != 0)
+                    continue;
+                if (!(count.Spec is QuestPractice practice))
+                    continue;
+                if (practice.Check(json.api_win_rank))
+                    Increment(count);
             }
         }
 
@@ -570,49 +367,12 @@ namespace KancolleSniffer.Model
             if ((int)json.api_clear_result == 0)
                 return;
             var mid = _missionId[deck - 1];
-            foreach (var quest in _quests.Values)
+            foreach (var count in _quests.Values.Select(q => q.Count))
             {
-                var count = quest.Count;
-                if (count.Spec is QuestMission mission)
-                {
-                    if (mission.Check(mid))
-                        Increment(count);
+                if (!(count.Spec is QuestMission mission))
                     continue;
-                }
-                switch (quest.Id)
-                {
-                    case 426:
-                        switch (mid)
-                        {
-                            case 3:
-                                IncrementNth(count, 0);
-                                break;
-                            case 4:
-                                IncrementNth(count, 1);
-                                break;
-                            case 5:
-                                IncrementNth(count, 2);
-                                break;
-                            case 10:
-                                IncrementNth(count, 3);
-                                break;
-                        }
-                        break;
-                    case 428:
-                        switch (mid)
-                        {
-                            case 4:
-                                IncrementNth(count, 0);
-                                break;
-                            case 101:
-                                IncrementNth(count, 1);
-                                break;
-                            case 102:
-                                IncrementNth(count, 2);
-                                break;
-                        }
-                        break;
-                }
+                if (mission.Count(count, mid))
+                    NeedSave = true;
             }
         }
 

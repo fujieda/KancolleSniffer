@@ -285,33 +285,33 @@ namespace KancolleSniffer.Test
             InjectMapStart(11, 4);
             var quests = _questInfo.Quests;
             // 出撃カウント
-            Assert.IsTrue(quests[2].Id == 214 && quests[2].Count.NowArray[0] == 1);
+            PAssert.That(() => quests[2].Id == 214 && quests[2].Count.NowArray[0] == 1);
             InjectBattleResult("S");
             // 道中S勝利
-            Assert.IsTrue(quests.Select(q => new {q.Id, q.Count.Now}).SequenceEqual(new[]
+            PAssert.That(() => quests.Select(q => new {q.Id, q.Count.Now}).SequenceEqual(new[]
             {
                 new {Id = 201, Now = 1}, new {Id = 210, Now = 1},
                 new {Id = 214, Now = 0}, new {Id = 216, Now = 1}
             }));
-            Assert.IsTrue(quests[2].Id == 214 && CheckCount(quests[2], new[] {1, 1, 0, 0}));
+            PAssert.That(() => quests[2].Id == 214 && CheckCount(quests[2], new[] {1, 1, 0, 0}));
 
             InjectMapNext(11, 5);
             // ボスB勝利
             InjectBattleResult("B");
-            Assert.IsTrue(quests.Select(q => new {q.Id, q.Count.Now}).SequenceEqual(new[]
+            PAssert.That(() => quests.Select(q => new {q.Id, q.Count.Now}).SequenceEqual(new[]
             {
                 new {Id = 201, Now = 2}, new {Id = 210, Now = 2},
                 new {Id = 214, Now = 0}, new {Id = 216, Now = 2}
             }));
             // ボス敗北
-            Assert.IsTrue(quests[2].Id == 214 && CheckCount(quests[2], new[] {1, 1, 1, 1}));
+            PAssert.That(() => quests[2].Id == 214 && CheckCount(quests[2], new[] {1, 1, 1, 1}));
             InjectBattleResult("C");
-            Assert.IsTrue(quests.Select(q => new {q.Id, q.Count.Now}).SequenceEqual(new[]
+            PAssert.That(() => quests.Select(q => new {q.Id, q.Count.Now}).SequenceEqual(new[]
             {
                 new {Id = 201, Now = 2}, new {Id = 210, Now = 3},
                 new {Id = 214, Now = 0}, new {Id = 216, Now = 2}
             }));
-            Assert.IsTrue(quests[2].Id == 214 && CheckCount(quests[2], new[] {1, 1, 2, 1}));
+            PAssert.That(() => quests[2].Id == 214 && CheckCount(quests[2], new[] {1, 1, 2, 1}));
         }
 
         /// <summary>

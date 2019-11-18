@@ -49,35 +49,35 @@ namespace KancolleSniffer.Model
             {241, new QuestSortie {Interval = Weekly, Max = 5, Rank = "B", Maps = new[] {33, 34, 35}, Material = new[] {0, 0, 3, 3}}}, // 241: 敵北方艦隊主力を撃滅せよ！
             {242, new QuestSortie {Interval = Weekly, Max = 1, Rank = "B", Maps = new[] {44}, Material = new[] {0, 1, 1, 0}}}, // 242: 敵東方中枢艦隊を撃破せよ！
             {243, new QuestSortie {Interval = Weekly, Max = 2, Rank = "S", Maps = new[] {52}, Material = new[] {0, 0, 2, 2}}}, // 243: 南方海域珊瑚諸島沖の制空権を握れ！
-            {249, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {0, 0, 5, 0}}}, // 249: 「第五戦隊」出撃せよ！
+            {249, new QuestSortie {Interval = Monthly, Max = 1, Rank = "S", Maps = new[] {25}, Material = new[] {0, 0, 5, 0}}}, // 249: 「第五戦隊」出撃せよ！
             {256, new QuestSortie {Interval = Monthly, Max = 3, Rank = "S", Maps = new[] {61}, Material = new[] {0, 0, 0, 0}}}, // 256: 「潜水艦隊」出撃せよ！
-            {257, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {0, 0, 0, 3}}}, // 257: 「水雷戦隊」南西へ！
-            {259, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {0, 3, 0, 4}}}, // 259: 「水上打撃部隊」南方へ！
+            {257, new QuestSortie {Interval = Monthly, Max = 1, Rank = "S", Maps = new[] {14}, Material = new[] {0, 0, 0, 3}}}, // 257: 「水雷戦隊」南西へ！
+            {259, new QuestSortie {Interval = Monthly, Max = 1, Rank = "S", Maps = new[] {51}, Material = new[] {0, 3, 0, 4}}}, // 259: 「水上打撃部隊」南方へ！
             {261, new QuestSortie {Interval = Weekly, Max = 3, Rank = "A", Maps = new[] {15}, Material = new[] {0, 0, 0, 3}}}, // 261: 海上輸送路の安全確保に努めよ！
-            {264, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {0, 0, 0, 2}}}, // 264: 「空母機動部隊」西へ！
+            {264, new QuestSortie {Interval = Monthly, Max = 1, Rank = "S", Maps = new[] {42}, Material = new[] {0, 0, 0, 2}}}, // 264: 「空母機動部隊」西へ！
             {265, new QuestSortie {Interval = Monthly, Max = 10, Rank = "A", Maps = new[] {15}, Material = new[] {0, 0, 5, 3}}}, // 265: 海上護衛強化月間
-            {266, new QuestSpec {Interval = Monthly, Max = 1, Material = new[] {4, 4, 0, 2}}}, // 266: 「水上反撃部隊」突入せよ！
-            {280, new QuestSpec {Interval = Monthly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 4, 4, 2}}}, // 280: 兵站線確保！海上警備を強化実施せよ！
-            {284, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 0, 0, 4}}}, // 284: 南西諸島方面「海上警備行動」発令！
+            {266, new QuestSortie {Interval = Monthly, Max = 1, Rank = "S", Maps = new[] {25}, Material = new[] {4, 4, 0, 2}}}, // 266: 「水上反撃部隊」突入せよ！
+            {280, new QuestSortie {Interval = Monthly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {12, 13, 14, 21}, Material = new[] {0, 4, 4, 2}}}, // 280: 兵站線確保！海上警備を強化実施せよ！
+            {284, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {14, 21, 22, 23}, Material = new[] {0, 0, 0, 4}}}, // 284: 南西諸島方面「海上警備行動」発令！
 
             {822, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "S", Maps = new[] {24}, Material = new[] {0, 0, 0, 5}}}, // 822: 沖ノ島海域迎撃戦
-            {854, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 0, 0, 4}}}, // 854: 戦果拡張任務！「Z作戦」前段作戦
+            {854, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Ranks = new[] {"A", "A", "A", "S"}, Maps = new[] {24, 61, 63, 64}, Material = new[] {0, 0, 0, 4}}}, // 854: 戦果拡張任務！「Z作戦」前段作戦
             {861, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 4, 0, 0}}}, // 861: 強行輸送艦隊、抜錨！
-            {862, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 0, 8, 4}}}, // 862: 前線の航空偵察を実施せよ！
-            {872, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 0, 0, 4}}}, // 872: 戦果拡張任務！「Z作戦」後段作戦
-            {873, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 873: 北方海域警備を実施せよ！
-            {875, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 0, 0, 0}}}, // 875: 精鋭「三一駆」、鉄底海域に突入せよ！
-            {888, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 888: 新編成「三川艦隊」、鉄底海峡に突入せよ！
-            {893, new QuestSpec {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Material = new[] {0, 0, 0, 0}}}, // 893: 泊地周辺海域の安全確保を徹底せよ！
-            {894, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1, 1}, Material = new[] {0, 0, 0, 0}}}, // 894: 空母戦力の投入による兵站線戦闘哨戒
+            {862, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "A", Maps = new[] {63}, Material = new[] {0, 0, 8, 4}}}, // 862: 前線の航空偵察を実施せよ！
+            {872, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {722, 55, 62, 65}, Material = new[] {0, 0, 0, 4}}}, // 872: 戦果拡張任務！「Z作戦」後段作戦
+            {873, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Rank = "A", Maps = new[] {31, 32, 33}, Material = new[] {0, 0, 0, 0}}}, // 873: 北方海域警備を実施せよ！
+            {875, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "S", Maps = new[] {54}, Material = new[] {0, 0, 0, 0}}}, // 875: 精鋭「三一駆」、鉄底海域に突入せよ！
+            {888, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Rank = "S", Maps = new[] {51, 53, 54}, Material = new[] {0, 0, 0, 0}}}, // 888: 新編成「三川艦隊」、鉄底海峡に突入せよ！
+            {893, new QuestSortie {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Rank = "S", Maps = new[] {15, 71, 721, 722}, Material = new[] {0, 0, 0, 0}}}, // 893: 泊地周辺海域の安全確保を徹底せよ！
+            {894, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "S", Maps = new[] {13, 14, 21, 22, 23}, Material = new[] {0, 0, 0, 0}}}, // 894: 空母戦力の投入による兵站線戦闘哨戒
 
             {303, new QuestPractice {Interval = Daily, Max = 3, Win = false, Material = new[] {1, 0, 0, 0}}}, // 303: 「演習」で練度向上！
             {304, new QuestPractice {Interval = Daily, Max = 5, Win = true, Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
             {302, new QuestPractice {Interval = Weekly, Max = 20, Win = true, Material = new[] {0, 0, 2, 1}}}, // 302: 大規模演習
             {311, new QuestPractice {Interval = Daily, Max = 7, Win = true, Material = new[] {0, 2, 0, 0}}}, // 311: 精鋭艦隊演習
             {315, new QuestPractice {Interval = Daily, Max = 8, Win = true, Material = new[] {0, 0, 0, 0}}}, // 315: 春季大演習
-            {318, new QuestSpec {Interval = Daily, Max = 3, Material = new[] {0, 2, 2, 0}, AdjustCount = false}}, // 318: 給糧艦「伊良湖」の支援
-            {330, new QuestSpec {Interval = Daily, Max = 4, Material = new[] {0, 0, 3, 0}}}, // 330: 空母機動部隊、演習始め！
+            {318, new QuestPractice {Interval = Daily, Max = 3, Win = true, Material = new[] {0, 2, 2, 0}, AdjustCount = false}}, // 318: 給糧艦「伊良湖」の支援
+            {330, new QuestPractice {Interval = Daily, Max = 4, Win = true, Material = new[] {0, 0, 3, 0}}}, // 330: 空母機動部隊、演習始め！
 
             {402, new QuestMission {Interval = Daily, Max = 3, Material = new[] {0, 0, 1, 0}}}, // 402: 「遠征」を3回成功させよう！
             {403, new QuestMission {Interval = Daily, Max = 10, Material = new[] {0, 0, 0, 0}}}, // 403: 「遠征」を10回成功させよう！
@@ -85,8 +85,8 @@ namespace KancolleSniffer.Model
             {410, new QuestMission {Interval = Weekly, Max = 1, Ids = new[] {37, 38}, Material = new[] {0, 0, 0, 0}}}, // 410: 南方への輸送作戦を成功させよ！
             {411, new QuestMission {Interval = Weekly, Max = 6, Shift = 1, Ids = new[] {37, 38}, Material = new[] {0, 0, 2, 1}}}, // 411: 南方への鼠輸送を継続実施せよ！
             {424, new QuestMission {Interval = Monthly, Max = 4, Shift = 1, Ids = new[] {5}, Material = new[] {0, 0, 0, 0}}}, // 424: 輸送船団護衛を強化せよ！
-            {426, new QuestSpec {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Material = new[] {0, 0, 4, 0}}}, // 426: 海上通商航路の警戒を厳とせよ！
-            {428, new QuestSpec {Interval = Quarterly, MaxArray = new[] {2, 2, 2}, Material = new[] {0, 0, 0, 3}}}, // 428: 近海に侵入する敵潜を制圧せよ！
+            {426, new QuestMission {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Ids = new[] {3, 4, 5, 10}, Material = new[] {0, 0, 4, 0}}}, // 426: 海上通商航路の警戒を厳とせよ！
+            {428, new QuestMission {Interval = Quarterly, MaxArray = new[] {2, 2, 2}, Ids = new[] {4, 101, 102}, Material = new[] {0, 0, 0, 3}}}, // 428: 近海に侵入する敵潜を制圧せよ！
 
             {503, new QuestSpec {Interval = Daily, Max = 5, Material = new[] {0, 2, 0, 0}}}, // 503: 艦隊大整備！
             {504, new QuestSpec {Interval = Daily, Max = 15, Material = new[] {1, 0, 1, 0}}}, // 504: 艦隊酒保祭り！

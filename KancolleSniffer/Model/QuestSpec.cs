@@ -31,6 +31,7 @@ namespace KancolleSniffer.Model
     public class QuestSortie : QuestSpec
     {
         public string Rank { get; set; }
+        public string[] Ranks { get; set; }
         public int[] Maps { get; set; }
 
         public static int CompareRank(string a, string b)
@@ -40,10 +41,38 @@ namespace KancolleSniffer.Model
                    ranks.IndexOf(b, StringComparison.Ordinal);
         }
 
-        public bool Check(string rank, int map, bool boss)
+        public bool Count(QuestCount count, string rank, int map, bool boss)
         {
-            return (Rank == null || CompareRank(rank, Rank) <= 0) &&
-                   (Maps == null || Maps.Contains(map) && boss);
+            if (Maps != null)
+            {
+                return boss && CheckMaps(count, rank, map);
+            }
+            return CountNow(count, rank);
+        }
+
+        private bool CheckMaps(QuestCount count, string rank, int map)
+        {
+            var idx = Array.FindIndex(Maps, m => m == map);
+            if (idx < 0)
+                return false;
+            return count.NowArray != null ? CountNowArray(count, rank, idx) : CountNow(count, rank);
+        }
+
+        private bool CountNowArray(QuestCount count, string rank, int idx)
+        {
+            var specRank = Ranks == null ? Rank : Ranks[idx];
+            if (CompareRank(rank, specRank) > 0)
+                return false;
+            count.NowArray[idx]++;
+            return true;
+        }
+
+        private bool CountNow(QuestCount count, string rank)
+        {
+            if (Rank != null && CompareRank(rank, Rank) > 0)
+                return false;
+            count.Now++;
+            return true;
         }
     }
 
@@ -64,7 +93,27 @@ namespace KancolleSniffer.Model
     public class QuestMission : QuestSpec
     {
         public int[] Ids { get; set; }
-        public bool Check(int id) => Ids == null || Ids.Contains(id);
+
+        public bool Count(QuestCount count, int id)
+        {
+            if (Ids == null)
+            {
+                count.Now++;
+                return true;
+            }
+            var idx = Array.FindIndex(Ids, n => n == id);
+            if (idx < 0)
+                return false;
+            if (count.NowArray == null)
+            {
+                count.Now++;
+            }
+            else
+            {
+                count.NowArray[idx]++;
+            }
+            return true;
+        }
     }
 
     public class QuestDestroyItem : QuestSpec
