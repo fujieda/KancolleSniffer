@@ -48,10 +48,11 @@ namespace KancolleSniffer
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ListForm));
             this.contextMenuStripShipList = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.shipCsvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kantaiSarashiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripItemList = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.itemCsvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kantaiBunsekiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelHeaderHp = new System.Windows.Forms.Label();
             this.labelHeaderCond = new System.Windows.Forms.Label();
             this.labelHeaderExp = new System.Windows.Forms.Label();
@@ -71,7 +72,7 @@ namespace KancolleSniffer
             this.panelItemHeader = new System.Windows.Forms.Panel();
             this.richTextBoxMiscText = new System.Windows.Forms.RichTextBox();
             this.contextMenuStripFleetData = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.textToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fleetTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deckBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelFleetHeader = new System.Windows.Forms.Panel();
             this.labelFleet4 = new System.Windows.Forms.Label();
@@ -96,9 +97,9 @@ namespace KancolleSniffer
             this.antiAirPanel = new KancolleSniffer.View.AntiAirPanel();
             this.fleetPanel = new KancolleSniffer.View.FleetPanel();
             this.itemTreeView = new KancolleSniffer.View.ItemTreeView();
-            this.shipListPanel = new ShipListPanel();
+            this.shipListPanel = new KancolleSniffer.View.ShipListPanel.ShipListPanel();
             this.contextMenuStripShipList.SuspendLayout();
-            this.contextMenuStrip.SuspendLayout();
+            this.contextMenuStripItemList.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
             this.panelRepairHeader.SuspendLayout();
             this.contextMenuStripFleetData.SuspendLayout();
@@ -109,17 +110,17 @@ namespace KancolleSniffer
             // contextMenuStripShipList
             // 
             this.contextMenuStripShipList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.csvToolStripMenuItem,
+            this.shipCsvToolStripMenuItem,
             this.kantaiSarashiToolStripMenuItem});
             this.contextMenuStripShipList.Name = "contextMenuStripShipList";
             this.contextMenuStripShipList.Size = new System.Drawing.Size(193, 48);
             // 
-            // csvToolStripMenuItem
+            // shipCsvToolStripMenuItem
             // 
-            this.csvToolStripMenuItem.Name = "csvToolStripMenuItem";
-            this.csvToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.csvToolStripMenuItem.Text = "CSV形式でコピー(&C)";
-            this.csvToolStripMenuItem.Click += new System.EventHandler(this.csvToolStripMenuItem_Click);
+            this.shipCsvToolStripMenuItem.Name = "shipCsvToolStripMenuItem";
+            this.shipCsvToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.shipCsvToolStripMenuItem.Text = "CSV形式でコピー(&C)";
+            this.shipCsvToolStripMenuItem.Click += new System.EventHandler(this.shipCsvToolStripMenuItem_Click);
             // 
             // kantaiSarashiToolStripMenuItem
             // 
@@ -128,21 +129,29 @@ namespace KancolleSniffer
             this.kantaiSarashiToolStripMenuItem.Text = "艦隊晒し形式でコピー(&K)";
             this.kantaiSarashiToolStripMenuItem.Click += new System.EventHandler(this.kantaiSarashiToolStripMenuItem_Click);
             // 
-            // contextMenuStrip
+            // contextMenuStripItemList
             // 
-            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyToolStripMenuItem});
-            this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(108, 26);
+            this.contextMenuStripItemList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemCsvToolStripMenuItem,
+            this.kantaiBunsekiToolStripMenuItem});
+            this.contextMenuStripItemList.Name = "contextMenuStrip";
+            this.contextMenuStripItemList.Size = new System.Drawing.Size(197, 48);
             // 
-            // copyToolStripMenuItem
+            // itemCsvToolStripMenuItem
             // 
-            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyToolStripMenuItem.ShowShortcutKeys = false;
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.copyToolStripMenuItem.Text = "コピー(&C)";
-            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+            this.itemCsvToolStripMenuItem.Name = "itemCsvToolStripMenuItem";
+            this.itemCsvToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.itemCsvToolStripMenuItem.ShowShortcutKeys = false;
+            this.itemCsvToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.itemCsvToolStripMenuItem.Text = "CSV形式でコピー(&C)";
+            this.itemCsvToolStripMenuItem.Click += new System.EventHandler(this.itemCsvToolStripMenuItem_Click);
+            // 
+            // kantaiBunsekiToolStripMenuItem
+            // 
+            this.kantaiBunsekiToolStripMenuItem.Name = "kantaiBunsekiToolStripMenuItem";
+            this.kantaiBunsekiToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.kantaiBunsekiToolStripMenuItem.Text = "艦隊分析形式でコピー(&K)";
+            this.kantaiBunsekiToolStripMenuItem.Click += new System.EventHandler(this.kantaiBunsekiToolStripMenuItem_Click);
             // 
             // labelHeaderHp
             // 
@@ -339,17 +348,17 @@ namespace KancolleSniffer
             // contextMenuStripFleetData
             // 
             this.contextMenuStripFleetData.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.textToolStripMenuItem,
+            this.fleetTextToolStripMenuItem,
             this.deckBuilderToolStripMenuItem});
             this.contextMenuStripFleetData.Name = "contextMenuStripFleetData";
-            this.contextMenuStripFleetData.Size = new System.Drawing.Size(211, 48);
+            this.contextMenuStripFleetData.Size = new System.Drawing.Size(211, 70);
             // 
-            // textToolStripMenuItem
+            // fleetTextToolStripMenuItem
             // 
-            this.textToolStripMenuItem.Name = "textToolStripMenuItem";
-            this.textToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.textToolStripMenuItem.Text = "テキスト形式でコピー(&C)";
-            this.textToolStripMenuItem.Click += new System.EventHandler(this.textToolStripMenuItem_Click);
+            this.fleetTextToolStripMenuItem.Name = "fleetTextToolStripMenuItem";
+            this.fleetTextToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.fleetTextToolStripMenuItem.Text = "テキスト形式でコピー(&C)";
+            this.fleetTextToolStripMenuItem.Click += new System.EventHandler(this.fleetTextToolStripMenuItem_Click);
             // 
             // deckBuilderToolStripMenuItem
             // 
@@ -612,7 +621,7 @@ namespace KancolleSniffer
             this.itemTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.itemTreeView.ContextMenuStrip = this.contextMenuStrip;
+            this.itemTreeView.ContextMenuStrip = this.contextMenuStripItemList;
             this.itemTreeView.Location = new System.Drawing.Point(6, 23);
             this.itemTreeView.Name = "itemTreeView";
             this.itemTreeView.Size = new System.Drawing.Size(238, 263);
@@ -665,7 +674,7 @@ namespace KancolleSniffer
             this.Load += new System.EventHandler(this.ListForm_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ListForm_KeyPress);
             this.contextMenuStripShipList.ResumeLayout(false);
-            this.contextMenuStrip.ResumeLayout(false);
+            this.contextMenuStripItemList.ResumeLayout(false);
             this.panelGroupHeader.ResumeLayout(false);
             this.panelGroupHeader.PerformLayout();
             this.panelRepairHeader.ResumeLayout(false);
@@ -702,13 +711,13 @@ namespace KancolleSniffer
         private FleetPanel fleetPanel;
         private ItemTreeView itemTreeView;
         private System.Windows.Forms.RichTextBox richTextBoxMiscText;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripItemList;
+        private System.Windows.Forms.ToolStripMenuItem itemCsvToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripFleetData;
-        private System.Windows.Forms.ToolStripMenuItem textToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fleetTextToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deckBuilderToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripShipList;
-        private System.Windows.Forms.ToolStripMenuItem csvToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem shipCsvToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem kantaiSarashiToolStripMenuItem;
         private System.Windows.Forms.Panel panelFleetHeader;
         private System.Windows.Forms.Label labelFleet4;
@@ -731,5 +740,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelSTypeButton;
         private System.Windows.Forms.Label labelSType;
         private System.Windows.Forms.CheckBox checkBoxSTypeDetails;
+        private System.Windows.Forms.ToolStripMenuItem kantaiBunsekiToolStripMenuItem;
     }
 }

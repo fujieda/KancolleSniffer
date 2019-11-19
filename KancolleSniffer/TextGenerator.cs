@@ -15,6 +15,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using KancolleSniffer.Model;
 
@@ -29,7 +30,6 @@ namespace KancolleSniffer
                    orderby ship.Spec.ShipType, -ship.Level, ship.ExpToNext
                    select $"{ship.Id},{ship.Spec.ShipTypeName},{ship.Name},{ship.Level},{ship.ExpToNext},{ship.Cond},{ship.ShipAntiSubmarine}");
 
-        // ReSharper disable IdentifierTypo
         public static string GenerateKantaiSarashiData(IEnumerable<ShipStatus> shipList)
         {
             return ".2|" +
@@ -45,7 +45,6 @@ namespace KancolleSniffer
                                       ? "." + ship.Spec.Remodel.Step
                                       : "")));
         }
-        // ReSharper restore IdentifierTypo
 
         public static string GenerateItemList(IEnumerable<ItemStatus> itemList)
             => "区分,装備名,熟練度,改修,個数\r\n" +
@@ -57,6 +56,11 @@ namespace KancolleSniffer
                            $"{item.Spec.TypeName},{item.Spec.Name},{item.Alv},{item.Level}"
                        into grp
                        select grp.Key + $",{grp.Count()}"));
+
+        public static string GenerateKantaiBunsekiItemList(IEnumerable<ItemStatus> itemList)
+            => "[" + string.Join(",",
+                   (from item in itemList where item.Locked
+                       select $"{{\"api_slotitem_id\":{item.Spec.Id},\"api_level\":{item.Level}}}")) + "]";
 
         public static string GenerateFleetData(Sniffer sniffer)
         {

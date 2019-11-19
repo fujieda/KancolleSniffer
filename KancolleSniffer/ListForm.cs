@@ -343,7 +343,6 @@ namespace KancolleSniffer
         {
             UpdateList();
             SetActiveControl();
-            copyToolStripMenuItem.Enabled = InShipStatus | InItemList;
             if (!(InShipStatus || InGroupConfig || InRepairList))
                 SetPanelSTypeState(false);
         }
@@ -379,12 +378,17 @@ namespace KancolleSniffer
             }
         }
 
-        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void itemCsvToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(TextGenerator.GenerateItemList(_sniffer.ItemList));
         }
 
-        private void textToolStripMenuItem_Click(object sender, EventArgs e)
+        private void kantaiBunsekiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(TextGenerator.GenerateKantaiBunsekiItemList(_sniffer.ItemList));
+        }
+
+        private void fleetTextToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(TextGenerator.GenerateFleetData(_sniffer));
         }
@@ -430,17 +434,15 @@ namespace KancolleSniffer
             UpdateList();
         }
 
-        private void csvToolStripMenuItem_Click(object sender, EventArgs e)
+        private void shipCsvToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(TextGenerator.GenerateShipList(shipListPanel.CurrentShipList));
         }
 
-        // ReSharper disable IdentifierTypo
         private void kantaiSarashiToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(TextGenerator.GenerateKantaiSarashiData(shipListPanel.CurrentShipList));
         }
-        // ReSharper enable IdentifierTypo
 
         private void labelFleet_Click(object sender, EventArgs e)
         {

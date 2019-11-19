@@ -25,6 +25,7 @@ namespace KancolleSniffer.Model
         public ItemSpec Spec { get; set; } = new ItemSpec();
         public int Level { get; set; }
         public int Alv { get; set; }
+        public bool Locked { get; set; }
         public ShipStatus Holder { get; set; }
 
         public ItemStatus()

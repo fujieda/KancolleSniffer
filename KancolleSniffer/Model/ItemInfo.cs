@@ -56,7 +56,8 @@ namespace KancolleSniffer.Model
                 {
                     Spec = _itemMaster[(int)entry.api_slotitem_id],
                     Level = entry.api_level() ? (int)entry.api_level : 0,
-                    Alv = entry.api_alv() ? (int)entry.api_alv : 0
+                    Alv = entry.api_alv() ? (int)entry.api_alv : 0,
+                    Locked = entry.api_locked() && (int)entry.api_locked == 1
                 };
             }
         }
