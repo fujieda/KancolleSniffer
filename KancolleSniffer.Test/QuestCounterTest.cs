@@ -709,6 +709,33 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 845: 発令！「西方海域作戦」
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_845()
+        {
+            var quest = InjectQuest(845);
+
+            InjectMapNext(41, 4);
+            InjectBattleResult("S");
+            InjectMapNext(41, 5);
+            InjectBattleResult("A");
+            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0, 0}));
+
+            InjectMapNext(41, 5);
+            InjectBattleResult("S");
+            InjectMapNext(42, 5);
+            InjectBattleResult("S");
+            InjectMapNext(43, 5);
+            InjectBattleResult("S");
+            InjectMapNext(44, 5);
+            InjectBattleResult("S");
+            InjectMapNext(45, 5);
+            InjectBattleResult("S");
+            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1, 1}));
+        }
+
+        /// <summary>
         /// 861: 強行輸送艦隊、抜錨！
         /// </summary>
         [TestMethod]

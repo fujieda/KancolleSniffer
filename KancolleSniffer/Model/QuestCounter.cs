@@ -77,7 +77,7 @@ namespace KancolleSniffer.Model
 
         public override string ToString()
         {
-            if (Id == 280 || Id == 284 || Id == 426 || Id == 854 || Id == 872 || Id == 873 || Id == 888 || Id == 894)
+            if (Id == 280 || Id == 284 || Id == 426 || Id == 845 || Id == 854 || Id == 872 || Id == 873 || Id == 888 || Id == 894)
                 return $"{NowArray.Count(n => n >= 1)}/{Spec.MaxArray.Length}";
             return NowArray != null
                 ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
@@ -121,6 +121,10 @@ namespace KancolleSniffer.Model
                 case 428:
                     return string.Join(" ",
                         new[] {"対潜警戒任務", "海峡警備行動", "長時間対潜警戒"}.Zip(NowArray, (mission, n) => n >= 1 ? mission + n : "")
+                            .Where(s => !string.IsNullOrEmpty(s)));
+                case 845:
+                    return string.Join(" ",
+                        new[] {"4-1", "4-2", "4-3", "4-4", "4-5"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
                             .Where(s => !string.IsNullOrEmpty(s)));
                 case 854:
                     return string.Join(" ",
