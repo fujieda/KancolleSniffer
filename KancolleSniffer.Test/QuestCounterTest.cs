@@ -647,7 +647,7 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
-        ///  // 284: 南西諸島方面「海上警備行動」発令！
+        /// 284: 南西諸島方面「海上警備行動」発令！
         /// </summary>
         [TestMethod]
         public void BattleResult_284()
@@ -1106,8 +1106,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void PracticeResult_318()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {318}));
-            var q318 = _questInfo.Quests[0];
+            var quest = InjectQuest(318);
 
             _battleInfo.InjectResultStatus(new[]
             {
@@ -1115,20 +1114,20 @@ namespace KancolleSniffer.Test
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             InjectPracticeResult("B");
-            Assert.IsTrue(q318.Count.Now == 0, "軽巡1隻");
+            Assert.IsTrue(quest.Count.Now == 0, "軽巡1隻");
             _battleInfo.Result.Friend.Main[0] = ShipStatus(3, 200);
             _questCounter.StartPractice("api%5Fdeck%5Fid=2");
             InjectPracticeResult("B");
-            Assert.IsTrue(q318.Count.Now == 0, "第2艦隊");
+            Assert.IsTrue(quest.Count.Now == 0, "第2艦隊");
             _questCounter.StartPractice("api%5Fdeck%5Fid=1"); // 第一艦隊
             InjectPracticeResult("C");
-            Assert.IsTrue(q318.Count.Now == 0, "敗北");
+            Assert.IsTrue(quest.Count.Now == 0, "敗北");
             InjectPracticeResult("B");
-            Assert.IsTrue(q318.Count.Now == 1);
+            Assert.IsTrue(quest.Count.Now == 1);
 
-            q318.Count.Now = 2;
+            quest.Count.Now = 2;
             _questInfo.InspectQuestList(CreateQuestList(new[] {318}));
-            Assert.IsTrue(q318.Count.Now == 2, "進捗調節しない");
+            Assert.IsTrue(quest.Count.Now == 2, "進捗調節しない");
         }
 
         /// <summary>
@@ -1137,34 +1136,33 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void PracticeResult_330()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {330}));
-            var q330 = _questInfo.Quests[0];
+            var quest = InjectQuest(330);
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(18, 7, 2, 2),
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
             InjectPracticeResult("B");
-            Assert.AreEqual(1, q330.Count.Now, "装甲空母、軽空母");
+            Assert.AreEqual(1, quest.Count.Now, "装甲空母、軽空母");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(11, 7, 2, 2);
             InjectPracticeResult("B");
-            Assert.AreEqual(2, q330.Count.Now, "正規空母、軽空母");
+            Assert.AreEqual(2, quest.Count.Now, "正規空母、軽空母");
 
-            q330.Count.Now = 0;
+            quest.Count.Now = 0;
             InjectPracticeResult("C");
-            Assert.AreEqual(0, q330.Count.Now, "敗北");
+            Assert.AreEqual(0, quest.Count.Now, "敗北");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(2, 7, 11, 2);
             InjectPracticeResult("B");
-            Assert.AreEqual(0, q330.Count.Now, "旗艦空母以外");
+            Assert.AreEqual(0, quest.Count.Now, "旗艦空母以外");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(11, 2, 2, 2);
             InjectPracticeResult("B");
-            Assert.AreEqual(0, q330.Count.Now, "空母一隻");
+            Assert.AreEqual(0, quest.Count.Now, "空母一隻");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(11, 7, 3, 2);
             InjectPracticeResult("B");
-            Assert.AreEqual(0, q330.Count.Now, "駆逐一隻");
+            Assert.AreEqual(0, quest.Count.Now, "駆逐一隻");
         }
 
         /// <summary>
