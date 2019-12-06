@@ -50,7 +50,7 @@ namespace KancolleSniffer.View
 
         public new sealed class Name : ShipLabel
         {
-            private SlotStatus _slotStatus;
+            private SlotStatus _slotStatus, _prevSlotStatus;
             private readonly ShipNameWidth _defaultWidth;
 
             public static Font LatinFont { get; set; }
@@ -144,7 +144,9 @@ namespace KancolleSniffer.View
                 ChangeFont(name);
                 var realWidth = width == ShipNameWidth.Max ? (int)width : Scaler.ScaleWidth((int)width);
                 Text = prefix + StringTruncator.Truncate(name, "", realWidth, Font);
-                Invalidate(); // 必ずOnPaintを実行させるため
+                if (_prevSlotStatus != _slotStatus)
+                    Invalidate(); // OnPaintを実行させるため
+                _prevSlotStatus = _slotStatus;
             }
 
             private void ChangeFont(string name)
