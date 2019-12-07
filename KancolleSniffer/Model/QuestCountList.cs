@@ -72,13 +72,14 @@ namespace KancolleSniffer.Model
             {893, new QuestSortie {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Rank = "S", Maps = new[] {15, 71, 721, 722}, Material = new[] {0, 0, 0, 0}}}, // 893: 泊地周辺海域の安全確保を徹底せよ！
             {894, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "S", Maps = new[] {13, 14, 21, 22, 23}, Material = new[] {0, 0, 0, 0}}}, // 894: 空母戦力の投入による兵站線戦闘哨戒
 
-            {303, new QuestPractice {Interval = Daily, Max = 3, Win = false, Material = new[] {1, 0, 0, 0}}}, // 303: 「演習」で練度向上！
-            {304, new QuestPractice {Interval = Daily, Max = 5, Win = true, Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
-            {302, new QuestPractice {Interval = Weekly, Max = 20, Win = true, Material = new[] {0, 0, 2, 1}}}, // 302: 大規模演習
-            {311, new QuestPractice {Interval = Daily, Max = 7, Win = true, Material = new[] {0, 2, 0, 0}}}, // 311: 精鋭艦隊演習
-            {315, new QuestPractice {Interval = Daily, Max = 8, Win = true, Material = new[] {0, 0, 0, 0}}}, // 315: 春季大演習
-            {318, new QuestPractice {Interval = Daily, Max = 3, Win = true, Material = new[] {0, 2, 2, 0}, AdjustCount = false}}, // 318: 給糧艦「伊良湖」の支援
-            {330, new QuestPractice {Interval = Daily, Max = 4, Win = true, Material = new[] {0, 0, 3, 0}}}, // 330: 空母機動部隊、演習始め！
+            {303, new QuestPractice {Interval = Daily, Max = 3, Rank = "E", Material = new[] {1, 0, 0, 0}}}, // 303: 「演習」で練度向上！
+            {304, new QuestPractice {Interval = Daily, Max = 5, Rank = "B", Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
+            {302, new QuestPractice {Interval = Weekly, Max = 20, Rank = "B", Material = new[] {0, 0, 2, 1}}}, // 302: 大規模演習
+            {311, new QuestPractice {Interval = Daily, Max = 7, Rank = "B", Material = new[] {0, 2, 0, 0}}}, // 311: 精鋭艦隊演習
+            {315, new QuestPractice {Interval = Daily, Max = 8, Rank = "B", Material = new[] {0, 0, 0, 0}}}, // 315: 春季大演習
+            {318, new QuestPractice {Interval = Daily, Max = 3, Rank = "B", Material = new[] {0, 2, 2, 0}, AdjustCount = false}}, // 318: 給糧艦「伊良湖」の支援
+            {330, new QuestPractice {Interval = Daily, Max = 4, Rank = "B", Material = new[] {0, 0, 3, 0}}}, // 330: 空母機動部隊、演習始め！
+            {337, new QuestPractice {Interval = Daily, Max = 3, Rank = "S", Material = new[] {0, 0, 0, 3}}}, // 337: 「十八駆」演習！
 
             {402, new QuestMission {Interval = Daily, Max = 3, Material = new[] {0, 0, 1, 0}}}, // 402: 「遠征」を3回成功させよう！
             {403, new QuestMission {Interval = Daily, Max = 10, Material = new[] {0, 0, 0, 0}}}, // 403: 「遠征」を10回成功させよう！

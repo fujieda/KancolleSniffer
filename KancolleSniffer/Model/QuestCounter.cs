@@ -334,6 +334,14 @@ namespace KancolleSniffer.Model
                     return specs.Flagship.IsAircraftCarrier &&
                            specs.Specs.Count(spec => spec.IsAircraftCarrier) >= 2 &&
                            specs.Types.Count(type => type == 2) >= 2;
+                case 337:
+                    return specs.Ids.Intersect(new[]
+                    {
+                        17, 225, 566, // 陽炎
+                        18, 226, 567, // 不知火
+                        48, 198, 252, // 霰
+                        49, 253, 464 // 霞
+                    }).Count() == 4;
                 default:
                     return true;
             }

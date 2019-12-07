@@ -86,8 +86,8 @@ namespace KancolleSniffer.Model
 
     public class QuestPractice : QuestSpec
     {
-        public bool Win { get; set; }
-        public bool Check(string rank) => !Win || QuestSortie.CompareRank(rank, "B") <= 0;
+        public string Rank { get; set; }
+        public bool Check(string rank) => QuestSortie.CompareRank(rank, Rank) <= 0;
     }
 
     public class QuestMission : QuestSpec

@@ -1166,6 +1166,32 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 337: 「十八駆」演習！
+        /// </summary>
+        [TestMethod]
+        public void PracticeResult_337()
+        {
+            var quest = InjectQuest(337);
+
+            _battleInfo.InjectResultStatus(new []
+            {
+                ShipStatus(2, 48), ShipStatus(2, 49),
+                ShipStatus(2, 17), ShipStatus(2, 18),
+                ShipStatus(2, 19)
+            }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            InjectPracticeResult("A");
+            Assert.AreEqual(0, quest.Count.Now, "A");
+            InjectPracticeResult("S");
+            Assert.AreEqual(1, quest.Count.Now);
+            _battleInfo.Result.Friend.Main[0] = ShipStatus(2, 47);
+            InjectPracticeResult("S");
+            Assert.AreEqual(1, quest.Count.Now, "霰→涼風");
+            _battleInfo.Result.Friend.Main[4] = ShipStatus(2, 464);
+            InjectPracticeResult("S");
+            Assert.AreEqual(2, quest.Count.Now, "黒潮→霞改二");
+        }
+
+        /// <summary>
         /// 402: 「遠征」を3回成功させよう！
         /// 403: 「遠征」を10回成功させよう！
         /// 404: 大規模遠征作戦、発令！
