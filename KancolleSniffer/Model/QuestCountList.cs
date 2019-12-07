@@ -56,7 +56,7 @@ namespace KancolleSniffer.Model
             {261, new QuestSortie {Interval = Weekly, Max = 3, Rank = "A", Maps = new[] {15}, Material = new[] {0, 0, 0, 3}}}, // 261: 海上輸送路の安全確保に努めよ！
             {264, new QuestSortie {Interval = Monthly, Max = 1, Rank = "S", Maps = new[] {42}, Material = new[] {0, 0, 0, 2}}}, // 264: 「空母機動部隊」西へ！
             {265, new QuestSortie {Interval = Monthly, Max = 10, Rank = "A", Maps = new[] {15}, Material = new[] {0, 0, 5, 3}}}, // 265: 海上護衛強化月間
-            {266, new QuestSortie {Interval = Monthly, Max = 1, Rank = "S", Maps = new[] {25}, Material = new[] {4, 4, 0, 2}}}, // 266: 「水上反撃部隊」突入せよ！
+            {266, new QuestSortie {Interval = Monthly, Max = 1, Rank = "S", Maps = new[] {25}, Material = new[] {0, 4, 0, 2}}}, // 266: 「水上反撃部隊」突入せよ！
             {280, new QuestSortie {Interval = Monthly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {12, 13, 14, 21}, Material = new[] {0, 4, 4, 2}}}, // 280: 兵站線確保！海上警備を強化実施せよ！
             {284, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {14, 21, 22, 23}, Material = new[] {0, 0, 0, 4}}}, // 284: 南西諸島方面「海上警備行動」発令！
 
