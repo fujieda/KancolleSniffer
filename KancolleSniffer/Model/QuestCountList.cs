@@ -104,6 +104,7 @@ namespace KancolleSniffer.Model
             {638, new QuestDestroyItem {Interval = Weekly, Max = 6, Types = new[] {21}, Material = new[] {0, 0, 2, 1}}}, // 638: 対空機銃量産
             {643, new QuestDestroyItem {Interval = Quarterly, Max = 2, Ids = new[] {20}, Material = new[] {0, 0, 2, 0}, AdjustCount = false}}, // 643: 主力「陸攻」の調達
             {645, new QuestDestroyItem {Interval = Monthly, Max = 1, Ids = new[] {35}, Material = new[] {0, 0, 0, 0}, AdjustCount = false}}, // 645: 「洋上補給」物資の調達
+            {653, new QuestDestroyItem {Interval = Quarterly, Max = 6, Ids = new[] {4}, Material = new[] {0, 0, 0, 0}}}, // 653: 工廠稼働！次期作戦準備！
             {663, new QuestDestroyItem {Interval = Quarterly, Max = 10, Types = new[] {3}, Material = new[] {0, 0, 3, 0}}}, // 663: 新型艤装の継続研究
             {673, new QuestDestroyItem {Interval = Daily, Max = 4, Types = new[] {1}, Shift = 1, Material = new[] {0, 0, 1, 0}}}, // 673: 装備開発力の整備
             {674, new QuestDestroyItem {Interval = Daily, Max = 3, Types = new[] {21}, Shift = 2, Material = new[] {0, 1, 1, 0}}}, // 674: 工廠環境の整備
