@@ -324,7 +324,7 @@ namespace KancolleSniffer.Model
                 {
                     var min = Ships.Where(ship => ship.Cond > 49).Min(ship => ship.Cond);
                     var mark = Ships[0].Cond > 49 ? "+" : "";
-                    result.Add($"ｷﾗ{kira}{mark}≥{min}");
+                    result.Add($"ｷﾗ{kira}{mark}⪰{min}");
                 }
                 var drums = Ships.SelectMany(ship => ship.Slot).Count(item => item.Spec.IsDrum);
                 var drumShips = Ships.Count(ship => ship.Slot.Any(item => item.Spec.IsDrum));
