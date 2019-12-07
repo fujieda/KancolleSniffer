@@ -33,22 +33,22 @@ namespace KancolleSniffer.Test
                 Now = 3
             };
             count.AdjustCount(0);
-            Assert.IsTrue(count.Now == 3);
+            Assert.AreEqual(3, count.Now);
             count.AdjustCount(50);
-            Assert.IsTrue(count.Now == 4);
+            Assert.AreEqual(4, count.Now);
             count.AdjustCount(80);
-            Assert.IsTrue(count.Now == 6);
+            Assert.AreEqual(6, count.Now);
             count.AdjustCount(100);
-            Assert.IsTrue(count.Now == 7);
+            Assert.AreEqual(7, count.Now);
             count.Now = 14;
             count.AdjustCount(100);
-            Assert.IsTrue(count.Now == 14);
+            Assert.AreEqual(14, count.Now);
             count.AdjustCount(80);
-            Assert.IsTrue(count.Now == 6);
+            Assert.AreEqual(6, count.Now);
             count.AdjustCount(50);
-            Assert.IsTrue(count.Now == 5);
+            Assert.AreEqual(5, count.Now);
             count.AdjustCount(0);
-            Assert.IsTrue(count.Now == 3);
+            Assert.AreEqual(3, count.Now);
         }
 
         [TestMethod]
@@ -60,22 +60,22 @@ namespace KancolleSniffer.Test
                 Now = 3
             };
             count.AdjustCount(0);
-            Assert.IsTrue(count.Now == 2);
+            Assert.AreEqual(2, count.Now);
             count.AdjustCount(50);
-            Assert.IsTrue(count.Now == 3);
+            Assert.AreEqual(3, count.Now);
             count.AdjustCount(80);
-            Assert.IsTrue(count.Now == 6);
+            Assert.AreEqual(6, count.Now);
             count.AdjustCount(100);
-            Assert.IsTrue(count.Now == 7);
+            Assert.AreEqual(7, count.Now);
             count.Now = 14;
             count.AdjustCount(100);
-            Assert.IsTrue(count.Now == 14);
+            Assert.AreEqual(14, count.Now);
             count.AdjustCount(80);
-            Assert.IsTrue(count.Now == 6);
+            Assert.AreEqual(6, count.Now);
             count.AdjustCount(50);
-            Assert.IsTrue(count.Now == 5);
+            Assert.AreEqual(5, count.Now);
             count.AdjustCount(0);
-            Assert.IsTrue(count.Now == 2);
+            Assert.AreEqual(2, count.Now);
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace KancolleSniffer.Test
                     count.Spec.Shift = shift;
                     count.Now = 1;
                     count.AdjustCount(80);
-                    Assert.IsTrue(count.Now == count.Spec.Max - 1);
+                    Assert.AreEqual(count.Spec.Max - 1, count.Now);
                 }
             }
         }
@@ -141,42 +141,42 @@ namespace KancolleSniffer.Test
                 }
             };
             new QuestInfo().LoadState(status);
-            Assert.IsTrue(status.QuestCountList[0].ToString() == "2/3");
-            Assert.IsTrue(status.QuestCountList[1].ToString() == "20/36 7/6 10/24 8/12");
+            Assert.AreEqual("2/3", status.QuestCountList[0].ToString());
+            Assert.AreEqual("20/36 7/6 10/24 8/12", status.QuestCountList[1].ToString());
             var z = status.QuestCountList[2];
-            Assert.IsTrue(z.ToString() == "4/4");
-            Assert.IsTrue(z.ToToolTip() == "2-4 6-1 6-3 6-4");
+            Assert.AreEqual("4/4", z.ToString());
+            Assert.AreEqual("2-4 6-1 6-3 6-4", z.ToToolTip());
             z.NowArray = new[] {0, 0, 0, 0};
-            Assert.IsTrue(z.ToToolTip() == "");
+            Assert.AreEqual("", z.ToToolTip());
             var q426 = status.QuestCountList[3];
-            Assert.IsTrue(q426.ToString() == "4/4");
-            Assert.IsTrue(q426.ToToolTip() == "警備任務 対潜警戒任務 海上護衛任務 強硬偵察任務");
+            Assert.AreEqual("4/4", q426.ToString());
+            Assert.AreEqual("警備任務 対潜警戒任務 海上護衛任務 強硬偵察任務", q426.ToToolTip());
             var q428 = status.QuestCountList[4];
-            Assert.IsTrue(q428.ToToolTip() == "対潜警戒任務1 海峡警備行動1 長時間対潜警戒1");
+            Assert.AreEqual("対潜警戒任務1 海峡警備行動1 長時間対潜警戒1", q428.ToToolTip());
             q428.NowArray = new[] {0, 1, 0};
-            Assert.IsTrue(q428.ToToolTip() == "海峡警備行動1");
+            Assert.AreEqual("海峡警備行動1", q428.ToToolTip());
             var q873 = status.QuestCountList[5];
-            Assert.IsTrue(q873.ToString() == "3/3");
-            Assert.IsTrue(q873.ToToolTip() == "3-1 3-2 3-3");
+            Assert.AreEqual("3/3", q873.ToString());
+            Assert.AreEqual("3-1 3-2 3-3", q873.ToToolTip());
             var q888 = status.QuestCountList[6];
-            Assert.IsTrue(q888.ToString() == "3/3");
-            Assert.IsTrue(q888.ToToolTip() == "5-1 5-3 5-4");
+            Assert.AreEqual("3/3", q888.ToString());
+            Assert.AreEqual("5-1 5-3 5-4", q888.ToToolTip());
             var q688 = status.QuestCountList[7];
-            Assert.IsTrue(q688.ToToolTip() == "艦戦2 艦爆1 艦攻2 水偵1");
+            Assert.AreEqual("艦戦2 艦爆1 艦攻2 水偵1", q688.ToToolTip());
             var q893 = status.QuestCountList[8];
-            Assert.IsTrue(q893.ToToolTip() == "1-5:1 7-1:1 7-2G:1 7-2M:1");
+            Assert.AreEqual("1-5:1 7-1:1 7-2G:1 7-2M:1", q893.ToToolTip());
             var q894 = status.QuestCountList[9];
-            Assert.IsTrue(q894.ToString() == "5/5");
-            Assert.IsTrue(q894.ToToolTip() == "1-3 1-4 2-1 2-2 2-3");
+            Assert.AreEqual("5/5", q894.ToString());
+            Assert.AreEqual("1-3 1-4 2-1 2-2 2-3", q894.ToToolTip());
             var q280 = status.QuestCountList[10];
-            Assert.IsTrue(q280.ToString() == "4/4");
-            Assert.IsTrue(q280.ToToolTip() == "1-2 1-3 1-4 2-1");
+            Assert.AreEqual("4/4", q280.ToString());
+            Assert.AreEqual("1-2 1-3 1-4 2-1", q280.ToToolTip());
             var q872 = status.QuestCountList.First(q => q.Id == 872);
-            Assert.IsTrue(q872.ToString() == "4/4");
-            Assert.IsTrue(q872.ToToolTip() == "7-2M 5-5 6-2 6-5");
+            Assert.AreEqual("4/4", q872.ToString());
+            Assert.AreEqual("7-2M 5-5 6-2 6-5", q872.ToToolTip());
             var q284 = status.QuestCountList.First(q => q.Id == 284);
-            Assert.IsTrue(q284.ToString() == "4/4");
-            Assert.IsTrue(q284.ToToolTip() == "1-4 2-1 2-2 2-3");
+            Assert.AreEqual("4/4", q284.ToString());
+            Assert.AreEqual("1-4 2-1 2-2 2-3", q284.ToToolTip());
         }
     }
 
@@ -201,10 +201,10 @@ namespace KancolleSniffer.Test
                 })
         });
 
-        private QuestStatus InjectQuest(int id)
+        private QuestCount InjectQuest(int id)
         {
             _questInfo.InspectQuestList(CreateQuestList(new[] {id}));
-            return _questInfo.Quests[0];
+            return _questInfo.Quests[0].Count;
         }
 
         private void InjectMapStart(int map, int eventId)
@@ -235,16 +235,6 @@ namespace KancolleSniffer.Test
         private void InjectPracticeResult(string result)
         {
             _questCounter.InspectPracticeResult(Js(new {api_win_rank = result}));
-        }
-
-        private bool CheckCount(QuestStatus quest, int number)
-        {
-            return quest.Count.Now == number;
-        }
-
-        private bool CheckCount(QuestStatus quest, int[] array)
-        {
-            return quest.Count.NowArray.SequenceEqual(array);
         }
 
         private ShipStatus[] ShipStatusList(params int[] shipTypes)
@@ -283,35 +273,36 @@ namespace KancolleSniffer.Test
             _questInfo.InspectQuestList(CreateQuestList(new[] {201, 216, 210, 214}));
 
             InjectMapStart(11, 4);
-            var quests = _questInfo.Quests;
+            var counts = _questInfo.Quests.Select(q => q.Count).ToArray();
             // 出撃カウント
-            PAssert.That(() => quests[2].Id == 214 && quests[2].Count.NowArray[0] == 1);
+            Assert.AreEqual(214, counts[2].Id);
+            Assert.AreEqual(1, counts[2].NowArray[0]);
             InjectBattleResult("S");
             // 道中S勝利
-            PAssert.That(() => quests.Select(q => new {q.Id, q.Count.Now}).SequenceEqual(new[]
+            PAssert.That(() => counts.Select(c => new {c.Id, c.Now}).SequenceEqual(new[]
             {
                 new {Id = 201, Now = 1}, new {Id = 210, Now = 1},
                 new {Id = 214, Now = 0}, new {Id = 216, Now = 1}
             }));
-            PAssert.That(() => quests[2].Id == 214 && CheckCount(quests[2], new[] {1, 1, 0, 0}));
+            PAssert.That(() => counts[2].NowArray.SequenceEqual(new[] {1, 1, 0, 0}));
 
             InjectMapNext(11, 5);
             // ボスB勝利
             InjectBattleResult("B");
-            PAssert.That(() => quests.Select(q => new {q.Id, q.Count.Now}).SequenceEqual(new[]
+            PAssert.That(() => counts.Select(c => new {c.Id, c.Now}).SequenceEqual(new[]
             {
                 new {Id = 201, Now = 2}, new {Id = 210, Now = 2},
                 new {Id = 214, Now = 0}, new {Id = 216, Now = 2}
             }));
             // ボス敗北
-            PAssert.That(() => quests[2].Id == 214 && CheckCount(quests[2], new[] {1, 1, 1, 1}));
+            PAssert.That(() => counts[2].NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
             InjectBattleResult("C");
-            PAssert.That(() => quests.Select(q => new {q.Id, q.Count.Now}).SequenceEqual(new[]
+            PAssert.That(() => counts.Select(c => new {c.Id, c.Now}).SequenceEqual(new[]
             {
                 new {Id = 201, Now = 2}, new {Id = 210, Now = 3},
                 new {Id = 214, Now = 0}, new {Id = 216, Now = 2}
             }));
-            PAssert.That(() => quests[2].Id == 214 && CheckCount(quests[2], new[] {1, 1, 2, 1}));
+            PAssert.That(() => counts[2].NowArray.SequenceEqual(new[] {1, 1, 2, 1}));
         }
 
         /// <summary>
@@ -374,17 +365,17 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_226()
         {
-            var quest = InjectQuest(226);
+            var count = InjectQuest(226);
 
             InjectMapStart(21, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
 
             InjectMapNext(21, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1));
+            Assert.AreEqual(1, count.Now);
             InjectBattleResult("B");
-            Assert.IsTrue(CheckCount(quest, 2));
+            Assert.AreEqual(2, count.Now);
         }
 
         /// <summary>
@@ -393,17 +384,17 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_243()
         {
-            var quest = InjectQuest(243);
+            var count = InjectQuest(243);
 
             InjectMapNext(52, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
 
             InjectMapNext(52, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1));
+            Assert.AreEqual(1, count.Now);
         }
 
         /// <summary>
@@ -412,7 +403,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_249()
         {
-            var quest = InjectQuest(249);
+            var count = InjectQuest(249);
 
             _battleInfo.InjectResultStatus(new[]
             {
@@ -422,18 +413,18 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(25, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
 
             InjectMapNext(25, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1));
+            Assert.AreEqual(1, count.Now);
             _questInfo.Quests[0].Count.Now = 0;
 
             _battleInfo.Result.Friend.Main[1].NowHp = 0;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0), "那智改二轟沈");
+            Assert.AreEqual(0, count.Now, "那智改二轟沈");
         }
 
         /// <summary>
@@ -442,7 +433,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_257()
         {
-            var quest = InjectQuest(257);
+            var count = InjectQuest(257);
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(3, 2, 2, 2, 2, 2), new ShipStatus[0],
@@ -450,35 +441,35 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(14, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
 
             InjectMapNext(14, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1));
+            Assert.AreEqual(1, count.Now);
             _questInfo.Quests[0].Count.Now = 0;
 
             _battleInfo.Result.Friend.Main[0].NowHp = 0;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0), "軽巡轟沈");
+            Assert.AreEqual(0, count.Now, "軽巡轟沈");
             _battleInfo.Result.Friend.Main[0].NowHp = 1;
 
             _battleInfo.Result.Friend.Main[0].Spec.ShipType = 2;
             _battleInfo.Result.Friend.Main[1].Spec.ShipType = 3;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0), "旗艦が駆逐");
+            Assert.AreEqual(0, count.Now, "旗艦が駆逐");
             _battleInfo.Result.Friend.Main[0].Spec.ShipType = 3;
 
             _battleInfo.Result.Friend.Main[2].Spec.ShipType = 3;
             _battleInfo.Result.Friend.Main[3].Spec.ShipType = 3;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0), "軽巡が4隻");
+            Assert.AreEqual(0, count.Now, "軽巡が4隻");
 
             _battleInfo.Result.Friend.Main[0].Spec.ShipType = 3;
             _battleInfo.Result.Friend.Main[3].Spec.ShipType = 4;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0), "駆逐軽巡以外");
+            Assert.AreEqual(0, count.Now, "駆逐軽巡以外");
         }
 
         private ShipStatus ShipStatus(int shipType, int shipClass, int specId) =>
@@ -490,7 +481,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_259()
         {
-            var quest = InjectQuest(259);
+            var count = InjectQuest(259);
 
             var org = new[]
             {
@@ -503,33 +494,33 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(51, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
 
             InjectMapNext(51, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1));
+            Assert.AreEqual(1, count.Now);
             _questInfo.Quests[0].Count.Now = 0;
 
             _battleInfo.Result.Friend.Main[0].NowHp = 0;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0), "軽巡轟沈");
+            Assert.AreEqual(0, count.Now, "軽巡轟沈");
             _battleInfo.Result.Friend.Main[0].NowHp = 1;
 
             _battleInfo.Result.Friend.Main[4] = ShipStatus(9, 37, 136);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0), "戦艦4隻");
+            Assert.AreEqual(0, count.Now, "戦艦4隻");
             _battleInfo.Result.Friend.Main[4] = org[4];
 
             _battleInfo.Result.Friend.Main[0] = ShipStatus(4, 4, 58);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0), "軽巡なし");
+            Assert.AreEqual(0, count.Now, "軽巡なし");
             _battleInfo.Result.Friend.Main[0] = org[0];
 
             _battleInfo.Result.Friend.Main[2] = ShipStatus(10, 2, 553);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1), "伊勢改二");
+            Assert.AreEqual(1, count.Now, "伊勢改二");
         }
 
         /// <summary>
@@ -538,7 +529,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_264()
         {
-            var quest = InjectQuest(264);
+            var count = InjectQuest(264);
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(7, 11, 3, 3, 2, 2), new ShipStatus[0],
@@ -546,17 +537,17 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(42, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
 
             InjectMapNext(42, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1));
+            Assert.AreEqual(1, count.Now);
 
             _battleInfo.Result.Friend.Main[0].NowHp = 0;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1), "轟沈あり");
+            Assert.AreEqual(1, count.Now, "轟沈あり");
         }
 
         /// <summary>
@@ -565,7 +556,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_266()
         {
-            var quest = InjectQuest(266);
+            var count = InjectQuest(266);
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(2, 5, 3, 2, 2, 2), new ShipStatus[0],
@@ -573,29 +564,29 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(25, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
 
             InjectMapNext(25, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1));
+            Assert.AreEqual(1, count.Now);
 
             _battleInfo.Result.Friend.Main[1].NowHp = 0;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1), "轟沈あり");
+            Assert.AreEqual(1, count.Now, "轟沈あり");
             _battleInfo.Result.Friend.Main[1].NowHp = 1;
 
             _battleInfo.Result.Friend.Main[0].Spec.ShipType = 3;
             _battleInfo.Result.Friend.Main[2].Spec.ShipType = 2;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1), "旗艦が軽巡");
+            Assert.AreEqual(1, count.Now, "旗艦が軽巡");
             _battleInfo.Result.Friend.Main[0].Spec.ShipType = 2;
             _battleInfo.Result.Friend.Main[2].Spec.ShipType = 3;
 
             _battleInfo.Result.Friend.Main[3].Spec.ShipType = 3;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1), "軽巡が2隻");
+            Assert.AreEqual(1, count.Now, "軽巡が2隻");
         }
 
         /// <summary>
@@ -604,7 +595,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_280()
         {
-            var quest = InjectQuest(280);
+            var count = InjectQuest(280);
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(7, 2, 1, 1, 8, 8), new ShipStatus[0],
@@ -614,7 +605,7 @@ namespace KancolleSniffer.Test
             InjectBattleResult("S");
             InjectMapNext(12, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}));
 
             InjectBattleResult("S");
             InjectMapNext(13, 5);
@@ -623,27 +614,27 @@ namespace KancolleSniffer.Test
             InjectBattleResult("S");
             InjectMapNext(21, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
 
             _battleInfo.Result.Friend.Main = ShipStatusList(7, 1, 1, 8, 8, 8);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
 
             _battleInfo.Result.Friend.Main = ShipStatusList(8, 1, 1, 1, 8, 8);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
 
             _battleInfo.Result.Friend.Main = ShipStatusList(3, 2, 1, 1, 8, 8);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 2}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 2}));
 
             _battleInfo.Result.Friend.Main = ShipStatusList(2, 4, 2, 1, 8, 8);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 3}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 3}));
 
             _battleInfo.Result.Friend.Main = ShipStatusList(2, 2, 21, 2, 8, 8);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 4}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 4}));
         }
 
         /// <summary>
@@ -652,7 +643,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_284()
         {
-            var quest = InjectQuest(284);
+            var count = InjectQuest(284);
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(7, 2, 1, 1, 8, 8), new ShipStatus[0],
@@ -662,7 +653,7 @@ namespace KancolleSniffer.Test
             InjectBattleResult("S");
             InjectMapNext(14, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}));
 
             InjectBattleResult("S");
             InjectMapNext(21, 5);
@@ -671,7 +662,7 @@ namespace KancolleSniffer.Test
             InjectBattleResult("S");
             InjectMapNext(23, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
 
             // 艦種チェックは280と共通
         }
@@ -684,13 +675,14 @@ namespace KancolleSniffer.Test
         public void BattleResult_822_854()
         {
             _questInfo.InspectQuestList(CreateQuestList(new[] {822, 854}));
-            var q822 = _questInfo.Quests[0];
-            var q854 = _questInfo.Quests[1];
+            var c822 = _questInfo.Quests[0].Count;
+            var c854 = _questInfo.Quests[1].Count;
 
             InjectMapNext(24, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(q854, new[] {0, 0, 0, 0}));
-            Assert.IsTrue(CheckCount(q822, 0));
+
+            PAssert.That(() => c854.NowArray.SequenceEqual(new[] {0, 0, 0, 0}));
+            Assert.AreEqual(0, c822.Now);
 
             InjectMapNext(24, 5);
             InjectBattleResult("A");
@@ -700,12 +692,12 @@ namespace KancolleSniffer.Test
             InjectBattleResult("A");
             InjectMapNext(64, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(q854, new[] {1, 1, 1, 1}));
-            Assert.IsTrue(CheckCount(q822, 0));
+            PAssert.That(() => c854.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
+            Assert.AreEqual(0, c822.Now);
             InjectMapNext(24, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(q854, new[] {2, 1, 1, 1}));
-            Assert.IsTrue(CheckCount(q822, 1));
+            PAssert.That(() => c854.NowArray.SequenceEqual(new[] {2, 1, 1, 1}));
+            Assert.AreEqual(1, c822.Now);
         }
 
         /// <summary>
@@ -714,13 +706,13 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_845()
         {
-            var quest = InjectQuest(845);
+            var count = InjectQuest(845);
 
             InjectMapNext(41, 4);
             InjectBattleResult("S");
             InjectMapNext(41, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0, 0}));
 
             InjectMapNext(41, 5);
             InjectBattleResult("S");
@@ -732,7 +724,7 @@ namespace KancolleSniffer.Test
             InjectBattleResult("S");
             InjectMapNext(45, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1, 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1, 1}));
         }
 
         /// <summary>
@@ -741,27 +733,26 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void MapNext_861()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {861}));
-            var quest = _questInfo.Quests[0];
+            var count = InjectQuest(861);
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(10, 22, 2, 2, 2, 2), new ShipStatus[0],
                 new ShipStatus[0], new ShipStatus[0]);
 
             InjectMapNext(16, 4);
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
 
             InjectMapNext(16, 8);
-            Assert.IsTrue(CheckCount(quest, 1));
+            Assert.AreEqual(1, count.Now);
 
             _battleInfo.Result.Friend.Main[1].NowHp = 0;
             InjectMapNext(16, 8);
-            Assert.IsTrue(CheckCount(quest, 1), "轟沈あり");
+            Assert.AreEqual(1, count.Now, "轟沈あり");
             _battleInfo.Result.Friend.Main[1].NowHp = 1;
 
             _battleInfo.Result.Friend.Main[2].Spec.ShipType = 10;
             InjectMapNext(16, 8);
-            Assert.IsTrue(CheckCount(quest, 1), "補給・航戦が3隻");
+            Assert.AreEqual(1, count.Now, "補給・航戦が3隻");
         }
 
         /// <summary>
@@ -770,8 +761,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_862()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {862}));
-            var quest = _questInfo.Quests[0];
+            var count = InjectQuest(862);
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(2, 3, 3, 2, 2, 16), new ShipStatus[0],
@@ -779,23 +769,23 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(63, 4);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
 
             InjectMapNext(63, 5);
             InjectBattleResult("B");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 1));
+            Assert.AreEqual(1, count.Now);
 
             _battleInfo.Result.Friend.Main[1].NowHp = 0;
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 1), "轟沈あり");
+            Assert.AreEqual(1, count.Now, "轟沈あり");
             _battleInfo.Result.Friend.Main[1].NowHp = 1;
 
             _battleInfo.Result.Friend.Main[3].Spec.ShipType = 3;
             _battleInfo.Result.Friend.Main[4].Spec.ShipType = 16;
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 2), "軽巡3隻水母2隻");
+            Assert.AreEqual(2, count.Now, "軽巡3隻水母2隻");
         }
 
         /// <summary>
@@ -804,23 +794,23 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_872()
         {
-            var quest = InjectQuest(872);
+            var count = InjectQuest(872);
 
             InjectMapNext(55, 4);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}));
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}));
             InjectMapNext(55, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 1, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 1, 0, 0}));
 
             InjectMapNext(62, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 1, 1, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 1, 1, 0}));
             InjectMapNext(65, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 1, 1, 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 1, 1, 1}));
             _questCounter.InspectMapNext(Js(new
             {
                 api_maparea_id = 7,
@@ -829,7 +819,7 @@ namespace KancolleSniffer.Test
                 api_event_id = 5
             }));
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1}), "7-2M");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}), "7-2M");
         }
 
         /// <summary>
@@ -838,7 +828,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_873()
         {
-            var quest = InjectQuest(873);
+            var count = InjectQuest(873);
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(3, 2, 2, 2, 2, 2), new ShipStatus[0],
@@ -846,17 +836,17 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(31, 4);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0}));
 
             InjectMapNext(31, 5);
             InjectBattleResult("B");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0}));
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0}));
 
             _battleInfo.Result.Friend.Main[0].Spec.ShipType = 2;
             InjectBattleResult("A");
-            Assert.IsTrue(_questInfo.Quests[0].Count.NowArray[0] == 1, "軽巡なし");
+            Assert.AreEqual(1, _questInfo.Quests[0].Count.NowArray[0], "軽巡なし");
             _battleInfo.Result.Friend.Main[0].Spec.ShipType = 3;
 
             InjectMapNext(32, 5);
@@ -872,7 +862,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_875()
         {
-            var quest = InjectQuest(875);
+            var count = InjectQuest(875);
 
             _battleInfo.InjectResultStatus(new[]
             {
@@ -882,33 +872,33 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(54, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
 
             InjectMapNext(54, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, 0));
+            Assert.AreEqual(0, count.Now);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1));
+            Assert.AreEqual(1, count.Now);
 
             _battleInfo.Result.Friend.Main[5].NowHp = 0;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1), "朝霜改轟沈");
+            Assert.AreEqual(1, count.Now, "朝霜改轟沈");
             _battleInfo.Result.Friend.Main[5].NowHp = 1;
 
             _battleInfo.Result.Friend.Main[0].Spec.Id = 345;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 1), "長波改二なし");
+            Assert.AreEqual(1, count.Now, "長波改二なし");
             _battleInfo.Result.Friend.Main[0].Spec.Id = 543;
 
             _battleInfo.Result.Friend.Main[5].Spec.Id = 345;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 2), "高波改");
+            Assert.AreEqual(2, count.Now, "高波改");
             _battleInfo.Result.Friend.Main[5].Spec.Id = 359;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 3), "沖波改");
+            Assert.AreEqual(3, count.Now, "沖波改");
             _battleInfo.Result.Friend.Main[5].Spec.Id = 578;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, 4), "朝霜改二");
+            Assert.AreEqual(4, count.Now, "朝霜改二");
         }
 
         /// <summary>
@@ -917,7 +907,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_888()
         {
-            var quest = InjectQuest(888);
+            var count = InjectQuest(888);
 
             _battleInfo.InjectResultStatus(new[]
             {
@@ -927,30 +917,30 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(51, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0}));
 
             InjectMapNext(51, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0}));
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0}));
             _battleInfo.Result.Friend.Main[0].NowHp = 0;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 0, 0}), "轟沈あり");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0}), "轟沈あり");
             _battleInfo.Result.Friend.Main[0].NowHp = 1;
 
             _battleInfo.Result.Friend.Main[0].Spec.Id = 319;
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 0, 0}), "三川艦隊3隻");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0}), "三川艦隊3隻");
             _battleInfo.Result.Friend.Main[0].Spec.Id = 427;
 
             InjectMapNext(53, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0}));
 
             InjectMapNext(54, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1}));
         }
 
         /// <summary>
@@ -959,21 +949,21 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_893()
         {
-            var quest = InjectQuest(893);
+            var count = InjectQuest(893);
 
             InjectMapNext(15, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}));
 
             InjectMapNext(15, 5);
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0}), "A勝利はカウントしない");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}), "A勝利はカウントしない");
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 0, 0, 0}), "1-5");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "1-5");
 
             InjectMapNext(71, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 0, 0}), "7-1");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0, 0}), "7-1");
 
             _questCounter.InspectMapNext(Js(new
             {
@@ -983,7 +973,7 @@ namespace KancolleSniffer.Test
                 api_event_id = 5
             }));
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 0}), "7-2G");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0}), "7-2G");
 
             _questCounter.InspectMapNext(Js(new
             {
@@ -993,7 +983,7 @@ namespace KancolleSniffer.Test
                 api_event_id = 5
             }));
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1}), "7-2M");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}), "7-2M");
         }
 
         /// <summary>
@@ -1002,41 +992,41 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_894()
         {
-            var quest = InjectQuest(894);
+            var count = InjectQuest(894);
             _battleInfo.InjectResultStatus(
                 ShipStatusList(2, 2, 2, 2, 2, 2),
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             InjectMapNext(13, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0, 0}), "空母なしはカウントしない");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0, 0}), "空母なしはカウントしない");
 
             _battleInfo.Result.Friend.Main[0].Spec.ShipType = 7;
             InjectBattleResult("A");
-            Assert.IsTrue(CheckCount(quest, new[] {0, 0, 0, 0, 0}), "A勝利はカウントしない");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0, 0}), "A勝利はカウントしない");
 
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 0, 0, 0, 0}), "1-3");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0, 0}), "1-3");
 
             InjectMapNext(14, 4);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 0, 0, 0, 0}), "1-4");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0, 0}), "1-4");
 
             InjectMapNext(14, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 0, 0, 0}), "1-4");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0, 0, 0}), "1-4");
 
             InjectMapNext(21, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 0, 0}), "2-1");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0, 0}), "2-1");
 
             InjectMapNext(22, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1, 0}), "2-2");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1, 0}), "2-2");
 
             InjectMapNext(23, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1, 1}), "2-3");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1, 1}), "2-3");
         }
 
         /// <summary>
@@ -1053,7 +1043,7 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(24, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(_questInfo.Quests[1].Count.NowArray[0] == 1);
+            Assert.AreEqual(1, _questInfo.Quests[1].Count.NowArray[0]);
         }
 
         /// <summary>
@@ -1070,7 +1060,7 @@ namespace KancolleSniffer.Test
 
             InjectMapNext(71, 5);
             InjectBattleResult("S");
-            Assert.IsTrue(_questInfo.Quests[1].Count.NowArray[1] == 1);
+            Assert.AreEqual(1, _questInfo.Quests[1].Count.NowArray[1]);
         }
 
         /// <summary>
@@ -1106,7 +1096,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void PracticeResult_318()
         {
-            var quest = InjectQuest(318);
+            var count = InjectQuest(318);
 
             _battleInfo.InjectResultStatus(new[]
             {
@@ -1114,20 +1104,20 @@ namespace KancolleSniffer.Test
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             InjectPracticeResult("B");
-            Assert.IsTrue(quest.Count.Now == 0, "軽巡1隻");
+            Assert.AreEqual(0, count.Now, "軽巡1隻");
             _battleInfo.Result.Friend.Main[0] = ShipStatus(3, 200);
             _questCounter.StartPractice("api%5Fdeck%5Fid=2");
             InjectPracticeResult("B");
-            Assert.IsTrue(quest.Count.Now == 0, "第2艦隊");
+            Assert.AreEqual(0, count.Now, "第2艦隊");
             _questCounter.StartPractice("api%5Fdeck%5Fid=1"); // 第一艦隊
             InjectPracticeResult("C");
-            Assert.IsTrue(quest.Count.Now == 0, "敗北");
+            Assert.AreEqual(0, count.Now, "敗北");
             InjectPracticeResult("B");
-            Assert.IsTrue(quest.Count.Now == 1);
+            Assert.AreEqual(1, count.Now);
 
-            quest.Count.Now = 2;
+            count.Now = 2;
             _questInfo.InspectQuestList(CreateQuestList(new[] {318}));
-            Assert.IsTrue(quest.Count.Now == 2, "進捗調節しない");
+            Assert.AreEqual(2, count.Now, "進捗調節しない");
         }
 
         /// <summary>
@@ -1136,33 +1126,33 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void PracticeResult_330()
         {
-            var quest = InjectQuest(330);
+            var count = InjectQuest(330);
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(18, 7, 2, 2),
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
             InjectPracticeResult("B");
-            Assert.AreEqual(1, quest.Count.Now, "装甲空母、軽空母");
+            Assert.AreEqual(1, count.Now, "装甲空母、軽空母");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(11, 7, 2, 2);
             InjectPracticeResult("B");
-            Assert.AreEqual(2, quest.Count.Now, "正規空母、軽空母");
+            Assert.AreEqual(2, count.Now, "正規空母、軽空母");
 
-            quest.Count.Now = 0;
+            count.Now = 0;
             InjectPracticeResult("C");
-            Assert.AreEqual(0, quest.Count.Now, "敗北");
+            Assert.AreEqual(0, count.Now, "敗北");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(2, 7, 11, 2);
             InjectPracticeResult("B");
-            Assert.AreEqual(0, quest.Count.Now, "旗艦空母以外");
+            Assert.AreEqual(0, count.Now, "旗艦空母以外");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(11, 2, 2, 2);
             InjectPracticeResult("B");
-            Assert.AreEqual(0, quest.Count.Now, "空母一隻");
+            Assert.AreEqual(0, count.Now, "空母一隻");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(11, 7, 3, 2);
             InjectPracticeResult("B");
-            Assert.AreEqual(0, quest.Count.Now, "駆逐一隻");
+            Assert.AreEqual(0, count.Now, "駆逐一隻");
         }
 
         /// <summary>
@@ -1171,7 +1161,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void PracticeResult_337()
         {
-            var quest = InjectQuest(337);
+            var count = InjectQuest(337);
 
             _battleInfo.InjectResultStatus(new []
             {
@@ -1180,15 +1170,15 @@ namespace KancolleSniffer.Test
                 ShipStatus(2, 19)
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
             InjectPracticeResult("A");
-            Assert.AreEqual(0, quest.Count.Now, "A");
+            Assert.AreEqual(0, count.Now, "A");
             InjectPracticeResult("S");
-            Assert.AreEqual(1, quest.Count.Now);
+            Assert.AreEqual(1, count.Now);
             _battleInfo.Result.Friend.Main[0] = ShipStatus(2, 47);
             InjectPracticeResult("S");
-            Assert.AreEqual(1, quest.Count.Now, "霰→涼風");
+            Assert.AreEqual(1, count.Now, "霰→涼風");
             _battleInfo.Result.Friend.Main[4] = ShipStatus(2, 464);
             InjectPracticeResult("S");
-            Assert.AreEqual(2, quest.Count.Now, "黒潮→霞改二");
+            Assert.AreEqual(2, count.Now, "黒潮→霞改二");
         }
 
         /// <summary>
@@ -1228,7 +1218,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void MissionResult_426()
         {
-            var quest = InjectQuest(426);
+            var count = InjectQuest(426);
 
             _questCounter.InspectDeck(Js(
                 new[]
@@ -1240,14 +1230,14 @@ namespace KancolleSniffer.Test
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0}));
             _questCounter.InspectDeck(Js(
                 new[]
                 {
                     new {api_id = 2, api_mission = new[] {2, 10}}
                 }));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1, 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
         }
 
         /// <summary>
@@ -1256,7 +1246,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void MissionResult_428()
         {
-            var quest = InjectQuest(428);
+            var count = InjectQuest(428);
 
             _questCounter.InspectDeck(Js(
                 new[]
@@ -1268,7 +1258,7 @@ namespace KancolleSniffer.Test
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
-            Assert.IsTrue(CheckCount(quest, new[] {1, 1, 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1}));
         }
 
         /// <summary>
@@ -1370,7 +1360,8 @@ namespace KancolleSniffer.Test
             foreach (var e in scalar)
             {
                 var c = Array.Find(_questInfo.Quests, q => q.Id == e.Id).Count;
-                Assert.IsTrue(c.Id == e.Id && c.Now == e.Now, $"{c.Id}");
+                Assert.AreEqual(e.Id, c.Id);
+                Assert.AreEqual(e.Now, c.Now, $"{c.Id}");
             }
             var array = new[]
             {
@@ -1382,7 +1373,8 @@ namespace KancolleSniffer.Test
             foreach (var e in array)
             {
                 var c = Array.Find(_questInfo.Quests, q => q.Id == e.Id).Count;
-                Assert.IsTrue(c.Id == e.Id && c.NowArray.SequenceEqual(e.NowArray), $"{c.Id}");
+                Assert.AreEqual(e.Id, c.Id);
+                PAssert.That(() => c.NowArray.SequenceEqual(e.NowArray), $"{c.Id}");
             }
         }
 
