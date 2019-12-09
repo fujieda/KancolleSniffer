@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using KancolleSniffer.Util;
@@ -382,6 +383,18 @@ namespace KancolleSniffer.Model
         }
 
         public IReadOnlyList<Fleet> Fleets => _fleets;
+
+        public int InSortie
+        {
+            get
+            {
+                var sorties = _fleets.Select(f => f.State >= FleetState.Sortie).ToArray();
+                if (sorties[0] && sorties[1])
+                    return 10;
+                var idx = Array.FindIndex(sorties, s => s);
+                return idx;
+            }
+        }
 
         public ShipStatus GetShip(int id) => _shipInventory[id];
 

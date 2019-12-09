@@ -673,15 +673,14 @@ namespace KancolleSniffer
 
         private void SetCurrentFleet()
         {
-            var states = Sniffer.Fleets.Select(fleet => fleet.State).ToArray();
-            var inSortie = states.Any(state => state >= FleetState.Sortie);
-            if (_inSortie || !inSortie)
+            var inSortie = Sniffer.InSortie;
+            if (_inSortie || inSortie == -1)
             {
-                _inSortie = inSortie;
+                _inSortie = inSortie == -1;
                 return;
             }
             _inSortie = true;
-            if (states[0] == FleetState.Sortie && states[1] == FleetState.Sortie)
+            if (inSortie == 10)
             {
                 _combinedFleet = true;
                 _currentFleet = 0;
@@ -689,7 +688,7 @@ namespace KancolleSniffer
             else
             {
                 _combinedFleet = false;
-                _currentFleet = Array.FindIndex(states, state => state >= FleetState.Sortie);
+                _currentFleet = inSortie;
             }
         }
 

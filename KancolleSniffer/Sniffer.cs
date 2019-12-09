@@ -634,6 +634,8 @@ namespace KancolleSniffer
 
         public IReadOnlyList<Fleet> Fleets => _shipInfo.Fleets;
 
+        public int InSortie => _shipInfo.InSortie;
+
         public ShipInfo.ShipStatusPair[] BattleResultStatusDiff => _shipInfo.BattleResultDiff;
 
         public bool IsBattleResultError => _shipInfo.IsBattleResultError || _battleInfo.DisplayedResultRank.IsError;
