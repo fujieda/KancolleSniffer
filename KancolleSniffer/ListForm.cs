@@ -158,8 +158,29 @@ namespace KancolleSniffer
 
         public void UpdateBattleResult()
         {
+            MoveToBattleResult();
             battleResultPanel.Spoilers = _config.Spoilers;
             battleResultPanel.Update(_sniffer);
+            BackFromBattleResult();
+        }
+
+        private int _prevSelectedIndex = -1;
+        private const int BattleResultIndex = 10;
+
+        private void MoveToBattleResult()
+        {
+            if (comboBoxGroup.SelectedIndex == BattleResultIndex || _sniffer.InSortie == -1)
+                return;
+            _prevSelectedIndex = comboBoxGroup.SelectedIndex;
+            comboBoxGroup.SelectedIndex = BattleResultIndex;
+        }
+
+        private void BackFromBattleResult()
+        {
+            if (_sniffer.InSortie != -1 || _prevSelectedIndex == -1)
+                return;
+            comboBoxGroup.SelectedIndex = _prevSelectedIndex;
+            _prevSelectedIndex = -1;
         }
 
         public void UpdateCellInfo()
