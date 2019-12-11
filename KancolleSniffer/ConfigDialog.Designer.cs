@@ -71,6 +71,7 @@ namespace KancolleSniffer
             this.checkBoxBalloon = new System.Windows.Forms.CheckBox();
             this.checkBoxFlash = new System.Windows.Forms.CheckBox();
             this.tabPageAchievement = new System.Windows.Forms.TabPage();
+            this.checkBoxAutoBattleResult = new System.Windows.Forms.CheckBox();
             this.checkBoxWarnBadDamageWithDamecon = new System.Windows.Forms.CheckBox();
             this.checkBoxPresetAkashi = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -493,6 +494,7 @@ namespace KancolleSniffer
             // 
             // tabPageAchievement
             // 
+            this.tabPageAchievement.Controls.Add(this.checkBoxAutoBattleResult);
             this.tabPageAchievement.Controls.Add(this.checkBoxWarnBadDamageWithDamecon);
             this.tabPageAchievement.Controls.Add(this.checkBoxPresetAkashi);
             this.tabPageAchievement.Controls.Add(this.groupBox3);
@@ -505,24 +507,34 @@ namespace KancolleSniffer
             this.tabPageAchievement.Text = "機能";
             this.tabPageAchievement.UseVisualStyleBackColor = true;
             // 
+            // checkBoxAutoBattleResult
+            // 
+            this.checkBoxAutoBattleResult.AutoSize = true;
+            this.checkBoxAutoBattleResult.Location = new System.Drawing.Point(143, 134);
+            this.checkBoxAutoBattleResult.Name = "checkBoxAutoBattleResult";
+            this.checkBoxAutoBattleResult.Size = new System.Drawing.Size(96, 16);
+            this.checkBoxAutoBattleResult.TabIndex = 21;
+            this.checkBoxAutoBattleResult.Text = "戦況自動切替";
+            this.checkBoxAutoBattleResult.UseVisualStyleBackColor = true;
+            // 
             // checkBoxWarnBadDamageWithDamecon
             // 
             this.checkBoxWarnBadDamageWithDamecon.AutoSize = true;
-            this.checkBoxWarnBadDamageWithDamecon.Location = new System.Drawing.Point(20, 114);
+            this.checkBoxWarnBadDamageWithDamecon.Location = new System.Drawing.Point(20, 112);
             this.checkBoxWarnBadDamageWithDamecon.Name = "checkBoxWarnBadDamageWithDamecon";
-            this.checkBoxWarnBadDamageWithDamecon.Size = new System.Drawing.Size(168, 16);
+            this.checkBoxWarnBadDamageWithDamecon.Size = new System.Drawing.Size(124, 16);
             this.checkBoxWarnBadDamageWithDamecon.TabIndex = 20;
-            this.checkBoxWarnBadDamageWithDamecon.Text = "ダメコン装備でも大破警告する";
+            this.checkBoxWarnBadDamageWithDamecon.Text = "ダメコンあり大破警告";
             this.checkBoxWarnBadDamageWithDamecon.UseVisualStyleBackColor = true;
             // 
             // checkBoxPresetAkashi
             // 
             this.checkBoxPresetAkashi.AutoSize = true;
-            this.checkBoxPresetAkashi.Location = new System.Drawing.Point(20, 135);
+            this.checkBoxPresetAkashi.Location = new System.Drawing.Point(20, 134);
             this.checkBoxPresetAkashi.Name = "checkBoxPresetAkashi";
-            this.checkBoxPresetAkashi.Size = new System.Drawing.Size(141, 16);
+            this.checkBoxPresetAkashi.Size = new System.Drawing.Size(113, 16);
             this.checkBoxPresetAkashi.TabIndex = 19;
-            this.checkBoxPresetAkashi.Text = "プリセット明石修理を使う";
+            this.checkBoxPresetAkashi.Text = "プリセット明石修理";
             this.checkBoxPresetAkashi.UseVisualStyleBackColor = true;
             // 
             // groupBox3
@@ -1330,5 +1342,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.CheckBox checkBoxWarnBadDamageWithDamecon;
+        private System.Windows.Forms.CheckBox checkBoxAutoBattleResult;
     }
 }

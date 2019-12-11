@@ -169,7 +169,8 @@ namespace KancolleSniffer
 
         private void MoveToBattleResult()
         {
-            if (comboBoxGroup.SelectedIndex == BattleResultIndex || _sniffer.InSortie == -1)
+            if (!_config.ShipList.AutoBattleResult || comboBoxGroup.SelectedIndex == BattleResultIndex ||
+                _sniffer.InSortie == -1)
                 return;
             _prevSelectedIndex = comboBoxGroup.SelectedIndex;
             comboBoxGroup.SelectedIndex = BattleResultIndex;
