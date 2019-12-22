@@ -77,11 +77,11 @@ namespace KancolleSniffer.Model
 
         public override string ToString()
         {
-            if (Id == 280 || Id == 284 || Id == 426 || Id == 845 || Id == 854 || Id == 872 || Id == 873 || Id == 888 || Id == 894)
-                return $"{NowArray.Count(n => n >= 1)}/{Spec.MaxArray.Length}";
-            return NowArray != null
-                ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
-                : $"{Now}/{Spec.Max}";
+            return Spec.MaxArray != null && Spec.MaxArray.All(x => x == 1)
+                ? string.Join("\u200a", NowArray.Select(n => (n % 10).ToString()))
+                : Spec.MaxArray != null
+                    ? string.Join(" ", NowArray.Zip(Spec.MaxArray, (n, m) => $"{n}/{m}"))
+                    : $"{Now}/{Spec.Max}";
         }
 
         public QuestCount Clone()
@@ -101,61 +101,38 @@ namespace KancolleSniffer.Model
             return NowArray.SequenceEqual(other.NowArray);
         }
 
+        private static string MapString(int map)
+        {
+            return map switch
+            {
+                721 => "7-2G",
+                722 => "7-2M",
+                _ => $"{map / 10}-{map % 10}"
+            };
+        }
+
         public string ToToolTip()
         {
-            switch (Id)
+            if (Spec is QuestSortie spec && spec.Maps != null)
             {
-                case 280:
-                    return string.Join(" ",
-                        new[] {"1-2", "1-3", "1-4", "2-1"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 284:
-                    return string.Join(" ",
-                        new[] {"1-4", "2-1", "2-2", "2-3"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 426:
-                    return string.Join(" ",
-                        new[] {"警備任務", "対潜警戒任務", "海上護衛任務", "強硬偵察任務"}
-                            .Zip(NowArray, (mission, n) => n >= 1 ? mission : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 428:
-                    return string.Join(" ",
-                        new[] {"対潜警戒任務", "海峡警備行動", "長時間対潜警戒"}.Zip(NowArray, (mission, n) => n >= 1 ? mission + n : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 845:
-                    return string.Join(" ",
-                        new[] {"4-1", "4-2", "4-3", "4-4", "4-5"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 854:
-                    return string.Join(" ",
-                        new[] {"2-4", "6-1", "6-3", "6-4"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 872:
-                    return string.Join(" ",
-                        new[] {"7-2M", "5-5", "6-2", "6-5"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 873:
-                    return string.Join(" ",
-                        new[] {"3-1", "3-2", "3-3"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 888:
-                    return string.Join(" ",
-                        new[] {"5-1", "5-3", "5-4"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 688:
-                    return string.Join(" ",
-                        new[] {"艦戦", "艦爆", "艦攻", "水偵"}.Zip(NowArray, (type, n) => n >= 1 ? type + n : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 893:
-                    return string.Join(" ",
-                        new[] {"1-5", "7-1", "7-2G", "7-2M"}.Zip(NowArray, (map, n) => n >= 1 ? $"{map}:{n}" : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
-                case 894:
-                    return string.Join(" ",
-                        new[] {"1-3", "1-4", "2-1", "2-2", "2-3"}.Zip(NowArray, (map, n) => n >= 1 ? map : "")
-                            .Where(s => !string.IsNullOrEmpty(s)));
+                var flags = spec.MaxArray.All(x => x == 1);
+                return string.Join(" ",
+                    spec.Maps.Zip(NowArray, (map, n) => n >= 1 ? $"{MapString(map)}{(flags ? "" : $":{n}")}" : "")
+                    .Where(s => !string.IsNullOrEmpty(s)));
             }
-            return "";
+            return Id switch
+            {
+                426 => string.Join(" ",
+                    new[] {"警備任務", "対潜警戒任務", "海上護衛任務", "強硬偵察任務"}.Zip(NowArray, (mission, n) => n >= 1 ? mission : "")
+                        .Where(s => !string.IsNullOrEmpty(s))),
+                428 => string.Join(" ",
+                    new[] {"対潜警戒任務", "海峡警備行動", "長時間対潜警戒"}.Zip(NowArray, (mission, n) => n >= 1 ? mission + n : "")
+                        .Where(s => !string.IsNullOrEmpty(s))),
+                688 => string.Join(" ",
+                    new[] {"艦戦", "艦爆", "艦攻", "水偵"}.Zip(NowArray, (type, n) => n >= 1 ? type + n : "")
+                        .Where(s => !string.IsNullOrEmpty(s))),
+                _ => ""
+            };
         }
 
         public bool Cleared => NowArray?.Zip(Spec.MaxArray, (n, m) => n >= m).All(x => x) ??
