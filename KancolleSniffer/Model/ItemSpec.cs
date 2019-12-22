@@ -152,6 +152,8 @@ namespace KancolleSniffer.Model
 
         public bool IsArmyAircraft => Type == 25 || Type == 26;
 
+        public bool IsNightRecon => Id == 102;
+
         public double ContactTriggerRate
         {
             get

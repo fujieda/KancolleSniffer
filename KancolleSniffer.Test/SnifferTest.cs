@@ -310,6 +310,25 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 夜戦発動率を計算する
+        /// </summary>
+        [TestMethod]
+        public void NightContactTriggerRate()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "nightrecon_001");
+            PAssert.That(() => Abs(sniffer.Fleets[0].NightContactTriggerRate - 84.64) < 0.01);
+            var ship = sniffer.Fleets[0].Ships[0];
+            var empty = Enumerable.Repeat(new ItemStatus(), 5).ToArray();
+            var orig = ship.Slot;
+            ship.Slot = empty;
+            PAssert.That(() => Abs(sniffer.Fleets[0].NightContactTriggerRate - 52) < 0.01);
+            ship.Slot = orig;
+            sniffer.Fleets[0].Ships[1].Slot = empty;
+            PAssert.That(() => Abs(sniffer.Fleets[0].NightContactTriggerRate - 68) < 0.01);
+        }
+
+        /// <summary>
         /// 編成で空き番号を使ったローテートを正しく反映する
         /// </summary>
         [TestMethod]

@@ -314,6 +314,14 @@ namespace KancolleSniffer.Model
 
         public int CombinedTorpedoPenalty => CombinedType != 0 && Number == 1 ? -5 : 0;
 
+        public double NightContactTriggerRate => (1.0 - NightContactFailRate) * 100;
+
+        private double NightContactFailRate => Ships.Aggregate(1.0,
+            (perFleet, ship) => ship.OnSlot.Where((onSlot, i) => onSlot > 0 && ship.Slot[i].Spec.IsNightRecon)
+                .Aggregate(perFleet, (perShip, _) => perShip * NightContactFailRateOne(ship)));
+
+        private static double NightContactFailRateOne(ShipStatus ship) => 1.0 - Floor(Sqrt(ship.Level * 3)) * 4 / 100.0;
+
         public string MissionParameter
         {
             get
