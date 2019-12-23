@@ -137,7 +137,8 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 894, NowArray = new[] {1, 1, 1, 1, 1}},
                     new QuestCount {Id = 280, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 872, NowArray = new[] {1, 1, 1, 1}},
-                    new QuestCount {Id = 284, NowArray = new[] {1, 1, 1, 1}}
+                    new QuestCount {Id = 284, NowArray = new[] {1, 1, 1, 1}},
+                    new QuestCount {Id = 226, Now = 2}
                 }
             };
             new QuestInfo().LoadState(status);
@@ -177,6 +178,9 @@ namespace KancolleSniffer.Test
             var q284 = status.QuestCountList.First(q => q.Id == 284);
             Assert.AreEqual("1\u200a1\u200a1\u200a1", q284.ToString());
             Assert.AreEqual("1-4 2-1 2-2 2-3", q284.ToToolTip());
+            var q226 = status.QuestCountList.First(q => q.Id == 226);
+            Assert.AreEqual("2/5", q226.ToString());
+            Assert.AreEqual("", q226.ToToolTip());
         }
     }
 

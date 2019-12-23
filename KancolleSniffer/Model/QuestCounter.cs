@@ -113,7 +113,7 @@ namespace KancolleSniffer.Model
 
         public string ToToolTip()
         {
-            if (Spec is QuestSortie spec && spec.Maps != null)
+            if (Spec is QuestSortie spec && spec.Maps != null && spec.MaxArray != null)
             {
                 var flags = spec.MaxArray.All(x => x == 1);
                 return string.Join(" ",
