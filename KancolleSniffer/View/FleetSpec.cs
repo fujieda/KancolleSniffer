@@ -159,13 +159,19 @@ namespace KancolleSniffer.View
                 {
                     var fleet = fleets[number];
                     Fleet = new[] {"第一", "第二", "第三", "第四"}[number] + " " + SpeedName(fleet) + "   " + SpecTotal(fleet);
-                    Fleet2 = FleetParams(fleet) + GetTp(fleets, number);
+                    Fleet2 = Concat(FleetParams(fleet),
+                        Concat(GetTp(fleets, number), GetNightContact(fleet), " "), "\r\n");
                 }
 
                 private static string SpeedName(Fleet fleet)
                 {
                     var speed = fleet.ActualShips.Min(s => (int?)s.Speed);
                     return new[] {"", "低速", "高速", "高速+", "最速"}[(speed ?? 0) / 5];
+                }
+
+                private static string Concat(string a, string b, string separator)
+                {
+                    return a == "" ? b : b == "" ? a : a + separator + b;
                 }
 
                 private static string GetTp(IReadOnlyList<Fleet> fleets, int number)
@@ -178,7 +184,12 @@ namespace KancolleSniffer.View
                         else if (number == 1)
                             return "";
                     }
-                    return $"\r\nTP:S{(int)tp} A{(int)(tp * 0.7)}";
+                    return $"TP:S{(int)tp} A{(int)(tp * 0.7)}";
+                }
+
+                private static string GetNightContact(Fleet fleet)
+                {
+                    return fleet.NightContactTriggerRate > 0 ? $"夜偵:{fleet.NightContactTriggerRate}%" : "";
                 }
 
                 private static string SpecTotal(Fleet fleet)
