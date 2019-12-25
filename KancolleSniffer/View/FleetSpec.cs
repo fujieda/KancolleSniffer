@@ -158,8 +158,8 @@ namespace KancolleSniffer.View
                 public FleetRecord(IReadOnlyList<Fleet> fleets, int number)
                 {
                     var fleet = fleets[number];
-                    Fleet = new[] {"第一", "第二", "第三", "第四"}[number] + " " + SpeedName(fleet);
-                    Fleet2 = GetSpec(fleet) + GetTp(fleets, number);
+                    Fleet = new[] {"第一", "第二", "第三", "第四"}[number] + " " + SpeedName(fleet) + "   " + SpecTotal(fleet);
+                    Fleet2 = FleetParams(fleet) + GetTp(fleets, number);
                 }
 
                 private static string SpeedName(Fleet fleet)
@@ -181,17 +181,27 @@ namespace KancolleSniffer.View
                     return $"\r\nTP:S{(int)tp} A{(int)(tp * 0.7)}";
                 }
 
-                private static string GetSpec(Fleet fleet)
+                private static string SpecTotal(Fleet fleet)
                 {
-                    var total = fleet.Ships.Aggregate(new Total(), (sum, next) => sum.Add(next));
+                    var total = CalcTotal(fleet);
+                    return "火" + CutOverFlow(total.FirePower) +
+                           " 空" + CutOverFlow(total.AntiAir) +
+                           " 潜" + CutOverFlow(total.AntiSubmarine) +
+                           " 索" + CutOverFlow(total.LoS);
+                }
+
+                private static string FleetParams(Fleet fleet)
+                {
+                    var total = CalcTotal(fleet);
                     return "計:" + HideIfZero(" Lv", total.Level) +
                            HideIfZero(" ド", total.Drum) + HideIfZero("(", total.DrumShips, "隻)") +
                            HideIfZero(" 大", fleet.DaihatsuBonus * 100, "%") + "\r\n" +
-                           "　 火" + CutOverFlow(total.FirePower) +
-                           " 空" + CutOverFlow(total.AntiAir) +
-                           " 潜" + CutOverFlow(total.AntiSubmarine) +
-                           " 索" + CutOverFlow(total.LoS) + "\r\n" +
                            $"戦闘:燃{total.Fuel / 5}弾{total.Bull / 5} 支援:燃{total.Fuel / 2}弾{(int)(total.Bull * 0.8)}";
+                }
+
+                private static Total CalcTotal(Fleet fleet)
+                {
+                    return fleet.Ships.Aggregate(new Total(), (sum, next) => sum.Add(next));
                 }
 
                 private static int CutOverFlow(int value) => value > 999 ? 999 : value;

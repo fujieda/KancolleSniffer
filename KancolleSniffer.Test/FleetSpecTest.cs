@@ -77,7 +77,8 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SnifferTest.SniffLogFile(sniffer, "speed_001");
             var table = FleetSpec.Create(sniffer);
-            PAssert.That(() => table[0].Fleet == "第一 高速+" && table[37].Fleet == "第二 高速");
+            PAssert.That(() => table[0].Fleet == "第一 高速+   火525 空600 潜39 索724" &&
+                               table[37].Fleet == "第二 高速   火185 空215 潜242 索166");
         }
 
         [TestMethod]
