@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Linq;
+
 namespace KancolleSniffer.Model
 {
     public class CellInfo : Sniffer.IPort
@@ -102,6 +104,8 @@ namespace KancolleSniffer.Model
             }
         }
 
-        private string BattleCount => ((char)('０' + _battleCount)).ToString();
+        private static readonly char[] FullNumber ="０１２３４５６７８９".ToCharArray();
+
+        private string BattleCount => new string(_battleCount.ToString().Select(ch => FullNumber[ch - '0']).ToArray());
     }
 }
