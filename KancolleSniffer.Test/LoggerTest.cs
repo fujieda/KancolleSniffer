@@ -203,7 +203,7 @@ namespace KancolleSniffer.Test
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2019, 1, 1));
             sniffer.EnableLog(LogType.Battle);
             SnifferTest.SniffLogFile(sniffer, "airraid_battle_001");
-            Assert.AreEqual("2019-01-01 00:00:00,アリューシャン列島沖,12,,S,同航戦,単縦陣,輪形陣,,,," +
+            Assert.AreEqual("2019-01-01 00:00:00,アリューシャン列島沖,12,出撃,S,同航戦,単縦陣,輪形陣,,,," +
                             "基地航空隊1(Lv0),200/200,基地航空隊2(Lv0),200/200,基地航空隊3(Lv0),200/200,,,,,,," +
                             "北方棲妹,790/790,砲台小鬼,130/130,砲台小鬼,130/130,飛行場姫,500/500,飛行場姫,500/500,集積地棲姫,600/600,425～426,231,航空優勢,44-3|",
                 result);
@@ -220,7 +220,7 @@ namespace KancolleSniffer.Test
             sniffer.SetLogWriter((path, s, h) => { result += s + "|"; }, () => new DateTime(2019, 1, 1));
             sniffer.EnableLog(LogType.Battle);
             SnifferTest.SniffLogFile(sniffer, "airraid_battle_003");
-            Assert.AreEqual("2019-01-01 00:00:00,北太平洋ハワイ諸島戦域,22,,A,Ｔ字戦(不利),単縦陣,輪形陣,,,," +
+            Assert.AreEqual("2019-01-01 00:00:00,北太平洋ハワイ諸島戦域,22,出撃,A,Ｔ字戦(不利),単縦陣,輪形陣,,,," +
                             "基地航空隊1(Lv0),200/200,基地航空隊2(Lv0),188/200,基地航空隊3(Lv0),200/200,,,,,,," +
                             "中枢棲姫,900/900,飛行場姫,500/500,飛行場姫,500/500,飛行場姫,500/500,砲台小鬼,130/130,集積地棲姫,600/600,471～473,212,航空優勢,44-4|",
                 result);
