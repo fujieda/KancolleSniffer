@@ -43,8 +43,7 @@ namespace KancolleSniffer
     {
         None = 0,
         // ReSharper disable UnusedMember.Global
-        BattleShip = 1 << 0,
-
+        BattleShip = 1,
         AircraftCarrier = 1 << 1,
         HeavyCruiser = 1 << 2,
         LightCruiser = 1 << 3,
@@ -151,7 +150,6 @@ namespace KancolleSniffer
         Cont = 1 << 6,
         Preliminary = 1 << 7
     }
-
 
     public class NotificationSpec
     {
