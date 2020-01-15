@@ -101,6 +101,9 @@ namespace KancolleSniffer.Model
                     _battleCount++;
                     _info = $"{BattleCount}戦目(夜戦)";
                     break;
+                case 14:
+                    _info = "泊地修理";
+                    break;
             }
         }
 
