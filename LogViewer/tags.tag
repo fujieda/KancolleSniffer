@@ -1227,9 +1227,6 @@ this.gatherData = function(data) {
     var r = this.initResult();
     for (var i = 0; i < data.length; i++) {
         var row = data[i];
-        if (/^基地航空隊/.test(row[11])) {
-            continue;
-        }
         var date = moment(row[0]);
         var map = row[1];
         var isBoss = row[3].indexOf("ボス") !== -1;
@@ -1262,17 +1259,19 @@ this.gatherData = function(data) {
                     if (name === "合計")
                         to.stat["合計 - ボス"] = initStat();
                 }
+                if ((b === 0 || b === 2) && isStart) {
+                    if (mo.start === "-")
+                        mo.start = 0;
+                    mo.start++;
+                }
+                if (/^基地航空隊/.test(row[11]))
+                    continue;
                 mo["R"] += resR;
                 mo[res]++;
                 if (item) {
                     if (!mo[item])
                         mo[item] = 0;
                     mo[item]++;
-                }
-                if ((b === 0 || b === 2) && isStart) {
-                    if (mo.start === "-")
-                        mo.start = 0;
-                    mo.start++;
                 }
             }
         }
