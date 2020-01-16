@@ -436,6 +436,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 近代化改修による艦娘数と装備数の変化
+        /// </summary>
+        [TestMethod]
+        public void PowerUpCount()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "powerup_001");
+            PAssert.That(() => sniffer.ShipCounter.Now == 204);
+            PAssert.That(() => sniffer.ItemCounter.Now == 932);
+        }
+
+        /// <summary>
         /// 近代化改修が二重に行われた場合に対応する
         /// </summary>
         [TestMethod]
@@ -444,6 +456,18 @@ namespace KancolleSniffer.Test
             var sniffer = new Sniffer();
             SniffLogFile(sniffer, "powerup_002");
             PAssert.That(() => sniffer.ShipCounter.Now == 218);
+        }
+
+        /// <summary>
+        /// 装備解除後の近代化改修
+        /// </summary>
+        [TestMethod]
+        public void PowerUpDetachItem()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "powerup_003");
+            PAssert.That(() => sniffer.ShipCounter.Now == 317);
+            PAssert.That(() => sniffer.ItemCounter.Now == 1390);
         }
 
         /// <summary>

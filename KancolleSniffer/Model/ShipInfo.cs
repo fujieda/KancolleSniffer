@@ -308,7 +308,8 @@ namespace KancolleSniffer.Model
             var ships = values["api_id_items"].Split(',').Select(int.Parse).ToArray();
             if (!_shipInventory.Contains(ships[0])) // 二重に実行された場合
                 return;
-            _itemInventory.Remove(ships.SelectMany(id => _shipInventory[id].Slot));
+            if ((values["api_slot_dest_flag"] ?? "1") == "1")
+                _itemInventory.Remove(ships.SelectMany(id => _shipInventory[id].Slot));
             _shipInventory.Remove(ships);
             SetShipAndDeck(new[] {json.api_ship}, json.api_deck);
         }
