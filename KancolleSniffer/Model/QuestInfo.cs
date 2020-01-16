@@ -78,7 +78,7 @@ namespace KancolleSniffer.Model
         {
             Color.FromArgb(60, 141, 76), Color.FromArgb(232, 57, 41), Color.FromArgb(136, 204, 120),
             Color.FromArgb(52, 147, 185), Color.FromArgb(220, 198, 126), Color.FromArgb(168, 111, 76),
-            Color.FromArgb(200, 148, 231), Color.FromArgb(232, 57, 41)
+            Color.FromArgb(200, 148, 231), Color.FromArgb(232, 57, 41), Color.FromArgb(232, 57, 41)
         };
 
         public int AcceptMax { get; set; } = 5;
