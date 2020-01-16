@@ -63,6 +63,6 @@ namespace KancolleSniffer.Model
             set => _itemSpecs[id] = value;
         }
 
-        public string GetUseItemName(int id) => _useItemName[id];
+        public string GetUseItemName(int id) => _useItemName.TryGetValue(id, out var name) ? name : "";
     }
 }

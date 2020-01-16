@@ -22,6 +22,8 @@ namespace KancolleSniffer.Model
     {
         private readonly ItemMaster _itemMaster;
         private readonly ItemInventory _itemInventory;
+        private readonly Dictionary<int, int> _useItem = new Dictionary<int, int>();
+
         public AlarmCounter Counter { get; }
 
         public ItemInfo(ItemMaster itemMaster, ItemInventory itemInventory)
@@ -59,6 +61,14 @@ namespace KancolleSniffer.Model
                     Alv = entry.api_alv() ? (int)entry.api_alv : 0,
                     Locked = entry.api_locked() && (int)entry.api_locked == 1
                 };
+            }
+        }
+
+        public void InspectUseItem(dynamic json)
+        {
+            foreach (var entry in json)
+            {
+                _useItem[(int)entry.api_id] = (int)entry.api_count;
             }
         }
 
@@ -117,9 +127,23 @@ namespace KancolleSniffer.Model
                 item.Holder = new ShipStatus();
         }
 
-        public ItemStatus[] ItemList => _itemInventory.AllItems.ToArray();
+        public ItemStatus[] ItemList => _itemInventory.AllItems.Concat(UseItemList).ToArray();
 
         public string GetUseItemName(int id) => _itemMaster.GetUseItemName(id);
+
+        private const int EmergencyRepairId = 91;
+
+        private IEnumerable<ItemStatus> UseItemList =>
+            Enumerable.Repeat(new ItemStatus
+            {
+                Spec = new ItemSpec
+                {
+                    Type = 31,
+                    Id = 10000 + EmergencyRepairId,
+                    Name = _itemMaster.GetUseItemName(EmergencyRepairId)
+                },
+                Holder = new ShipStatus()
+            }, _useItem.TryGetValue(EmergencyRepairId, out var count) ? count : 0);
 
         public void InjectItemSpec(IEnumerable<ItemSpec> specs)
         {

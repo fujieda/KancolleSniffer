@@ -234,6 +234,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/require_info"))
             {
                 _itemInfo.InspectSlotItem(data.api_slot_item, true);
+                _itemInfo.InspectUseItem(data.api_useitem);
                 _dockInfo.InspectKDock(data.api_kdock);
                 return Update.None;
             }
@@ -246,6 +247,11 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/slot_item"))
             {
                 _itemInfo.InspectSlotItem(data, true);
+                return Update.Item;
+            }
+            if (url.EndsWith("api_get_member/useitem"))
+            {
+                _itemInfo.InspectUseItem(data);
                 return Update.Item;
             }
             if (url.EndsWith("api_get_member/kdock"))
