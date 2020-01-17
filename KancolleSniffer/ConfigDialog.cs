@@ -201,7 +201,7 @@ namespace KancolleSniffer
                                (checkBoxNextCell.Checked ? Spoiler.NextCell : 0);
             _config.UsePresetAkashi = checkBoxPresetAkashi.Checked;
             _config.WarnBadDamageWithDameCon = checkBoxWarnBadDamageWithDamecon.Checked;
-            _config.ShipList.AutoBattleResult = checkBoxAirBattleResult.Checked;
+            _config.ShipList.AutoBattleResult = checkBoxAutoBattleResult.Checked;
 
             _config.Sounds.Volume = (int)numericUpDownSoundVolume.Value;
             foreach (var name in Config.NotificationNames)
