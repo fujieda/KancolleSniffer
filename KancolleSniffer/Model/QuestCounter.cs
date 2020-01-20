@@ -113,26 +113,19 @@ namespace KancolleSniffer.Model
 
         public string ToToolTip()
         {
+            if (NowArray == null)
+                return "";
             if (Spec is QuestSortie spec && spec.Maps != null && spec.MaxArray != null)
             {
-                var flags = spec.MaxArray.All(x => x == 1);
-                return string.Join(" ",
-                    spec.Maps.Zip(NowArray, (map, n) => n >= 1 ? $"{MapString(map)}{(flags ? "" : $":{n}")}" : "")
-                    .Where(s => !string.IsNullOrEmpty(s)));
+                return string.Join(" ", spec.Maps.Zip(NowArray, (map, n) => $"{MapString(map)}:{n}"));
             }
-            return Id switch
+            return string.Join(" ", (Id switch
             {
-                426 => string.Join(" ",
-                    new[] {"警備任務", "対潜警戒任務", "海上護衛任務", "強硬偵察任務"}.Zip(NowArray, (mission, n) => n >= 1 ? mission : "")
-                        .Where(s => !string.IsNullOrEmpty(s))),
-                428 => string.Join(" ",
-                    new[] {"対潜警戒任務", "海峡警備行動", "長時間対潜警戒"}.Zip(NowArray, (mission, n) => n >= 1 ? mission + n : "")
-                        .Where(s => !string.IsNullOrEmpty(s))),
-                688 => string.Join(" ",
-                    new[] {"艦戦", "艦爆", "艦攻", "水偵"}.Zip(NowArray, (type, n) => n >= 1 ? type + n : "")
-                        .Where(s => !string.IsNullOrEmpty(s))),
-                _ => ""
-            };
+                426 => new[] {"警備任務", "対潜警戒任務", "海上護衛任務", "強硬偵察任務"},
+                428 => new[] {"対潜警戒任務", "海峡警備行動", "長時間対潜警戒"},
+                688 => new[] {"艦戦", "艦爆", "艦攻", "水偵"},
+                _ => new string[0]
+            }).Zip(NowArray, (entry, n) => $"{entry}{n}"));
         }
 
         public bool Cleared => NowArray?.Zip(Spec.MaxArray, (n, m) => n >= m).All(x => x) ??
