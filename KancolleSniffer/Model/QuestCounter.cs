@@ -143,23 +143,43 @@ namespace KancolleSniffer.Model
 
         private class ResultShipSpecs
         {
+            public ShipSpec[] Specs { get; }
+            public NameChecker Names { get; }
+            public int[] Types { get; }
+            public int[] Classes { get; }
+            public ShipSpec Flagship { get; }
+            public int FlagshipType { get; }
+
+            public class NameChecker
+            {
+                private readonly string[] _names;
+
+                public NameChecker(ShipSpec[] specs)
+                {
+                    _names = specs.Select(spec => spec.Name).ToArray();
+                }
+
+                public bool Contains(string demand)
+                {
+                    return _names.Any(name => name.StartsWith(demand));
+                }
+
+                public int Count(params string[] demands)
+                {
+                    return demands.Sum(demand => _names.Count(name => name.StartsWith(demand)));
+                }
+            }
+
             public ResultShipSpecs(BattleInfo battleInfo)
             {
                 Specs = battleInfo.Result?.Friend.Main.Where(s => s.NowHp > 0).Select(ship => ship.Spec).ToArray() ??
                         new ShipSpec[0];
-                Ids = Specs.Select(spec => spec.Id).ToArray();
+                Names = new NameChecker(Specs);
                 Types = Specs.Select(spec => spec.ShipType).ToArray();
                 Classes = Specs.Select(spec => spec.ShipClass).ToArray();
                 Flagship = Specs.FirstOrDefault();
                 FlagshipType = Types.FirstOrDefault();
             }
-
-            public ShipSpec[] Specs { get; }
-            public int[] Ids { get; }
-            public int[] Types { get; }
-            public int[] Classes { get; }
-            public ShipSpec Flagship { get; }
-            public int FlagshipType { get; }
         }
 
         public QuestCounter(QuestInfo questInfo, ItemInfo itemInfo, BattleInfo battleInfo)
@@ -250,7 +270,7 @@ namespace KancolleSniffer.Model
             switch (id)
             {
                 case 249:
-                    return specs.Ids.Intersect(new[] {62, 63, 64, 265, 266, 268, 319, 192, 194}).Count() == 3;
+                    return specs.Names.Count("妙高", "那智", "羽黒") == 3;
                 case 257:
                     return specs.FlagshipType == 3 && specs.Types.Count(s => s == 3) <= 3 &&
                            specs.Types.All(s => s == 2 || s == 3);
@@ -277,25 +297,10 @@ namespace KancolleSniffer.Model
                 case 873:
                     return specs.Types.Count(type => type == 3) >= 1;
                 case 875:
-                    return specs.Ids.Contains(543) &&
-                           specs.Ids.Intersect(new[]
-                           {
-                               344, // 朝霜改
-                               345, // 高波改
-                               359, // 沖波改
-                               578 // 朝霜改二
-                           }).Any();
+                    return specs.Names.Contains("長波改二") &&
+                           specs.Names.Count("朝霜改", "高波改", "沖波改") > 0;
                 case 888:
-                    return specs.Ids.Intersect(new[]
-                    {
-                        69, 272, 427, // 鳥海
-                        61, 264, // 青葉
-                        123, 295, 142, // 衣笠
-                        59, 262, 416, // 古鷹
-                        60, 263, 417, // 加古
-                        51, 213, 477, // 天龍
-                        115, 293 // 夕張
-                    }).Count() >= 4;
+                    return specs.Names.Count("鳥海", "青葉", "衣笠", "加古", "天竜", "夕張") >= 4;
                 case 894:
                     return specs.Specs.Any(spec => spec.IsAircraftCarrier);
                 case 318:
@@ -305,13 +310,7 @@ namespace KancolleSniffer.Model
                            specs.Specs.Count(spec => spec.IsAircraftCarrier) >= 2 &&
                            specs.Types.Count(type => type == 2) >= 2;
                 case 337:
-                    return specs.Ids.Intersect(new[]
-                    {
-                        17, 225, 566, // 陽炎
-                        18, 226, 567, // 不知火
-                        48, 198, 252, // 霰
-                        49, 253, 464 // 霞
-                    }).Count() == 4;
+                    return specs.Names.Count("陽炎", "不知火", "霰", "霞") == 4;
                 default:
                     return true;
             }

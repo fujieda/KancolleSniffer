@@ -251,6 +251,18 @@ namespace KancolleSniffer.Test
             return new ShipStatus {NowHp = 1, Spec = new ShipSpec {Id = specId, ShipType = shipType}};
         }
 
+        private ShipStatus ShipStatus(int shipType, int shipClass, int specId)
+        {
+            return new ShipStatus
+                {NowHp = 1, Spec = new ShipSpec {Id = specId, ShipType = shipType, ShipClass = shipClass}};
+        }
+
+        private ShipStatus ShipStatus(string name)
+        {
+            return new ShipStatus {NowHp = 1, Spec = new ShipSpec {Name = name}};
+        }
+
+
         private BattleInfo _battleInfo;
         private ItemInfo _itemInfo;
         private QuestInfo _questInfo;
@@ -411,8 +423,8 @@ namespace KancolleSniffer.Test
 
             _battleInfo.InjectResultStatus(new[]
             {
-                ShipStatus(5, 319), ShipStatus(5, 192), ShipStatus(5, 194),
-                ShipStatus(5, 193), ShipStatus(6, 189), ShipStatus(6, 188)
+                ShipStatus("妙高改二"), ShipStatus("那智改二"), ShipStatus("羽黒改二"),
+                ShipStatus("足柄改二"), ShipStatus("筑摩改二"), ShipStatus("利根改二")
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             InjectMapNext(25, 4);
@@ -424,11 +436,14 @@ namespace KancolleSniffer.Test
             Assert.AreEqual(0, count.Now);
             InjectBattleResult("S");
             Assert.AreEqual(1, count.Now);
-            _questInfo.Quests[0].Count.Now = 0;
+
+            _battleInfo.Result.Friend.Main[3].NowHp = 0;
+            InjectBattleResult("S");
+            Assert.AreEqual(2, count.Now, "足柄改二轟沈");
 
             _battleInfo.Result.Friend.Main[1].NowHp = 0;
             InjectBattleResult("S");
-            Assert.AreEqual(0, count.Now, "那智改二轟沈");
+            Assert.AreEqual(2, count.Now, "那智改二轟沈");
         }
 
         /// <summary>
@@ -475,9 +490,6 @@ namespace KancolleSniffer.Test
             InjectBattleResult("S");
             Assert.AreEqual(0, count.Now, "駆逐軽巡以外");
         }
-
-        private ShipStatus ShipStatus(int shipType, int shipClass, int specId) =>
-            new ShipStatus {NowHp = 1, Spec = new ShipSpec {Id = specId, ShipType = shipType, ShipClass = shipClass}};
 
         /// <summary>
         /// 257: 「水上打撃部隊」南方へ！
@@ -870,8 +882,8 @@ namespace KancolleSniffer.Test
 
             _battleInfo.InjectResultStatus(new[]
             {
-                ShipStatus(2, 543), ShipStatus(8, 360), ShipStatus(11, 545),
-                ShipStatus(18, 467), ShipStatus(11, 261), ShipStatus(2, 344)
+                ShipStatus("長波改二"), ShipStatus("Iowa改"), ShipStatus("Saratoga Mk.II"),
+                ShipStatus("瑞鶴改二甲"), ShipStatus("望月改"), ShipStatus("朝霜改")
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             InjectMapNext(54, 4);
@@ -889,18 +901,18 @@ namespace KancolleSniffer.Test
             Assert.AreEqual(1, count.Now, "朝霜改轟沈");
             _battleInfo.Result.Friend.Main[5].NowHp = 1;
 
-            _battleInfo.Result.Friend.Main[0].Spec.Id = 345;
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("高波改");
             InjectBattleResult("S");
             Assert.AreEqual(1, count.Now, "長波改二なし");
-            _battleInfo.Result.Friend.Main[0].Spec.Id = 543;
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("長波改二");
 
-            _battleInfo.Result.Friend.Main[5].Spec.Id = 345;
+            _battleInfo.Result.Friend.Main[5] = ShipStatus("高波改");
             InjectBattleResult("S");
             Assert.AreEqual(2, count.Now, "高波改");
-            _battleInfo.Result.Friend.Main[5].Spec.Id = 359;
+            _battleInfo.Result.Friend.Main[5] = ShipStatus("沖波改");
             InjectBattleResult("S");
             Assert.AreEqual(3, count.Now, "沖波改");
-            _battleInfo.Result.Friend.Main[5].Spec.Id = 578;
+            _battleInfo.Result.Friend.Main[5] = ShipStatus("朝霜改二");
             InjectBattleResult("S");
             Assert.AreEqual(4, count.Now, "朝霜改二");
         }
@@ -915,8 +927,8 @@ namespace KancolleSniffer.Test
 
             _battleInfo.InjectResultStatus(new[]
             {
-                ShipStatus(5, 427), ShipStatus(5, 264), ShipStatus(5, 142),
-                ShipStatus(5, 417), ShipStatus(2, 144), ShipStatus(2, 195)
+                ShipStatus("鳥海改二"), ShipStatus("青葉改"), ShipStatus("衣笠改二"),
+                ShipStatus("加古改二"), ShipStatus("夕立改二"), ShipStatus("綾波改二")
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             InjectMapNext(51, 4);
@@ -933,11 +945,11 @@ namespace KancolleSniffer.Test
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0}), "轟沈あり");
             _battleInfo.Result.Friend.Main[0].NowHp = 1;
 
-            _battleInfo.Result.Friend.Main[0].Spec.Id = 319;
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("妙高改二");
             InjectBattleResult("S");
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0}), "三川艦隊3隻");
-            _battleInfo.Result.Friend.Main[0].Spec.Id = 427;
 
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("夕張改二特");
             InjectMapNext(53, 5);
             InjectBattleResult("S");
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0}));
@@ -1169,18 +1181,18 @@ namespace KancolleSniffer.Test
 
             _battleInfo.InjectResultStatus(new []
             {
-                ShipStatus(2, 48), ShipStatus(2, 49),
-                ShipStatus(2, 17), ShipStatus(2, 18),
-                ShipStatus(2, 19)
+                ShipStatus("霰"), ShipStatus("霰"),
+                ShipStatus("陽炎"), ShipStatus("不知火"),
+                ShipStatus("黒潮")
             }, new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
             InjectPracticeResult("A");
             Assert.AreEqual(0, count.Now, "A");
             InjectPracticeResult("S");
             Assert.AreEqual(1, count.Now);
-            _battleInfo.Result.Friend.Main[0] = ShipStatus(2, 47);
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("涼風");
             InjectPracticeResult("S");
             Assert.AreEqual(1, count.Now, "霰→涼風");
-            _battleInfo.Result.Friend.Main[4] = ShipStatus(2, 464);
+            _battleInfo.Result.Friend.Main[4] = ShipStatus("霞改二");
             InjectPracticeResult("S");
             Assert.AreEqual(2, count.Now, "黒潮→霞改二");
         }
