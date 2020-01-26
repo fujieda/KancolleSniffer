@@ -676,7 +676,7 @@ namespace KancolleSniffer
             var inSortie = Sniffer.InSortie;
             if (_inSortie || inSortie == -1)
             {
-                _inSortie = inSortie == -1;
+                _inSortie = inSortie != -1;
                 return;
             }
             _inSortie = true;
