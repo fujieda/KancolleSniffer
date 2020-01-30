@@ -61,7 +61,7 @@ namespace KancolleSniffer.Model
         private Record[] _enemy;
         private Record[] _enemyGuard;
         private readonly List<int> _escapingShips = new List<int>();
-        private bool _lastCell;
+        private bool _safeCell;
 
         public BattleState BattleState { get; set; }
         public int[] Formation { get; private set; }
@@ -115,7 +115,7 @@ namespace KancolleSniffer.Model
         public void Port()
         {
             CleanupResult();
-            _lastCell = false;
+            _safeCell = false;
             BattleState = BattleState.None;
         }
 
@@ -300,11 +300,30 @@ namespace KancolleSniffer.Model
 
         public void InspectMapNext(dynamic json)
         {
-            _lastCell = (int)json.api_next == 0;
+            SetSafeCell(json);
             BattleState = BattleState.None;
             if (!json.api_destruction_battle())
                 return;
             InspectAirRaidBattle((int)json.api_maparea_id, json.api_destruction_battle);
+        }
+
+        private void SetSafeCell(dynamic json)
+        {
+            var map = (int)json.api_maparea_id * 1000 + (int)json.api_mapinfo_no * 100 + (int)json.api_no;
+            _safeCell =
+                (int)json.api_next == 0 || // last cell
+                map switch
+                {
+                    1613 => true, // 1-6-B
+                    1611 => true, // 1-6-D
+                    1616 => true, // 1-6-D
+                    2202 => true, // 2-2-B
+                    3102 => true, // 3-1-B
+                    3201 => true, // 3-2-A
+                    4206 => true, // 4-2-F
+                    5302 => true, // 5-3-B
+                    _ => false
+                };
         }
 
         public void InspectAirRaidBattle(int areaId, dynamic json)
@@ -593,8 +612,7 @@ namespace KancolleSniffer.Model
             if (_friend == null)
                 return;
             ShowResult();
-            if (!_lastCell)
-                SetDamagedShipWarning();
+            SetDamagedShipWarning();
             _shipInfo.SaveBattleResult();
             _shipInfo.DropShipId = json.api_get_ship() ? (int)json.api_get_ship.api_ship_id : -1;
             VerifyResultRank(json);
@@ -626,6 +644,8 @@ namespace KancolleSniffer.Model
 
         private void SetDamagedShipWarning()
         {
+            if (_safeCell)
+                return;
             _shipInfo.SetBadlyDamagedShips();
         }
 

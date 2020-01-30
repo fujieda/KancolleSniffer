@@ -404,5 +404,16 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "anchorage_repair_001");
             PAssert.That(() => !sniffer.IsBattleResultError);
         }
+
+        /// <summary>
+        /// 大破進撃しても平気なマスでの大破警告抑制
+        /// </summary>
+        [TestMethod]
+        public void IgnoreDamagedShips()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "endpoint_001");
+            PAssert.That(() => sniffer.BadlyDamagedShips.Length == 0);
+        }
     }
 }
