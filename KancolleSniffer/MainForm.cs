@@ -27,6 +27,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DynaJson;
 using KancolleSniffer.Log;
 using KancolleSniffer.Model;
 using KancolleSniffer.Net;
@@ -254,7 +255,7 @@ namespace KancolleSniffer
         {
             try
             {
-                UpdateInfo(Sniffer.Sniff(url, request, JsonParser.Parse(response)));
+                UpdateInfo(Sniffer.Sniff(url, request, JsonObject.Parse(response)));
                 _errorLog.CheckBattleApi(url, request, response);
             }
 

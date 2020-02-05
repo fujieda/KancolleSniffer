@@ -19,6 +19,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using DynaJson;
 using KancolleSniffer.Model;
 using KancolleSniffer.Util;
 
@@ -82,14 +83,14 @@ namespace KancolleSniffer
 
         private string BattleStartSlots()
         {
-            return JsonObject.CreateJsonObject((from ship in _sniffer.BattleStartStatus
-                group ship by ship.Fleet
-                into fleet
-                select
-                (from s in fleet
-                    select (from item in s.AllSlot select item.Spec.Id).ToArray()
-                ).ToArray()
-            ).ToArray()).ToString();
+            return new JsonObject((from ship in _sniffer.BattleStartStatus
+                    group ship by ship.Fleet
+                    into fleet
+                    select
+                        (from s in fleet
+                            select (from item in s.AllSlot select item.Spec.Id).ToArray()
+                        ).ToArray()
+                ).ToArray()).ToString();
         }
 
         private string HpDiffLog() => string.Join(" ",

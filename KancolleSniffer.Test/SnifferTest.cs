@@ -17,9 +17,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using DynaJson;
 using ExpressionToCodeLib;
 using KancolleSniffer.Model;
-using KancolleSniffer.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.Math;
 
@@ -73,7 +73,7 @@ namespace KancolleSniffer.Test
                         } while (!line.StartsWith(s));
                         triple.Add(line.Substring(s.Length));
                     }
-                    var json = JsonParser.Parse(triple[2]);
+                    var json = JsonObject.Parse(triple[2]);
                     sniffer.Sniff(triple[0], triple[1], json);
                     action?.Invoke(sniffer);
                 }
@@ -855,7 +855,7 @@ namespace KancolleSniffer.Test
             var miscTextInfo = new MiscTextInfo(null, null);
             using (var stream = OpenLogFile("mapgauge_003"))
             {
-                miscTextInfo.InspectMapInfo(JsonParser.Parse(stream.ReadToEnd()));
+                miscTextInfo.InspectMapInfo(JsonObject.Parse(stream.ReadToEnd()));
             }
             PAssert.That(() =>
                 miscTextInfo.Text ==

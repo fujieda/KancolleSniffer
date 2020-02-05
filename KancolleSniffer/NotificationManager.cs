@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using KancolleSniffer.Util;
+using DynaJson;
 
 namespace KancolleSniffer
 {
@@ -208,7 +208,7 @@ namespace KancolleSniffer
                 _config.Clear();
                 try
                 {
-                    dynamic config = JsonParser.Parse(File.ReadAllText(fileName));
+                    dynamic config = JsonObject.Parse(File.ReadAllText(fileName));
                     foreach (var entry in config)
                     {
                         if (!_default.ContainsKey(entry.key))

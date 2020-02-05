@@ -15,9 +15,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using DynaJson;
 using ExpressionToCodeLib;
 using KancolleSniffer.Log;
-using KancolleSniffer.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -265,8 +265,8 @@ namespace KancolleSniffer.Test
             sniffer.EnableLog(LogType.CreateItem);
             SnifferTest.SniffLogFile(sniffer, "createitem_002");
             Assert.AreEqual("2019-01-01 00:00:00,失敗,,10,10,30,10,大淀改(167),120|" +
-                               "2019-01-01 00:00:00,61cm三連装魚雷,魚雷,10,10,30,10,大淀改(167),120|" +
-                               "2019-01-01 00:00:00,失敗,,10,10,30,10,大淀改(167),120|",
+                            "2019-01-01 00:00:00,61cm三連装魚雷,魚雷,10,10,30,10,大淀改(167),120|" +
+                            "2019-01-01 00:00:00,失敗,,10,10,30,10,大淀改(167),120|",
                 result);
         }
 
@@ -298,7 +298,7 @@ namespace KancolleSniffer.Test
                                == result);
         }
 
-        private JsonObject Js(object obj) => JsonObject.CreateJsonObject(obj);
+        private JsonObject Js(object obj) => new JsonObject(obj);
 
         [TestMethod]
         public void Achievement()
@@ -324,9 +324,10 @@ namespace KancolleSniffer.Test
                 return (DateTime)dateEnum.Current;
             });
             for (var i = 0; i < 6; i++)
-                logger.InspectBasic(Js(new{api_experience = i * 1000}));
+                logger.InspectBasic(Js(new {api_experience = i * 1000}));
             logger.InspectBattleResult(Js(new {api_get_exmap_rate = "100"}));
-            logger.InspectMapNext(Js(new {api_maparea_id = 0, api_mapinfo_no = 0, api_no = 0, api_event_id = 0, api_get_eo_rate = 75}));
+            logger.InspectMapNext(Js(new
+                {api_maparea_id = 0, api_mapinfo_no = 0, api_no = 0, api_event_id = 0, api_get_eo_rate = 75}));
             PAssert.That(() =>
                 "2017-03-31 21:00:00,0,0|2017-03-31 21:00:00,0,0|2017-03-31 22:00:00,1000,0|" +
                 "2017-04-01 03:00:00,4000,0|2017-04-02 02:00:00,5000,0|" +
@@ -357,7 +358,7 @@ namespace KancolleSniffer.Test
             sniffer.EnableLog(LogType.Achievement);
             sniffer.Sniff("/kcsapi/api_req_quest/clearitemget",
                 "api%5Fquest%5Fid=656&api%5Fverno=1",
-                JsonParser.Parse(
+                JsonObject.Parse(
                     @"{""api_result"":1,""api_result_msg"":""成功"",""api_data"":
                     {""api_material"":[0,0,0,0],""api_bounus"":[
                     {""api_type"":15,""api_count"":1,""api_item"":{""api_id_from"":9999,""api_id_to"":9999,

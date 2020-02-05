@@ -14,9 +14,9 @@
 
 using System;
 using System.Linq;
+using DynaJson;
 using ExpressionToCodeLib;
 using KancolleSniffer.Model;
-using KancolleSniffer.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test
@@ -218,7 +218,7 @@ namespace KancolleSniffer.Test
     [TestClass]
     public class QuestCounterTest
     {
-        private JsonObject Js(object obj) => JsonObject.CreateJsonObject(obj);
+        private JsonObject Js(object obj) => new JsonObject(obj);
 
         private object CreateQuestList(int[] ids) => Js(new
         {

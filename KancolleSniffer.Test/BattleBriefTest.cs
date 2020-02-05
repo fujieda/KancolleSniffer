@@ -14,9 +14,9 @@
 
 using System;
 using System.Linq;
+using DynaJson;
 using ExpressionToCodeLib;
 using KancolleSniffer.Model;
-using KancolleSniffer.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test
@@ -91,11 +91,11 @@ namespace KancolleSniffer.Test
         public void CauseRepairGoddessByDoubleAttack()
         {
             var logs = ReadAllLines("damecon_001");
-            var items = JsonParser.Parse("[[[],[],[],[],[43]]]");
-            dynamic battle = JsonParser.Parse(logs[2]);
+            var items = JsonObject.Parse("[[[],[],[],[],[43]]]");
+            dynamic battle = JsonObject.Parse(logs[2]);
             InjectShips(battle, items);
             _battleInfo.InspectBattle(logs[0], logs[1], battle);
-            dynamic result = JsonParser.Parse(logs[5]);
+            dynamic result = JsonObject.Parse(logs[5]);
             _battleInfo.InspectBattleResult(result);
             PAssert.That(() => _shipInfo.Fleets[2].Ships[4].NowHp == 31);
         }
@@ -107,14 +107,14 @@ namespace KancolleSniffer.Test
         public void AttackedByBattleShipInMidnight()
         {
             var logs = ReadAllLines("midnight_002");
-            var battle = JsonParser.Parse(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
+            var battle = JsonObject.Parse(logs[3]);
+            InjectShips(battle, JsonObject.Parse(logs[0]));
             _battleInfo.InspectBattle(logs[1], logs[2], battle);
-            _battleInfo.InspectBattleResult(JsonParser.Parse(logs[6]));
+            _battleInfo.InspectBattleResult(JsonObject.Parse(logs[6]));
             PAssert.That(() => _shipInfo.Fleets[0].Ships[3].NowHp == 12);
         }
 
-        private dynamic Data(string json) => ((dynamic)JsonParser.Parse(json)).api_data;
+        private dynamic Data(string json) => JsonObject.Parse(json).api_data;
 
         /// <summary>
         /// NPC友軍の支援攻撃がある
@@ -124,7 +124,7 @@ namespace KancolleSniffer.Test
         {
             var logs = ReadAllLines("friendfleet_001");
             var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
+            InjectShips(battle, JsonObject.Parse(logs[0]));
             _battleInfo.InspectBattle(logs[1], logs[2], battle);
             _battleInfo.InspectBattle(logs[4], logs[5], Data(logs[6]));
             _battleInfo.InspectBattleResult(Data(logs[9]));
@@ -139,7 +139,7 @@ namespace KancolleSniffer.Test
         {
             var logs = ReadAllLines("ld_airbattle_001");
             var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
+            InjectShips(battle, JsonObject.Parse(logs[0]));
             _battleInfo.InspectBattle(logs[1], logs[2], battle);
             _battleInfo.InspectBattleResult(Data(logs[6]));
             PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
@@ -153,7 +153,7 @@ namespace KancolleSniffer.Test
         {
             var logs = ReadAllLines("ld_airbattle_002");
             var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
+            InjectShips(battle, JsonObject.Parse(logs[0]));
             _battleInfo.InspectBattle(logs[1], logs[2], battle);
             _battleInfo.InspectBattleResult(Data(logs[6]));
             PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
@@ -167,7 +167,7 @@ namespace KancolleSniffer.Test
         {
             var logs = ReadAllLines("damecon_002");
             var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
+            InjectShips(battle, JsonObject.Parse(logs[0]));
             _battleInfo.InspectBattle(logs[1], logs[2], battle);
             _battleInfo.InspectBattle(logs[4], logs[5], Data(logs[6]));
             _battleInfo.InspectBattleResult(Data(logs[9]));
@@ -182,7 +182,7 @@ namespace KancolleSniffer.Test
         {
             var logs = ReadAllLines("damecon_003");
             var battle = Data(logs[3]);
-            InjectShips(battle, JsonParser.Parse(logs[0]));
+            InjectShips(battle, JsonObject.Parse(logs[0]));
             _battleInfo.InspectBattle(logs[1], logs[2], battle);
             _battleInfo.InspectBattleResult(Data(logs[6]));
             PAssert.That(() => _shipInfo.Fleets[1].Ships[5].NowHp == 6);
