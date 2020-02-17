@@ -20,7 +20,7 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.Log
 {
-    public class BattleLogProcessor
+    public class BattleLogProcessor : LogProcessor.Processor
     {
         private readonly Dictionary<string, string> _mapDictionary;
 
@@ -29,7 +29,7 @@ namespace KancolleSniffer.Log
             _mapDictionary = mapDictionary ?? new Dictionary<string, string>();
         }
 
-        public string[] Process(string[] data)
+        public override string[] Process(string[] data)
         {
             string map;
             switch (data.Length)
@@ -49,8 +49,10 @@ namespace KancolleSniffer.Log
                     Array.Copy(data, 24, data, 23, 15);
                     goto case 38;
                 default:
-                    return data;
+                    Skip = true;
+                    return null;
             }
+            Skip = false;
             if (data[5] == "Ｔ字戦(有利)")
                 data[5] = "Ｔ字有利";
             if (data[5] == "Ｔ字戦(不利)")

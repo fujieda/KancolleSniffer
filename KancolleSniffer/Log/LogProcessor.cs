@@ -32,40 +32,55 @@ namespace KancolleSniffer.Log
             _battleLogProcessor = new BattleLogProcessor(mapDictionary);
         }
 
+        public class Processor
+        {
+            protected virtual int Fields { get; }
+            public bool Skip { get; protected set; }
+
+            public Processor()
+            {
+            }
+
+            public Processor(int fields)
+            {
+                Fields = fields;
+            }
+
+            public virtual string[] Process(string[] data)
+            {
+                Skip = data.Length != Fields;
+                return Skip ? null : data;
+            }
+        }
+
+        private class MissionProcessor : Processor
+        {
+            protected override int Fields { get; } = 11;
+
+            public override string[] Process(string[] data)
+            {
+                return data.Concat(new[] {"0"}).Take(Fields).ToArray();
+            }
+        }
+
+        private class MaterialProcessor : Processor
+        {
+            protected override int Fields { get; } = 9;
+
+            public override string[] Process(string[] data)
+            {
+                if (data.Length >= Fields)
+                    Array.Resize(ref data, Fields);
+                return base.Process(data);
+            }
+        }
+
         public IEnumerable<string> Process(IEnumerable<string> lines, string path, DateTime from, DateTime to,
             bool number, DateTime now = default)
         {
-            var fields = 0;
-            var mission = false;
-            var battle = false;
-            var material = false;
-            switch (Path.GetFileNameWithoutExtension(path))
-            {
-                case "遠征報告書":
-                    mission = true;
-                    fields = 11;
-                    break;
-                case "改修報告書":
-                    fields = 15;
-                    break;
-                case "海戦・ドロップ報告書":
-                    fields = 40;
-                    battle = true;
-                    break;
-                case "開発報告書":
-                    fields = 9;
-                    break;
-                case "建造報告書":
-                    fields = 12;
-                    break;
-                case "資材ログ":
-                    fields = 9;
-                    material = true;
-                    break;
-                case "戦果":
-                    fields = 3;
-                    break;
-            }
+            var logName = Path.GetFileNameWithoutExtension(path);
+            var currentMaterial = logName == "資材ログ" && !number;
+            var processor = DecideProcessor(logName);
             var delimiter = "";
             foreach (var line in lines)
             {
@@ -78,14 +93,8 @@ namespace KancolleSniffer.Log
                 if (date < from)
                     continue;
                 data[0] = Logger.FormatDateTime(date);
-                var entries = data;
-                if (mission)
-                    entries = data.Concat(new[] {"0"}).Take(fields).ToArray();
-                if (material)
-                    entries = data.Take(fields).ToArray();
-                if (battle)
-                    entries = _battleLogProcessor.Process(data);
-                if (entries.Length != fields)
+                var entries = processor.Process(data);
+                if (processor.Skip)
                     continue;
                 var result =
                     number
@@ -94,9 +103,32 @@ namespace KancolleSniffer.Log
                 delimiter = ",\n";
                 yield return result;
             }
-            if (material && !number) // 資材の現在値を出力する
+            if (currentMaterial) // 資材の現在値を出力する
                 yield return delimiter + "[\"" + Logger.FormatDateTime(now) + "\",\"" +
                              string.Join("\",\"", _materialCount.Select(c => c.Now)) + "\"]";
+        }
+
+        private Processor DecideProcessor(string logName)
+        {
+            switch (logName)
+            {
+                case "遠征報告書":
+                    return new MissionProcessor();
+                case "改修報告書":
+                    return new Processor(15);
+                case "海戦・ドロップ報告書":
+                    return _battleLogProcessor;
+                case "開発報告書":
+                    return new Processor(9);
+                case "建造報告書":
+                    return new Processor(12);
+                case "資材ログ":
+                    return new MaterialProcessor();
+                case "戦果":
+                    return new Processor(3);
+                default:
+                    return new Processor();
+            }
         }
 
         private DateTime ParseDateTime(string dateTime)

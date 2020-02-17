@@ -173,5 +173,26 @@ namespace KancolleSniffer.Test
             var excel = "2018/9/10 20:13";
             PAssert.That(() => "[\"2018-09-10 20:13:00\"" + expected == dateProcessor(excel), "Excelの形式から変換する");
         }
+
+        /// <summary>
+        /// 壊れたログを取り除く
+        /// </summary>
+        [TestMethod]
+        public void TruncatedLog()
+        {
+            var processor = new LogProcessor();
+            var logs = new[]
+            {
+                "2014-12-15 23:10:34,29734,29855,28016,41440,1407,1529,2151,13",
+                "2014-12-15 23:13:29,29709,29819,28019,41440,1407,1529,21",
+                "2014-12-15 23:16:06,29710,29819,28018,41440,1407,1529,2151,13"
+            };
+            var result = processor.Process(logs, "資材ログ", DateTime.MinValue, DateTime.MaxValue, true);
+            PAssert.That(() => result.SequenceEqual(new[]
+            {
+                "[1418652634000,29734,29855,28016,41440,1407,1529,2151,13]",
+                ",\n[1418652966000,29710,29819,28018,41440,1407,1529,2151,13]"
+            }));
+        }
     }
 }
