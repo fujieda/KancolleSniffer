@@ -872,7 +872,7 @@ $(window).resize(function() {
 </select>
 <table id="achivement_table" class="display compact cell-border">
 <thead>
-<tr><th>日付</th><th>戦果</th><th>EO</th><th>月毎</th></tr>
+<tr><th>日付</th><th>戦果</th><th>月毎</th><th>EO</th><th>月毎(EO込)</th></tr>
 </thead>
 </table>
 <div id="achivementChart" style="margin: 1em;"></div>
@@ -951,10 +951,12 @@ this.calcResult = function(data) {
                 var m = d.format("YYYY-MM");
                 if (!this.result[m])
                     this.result[m] = [];
+                var perMonth = (lastExp - monthExp) / expPerAch + carryOverAch;
                 this.result[m].push([
                     d.format("YYYY-MM-DD"),
-                    ((lastExp - prevExp) / expPerAch).toFixed(1), dayEo,
-                    ((lastExp - monthExp) / expPerAch + monthEo + carryOverAch + carryOverEo).toFixed(1)
+                    ((lastExp - prevExp) / expPerAch).toFixed(1),
+                    perMonth.toFixed(1), dayEo,
+                    (perMonth + monthEo + carryOverEo).toFixed(1)
                 ]);
             }
             prevExp = lastExp === -1 ? exp : lastExp;
@@ -978,7 +980,7 @@ this.calcResult = function(data) {
                 if (!this.result[m])
                     this.result[m] = [];
                 this.result[m].push([endOfMonth.format("YYYY-MM 引継"),
-                    carryOverAch.toFixed(1), carryOverEo.toFixed(1), (carryOverAch + carryOverEo).toFixed(1)]);
+                    carryOverAch.toFixed(1), carryOverAch.toFixed(1), carryOverEo.toFixed(1), (carryOverAch + carryOverEo).toFixed(1)]);
             }
             dayEo = 0;
             nextDate = date.clone().hour(2).startOf('hour');
