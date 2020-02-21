@@ -83,7 +83,7 @@ this.rangeTabChange = function(e) {
 <script>
 this.tables = [
 "<th>日付</th><th>海域</th><th>マップ</th><th>マス</th><th>ボス</th><th>ランク</th><th>ドロップ艦種</th><th>ドロップ艦娘", // ドロップ
-"<th>日付</th><th style=\"min-width: 3.2em;\">海域</th><th>マップ</th><th>マス</th><th>ボス</th><th>ランク</th><th>艦隊行動</th><th>味方陣形</th><th>敵陣形</th><th style=\"min-width: 3.2em;\">敵艦隊</th><th>味方艦1</th><th>味方艦1HP</th><th>味方艦2</th><th>味方艦2HP</th><th>味方艦3</th><th>味方艦3HP</th><th>味方艦4</th><th>味方艦4HP</th><th>味方艦5</th><th>味方艦5HP</th><th>味方艦6</th><th>味方艦6HP</th><th>大破艦</ht><th style=\"min-width: 2.2em;\">敵艦1</th><th>敵艦1HP</th><th style=\"min-width: 2.2em;\">敵艦2</th><th>敵艦2HP</th><th style=\"min-width: 2.2em;\">敵艦3</th><th>敵艦3HP</th><th style=\"min-width: 2.2em;\">敵艦4</th><th>敵艦4HP</th><th style=\"min-width: 2.2em;\">敵艦5</th><th>敵艦5HP</th><th style=\"min-width: 2.2em;\">敵艦6</th><th>敵艦6HP</th><th>味方制空値</th><th>敵制空値</th><th>制空状態</th>", // 海戦
+"<th>日付</th><th style=\"min-width: 3.2em;\">海域</th><th>マップ</th><th>マス</th><th>ボス</th><th>ランク</th><th>艦隊行動</th><th>味方陣形</th><th>敵陣形</th><th style=\"min-width: 3.2em;\">敵艦隊</th><th>味方艦1</th><th>味方艦1HP</th><th>味方艦2</th><th>味方艦2HP</th><th>味方艦3</th><th>味方艦3HP</th><th>味方艦4</th><th>味方艦4HP</th><th>味方艦5</th><th>味方艦5HP</th><th>味方艦6</th><th>味方艦6HP</th><th>大破艦</th><th>中破艦</th><th style=\"min-width: 2.2em;\">敵艦1</th><th>敵艦1HP</th><th style=\"min-width: 2.2em;\">敵艦2</th><th>敵艦2HP</th><th style=\"min-width: 2.2em;\">敵艦3</th><th>敵艦3HP</th><th style=\"min-width: 2.2em;\">敵艦4</th><th>敵艦4HP</th><th style=\"min-width: 2.2em;\">敵艦5</th><th>敵艦5HP</th><th style=\"min-width: 2.2em;\">敵艦6</th><th>敵艦6HP</th><th>味方制空値</th><th>敵制空値</th><th>制空状態</th>", // 海戦
 "<th>日付</th><th>結果</th><th>遠征</th><th>燃料</th><th>弾薬</th><th>鋼材</th><th>ボーキ</th><th>開発資材</th><th>高速修復材</th><th>高速建造材</th><th>改修資材</th>", // 遠征
 "<th>日付</th><th>開発装備</th><th>種別</th><th>燃料</th><th>弾薬</th><th>鋼材</th><th>ボーキ</th><th>秘書艦</th><th>司令部Lv</th>", // 開発
 "<th>日付</th><th>種類</th><th>名前</th><th>艦種</th><th>燃料</th><th>弾薬</th><th>鋼材</th><th>ボーキ</th><th>開発資材</th><th>空きドック</th><th>秘書艦</th><th>司令部Lv</th>", // 建造
@@ -147,18 +147,20 @@ this.tableOptions = function(tableId) {
 };
 
 this.dropColumns = function() {
-    return [{data: 0}, {data: 1}, {data: 39}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}];
+    return [{data: 0}, {data: 1}, {data: 40}, {data: 2}, {data: 3}, {data: 4}, {data: 9}, {data: 10}];
 };
 
 this.sortieColumns = function() {
     var entries = [];
     for (var i = 0; i < 38; i++) {
         if (i === 2)
-            entries.push({data: 39});
+            entries.push({data: 40});
         if (i === 9 || i === 10)
             continue;
-        if (i === 23)
+        if (i === 23) {
             entries.push({data: 38});
+            entries.push({data: 39});
+        }
         entries.push({data: i});
     }
     return entries;

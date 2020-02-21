@@ -62,9 +62,11 @@ namespace KancolleSniffer.Log
             if (data[7].EndsWith("航行序列"))
                 data[7] = data[7].Substring(0, 4);
             data[37] = ShortenAirBattleResult(data[37]);
-            var result = new string[40];
-            result[38] = GenerateDamagedShip(data);
-            result[39] = map;
+            var result = new string[41];
+            var damage = GenerateDamagedShip(data);
+            result[38] = damage[0];
+            result[39] =  damage[1];
+            result[40] = map;
             Array.Copy(data, result, 38);
             return result;
         }
@@ -88,9 +90,10 @@ namespace KancolleSniffer.Log
             }
         }
 
-        private static string GenerateDamagedShip(string[] data)
+        private static string[] GenerateDamagedShip(string[] data)
         {
-            var damaged = new List<string>();
+            var badly = new List<string>();
+            var half = new List<string>();
             for (var i = 11; i < 11 + 12; i += 2)
             {
                 if (data[i] == "")
@@ -99,18 +102,24 @@ namespace KancolleSniffer.Log
                 var hp = data[i + 1];
                 try
                 {
-                    damaged.AddRange(from entry in ship.Split('・').Zip(hp.Split('・'), (s, h) => new {s, h})
+                    foreach (var entry in from entry in ship.Split('・').Zip(hp.Split('・'), (s, h) => new {s, h})
                         where entry.h.Contains("/")
                         let nm = entry.h.Split('/').Select(int.Parse).ToArray()
-                        where ShipStatus.CalcDamage(nm[0], nm[1]) == ShipStatus.Damage.Badly
-                        select entry.s);
+                        let level = ShipStatus.CalcDamage(nm[0], nm[1])
+                        select new {level, name = entry.s})
+                    {
+                        if (entry.level == ShipStatus.Damage.Half)
+                            half.Add(entry.name);
+                        else if (entry.level == ShipStatus.Damage.Badly)
+                            badly.Add(entry.name);
+                    }
                 }
                 catch (FormatException)
                 {
-                    return "";
+                    return new[] {"", ""};
                 }
             }
-            return string.Join("・", damaged);
+            return new []{string.Join("・", badly), string.Join("・", half)};
         }
 
         private static readonly Regex Kana = new Regex(@"\([^)]+\)\(", RegexOptions.Compiled);

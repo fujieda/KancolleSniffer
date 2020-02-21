@@ -41,11 +41,14 @@ namespace KancolleSniffer.Test
             input[14] = "5/36";
             input[15] = "綾波改二(Lv148)";
             input[16] = "20/37";
+            input[17] = "夕立改二(Lv148)";
+            input[18] = "18/36";
             input[37] = "制空権確保";
             var result = new BattleLogProcessor().Process(input);
             PAssert.That(() => result[5] == "Ｔ字有利");
             PAssert.That(() => result[37] == "確保");
             PAssert.That(() => result[38] == "龍鳳改(Lv97)・夕立改(Lv148)");
+            PAssert.That(() => result[39] == "夕立改二(Lv148)");
         }
 
         [TestMethod]
@@ -100,7 +103,7 @@ namespace KancolleSniffer.Test
             var result = new BattleLogProcessor().Process(input);
             PAssert.That(() => result[21] == "潮改二(Lv94)・龍驤改二(Lv99)" &&
                                result[22] == "33/33・50/50");
-            PAssert.That(() => result.Length == 40);
+            PAssert.That(() => result.Length == 41);
         }
 
         [TestMethod]
@@ -109,7 +112,7 @@ namespace KancolleSniffer.Test
             var input = Enumerable.Repeat("", 38).ToArray();
             input[1] = "サーモン海域";
             var result = new BattleLogProcessor(new Dictionary<string, string> {{"サーモン海域", "5-4"}}).Process(input);
-            PAssert.That(() => result[39] == "5-4");
+            PAssert.That(() => result[40] == "5-4");
         }
     }
 }
