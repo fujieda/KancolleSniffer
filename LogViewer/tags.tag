@@ -997,6 +997,12 @@ this.calcResult = function(data) {
         lastDate = date;
         lastExp = exp;
     }
+    if (lastDate.isBefore(endOfMonth)) {
+        var eom = endOfMonth.format("YYYY-MM");
+        var ave = (perMonth - carryOverAch) / lastDate.date();
+        var estimate = perMonth + ave * (endOfMonth.date() - lastDate.date());
+        this.result[eom].push([endOfMonth.format("YYYY-MM-DD 予測"), ave.toFixed(1) + " 平均", estimate.toFixed(1) + " 予測", monthEo + " 合計", (estimate + monthEo).toFixed(1) + " 予測"]);
+    }
 };
 
 this.calcChartData = function() {
