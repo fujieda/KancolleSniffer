@@ -344,6 +344,7 @@ namespace KancolleSniffer
             }
             catch (InvalidOperationException ex)
             {
+                File.Delete(ConfigFile);
                 throw new Exception(FileName + "が壊れています。", ex);
             }
             ConvertPath(PrependBaseDir);

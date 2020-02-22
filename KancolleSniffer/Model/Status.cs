@@ -63,6 +63,7 @@ namespace KancolleSniffer.Model
             }
             catch (InvalidOperationException ex)
             {
+                File.Delete(StatusFile);
                 throw new Exception(FileName + "が壊れています。", ex);
             }
             finally
