@@ -277,6 +277,7 @@ namespace KancolleSniffer
         public string DebugLogFile { get; set; } = "log.txt";
         public ProxyConfig Proxy { get; set; } = new ProxyConfig();
         public ShipListConfig ShipList { get; set; } = new ShipListConfig();
+        public List<ShipListConfig> ListFormGroup { get; set; } = new List<ShipListConfig>();
         public LogConfig Log { get; set; } = new LogConfig();
         public PushbulletConfig Pushbullet { get; set; } = new PushbulletConfig();
         public PushoverConfig Pushover { get; set; } = new PushoverConfig();

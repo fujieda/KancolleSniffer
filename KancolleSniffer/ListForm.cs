@@ -30,7 +30,26 @@ namespace KancolleSniffer
         private readonly MainForm _main;
         private readonly MainForm.TimeOutChecker _suppressActivate;
         private readonly CheckBox[] _shipTypeCheckBoxes;
+        private bool _isMaster;
         public const int PanelWidth = 217;
+
+        private object[] PanelNames => new object[] {"全艦", "A", "B", "C", "D", "分類", "修復", "装備", "艦隊", "対空", "戦況", "情報"}
+            .Where(n => IsMaster || (string)n != "分類").ToArray();
+
+        private char[] PanelKeys => new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'X', 'Y', 'S', 'I'}
+            .Where(key => IsMaster || key != 'G').ToArray();
+
+        public bool IsMaster
+        {
+            get => _isMaster;
+            set
+            {
+                _isMaster = value;
+                Text = _isMaster ? "一覧 プライマリ" : "一覧";
+                comboBoxGroup.Items.Clear();
+                comboBoxGroup.Items.AddRange(PanelNames);
+            }
+        }
 
         public enum SortOrder
         {
@@ -47,6 +66,7 @@ namespace KancolleSniffer
         public ListForm(MainForm main)
         {
             InitializeComponent();
+            IsMaster = false;
             _main = main;
             _sniffer = main.Sniffer;
             _config = main.Config;
@@ -226,7 +246,7 @@ namespace KancolleSniffer
                     SystemInformation.VerticalScrollBarWidth + 2 /* 縁の幅 */ + Width - ClientSize.Width;
             MinimumSize = new Size(Width, 0);
             MaximumSize = new Size(Width, int.MaxValue);
-            var config = _config.ShipList;
+            var config = GetConfig();
             if (config.ShowHpInPercent)
             {
                 shipListPanel.ToggleHpPercent();
@@ -234,13 +254,24 @@ namespace KancolleSniffer
             }
             LoadShipGroupFromConfig();
             comboBoxGroup.SelectedItem = config.Mode ?? "全艦";
-            SetCheckBoxSTypeSate();
+            SetCheckBoxSTypeState(config);
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);
             if (MainForm.IsTitleBarOnAnyScreen(bounds.Location))
                 Location = bounds.Location;
             Height = bounds.Height;
+        }
+
+        private ShipListConfig GetConfig()
+        {
+            if (_isMaster || _config.ListFormGroup.Count == 0)
+                return _config.ShipList;
+            var config = _config.ListFormGroup[0];
+            _config.ListFormGroup.RemoveAt(0);
+            if (config.Mode == "分類")
+                config.Mode = "全艦";
+            return config;
         }
 
         private void LoadShipGroupFromConfig()
@@ -250,26 +281,56 @@ namespace KancolleSniffer
                 shipListPanel.GroupSettings[i] = i < group.Count ? new HashSet<int>(group[i]) : new HashSet<int>();
         }
 
-        private void SetCheckBoxSTypeSate()
+        private void SetCheckBoxSTypeState(ShipListConfig config)
         {
             for (var type = 0; type < _shipTypeCheckBoxes.Length; type++)
-                _shipTypeCheckBoxes[type].Checked = ((int)_config.ShipList.ShipCategories & (1 << type)) != 0;
-            checkBoxSTypeAll.Checked = _config.ShipList.ShipCategories == ShipCategory.All;
-            checkBoxSTypeDetails.Checked = _config.ShipList.ShipType;
+                _shipTypeCheckBoxes[type].Checked = ((int)config.ShipCategories & (1 << type)) != 0;
+            checkBoxSTypeAll.Checked = config.ShipCategories == ShipCategory.All;
+            checkBoxSTypeDetails.Checked = config.ShipType;
         }
 
         private void ListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
-            if (!Visible) // 非表示のときは保存すべき情報がないのでスキップする
-                return;
-            var config = _config.ShipList;
+            if (_isMaster)
+            {
+                SaveMasterState();
+            }
+            else
+            {
+                SaveSlaveState();
+            }
+            Hide();
+        }
+
+        private void SaveMasterState()
+        {
             StoreShipGroupToConfig();
+            var config = _config.ShipList;
+            config.Visible = Visible && WindowState == FormWindowState.Normal;
+            config.Mode = (string)comboBoxGroup.SelectedItem;
+            if (!Visible)
+                return;
+            SaveBounds(config); // 最小化時は以前のサイズを記録する
+        }
+
+        private void SaveSlaveState()
+        {
+            if (!Visible)
+                return;
+            if (WindowState != FormWindowState.Normal) // 最小化時は次回復旧しない
+                return;
+            var config = new ShipListConfig {Visible = true};
+            _config.ListFormGroup.Add(config);
+            config.Mode = (string)comboBoxGroup.SelectedItem;
+            SaveBounds(config);
+        }
+
+        private void SaveBounds(ShipListConfig config)
+        {
             var bounds = WindowState == FormWindowState.Normal ? Bounds : RestoreBounds;
             config.Location = bounds.Location;
             config.Size = bounds.Size;
-            config.Mode = (string)comboBoxGroup.SelectedItem;
-            Hide();
         }
 
         public void ChangeWindowState(FormWindowState newState)
@@ -297,6 +358,8 @@ namespace KancolleSniffer
 
         private void ListForm_Activated(object sender, EventArgs e)
         {
+            if (!_isMaster)
+                return;
             if (_suppressActivate.Check())
                 return;
             if (WindowState == FormWindowState.Minimized)
@@ -356,8 +419,7 @@ namespace KancolleSniffer
 
         private void ListForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var g = Array.FindIndex(new[] {'Z', 'A', 'B', 'C', 'D', 'G', 'R', 'W', 'X', 'Y', 'S', 'I'},
-                x => x == char.ToUpper(e.KeyChar));
+            var g = Array.FindIndex(PanelKeys, x => x == char.ToUpper(e.KeyChar));
             if (g == -1)
                 return;
             comboBoxGroup.SelectedIndex = g;

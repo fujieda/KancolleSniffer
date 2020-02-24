@@ -51,7 +51,8 @@ namespace KancolleSniffer
         private readonly MainShipLabels _mainLabels = new MainShipLabels();
         private readonly MainNDockLabels _ndockLabels = new MainNDockLabels();
         private NumberAndHistory _numberAndHistory;
-        private readonly ListForm _listForm;
+        private readonly ListFormGroup _listFormGroup;
+
         private readonly NotificationManager _notificationManager;
         private bool _started;
         private bool _timerEnabled;
@@ -71,7 +72,7 @@ namespace KancolleSniffer
             HttpProxy.AfterSessionComplete += HttpProxy_AfterSessionComplete;
             Config.Load();
             _configDialog = new ConfigDialog(this);
-            _listForm = new ListForm(this);
+            _listFormGroup = new ListFormGroup(this);
             _notificationManager = new NotificationManager(Alarm);
             SetupView(_notificationManager);
             _proxyManager = new ProxyManager(this);
@@ -356,7 +357,7 @@ namespace KancolleSniffer
             if (Config.ShowHpInPercent)
                 _mainLabels.ToggleHpPercent();
             if (Config.ShipList.Visible)
-                _listForm.Show();
+                _listFormGroup.Show();
             ApplyConfig();
             ApplyDebugLogSetting();
             ApplyLogSetting();
@@ -398,17 +399,14 @@ namespace KancolleSniffer
         {
             if (!Config.ExitSilently)
             {
-                using (var dialog = new ConfirmDialog())
+                using var dialog = new ConfirmDialog();
+                if (dialog.ShowDialog(this) != DialogResult.Yes)
                 {
-                    if (dialog.ShowDialog(this) != DialogResult.Yes)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
+                    e.Cancel = true;
+                    return;
                 }
             }
-            Config.ShipList.Visible = _listForm.Visible && _listForm.WindowState == FormWindowState.Normal;
-            _listForm.Close();
+            _listFormGroup.Close();
             Sniffer.FlashLog();
             Config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             Config.ShowHpInPercent = _mainLabels.ShowHpInPercent;
@@ -419,7 +417,7 @@ namespace KancolleSniffer
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            if (_listForm == null) // DPIが100%でないときにInitializeComponentから呼ばれるので
+            if (_listFormGroup == null) // DPIが100%でないときにInitializeComponentから呼ばれるので
                 return;
             SuppressActivate.Start();
             if (WindowState == FormWindowState.Minimized)
@@ -427,7 +425,7 @@ namespace KancolleSniffer
                 if (Config.HideOnMinimized)
                     ShowInTaskbar = false;
             }
-            _listForm.ChangeWindowState(WindowState);
+            _listFormGroup.Main.ChangeWindowState(WindowState);
         }
 
         public TimeOutChecker SuppressActivate = new TimeOutChecker();
@@ -440,12 +438,12 @@ namespace KancolleSniffer
                 RaiseBothWindows();
         }
 
-        private bool NeedRaise => _listForm.Visible && WindowState != FormWindowState.Minimized;
+        private bool NeedRaise => _listFormGroup.Visible && WindowState != FormWindowState.Minimized;
 
         private void RaiseBothWindows()
         {
-            _listForm.Owner = null;
-            Owner = _listForm;
+            _listFormGroup.Main.Owner = null;
+            Owner = _listFormGroup.Main;
             BringToFront();
             Owner = null;
         }
@@ -478,7 +476,7 @@ namespace KancolleSniffer
         {
             ShowInTaskbar = true;
             WindowState = FormWindowState.Normal;
-            TopMost = _listForm.TopMost = Config.TopMost; // 最前面に表示されなくなることがあるのを回避する
+            TopMost = _listFormGroup.TopMost = Config.TopMost; // 最前面に表示されなくなることがあるのを回避する
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -513,13 +511,14 @@ namespace KancolleSniffer
             var prev = CurrentAutoScaleDimensions;
             foreach (var control in new Control[]
             {
-                this, _listForm, labelLogin, linkLabelGuide,
+                this, labelLogin, linkLabelGuide,
                 _configDialog, _configDialog.NotificationConfigDialog,
                 contextMenuStripMain, _errorDialog
             })
             {
                 control.Font = ZoomFont(control.Font);
             }
+            _listFormGroup.Font = ZoomFont(_listFormGroup.Font);
             foreach (var toolTip in new[] {_toolTip, _tooltipCopy})
             {
                 toolTip.Font = ZoomFont(toolTip.Font);
@@ -551,7 +550,7 @@ namespace KancolleSniffer
         private void ApplyConfig()
         {
             if (TopMost != Config.TopMost)
-                TopMost = _listForm.TopMost = Config.TopMost;
+                TopMost = _listFormGroup.TopMost = Config.TopMost;
             Sniffer.ShipCounter.Margin = Config.MarginShips;
             _numberAndHistory.UpdateNumOfShips();
             Sniffer.ItemCounter.Margin = Config.MarginEquips;
@@ -640,22 +639,22 @@ namespace KancolleSniffer
 
         private void ShowShipOnShipList(object sender, EventArgs ev)
         {
-            if (!_listForm.Visible)
+            if (!_listFormGroup.Visible)
                 return;
             var idx = (int)((Control)sender).Tag;
             var ship = (_combinedFleet
                 ? Sniffer.Fleets[0].Ships.Concat(Sniffer.Fleets[1].Ships).ToArray()
                 : Sniffer.Fleets[_currentFleet].Ships)[idx];
             if (!ship.Empty)
-                _listForm.ShowShip(ship.Id);
+                _listFormGroup.ShowShip(ship.Id);
         }
 
 
         private void UpdateItemInfo()
         {
             _numberAndHistory.Update();
-            if (_listForm.Visible)
-                _listForm.UpdateList();
+            if (_listFormGroup.Visible)
+                _listFormGroup.UpdateList();
         }
 
         private void UpdateShipInfo()
@@ -667,8 +666,8 @@ namespace KancolleSniffer
             UpdateChargeInfo();
             UpdateRepairList();
             UpdateMissionLabels();
-            if (_listForm.Visible)
-                _listForm.UpdateList();
+            if (_listFormGroup.Visible)
+                _listFormGroup.UpdateList();
         }
 
         private bool _inSortie;
@@ -802,8 +801,8 @@ namespace KancolleSniffer
         private void UpdateBattleInfo()
         {
             ResetBattleInfo();
-            _listForm.UpdateBattleResult();
-            _listForm.UpdateAirBattleResult();
+            _listFormGroup.UpdateBattleResult();
+            _listFormGroup.UpdateAirBattleResult();
             if (Sniffer.Battle.BattleState == BattleState.None)
                 return;
             panelBattleInfo.BringToFront();
@@ -816,7 +815,7 @@ namespace KancolleSniffer
 
         private void UpdateCellInfo()
         {
-            _listForm.UpdateCellInfo();
+            _listFormGroup.UpdateCellInfo();
         }
 
         private void ResetBattleInfo()
@@ -1411,11 +1410,14 @@ namespace KancolleSniffer
 
         private void ShipListToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            _listFormGroup.ShowOrCreate();
+            /*
             _listForm.UpdateList();
             _listForm.Show();
             if (_listForm.WindowState == FormWindowState.Minimized)
                 _listForm.WindowState = FormWindowState.Normal;
             _listForm.Activate();
+            */
         }
 
         private void LogToolStripMenuItem_Click(object sender, EventArgs e)

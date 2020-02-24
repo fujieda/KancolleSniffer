@@ -60,6 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Log\BattleLogger.cs" />
+    <Compile Include="MainForm.ListFormGroup.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Model\AirBattleResult.cs" />
     <Compile Include="Model\AirCorpsFighterPower.cs" />
     <Compile Include="Model\QuestCounter.cs" />

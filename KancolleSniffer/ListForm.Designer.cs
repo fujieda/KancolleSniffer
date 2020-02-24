@@ -257,19 +257,6 @@ namespace KancolleSniffer
             this.comboBoxGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxGroup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboBoxGroup.FormattingEnabled = true;
-            this.comboBoxGroup.Items.AddRange(new object[] {
-            "全艦",
-            "A",
-            "B",
-            "C",
-            "D",
-            "分類",
-            "修復",
-            "装備",
-            "艦隊",
-            "対空",
-            "戦況",
-            "情報"});
             this.comboBoxGroup.Location = new System.Drawing.Point(6, 4);
             this.comboBoxGroup.Name = "comboBoxGroup";
             this.comboBoxGroup.Size = new System.Drawing.Size(48, 20);
@@ -351,7 +338,7 @@ namespace KancolleSniffer
             this.fleetTextToolStripMenuItem,
             this.deckBuilderToolStripMenuItem});
             this.contextMenuStripFleetData.Name = "contextMenuStripFleetData";
-            this.contextMenuStripFleetData.Size = new System.Drawing.Size(211, 70);
+            this.contextMenuStripFleetData.Size = new System.Drawing.Size(211, 48);
             // 
             // fleetTextToolStripMenuItem
             // 
