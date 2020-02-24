@@ -215,7 +215,39 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public int ShipAntiSubmarine => AntiSubmarine - Slot.Sum(item => item.Spec.AntiSubmarine);
+        public int ShipAntiSubmarine => AntiSubmarine - Slot.Sum(item => item.Spec.AntiSubmarine + AntiSubmarineBonus(item.Spec));
+
+        private int AntiSubmarineBonus(ItemSpec spec)
+        {
+            switch (spec.Name)
+            {
+                case "四式水中聴音機":
+                    if (Spec.ShipClass == 54) // 秋月型
+                        return 1;
+                    if (new[] {"五十鈴改二", "那珂改二", "由良改二", "夕張改二", "夕張改二特"}.Any(name => Spec.Name == name))
+                        return 1;
+                    if (Spec.Name == "夕張改二丁")
+                        return 3;
+                    break;
+                case "三式水中探信儀":
+                    if (new[] {"神風", "春風", "時雨", "山風", "舞風", "朝霜"}.Any(Spec.Name.StartsWith))
+                        return 3;
+                    if (new[] {"潮", "雷", "山雲", "磯風", "浜風", "岸波"}.Any(Spec.Name.StartsWith))
+                        return 2;
+                    break;
+                case "三式爆雷投射機 集中配備":
+                    if (new[] {"五十鈴改二", "那珂改二", "由良改二"}.Any(name => Spec.Name == name))
+                        return 1;
+                    break;
+                case "試製15cm9連装対潜噴進砲":
+                    if (new[] {"五十鈴改二", "那珂改二", "由良改二", "夕張改二"}.Any(name => Spec.Name == name))
+                        return 2;
+                    if (Spec.Name == "夕張改二丁")
+                        return 3;
+                    break;
+            }
+            return 0;
+        }
 
         public bool CanOpeningAntiSubmarineAttack
         {

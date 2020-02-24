@@ -616,6 +616,26 @@ namespace KancolleSniffer.Test
                 };
                 Assert.AreEqual("83.8", ship.EffectiveAntiSubmarine.ToString("f1"), "三種コンビネーションにならない");
             }
+
+            [TestMethod]
+            public void 装備ボーナス()
+            {
+                var ship = new ShipStatus
+                {
+                    Fleet = new Fleet(null, 0, null),
+                    Firepower = 50,
+                    Spec = new ShipSpec
+                    {
+                        Name = "神風改"
+                    },
+                    AntiSubmarine = 50 + 10 + 3,
+                    Slot = new[]
+                    {
+                        三式水中探信儀
+                    }
+                };
+                Assert.AreEqual(50, ship.ShipAntiSubmarine);
+            }
         }
 
         // ReSharper disable once InconsistentNaming
@@ -635,7 +655,8 @@ namespace KancolleSniffer.Test
         private static readonly ItemStatus A25mm三連装機銃集中配備 = new ItemStatus
         {
             Id = 1,
-            Spec = new ItemSpec{
+            Spec = new ItemSpec
+            {
                 Id = 131,
                 Type = 21,
                 IconType = 15,
@@ -651,13 +672,13 @@ namespace KancolleSniffer.Test
             [TestInitialize]
             public void Initialize()
             {
-                _ship =new ShipStatus
+                _ship = new ShipStatus
                 {
                     AntiAir = 93,
                     Lucky = 46,
                     Spec = new ShipSpec
                     {
-                        ShipType = 4,
+                        ShipType = 4
                     },
                     Slot = new ItemStatus[0]
                 };
