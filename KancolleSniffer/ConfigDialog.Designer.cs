@@ -1148,9 +1148,9 @@ namespace KancolleSniffer
             this.checkBoxDebugLog.AutoSize = true;
             this.checkBoxDebugLog.Location = new System.Drawing.Point(11, 11);
             this.checkBoxDebugLog.Name = "checkBoxDebugLog";
-            this.checkBoxDebugLog.Size = new System.Drawing.Size(100, 16);
+            this.checkBoxDebugLog.Size = new System.Drawing.Size(174, 16);
             this.checkBoxDebugLog.TabIndex = 8;
-            this.checkBoxDebugLog.Text = "通信を記録する";
+            this.checkBoxDebugLog.Text = "開発者のために通信を記録する";
             this.checkBoxDebugLog.UseVisualStyleBackColor = true;
             // 
             // buttonCancel
