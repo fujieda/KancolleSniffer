@@ -761,9 +761,8 @@ namespace KancolleSniffer.Model
                 ship.NowHp = NowHp;
                 ship.Slot = _status.Slot;
                 ship.SlotEx = _status.SlotEx;
-                ship.SpecialAttack = _status.SpecialAttack == ShipStatus.Attack.Fire
-                    ? ShipStatus.Attack.Fired
-                    : ShipStatus.Attack.None;
+                if (_status.SpecialAttack == ShipStatus.Attack.Fire)
+                    ship.SpecialAttack = ShipStatus.Attack.Fired;
             }
         }
 
