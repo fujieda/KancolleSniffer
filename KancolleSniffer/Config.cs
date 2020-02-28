@@ -20,12 +20,13 @@ using System.Linq;
 using System.Xml.Serialization;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 
 namespace KancolleSniffer
 {
     public class ProxyConfig
     {
-        public const int DefaultListenPort = 8080;
+        private const int DefaultListenPort = 8080;
         public bool Auto { get; set; }
         public int Listen { get; set; }
         public bool UseUpstream { get; set; }
@@ -128,15 +129,6 @@ namespace KancolleSniffer
             get => Files[Config.NotificationIndex[name]];
             set => Files[Config.NotificationIndex[name]] = value;
         }
-
-        public void Upgrade()
-        {
-            var expected = Config.NotificationNames.Length;
-            if (Files.Length == expected)
-                return;
-            Array.Resize(ref Files, expected);
-            Files[expected - 1] = "ninmu.mp3";
-        }
     }
 
     [Flags]
@@ -147,7 +139,6 @@ namespace KancolleSniffer
         ShowBaloonTip = 1 << 1,
         PlaySound = 1 << 2,
         All = (1 << 3) - 1,
-        Pushbullet = 1 << 3,
         Push = 1 << 4,
         Repeat = 1 << 5,
         Cont = 1 << 6,
@@ -189,37 +180,6 @@ namespace KancolleSniffer
                 PreliminaryPeriods[Config.NotificationIndex[name]] = value.PreliminaryPeriod;
             }
         }
-
-        public void Upgrade()
-        {
-            UpgradeSettings(ref Settings);
-            UpgradeParameterArray(ref RepeatIntervals);
-            UpgradeParameterArray(ref PreliminaryPeriods);
-        }
-
-        private void UpgradeSettings(ref NotificationType[] settings)
-        {
-            for (var i = 0; i < settings.Length; i++)
-            {
-                if ((settings[i] & NotificationType.Pushbullet) != 0)
-                    settings[i] = settings[i] ^ NotificationType.Pushbullet | NotificationType.Push;
-            }
-            var expected = Config.NotificationNames.Length;
-            if (expected == settings.Length)
-                return;
-            Array.Resize(ref settings, expected);
-            settings[expected - 1] = NotificationType.All;
-        }
-
-        private void UpgradeParameterArray(ref int[] array)
-        {
-            Array.Resize(ref array, Config.NotificationNames.Length);
-            for (var i = 0; i < array.Length; i++)
-            {
-                if (array[i] < 0)
-                    array[i] = 0;
-            }
-        }
     }
 
     public class LocationPerMachine
@@ -238,6 +198,7 @@ namespace KancolleSniffer
         AirBattleResult = 1 << 1,
         BattleResult = 1 << 2,
         NextCell = 1 << 3,
+        // ReSharper disable once UnusedMember.Global
         All = (1 << 4) - 1
     }
 
@@ -247,6 +208,7 @@ namespace KancolleSniffer
         Mission = 1,
         NDock = 1 << 1
     }
+
 
     public class Config
     {
@@ -260,17 +222,12 @@ namespace KancolleSniffer
         public List<LocationPerMachine> LocationList { get; set; } = new List<LocationPerMachine>();
         public bool ShowHpInPercent { get; set; }
         public TimerKind ShowEndTime { get; set; }
-        public bool FlashWindow { get; set; } = true;
-        // ReSharper disable once IdentifierTypo
-        public bool ShowBaloonTip { get; set; } = true;
-        public bool PlaySound { get; set; } = true;
         public NotificationType NotificationFlags { get; set; } = NotificationType.All;
         public NotificationConfig Notifications { get; set; } = new NotificationConfig();
         public int MarginShips { get; set; } = 5;
         public int MarginEquips { get; set; } = 5;
         public List<int> NotifyConditions { get; set; }
         public List<int> ResetHours { get; set; }
-        public bool AlwaysShowResultRank { get; set; }
         public Spoiler Spoilers { get; set; }
         public bool UsePresetAkashi { get; set; }
         public bool WarnBadDamageWithDameCon { get; set; }
@@ -319,14 +276,6 @@ namespace KancolleSniffer
                     config = (Config)serializer.Deserialize(file);
                 foreach (var property in GetType().GetProperties())
                     property.SetValue(this, property.GetValue(config, null), null);
-                Notifications.Upgrade();
-                ComposeNotificationFlags();
-                Sounds.Upgrade();
-                if (AlwaysShowResultRank)
-                {
-                    Spoilers = Spoiler.All;
-                    AlwaysShowResultRank = false;
-                }
                 if (SaveLocationPerMachine)
                 {
                     foreach (var l in LocationList)
@@ -353,14 +302,6 @@ namespace KancolleSniffer
             ConvertPath(PrependBaseDir);
         }
 
-        private void ComposeNotificationFlags()
-        {
-            NotificationFlags = (NotificationFlags & ~NotificationType.All) |
-                                (FlashWindow ? NotificationType.FlashWindow : 0) |
-                                (ShowBaloonTip ? NotificationType.ShowBaloonTip : 0) |
-                                (PlaySound ? NotificationType.PlaySound : 0);
-        }
-
         public void Save()
         {
             if (SaveLocationPerMachine)
@@ -379,7 +320,6 @@ namespace KancolleSniffer
             {
                 LocationList = new List<LocationPerMachine>();
             }
-            DecomposeNotificationFlags();
             ConvertPath(StripBaseDir);
             var serializer = new XmlSerializer(typeof(Config));
             using (var file = File.CreateText(ConfigFile + ".tmp"))
@@ -387,13 +327,6 @@ namespace KancolleSniffer
             File.Copy(ConfigFile + ".tmp", ConfigFile, true);
             File.Delete(ConfigFile + ".tmp");
             ConvertPath(PrependBaseDir);
-        }
-
-        private void DecomposeNotificationFlags()
-        {
-            FlashWindow = (NotificationFlags & NotificationType.FlashWindow) != 0;
-            ShowBaloonTip = (NotificationFlags & NotificationType.ShowBaloonTip) != 0;
-            PlaySound = (NotificationFlags & NotificationType.PlaySound) != 0;
         }
 
         private void ConvertPath(Func<string, string> func)
