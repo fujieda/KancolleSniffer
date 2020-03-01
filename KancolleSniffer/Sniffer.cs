@@ -73,7 +73,7 @@ namespace KancolleSniffer
         public enum Update
         {
             None = 0,
-            Error = 1 << 0,
+            Error = 1,
             Start = 1 << 1,
             Item = 1 << 2,
             Ship = 1 << 3,
@@ -106,7 +106,7 @@ namespace KancolleSniffer
         public AdditionalData AdditionalData
         {
             get => _additionalData;
-            set
+            private set
             {
                 _additionalData = value;
                 _itemMaster.AdditionalData = value;
@@ -234,7 +234,8 @@ namespace KancolleSniffer
             if (url.EndsWith("api_get_member/require_info"))
             {
                 _itemInfo.InspectSlotItem(data.api_slot_item, true);
-                _itemInfo.InspectUseItem(data.api_useitem);
+                if (data.api_useitem())
+                    _itemInfo.InspectUseItem(data.api_useitem);
                 _dockInfo.InspectKDock(data.api_kdock);
                 return Update.None;
             }

@@ -81,6 +81,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 一つもアイテムがない場合
+        /// </summary>
+        [TestMethod]
+        public void NoUseItem()
+        {
+            var sniffer = new Sniffer(true);
+            SniffLogFile(sniffer, "require_info_001");
+            Assert.IsTrue(true);
+        }
+
+        /// <summary>
         /// 熟練度込みの制空値を正しく計算する
         /// </summary>
         [TestMethod]
