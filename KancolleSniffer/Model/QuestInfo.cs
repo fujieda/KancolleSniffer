@@ -62,7 +62,8 @@ namespace KancolleSniffer.Model
         Daily,
         Weekly,
         Monthly,
-        Quarterly
+        Quarterly,
+        Yearly
     }
 
     public class QuestInfo : IHaveState
@@ -117,7 +118,7 @@ namespace KancolleSniffer.Model
         private readonly QuestInterval[] _intervals =
         {
             QuestInterval.Daily, QuestInterval.Weekly, QuestInterval.Monthly,
-            QuestInterval.Other, QuestInterval.Quarterly
+            QuestInterval.Other, QuestInterval.Quarterly, QuestInterval.Yearly
         };
 
         private readonly int[] _progress = {0, 50, 80};
@@ -194,44 +195,36 @@ namespace KancolleSniffer.Model
         private void ResetQuests()
         {
             _now = _nowFunc();
-            if (!CrossBoundary(LastMorning))
+            if (!CrossBoundary(QuestInterval.Daily))
                 return;
-            RemoveQuest(QuestInterval.Daily);
-            _countList.Remove(QuestInterval.Daily);
-            ResetWeekly();
-            ResetMonthly();
-            ResetQuarterly();
+            foreach (var interval in (QuestInterval[])typeof(QuestInterval).GetEnumValues())
+            {
+                if (!CrossBoundary(interval))
+                    continue;
+                RemoveQuest(interval);
+                _countList.Remove(interval);
+            }
             _lastReset = _now;
             NeedSave = true;
         }
 
         private DateTime LastMorning => _now.Date.AddDays(_now.Hour < 5 ? -1 : 0).AddHours(5);
 
-        private void ResetWeekly()
+        private bool CrossBoundary(QuestInterval interval)
         {
-            if (!CrossBoundary(LastMonday.AddHours(5)))
-                return;
-            RemoveQuest(QuestInterval.Weekly);
-            _countList.Remove(QuestInterval.Weekly);
+            return interval switch
+            {
+                QuestInterval.Other => false,
+                QuestInterval.Daily => CrossBoundary(LastMorning),
+                QuestInterval.Weekly => CrossBoundary(LastMonday.AddHours(5)),
+                QuestInterval.Monthly => CrossBoundary(new DateTime(_now.Year, _now.Month, 1, 5, 0, 0)),
+                QuestInterval.Quarterly => CrossBoundary(QuarterlyBoundary.AddHours(5)),
+                QuestInterval.Yearly => CrossBoundary(new DateTime(_now.Year, 2, 1, 5, 0, 0)),
+                _ => false
+            };
         }
 
         private DateTime LastMonday => _now.Date.AddDays(-((6 + (int)_now.DayOfWeek) % 7));
-
-        private void ResetMonthly()
-        {
-            if (!CrossBoundary(new DateTime(_now.Year, _now.Month, 1, 5, 0, 0)))
-                return;
-            RemoveQuest(QuestInterval.Monthly);
-            _countList.Remove(QuestInterval.Monthly);
-        }
-
-        private void ResetQuarterly()
-        {
-            if (!CrossBoundary(QuarterlyBoundary.AddHours(5)))
-                return;
-            RemoveQuest(QuestInterval.Quarterly);
-            _countList.Remove(QuestInterval.Quarterly);
-        }
 
         private DateTime QuarterlyBoundary =>
             _now.Month / 3 == 0
@@ -247,10 +240,17 @@ namespace KancolleSniffer.Model
         {
             foreach (var id in
                 (from kv in _quests
-                    where kv.Value.Count.Spec.Interval == interval || // 輸送5と空母3はカウンタを見ないとデイリーにならない
-                          kv.Value.Interval == interval
+                    where MatchInterval(kv.Value, interval)
                     select kv.Key).ToArray())
                 _quests.Remove(id);
+        }
+
+        private bool MatchInterval(QuestStatus quest, QuestInterval interval)
+        {
+            var i = quest.Count.Spec.Interval;
+            return i == QuestInterval.Other // 定期任務の定義がない
+                ? quest.Interval == interval
+                : i == interval;
         }
 
         public void InspectStop(string request)
@@ -294,5 +294,4 @@ namespace KancolleSniffer.Model
             }
         }
     }
-
 }

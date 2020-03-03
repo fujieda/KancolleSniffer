@@ -1046,6 +1046,45 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 904: 精鋭「十九駆」、躍り出る！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_904()
+        {
+            var count = InjectQuest(904);
+            _battleInfo.InjectResultStatus(
+                new []{ShipStatus("綾波改二"), ShipStatus("敷波")},
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
+            InjectMapNext(25, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}), "敷波はカウントしない");
+
+            _battleInfo.Result.Friend.Main[1] = ShipStatus("敷波改二");
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}), "A勝利はカウントしない");
+
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "2-5");
+
+            InjectMapNext(34, 4);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "ボス以外はカウントしない");
+
+            InjectMapNext(34, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0, 0}), "3-4");
+
+            InjectMapNext(45, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0}), "4-5");
+
+            InjectMapNext(53, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}), "5-3");
+        }
+
+        /// <summary>
         /// 280と854以降を同時に遂行していると854以降がカウントされないことがある
         /// </summary>
         [TestMethod]
