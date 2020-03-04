@@ -323,6 +323,8 @@ namespace KancolleSniffer.Model
                     return specs.Names.Count("磯波", "浦波", "綾波", "敷波") == 4;
                 case 904:
                     return specs.Names.Count("綾波改二", "敷波改二") == 2;
+                case 905:
+                    return specs.Types.Count(type => type == 1) >= 3 && specs.Types.Length <= 5;
                 default:
                     return true;
             }

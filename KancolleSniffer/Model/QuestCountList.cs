@@ -73,6 +73,7 @@ namespace KancolleSniffer.Model
             {893, new QuestSortie {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Rank = "S", Maps = new[] {15, 71, 721, 722}, Material = new[] {0, 0, 0, 0}}}, // 893: 泊地周辺海域の安全確保を徹底せよ！
             {894, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "S", Maps = new[] {13, 14, 21, 22, 23}, Material = new[] {0, 0, 0, 0}}}, // 894: 空母戦力の投入による兵站線戦闘哨戒
             {904, new QuestSortie {Interval = Yearly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {25, 34, 45, 53}, Material = new[] {0, 8, 10, 4}}}, // 904: 精鋭「十九駆」、躍り出る！
+            {905, new QuestSortie {Interval = Yearly, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "A", Maps = new[] {11, 12, 13, 15, 16}, Material = new[] {0, 6, 8, 0}}}, // 905: 「海防艦」、海を護る！
 
             {303, new QuestPractice {Interval = Daily, Max = 3, Rank = "E", Material = new[] {1, 0, 0, 0}}}, // 303: 「演習」で練度向上！
             {304, new QuestPractice {Interval = Daily, Max = 5, Rank = "B", Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
