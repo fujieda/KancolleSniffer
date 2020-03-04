@@ -1234,10 +1234,13 @@ namespace KancolleSniffer.Test
                 ShipStatusList(18, 7, 2, 2),
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
             InjectPracticeResult("B");
+            Assert.AreEqual(0, count.Now, "B勝利でカウントしない");
+
+            InjectPracticeResult("A");
             Assert.AreEqual(1, count.Now, "装甲空母、軽空母");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(11, 7, 2, 2);
-            InjectPracticeResult("B");
+            InjectPracticeResult("A");
             Assert.AreEqual(2, count.Now, "正規空母、軽空母");
 
             count.Now = 0;
@@ -1245,15 +1248,15 @@ namespace KancolleSniffer.Test
             Assert.AreEqual(0, count.Now, "敗北");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(2, 7, 11, 2);
-            InjectPracticeResult("B");
+            InjectPracticeResult("A");
             Assert.AreEqual(0, count.Now, "旗艦空母以外");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(11, 2, 2, 2);
-            InjectPracticeResult("B");
+            InjectPracticeResult("A");
             Assert.AreEqual(0, count.Now, "空母一隻");
 
             _battleInfo.Result.Friend.Main = ShipStatusList(11, 7, 3, 2);
-            InjectPracticeResult("B");
+            InjectPracticeResult("A");
             Assert.AreEqual(0, count.Now, "駆逐一隻");
         }
 

@@ -81,7 +81,7 @@ namespace KancolleSniffer.Model
             {311, new QuestPractice {Interval = Daily, Max = 7, Rank = "B", Material = new[] {0, 2, 0, 0}}}, // 311: 精鋭艦隊演習
             {315, new QuestPractice {Interval = Daily, Max = 8, Rank = "B", Material = new[] {0, 0, 0, 0}}}, // 315: 春季大演習
             {318, new QuestPractice {Interval = Daily, Max = 3, Rank = "B", Material = new[] {0, 2, 2, 0}, AdjustCount = false}}, // 318: 給糧艦「伊良湖」の支援
-            {330, new QuestPractice {Interval = Daily, Max = 4, Rank = "B", Material = new[] {0, 0, 3, 0}}}, // 330: 空母機動部隊、演習始め！
+            {330, new QuestPractice {Interval = Daily, Max = 4, Rank = "A", Material = new[] {0, 0, 3, 0}}}, // 330: 空母機動部隊、演習始め！
             {337, new QuestPractice {Interval = Daily, Max = 3, Rank = "S", Material = new[] {0, 0, 0, 3}}}, // 337: 「十八駆」演習！
             {339, new QuestPractice {Interval = Daily, Max = 3, Rank = "S", Material = new[] {0, 0, 8, 3}}}, // 339: 「十九駆」演習！
 
