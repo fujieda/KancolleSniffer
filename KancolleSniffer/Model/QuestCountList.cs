@@ -64,7 +64,7 @@ namespace KancolleSniffer.Model
             {822, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "S", Maps = new[] {24}, Material = new[] {0, 0, 0, 5}}}, // 822: 沖ノ島海域迎撃戦
             {845, new QuestSortie {Interval = Quarterly, MaxArray = new []{1, 1, 1, 1, 1}, Rank = "S", Maps = new[] {41, 42, 43, 44, 45}, Material = new[] {0, 0, 1, 0}}}, // 845: 発令！「西方海域作戦」
             {854, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Ranks = new[] {"A", "A", "A", "S"}, Maps = new[] {24, 61, 63, 64}, Material = new[] {0, 0, 0, 4}}}, // 854: 戦果拡張任務！「Z作戦」前段作戦
-            {861, new QuestSpec {Interval = Quarterly, Max = 2, Material = new[] {0, 4, 0, 0}}}, // 861: 強行輸送艦隊、抜錨！
+            {861, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "B", Maps = new[] {16}, Material = new[] {0, 4, 0, 0}}}, // 861: 強行輸送艦隊、抜錨！
             {862, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "A", Maps = new[] {63}, Material = new[] {0, 0, 8, 4}}}, // 862: 前線の航空偵察を実施せよ！
             {872, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {722, 55, 62, 65}, Material = new[] {0, 0, 0, 4}}}, // 872: 戦果拡張任務！「Z作戦」後段作戦
             {873, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Rank = "A", Maps = new[] {31, 32, 33}, Material = new[] {0, 0, 0, 0}}}, // 873: 北方海域警備を実施せよ！

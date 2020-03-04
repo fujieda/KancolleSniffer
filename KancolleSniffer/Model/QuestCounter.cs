@@ -216,10 +216,16 @@ namespace KancolleSniffer.Model
             }
             _boss = (int)json.api_event_id == 5;
 
-            if (_quests.TryGetValue(861, out var q861) && _map == 16 && (int)json.api_event_id == 8)
+            if (_map != 16 || (int)json.api_event_id != 8)
+                return;
+            foreach (var count in _quests.Values.Select(q => q.Count))
             {
-                if (new ResultShipSpecs(_battleInfo).Types.Count(s => s == 10 || s == 22) == 2)
-                    Increment(q861.Count);
+                if (!(count.Spec is QuestSortie sortie))
+                    continue;
+                if (!FleetCheck(count.Id))
+                    continue;
+                if (sortie.Count(count, "S", _map, true))
+                    NeedSave = true;
             }
         }
 
@@ -292,6 +298,8 @@ namespace KancolleSniffer.Model
                 case 284:
                     return specs.Types.Count(type => type == 1 || type == 2) >= 3 &&
                            specs.Types.Intersect(new[] {3, 4, 7, 21}).Any();
+                case 861:
+                    return specs.Types.Count(s => s == 10 || s == 22) == 2;
                 case 862:
                     return specs.Types.Count(s => s == 3) >= 2 && specs.Types.Count(s => s == 16) >= 1;
                 case 873:
