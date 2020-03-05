@@ -308,7 +308,7 @@ namespace KancolleSniffer.Model
                     return specs.Names.Contains("長波改二") &&
                            specs.Names.Count("朝霜改", "高波改", "沖波改") > 0;
                 case 888:
-                    return specs.Names.Count("鳥海", "青葉", "衣笠", "加古", "天竜", "夕張") >= 4;
+                    return specs.Names.Count("鳥海", "青葉", "衣笠", "加古", "古鷹", "天龍", "夕張") >= 4;
                 case 894:
                     return specs.Specs.Any(spec => spec.IsAircraftCarrier);
                 case 318:

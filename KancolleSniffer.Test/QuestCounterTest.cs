@@ -954,6 +954,8 @@ namespace KancolleSniffer.Test
             InjectBattleResult("S");
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0}));
 
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("天龍改二");
+            _battleInfo.Result.Friend.Main[1] = ShipStatus("古鷹改二");
             InjectMapNext(54, 5);
             InjectBattleResult("S");
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1}));
