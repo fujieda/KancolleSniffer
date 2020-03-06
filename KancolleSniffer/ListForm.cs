@@ -513,6 +513,8 @@ namespace KancolleSniffer
         private void SetPanelSTypeState(bool visible)
         {
             panelSType.Visible = visible;
+            if (visible)
+                panelSType.BringToFront();
             labelSTypeButton.BackColor = visible ? CustomColors.ActiveButtonColor : DefaultBackColor;
         }
 
