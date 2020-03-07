@@ -252,6 +252,8 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_get_member/useitem"))
             {
+                if (data == null)
+                    return Update.None;
                 _itemInfo.InspectUseItem(data);
                 return Update.Item;
             }

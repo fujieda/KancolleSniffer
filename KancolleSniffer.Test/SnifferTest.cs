@@ -81,13 +81,24 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
-        /// 一つもアイテムがない場合
+        /// 一つもアイテムがない場合のrequire_info
+        /// </summary>
+        [TestMethod]
+        public void NoUseItemRequireInfo()
+        {
+            var sniffer = new Sniffer(true);
+            SniffLogFile(sniffer, "require_info_001");
+            Assert.IsTrue(true);
+        }
+
+        /// <summary>
+        /// 一つもアイテムがない場合のuseitem
         /// </summary>
         [TestMethod]
         public void NoUseItem()
         {
             var sniffer = new Sniffer(true);
-            SniffLogFile(sniffer, "require_info_001");
+            SniffLogFile(sniffer, "useitem_001");
             Assert.IsTrue(true);
         }
 
