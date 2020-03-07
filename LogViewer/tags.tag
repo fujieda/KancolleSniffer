@@ -1015,15 +1015,16 @@ this.calcChartData = function() {
         data.push(["日付", "戦果", "EO", "月毎"]);
         for (var i = 0; i < result.length; i++) {
             var row = result[i];
+            if (row[0].match(/予測/))
+                continue;
             if (row[0].match(/引継/)) {
-                eo = row[2] - 0;
-                data.push([0, row[1], row[2], row[3]]);
+                eo = row[3] - 0;
+                data.push([0, row[1], row[3], row[4]]);
                 continue;
             }
             d = moment(row[0], "YYYY-MM-DD").date();
-            eo += row[2];
-            var ach = (row[3] - eo).toFixed(1);
-            data.push([d, ach, eo, row[3]]);
+            eo += row[3];
+            data.push([d, row[2], eo, row[4]]);
         }
         var endOfMonth = moment(month, "YYYY-MM").endOf("month").date();
         while (d < endOfMonth) {
