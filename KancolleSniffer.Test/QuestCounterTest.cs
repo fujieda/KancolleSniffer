@@ -79,6 +79,33 @@ namespace KancolleSniffer.Test
         }
 
         [TestMethod]
+        public void AdjustCountMax3WithShift2()
+        {
+            var count = new QuestCount
+            {
+                Spec = new QuestSpec {Max = 3, Shift = 2},
+                Now = 0
+            };
+            count.AdjustCount(0);
+            Assert.AreEqual(0, count.Now);
+            count.AdjustCount(50);
+            Assert.AreEqual(1, count.Now);
+            count.AdjustCount(80);
+            Assert.AreEqual(2, count.Now);
+            count.AdjustCount(100);
+            Assert.AreEqual(3, count.Now);
+            count.Now = 4;
+            count.AdjustCount(100);
+            Assert.AreEqual(4, count.Now);
+            count.AdjustCount(80);
+            Assert.AreEqual(2, count.Now);
+            count.AdjustCount(50);
+            Assert.AreEqual(1, count.Now);
+            count.AdjustCount(0);
+            Assert.AreEqual(0, count.Now);
+        }
+
+        [TestMethod]
         public void AdjustCount80Percent()
         {
             var count = new QuestCount
