@@ -53,8 +53,8 @@ namespace KancolleSniffer
                     }
                 }
                 var newForm = new ListForm(_mainForm) {Owner = Main, TopMost = Main.TopMost, Font = Main.Font};
-                newForm.UpdateList();
                 newForm.Show();
+                newForm.UpdateList();
                 _listForms.Add(newForm);
             }
 

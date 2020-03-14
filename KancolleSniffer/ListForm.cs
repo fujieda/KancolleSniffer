@@ -31,7 +31,38 @@ namespace KancolleSniffer
         private readonly MainForm.TimeOutChecker _suppressActivate;
         private readonly CheckBox[] _shipTypeCheckBoxes;
         private bool _isMaster;
+        private Settings _settings;
         public const int PanelWidth = 217;
+
+        public class Settings
+        {
+            public string Mode { get; set; }
+            public ShipCategory ShipCategories { get; set; }
+            public bool ShipType { get; set; }
+            public bool ShowHpInPercent { get; set; }
+            public SortOrder SortOrder { get; set; }
+
+            public static Settings FromShipListConfig(ShipListConfig config)
+            {
+                return new Settings
+                {
+                    Mode = config.Mode ?? "全艦",
+                    ShipCategories = config.ShipCategories,
+                    ShipType = config.ShipType,
+                    ShowHpInPercent = config.ShowHpInPercent,
+                    SortOrder = config.SortOrder
+                };
+            }
+
+            public void SetToShipListConfig(ShipListConfig config)
+            {
+                config.Mode = Mode;
+                config.ShipCategories = ShipCategories;
+                config.ShipType = ShipType;
+                config.ShowHpInPercent = ShowHpInPercent;
+                config.SortOrder = SortOrder;
+            }
+        }
 
         private object[] PanelNames => new object[] {"全艦", "A", "B", "C", "D", "分類", "修復", "装備", "艦隊", "対空", "戦況", "情報"}
             .Where(n => IsMaster || (string)n != "分類").ToArray();
@@ -113,7 +144,7 @@ namespace KancolleSniffer
             else if (InShipStatus || InGroupConfig || InRepairList)
             {
                 SetHeaderSortOrder();
-                shipListPanel.Update(_sniffer, comboBoxGroup.Text, _config.ShipList);
+                shipListPanel.Update(_sniffer, comboBoxGroup.Text, _settings);
             }
             if (shipListPanel.GroupUpdated)
             {
@@ -174,7 +205,7 @@ namespace KancolleSniffer
 
         private void MoveToBattleResult()
         {
-            if (!_config.ShipList.AutoBattleResult || comboBoxGroup.SelectedIndex == BattleResultIndex ||
+            if (!_isMaster || !_config.ShipList.AutoBattleResult || comboBoxGroup.SelectedIndex == BattleResultIndex ||
                 _sniffer.InSortie == -1)
                 return;
             _prevSelectedIndex = comboBoxGroup.SelectedIndex;
@@ -197,7 +228,7 @@ namespace KancolleSniffer
 
         private void SetHeaderSortOrder()
         {
-            switch (_config.ShipList.SortOrder)
+            switch (_settings.SortOrder)
             {
                 case SortOrder.None:
                     labelHeaderCond.Text = "cond";
@@ -222,21 +253,21 @@ namespace KancolleSniffer
             }
         }
 
-        private bool InShipStatus => Array.Exists(new[] {"全艦", "A", "B", "C", "D"}, x => comboBoxGroup.Text == x);
+        private bool InShipStatus => Array.Exists(new[] {"全艦", "A", "B", "C", "D"}, x => _settings.Mode == x);
 
-        private bool InGroupConfig => comboBoxGroup.Text == "分類";
+        private bool InGroupConfig => _settings.Mode == "分類";
 
-        private bool InRepairList => comboBoxGroup.Text == "修復";
+        private bool InRepairList => _settings.Mode == "修復";
 
-        private bool InItemList => comboBoxGroup.Text == "装備";
+        private bool InItemList => _settings.Mode == "装備";
 
-        private bool InFleetInfo => comboBoxGroup.Text == "艦隊";
+        private bool InFleetInfo => _settings.Mode == "艦隊";
 
-        private bool InAntiAir => comboBoxGroup.Text == "対空";
+        private bool InAntiAir => _settings.Mode == "対空";
 
-        private bool InBattleResult => comboBoxGroup.Text == "戦況";
+        private bool InBattleResult => _settings.Mode == "戦況";
 
-        private bool InMiscText => comboBoxGroup.Text == "情報";
+        private bool InMiscText => _settings.Mode == "情報";
 
         private void ListForm_Load(object sender, EventArgs e)
         {
@@ -247,14 +278,15 @@ namespace KancolleSniffer
             MinimumSize = new Size(Width, 0);
             MaximumSize = new Size(Width, int.MaxValue);
             var config = GetConfig();
-            if (config.ShowHpInPercent)
+            _settings = Settings.FromShipListConfig(config);
+            if (_settings.ShowHpInPercent)
             {
                 shipListPanel.ToggleHpPercent();
                 battleResultPanel.ToggleHpPercent();
             }
             LoadShipGroupFromConfig();
-            comboBoxGroup.SelectedItem = config.Mode ?? "全艦";
-            SetCheckBoxSTypeState(config);
+            comboBoxGroup.SelectedItem = _settings.Mode;
+            SetCheckBoxSTypeState();
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);
@@ -281,12 +313,12 @@ namespace KancolleSniffer
                 shipListPanel.GroupSettings[i] = i < group.Count ? new HashSet<int>(group[i]) : new HashSet<int>();
         }
 
-        private void SetCheckBoxSTypeState(ShipListConfig config)
+        private void SetCheckBoxSTypeState()
         {
             for (var type = 0; type < _shipTypeCheckBoxes.Length; type++)
-                _shipTypeCheckBoxes[type].Checked = ((int)config.ShipCategories & (1 << type)) != 0;
-            checkBoxSTypeAll.Checked = config.ShipCategories == ShipCategory.All;
-            checkBoxSTypeDetails.Checked = config.ShipType;
+                _shipTypeCheckBoxes[type].Checked = ((int)_settings.ShipCategories & (1 << type)) != 0;
+            checkBoxSTypeAll.Checked = _settings.ShipCategories == ShipCategory.All;
+            checkBoxSTypeDetails.Checked = _settings.ShipType;
         }
 
         private void ListForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -308,7 +340,7 @@ namespace KancolleSniffer
             StoreShipGroupToConfig();
             var config = _config.ShipList;
             config.Visible = Visible && WindowState == FormWindowState.Normal;
-            config.Mode = (string)comboBoxGroup.SelectedItem;
+            _settings.SetToShipListConfig(config);
             if (!Visible)
                 return;
             SaveBounds(config); // 最小化時は以前のサイズを記録する
@@ -321,8 +353,8 @@ namespace KancolleSniffer
             if (WindowState != FormWindowState.Normal) // 最小化時は次回復旧しない
                 return;
             var config = new ShipListConfig {Visible = true};
+            _settings.SetToShipListConfig(config);
             _config.ListFormGroup.Add(config);
-            config.Mode = (string)comboBoxGroup.SelectedItem;
             SaveBounds(config);
         }
 
@@ -411,6 +443,7 @@ namespace KancolleSniffer
 
         private void comboBoxGroup_SelectedIndexChanged(object sender, EventArgs e)
         {
+            _settings.Mode = comboBoxGroup.Text;
             UpdateList();
             SetActiveControl();
             if (!(InShipStatus || InGroupConfig || InRepairList))
@@ -469,17 +502,16 @@ namespace KancolleSniffer
 
         private void labelHeaderCond_Click(object sender, EventArgs e)
         {
-            var sl = _config.ShipList;
-            switch (sl.SortOrder)
+            switch (_settings.SortOrder)
             {
                 case SortOrder.CondAscend:
-                    sl.SortOrder = SortOrder.CondDescend;
+                    _settings.SortOrder = SortOrder.CondDescend;
                     break;
                 case SortOrder.CondDescend:
-                    sl.SortOrder = SortOrder.None;
+                    _settings.SortOrder = SortOrder.None;
                     break;
                 default:
-                    sl.SortOrder = SortOrder.CondAscend;
+                    _settings.SortOrder = SortOrder.CondAscend;
                     break;
             }
             UpdateList();
@@ -487,17 +519,16 @@ namespace KancolleSniffer
 
         private void labelHeaderExp_Click(object sender, EventArgs e)
         {
-            var sl = _config.ShipList;
-            switch (sl.SortOrder)
+            switch (_settings.SortOrder)
             {
                 case SortOrder.ExpToNextAscend:
-                    sl.SortOrder = SortOrder.ExpToNextDescend;
+                    _settings.SortOrder = SortOrder.ExpToNextDescend;
                     break;
                 case SortOrder.ExpToNextDescend:
-                    sl.SortOrder = SortOrder.None;
+                    _settings.SortOrder = SortOrder.None;
                     break;
                 default:
-                    sl.SortOrder = SortOrder.ExpToNextAscend;
+                    _settings.SortOrder = SortOrder.ExpToNextAscend;
                     break;
             }
             UpdateList();
@@ -525,7 +556,7 @@ namespace KancolleSniffer
 
         private void ToggleHpPercent()
         {
-            _config.ShipList.ShowHpInPercent = !_config.ShipList.ShowHpInPercent;
+            _settings.ShowHpInPercent = !_settings.ShowHpInPercent;
             shipListPanel.ToggleHpPercent();
             battleResultPanel.ToggleHpPercent();
         }
@@ -537,7 +568,7 @@ namespace KancolleSniffer
 
         private void checkBoxSType_Click(object sender, EventArgs e)
         {
-            _config.ShipList.ShipCategories = SelectedShipTypes;
+            _settings.ShipCategories = SelectedShipTypes;
             UpdateList();
             SetActiveControl();
         }
@@ -567,7 +598,7 @@ namespace KancolleSniffer
 
         private void checkBoxSTypeDetails_Click(object sender, EventArgs e)
         {
-            _config.ShipList.ShipType = checkBoxSTypeDetails.Checked;
+            _settings.ShipType = checkBoxSTypeDetails.Checked;
             UpdateList();
             SetActiveControl();
         }
