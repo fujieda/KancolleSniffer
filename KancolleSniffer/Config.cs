@@ -18,6 +18,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 namespace KancolleSniffer
 {
@@ -41,8 +43,8 @@ namespace KancolleSniffer
     [Flags]
     public enum ShipCategory
     {
-        None = 0,
         // ReSharper disable UnusedMember.Global
+        None = 0,
         BattleShip = 1,
         AircraftCarrier = 1 << 1,
         HeavyCruiser = 1 << 2,
@@ -301,7 +303,7 @@ namespace KancolleSniffer
             ConvertPath(PrependBaseDir);
         }
 
-        public void InitializeValues()
+        private void InitializeValues()
         {
             NotifyConditions = new List<int>(new[] {40, 49});
             ResetHours = new List<int>(new[] {2});
