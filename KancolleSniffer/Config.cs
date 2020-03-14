@@ -189,6 +189,7 @@ namespace KancolleSniffer
         public int Zoom { get; set; } = 100;
         public Point ListLocation { get; set; }
         public Size ListSize { get; set; }
+        public List<ShipListConfig> ListFromGroup { get; set; }
     }
 
     [Flags]
@@ -286,6 +287,7 @@ namespace KancolleSniffer
                         Zoom = l.Zoom;
                         ShipList.Location = l.ListLocation;
                         ShipList.Size = l.ListSize;
+                        ListFormGroup = l.ListFromGroup;
                     }
                 }
             }
@@ -313,7 +315,8 @@ namespace KancolleSniffer
                     Location = Location,
                     Zoom = Zoom,
                     ListLocation = ShipList.Location,
-                    ListSize = ShipList.Size
+                    ListSize = ShipList.Size,
+                    ListFromGroup = ListFormGroup
                 });
             }
             else
