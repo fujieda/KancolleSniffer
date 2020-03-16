@@ -758,9 +758,9 @@ namespace KancolleSniffer
 
         private void NotifyDamagedShip()
         {
+            _notificationManager.StopRepeat("大破警告");
             if (!Sniffer.BadlyDamagedShips.Any())
                 return;
-            _notificationManager.StopRepeat("大破警告");
             SetNotification("大破警告", string.Join(" ", Sniffer.BadlyDamagedShips));
             _notificationManager.Flash();
         }
