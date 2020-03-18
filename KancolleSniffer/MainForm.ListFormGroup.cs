@@ -103,6 +103,7 @@ namespace KancolleSniffer
 
             public void Close()
             {
+                InvokeAll(listForm => listForm.SaveConfig());
                 InvokeAll(listForm => listForm.Close());
             }
 

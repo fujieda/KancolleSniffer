@@ -324,6 +324,11 @@ namespace KancolleSniffer
         private void ListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
+            Hide();
+        }
+
+        public void SaveConfig()
+        {
             if (_isMaster)
             {
                 SaveMasterState();
@@ -332,7 +337,6 @@ namespace KancolleSniffer
             {
                 SaveSlaveState();
             }
-            Hide();
         }
 
         private void SaveMasterState()
