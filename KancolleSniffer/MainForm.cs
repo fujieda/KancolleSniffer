@@ -111,7 +111,7 @@ namespace KancolleSniffer
             {
                 PanelShipInfo = panelShipInfo,
                 Panel7Ships = panel7Ships,
-                PanelCombinedFleet = panelCombinedFleet,
+                PanelCombinedFleet = panelCombinedFleet
             }, ShowShipOnShipList);
             _ndockLabels.Create(panelDock, labelNDock_Click);
         }
@@ -765,7 +765,7 @@ namespace KancolleSniffer
             _notificationManager.Flash();
         }
 
-        public void UpdateFighterPower(bool combined)
+        private void UpdateFighterPower(bool combined)
         {
             var fleets = Sniffer.Fleets;
             var fp = combined
@@ -822,6 +822,7 @@ namespace KancolleSniffer
             labelFormation.Text = "";
             labelEnemyFighterPower.Text = "";
             labelFighterPower.ForeColor = DefaultForeColor;
+            labelFighterPowerCaption.Text = "制空";
             labelResultRank.Text = "判定";
             panelBattleInfo.Visible = Sniffer.Battle.BattleState != BattleState.None;
         }
@@ -830,9 +831,8 @@ namespace KancolleSniffer
         {
             UpdateEnemyFighterPower();
             var battle = Sniffer.Battle;
-            labelFighterPower.ForeColor = battle.BattleState == BattleState.Night
-                ? DefaultForeColor
-                : AirControlLevelColor(battle.AirControlLevel);
+            labelFighterPower.ForeColor = AirControlLevelColor(battle);
+            labelFighterPowerCaption.Text = AirControlLevelString(battle);
             if (battle.BattleState == BattleState.AirRaid)
             {
                 UpdateAirRaidFighterPower();
@@ -861,13 +861,17 @@ namespace KancolleSniffer
             _toolTip.SetToolTip(labelFighterPowerCaption, toolTop);
         }
 
-        private static Color AirControlLevelColor(int level)
+        private static Color AirControlLevelColor(BattleInfo battle)
         {
-            var colors = new[]
-            {
-                DefaultForeColor, DefaultForeColor, CUDColors.Blue, CUDColors.Green, CUDColors.Orange, CUDColors.Red
-            };
-            return colors[level + 1];
+            return new[]
+                {DefaultForeColor, DefaultForeColor, CUDColors.Blue, CUDColors.Green, CUDColors.Orange, CUDColors.Red}[
+                battle.BattleState == BattleState.Night ? 0 : battle.AirControlLevel + 1];
+        }
+
+        private static string AirControlLevelString(BattleInfo battle)
+        {
+            return new[] {"制空", "拮抗", "確保", "優勢", "劣勢", "喪失"}[
+                battle.BattleState == BattleState.Night ? 0 : battle.AirControlLevel + 1];
         }
 
         private void ShowResultRank()
