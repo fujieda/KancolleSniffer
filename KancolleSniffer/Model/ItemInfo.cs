@@ -131,19 +131,12 @@ namespace KancolleSniffer.Model
 
         public string GetUseItemName(int id) => _itemMaster.GetUseItemName(id);
 
-        private const int EmergencyRepairId = 91;
-
         private IEnumerable<ItemStatus> UseItemList =>
             Enumerable.Repeat(new ItemStatus
             {
-                Spec = new ItemSpec
-                {
-                    Type = 31,
-                    Id = 10000 + EmergencyRepairId,
-                    Name = _itemMaster.GetUseItemName(EmergencyRepairId)
-                },
+                Spec = GetSpecByItemId(ItemMaster.EmergencyRepairSpecId),
                 Holder = new ShipStatus()
-            }, _useItem.TryGetValue(EmergencyRepairId, out var count) ? count : 0);
+            }, _useItem.TryGetValue(ItemMaster.EmergencyRepairId, out var count) ? count : 0);
 
         public void InjectItemSpec(IEnumerable<ItemSpec> specs)
         {

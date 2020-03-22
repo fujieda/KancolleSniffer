@@ -21,6 +21,9 @@ namespace KancolleSniffer.Model
         private readonly Dictionary<int, ItemSpec> _itemSpecs = new Dictionary<int, ItemSpec>();
         private readonly Dictionary<int, string> _useItemName = new Dictionary<int, string>();
 
+        public const int EmergencyRepairId = 91;
+        public const int EmergencyRepairSpecId = 10091;
+
         public AdditionalData AdditionalData { get; set; }
 
         public void InspectMaster(dynamic json)
@@ -54,7 +57,19 @@ namespace KancolleSniffer.Model
             }
             _itemSpecs[-1] = _itemSpecs[0] = new ItemSpec();
             foreach (var entry in json.api_mst_useitem)
-                _useItemName[(int)entry.api_id] = entry.api_name;
+            {
+                var id = (int)entry.api_id;
+                _useItemName[id] = entry.api_name;
+            }
+            if (_useItemName.ContainsKey(EmergencyRepairId))
+            {
+                _itemSpecs[EmergencyRepairSpecId] = new ItemSpec
+                {
+                    Type = 31,
+                    Id = EmergencyRepairSpecId,
+                    Name = _useItemName[EmergencyRepairId]
+                };
+            }
         }
 
         public ItemSpec this[int id]
