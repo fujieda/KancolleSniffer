@@ -24,13 +24,8 @@ namespace KancolleSniffer.View
 {
     public class ItemTreeView : TreeView
     {
-        private ItemStatus[] _prevItemList;
-
         public void SetNodes(ItemStatus[] itemList)
         {
-            if (_prevItemList != null && _prevItemList.SequenceEqual(itemList, new ItemStatusComparer()))
-                return;
-            _prevItemList = itemList.Select(CloneItemStatus).ToArray();
             SetNodes(CreateItemNodes(itemList));
         }
 
@@ -97,44 +92,11 @@ namespace KancolleSniffer.View
             return root;
         }
 
-        private ItemStatus CloneItemStatus(ItemStatus org)
-        {
-            return new ItemStatus
-            {
-                Level = org.Level,
-                Spec = org.Spec,
-                Holder = new ShipStatus {Id = org.Holder.Id, Fleet = org.Holder.Fleet}
-            };
-        }
-
-        private class ItemStatusComparer : IEqualityComparer<ItemStatus>
-        {
-            public bool Equals(ItemStatus x, ItemStatus y)
-                // ReSharper disable PossibleNullReferenceException
-                => x.Level == y.Level && x.Spec == y.Spec && x.Holder.Id == y.Holder.Id &&
-                   x.Holder.Fleet == y.Holder.Fleet;
-            // ReSharper restore PossibleNullReferenceException
-
-            public int GetHashCode(ItemStatus obj) => obj.Level + obj.Spec.GetHashCode() + obj.Holder.GetHashCode();
-        }
-
-        [DllImport("user32.dll")]
-        private static extern int GetScrollPos(IntPtr hWnd, int nBar);
-
-        [DllImport("user32.dll")]
-        private static extern int SetScrollPos(IntPtr hWnd, int nBar, int nPos, bool bRedraw);
-
         private void SetNodes(TreeNode root)
         {
-            var y = GetScrollPos(Handle, 1);
-            BeginUpdate();
             var save = SaveTreeViewState(Nodes);
-            Nodes.Clear();
-            foreach (TreeNode child in root.Nodes)
-                Nodes.Add(child);
+            UpdateNodes(Nodes, root.Nodes);
             RestoreTreeViewState(Nodes, save.Nodes);
-            EndUpdate();
-            SetScrollPos(Handle, 1, y, true);
         }
 
         private TreeNode SaveTreeViewState(IEnumerable nodes)
@@ -161,6 +123,25 @@ namespace KancolleSniffer.View
                 if (s.IsExpanded)
                     d.Expand();
                 RestoreTreeViewState(d.Nodes, s.Nodes);
+            }
+        }
+
+        private void UpdateNodes(TreeNodeCollection prev, TreeNodeCollection now)
+        {
+            for (var i = 0; i < now.Count; i++)
+            {
+                if (prev.Count <= i)
+                {
+                    prev.Add(now[i]);
+                    continue;
+                }
+                if (prev.Count > i && prev[i].Name == now[i].Name)
+                {
+                    UpdateNodes(prev[i].Nodes, now[i].Nodes);
+                    continue;
+                }
+                prev.RemoveAt(i);
+                prev.Insert(i, now[i]);
             }
         }
 
