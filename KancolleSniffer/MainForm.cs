@@ -49,7 +49,6 @@ namespace KancolleSniffer
         private int _currentFleet;
         private bool _combinedFleet;
         private readonly MainShipLabels _mainLabels = new MainShipLabels();
-        private readonly MainNDockLabels _ndockLabels = new MainNDockLabels();
         private NumberAndHistory _numberAndHistory;
         private readonly ListFormGroup _listFormGroup;
 
@@ -91,6 +90,7 @@ namespace KancolleSniffer
             labelPresetAkashiTimer.BackColor = CustomColors.ColumnColors.Bright;
             SetupQuestPanel();
             panelRepairList.CreateLabels(panelRepairList_Click);
+            ndockPanel.SetClickHandler(labelNDock_Click);
             missionPanel.SetClickHandler(labelMission_Click);
             PerformZoom();
         }
@@ -117,7 +117,6 @@ namespace KancolleSniffer
                 Panel7Ships = panel7Ships,
                 PanelCombinedFleet = panelCombinedFleet
             }, ShowShipOnShipList);
-            _ndockLabels.Create(panelDock, labelNDock_Click);
         }
 
         private void CreateNumberAndHistory(NotificationManager manager)
@@ -905,7 +904,7 @@ namespace KancolleSniffer
 
         private void UpdateNDocLabels()
         {
-            _ndockLabels.SetName(Sniffer.NDock);
+            ndockPanel.SetName(Sniffer.NDock);
             SetNDockLabel();
         }
 
@@ -942,11 +941,7 @@ namespace KancolleSniffer
         private void UpdateTimers()
         {
             missionPanel.UpdateTimers(Sniffer, _now, (Config.ShowEndTime & TimerKind.Mission) != 0);
-            for (var i = 0; i < Sniffer.NDock.Length; i++)
-            {
-                var entry = Sniffer.NDock[i];
-                _ndockLabels.SetTimer(i, entry.Timer, _now, (Config.ShowEndTime & TimerKind.NDock) != 0);
-            }
+            ndockPanel.UpdateTimers(Sniffer, _now, (Config.ShowEndTime & TimerKind.NDock) != 0);
             var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
             for (var i = 0; i < kdock.Length; i++)
             {
