@@ -91,6 +91,7 @@ namespace KancolleSniffer
             labelPresetAkashiTimer.BackColor = CustomColors.ColumnColors.Bright;
             SetupQuestPanel();
             panelRepairList.CreateLabels(panelRepairList_Click);
+            missionPanel.SetClickHandler(labelMission_Click);
             PerformZoom();
         }
 
@@ -922,18 +923,7 @@ namespace KancolleSniffer
 
         private void UpdateMissionLabels()
         {
-            var nameLabels = new[] {labelMissionName1, labelMissionName2, labelMissionName3};
-            var paramsLabels = new[] {labelMissionParams1, labelMissionParams2, labelMissionParams3};
-            var names = Sniffer.Missions.Select(mission => mission.Name).ToArray();
-            for (var i = 0; i < ShipInfo.FleetCount - 1; i++)
-            {
-                var fleetParams = Sniffer.Fleets[i + 1].MissionParameter;
-                var inPort = string.IsNullOrEmpty(names[i]);
-                paramsLabels[i].Visible = inPort;
-                paramsLabels[i].Text = fleetParams;
-                nameLabels[i].Text = names[i];
-                _toolTip.SetToolTip(nameLabels[i], inPort ? "" : fleetParams);
-            }
+            missionPanel.Update(Sniffer);
             SetMissionLabel();
         }
 
@@ -951,13 +941,7 @@ namespace KancolleSniffer
 
         private void UpdateTimers()
         {
-            var mission = new[] {labelMission1, labelMission2, labelMission3};
-            for (var i = 0; i < mission.Length; i++)
-            {
-                var entry = Sniffer.Missions[i];
-                SetTimerColor(mission[i], entry.Timer, _now);
-                mission[i].Text = entry.Timer.ToString(_now, (Config.ShowEndTime & TimerKind.Mission) != 0);
-            }
+            missionPanel.UpdateTimers(Sniffer, _now, (Config.ShowEndTime & TimerKind.Mission) != 0);
             for (var i = 0; i < Sniffer.NDock.Length; i++)
             {
                 var entry = Sniffer.NDock[i];

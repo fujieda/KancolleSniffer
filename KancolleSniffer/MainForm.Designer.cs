@@ -99,19 +99,6 @@ namespace KancolleSniffer
             this.labelConstruct = new System.Windows.Forms.Label();
             this.labelQuest = new System.Windows.Forms.Label();
             this.labelMission = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.labelMissionParams3 = new System.Windows.Forms.Label();
-            this.labelMissionParams2 = new System.Windows.Forms.Label();
-            this.labelMissionParams1 = new System.Windows.Forms.Label();
-            this.labelMissionName3 = new System.Windows.Forms.Label();
-            this.labelMissionName2 = new System.Windows.Forms.Label();
-            this.labelMissionName1 = new System.Windows.Forms.Label();
-            this.labelMission3 = new System.Windows.Forms.Label();
-            this.labelMission2 = new System.Windows.Forms.Label();
-            this.labelMission1 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStripNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -148,16 +135,16 @@ namespace KancolleSniffer
             this.labelCheckFleet3 = new System.Windows.Forms.Label();
             this.labelCheckFleet4 = new System.Windows.Forms.Label();
             this.labelCheckFleet1 = new System.Windows.Forms.Label();
+            this.labelQuestCount = new System.Windows.Forms.Label();
             this.questPanel = new KancolleSniffer.View.QuestPanel();
             this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
-            this.labelQuestCount = new System.Windows.Forms.Label();
+            this.missionPanel = new KancolleSniffer.View.MissionPanel();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
             this.panelMaterialHistory.SuspendLayout();
             this.panelDock.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -682,135 +669,6 @@ namespace KancolleSniffer
             this.labelMission.Text = "遠征";
             this.labelMission.Click += new System.EventHandler(this.labelMission_Click);
             // 
-            // panel2
-            // 
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.labelMissionParams3);
-            this.panel2.Controls.Add(this.labelMissionParams2);
-            this.panel2.Controls.Add(this.labelMissionParams1);
-            this.panel2.Controls.Add(this.labelMissionName3);
-            this.panel2.Controls.Add(this.labelMissionName2);
-            this.panel2.Controls.Add(this.labelMissionName1);
-            this.panel2.Controls.Add(this.labelMission3);
-            this.panel2.Controls.Add(this.labelMission2);
-            this.panel2.Controls.Add(this.labelMission1);
-            this.panel2.Controls.Add(this.label15);
-            this.panel2.Controls.Add(this.label14);
-            this.panel2.Controls.Add(this.label13);
-            this.panel2.Location = new System.Drawing.Point(6, 290);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(220, 49);
-            this.panel2.TabIndex = 11;
-            this.panel2.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // labelMissionParams3
-            // 
-            this.labelMissionParams3.Location = new System.Drawing.Point(56, 33);
-            this.labelMissionParams3.Name = "labelMissionParams3";
-            this.labelMissionParams3.Size = new System.Drawing.Size(161, 12);
-            this.labelMissionParams3.TabIndex = 11;
-            this.labelMissionParams3.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // labelMissionParams2
-            // 
-            this.labelMissionParams2.Location = new System.Drawing.Point(56, 18);
-            this.labelMissionParams2.Name = "labelMissionParams2";
-            this.labelMissionParams2.Size = new System.Drawing.Size(161, 12);
-            this.labelMissionParams2.TabIndex = 10;
-            this.labelMissionParams2.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // labelMissionParams1
-            // 
-            this.labelMissionParams1.Location = new System.Drawing.Point(56, 3);
-            this.labelMissionParams1.Name = "labelMissionParams1";
-            this.labelMissionParams1.Size = new System.Drawing.Size(161, 12);
-            this.labelMissionParams1.TabIndex = 9;
-            this.labelMissionParams1.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // labelMissionName3
-            // 
-            this.labelMissionName3.Location = new System.Drawing.Point(32, 33);
-            this.labelMissionName3.Name = "labelMissionName3";
-            this.labelMissionName3.Size = new System.Drawing.Size(139, 12);
-            this.labelMissionName3.TabIndex = 5;
-            this.labelMissionName3.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // labelMissionName2
-            // 
-            this.labelMissionName2.Location = new System.Drawing.Point(32, 18);
-            this.labelMissionName2.Name = "labelMissionName2";
-            this.labelMissionName2.Size = new System.Drawing.Size(139, 12);
-            this.labelMissionName2.TabIndex = 4;
-            this.labelMissionName2.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // labelMissionName1
-            // 
-            this.labelMissionName1.Location = new System.Drawing.Point(32, 3);
-            this.labelMissionName1.Name = "labelMissionName1";
-            this.labelMissionName1.Size = new System.Drawing.Size(139, 12);
-            this.labelMissionName1.TabIndex = 3;
-            this.labelMissionName1.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // labelMission3
-            // 
-            this.labelMission3.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelMission3.Location = new System.Drawing.Point(171, 33);
-            this.labelMission3.Name = "labelMission3";
-            this.labelMission3.Size = new System.Drawing.Size(47, 12);
-            this.labelMission3.TabIndex = 8;
-            this.labelMission3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelMission3.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // labelMission2
-            // 
-            this.labelMission2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelMission2.Location = new System.Drawing.Point(171, 18);
-            this.labelMission2.Name = "labelMission2";
-            this.labelMission2.Size = new System.Drawing.Size(47, 12);
-            this.labelMission2.TabIndex = 7;
-            this.labelMission2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelMission2.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // labelMission1
-            // 
-            this.labelMission1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelMission1.Location = new System.Drawing.Point(171, 3);
-            this.labelMission1.Name = "labelMission1";
-            this.labelMission1.Size = new System.Drawing.Size(47, 12);
-            this.labelMission1.TabIndex = 6;
-            this.labelMission1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelMission1.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(2, 33);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(29, 12);
-            this.label15.TabIndex = 2;
-            this.label15.Text = "第四";
-            this.label15.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(2, 18);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(29, 12);
-            this.label14.TabIndex = 1;
-            this.label14.Text = "第三";
-            this.label14.Click += new System.EventHandler(this.labelMission_Click);
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(2, 3);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(29, 12);
-            this.label13.TabIndex = 0;
-            this.label13.Text = "第二";
-            this.label13.Click += new System.EventHandler(this.labelMission_Click);
-            // 
             // timerMain
             // 
             this.timerMain.Enabled = true;
@@ -1139,6 +997,15 @@ namespace KancolleSniffer
             this.labelCheckFleet1.Size = new System.Drawing.Size(5, 14);
             this.labelCheckFleet1.TabIndex = 16;
             // 
+            // labelQuestCount
+            // 
+            this.labelQuestCount.AutoSize = true;
+            this.labelQuestCount.Location = new System.Drawing.Point(35, 342);
+            this.labelQuestCount.Name = "labelQuestCount";
+            this.labelQuestCount.Size = new System.Drawing.Size(11, 12);
+            this.labelQuestCount.TabIndex = 57;
+            this.labelQuestCount.Text = "0";
+            // 
             // questPanel
             // 
             this.questPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1157,14 +1024,13 @@ namespace KancolleSniffer
             this.panelRepairList.Visible = false;
             this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
             // 
-            // labelQuestCount
+            // missionPanel
             // 
-            this.labelQuestCount.AutoSize = true;
-            this.labelQuestCount.Location = new System.Drawing.Point(35, 342);
-            this.labelQuestCount.Name = "labelQuestCount";
-            this.labelQuestCount.Size = new System.Drawing.Size(11, 12);
-            this.labelQuestCount.TabIndex = 57;
-            this.labelQuestCount.Text = "0";
+            this.missionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.missionPanel.Location = new System.Drawing.Point(6, 290);
+            this.missionPanel.Name = "missionPanel";
+            this.missionPanel.Size = new System.Drawing.Size(220, 49);
+            this.missionPanel.TabIndex = 58;
             // 
             // MainForm
             // 
@@ -1172,6 +1038,7 @@ namespace KancolleSniffer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.missionPanel);
             this.Controls.Add(this.labelQuestCount);
             this.Controls.Add(this.questPanel);
             this.Controls.Add(this.labelClearQuest);
@@ -1199,7 +1066,6 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelCheckFleet4);
             this.Controls.Add(this.labelFleet4);
             this.Controls.Add(this.labelCheckFleet1);
-            this.Controls.Add(this.panel2);
             this.Controls.Add(this.labelMission);
             this.Controls.Add(this.labelQuest);
             this.Controls.Add(this.panel1);
@@ -1231,8 +1097,6 @@ namespace KancolleSniffer
             this.panelDock.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.contextMenuStripNotifyIcon.ResumeLayout(false);
             this.contextMenuStripMain.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -1268,16 +1132,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label labelQuest;
         private System.Windows.Forms.Label labelMission;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label labelMissionName3;
-        private System.Windows.Forms.Label labelMissionName2;
-        private System.Windows.Forms.Label labelMissionName1;
-        private System.Windows.Forms.Label labelMission3;
-        private System.Windows.Forms.Label labelMission2;
-        private System.Windows.Forms.Label labelMission1;
-        private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Timer timerMain;
         private System.Windows.Forms.Label labelCondTimerTitle;
         private System.Windows.Forms.Label labelCondTimer;
@@ -1342,11 +1196,9 @@ namespace KancolleSniffer
         private System.Windows.Forms.Panel panel7Ships;
         private System.Windows.Forms.LinkLabel linkLabelGuide;
         private System.Windows.Forms.Label labelClearQuest;
-        private System.Windows.Forms.Label labelMissionParams1;
-        private System.Windows.Forms.Label labelMissionParams3;
-        private System.Windows.Forms.Label labelMissionParams2;
         private QuestPanel questPanel;
         private System.Windows.Forms.Label labelQuestCount;
+        private MissionPanel missionPanel;
     }
 }
 
