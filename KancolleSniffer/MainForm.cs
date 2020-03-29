@@ -942,13 +942,7 @@ namespace KancolleSniffer
         {
             missionPanel.UpdateTimers(Sniffer, _now, (Config.ShowEndTime & TimerKind.Mission) != 0);
             ndockPanel.UpdateTimers(Sniffer, _now, (Config.ShowEndTime & TimerKind.NDock) != 0);
-            var kdock = new[] {labelConstruct1, labelConstruct2, labelConstruct3, labelConstruct4};
-            for (var i = 0; i < kdock.Length; i++)
-            {
-                var timer = Sniffer.KDock[i];
-                SetTimerColor(kdock[i], timer, _now);
-                kdock[i].Text = timer.ToString(_now);
-            }
+            kdockPanel.UpdateTimers(Sniffer, _now);
             UpdateCondTimers();
             UpdateAkashiTimer();
             _timerEnabled = true;

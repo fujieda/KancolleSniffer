@@ -82,15 +82,6 @@ namespace KancolleSniffer
             this.label35 = new System.Windows.Forms.Label();
             this.labelFuelHistory = new System.Windows.Forms.Label();
             this.labelNDock = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.labelConstruct3 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.labelConstruct4 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.labelConstruct2 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.labelConstruct1 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.labelConstruct = new System.Windows.Forms.Label();
             this.labelQuest = new System.Windows.Forms.Label();
             this.labelMission = new System.Windows.Forms.Label();
@@ -135,11 +126,11 @@ namespace KancolleSniffer
             this.ndockPanel = new KancolleSniffer.View.NDockPanel();
             this.missionPanel = new KancolleSniffer.View.MissionPanel();
             this.questPanel = new KancolleSniffer.View.QuestPanel();
+            this.kdockPanel = new KancolleSniffer.View.KDockPanel();
             this.panelHeadquarters.SuspendLayout();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
             this.panelMaterialHistory.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -496,91 +487,6 @@ namespace KancolleSniffer
             this.labelNDock.TabIndex = 3;
             this.labelNDock.Text = "入渠";
             this.labelNDock.Click += new System.EventHandler(this.labelNDock_Click);
-            // 
-            // panel1
-            // 
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.labelConstruct3);
-            this.panel1.Controls.Add(this.label12);
-            this.panel1.Controls.Add(this.labelConstruct4);
-            this.panel1.Controls.Add(this.label11);
-            this.panel1.Controls.Add(this.labelConstruct2);
-            this.panel1.Controls.Add(this.label10);
-            this.panel1.Controls.Add(this.labelConstruct1);
-            this.panel1.Controls.Add(this.label9);
-            this.panel1.Location = new System.Drawing.Point(149, 209);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(77, 64);
-            this.panel1.TabIndex = 7;
-            // 
-            // labelConstruct3
-            // 
-            this.labelConstruct3.BackColor = System.Drawing.Color.Transparent;
-            this.labelConstruct3.Location = new System.Drawing.Point(28, 33);
-            this.labelConstruct3.Name = "labelConstruct3";
-            this.labelConstruct3.Size = new System.Drawing.Size(47, 12);
-            this.labelConstruct3.TabIndex = 6;
-            this.labelConstruct3.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(2, 48);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(29, 12);
-            this.label12.TabIndex = 3;
-            this.label12.Text = "第四";
-            // 
-            // labelConstruct4
-            // 
-            this.labelConstruct4.Location = new System.Drawing.Point(28, 48);
-            this.labelConstruct4.Name = "labelConstruct4";
-            this.labelConstruct4.Size = new System.Drawing.Size(47, 12);
-            this.labelConstruct4.TabIndex = 7;
-            this.labelConstruct4.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(2, 33);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(29, 12);
-            this.label11.TabIndex = 2;
-            this.label11.Text = "第三";
-            // 
-            // labelConstruct2
-            // 
-            this.labelConstruct2.Location = new System.Drawing.Point(28, 18);
-            this.labelConstruct2.Name = "labelConstruct2";
-            this.labelConstruct2.Size = new System.Drawing.Size(47, 12);
-            this.labelConstruct2.TabIndex = 5;
-            this.labelConstruct2.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(2, 18);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(29, 12);
-            this.label10.TabIndex = 1;
-            this.label10.Text = "第二";
-            // 
-            // labelConstruct1
-            // 
-            this.labelConstruct1.Location = new System.Drawing.Point(28, 3);
-            this.labelConstruct1.Name = "labelConstruct1";
-            this.labelConstruct1.Size = new System.Drawing.Size(47, 12);
-            this.labelConstruct1.TabIndex = 4;
-            this.labelConstruct1.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(2, 3);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(29, 12);
-            this.label9.TabIndex = 0;
-            this.label9.Text = "第一";
             // 
             // labelConstruct
             // 
@@ -968,6 +874,7 @@ namespace KancolleSniffer
             // 
             // missionPanel
             // 
+            this.missionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.missionPanel.Location = new System.Drawing.Point(6, 290);
             this.missionPanel.Name = "missionPanel";
             this.missionPanel.Size = new System.Drawing.Size(220, 49);
@@ -981,12 +888,21 @@ namespace KancolleSniffer
             this.questPanel.Size = new System.Drawing.Size(220, 94);
             this.questPanel.TabIndex = 56;
             // 
+            // kdockPanel
+            // 
+            this.kdockPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.kdockPanel.Location = new System.Drawing.Point(149, 209);
+            this.kdockPanel.Name = "kdockPanel";
+            this.kdockPanel.Size = new System.Drawing.Size(77, 64);
+            this.kdockPanel.TabIndex = 60;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.kdockPanel);
             this.Controls.Add(this.panelRepairList);
             this.Controls.Add(this.ndockPanel);
             this.Controls.Add(this.missionPanel);
@@ -1018,7 +934,6 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelCheckFleet1);
             this.Controls.Add(this.labelMission);
             this.Controls.Add(this.labelQuest);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.labelConstruct);
             this.Controls.Add(this.labelNDock);
             this.Controls.Add(this.panelShipInfo);
@@ -1042,8 +957,6 @@ namespace KancolleSniffer
             this.panelBattleInfo.PerformLayout();
             this.panelMaterialHistory.ResumeLayout(false);
             this.panelMaterialHistory.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.contextMenuStripNotifyIcon.ResumeLayout(false);
             this.contextMenuStripMain.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -1062,16 +975,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panelShipInfo;
         private System.Windows.Forms.Label labelNDock;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label labelConstruct;
-        private System.Windows.Forms.Label labelConstruct3;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label labelConstruct4;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label labelConstruct2;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label labelConstruct1;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label labelQuest;
         private System.Windows.Forms.Label labelMission;
         private System.Windows.Forms.Timer timerMain;
@@ -1142,6 +1046,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelQuestCount;
         private MissionPanel missionPanel;
         private NDockPanel ndockPanel;
+        private KDockPanel kdockPanel;
     }
 }
 

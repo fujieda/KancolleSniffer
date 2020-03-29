@@ -127,6 +127,9 @@
     <Compile Include="Util\HttpUtility.cs" />
     <Compile Include="View\FleetSpec.cs" />
     <Compile Include="View\GrowLeftLabel.cs" />
+    <Compile Include="View\KDockPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\NDockPanel.cs">
       <SubType>Component</SubType>
     </Compile>
