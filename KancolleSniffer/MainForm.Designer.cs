@@ -46,18 +46,6 @@ namespace KancolleSniffer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.panelHeadquarters = new System.Windows.Forms.Panel();
-            this.labelPlayLog = new System.Windows.Forms.Label();
-            this.labelLogin = new System.Windows.Forms.Label();
-            this.labelBucketHistoryButton = new System.Windows.Forms.Label();
-            this.labelAchievement = new System.Windows.Forms.Label();
-            this.label28 = new System.Windows.Forms.Label();
-            this.labelNumOfBuckets = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.labelNumOfEquips = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.labelNumOfShips = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.panelShipInfo = new System.Windows.Forms.Panel();
             this.labelPresetAkashiTimer = new System.Windows.Forms.Label();
             this.linkLabelGuide = new System.Windows.Forms.LinkLabel();
@@ -100,7 +88,6 @@ namespace KancolleSniffer
             this.labelFleet4 = new System.Windows.Forms.Label();
             this.labelFleet3 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
-            this.labelBucketHistory = new System.Windows.Forms.Label();
             this.label36 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.imageListFuelSq = new System.Windows.Forms.ImageList(this.components);
@@ -122,139 +109,18 @@ namespace KancolleSniffer
             this.labelCheckFleet4 = new System.Windows.Forms.Label();
             this.labelCheckFleet1 = new System.Windows.Forms.Label();
             this.labelQuestCount = new System.Windows.Forms.Label();
+            this.kdockPanel = new KancolleSniffer.View.KDockPanel();
             this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
             this.ndockPanel = new KancolleSniffer.View.NDockPanel();
             this.missionPanel = new KancolleSniffer.View.MissionPanel();
             this.questPanel = new KancolleSniffer.View.QuestPanel();
-            this.kdockPanel = new KancolleSniffer.View.KDockPanel();
-            this.panelHeadquarters.SuspendLayout();
+            this.hqPanel = new KancolleSniffer.View.HqPanel();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
             this.panelMaterialHistory.SuspendLayout();
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panelHeadquarters
-            // 
-            this.panelHeadquarters.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelHeadquarters.Controls.Add(this.labelPlayLog);
-            this.panelHeadquarters.Controls.Add(this.labelLogin);
-            this.panelHeadquarters.Controls.Add(this.labelBucketHistoryButton);
-            this.panelHeadquarters.Controls.Add(this.labelAchievement);
-            this.panelHeadquarters.Controls.Add(this.label28);
-            this.panelHeadquarters.Controls.Add(this.labelNumOfBuckets);
-            this.panelHeadquarters.Controls.Add(this.label3);
-            this.panelHeadquarters.Controls.Add(this.labelNumOfEquips);
-            this.panelHeadquarters.Controls.Add(this.label2);
-            this.panelHeadquarters.Controls.Add(this.labelNumOfShips);
-            this.panelHeadquarters.Controls.Add(this.label1);
-            this.panelHeadquarters.Location = new System.Drawing.Point(6, 6);
-            this.panelHeadquarters.Name = "panelHeadquarters";
-            this.panelHeadquarters.Size = new System.Drawing.Size(220, 33);
-            this.panelHeadquarters.TabIndex = 0;
-            // 
-            // labelPlayLog
-            // 
-            this.labelPlayLog.AutoSize = true;
-            this.labelPlayLog.Location = new System.Drawing.Point(207, 3);
-            this.labelPlayLog.Name = "labelPlayLog";
-            this.labelPlayLog.Size = new System.Drawing.Size(11, 12);
-            this.labelPlayLog.TabIndex = 24;
-            this.labelPlayLog.Text = "*";
-            this.labelPlayLog.Visible = false;
-            // 
-            // labelLogin
-            // 
-            this.labelLogin.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelLogin.Location = new System.Drawing.Point(6, 2);
-            this.labelLogin.Name = "labelLogin";
-            this.labelLogin.Size = new System.Drawing.Size(210, 28);
-            this.labelLogin.TabIndex = 23;
-            this.labelLogin.Text = "艦これにログインしてください。\r\nログイン中ならログインし直してください。";
-            this.labelLogin.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // labelBucketHistoryButton
-            // 
-            this.labelBucketHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelBucketHistoryButton.Image = ((System.Drawing.Image)(resources.GetObject("labelBucketHistoryButton.Image")));
-            this.labelBucketHistoryButton.Location = new System.Drawing.Point(146, 15);
-            this.labelBucketHistoryButton.Name = "labelBucketHistoryButton";
-            this.labelBucketHistoryButton.Size = new System.Drawing.Size(14, 14);
-            this.labelBucketHistoryButton.TabIndex = 9;
-            this.labelBucketHistoryButton.Click += new System.EventHandler(this.labelBucketHistoryButton_Click);
-            // 
-            // labelAchievement
-            // 
-            this.labelAchievement.Location = new System.Drawing.Point(166, 18);
-            this.labelAchievement.Name = "labelAchievement";
-            this.labelAchievement.Size = new System.Drawing.Size(33, 12);
-            this.labelAchievement.TabIndex = 7;
-            this.labelAchievement.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(170, 3);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(29, 12);
-            this.label28.TabIndex = 6;
-            this.label28.Text = "戦果";
-            // 
-            // labelNumOfBuckets
-            // 
-            this.labelNumOfBuckets.Location = new System.Drawing.Point(116, 18);
-            this.labelNumOfBuckets.Name = "labelNumOfBuckets";
-            this.labelNumOfBuckets.Size = new System.Drawing.Size(30, 12);
-            this.labelNumOfBuckets.TabIndex = 5;
-            this.labelNumOfBuckets.Text = "0";
-            this.labelNumOfBuckets.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelNumOfBuckets.Click += new System.EventHandler(this.labelBucketHistoryButton_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(113, 3);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(33, 12);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "バケツ";
-            // 
-            // labelNumOfEquips
-            // 
-            this.labelNumOfEquips.Location = new System.Drawing.Point(46, 18);
-            this.labelNumOfEquips.Name = "labelNumOfEquips";
-            this.labelNumOfEquips.Size = new System.Drawing.Size(60, 12);
-            this.labelNumOfEquips.TabIndex = 3;
-            this.labelNumOfEquips.Text = "0/0";
-            this.labelNumOfEquips.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(65, 3);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(41, 12);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "装備数";
-            // 
-            // labelNumOfShips
-            // 
-            this.labelNumOfShips.Location = new System.Drawing.Point(0, 18);
-            this.labelNumOfShips.Name = "labelNumOfShips";
-            this.labelNumOfShips.Size = new System.Drawing.Size(48, 12);
-            this.labelNumOfShips.TabIndex = 1;
-            this.labelNumOfShips.Text = "0/0";
-            this.labelNumOfShips.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 3);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 12);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "艦娘数";
             // 
             // panelShipInfo
             // 
@@ -634,18 +500,6 @@ namespace KancolleSniffer
             this.labelFleet2.TabIndex = 21;
             this.labelFleet2.Text = "第二";
             // 
-            // labelBucketHistory
-            // 
-            this.labelBucketHistory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelBucketHistory.Location = new System.Drawing.Point(106, 36);
-            this.labelBucketHistory.Name = "labelBucketHistory";
-            this.labelBucketHistory.Size = new System.Drawing.Size(61, 28);
-            this.labelBucketHistory.TabIndex = 42;
-            this.labelBucketHistory.Text = "今日\r\n今週";
-            this.labelBucketHistory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.labelBucketHistory.Visible = false;
-            this.labelBucketHistory.Click += new System.EventHandler(this.labelBucketHistory_Click);
-            // 
             // label36
             // 
             this.label36.AutoSize = true;
@@ -854,6 +708,14 @@ namespace KancolleSniffer
             this.labelQuestCount.TabIndex = 57;
             this.labelQuestCount.Text = "0";
             // 
+            // kdockPanel
+            // 
+            this.kdockPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.kdockPanel.Location = new System.Drawing.Point(149, 209);
+            this.kdockPanel.Name = "kdockPanel";
+            this.kdockPanel.Size = new System.Drawing.Size(77, 64);
+            this.kdockPanel.TabIndex = 60;
+            // 
             // panelRepairList
             // 
             this.panelRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -867,6 +729,7 @@ namespace KancolleSniffer
             // ndockPanel
             // 
             this.ndockPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ndockPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ndockPanel.Location = new System.Drawing.Point(6, 209);
             this.ndockPanel.Name = "ndockPanel";
             this.ndockPanel.Size = new System.Drawing.Size(140, 64);
@@ -875,6 +738,7 @@ namespace KancolleSniffer
             // missionPanel
             // 
             this.missionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.missionPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.missionPanel.Location = new System.Drawing.Point(6, 290);
             this.missionPanel.Name = "missionPanel";
             this.missionPanel.Size = new System.Drawing.Size(220, 49);
@@ -888,13 +752,13 @@ namespace KancolleSniffer
             this.questPanel.Size = new System.Drawing.Size(220, 94);
             this.questPanel.TabIndex = 56;
             // 
-            // kdockPanel
+            // hqPanel
             // 
-            this.kdockPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.kdockPanel.Location = new System.Drawing.Point(149, 209);
-            this.kdockPanel.Name = "kdockPanel";
-            this.kdockPanel.Size = new System.Drawing.Size(77, 64);
-            this.kdockPanel.TabIndex = 60;
+            this.hqPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.hqPanel.Location = new System.Drawing.Point(6, 6);
+            this.hqPanel.Name = "hqPanel";
+            this.hqPanel.Size = new System.Drawing.Size(220, 33);
+            this.hqPanel.TabIndex = 61;
             // 
             // MainForm
             // 
@@ -902,6 +766,7 @@ namespace KancolleSniffer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.hqPanel);
             this.Controls.Add(this.kdockPanel);
             this.Controls.Add(this.panelRepairList);
             this.Controls.Add(this.ndockPanel);
@@ -912,7 +777,6 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelAkashiRepair);
             this.Controls.Add(this.labelAkashiRepairTimer);
             this.Controls.Add(this.panelMaterialHistory);
-            this.Controls.Add(this.labelBucketHistory);
             this.Controls.Add(this.labelBullSq4);
             this.Controls.Add(this.labelFuelSq4);
             this.Controls.Add(this.labelBullSq3);
@@ -938,7 +802,6 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelNDock);
             this.Controls.Add(this.panelShipInfo);
             this.Controls.Add(this.labelFleet1);
-            this.Controls.Add(this.panelHeadquarters);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -949,8 +812,6 @@ namespace KancolleSniffer
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
-            this.panelHeadquarters.ResumeLayout(false);
-            this.panelHeadquarters.PerformLayout();
             this.panelShipInfo.ResumeLayout(false);
             this.panelShipInfo.PerformLayout();
             this.panelBattleInfo.ResumeLayout(false);
@@ -965,14 +826,6 @@ namespace KancolleSniffer
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel panelHeadquarters;
-        private System.Windows.Forms.Label labelNumOfBuckets;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label labelNumOfEquips;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label labelNumOfShips;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panelShipInfo;
         private System.Windows.Forms.Label labelNDock;
         private System.Windows.Forms.Label labelConstruct;
@@ -995,11 +848,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFleet2;
         private System.Windows.Forms.Label labelFighterPower;
         private System.Windows.Forms.Label labelFighterPowerCaption;
-        private System.Windows.Forms.Label labelLogin;
-        private System.Windows.Forms.Label labelAchievement;
-        private System.Windows.Forms.Label label28;
-        private System.Windows.Forms.Label labelBucketHistoryButton;
-        private System.Windows.Forms.Label labelBucketHistory;
         private System.Windows.Forms.Panel panelMaterialHistory;
         private System.Windows.Forms.Label labelBouxiteHistory;
         private System.Windows.Forms.Label labelSteelHistory;
@@ -1016,7 +864,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
         private System.Windows.Forms.Label labelLoS;
         private System.Windows.Forms.Label labelLoSCaption;
-        private System.Windows.Forms.Label labelPlayLog;
         private System.Windows.Forms.Panel panelBattleInfo;
         private System.Windows.Forms.Label labelEnemyFighterPower;
         private System.Windows.Forms.Label labelEnemyFighterPowerCaption;
@@ -1047,6 +894,7 @@ namespace KancolleSniffer
         private MissionPanel missionPanel;
         private NDockPanel ndockPanel;
         private KDockPanel kdockPanel;
+        private HqPanel hqPanel;
     }
 }
 

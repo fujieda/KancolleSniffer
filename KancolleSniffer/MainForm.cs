@@ -65,6 +65,28 @@ namespace KancolleSniffer
         public Sniffer Sniffer { get; } = new Sniffer();
         public Config Config { get; } = new Config();
 
+        public interface INotifySubmitter
+        {
+            void Flash();
+            void Enqueue(string key, string subject);
+        }
+
+        public class Context
+        {
+            public Sniffer Sniffer { get; }
+            public Config Config { get; }
+            public INotifySubmitter Submitter { get; }
+            public Func<DateTime> GetNow { get; }
+
+            public Context(Sniffer sniffer, Config config, INotifySubmitter submitter, Func<DateTime> getNow)
+            {
+                Sniffer = sniffer;
+                Config = config;
+                Submitter = submitter;
+                GetNow = getNow;
+            }
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -92,7 +114,14 @@ namespace KancolleSniffer
             panelRepairList.CreateLabels(panelRepairList_Click);
             ndockPanel.SetClickHandler(labelNDock_Click);
             missionPanel.SetClickHandler(labelMission_Click);
+            SetContextToView();
             PerformZoom();
+        }
+
+        private void SetContextToView()
+        {
+            var context = new Context(Sniffer, Config, new NotifySubmitter(_notificationManager), () => _now);
+            hqPanel.Context = context;
         }
 
         private void SetScaleFactorOfDpiScaling()
@@ -123,11 +152,6 @@ namespace KancolleSniffer
         {
             _numberAndHistory = new NumberAndHistory(new NumberAndHistoryLabels
             {
-                NumOfShips = labelNumOfShips,
-                NumOfEquips = labelNumOfEquips,
-                NumOfBuckets = labelNumOfBuckets,
-                BucketHistory = labelBucketHistory,
-                Achievement = labelAchievement,
                 FuelHistory = labelFuelHistory,
                 BulletHistory = labelBulletHistory,
                 SteelHistory = labelSteelHistory,
@@ -320,7 +344,7 @@ namespace KancolleSniffer
         {
             if (update == Sniffer.Update.Start)
             {
-                labelLogin.Visible = false;
+                hqPanel.Login.Visible = false;
                 linkLabelGuide.Visible = false;
                 _started = true;
                 _notificationManager.StopAllRepeat();
@@ -511,7 +535,7 @@ namespace KancolleSniffer
             var prev = CurrentAutoScaleDimensions;
             foreach (var control in new Control[]
             {
-                this, labelLogin, linkLabelGuide,
+                this, linkLabelGuide, hqPanel.Login,
                 _configDialog, _configDialog.NotificationConfigDialog,
                 contextMenuStripMain, _errorDialog
             })
@@ -552,9 +576,8 @@ namespace KancolleSniffer
             if (TopMost != Config.TopMost)
                 TopMost = _listFormGroup.TopMost = Config.TopMost;
             Sniffer.ShipCounter.Margin = Config.MarginShips;
-            _numberAndHistory.UpdateNumOfShips();
             Sniffer.ItemCounter.Margin = Config.MarginEquips;
-            _numberAndHistory.UpdateNumOfEquips();
+            hqPanel.Update();
             Sniffer.Achievement.ResetHours = Config.ResetHours;
             labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible =
                 labelPresetAkashiTimer.Visible = Config.UsePresetAkashi;
@@ -607,7 +630,7 @@ namespace KancolleSniffer
             }
             if (_playLog == null || _configDialog.Visible)
             {
-                labelPlayLog.Visible = false;
+                hqPanel.PlayLog.Visible = false;
                 return;
             }
             PlayLog();
@@ -627,13 +650,13 @@ namespace KancolleSniffer
                 {
                     if (!_playLog.MoveNext() || _playLog.Current == null)
                     {
-                        labelPlayLog.Visible = false;
+                        hqPanel.PlayLog.Visible = false;
                         return;
                     }
                 } while (!_playLog.Current.StartsWith(s));
                 lines.Add(_playLog.Current.Substring(s.Length));
             }
-            labelPlayLog.Visible = !labelPlayLog.Visible;
+            hqPanel.PlayLog.Visible = !hqPanel.PlayLog.Visible;
             ProcessRequestMain(lines[0], lines[1], lines[2]);
         }
 
@@ -652,6 +675,7 @@ namespace KancolleSniffer
 
         private void UpdateItemInfo()
         {
+            hqPanel.Update();
             _numberAndHistory.Update();
             if (_listFormGroup.Visible)
                 _listFormGroup.UpdateList();
@@ -986,11 +1010,6 @@ namespace KancolleSniffer
                 SetPreNotification(key, fleet, subject);
         }
 
-        private void SetTimerColor(Label label, AlarmTimer timer, DateTime now)
-        {
-            label.ForeColor = timer.IsFinished(now) ? CUDColors.Red : Color.Black;
-        }
-
         private void UpdateCondTimers()
         {
             DateTime timer;
@@ -1310,27 +1329,6 @@ namespace KancolleSniffer
                 await Task.Delay(1000);
                 _tooltipCopy.Active = false;
             });
-        }
-
-        private void labelBucketHistoryButton_Click(object sender, EventArgs e)
-        {
-            if (labelBucketHistory.Visible)
-            {
-                labelBucketHistory.Visible = false;
-                labelBucketHistoryButton.BackColor = DefaultBackColor;
-            }
-            else
-            {
-                labelBucketHistory.Visible = true;
-                labelBucketHistory.BringToFront();
-                labelBucketHistoryButton.BackColor = CustomColors.ActiveButtonColor;
-            }
-        }
-
-        private void labelBucketHistory_Click(object sender, EventArgs e)
-        {
-            labelBucketHistory.Visible = false;
-            labelBucketHistoryButton.BackColor = DefaultBackColor;
         }
 
         private void labelMaterialHistoryButton_Click(object sender, EventArgs e)
