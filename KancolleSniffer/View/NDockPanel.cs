@@ -34,6 +34,8 @@ namespace KancolleSniffer.View
             public Label Timer { get; set; }
         }
 
+        public UpdateContext Context { private get; set; }
+
         public NDockPanel()
         {
             BorderStyle = BorderStyle.FixedSingle;
@@ -77,15 +79,17 @@ namespace KancolleSniffer.View
                 control.Click += onClick;
         }
 
-        public void SetName(NameAndTimer[] ndock)
+        public new void Update()
         {
             for (var i = 0; i < _labels.Length; i++)
-                _labels[i].Name.SetName(ndock[i].Name);
+                _labels[i].Name.SetName(Context.Sniffer.NDock[i].Name);
         }
 
-        public void UpdateTimers(Sniffer sniffer, DateTime now, bool showEndTime)
+        public void UpdateTimers()
         {
-            foreach (var entry in _labels.Zip(sniffer.NDock,
+            var now = Context.GetNow();
+            var showEndTime = (Context.Config.ShowEndTime & TimerKind.NDock) != 0;
+            foreach (var entry in _labels.Zip(Context.Sniffer.NDock,
                 (label, ndock) => new {label = label.Timer, timer = ndock.Timer}))
             {
                 entry.label.ForeColor = entry.timer.IsFinished(now) ? CUDColors.Red : Color.Black;

@@ -83,6 +83,7 @@
     <Compile Include="Log\BattleLogProcessor.cs" />
     <Compile Include="Model\Range.cs" />
     <Compile Include="Util\Clipboard.cs" />
+    <Compile Include="View\UpdateContext.cs" />
     <Compile Include="View\AntiAirPanel.cs">
       <SubType>Component</SubType>
     </Compile>

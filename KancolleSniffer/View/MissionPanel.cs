@@ -37,6 +37,8 @@ namespace KancolleSniffer.View
             public Label Timer { get; set; }
         }
 
+        public UpdateContext Context { private get; set; }
+
         public MissionPanel()
         {
             BorderStyle = BorderStyle.FixedSingle;
@@ -87,12 +89,12 @@ namespace KancolleSniffer.View
                 control.Click += onClick;
         }
 
-        public void Update(Sniffer sniffer)
+        public new void Update()
         {
-            var names = sniffer.Missions.Select(mission => mission.Name).ToArray();
+            var names = Context.Sniffer.Missions.Select(mission => mission.Name).ToArray();
             for (var i = 0; i < Lines; i++)
             {
-                var fleetParams = sniffer.Fleets[i + 1].MissionParameter;
+                var fleetParams = Context.Sniffer.Fleets[i + 1].MissionParameter;
                 var inPort = string.IsNullOrEmpty(names[i]);
                 _labels[i].Params.Visible = inPort;
                 _labels[i].Params.Text = fleetParams;
@@ -101,11 +103,13 @@ namespace KancolleSniffer.View
             }
         }
 
-        public void UpdateTimers(Sniffer sniffer, DateTime now, bool showEndTime)
+        public void UpdateTimers()
         {
+            var now = Context.GetNow();
+            var showEndTime = (Context.Config.ShowEndTime & TimerKind.Mission) != 0;
             for (var i = 0; i < Lines; i++)
             {
-                var entry = sniffer.Missions[i];
+                var entry = Context.Sniffer.Missions[i];
                 SetTimerColor(_labels[i].Timer, entry.Timer, now);
                 _labels[i].Timer.Text = entry.Timer.ToString(now, showEndTime);
             }

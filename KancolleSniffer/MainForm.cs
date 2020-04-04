@@ -71,22 +71,6 @@ namespace KancolleSniffer
             void Enqueue(string key, string subject);
         }
 
-        public class Context
-        {
-            public Sniffer Sniffer { get; }
-            public Config Config { get; }
-            public INotifySubmitter Submitter { get; }
-            public Func<DateTime> GetNow { get; }
-
-            public Context(Sniffer sniffer, Config config, INotifySubmitter submitter, Func<DateTime> getNow)
-            {
-                Sniffer = sniffer;
-                Config = config;
-                Submitter = submitter;
-                GetNow = getNow;
-            }
-        }
-
         public MainForm()
         {
             InitializeComponent();
@@ -114,14 +98,17 @@ namespace KancolleSniffer
             panelRepairList.CreateLabels(panelRepairList_Click);
             ndockPanel.SetClickHandler(labelNDock_Click);
             missionPanel.SetClickHandler(labelMission_Click);
-            SetContextToView();
+            SetUpdateContextToView();
             PerformZoom();
         }
 
-        private void SetContextToView()
+        private void SetUpdateContextToView()
         {
-            var context = new Context(Sniffer, Config, new NotifySubmitter(_notificationManager), () => _now);
+            var context = new UpdateContext(Sniffer, Config, new NotifySubmitter(_notificationManager), () => _now);
             hqPanel.Context = context;
+            missionPanel.Context = context;
+            kdockPanel.Context = context;
+            ndockPanel.Context = context;
         }
 
         private void SetScaleFactorOfDpiScaling()
@@ -928,7 +915,7 @@ namespace KancolleSniffer
 
         private void UpdateNDocLabels()
         {
-            ndockPanel.SetName(Sniffer.NDock);
+            ndockPanel.Update();
             SetNDockLabel();
         }
 
@@ -946,7 +933,7 @@ namespace KancolleSniffer
 
         private void UpdateMissionLabels()
         {
-            missionPanel.Update(Sniffer);
+            missionPanel.Update();
             SetMissionLabel();
         }
 
@@ -964,9 +951,9 @@ namespace KancolleSniffer
 
         private void UpdateTimers()
         {
-            missionPanel.UpdateTimers(Sniffer, _now, (Config.ShowEndTime & TimerKind.Mission) != 0);
-            ndockPanel.UpdateTimers(Sniffer, _now, (Config.ShowEndTime & TimerKind.NDock) != 0);
-            kdockPanel.UpdateTimers(Sniffer, _now);
+            missionPanel.UpdateTimers();
+            ndockPanel.UpdateTimers();
+            kdockPanel.UpdateTimers();
             UpdateCondTimers();
             UpdateAkashiTimer();
             _timerEnabled = true;

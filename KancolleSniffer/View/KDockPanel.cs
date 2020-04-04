@@ -34,6 +34,8 @@ namespace KancolleSniffer.View
             public Label Timer { get; set; }
         }
 
+        public UpdateContext Context { private get; set; }
+
         public KDockPanel()
         {
             BorderStyle = BorderStyle.FixedSingle;
@@ -59,9 +61,10 @@ namespace KancolleSniffer.View
             Controls.AddRange(_labels.SelectMany(l => new Control[] {l.Number, l.Timer}).ToArray());
         }
 
-        public void UpdateTimers(Sniffer sniffer, DateTime now)
+        public void UpdateTimers()
         {
-            foreach (var entry in _labels.Zip(sniffer.KDock,
+            var now = Context.GetNow();
+            foreach (var entry in _labels.Zip(Context.Sniffer.KDock,
                 (label, kdock) => new {label = label.Timer, timer = kdock}))
             {
                 SetTimerColor(entry.label, entry.timer, now);

@@ -102,7 +102,7 @@ namespace KancolleSniffer.View
             }
         };
 
-        public MainForm.Context Context { private get; set; }
+        public UpdateContext Context { private get; set; }
 
         public HqPanel()
         {
