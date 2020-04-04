@@ -20,7 +20,7 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View
 {
-    public class NDockPanel : Panel
+    public class NDockPanel : Panel, IUpdateable
     {
         private const int TopMargin = 3;
         private const int LeftMargin = 2;

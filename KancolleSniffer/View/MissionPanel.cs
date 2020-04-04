@@ -20,7 +20,7 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View
 {
-    public class MissionPanel : PanelWithToolTip
+    public class MissionPanel : PanelWithToolTip, IUpdateable
     {
         private const int TopMargin = 3;
         private const int LeftMargin = 2;
