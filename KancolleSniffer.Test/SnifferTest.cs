@@ -221,6 +221,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 補強増設スロットに見張り員を装備した場合の判定式(33)
+        /// </summary>
+        [TestMethod]
+        public void LineOfSightWithExSlot()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "lineofsight_003");
+            var fleet = sniffer.Fleets[0];
+            PAssert.That(() => Abs(fleet.GetLineOfSights(1) - -28.8) < 0.01);
+        }
+
+        /// <summary>
         /// 触接開始率を正しく計算する
         /// </summary>
         [TestMethod]

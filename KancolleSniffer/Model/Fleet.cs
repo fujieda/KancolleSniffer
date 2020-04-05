@@ -221,7 +221,7 @@ namespace KancolleSniffer.Model
             {
                 emptyBonus--;
                 var itemLoS = 0;
-                foreach (var item in s.Slot)
+                foreach (var item in s.AllSlot)
                 {
                     var spec = item.Spec;
                     itemLoS += spec.LoS;
