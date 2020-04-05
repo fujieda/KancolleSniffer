@@ -26,6 +26,7 @@ namespace KancolleSniffer.View
         private const int LeftMargin = 2;
         private const int LineHeight = 15;
         private readonly NDockLabels[] _labels = new NDockLabels[DockInfo.DockCount];
+        private Label _caption;
 
         private class NDockLabels
         {
@@ -63,6 +64,13 @@ namespace KancolleSniffer.View
             }
             Controls.AddRange(_labels.SelectMany(l => new Control[] {l.Number, l.Name, l.Timer}).ToArray());
             SetCursor();
+            SetClickHandler();
+        }
+
+        public void SetClickHandler(Label caption)
+        {
+            caption.Click += ClickHandler;
+            _caption = caption;
         }
 
         private void SetCursor()
@@ -72,17 +80,30 @@ namespace KancolleSniffer.View
                 control.Cursor = Cursors.Hand;
         }
 
-        public void SetClickHandler(EventHandler onClick)
+        private void SetClickHandler()
         {
-            Click += onClick;
+            Click += ClickHandler;
             foreach (Control control in Controls)
-                control.Click += onClick;
+                control.Click += ClickHandler;
+        }
+
+        private void ClickHandler(object sender, EventArgs e)
+        {
+            Context.Config.ShowEndTime ^= TimerKind.NDock;
+            SetCaption();
+            UpdateTimers();
         }
 
         public new void Update()
         {
             for (var i = 0; i < _labels.Length; i++)
                 _labels[i].Name.SetName(Context.Sniffer.NDock[i].Name);
+            SetCaption();
+        }
+
+        private void SetCaption()
+        {
+            _caption.Text = (Context.Config.ShowEndTime & TimerKind.NDock) != 0 ? "入渠終了" : "入渠";
         }
 
         public void UpdateTimers()

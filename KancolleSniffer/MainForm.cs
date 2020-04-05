@@ -96,8 +96,8 @@ namespace KancolleSniffer
             labelPresetAkashiTimer.BackColor = CustomColors.ColumnColors.Bright;
             SetupQuestPanel();
             panelRepairList.CreateLabels(panelRepairList_Click);
-            ndockPanel.SetClickHandler(labelNDock_Click);
-            missionPanel.SetClickHandler(labelMission_Click);
+            ndockPanel.SetClickHandler(labelNDockCaption);
+            missionPanel.SetClickHandler(labelMissionCaption);
             materialHistoryPanel.SetClickHandler(labelMaterialCaption, labelMaterialHistoryButton);
             SetupUpdateable();
             PerformZoom();
@@ -905,37 +905,11 @@ namespace KancolleSniffer
         private void UpdateNDocLabels()
         {
             ndockPanel.Update();
-            SetNDockLabel();
-        }
-
-        private void SetNDockLabel()
-        {
-            labelNDock.Text = (Config.ShowEndTime & TimerKind.NDock) != 0 ? "入渠終了" : "入渠";
-        }
-
-        private void labelNDock_Click(object sender, EventArgs e)
-        {
-            Config.ShowEndTime ^= TimerKind.NDock;
-            SetNDockLabel();
-            UpdateTimers();
         }
 
         private void UpdateMissionLabels()
         {
             missionPanel.Update();
-            SetMissionLabel();
-        }
-
-        private void SetMissionLabel()
-        {
-            labelMission.Text = (Config.ShowEndTime & TimerKind.Mission) != 0 ? "遠征終了" : "遠征";
-        }
-
-        private void labelMission_Click(object sender, EventArgs e)
-        {
-            Config.ShowEndTime ^= TimerKind.Mission;
-            SetMissionLabel();
-            UpdateTimers();
         }
 
         private void UpdateTimers()

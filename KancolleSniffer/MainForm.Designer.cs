@@ -63,10 +63,10 @@ namespace KancolleSniffer
             this.labelCondTimerTitle = new System.Windows.Forms.Label();
             this.labelCondTimer = new System.Windows.Forms.Label();
             this.labelAkashiRepairTimer = new System.Windows.Forms.Label();
-            this.labelNDock = new System.Windows.Forms.Label();
+            this.labelNDockCaption = new System.Windows.Forms.Label();
             this.labelConstruct = new System.Windows.Forms.Label();
             this.labelQuest = new System.Windows.Forms.Label();
-            this.labelMission = new System.Windows.Forms.Label();
+            this.labelMissionCaption = new System.Windows.Forms.Label();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStripNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -272,16 +272,15 @@ namespace KancolleSniffer
             this.labelAkashiRepairTimer.Size = new System.Drawing.Size(32, 12);
             this.labelAkashiRepairTimer.TabIndex = 43;
             // 
-            // labelNDock
+            // labelNDockCaption
             // 
-            this.labelNDock.AutoSize = true;
-            this.labelNDock.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelNDock.Location = new System.Drawing.Point(8, 195);
-            this.labelNDock.Name = "labelNDock";
-            this.labelNDock.Size = new System.Drawing.Size(29, 12);
-            this.labelNDock.TabIndex = 3;
-            this.labelNDock.Text = "入渠";
-            this.labelNDock.Click += new System.EventHandler(this.labelNDock_Click);
+            this.labelNDockCaption.AutoSize = true;
+            this.labelNDockCaption.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelNDockCaption.Location = new System.Drawing.Point(8, 195);
+            this.labelNDockCaption.Name = "labelNDockCaption";
+            this.labelNDockCaption.Size = new System.Drawing.Size(29, 12);
+            this.labelNDockCaption.TabIndex = 3;
+            this.labelNDockCaption.Text = "入渠";
             // 
             // labelConstruct
             // 
@@ -301,16 +300,15 @@ namespace KancolleSniffer
             this.labelQuest.TabIndex = 8;
             this.labelQuest.Text = "任務";
             // 
-            // labelMission
+            // labelMissionCaption
             // 
-            this.labelMission.AutoSize = true;
-            this.labelMission.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelMission.Location = new System.Drawing.Point(8, 276);
-            this.labelMission.Name = "labelMission";
-            this.labelMission.Size = new System.Drawing.Size(29, 12);
-            this.labelMission.TabIndex = 10;
-            this.labelMission.Text = "遠征";
-            this.labelMission.Click += new System.EventHandler(this.labelMission_Click);
+            this.labelMissionCaption.AutoSize = true;
+            this.labelMissionCaption.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelMissionCaption.Location = new System.Drawing.Point(8, 276);
+            this.labelMissionCaption.Name = "labelMissionCaption";
+            this.labelMissionCaption.Size = new System.Drawing.Size(29, 12);
+            this.labelMissionCaption.TabIndex = 10;
+            this.labelMissionCaption.Text = "遠征";
             // 
             // timerMain
             // 
@@ -732,10 +730,10 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelCheckFleet4);
             this.Controls.Add(this.labelFleet4);
             this.Controls.Add(this.labelCheckFleet1);
-            this.Controls.Add(this.labelMission);
+            this.Controls.Add(this.labelMissionCaption);
             this.Controls.Add(this.labelQuest);
             this.Controls.Add(this.labelConstruct);
-            this.Controls.Add(this.labelNDock);
+            this.Controls.Add(this.labelNDockCaption);
             this.Controls.Add(this.panelShipInfo);
             this.Controls.Add(this.labelFleet1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -761,10 +759,10 @@ namespace KancolleSniffer
 
         #endregion
         private System.Windows.Forms.Panel panelShipInfo;
-        private System.Windows.Forms.Label labelNDock;
+        private System.Windows.Forms.Label labelNDockCaption;
         private System.Windows.Forms.Label labelConstruct;
         private System.Windows.Forms.Label labelQuest;
-        private System.Windows.Forms.Label labelMission;
+        private System.Windows.Forms.Label labelMissionCaption;
         private System.Windows.Forms.Timer timerMain;
         private System.Windows.Forms.Label labelCondTimerTitle;
         private System.Windows.Forms.Label labelCondTimer;

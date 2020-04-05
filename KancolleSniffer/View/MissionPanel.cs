@@ -28,6 +28,7 @@ namespace KancolleSniffer.View
         private const int LineHeight = 15;
         private const int Lines = 3;
         private readonly MissionLabels[] _labels = new MissionLabels[Lines];
+        private Label _caption;
 
         private class MissionLabels
         {
@@ -73,6 +74,13 @@ namespace KancolleSniffer.View
             }
             Controls.AddRange(_labels.SelectMany(l => new Control[] {l.Number, l.Params, l.Name, l.Timer}).ToArray());
             SetCursor();
+            SetClickHandler();
+        }
+
+        public void SetClickHandler(Label caption)
+        {
+            caption.Click += ClickHandler;
+            _caption = caption;
         }
 
         private void SetCursor()
@@ -82,11 +90,18 @@ namespace KancolleSniffer.View
                 control.Cursor = Cursors.Hand;
         }
 
-        public void SetClickHandler(EventHandler onClick)
+        private void SetClickHandler()
         {
-            Click += onClick;
+            Click += ClickHandler;
             foreach (Control control in Controls)
-                control.Click += onClick;
+                control.Click += ClickHandler;
+        }
+
+        private void ClickHandler(Object sender, EventArgs e)
+        {
+            Context.Config.ShowEndTime ^= TimerKind.Mission;
+            SetCaption();
+            UpdateTimers();
         }
 
         public new void Update()
@@ -101,6 +116,12 @@ namespace KancolleSniffer.View
                 _labels[i].Name.Text = names[i];
                 ToolTip.SetToolTip(_labels[i].Name, inPort ? "" : fleetParams);
             }
+            SetCaption();
+        }
+
+        private void SetCaption()
+        {
+            _caption.Text = (Context.Config.ShowEndTime & TimerKind.Mission) != 0 ? "遠征終了" : "遠征";
         }
 
         public void UpdateTimers()
