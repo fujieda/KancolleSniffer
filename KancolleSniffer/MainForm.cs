@@ -57,7 +57,8 @@ namespace KancolleSniffer
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
         private DateTime _prev, _now;
-        private IEnumerable<IUpdateable> _updatables;
+        private IEnumerable<IUpdateContext> _updateable;
+        private IEnumerable<IUpdateTimers> _timers;
 
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
         private readonly ErrorLog _errorLog;
@@ -104,10 +105,11 @@ namespace KancolleSniffer
 
         private void SetupUpdateable()
         {
-            _updatables = new IUpdateable[] {hqPanel, missionPanel, kdockPanel, ndockPanel, materialHistoryPanel};
+            _updateable = new IUpdateContext[] {hqPanel, missionPanel, kdockPanel, ndockPanel, materialHistoryPanel};
             var context = new UpdateContext(Sniffer, Config, new NotifySubmitter(_notificationManager), () => _now);
-            foreach (var updateable in _updatables)
+            foreach (var updateable in _updateable)
                 updateable.Context = context;
+            _timers = new IUpdateTimers[] {missionPanel, kdockPanel, ndockPanel};
         }
 
         private void SetScaleFactorOfDpiScaling()
@@ -938,8 +940,8 @@ namespace KancolleSniffer
 
         private void UpdateTimers()
         {
-            foreach (var updateable in _updatables)
-                updateable.UpdateTimers();
+            foreach (var timer in _timers)
+                timer.UpdateTimers();
             UpdateCondTimers();
             UpdateAkashiTimer();
             _timerEnabled = true;

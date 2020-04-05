@@ -1,8 +1,12 @@
 ﻿namespace KancolleSniffer.View
 {
-    public interface IUpdateable
+    public interface IUpdateContext
     {
         UpdateContext Context { set; }
+    }
+
+    public interface IUpdateTimers : IUpdateContext
+    {
         void UpdateTimers();
     }
 }

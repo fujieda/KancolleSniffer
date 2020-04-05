@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace KancolleSniffer.View
 {
-    public class MaterialHistoryPanel : Panel, IUpdateable
+    public class MaterialHistoryPanel : Panel, IUpdateContext
     {
         private readonly Label _bauxite = new Label
         {

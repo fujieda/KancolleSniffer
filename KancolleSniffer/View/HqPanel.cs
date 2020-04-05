@@ -6,7 +6,7 @@ using KancolleSniffer.Properties;
 
 namespace KancolleSniffer.View
 {
-    public class HqPanel : PanelWithToolTip, IUpdateable
+    public class HqPanel : PanelWithToolTip, IUpdateContext
     {
         public Label Login { get; } = new Label
         {
@@ -131,10 +131,6 @@ namespace KancolleSniffer.View
             UpdateNumOfBuckets();
             UpdateBucketHistory();
             UpdateAchievement();
-        }
-
-        public void UpdateTimers()
-        {
         }
 
         private void UpdateNumOfBuckets()
