@@ -84,6 +84,9 @@
     <Compile Include="Model\Range.cs" />
     <Compile Include="Util\Clipboard.cs" />
     <Compile Include="View\IUpdateable.cs" />
+    <Compile Include="View\MaterialHistoryPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\UpdateContext.cs" />
     <Compile Include="View\AntiAirPanel.cs">
       <SubType>Component</SubType>
@@ -144,7 +147,6 @@
     <Compile Include="View\ShipLabels.cs" />
     <Compile Include="View\ShipListPanel\GroupConfigLabels.cs" />
     <Compile Include="View\ListScroller.cs" />
-    <Compile Include="View\NumberAndHistory.cs" />
     <Compile Include="View\ItemTreeView.cs">
       <SubType>Component</SubType>
     </Compile>

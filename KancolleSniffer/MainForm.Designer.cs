@@ -63,12 +63,6 @@ namespace KancolleSniffer
             this.labelCondTimerTitle = new System.Windows.Forms.Label();
             this.labelCondTimer = new System.Windows.Forms.Label();
             this.labelAkashiRepairTimer = new System.Windows.Forms.Label();
-            this.panelMaterialHistory = new System.Windows.Forms.Panel();
-            this.labelBouxiteHistory = new System.Windows.Forms.Label();
-            this.labelSteelHistory = new System.Windows.Forms.Label();
-            this.labelBulletHistory = new System.Windows.Forms.Label();
-            this.label35 = new System.Windows.Forms.Label();
-            this.labelFuelHistory = new System.Windows.Forms.Label();
             this.labelNDock = new System.Windows.Forms.Label();
             this.labelConstruct = new System.Windows.Forms.Label();
             this.labelQuest = new System.Windows.Forms.Label();
@@ -88,7 +82,7 @@ namespace KancolleSniffer
             this.labelFleet4 = new System.Windows.Forms.Label();
             this.labelFleet3 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
-            this.label36 = new System.Windows.Forms.Label();
+            this.labelMaterialCaption = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.imageListFuelSq = new System.Windows.Forms.ImageList(this.components);
             this.imageListBullSq = new System.Windows.Forms.ImageList(this.components);
@@ -115,9 +109,9 @@ namespace KancolleSniffer
             this.missionPanel = new KancolleSniffer.View.MissionPanel();
             this.questPanel = new KancolleSniffer.View.QuestPanel();
             this.hqPanel = new KancolleSniffer.View.HqPanel();
+            this.materialHistoryPanel = new KancolleSniffer.View.MaterialHistoryPanel();
             this.panelShipInfo.SuspendLayout();
             this.panelBattleInfo.SuspendLayout();
-            this.panelMaterialHistory.SuspendLayout();
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -278,71 +272,6 @@ namespace KancolleSniffer
             this.labelAkashiRepairTimer.Size = new System.Drawing.Size(32, 12);
             this.labelAkashiRepairTimer.TabIndex = 43;
             // 
-            // panelMaterialHistory
-            // 
-            this.panelMaterialHistory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelMaterialHistory.Controls.Add(this.labelBouxiteHistory);
-            this.panelMaterialHistory.Controls.Add(this.labelSteelHistory);
-            this.panelMaterialHistory.Controls.Add(this.labelBulletHistory);
-            this.panelMaterialHistory.Controls.Add(this.label35);
-            this.panelMaterialHistory.Controls.Add(this.labelFuelHistory);
-            this.panelMaterialHistory.Location = new System.Drawing.Point(38, 354);
-            this.panelMaterialHistory.Name = "panelMaterialHistory";
-            this.panelMaterialHistory.Size = new System.Drawing.Size(188, 52);
-            this.panelMaterialHistory.TabIndex = 41;
-            this.panelMaterialHistory.Visible = false;
-            this.panelMaterialHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
-            // 
-            // labelBouxiteHistory
-            // 
-            this.labelBouxiteHistory.Location = new System.Drawing.Point(117, 2);
-            this.labelBouxiteHistory.Name = "labelBouxiteHistory";
-            this.labelBouxiteHistory.Size = new System.Drawing.Size(42, 48);
-            this.labelBouxiteHistory.TabIndex = 7;
-            this.labelBouxiteHistory.Text = "ボーキ";
-            this.labelBouxiteHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.labelBouxiteHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
-            // 
-            // labelSteelHistory
-            // 
-            this.labelSteelHistory.Location = new System.Drawing.Point(78, 2);
-            this.labelSteelHistory.Name = "labelSteelHistory";
-            this.labelSteelHistory.Size = new System.Drawing.Size(42, 48);
-            this.labelSteelHistory.TabIndex = 6;
-            this.labelSteelHistory.Text = "鋼材";
-            this.labelSteelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.labelSteelHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
-            // 
-            // labelBulletHistory
-            // 
-            this.labelBulletHistory.Location = new System.Drawing.Point(39, 2);
-            this.labelBulletHistory.Name = "labelBulletHistory";
-            this.labelBulletHistory.Size = new System.Drawing.Size(42, 48);
-            this.labelBulletHistory.TabIndex = 5;
-            this.labelBulletHistory.Text = "弾薬";
-            this.labelBulletHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.labelBulletHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(158, 14);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(29, 36);
-            this.label35.TabIndex = 4;
-            this.label35.Text = "母港\r\n今日\r\n今週";
-            this.label35.Click += new System.EventHandler(this.panelMaterialHistory_Click);
-            // 
-            // labelFuelHistory
-            // 
-            this.labelFuelHistory.Location = new System.Drawing.Point(0, 2);
-            this.labelFuelHistory.Name = "labelFuelHistory";
-            this.labelFuelHistory.Size = new System.Drawing.Size(42, 48);
-            this.labelFuelHistory.TabIndex = 0;
-            this.labelFuelHistory.Text = "燃料";
-            this.labelFuelHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.labelFuelHistory.Click += new System.EventHandler(this.panelMaterialHistory_Click);
-            // 
             // labelNDock
             // 
             this.labelNDock.AutoSize = true;
@@ -500,15 +429,14 @@ namespace KancolleSniffer
             this.labelFleet2.TabIndex = 21;
             this.labelFleet2.Text = "第二";
             // 
-            // label36
+            // labelMaterialCaption
             // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(183, 342);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(29, 12);
-            this.label36.TabIndex = 43;
-            this.label36.Text = "資材";
-            this.label36.Click += new System.EventHandler(this.labelMaterialHistoryButton_Click);
+            this.labelMaterialCaption.AutoSize = true;
+            this.labelMaterialCaption.Location = new System.Drawing.Point(183, 342);
+            this.labelMaterialCaption.Name = "labelMaterialCaption";
+            this.labelMaterialCaption.Size = new System.Drawing.Size(29, 12);
+            this.labelMaterialCaption.TabIndex = 43;
+            this.labelMaterialCaption.Text = "資材";
             // 
             // label31
             // 
@@ -662,7 +590,6 @@ namespace KancolleSniffer
             this.labelMaterialHistoryButton.Name = "labelMaterialHistoryButton";
             this.labelMaterialHistoryButton.Size = new System.Drawing.Size(14, 14);
             this.labelMaterialHistoryButton.TabIndex = 10;
-            this.labelMaterialHistoryButton.Click += new System.EventHandler(this.labelMaterialHistoryButton_Click);
             // 
             // labelCheckFleet2
             // 
@@ -760,12 +687,22 @@ namespace KancolleSniffer
             this.hqPanel.Size = new System.Drawing.Size(220, 33);
             this.hqPanel.TabIndex = 61;
             // 
+            // materialHistoryPanel
+            // 
+            this.materialHistoryPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.materialHistoryPanel.Location = new System.Drawing.Point(38, 354);
+            this.materialHistoryPanel.Name = "materialHistoryPanel";
+            this.materialHistoryPanel.Size = new System.Drawing.Size(188, 52);
+            this.materialHistoryPanel.TabIndex = 65;
+            this.materialHistoryPanel.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.materialHistoryPanel);
             this.Controls.Add(this.hqPanel);
             this.Controls.Add(this.kdockPanel);
             this.Controls.Add(this.panelRepairList);
@@ -776,7 +713,6 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelClearQuest);
             this.Controls.Add(this.labelAkashiRepair);
             this.Controls.Add(this.labelAkashiRepairTimer);
-            this.Controls.Add(this.panelMaterialHistory);
             this.Controls.Add(this.labelBullSq4);
             this.Controls.Add(this.labelFuelSq4);
             this.Controls.Add(this.labelBullSq3);
@@ -788,7 +724,7 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelRepairListButton);
             this.Controls.Add(this.label31);
             this.Controls.Add(this.labelMaterialHistoryButton);
-            this.Controls.Add(this.label36);
+            this.Controls.Add(this.labelMaterialCaption);
             this.Controls.Add(this.labelCheckFleet2);
             this.Controls.Add(this.labelFleet2);
             this.Controls.Add(this.labelCheckFleet3);
@@ -816,8 +752,6 @@ namespace KancolleSniffer
             this.panelShipInfo.PerformLayout();
             this.panelBattleInfo.ResumeLayout(false);
             this.panelBattleInfo.PerformLayout();
-            this.panelMaterialHistory.ResumeLayout(false);
-            this.panelMaterialHistory.PerformLayout();
             this.contextMenuStripNotifyIcon.ResumeLayout(false);
             this.contextMenuStripMain.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -848,13 +782,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFleet2;
         private System.Windows.Forms.Label labelFighterPower;
         private System.Windows.Forms.Label labelFighterPowerCaption;
-        private System.Windows.Forms.Panel panelMaterialHistory;
-        private System.Windows.Forms.Label labelBouxiteHistory;
-        private System.Windows.Forms.Label labelSteelHistory;
-        private System.Windows.Forms.Label labelBulletHistory;
-        private System.Windows.Forms.Label label35;
-        private System.Windows.Forms.Label labelFuelHistory;
-        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.Label labelMaterialCaption;
         private System.Windows.Forms.Label labelMaterialHistoryButton;
         private System.Windows.Forms.Label labelRepairListButton;
         private System.Windows.Forms.Label label31;
@@ -895,6 +823,7 @@ namespace KancolleSniffer
         private NDockPanel ndockPanel;
         private KDockPanel kdockPanel;
         private HqPanel hqPanel;
+        private MaterialHistoryPanel materialHistoryPanel;
     }
 }
 

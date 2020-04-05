@@ -49,7 +49,6 @@ namespace KancolleSniffer
         private int _currentFleet;
         private bool _combinedFleet;
         private readonly MainShipLabels _mainLabels = new MainShipLabels();
-        private NumberAndHistory _numberAndHistory;
         private readonly ListFormGroup _listFormGroup;
 
         private readonly NotificationManager _notificationManager;
@@ -80,7 +79,7 @@ namespace KancolleSniffer
             _configDialog = new ConfigDialog(this);
             _listFormGroup = new ListFormGroup(this);
             _notificationManager = new NotificationManager(Alarm);
-            SetupView(_notificationManager);
+            SetupView();
             _proxyManager = new ProxyManager(this);
             _proxyManager.UpdatePacFile();
             _errorLog = new ErrorLog(Sniffer);
@@ -88,24 +87,24 @@ namespace KancolleSniffer
             Sniffer.RepeatingTimerController = new RepeatingTimerController(this);
         }
 
-        private void SetupView(NotificationManager manager)
+        private void SetupView()
         {
             SetScaleFactorOfDpiScaling();
             SetupFleetClick();
             CreateMainLabels();
-            CreateNumberAndHistory(manager);
             labelPresetAkashiTimer.BackColor = CustomColors.ColumnColors.Bright;
             SetupQuestPanel();
             panelRepairList.CreateLabels(panelRepairList_Click);
             ndockPanel.SetClickHandler(labelNDock_Click);
             missionPanel.SetClickHandler(labelMission_Click);
+            materialHistoryPanel.SetClickHandler(labelMaterialCaption, labelMaterialHistoryButton);
             SetupUpdateable();
             PerformZoom();
         }
 
         private void SetupUpdateable()
         {
-            _updatables = new IUpdateable[] {hqPanel, missionPanel, kdockPanel, ndockPanel};
+            _updatables = new IUpdateable[] {hqPanel, missionPanel, kdockPanel, ndockPanel, materialHistoryPanel};
             var context = new UpdateContext(Sniffer, Config, new NotifySubmitter(_notificationManager), () => _now);
             foreach (var updateable in _updatables)
                 updateable.Context = context;
@@ -133,18 +132,6 @@ namespace KancolleSniffer
                 Panel7Ships = panel7Ships,
                 PanelCombinedFleet = panelCombinedFleet
             }, ShowShipOnShipList);
-        }
-
-        private void CreateNumberAndHistory(NotificationManager manager)
-        {
-            _numberAndHistory = new NumberAndHistory(new NumberAndHistoryLabels
-            {
-                FuelHistory = labelFuelHistory,
-                BulletHistory = labelBulletHistory,
-                SteelHistory = labelSteelHistory,
-                BauxiteHistory = labelBouxiteHistory,
-                ToolTip = _toolTip
-            }, Sniffer, new NotifySubmitter(manager));
         }
 
         private class NotifySubmitter : INotifySubmitter
@@ -663,7 +650,7 @@ namespace KancolleSniffer
         private void UpdateItemInfo()
         {
             hqPanel.Update();
-            _numberAndHistory.Update();
+            materialHistoryPanel.Update();
             if (_listFormGroup.Visible)
                 _listFormGroup.UpdateList();
         }
@@ -1315,27 +1302,6 @@ namespace KancolleSniffer
                 await Task.Delay(1000);
                 _tooltipCopy.Active = false;
             });
-        }
-
-        private void labelMaterialHistoryButton_Click(object sender, EventArgs e)
-        {
-            if (panelMaterialHistory.Visible)
-            {
-                panelMaterialHistory.Visible = false;
-                labelMaterialHistoryButton.BackColor = DefaultBackColor;
-            }
-            else
-            {
-                panelMaterialHistory.Visible = true;
-                panelMaterialHistory.BringToFront();
-                labelMaterialHistoryButton.BackColor = CustomColors.ActiveButtonColor;
-            }
-        }
-
-        private void panelMaterialHistory_Click(object sender, EventArgs e)
-        {
-            panelMaterialHistory.Visible = false;
-            labelMaterialHistoryButton.BackColor = DefaultBackColor;
         }
 
         public void ResetAchievement()
