@@ -238,21 +238,16 @@ namespace KancolleSniffer.View
                 Set(new ShipStatus {NowHp = now, MaxHp = max});
             }
 
-            public Color DamageColor(ShipStatus status)
+            private Color DamageColor(ShipStatus status)
             {
-                switch (status.DamageLevel)
+                return status.DamageLevel switch
                 {
-                    case ShipStatus.Damage.Sunk:
-                        return Color.CornflowerBlue;
-                    case ShipStatus.Damage.Badly:
-                        return CUDColors.Red;
-                    case ShipStatus.Damage.Half:
-                        return CUDColors.Orange;
-                    case ShipStatus.Damage.Small:
-                        return Color.FromArgb(240, 240, 0);
-                    default:
-                        return InitialBackColor;
-                }
+                    ShipStatus.Damage.Sunk => Color.CornflowerBlue,
+                    ShipStatus.Damage.Badly => status.Escaped ? CUDColors.LightGray : CUDColors.Red,
+                    ShipStatus.Damage.Half => CUDColors.Orange,
+                    ShipStatus.Damage.Small => Color.FromArgb(240, 240, 0),
+                    _ => InitialBackColor
+                };
             }
 
             public void SetColor(ShipStatus status)

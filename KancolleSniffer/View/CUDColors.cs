@@ -13,5 +13,6 @@ namespace KancolleSniffer.View
         public static Color Yellow = Color.FromArgb(250, 245, 0);
         public static Color Green = Color.FromArgb(53, 161, 107);
         public static Color Blue = Color.FromArgb(0, 65, 255);
+        public static Color LightGray = Color.FromArgb(200, 200, 203);
     }
 }
