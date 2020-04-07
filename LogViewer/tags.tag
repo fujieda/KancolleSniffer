@@ -929,6 +929,7 @@ this.calcResult = function(data) {
     var lastDate = moment(0);
     var lastExp = -1;
     var nextDate = moment(0);
+    var lastEmit = moment(0);
     for (var i = 0; i < data.length; i++) {
         var row = data[i];
         var date = this.parseDate(row[0]);
@@ -948,6 +949,7 @@ this.calcResult = function(data) {
             }
             if (nextDate.valueOf() !== 0) {
                 var d = isNewDate ? nextDate.subtract(1, 'days') : endOfMonth;
+                lastEmit = isNewDate ? d : moment(0);
                 var m = d.format("YYYY-MM");
                 if (!this.result[m])
                     this.result[m] = [];
@@ -997,10 +999,10 @@ this.calcResult = function(data) {
         lastDate = date;
         lastExp = exp;
     }
-    if (lastDate.isBefore(endOfMonth)) {
+    if (lastEmit.valueOf() !== 0) {
         var eom = endOfMonth.format("YYYY-MM");
-        var ave = (perMonth - carryOverAch) / lastDate.date();
-        var estimate = perMonth + ave * (endOfMonth.date() - lastDate.date());
+        var ave = (perMonth - carryOverAch) / lastEmit.date();
+        var estimate = perMonth + ave * (endOfMonth.date() - lastEmit.date());
         this.result[eom].push([endOfMonth.format("YYYY-MM-DD 予測"), ave.toFixed(1) + " 平均", estimate.toFixed(1) + " 予測", monthEo + " 合計", (estimate + monthEo).toFixed(1) + " 予測"]);
     }
 };
