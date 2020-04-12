@@ -46,22 +46,6 @@ namespace KancolleSniffer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.panelShipInfo = new System.Windows.Forms.Panel();
-            this.labelPresetAkashiTimer = new System.Windows.Forms.Label();
-            this.linkLabelGuide = new System.Windows.Forms.LinkLabel();
-            this.panelCombinedFleet = new System.Windows.Forms.Panel();
-            this.panel7Ships = new System.Windows.Forms.Panel();
-            this.panelBattleInfo = new System.Windows.Forms.Panel();
-            this.labelEnemyFighterPower = new System.Windows.Forms.Label();
-            this.labelEnemyFighterPowerCaption = new System.Windows.Forms.Label();
-            this.labelFormation = new System.Windows.Forms.Label();
-            this.labelResultRank = new System.Windows.Forms.Label();
-            this.labelLoS = new System.Windows.Forms.Label();
-            this.labelLoSCaption = new System.Windows.Forms.Label();
-            this.labelFighterPower = new System.Windows.Forms.Label();
-            this.labelFighterPowerCaption = new System.Windows.Forms.Label();
-            this.labelCondTimerTitle = new System.Windows.Forms.Label();
-            this.labelCondTimer = new System.Windows.Forms.Label();
             this.labelAkashiRepairTimer = new System.Windows.Forms.Label();
             this.labelNDockCaption = new System.Windows.Forms.Label();
             this.labelConstruct = new System.Windows.Forms.Label();
@@ -110,160 +94,10 @@ namespace KancolleSniffer
             this.questPanel = new KancolleSniffer.View.QuestPanel();
             this.hqPanel = new KancolleSniffer.View.HqPanel();
             this.materialHistoryPanel = new KancolleSniffer.View.MaterialHistoryPanel();
-            this.panelShipInfo.SuspendLayout();
-            this.panelBattleInfo.SuspendLayout();
+            this.shipInfoPanel = new KancolleSniffer.View.ShipInfoPanel();
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panelShipInfo
-            // 
-            this.panelShipInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelShipInfo.Controls.Add(this.labelPresetAkashiTimer);
-            this.panelShipInfo.Controls.Add(this.linkLabelGuide);
-            this.panelShipInfo.Controls.Add(this.panelCombinedFleet);
-            this.panelShipInfo.Controls.Add(this.panel7Ships);
-            this.panelShipInfo.Controls.Add(this.panelBattleInfo);
-            this.panelShipInfo.Controls.Add(this.labelLoS);
-            this.panelShipInfo.Controls.Add(this.labelLoSCaption);
-            this.panelShipInfo.Controls.Add(this.labelFighterPower);
-            this.panelShipInfo.Controls.Add(this.labelFighterPowerCaption);
-            this.panelShipInfo.Controls.Add(this.labelCondTimerTitle);
-            this.panelShipInfo.Controls.Add(this.labelCondTimer);
-            this.panelShipInfo.Location = new System.Drawing.Point(6, 57);
-            this.panelShipInfo.Name = "panelShipInfo";
-            this.panelShipInfo.Size = new System.Drawing.Size(220, 134);
-            this.panelShipInfo.TabIndex = 2;
-            // 
-            // labelPresetAkashiTimer
-            // 
-            this.labelPresetAkashiTimer.Location = new System.Drawing.Point(2, 3);
-            this.labelPresetAkashiTimer.Name = "labelPresetAkashiTimer";
-            this.labelPresetAkashiTimer.Size = new System.Drawing.Size(32, 12);
-            this.labelPresetAkashiTimer.TabIndex = 55;
-            // 
-            // linkLabelGuide
-            // 
-            this.linkLabelGuide.AutoSize = true;
-            this.linkLabelGuide.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.linkLabelGuide.LinkArea = new System.Windows.Forms.LinkArea(0, 0);
-            this.linkLabelGuide.Location = new System.Drawing.Point(31, 51);
-            this.linkLabelGuide.Name = "linkLabelGuide";
-            this.linkLabelGuide.Size = new System.Drawing.Size(158, 13);
-            this.linkLabelGuide.TabIndex = 44;
-            this.linkLabelGuide.Text = "右クリックでメニューが出ます。";
-            // 
-            // panelCombinedFleet
-            // 
-            this.panelCombinedFleet.Location = new System.Drawing.Point(0, 0);
-            this.panelCombinedFleet.Name = "panelCombinedFleet";
-            this.panelCombinedFleet.Size = new System.Drawing.Size(220, 113);
-            this.panelCombinedFleet.TabIndex = 43;
-            this.panelCombinedFleet.Visible = false;
-            // 
-            // panel7Ships
-            // 
-            this.panel7Ships.Location = new System.Drawing.Point(0, 0);
-            this.panel7Ships.Name = "panel7Ships";
-            this.panel7Ships.Size = new System.Drawing.Size(220, 115);
-            this.panel7Ships.TabIndex = 0;
-            this.panel7Ships.Visible = false;
-            // 
-            // panelBattleInfo
-            // 
-            this.panelBattleInfo.Controls.Add(this.labelEnemyFighterPower);
-            this.panelBattleInfo.Controls.Add(this.labelEnemyFighterPowerCaption);
-            this.panelBattleInfo.Controls.Add(this.labelFormation);
-            this.panelBattleInfo.Controls.Add(this.labelResultRank);
-            this.panelBattleInfo.Location = new System.Drawing.Point(59, 116);
-            this.panelBattleInfo.Name = "panelBattleInfo";
-            this.panelBattleInfo.Size = new System.Drawing.Size(157, 14);
-            this.panelBattleInfo.TabIndex = 40;
-            this.panelBattleInfo.Visible = false;
-            // 
-            // labelEnemyFighterPower
-            // 
-            this.labelEnemyFighterPower.Location = new System.Drawing.Point(129, 1);
-            this.labelEnemyFighterPower.Name = "labelEnemyFighterPower";
-            this.labelEnemyFighterPower.Size = new System.Drawing.Size(29, 12);
-            this.labelEnemyFighterPower.TabIndex = 3;
-            this.labelEnemyFighterPower.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelEnemyFighterPowerCaption
-            // 
-            this.labelEnemyFighterPowerCaption.AutoSize = true;
-            this.labelEnemyFighterPowerCaption.Location = new System.Drawing.Point(90, 1);
-            this.labelEnemyFighterPowerCaption.Name = "labelEnemyFighterPowerCaption";
-            this.labelEnemyFighterPowerCaption.Size = new System.Drawing.Size(41, 12);
-            this.labelEnemyFighterPowerCaption.TabIndex = 2;
-            this.labelEnemyFighterPowerCaption.Text = "敵制空";
-            // 
-            // labelFormation
-            // 
-            this.labelFormation.Location = new System.Drawing.Point(40, 1);
-            this.labelFormation.Name = "labelFormation";
-            this.labelFormation.Size = new System.Drawing.Size(48, 12);
-            this.labelFormation.TabIndex = 1;
-            // 
-            // labelResultRank
-            // 
-            this.labelResultRank.Location = new System.Drawing.Point(1, 1);
-            this.labelResultRank.Name = "labelResultRank";
-            this.labelResultRank.Size = new System.Drawing.Size(42, 12);
-            this.labelResultRank.TabIndex = 0;
-            this.labelResultRank.Text = "判定";
-            this.labelResultRank.Click += new System.EventHandler(this.labelResultRank_Click);
-            // 
-            // labelLoS
-            // 
-            this.labelLoS.Location = new System.Drawing.Point(85, 117);
-            this.labelLoS.Name = "labelLoS";
-            this.labelLoS.Size = new System.Drawing.Size(38, 12);
-            this.labelLoS.TabIndex = 42;
-            this.labelLoS.Text = "0.0";
-            this.labelLoS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelLoSCaption
-            // 
-            this.labelLoSCaption.AutoSize = true;
-            this.labelLoSCaption.Location = new System.Drawing.Point(59, 117);
-            this.labelLoSCaption.Name = "labelLoSCaption";
-            this.labelLoSCaption.Size = new System.Drawing.Size(29, 12);
-            this.labelLoSCaption.TabIndex = 41;
-            this.labelLoSCaption.Text = "索敵";
-            // 
-            // labelFighterPower
-            // 
-            this.labelFighterPower.Location = new System.Drawing.Point(28, 117);
-            this.labelFighterPower.Name = "labelFighterPower";
-            this.labelFighterPower.Size = new System.Drawing.Size(29, 12);
-            this.labelFighterPower.TabIndex = 23;
-            this.labelFighterPower.Text = "0";
-            this.labelFighterPower.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelFighterPowerCaption
-            // 
-            this.labelFighterPowerCaption.AutoSize = true;
-            this.labelFighterPowerCaption.Location = new System.Drawing.Point(2, 117);
-            this.labelFighterPowerCaption.Name = "labelFighterPowerCaption";
-            this.labelFighterPowerCaption.Size = new System.Drawing.Size(29, 12);
-            this.labelFighterPowerCaption.TabIndex = 23;
-            this.labelFighterPowerCaption.Text = "制空";
-            // 
-            // labelCondTimerTitle
-            // 
-            this.labelCondTimerTitle.Location = new System.Drawing.Point(128, 117);
-            this.labelCondTimerTitle.Name = "labelCondTimerTitle";
-            this.labelCondTimerTitle.Size = new System.Drawing.Size(60, 12);
-            this.labelCondTimerTitle.TabIndex = 39;
-            // 
-            // labelCondTimer
-            // 
-            this.labelCondTimer.AutoSize = true;
-            this.labelCondTimer.Location = new System.Drawing.Point(186, 117);
-            this.labelCondTimer.Name = "labelCondTimer";
-            this.labelCondTimer.Size = new System.Drawing.Size(0, 12);
-            this.labelCondTimer.TabIndex = 38;
             // 
             // labelAkashiRepairTimer
             // 
@@ -694,12 +528,26 @@ namespace KancolleSniffer
             this.materialHistoryPanel.TabIndex = 65;
             this.materialHistoryPanel.Visible = false;
             // 
+            // shipInfoPanel
+            // 
+            this.shipInfoPanel.AkashiRepairTimer = null;
+            this.shipInfoPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.shipInfoPanel.CombinedFleet = false;
+            this.shipInfoPanel.Context = null;
+            this.shipInfoPanel.CurrentFleet = 0;
+            this.shipInfoPanel.Location = new System.Drawing.Point(6, 57);
+            this.shipInfoPanel.Name = "shipInfoPanel";
+            this.shipInfoPanel.ShowShipOnList = null;
+            this.shipInfoPanel.Size = new System.Drawing.Size(220, 134);
+            this.shipInfoPanel.TabIndex = 67;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.shipInfoPanel);
             this.Controls.Add(this.materialHistoryPanel);
             this.Controls.Add(this.hqPanel);
             this.Controls.Add(this.kdockPanel);
@@ -734,7 +582,6 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelQuest);
             this.Controls.Add(this.labelConstruct);
             this.Controls.Add(this.labelNDockCaption);
-            this.Controls.Add(this.panelShipInfo);
             this.Controls.Add(this.labelFleet1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -746,10 +593,6 @@ namespace KancolleSniffer
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
-            this.panelShipInfo.ResumeLayout(false);
-            this.panelShipInfo.PerformLayout();
-            this.panelBattleInfo.ResumeLayout(false);
-            this.panelBattleInfo.PerformLayout();
             this.contextMenuStripNotifyIcon.ResumeLayout(false);
             this.contextMenuStripMain.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -758,14 +601,11 @@ namespace KancolleSniffer
         }
 
         #endregion
-        private System.Windows.Forms.Panel panelShipInfo;
         private System.Windows.Forms.Label labelNDockCaption;
         private System.Windows.Forms.Label labelConstruct;
         private System.Windows.Forms.Label labelQuest;
         private System.Windows.Forms.Label labelMissionCaption;
         private System.Windows.Forms.Timer timerMain;
-        private System.Windows.Forms.Label labelCondTimerTitle;
-        private System.Windows.Forms.Label labelCondTimer;
         private System.Windows.Forms.NotifyIcon notifyIconMain;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripMain;
         private System.Windows.Forms.ToolStripMenuItem ConfigToolStripMenuItem;
@@ -778,8 +618,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFleet3;
         private System.Windows.Forms.Label labelCheckFleet2;
         private System.Windows.Forms.Label labelFleet2;
-        private System.Windows.Forms.Label labelFighterPower;
-        private System.Windows.Forms.Label labelFighterPowerCaption;
         private System.Windows.Forms.Label labelMaterialCaption;
         private System.Windows.Forms.Label labelMaterialHistoryButton;
         private System.Windows.Forms.Label labelRepairListButton;
@@ -788,13 +626,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolStripMenuItem NotifyIconOpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NotifyIconExitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
-        private System.Windows.Forms.Label labelLoS;
-        private System.Windows.Forms.Label labelLoSCaption;
-        private System.Windows.Forms.Panel panelBattleInfo;
-        private System.Windows.Forms.Label labelEnemyFighterPower;
-        private System.Windows.Forms.Label labelEnemyFighterPowerCaption;
-        private System.Windows.Forms.Label labelFormation;
-        private System.Windows.Forms.Label labelResultRank;
         private System.Windows.Forms.ImageList imageListFuelSq;
         private System.Windows.Forms.Label labelFuelSq1;
         private System.Windows.Forms.ImageList imageListBullSq;
@@ -808,12 +639,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolStripMenuItem LogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CaptureToolStripMenuItem;
         private System.Windows.Forms.Label labelAkashiRepairTimer;
-        private System.Windows.Forms.Panel panelCombinedFleet;
         private System.Windows.Forms.Label labelAkashiRepair;
-        private System.Windows.Forms.Label labelPresetAkashiTimer;
         private RepairListForMain panelRepairList;
-        private System.Windows.Forms.Panel panel7Ships;
-        private System.Windows.Forms.LinkLabel linkLabelGuide;
         private System.Windows.Forms.Label labelClearQuest;
         private QuestPanel questPanel;
         private System.Windows.Forms.Label labelQuestCount;
@@ -822,6 +649,7 @@ namespace KancolleSniffer
         private KDockPanel kdockPanel;
         private HqPanel hqPanel;
         private MaterialHistoryPanel materialHistoryPanel;
+        private ShipInfoPanel shipInfoPanel;
     }
 }
 
