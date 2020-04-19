@@ -649,7 +649,7 @@ namespace KancolleSniffer
 
         private void ShowCurrentFleetNumber()
         {
-            var labels = new[] {labelCheckFleet1, labelCheckFleet2, labelCheckFleet3, labelCheckFleet4};
+            var labels = new[] {triangleMark1, triangleMark2, triangleMark3, triangleMark4};
             for (var i = 0; i < labels.Length; i++)
                 labels[i].Visible = shipInfoPanel.CurrentFleet == i;
         }

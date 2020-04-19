@@ -72,10 +72,6 @@ namespace KancolleSniffer
             this.labelClearQuest = new System.Windows.Forms.Label();
             this.labelRepairListButton = new System.Windows.Forms.Label();
             this.labelMaterialHistoryButton = new System.Windows.Forms.Label();
-            this.labelCheckFleet2 = new System.Windows.Forms.Label();
-            this.labelCheckFleet3 = new System.Windows.Forms.Label();
-            this.labelCheckFleet4 = new System.Windows.Forms.Label();
-            this.labelCheckFleet1 = new System.Windows.Forms.Label();
             this.labelQuestCount = new System.Windows.Forms.Label();
             this.kdockPanel = new KancolleSniffer.View.KDockPanel();
             this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
@@ -89,6 +85,10 @@ namespace KancolleSniffer
             this.chargeStatus2 = new KancolleSniffer.View.ChargeStatus();
             this.chargeStatus3 = new KancolleSniffer.View.ChargeStatus();
             this.chargeStatus4 = new KancolleSniffer.View.ChargeStatus();
+            this.triangleMark1 = new KancolleSniffer.View.TriangleMark();
+            this.triangleMark2 = new KancolleSniffer.View.TriangleMark();
+            this.triangleMark3 = new KancolleSniffer.View.TriangleMark();
+            this.triangleMark4 = new KancolleSniffer.View.TriangleMark();
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -315,41 +315,6 @@ namespace KancolleSniffer
             this.labelMaterialHistoryButton.Size = new System.Drawing.Size(14, 14);
             this.labelMaterialHistoryButton.TabIndex = 10;
             // 
-            // labelCheckFleet2
-            // 
-            this.labelCheckFleet2.Image = global::KancolleSniffer.Properties.Resources.arrow;
-            this.labelCheckFleet2.Location = new System.Drawing.Point(62, 42);
-            this.labelCheckFleet2.Name = "labelCheckFleet2";
-            this.labelCheckFleet2.Size = new System.Drawing.Size(5, 14);
-            this.labelCheckFleet2.TabIndex = 22;
-            this.labelCheckFleet2.Visible = false;
-            // 
-            // labelCheckFleet3
-            // 
-            this.labelCheckFleet3.Image = global::KancolleSniffer.Properties.Resources.arrow;
-            this.labelCheckFleet3.Location = new System.Drawing.Point(117, 42);
-            this.labelCheckFleet3.Name = "labelCheckFleet3";
-            this.labelCheckFleet3.Size = new System.Drawing.Size(5, 14);
-            this.labelCheckFleet3.TabIndex = 20;
-            this.labelCheckFleet3.Visible = false;
-            // 
-            // labelCheckFleet4
-            // 
-            this.labelCheckFleet4.Image = global::KancolleSniffer.Properties.Resources.arrow;
-            this.labelCheckFleet4.Location = new System.Drawing.Point(172, 42);
-            this.labelCheckFleet4.Name = "labelCheckFleet4";
-            this.labelCheckFleet4.Size = new System.Drawing.Size(5, 14);
-            this.labelCheckFleet4.TabIndex = 18;
-            this.labelCheckFleet4.Visible = false;
-            // 
-            // labelCheckFleet1
-            // 
-            this.labelCheckFleet1.Image = global::KancolleSniffer.Properties.Resources.arrow;
-            this.labelCheckFleet1.Location = new System.Drawing.Point(7, 42);
-            this.labelCheckFleet1.Name = "labelCheckFleet1";
-            this.labelCheckFleet1.Size = new System.Drawing.Size(5, 14);
-            this.labelCheckFleet1.TabIndex = 16;
-            // 
             // labelQuestCount
             // 
             this.labelQuestCount.AutoSize = true;
@@ -469,12 +434,51 @@ namespace KancolleSniffer
             this.chargeStatus4.TabIndex = 73;
             this.chargeStatus4.Text = "chargeStatus4";
             // 
+            // triangleMark1
+            // 
+            this.triangleMark1.Location = new System.Drawing.Point(7, 42);
+            this.triangleMark1.Name = "triangleMark1";
+            this.triangleMark1.Size = new System.Drawing.Size(5, 13);
+            this.triangleMark1.TabIndex = 75;
+            this.triangleMark1.Text = "triangleMark1";
+            // 
+            // triangleMark2
+            // 
+            this.triangleMark2.Location = new System.Drawing.Point(62, 42);
+            this.triangleMark2.Name = "triangleMark2";
+            this.triangleMark2.Size = new System.Drawing.Size(5, 13);
+            this.triangleMark2.TabIndex = 76;
+            this.triangleMark2.Text = "triangleMark2";
+            this.triangleMark2.Visible = false;
+            // 
+            // triangleMark3
+            // 
+            this.triangleMark3.Location = new System.Drawing.Point(117, 42);
+            this.triangleMark3.Name = "triangleMark3";
+            this.triangleMark3.Size = new System.Drawing.Size(5, 13);
+            this.triangleMark3.TabIndex = 77;
+            this.triangleMark3.Text = "triangleMark3";
+            this.triangleMark3.Visible = false;
+            // 
+            // triangleMark4
+            // 
+            this.triangleMark4.Location = new System.Drawing.Point(172, 42);
+            this.triangleMark4.Name = "triangleMark4";
+            this.triangleMark4.Size = new System.Drawing.Size(5, 13);
+            this.triangleMark4.TabIndex = 78;
+            this.triangleMark4.Text = "triangleMark4";
+            this.triangleMark4.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.triangleMark4);
+            this.Controls.Add(this.triangleMark3);
+            this.Controls.Add(this.triangleMark2);
+            this.Controls.Add(this.triangleMark1);
             this.Controls.Add(this.chargeStatus3);
             this.Controls.Add(this.chargeStatus4);
             this.Controls.Add(this.chargeStatus2);
@@ -495,13 +499,9 @@ namespace KancolleSniffer
             this.Controls.Add(this.label31);
             this.Controls.Add(this.labelMaterialHistoryButton);
             this.Controls.Add(this.labelMaterialCaption);
-            this.Controls.Add(this.labelCheckFleet2);
             this.Controls.Add(this.labelFleet2);
-            this.Controls.Add(this.labelCheckFleet3);
             this.Controls.Add(this.labelFleet3);
-            this.Controls.Add(this.labelCheckFleet4);
             this.Controls.Add(this.labelFleet4);
-            this.Controls.Add(this.labelCheckFleet1);
             this.Controls.Add(this.labelMissionCaption);
             this.Controls.Add(this.labelQuest);
             this.Controls.Add(this.labelConstruct);
@@ -534,12 +534,8 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolStripMenuItem ConfigToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
         private System.Windows.Forms.Label labelFleet1;
-        private System.Windows.Forms.Label labelCheckFleet1;
-        private System.Windows.Forms.Label labelCheckFleet4;
         private System.Windows.Forms.Label labelFleet4;
-        private System.Windows.Forms.Label labelCheckFleet3;
         private System.Windows.Forms.Label labelFleet3;
-        private System.Windows.Forms.Label labelCheckFleet2;
         private System.Windows.Forms.Label labelFleet2;
         private System.Windows.Forms.Label labelMaterialCaption;
         private System.Windows.Forms.Label labelMaterialHistoryButton;
@@ -567,6 +563,10 @@ namespace KancolleSniffer
         private ChargeStatus chargeStatus2;
         private ChargeStatus chargeStatus3;
         private ChargeStatus chargeStatus4;
+        private TriangleMark triangleMark1;
+        private TriangleMark triangleMark2;
+        private TriangleMark triangleMark3;
+        private TriangleMark triangleMark4;
     }
 }
 

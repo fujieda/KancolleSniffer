@@ -93,6 +93,9 @@
     <Compile Include="View\ShipInfoPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="View\TriangleMark.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\UpdateContext.cs" />
     <Compile Include="View\AntiAirPanel.cs">
       <SubType>Component</SubType>
