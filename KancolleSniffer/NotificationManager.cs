@@ -22,7 +22,13 @@ namespace KancolleSniffer
 {
     public class NotificationManager
     {
-        private readonly NotificationQueue _notificationQueue;
+        private readonly Action<string, string, string> _alarm;
+        private readonly List<Notification> _queue = new List<Notification>();
+        private readonly Func<DateTime> _nowFunc = () => DateTime.Now;
+        private readonly NotificationConfig _notificationConfig = new NotificationConfig();
+        private DateTime _lastAlarm;
+        private bool _suspend;
+        private string _suspendException;
 
         private enum Mode
         {
@@ -44,12 +50,14 @@ namespace KancolleSniffer
 
         public NotificationManager(Action<string, string, string> alarm, Func<DateTime> nowFunc = null)
         {
-            _notificationQueue = new NotificationQueue(alarm, nowFunc);
+            _alarm = alarm;
+            if (nowFunc != null)
+                _nowFunc = nowFunc;
         }
 
         public void Enqueue(string key, int fleet, string subject, int repeat = 0, bool preliminary = false)
         {
-            _notificationQueue.Enqueue(new Notification
+            _queue.Add(new Notification
             {
                 Key = key,
                 Fleet = fleet,
@@ -66,40 +74,86 @@ namespace KancolleSniffer
 
         public void Flash()
         {
-            _notificationQueue.Flash();
+            Alarm();
         }
 
         public void StopRepeat(string key, bool cont = false)
         {
-            _notificationQueue.StopRepeat(key, cont);
+            if (!cont)
+            {
+                _queue.RemoveAll(n => IsMatch(n, key));
+            }
+            else
+            {
+                foreach (var n in _queue.Where(n => IsMatch(n, key)))
+                {
+                    n.Subject = "";
+                    n.Mode = Mode.Cont;
+                }
+            }
         }
 
         public void StopRepeat(string key, int fleet)
         {
-            _notificationQueue.StopRepeat(key, fleet);
+            _queue.RemoveAll(n => IsMatch(n, key) && n.Fleet == fleet);
         }
 
         public void StopRepeat(string key, string subject)
         {
-            _notificationQueue.StopRepeat(key, subject);
+            _queue.RemoveAll(n => IsMatch(n, key) && n.Subject == subject);
         }
 
         public void StopAllRepeat()
         {
-            _notificationQueue.StopAllRepeat();
+            _queue.RemoveAll(n => n.Schedule != default);
         }
 
         public void SuspendRepeat(string exception = "")
         {
-            _notificationQueue.SuspendRepeat(exception);
+            _suspend = true;
+            _suspendException = exception;
         }
 
         public void ResumeRepeat()
         {
-            _notificationQueue.ResumeRepeat();
+            _suspend = false;
         }
 
         public string KeyToName(string key) => NotificationConfig.KeyToName(key);
+
+        private bool IsMatch(Notification n, string key) =>
+            n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Schedule != default;
+
+        private void Alarm()
+        {
+            var now = _nowFunc();
+            if (now - _lastAlarm < TimeSpan.FromSeconds(2))
+                return;
+            var first = _queue.FirstOrDefault(n => n.Schedule.CompareTo(now) <= 0 &&
+                                                   !(n.Schedule != default && _suspend && n.Key != _suspendException));
+            if (first == null)
+                return;
+            var message = _notificationConfig.GenerateMessage(first);
+            var similar = _queue.Where(n =>
+                    _notificationConfig.GenerateMessage(n).Name == message.Name && n.Schedule.CompareTo(now) <= 0)
+                .ToArray();
+            var body = string.Join("\r\n", similar.Select(n => _notificationConfig.GenerateMessage(n).Body));
+            foreach (var n in similar)
+            {
+                if (n.Repeat == 0)
+                {
+                    _queue.Remove(n);
+                }
+                else
+                {
+                    n.Schedule = now + TimeSpan.FromSeconds(n.Repeat);
+                    if (n.Mode == Mode.Normal)
+                        n.Mode = Mode.Repeat;
+                }
+            }
+            _alarm(message.Title, body, message.Name);
+            _lastAlarm = now;
+        }
 
         private class NotificationConfig
         {
@@ -285,110 +339,6 @@ namespace KancolleSniffer
                     }
                 }
                 return result;
-            }
-        }
-
-        private class NotificationQueue
-        {
-            private readonly Action<string, string, string> _alarm;
-            private readonly List<Notification> _queue = new List<Notification>();
-            private readonly Func<DateTime> _nowFunc = () => DateTime.Now;
-            private readonly NotificationConfig _notificationConfig = new NotificationConfig();
-            private DateTime _lastAlarm;
-            private bool _suspend;
-            private string _suspendException;
-
-            public NotificationQueue(Action<string, string, string> alarm, Func<DateTime> nowFunc = null)
-            {
-                _alarm = alarm;
-                if (nowFunc != null)
-                    _nowFunc = nowFunc;
-            }
-
-            public void Enqueue(Notification notification)
-            {
-                _queue.Add(notification);
-            }
-
-            public void Flash()
-            {
-                Alarm();
-            }
-
-            public void StopRepeat(string key, bool cont = false)
-            {
-                if (!cont)
-                {
-                    _queue.RemoveAll(n => IsMatch(n, key));
-                }
-                else
-                {
-                    foreach (var n in _queue.Where(n => IsMatch(n, key)))
-                    {
-                        n.Subject = "";
-                        n.Mode = Mode.Cont;
-                    }
-                }
-            }
-
-            public void StopRepeat(string key, int fleet)
-            {
-                _queue.RemoveAll(n => IsMatch(n, key) && n.Fleet == fleet);
-            }
-
-            public void StopRepeat(string key, string subject)
-            {
-                _queue.RemoveAll(n => IsMatch(n, key) && n.Subject == subject);
-            }
-
-            private bool IsMatch(Notification n, string key) =>
-                n.Key.Substring(0, 4) == key.Substring(0, 4) && n.Schedule != default;
-
-            public void StopAllRepeat()
-            {
-                _queue.RemoveAll(n => n.Schedule != default);
-            }
-
-            public void SuspendRepeat(string exception = null)
-            {
-                _suspend = true;
-                _suspendException = exception;
-            }
-
-            public void ResumeRepeat()
-            {
-                _suspend = false;
-            }
-
-            private void Alarm()
-            {
-                var now = _nowFunc();
-                if (now - _lastAlarm < TimeSpan.FromSeconds(2))
-                    return;
-                var first = _queue.FirstOrDefault(n => n.Schedule.CompareTo(now) <= 0 &&
-                                                       !(n.Schedule != default && _suspend && n.Key != _suspendException));
-                if (first == null)
-                    return;
-                var message = _notificationConfig.GenerateMessage(first);
-                var similar = _queue.Where(n =>
-                        _notificationConfig.GenerateMessage(n).Name == message.Name && n.Schedule.CompareTo(now) <= 0)
-                    .ToArray();
-                var body = string.Join("\r\n", similar.Select(n => _notificationConfig.GenerateMessage(n).Body));
-                foreach (var n in similar)
-                {
-                    if (n.Repeat == 0)
-                    {
-                        _queue.Remove(n);
-                    }
-                    else
-                    {
-                        n.Schedule = now + TimeSpan.FromSeconds(n.Repeat);
-                        if (n.Mode == Mode.Normal)
-                            n.Mode = Mode.Repeat;
-                    }
-                }
-                _alarm(message.Title, body, message.Name);
-                _lastAlarm = now;
             }
         }
     }
