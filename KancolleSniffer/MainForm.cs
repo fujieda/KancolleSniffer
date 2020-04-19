@@ -101,7 +101,11 @@ namespace KancolleSniffer
 
         private void SetupUpdateable()
         {
-            _updateable = new IUpdateContext[] {hqPanel, missionPanel, kdockPanel, ndockPanel, materialHistoryPanel, shipInfoPanel};
+            _updateable = new IUpdateContext[]
+            {
+                hqPanel, missionPanel, kdockPanel, ndockPanel, materialHistoryPanel, shipInfoPanel, chargeStatus1,
+                chargeStatus2, chargeStatus3, chargeStatus4
+            };
             var context = new UpdateContext(Sniffer, Config, new NotifySubmitter(_notificationManager), () => _now);
             foreach (var updateable in _updateable)
                 updateable.Context = context;
@@ -699,17 +703,10 @@ namespace KancolleSniffer
 
         private void UpdateChargeInfo()
         {
-            var fuelSq = new[] {labelFuelSq1, labelFuelSq2, labelFuelSq3, labelFuelSq4};
-            var bullSq = new[] {labelBullSq1, labelBullSq2, labelBullSq3, labelBullSq4};
-
-            for (var i = 0; i < fuelSq.Length; i++)
+            foreach (var status in new[] {chargeStatus1, chargeStatus2, chargeStatus3, chargeStatus4})
             {
-                var stat = Sniffer.Fleets[i].ChargeStatus;
-                fuelSq[i].ImageIndex = stat.Fuel;
-                bullSq[i].ImageIndex = stat.Bull;
-                var text = stat.Empty ? "" : $"燃{stat.FuelRatio * 100:f1}% 弾{stat.BullRatio * 100:f1}%";
-                _toolTip.SetToolTip(fuelSq[i], text);
-                _toolTip.SetToolTip(bullSq[i], text);
+                status.Update();
+                _toolTip.SetToolTip(status, status.Text);
             }
         }
 
@@ -926,9 +923,8 @@ namespace KancolleSniffer
         {
             var labels = new[]
             {
-                new[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4},
-                new[] {labelFuelSq1, labelFuelSq2, labelFuelSq3, labelFuelSq4},
-                new[] {labelBullSq1, labelBullSq2, labelBullSq3, labelBullSq4}
+                new Control[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4},
+                new Control[] {chargeStatus1, chargeStatus2, chargeStatus3, chargeStatus4}
             };
             foreach (var a in labels)
             {
@@ -948,7 +944,7 @@ namespace KancolleSniffer
         {
             if (!_started)
                 return;
-            var fleet = (int)((Label)sender).Tag;
+            var fleet = (int)((Control)sender).Tag;
             if (shipInfoPanel.CurrentFleet == fleet)
                 return;
             shipInfoPanel.CombinedFleet = false;
@@ -997,9 +993,9 @@ namespace KancolleSniffer
         {
             if (!_started)
                 return;
-            var fleet = (int)((Label)sender).Tag;
+            var fleet = (int)((Control)sender).Tag;
             var text = TextGenerator.GenerateFleetData(Sniffer, fleet);
-            CopyFleetText(text, (Label)sender);
+            CopyFleetText(text, (Control)sender);
         }
 
         private void labelFleet1_DoubleClick(object sender, EventArgs e)
@@ -1010,10 +1006,10 @@ namespace KancolleSniffer
             var text = TextGenerator.GenerateFleetData(Sniffer, 0);
             if (shipInfoPanel.CombinedFleet)
                 text += TextGenerator.GenerateFleetData(Sniffer, 1);
-            CopyFleetText(text, (Label)sender);
+            CopyFleetText(text, (Control)sender);
         }
 
-        private void CopyFleetText(string text, Label fleetButton)
+        private void CopyFleetText(string text, Control fleetButton)
         {
             if (string.IsNullOrEmpty(text))
                 return;

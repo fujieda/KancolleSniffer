@@ -83,6 +83,9 @@
     <Compile Include="Log\BattleLogProcessor.cs" />
     <Compile Include="Model\Range.cs" />
     <Compile Include="Util\Clipboard.cs" />
+    <Compile Include="View\ChargeStatus.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\IUpdateable.cs" />
     <Compile Include="View\MaterialHistoryPanel.cs">
       <SubType>Component</SubType>

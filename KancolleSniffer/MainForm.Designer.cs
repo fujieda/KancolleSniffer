@@ -68,18 +68,8 @@ namespace KancolleSniffer
             this.labelFleet2 = new System.Windows.Forms.Label();
             this.labelMaterialCaption = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
-            this.imageListFuelSq = new System.Windows.Forms.ImageList(this.components);
-            this.imageListBullSq = new System.Windows.Forms.ImageList(this.components);
             this.labelAkashiRepair = new System.Windows.Forms.Label();
             this.labelClearQuest = new System.Windows.Forms.Label();
-            this.labelBullSq4 = new System.Windows.Forms.Label();
-            this.labelFuelSq4 = new System.Windows.Forms.Label();
-            this.labelBullSq3 = new System.Windows.Forms.Label();
-            this.labelFuelSq3 = new System.Windows.Forms.Label();
-            this.labelBullSq2 = new System.Windows.Forms.Label();
-            this.labelFuelSq2 = new System.Windows.Forms.Label();
-            this.labelBullSq1 = new System.Windows.Forms.Label();
-            this.labelFuelSq1 = new System.Windows.Forms.Label();
             this.labelRepairListButton = new System.Windows.Forms.Label();
             this.labelMaterialHistoryButton = new System.Windows.Forms.Label();
             this.labelCheckFleet2 = new System.Windows.Forms.Label();
@@ -95,6 +85,10 @@ namespace KancolleSniffer
             this.hqPanel = new KancolleSniffer.View.HqPanel();
             this.materialHistoryPanel = new KancolleSniffer.View.MaterialHistoryPanel();
             this.shipInfoPanel = new KancolleSniffer.View.ShipInfoPanel();
+            this.chargeStatus1 = new KancolleSniffer.View.ChargeStatus();
+            this.chargeStatus2 = new KancolleSniffer.View.ChargeStatus();
+            this.chargeStatus3 = new KancolleSniffer.View.ChargeStatus();
+            this.chargeStatus4 = new KancolleSniffer.View.ChargeStatus();
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -280,36 +274,6 @@ namespace KancolleSniffer
             this.label31.Text = "要修復";
             this.label31.Click += new System.EventHandler(this.labelRepairListButton_Click);
             // 
-            // imageListFuelSq
-            // 
-            this.imageListFuelSq.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListFuelSq.ImageStream")));
-            this.imageListFuelSq.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListFuelSq.Images.SetKeyName(0, "透明sq.png");
-            this.imageListFuelSq.Images.SetKeyName(1, "燃料黄sq.png");
-            this.imageListFuelSq.Images.SetKeyName(2, "燃料橙sq.png");
-            this.imageListFuelSq.Images.SetKeyName(3, "燃料赤sq.png");
-            this.imageListFuelSq.Images.SetKeyName(4, "燃料灰sq.png");
-            this.imageListFuelSq.Images.SetKeyName(5, "透明sq.png");
-            this.imageListFuelSq.Images.SetKeyName(6, "燃料薄黄sq.png");
-            this.imageListFuelSq.Images.SetKeyName(7, "燃料薄橙sq.png");
-            this.imageListFuelSq.Images.SetKeyName(8, "燃料薄赤sq.png");
-            this.imageListFuelSq.Images.SetKeyName(9, "燃料薄灰sq.png");
-            // 
-            // imageListBullSq
-            // 
-            this.imageListBullSq.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListBullSq.ImageStream")));
-            this.imageListBullSq.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListBullSq.Images.SetKeyName(0, "透明sq.png");
-            this.imageListBullSq.Images.SetKeyName(1, "弾薬黄sq.png");
-            this.imageListBullSq.Images.SetKeyName(2, "弾薬橙sq.png");
-            this.imageListBullSq.Images.SetKeyName(3, "弾薬赤sq.png");
-            this.imageListBullSq.Images.SetKeyName(4, "弾薬灰sq.png");
-            this.imageListBullSq.Images.SetKeyName(5, "透明sq.png");
-            this.imageListBullSq.Images.SetKeyName(6, "弾薬薄黄sq.png");
-            this.imageListBullSq.Images.SetKeyName(7, "弾薬薄橙sq.png");
-            this.imageListBullSq.Images.SetKeyName(8, "弾薬薄赤sq.png");
-            this.imageListBullSq.Images.SetKeyName(9, "弾薬薄灰sq.png");
-            // 
             // labelAkashiRepair
             // 
             this.labelAkashiRepair.AutoSize = true;
@@ -331,78 +295,6 @@ namespace KancolleSniffer
             this.labelClearQuest.Click += new System.EventHandler(this.labelClearQuest_Click);
             this.labelClearQuest.MouseDown += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseDown);
             this.labelClearQuest.MouseUp += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseUp);
-            // 
-            // labelBullSq4
-            // 
-            this.labelBullSq4.ImageIndex = 0;
-            this.labelBullSq4.ImageList = this.imageListBullSq;
-            this.labelBullSq4.Location = new System.Drawing.Point(214, 42);
-            this.labelBullSq4.Name = "labelBullSq4";
-            this.labelBullSq4.Size = new System.Drawing.Size(8, 13);
-            this.labelBullSq4.TabIndex = 53;
-            // 
-            // labelFuelSq4
-            // 
-            this.labelFuelSq4.ImageIndex = 0;
-            this.labelFuelSq4.ImageList = this.imageListFuelSq;
-            this.labelFuelSq4.Location = new System.Drawing.Point(205, 42);
-            this.labelFuelSq4.Name = "labelFuelSq4";
-            this.labelFuelSq4.Size = new System.Drawing.Size(8, 13);
-            this.labelFuelSq4.TabIndex = 52;
-            // 
-            // labelBullSq3
-            // 
-            this.labelBullSq3.ImageIndex = 0;
-            this.labelBullSq3.ImageList = this.imageListBullSq;
-            this.labelBullSq3.Location = new System.Drawing.Point(159, 42);
-            this.labelBullSq3.Name = "labelBullSq3";
-            this.labelBullSq3.Size = new System.Drawing.Size(8, 13);
-            this.labelBullSq3.TabIndex = 51;
-            // 
-            // labelFuelSq3
-            // 
-            this.labelFuelSq3.ImageIndex = 0;
-            this.labelFuelSq3.ImageList = this.imageListFuelSq;
-            this.labelFuelSq3.Location = new System.Drawing.Point(150, 42);
-            this.labelFuelSq3.Name = "labelFuelSq3";
-            this.labelFuelSq3.Size = new System.Drawing.Size(8, 13);
-            this.labelFuelSq3.TabIndex = 50;
-            // 
-            // labelBullSq2
-            // 
-            this.labelBullSq2.ImageIndex = 0;
-            this.labelBullSq2.ImageList = this.imageListBullSq;
-            this.labelBullSq2.Location = new System.Drawing.Point(104, 42);
-            this.labelBullSq2.Name = "labelBullSq2";
-            this.labelBullSq2.Size = new System.Drawing.Size(8, 13);
-            this.labelBullSq2.TabIndex = 49;
-            // 
-            // labelFuelSq2
-            // 
-            this.labelFuelSq2.ImageIndex = 0;
-            this.labelFuelSq2.ImageList = this.imageListFuelSq;
-            this.labelFuelSq2.Location = new System.Drawing.Point(95, 42);
-            this.labelFuelSq2.Name = "labelFuelSq2";
-            this.labelFuelSq2.Size = new System.Drawing.Size(8, 13);
-            this.labelFuelSq2.TabIndex = 48;
-            // 
-            // labelBullSq1
-            // 
-            this.labelBullSq1.ImageIndex = 0;
-            this.labelBullSq1.ImageList = this.imageListBullSq;
-            this.labelBullSq1.Location = new System.Drawing.Point(49, 42);
-            this.labelBullSq1.Name = "labelBullSq1";
-            this.labelBullSq1.Size = new System.Drawing.Size(8, 13);
-            this.labelBullSq1.TabIndex = 47;
-            // 
-            // labelFuelSq1
-            // 
-            this.labelFuelSq1.ImageIndex = 0;
-            this.labelFuelSq1.ImageList = this.imageListFuelSq;
-            this.labelFuelSq1.Location = new System.Drawing.Point(40, 42);
-            this.labelFuelSq1.Name = "labelFuelSq1";
-            this.labelFuelSq1.Size = new System.Drawing.Size(8, 13);
-            this.labelFuelSq1.TabIndex = 43;
             // 
             // labelRepairListButton
             // 
@@ -541,12 +433,52 @@ namespace KancolleSniffer
             this.shipInfoPanel.Size = new System.Drawing.Size(220, 134);
             this.shipInfoPanel.TabIndex = 67;
             // 
+            // chargeStatus1
+            // 
+            this.chargeStatus1.Context = null;
+            this.chargeStatus1.Location = new System.Drawing.Point(40, 42);
+            this.chargeStatus1.Name = "chargeStatus1";
+            this.chargeStatus1.Size = new System.Drawing.Size(17, 13);
+            this.chargeStatus1.TabIndex = 69;
+            this.chargeStatus1.Text = "chargeStatus1";
+            // 
+            // chargeStatus2
+            // 
+            this.chargeStatus2.Context = null;
+            this.chargeStatus2.Location = new System.Drawing.Point(95, 42);
+            this.chargeStatus2.Name = "chargeStatus2";
+            this.chargeStatus2.Size = new System.Drawing.Size(17, 13);
+            this.chargeStatus2.TabIndex = 71;
+            this.chargeStatus2.Text = "chargeStatus2";
+            // 
+            // chargeStatus3
+            // 
+            this.chargeStatus3.Context = null;
+            this.chargeStatus3.Location = new System.Drawing.Point(150, 42);
+            this.chargeStatus3.Name = "chargeStatus3";
+            this.chargeStatus3.Size = new System.Drawing.Size(17, 13);
+            this.chargeStatus3.TabIndex = 72;
+            this.chargeStatus3.Text = "chargeStatus3";
+            // 
+            // chargeStatus4
+            // 
+            this.chargeStatus4.Context = null;
+            this.chargeStatus4.Location = new System.Drawing.Point(205, 42);
+            this.chargeStatus4.Name = "chargeStatus4";
+            this.chargeStatus4.Size = new System.Drawing.Size(17, 13);
+            this.chargeStatus4.TabIndex = 73;
+            this.chargeStatus4.Text = "chargeStatus4";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.chargeStatus3);
+            this.Controls.Add(this.chargeStatus4);
+            this.Controls.Add(this.chargeStatus2);
+            this.Controls.Add(this.chargeStatus1);
             this.Controls.Add(this.shipInfoPanel);
             this.Controls.Add(this.materialHistoryPanel);
             this.Controls.Add(this.hqPanel);
@@ -559,14 +491,6 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelClearQuest);
             this.Controls.Add(this.labelAkashiRepair);
             this.Controls.Add(this.labelAkashiRepairTimer);
-            this.Controls.Add(this.labelBullSq4);
-            this.Controls.Add(this.labelFuelSq4);
-            this.Controls.Add(this.labelBullSq3);
-            this.Controls.Add(this.labelFuelSq3);
-            this.Controls.Add(this.labelBullSq2);
-            this.Controls.Add(this.labelFuelSq2);
-            this.Controls.Add(this.labelBullSq1);
-            this.Controls.Add(this.labelFuelSq1);
             this.Controls.Add(this.labelRepairListButton);
             this.Controls.Add(this.label31);
             this.Controls.Add(this.labelMaterialHistoryButton);
@@ -626,16 +550,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.ToolStripMenuItem NotifyIconOpenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NotifyIconExitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
-        private System.Windows.Forms.ImageList imageListFuelSq;
-        private System.Windows.Forms.Label labelFuelSq1;
-        private System.Windows.Forms.ImageList imageListBullSq;
-        private System.Windows.Forms.Label labelBullSq1;
-        private System.Windows.Forms.Label labelBullSq2;
-        private System.Windows.Forms.Label labelFuelSq2;
-        private System.Windows.Forms.Label labelBullSq3;
-        private System.Windows.Forms.Label labelFuelSq3;
-        private System.Windows.Forms.Label labelBullSq4;
-        private System.Windows.Forms.Label labelFuelSq4;
         private System.Windows.Forms.ToolStripMenuItem LogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CaptureToolStripMenuItem;
         private System.Windows.Forms.Label labelAkashiRepairTimer;
@@ -650,6 +564,10 @@ namespace KancolleSniffer
         private HqPanel hqPanel;
         private MaterialHistoryPanel materialHistoryPanel;
         private ShipInfoPanel shipInfoPanel;
+        private ChargeStatus chargeStatus1;
+        private ChargeStatus chargeStatus2;
+        private ChargeStatus chargeStatus3;
+        private ChargeStatus chargeStatus4;
     }
 }
 
