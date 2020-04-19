@@ -146,14 +146,6 @@ namespace KancolleSniffer
             }
         }
 
-        /// <summary>
-        /// パネルのz-orderがくるうのを避ける
-        /// https://stackoverflow.com/a/5777090/1429506
-        /// </summary>
-        private void MainForm_Shown(object sender, EventArgs e)
-        {
-        }
-
         private readonly FileSystemWatcher _watcher = new FileSystemWatcher
         {
             Path = AppDomain.CurrentDomain.BaseDirectory,
@@ -1053,13 +1045,6 @@ namespace KancolleSniffer
         private void ShipListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _listFormGroup.ShowOrCreate();
-            /*
-            _listForm.UpdateList();
-            _listForm.Show();
-            if (_listForm.WindowState == FormWindowState.Minimized)
-                _listForm.WindowState = FormWindowState.Normal;
-            _listForm.Activate();
-            */
         }
 
         private void LogToolStripMenuItem_Click(object sender, EventArgs e)
