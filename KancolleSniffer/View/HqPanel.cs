@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
-using KancolleSniffer.Properties;
 
 namespace KancolleSniffer.View
 {
@@ -25,12 +24,10 @@ namespace KancolleSniffer.View
             Visible = false
         };
 
-        private readonly Label _bucketHistoryButton = new Label
+        private readonly DropDownButton _bucketHistoryButton = new DropDownButton
         {
             Location = new Point(146, 15),
-            Size = new Size(14, 14),
-            BorderStyle = BorderStyle.FixedSingle,
-            Image = Resources.arrow_virtical
+            Size = new Size(14, 14)
         };
 
         private readonly Label _achievement = new Label

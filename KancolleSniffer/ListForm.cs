@@ -597,7 +597,7 @@ namespace KancolleSniffer
             panelSType.Visible = visible;
             if (visible)
                 panelSType.BringToFront();
-            labelSTypeButton.BackColor = visible ? CustomColors.ActiveButtonColor : DefaultBackColor;
+            dropDownButtonSType.BackColor = visible ? CustomColors.ActiveButtonColor : DefaultBackColor;
         }
 
         private void checkBoxSTypeDetails_Click(object sender, EventArgs e)

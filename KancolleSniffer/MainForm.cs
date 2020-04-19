@@ -94,7 +94,7 @@ namespace KancolleSniffer
             panelRepairList.CreateLabels(panelRepairList_Click);
             ndockPanel.SetClickHandler(labelNDockCaption);
             missionPanel.SetClickHandler(labelMissionCaption);
-            materialHistoryPanel.SetClickHandler(labelMaterialCaption, labelMaterialHistoryButton);
+            materialHistoryPanel.SetClickHandler(labelMaterialCaption, dropDownButtonMaterialHistory);
             SetupUpdateable();
             PerformZoom();
         }
@@ -1026,20 +1026,20 @@ namespace KancolleSniffer
             if (panelRepairList.Visible)
             {
                 panelRepairList.Visible = false;
-                labelRepairListButton.BackColor = DefaultBackColor;
+                dropDownButtonRepairList.BackColor = DefaultBackColor;
             }
             else
             {
                 panelRepairList.Visible = true;
                 panelRepairList.BringToFront();
-                labelRepairListButton.BackColor = CustomColors.ActiveButtonColor;
+                dropDownButtonRepairList.BackColor = CustomColors.ActiveButtonColor;
             }
         }
 
         private void panelRepairList_Click(object sender, EventArgs e)
         {
             panelRepairList.Visible = false;
-            labelRepairListButton.BackColor = DefaultBackColor;
+            dropDownButtonRepairList.BackColor = DefaultBackColor;
         }
 
         private void ShipListToolStripMenuItem_Click(object sender, EventArgs e)

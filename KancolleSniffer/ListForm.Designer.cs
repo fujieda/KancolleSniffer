@@ -90,7 +90,7 @@ namespace KancolleSniffer
             this.checkBoxSTypeHeavyCruiser = new System.Windows.Forms.CheckBox();
             this.checkBoxSTypeAircraftCarrier = new System.Windows.Forms.CheckBox();
             this.checkBoxSTypeBattleShip = new System.Windows.Forms.CheckBox();
-            this.labelSTypeButton = new System.Windows.Forms.Label();
+            this.dropDownButtonSType = new KancolleSniffer.View.DropDownButton();
             this.labelSType = new System.Windows.Forms.Label();
             this.airBattleResultPanel = new KancolleSniffer.View.AirBattleResultPanel();
             this.battleResultPanel = new KancolleSniffer.View.BattleResultPanel();
@@ -535,15 +535,13 @@ namespace KancolleSniffer
             this.checkBoxSTypeBattleShip.UseVisualStyleBackColor = true;
             this.checkBoxSTypeBattleShip.Click += new System.EventHandler(this.checkBoxSType_Click);
             // 
-            // labelSTypeButton
+            // dropDownButtonSType
             // 
-            this.labelSTypeButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelSTypeButton.Image = global::KancolleSniffer.Properties.Resources.arrow_virtical;
-            this.labelSTypeButton.Location = new System.Drawing.Point(58, 7);
-            this.labelSTypeButton.Name = "labelSTypeButton";
-            this.labelSTypeButton.Size = new System.Drawing.Size(14, 14);
-            this.labelSTypeButton.TabIndex = 19;
-            this.labelSTypeButton.Click += new System.EventHandler(this.labelSTypeButton_Click);
+            this.dropDownButtonSType.Location = new System.Drawing.Point(58, 7);
+            this.dropDownButtonSType.Name = "dropDownButtonSType";
+            this.dropDownButtonSType.Size = new System.Drawing.Size(14, 14);
+            this.dropDownButtonSType.TabIndex = 19;
+            this.dropDownButtonSType.Click += new System.EventHandler(this.labelSTypeButton_Click);
             // 
             // labelSType
             // 
@@ -641,7 +639,7 @@ namespace KancolleSniffer
             this.Controls.Add(this.panelRepairHeader);
             this.Controls.Add(this.panelGroupHeader);
             this.Controls.Add(this.labelSType);
-            this.Controls.Add(this.labelSTypeButton);
+            this.Controls.Add(this.dropDownButtonSType);
             this.Controls.Add(this.labelHeaderExp);
             this.Controls.Add(this.labelHeaderCond);
             this.Controls.Add(this.label3);
@@ -724,7 +722,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.CheckBox checkBoxSTypeHeavyCruiser;
         private System.Windows.Forms.CheckBox checkBoxSTypeAircraftCarrier;
         private System.Windows.Forms.CheckBox checkBoxSTypeBattleShip;
-        private System.Windows.Forms.Label labelSTypeButton;
+        private DropDownButton dropDownButtonSType;
         private System.Windows.Forms.Label labelSType;
         private System.Windows.Forms.CheckBox checkBoxSTypeDetails;
         private System.Windows.Forms.ToolStripMenuItem kantaiBunsekiToolStripMenuItem;

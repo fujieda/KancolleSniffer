@@ -70,8 +70,7 @@ namespace KancolleSniffer
             this.label31 = new System.Windows.Forms.Label();
             this.labelAkashiRepair = new System.Windows.Forms.Label();
             this.labelClearQuest = new System.Windows.Forms.Label();
-            this.labelRepairListButton = new System.Windows.Forms.Label();
-            this.labelMaterialHistoryButton = new System.Windows.Forms.Label();
+            this.dropDownButtonRepairList = new KancolleSniffer.View.DropDownButton();
             this.labelQuestCount = new System.Windows.Forms.Label();
             this.kdockPanel = new KancolleSniffer.View.KDockPanel();
             this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
@@ -89,6 +88,7 @@ namespace KancolleSniffer
             this.triangleMark2 = new KancolleSniffer.View.TriangleMark();
             this.triangleMark3 = new KancolleSniffer.View.TriangleMark();
             this.triangleMark4 = new KancolleSniffer.View.TriangleMark();
+            this.dropDownButtonMaterialHistory = new KancolleSniffer.View.DropDownButton();
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -296,24 +296,13 @@ namespace KancolleSniffer
             this.labelClearQuest.MouseDown += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseDown);
             this.labelClearQuest.MouseUp += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseUp);
             // 
-            // labelRepairListButton
+            // dropDownButtonRepairList
             // 
-            this.labelRepairListButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelRepairListButton.Image = global::KancolleSniffer.Properties.Resources.arrow_virtical;
-            this.labelRepairListButton.Location = new System.Drawing.Point(121, 193);
-            this.labelRepairListButton.Name = "labelRepairListButton";
-            this.labelRepairListButton.Size = new System.Drawing.Size(14, 14);
-            this.labelRepairListButton.TabIndex = 45;
-            this.labelRepairListButton.Click += new System.EventHandler(this.labelRepairListButton_Click);
-            // 
-            // labelMaterialHistoryButton
-            // 
-            this.labelMaterialHistoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelMaterialHistoryButton.Image = global::KancolleSniffer.Properties.Resources.arrow_virtical;
-            this.labelMaterialHistoryButton.Location = new System.Drawing.Point(211, 340);
-            this.labelMaterialHistoryButton.Name = "labelMaterialHistoryButton";
-            this.labelMaterialHistoryButton.Size = new System.Drawing.Size(14, 14);
-            this.labelMaterialHistoryButton.TabIndex = 10;
+            this.dropDownButtonRepairList.Location = new System.Drawing.Point(121, 193);
+            this.dropDownButtonRepairList.Name = "dropDownButtonRepairList";
+            this.dropDownButtonRepairList.Size = new System.Drawing.Size(14, 14);
+            this.dropDownButtonRepairList.TabIndex = 45;
+            this.dropDownButtonRepairList.Click += new System.EventHandler(this.labelRepairListButton_Click);
             // 
             // labelQuestCount
             // 
@@ -469,12 +458,22 @@ namespace KancolleSniffer
             this.triangleMark4.Text = "triangleMark4";
             this.triangleMark4.Visible = false;
             // 
+            // dropDownButtonMaterialHistory
+            // 
+            this.dropDownButtonMaterialHistory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.dropDownButtonMaterialHistory.Location = new System.Drawing.Point(211, 340);
+            this.dropDownButtonMaterialHistory.Name = "dropDownButtonMaterialHistory";
+            this.dropDownButtonMaterialHistory.Size = new System.Drawing.Size(14, 14);
+            this.dropDownButtonMaterialHistory.TabIndex = 80;
+            this.dropDownButtonMaterialHistory.Text = "dropDownButton1";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.dropDownButtonMaterialHistory);
             this.Controls.Add(this.triangleMark4);
             this.Controls.Add(this.triangleMark3);
             this.Controls.Add(this.triangleMark2);
@@ -495,9 +494,8 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelClearQuest);
             this.Controls.Add(this.labelAkashiRepair);
             this.Controls.Add(this.labelAkashiRepairTimer);
-            this.Controls.Add(this.labelRepairListButton);
+            this.Controls.Add(this.dropDownButtonRepairList);
             this.Controls.Add(this.label31);
-            this.Controls.Add(this.labelMaterialHistoryButton);
             this.Controls.Add(this.labelMaterialCaption);
             this.Controls.Add(this.labelFleet2);
             this.Controls.Add(this.labelFleet3);
@@ -538,8 +536,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelFleet3;
         private System.Windows.Forms.Label labelFleet2;
         private System.Windows.Forms.Label labelMaterialCaption;
-        private System.Windows.Forms.Label labelMaterialHistoryButton;
-        private System.Windows.Forms.Label labelRepairListButton;
+        private DropDownButton dropDownButtonRepairList;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripNotifyIcon;
         private System.Windows.Forms.ToolStripMenuItem NotifyIconOpenToolStripMenuItem;
@@ -567,6 +564,7 @@ namespace KancolleSniffer
         private TriangleMark triangleMark2;
         private TriangleMark triangleMark3;
         private TriangleMark triangleMark4;
+        private DropDownButton dropDownButtonMaterialHistory;
     }
 }
 
