@@ -138,7 +138,7 @@ namespace KancolleSniffer
 
             public void Flash()
             {
-                _manager.Flash();
+                _manager.Flush();
             }
 
             public void Enqueue(string key, string subject)
@@ -679,7 +679,7 @@ namespace KancolleSniffer
             if (!Sniffer.BadlyDamagedShips.Any())
                 return;
             SetNotification("大破警告", string.Join(" ", Sniffer.BadlyDamagedShips));
-            _notificationScheduler.Flash();
+            _notificationScheduler.Flush();
         }
 
         private void UpdateBattleInfo()
@@ -741,7 +741,7 @@ namespace KancolleSniffer
             }
             NotifyCondTimers();
             NotifyAkashiTimer();
-            _notificationScheduler.Flash();
+            _notificationScheduler.Flush();
         }
 
         private void CheckAlarm(string key, AlarmTimer timer, int fleet, string subject)
@@ -853,7 +853,7 @@ namespace KancolleSniffer
                 SetNotification("任務達成", 0, questName);
             foreach (var questName in stop)
                 _notificationScheduler.StopRepeat("任務達成", questName);
-            _notificationScheduler.Flash();
+            _notificationScheduler.Flush();
         }
 
         private void Alarm(string balloonTitle, string balloonMessage, string name)

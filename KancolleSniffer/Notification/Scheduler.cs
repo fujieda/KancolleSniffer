@@ -70,7 +70,7 @@ namespace KancolleSniffer.Notification
             Enqueue(key, 0, subject, repeat);
         }
 
-        public void Flash()
+        public void Flush()
         {
             Alarm();
         }
