@@ -20,15 +20,15 @@ namespace KancolleSniffer.View
     {
         public Sniffer Sniffer { get; }
         public Config Config { get; }
-        public MainForm.INotifySubmitter Submitter { get; }
         public Func<DateTime> GetNow { get; }
+        public Func<DateTime> GetPrev { get; }
 
-        public UpdateContext(Sniffer sniffer, Config config, MainForm.INotifySubmitter submitter, Func<DateTime> getNow)
+        public UpdateContext(Sniffer sniffer, Config config, Func<DateTime> getNow, Func<DateTime> getPrev)
         {
             Sniffer = sniffer;
             Config = config;
-            Submitter = submitter;
             GetNow = getNow;
+            GetPrev = getPrev;
         }
     }
 }

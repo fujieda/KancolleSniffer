@@ -124,7 +124,6 @@ namespace KancolleSniffer.View
         {
             UpdateNumOfShips();
             UpdateNumOfEquips();
-            Context.Submitter.Flash();
             UpdateNumOfBuckets();
             UpdateBucketHistory();
             UpdateAchievement();
@@ -151,12 +150,6 @@ namespace KancolleSniffer.View
             var ship = Context.Sniffer.ShipCounter;
             _numOfShips.Text = $"{ship.Now:D}/{ship.Max:D}";
             _numOfShips.ForeColor = ship.TooMany ? CUDColors.Red : Color.Black;
-            if (ship.Alarm)
-            {
-                var message = $"残り{ship.Rest:D}隻";
-                Context.Submitter.Enqueue("艦娘数超過", message);
-                ship.Alarm = false;
-            }
         }
 
         private void UpdateNumOfEquips()
@@ -164,12 +157,6 @@ namespace KancolleSniffer.View
             var item = Context.Sniffer.ItemCounter;
             _numOfEquips.Text = $"{item.Now:D}/{item.Max:D}";
             _numOfEquips.ForeColor = item.TooMany ? CUDColors.Red : Color.Black;
-            if (item.Alarm)
-            {
-                var message = $"残り{item.Rest:D}個";
-                Context.Submitter.Enqueue("装備数超過", message);
-                item.Alarm = false;
-            }
         }
 
         private void UpdateBucketHistory()

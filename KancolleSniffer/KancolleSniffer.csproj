@@ -69,6 +69,7 @@
     <Compile Include="Model\QuestCountList.cs" />
     <Compile Include="Model\QuestSpec.cs" />
     <Compile Include="Notification\Formatter.cs" />
+    <Compile Include="Notification\Notifier.cs" />
     <Compile Include="Privacy.cs" />
     <Compile Include="Log\LogProcessor.cs" />
     <Compile Include="Model\Achievement.cs" />

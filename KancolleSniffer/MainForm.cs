@@ -48,7 +48,7 @@ namespace KancolleSniffer
         private readonly ResizableToolTip _tooltipCopy = new ResizableToolTip {ShowAlways = false, AutomaticDelay = 0};
         private readonly ListFormGroup _listFormGroup;
 
-        private readonly Scheduler _notificationScheduler;
+        private readonly Notifier _notifier;
         private bool _started;
         private bool _timerEnabled;
         private string _debugLogFile;
@@ -63,12 +63,6 @@ namespace KancolleSniffer
         public Sniffer Sniffer { get; } = new Sniffer();
         public Config Config { get; } = new Config();
 
-        public interface INotifySubmitter
-        {
-            void Flash();
-            void Enqueue(string key, string subject);
-        }
-
         public MainForm()
         {
             InitializeComponent();
@@ -76,13 +70,13 @@ namespace KancolleSniffer
             Config.Load();
             _configDialog = new ConfigDialog(this);
             _listFormGroup = new ListFormGroup(this);
-            _notificationScheduler = new Scheduler(Alarm);
+            _notifier = new Notifier(FlashWindow, ShowTaster, PlaySound);
             SetupView();
             _proxyManager = new ProxyManager(this);
             _proxyManager.UpdatePacFile();
             _errorLog = new ErrorLog(Sniffer);
             LoadData();
-            Sniffer.RepeatingTimerController = new RepeatingTimerController(this);
+            Sniffer.RepeatingTimerController = _notifier;
         }
 
         private void SetupView()
@@ -105,9 +99,9 @@ namespace KancolleSniffer
             _updateable = new IUpdateContext[]
             {
                 hqPanel, missionPanel, kdockPanel, ndockPanel, materialHistoryPanel, shipInfoPanel, chargeStatus1,
-                chargeStatus2, chargeStatus3, chargeStatus4
+                chargeStatus2, chargeStatus3, chargeStatus4, _notifier
             };
-            var context = new UpdateContext(Sniffer, Config, new NotifySubmitter(_notificationScheduler), () => _now);
+            var context = new UpdateContext(Sniffer, Config, () => _now, () => _prev);
             foreach (var updateable in _updateable)
                 updateable.Context = context;
             _timers = new IUpdateTimers[] {missionPanel, kdockPanel, ndockPanel, shipInfoPanel};
@@ -125,26 +119,6 @@ namespace KancolleSniffer
             int prevHeight = questPanel.Height;
             questPanel.CreateLabels(Config.QuestLines, labelQuest_DoubleClick);
             Height += questPanel.Height - prevHeight;
-        }
-
-        private class NotifySubmitter : INotifySubmitter
-        {
-            private readonly Scheduler _manager;
-
-            public NotifySubmitter(Scheduler manager)
-            {
-                _manager = manager;
-            }
-
-            public void Flash()
-            {
-                _manager.Flush();
-            }
-
-            public void Enqueue(string key, string subject)
-            {
-                _manager.Enqueue(key, subject);
-            }
         }
 
         private readonly FileSystemWatcher _watcher = new FileSystemWatcher
@@ -180,31 +154,6 @@ namespace KancolleSniffer
                 _watcherTimer.Start();
             };
             _watcher.EnableRaisingEvents = true;
-        }
-
-        private class RepeatingTimerController : Sniffer.IRepeatingTimerController
-        {
-            private readonly Scheduler _manager;
-            private readonly Config _config;
-
-            public RepeatingTimerController(MainForm main)
-            {
-                _manager = main._notificationScheduler;
-                _config = main.Config;
-            }
-
-            public void Stop(string key)
-            {
-                _manager.StopRepeat(key,
-                    (key == "入渠終了" || key == "遠征終了") &&
-                    (_config.Notifications[key].Flags & NotificationType.Cont) != 0);
-            }
-
-            public void Stop(string key, int fleet) => _manager.StopRepeat(key, fleet);
-
-            public void Suspend(string exception = null) => _manager.SuspendRepeat(exception);
-
-            public void Resume() => _manager.ResumeRepeat();
         }
 
         private void HttpProxy_AfterSessionComplete(HttpProxy.Session session)
@@ -301,7 +250,7 @@ namespace KancolleSniffer
                 hqPanel.Login.Visible = false;
                 shipInfoPanel.Guide.Visible = false;
                 _started = true;
-                _notificationScheduler.StopAllRepeat();
+                _notifier.StopAllRepeat();
                 return;
             }
             if (!_started)
@@ -469,14 +418,8 @@ namespace KancolleSniffer
             {
                 Config.Save();
                 ApplyConfig();
-                StopRepeatingTimer(_configDialog.RepeatSettingsChanged);
+                _notifier.StopRepeatingTimer(_configDialog.RepeatSettingsChanged);
             }
-        }
-
-        private void StopRepeatingTimer(IEnumerable<string> names)
-        {
-            foreach (var name in names)
-                _notificationScheduler.StopRepeat(name);
         }
 
         private void PerformZoom()
@@ -533,6 +476,7 @@ namespace KancolleSniffer
             Sniffer.ShipCounter.Margin = Config.MarginShips;
             Sniffer.ItemCounter.Margin = Config.MarginEquips;
             hqPanel.Update();
+            _notifier.NotifyShipItemCount();
             Sniffer.Achievement.ResetHours = Config.ResetHours;
             labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible = Config.UsePresetAkashi;
             Sniffer.WarnBadDamageWithDameCon = Config.WarnBadDamageWithDameCon;
@@ -573,7 +517,7 @@ namespace KancolleSniffer
                 {
                     _now = DateTime.Now;
                     UpdateTimers();
-                    NotifyTimers();
+                    _notifier.NotifyTimers();
                     _prev = _now;
                 }
                 catch (Exception ex)
@@ -624,6 +568,7 @@ namespace KancolleSniffer
         private void UpdateItemInfo()
         {
             hqPanel.Update();
+            _notifier.NotifyShipItemCount();
             materialHistoryPanel.Update();
             if (_listFormGroup.Visible)
                 _listFormGroup.UpdateList();
@@ -633,7 +578,7 @@ namespace KancolleSniffer
         {
             shipInfoPanel.SetCurrentFleet();
             shipInfoPanel.Update();
-            NotifyDamagedShip();
+            _notifier.NotifyDamagedShip();
             UpdateChargeInfo();
             UpdateRepairList();
             UpdateMissionLabels();
@@ -671,15 +616,6 @@ namespace KancolleSniffer
                         return "連合";
                 }
             }
-        }
-
-        private void NotifyDamagedShip()
-        {
-            _notificationScheduler.StopRepeat("大破警告");
-            if (!Sniffer.BadlyDamagedShips.Any())
-                return;
-            SetNotification("大破警告", string.Join(" ", Sniffer.BadlyDamagedShips));
-            _notificationScheduler.Flush();
         }
 
         private void UpdateBattleInfo()
@@ -720,119 +656,6 @@ namespace KancolleSniffer
             _timerEnabled = true;
         }
 
-        private void NotifyTimers()
-        {
-            for (var i = 0; i < Sniffer.Missions.Length; i++)
-            {
-                var entry = Sniffer.Missions[i];
-                if (entry.Name == "前衛支援任務" || entry.Name == "艦隊決戦支援任務")
-                    continue;
-                CheckAlarm("遠征終了", entry.Timer, i + 1, entry.Name);
-            }
-            for (var i = 0; i < Sniffer.NDock.Length; i++)
-            {
-                var entry = Sniffer.NDock[i];
-                CheckAlarm("入渠終了", entry.Timer, i, entry.Name);
-            }
-            for (var i = 0; i < Sniffer.KDock.Length; i++)
-            {
-                var timer = Sniffer.KDock[i];
-                CheckAlarm("建造完了", timer, i, "");
-            }
-            NotifyCondTimers();
-            NotifyAkashiTimer();
-            _notificationScheduler.Flush();
-        }
-
-        private void CheckAlarm(string key, AlarmTimer timer, int fleet, string subject)
-        {
-            if (timer.CheckAlarm(_prev, _now))
-            {
-                SetNotification(key, fleet, subject);
-                return;
-            }
-            var pre = TimeSpan.FromSeconds(Config.Notifications[key].PreliminaryPeriod);
-            if (pre == TimeSpan.Zero)
-                return;
-            if (timer.CheckAlarm(_prev + pre, _now + pre))
-                SetPreNotification(key, fleet, subject);
-        }
-
-        private void NotifyCondTimers()
-        {
-            var notice = Sniffer.GetConditionNotice(_prev, _now);
-            var pre = TimeSpan.FromSeconds(Config.Notifications["疲労回復"].PreliminaryPeriod);
-            var preNotice = pre == TimeSpan.Zero
-                ? new int[ShipInfo.FleetCount]
-                : Sniffer.GetConditionNotice(_prev + pre, _now + pre);
-            for (var i = 0; i < ShipInfo.FleetCount; i++)
-            {
-                if (Config.NotifyConditions.Contains(notice[i]))
-                {
-                    SetNotification("疲労回復" + notice[i], i, "cond" + notice[i]);
-                }
-                else if (Config.NotifyConditions.Contains(preNotice[i]))
-                {
-                    SetPreNotification("疲労回復" + preNotice[i], i, "cond" + notice[i]);
-                }
-            }
-        }
-
-        private void NotifyAkashiTimer()
-        {
-            var akashi = Sniffer.AkashiTimer;
-            var msgs = akashi.GetNotice(_prev, _now);
-            if (msgs.Length == 0)
-            {
-                _notificationScheduler.StopRepeat("泊地修理");
-                return;
-            }
-            if (!akashi.CheckRepairing(_now) && !(akashi.CheckPresetRepairing() && Config.UsePresetAkashi))
-            {
-                _notificationScheduler.StopRepeat("泊地修理");
-                return;
-            }
-            var skipPreliminary = false;
-            if (msgs[0].Proceeded == "20分経過しました。")
-            {
-                SetNotification("泊地修理20分経過", msgs[0].Proceeded);
-                msgs[0].Proceeded = "";
-                skipPreliminary = true;
-                // 修理完了がいるかもしれないので続ける
-            }
-            for (var i = 0; i < ShipInfo.FleetCount; i++)
-            {
-                if (msgs[i].Proceeded != "")
-                    SetNotification("泊地修理進行", i, msgs[i].Proceeded);
-                if (msgs[i].Completed != "")
-                    SetNotification("泊地修理完了", i, msgs[i].Completed);
-            }
-            var pre = TimeSpan.FromSeconds(Config.Notifications["泊地修理20分経過"].PreliminaryPeriod);
-            if (skipPreliminary || pre == TimeSpan.Zero)
-                return;
-            if ((msgs = akashi.GetNotice(_prev + pre, _now + pre))[0].Proceeded == "20分経過しました。")
-                SetPreNotification("泊地修理20分経過", 0, msgs[0].Proceeded);
-        }
-
-        private void SetNotification(string key, string subject)
-        {
-            SetNotification(key, 0, subject);
-        }
-
-        private void SetNotification(string key, int fleet, string subject)
-        {
-            var spec = Config.Notifications[_notificationScheduler.KeyToName(key)];
-            _notificationScheduler.Enqueue(key, fleet, subject,
-                (spec.Flags & Config.NotificationFlags & NotificationType.Repeat) == 0 ? 0 : spec.RepeatInterval);
-        }
-
-        private void SetPreNotification(string key, int fleet, string subject)
-        {
-            var spec = Config.Notifications[_notificationScheduler.KeyToName(key)];
-            if ((spec.Flags & NotificationType.Preliminary) != 0)
-                _notificationScheduler.Enqueue(key, fleet, subject, 0, true);
-        }
-
         private void UpdateRepairList()
         {
             panelRepairList.SetRepairList(Sniffer.RepairList);
@@ -843,44 +666,17 @@ namespace KancolleSniffer
         {
             questPanel.Update(Sniffer.Quests);
             labelQuestCount.Text = Sniffer.Quests.Length.ToString();
-            SetQuestNotification();
+            _notifier.NotifyQuestComplete();
         }
 
-        private void SetQuestNotification()
+        private void FlashWindow()
         {
-            Sniffer.GetQuestNotifications(out var notify, out var stop);
-            foreach (var questName in notify)
-                SetNotification("任務達成", 0, questName);
-            foreach (var questName in stop)
-                _notificationScheduler.StopRepeat("任務達成", questName);
-            _notificationScheduler.Flush();
+            Win32API.FlashWindow(Handle);
         }
 
-        private void Alarm(string balloonTitle, string balloonMessage, string name)
+        private void ShowTaster(string title, string message)
         {
-            var flags = Config.Notifications[name].Flags;
-            var effective = Config.NotificationFlags & Config.Notifications[name].Flags;
-            if ((effective & NotificationType.FlashWindow) != 0)
-                Win32API.FlashWindow(Handle);
-            if ((effective & NotificationType.ShowBaloonTip) != 0)
-                notifyIconMain.ShowBalloonTip(20000, balloonTitle, balloonMessage, ToolTipIcon.Info);
-            if ((effective & NotificationType.PlaySound) != 0)
-                PlaySound(Config.Sounds[name], Config.Sounds.Volume);
-            if (Config.Pushbullet.On && (flags & NotificationType.Push) != 0)
-            {
-                Task.Run(() =>
-                {
-                    PushNotification.PushToPushbullet(Config.Pushbullet.Token, balloonTitle, balloonMessage);
-                });
-            }
-            if (Config.Pushover.On && (flags & NotificationType.Push) != 0)
-            {
-                Task.Run(() =>
-                {
-                    PushNotification.PushToPushover(Config.Pushover.ApiKey, Config.Pushover.UserKey,
-                        balloonTitle, balloonMessage);
-                });
-            }
+            notifyIconMain.ShowBalloonTip(20000, title, message, ToolTipIcon.Info);
         }
 
         [DllImport("winmm.dll")]
