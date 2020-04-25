@@ -85,6 +85,7 @@
     <Compile Include="Log\BattleLogProcessor.cs" />
     <Compile Include="Model\Range.cs" />
     <Compile Include="Util\Clipboard.cs" />
+    <Compile Include="Util\TimeStep.cs" />
     <Compile Include="View\ChargeStatus.cs">
       <SubType>Component</SubType>
     </Compile>

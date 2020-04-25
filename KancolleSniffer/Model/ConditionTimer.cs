@@ -14,6 +14,7 @@
 
 using System;
 using System.Linq;
+using KancolleSniffer.Util;
 
 namespace KancolleSniffer.Model
 {
@@ -95,21 +96,21 @@ namespace KancolleSniffer.Model
             return cond >= 46 ? nextRegain : nextRegain.AddSeconds((46 - cond + 2) / 3 * Interval);
         }
 
-        public int[] GetNotice(DateTime prev, DateTime now)
+        public int[] GetNotice(TimeStep step)
         {
             var result = new int[ShipInfo.FleetCount];
-            if (prev == DateTime.MinValue)
+            if (step.Prev == DateTime.MinValue)
                 return result;
             foreach (var fleet in _shipInfo.Fleets)
             {
                 if (fleet.State != FleetState.Port)
                     continue;
                 var timer = GetTimer(fleet.Number);
-                if (timer == DateTime.MinValue || prev < _lastUpdate)
+                if (timer == DateTime.MinValue || step.Prev < _lastUpdate)
                     continue;
-                if (prev < timer.AddMinutes(-9) && now >= timer.AddMinutes(-9))
+                if (step.Prev < timer.AddMinutes(-9) && step.Now >= timer.AddMinutes(-9))
                     result[fleet.Number] = 40;
-                else if (prev < timer && now >= timer)
+                else if (step.Prev < timer && step.Now >= timer)
                     result[fleet.Number] = 49;
             }
             return result;

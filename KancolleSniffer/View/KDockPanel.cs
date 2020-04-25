@@ -63,7 +63,7 @@ namespace KancolleSniffer.View
 
         public void UpdateTimers()
         {
-            var now = Context.GetNow();
+            var now = Context.GetStep().Now;
             foreach (var entry in _labels.Zip(Context.Sniffer.KDock,
                 (label, kdock) => new {label = label.Timer, timer = kdock}))
             {

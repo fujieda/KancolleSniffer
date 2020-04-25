@@ -108,7 +108,7 @@ namespace KancolleSniffer.View
 
         public void UpdateTimers()
         {
-            var now = Context.GetNow();
+            var now = Context.GetStep().Now;
             var showEndTime = (Context.Config.ShowEndTime & TimerKind.NDock) != 0;
             foreach (var entry in _labels.Zip(Context.Sniffer.NDock,
                 (label, ndock) => new {label = label.Timer, timer = ndock.Timer}))

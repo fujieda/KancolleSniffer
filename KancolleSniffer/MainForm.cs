@@ -53,7 +53,7 @@ namespace KancolleSniffer
         private bool _timerEnabled;
         private string _debugLogFile;
         private IEnumerator<string> _playLog;
-        private DateTime _prev, _now;
+        private readonly TimeStep _step = new TimeStep();
         private IEnumerable<IUpdateContext> _updateable;
         private IEnumerable<IUpdateTimers> _timers;
 
@@ -101,7 +101,7 @@ namespace KancolleSniffer
                 hqPanel, missionPanel, kdockPanel, ndockPanel, materialHistoryPanel, shipInfoPanel, chargeStatus1,
                 chargeStatus2, chargeStatus3, chargeStatus4, _notifier
             };
-            var context = new UpdateContext(Sniffer, Config, () => _now, () => _prev);
+            var context = new UpdateContext(Sniffer, Config, () => _step);
             foreach (var updateable in _updateable)
                 updateable.Context = context;
             _timers = new IUpdateTimers[] {missionPanel, kdockPanel, ndockPanel, shipInfoPanel};
@@ -255,8 +255,8 @@ namespace KancolleSniffer
             }
             if (!_started)
                 return;
-            if (_now == DateTime.MinValue)
-                _now = DateTime.Now;
+            if (_step.Now == DateTime.MinValue)
+                _step.SetNow();
             if ((update & Sniffer.Update.Item) != 0)
                 UpdateItemInfo();
             if ((update & Sniffer.Update.Timer) != 0)
@@ -515,10 +515,10 @@ namespace KancolleSniffer
             {
                 try
                 {
-                    _now = DateTime.Now;
+                    _step.SetNow();
                     UpdateTimers();
                     _notifier.NotifyTimers();
-                    _prev = _now;
+                    _step.SetPrev();
                 }
                 catch (Exception ex)
                 {

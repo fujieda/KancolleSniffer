@@ -46,8 +46,8 @@ namespace KancolleSniffer.Model
             private IReadOnlyList<int> _deck = new int[0];
             private TimeSpan FirstRepairTime => TimeSpan.FromMinutes(20);
 
-            private bool PassedFirstRepairTime(DateTime start, DateTime prev, DateTime now) =>
-                prev - start < FirstRepairTime && now - start >= FirstRepairTime;
+            private bool PassedFirstRepairTime(DateTime start, TimeStep step) =>
+                step.Prev - start < FirstRepairTime && step.Now - start >= FirstRepairTime;
 
             private TimeSpan RepairTime(ShipStatus ship, int damage) =>
                 TimeSpan.FromMinutes(Math.Ceiling(ship.RepairTime.TotalMinutes / (ship.MaxHp - ship.NowHp) * damage));
@@ -93,7 +93,7 @@ namespace KancolleSniffer.Model
                 }).ToArray();
             }
 
-            public Notice GetNotice(DateTime start, DateTime prev, DateTime now)
+            public Notice GetNotice(DateTime start, TimeStep step)
             {
                 var proc = new List<string>();
                 var comp = new List<string>();
@@ -104,7 +104,7 @@ namespace KancolleSniffer.Model
                         continue;
                     if (damage == 1)
                     {
-                        if (PassedFirstRepairTime(start, prev, now))
+                        if (PassedFirstRepairTime(start, step))
                             comp.Add(s.Name);
                         continue;
                     }
@@ -115,11 +115,11 @@ namespace KancolleSniffer.Model
                         var span = RepairTime(s, d);
                         if (span <= FirstRepairTime)
                         {
-                            if (d == damage && PassedFirstRepairTime(start, prev, now))
+                            if (d == damage && PassedFirstRepairTime(start, step))
                                 comp.Add(s.Name);
                             continue;
                         }
-                        if (span <= prev - start || now - start < span)
+                        if (span <= step.Prev - start || step.Now - start < span)
                             continue;
                         if (d == damage)
                             comp.Add(s.Name);
@@ -243,13 +243,13 @@ namespace KancolleSniffer.Model
             => _presetDeck.Decks.Where(deck => deck != null)
                 .Any(deck => RepairTarget(deck.Select(id => _shipInfo.GetShip(id)).ToArray()).Any(s => s.NowHp < s.MaxHp));
 
-        public Notice[] GetNotice(DateTime prev, DateTime now)
+        public Notice[] GetNotice(TimeStep step)
         {
-            if (prev == DateTime.MinValue || _start == DateTime.MinValue)
+            if (step.Prev == DateTime.MinValue || _start == DateTime.MinValue)
                 return new Notice[0];
-            var r = _repairStatuses.Select(repair => repair.GetNotice(_start, prev, now)).ToArray();
+            var r = _repairStatuses.Select(repair => repair.GetNotice(_start, step)).ToArray();
             var m20 = TimeSpan.FromMinutes(20);
-            if (prev - _start < m20 && now - _start >= m20)
+            if (step.Prev - _start < m20 && step.Now - _start >= m20)
                 r[0].Proceeded = "20分経過しました。";
             return r;
         }

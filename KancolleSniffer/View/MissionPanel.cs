@@ -126,7 +126,7 @@ namespace KancolleSniffer.View
 
         public void UpdateTimers()
         {
-            var now = Context.GetNow();
+            var now = Context.GetStep().Now;
             var showEndTime = (Context.Config.ShowEndTime & TimerKind.Mission) != 0;
             for (var i = 0; i < Lines; i++)
             {

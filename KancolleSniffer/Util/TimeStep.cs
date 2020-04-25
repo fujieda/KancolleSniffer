@@ -13,21 +13,32 @@
 // limitations under the License.
 
 using System;
-using KancolleSniffer.Util;
+using System.Runtime.CompilerServices;
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.Util
 {
-    public class UpdateContext
+    public class TimeStep
     {
-        public Sniffer Sniffer { get; }
-        public Config Config { get; }
-        public Func<TimeStep> GetStep { get; }
+        public DateTime Prev { get; private set; }
+        public DateTime Now { get; private set; }
 
-        public UpdateContext(Sniffer sniffer, Config config, Func<TimeStep> getStep)
+        public void SetNow()
         {
-            Sniffer = sniffer;
-            Config = config;
-            GetStep = getStep;
+            Now = DateTime.Now;
+        }
+
+        public void SetPrev()
+        {
+            Prev = Now;
+        }
+
+        public static TimeStep operator +(TimeStep lhs, TimeSpan rhs)
+        {
+            return new TimeStep
+            {
+                Prev = lhs.Prev + rhs,
+                Now = lhs.Now + rhs
+            };
         }
     }
 }

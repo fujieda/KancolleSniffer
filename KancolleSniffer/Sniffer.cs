@@ -637,7 +637,7 @@ namespace KancolleSniffer
 
         public DateTime GetConditionTimer(int fleet) => _conditionTimer.GetTimer(fleet);
 
-        public int[] GetConditionNotice(DateTime prev, DateTime now) => _conditionTimer.GetNotice(prev, now);
+        public int[] GetConditionNotice(TimeStep step) => _conditionTimer.GetNotice(step);
 
         public AlarmCounter ShipCounter => _shipInfo.Counter;
 

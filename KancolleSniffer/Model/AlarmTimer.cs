@@ -14,6 +14,7 @@
 
 using System;
 using System.Globalization;
+using KancolleSniffer.Util;
 
 namespace KancolleSniffer.Model
 {
@@ -60,9 +61,9 @@ namespace KancolleSniffer.Model
             _finished = true;
         }
 
-        public bool CheckAlarm(DateTime prev, DateTime now)
+        public bool CheckAlarm(TimeStep step)
         {
-            return EndTime != DateTime.MinValue && prev < EndTime - _spare && EndTime - _spare <= now;
+            return EndTime != DateTime.MinValue && step.Prev < EndTime - _spare && EndTime - _spare <= step.Now;
         }
 
         public string ToString(DateTime now, bool endTime = false)

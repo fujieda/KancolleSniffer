@@ -362,7 +362,7 @@ namespace KancolleSniffer.View
                 _condTimer.Text = "";
                 return;
             }
-            var span = TimeSpan.FromSeconds(Math.Ceiling((timer - Context.GetNow()).TotalSeconds));
+            var span = TimeSpan.FromSeconds(Math.Ceiling((timer - Context.GetStep().Now).TotalSeconds));
             if (span >= TimeSpan.FromMinutes(9) && Context.Config.NotifyConditions.Contains(40))
             {
                 _condTimerCaption.Text = "cond40まで";
@@ -390,12 +390,12 @@ namespace KancolleSniffer.View
             if (Context.Config.UsePresetAkashi)
                 UpdatePresetAkashiTimer();
             _mainLabels.SetAkashiTimer(Context.Sniffer.Fleets[CurrentFleet].ActualShips,
-                Context.Sniffer.AkashiTimer.GetTimers(CurrentFleet, Context.GetNow()));
+                Context.Sniffer.AkashiTimer.GetTimers(CurrentFleet, Context.GetStep().Now));
         }
 
         private void UpdatePresetAkashiTimer()
         {
-            var now = Context.GetNow();
+            var now = Context.GetStep().Now;
             var akashi = Context.Sniffer.AkashiTimer;
             var span = akashi.GetPresetDeckTimer(now);
             var color = span == TimeSpan.Zero && akashi.CheckPresetRepairing() ? CUDColors.Red : DefaultForeColor;

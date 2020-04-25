@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KancolleSniffer.Model;
 using KancolleSniffer.Net;
+using KancolleSniffer.Util;
 using KancolleSniffer.View;
 
 namespace KancolleSniffer.Notification
@@ -36,9 +37,7 @@ namespace KancolleSniffer.Notification
 
         public UpdateContext Context { get; set; }
 
-        private DateTime Now => Context.GetNow();
-
-        private DateTime Prev => Context.GetPrev();
+        private TimeStep Step => Context.GetStep();
 
         private NotificationConfig Notifications => Context.Config.Notifications;
 
@@ -128,7 +127,7 @@ namespace KancolleSniffer.Notification
 
         private void CheckAlarm(string key, AlarmTimer timer, int fleet, string subject)
         {
-            if (timer.CheckAlarm(Prev, Now))
+            if (timer.CheckAlarm(Step))
             {
                 SetNotification(key, fleet, subject);
                 return;
@@ -136,17 +135,17 @@ namespace KancolleSniffer.Notification
             var pre = TimeSpan.FromSeconds(Notifications[key].PreliminaryPeriod);
             if (pre == TimeSpan.Zero)
                 return;
-            if (timer.CheckAlarm(Prev + pre, Now + pre))
+            if (timer.CheckAlarm(Step + pre))
                 SetPreNotification(key, fleet, subject);
         }
 
         private void NotifyCondTimers()
         {
-            var notice = Context.Sniffer.GetConditionNotice(Prev, Now);
+            var notice = Context.Sniffer.GetConditionNotice(Step);
             var pre = TimeSpan.FromSeconds(Notifications["疲労回復"].PreliminaryPeriod);
             var preNotice = pre == TimeSpan.Zero
                 ? new int[ShipInfo.FleetCount]
-                : Context.Sniffer.GetConditionNotice(Prev + pre, Now + pre);
+                : Context.Sniffer.GetConditionNotice(Step + pre);
             var conditions = Context.Config.NotifyConditions;
             for (var i = 0; i < ShipInfo.FleetCount; i++)
             {
@@ -164,13 +163,13 @@ namespace KancolleSniffer.Notification
         private void NotifyAkashiTimer()
         {
             var akashi = Context.Sniffer.AkashiTimer;
-            var msgs = akashi.GetNotice(Prev, Now);
+            var msgs = akashi.GetNotice(Step);
             if (msgs.Length == 0)
             {
                 _scheduler.StopRepeat("泊地修理");
                 return;
             }
-            if (!akashi.CheckRepairing(Context.GetNow()) && !(akashi.CheckPresetRepairing() && Context.Config.UsePresetAkashi))
+            if (!akashi.CheckRepairing(Context.GetStep().Now) && !(akashi.CheckPresetRepairing() && Context.Config.UsePresetAkashi))
             {
                 _scheduler.StopRepeat("泊地修理");
                 return;
@@ -193,7 +192,7 @@ namespace KancolleSniffer.Notification
             var pre = TimeSpan.FromSeconds(Notifications["泊地修理20分経過"].PreliminaryPeriod);
             if (skipPreliminary || pre == TimeSpan.Zero)
                 return;
-            if ((msgs = akashi.GetNotice(Prev + pre, Now + pre))[0].Proceeded == "20分経過しました。")
+            if ((msgs = akashi.GetNotice(Step + pre))[0].Proceeded == "20分経過しました。")
                 SetPreNotification("泊地修理20分経過", 0, msgs[0].Proceeded);
         }
 
