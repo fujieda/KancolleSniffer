@@ -36,7 +36,7 @@ namespace KancolleSniffer
         private Point _prevPosition = new Point(int.MinValue, int.MinValue);
 
         public List<string> RepeatSettingsChanged { get; } = new List<string>();
-        public NotificationConfigDialog NotificationConfigDialog { get; }
+        public Notification.ConfigDialog NotificationConfigDialog { get; }
 
         public ConfigDialog(MainForm main)
         {
@@ -47,7 +47,7 @@ namespace KancolleSniffer
             listBoxSoundFile.Items.AddRange(Config.NotificationNames);
             numericUpDownMaterialLogInterval.Maximum = 1440;
 
-            NotificationConfigDialog = new NotificationConfigDialog(_notificationSettings,
+            NotificationConfigDialog = new Notification.ConfigDialog(_notificationSettings,
                 new Dictionary<NotificationType, CheckBox>
                 {
                     {NotificationType.FlashWindow, checkBoxFlash},

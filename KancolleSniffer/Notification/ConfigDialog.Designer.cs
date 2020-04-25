@@ -1,6 +1,6 @@
-﻿namespace KancolleSniffer
+﻿namespace KancolleSniffer.Notification
 {
-    partial class NotificationConfigDialog
+    partial class ConfigDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -202,7 +202,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "NotificationConfigDialog";
+            this.Name = "ConfigDialog";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "通知方法の詳細設定";

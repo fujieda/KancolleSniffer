@@ -14,6 +14,7 @@
 
 using System;
 using ExpressionToCodeLib;
+using KancolleSniffer.Notification;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test
@@ -55,7 +56,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             manager.Enqueue("遠征終了", 1, "防空射撃演習");
             manager.Flash();
             PAssert.That(() => new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"}.Equals(result));
@@ -70,7 +71,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             manager.Enqueue("遠征終了", 1, "防空射撃演習");
             manager.Enqueue("疲労回復49", 1, "cond49");
             manager.Flash();
@@ -91,7 +92,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             manager.Enqueue("建造完了", 0, "");
             manager.Flash();
             PAssert.That(() => new Message {Title = "建造が終わりました", Body = "第一ドック", Name = "建造完了"}.Equals(result));
@@ -110,7 +111,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var elapsed = 0;
             while (true)
@@ -149,7 +150,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var hakuchi = new Message {Title = "泊地修理 第一艦隊", Body = "20分経過しました。", Name = "泊地修理20分経過"};
             var elapsed = 0;
@@ -194,7 +195,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var hakuchi = new Message {Title = "泊地修理 第一艦隊", Body = "20分経過しました。", Name = "泊地修理20分経過"};
             var elapsed = 0;
@@ -242,7 +243,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var nyukyo = new Message {Title = "入渠が終わりました", Body = "第一ドック 綾波改二", Name = "入渠終了"};
             var elapsed = 0;
@@ -291,7 +292,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var elapsed = 0;
             while (true)
@@ -334,7 +335,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var taiha = new Message {Title = "大破した艦娘がいます", Body = "摩耶改二", Name = "大破警告"};
             var elapsed = 0;
@@ -387,7 +388,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected1 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var expected2 = new Message {Title = "遠征が終わりました", Body = "第三艦隊 海上護衛任務", Name = "遠征終了"};
             var elapsed = 0;
@@ -435,7 +436,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected1 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             var expected2 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 ", Name = "遠征終了"};
             var elapsed = 0;
@@ -482,7 +483,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected = new Message {Title = "[予告] 遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
             manager.Enqueue("遠征終了", 1, "防空射撃演習", 0, true);
             manager.Flash();
@@ -498,7 +499,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             manager.Enqueue("遠征終了", 1, "防空射撃演習", 10);
             manager.Enqueue("遠征終了", 2, "海上護衛任務", 10);
             manager.Flash();
@@ -515,7 +516,7 @@ namespace KancolleSniffer.Test
             var time = new TimeProvider();
             Message result = null;
             var manager =
-                new NotificationManager((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
+                new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var expected1 = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習\r\n第三艦隊 海上護衛任務", Name = "遠征終了"};
             var expected2 = new Message {Title = "遠征が終わりました", Body = "第三艦隊 海上護衛任務", Name = "遠征終了"};
             var elapsed = 0;
