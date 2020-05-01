@@ -18,13 +18,13 @@ namespace KancolleSniffer
 {
     public static class Privacy
     {
-        public static void Remove(MainForm.Session s)
+        public static void Remove(Main.Session s)
         {
             RemoveToken(s);
             RemoveName(s);
         }
 
-        private static void RemoveToken(MainForm.Session s)
+        private static void RemoveToken(Main.Session s)
         {
             s.Url = RemoveToken(s.Url);
             s.Request = RemoveToken(s.Request);
@@ -42,7 +42,7 @@ namespace KancolleSniffer
             @"""api_member_id"":""?\d*""?,|""api_(?:nick)?name"":""(?:[^\""]|\\.)*"",""api_(?:nick)?name_id"":""\d*"",",
             RegexOptions.Compiled);
 
-        private static void RemoveName(MainForm.Session s)
+        private static void RemoveName(Main.Session s)
         {
             if (s.Response != null && !(s.Url != null && s.Url.Contains("start2")))
                 s.Response = NameRegex.Replace(s.Response, "");

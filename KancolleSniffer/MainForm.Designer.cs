@@ -51,7 +51,6 @@ namespace KancolleSniffer
             this.labelConstruct = new System.Windows.Forms.Label();
             this.labelQuest = new System.Windows.Forms.Label();
             this.labelMissionCaption = new System.Windows.Forms.Label();
-            this.timerMain = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStripNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.NotifyIconOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -137,12 +136,6 @@ namespace KancolleSniffer
             this.labelMissionCaption.Size = new System.Drawing.Size(29, 12);
             this.labelMissionCaption.TabIndex = 10;
             this.labelMissionCaption.Text = "遠征";
-            // 
-            // timerMain
-            // 
-            this.timerMain.Enabled = true;
-            this.timerMain.Interval = 1000;
-            this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
             // 
             // notifyIconMain
             // 
@@ -298,6 +291,7 @@ namespace KancolleSniffer
             // 
             // dropDownButtonRepairList
             // 
+            this.dropDownButtonRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.dropDownButtonRepairList.Location = new System.Drawing.Point(121, 193);
             this.dropDownButtonRepairList.Name = "dropDownButtonRepairList";
             this.dropDownButtonRepairList.Size = new System.Drawing.Size(14, 14);
@@ -526,7 +520,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelConstruct;
         private System.Windows.Forms.Label labelQuest;
         private System.Windows.Forms.Label labelMissionCaption;
-        private System.Windows.Forms.Timer timerMain;
         private System.Windows.Forms.NotifyIcon notifyIconMain;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripMain;
         private System.Windows.Forms.ToolStripMenuItem ConfigToolStripMenuItem;

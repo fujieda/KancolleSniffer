@@ -32,10 +32,10 @@ namespace KancolleSniffer.Net
         private bool _initiated;
         private DateTime _pacFileTime;
 
-        public ProxyManager(MainForm main)
+        public ProxyManager(Control parent, Config config)
         {
-            _parent = main;
-            _config = main.Config;
+            _parent = parent;
+            _config = config;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
             _timer.Tick += CheckProxy;
         }

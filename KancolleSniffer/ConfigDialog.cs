@@ -19,13 +19,14 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using KancolleSniffer.Net;
+using KancolleSniffer.Util;
 using KancolleSniffer.View;
 
 namespace KancolleSniffer
 {
     public partial class ConfigDialog : Form
     {
-        private readonly MainForm _main;
+        private readonly Main _main;
         private readonly Config _config;
 
         private readonly Dictionary<string, NotificationSpec> _notificationSettings =
@@ -38,7 +39,7 @@ namespace KancolleSniffer
         public List<string> RepeatSettingsChanged { get; } = new List<string>();
         public Notification.ConfigDialog NotificationConfigDialog { get; }
 
-        public ConfigDialog(MainForm main)
+        public ConfigDialog(Main main)
         {
             InitializeComponent();
             _main = main;
@@ -292,7 +293,7 @@ namespace KancolleSniffer
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            _main.PlaySound(_soundSettings[(string)listBoxSoundFile.SelectedItem], (int)numericUpDownSoundVolume.Value);
+            SoundPlayer.PlaySound(Handle, _soundSettings[(string)listBoxSoundFile.SelectedItem], (int)numericUpDownSoundVolume.Value);
         }
 
         private void buttonResetAchievement_Click(object sender, EventArgs e)

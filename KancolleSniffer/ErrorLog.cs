@@ -33,14 +33,14 @@ namespace KancolleSniffer
     {
         private readonly Sniffer _sniffer;
         private BattleState _prevBattleState = BattleState.None;
-        private readonly List<MainForm.Session> _battleApiLog = new List<MainForm.Session>();
+        private readonly List<Main.Session> _battleApiLog = new List<Main.Session>();
 
         public ErrorLog(Sniffer sniffer)
         {
             _sniffer = sniffer;
         }
 
-        public void CheckBattleApi(MainForm.Session session)
+        public void CheckBattleApi(Main.Session session)
         {
             if (_prevBattleState == BattleState.None)
                 _battleApiLog.Clear();
@@ -99,7 +99,7 @@ namespace KancolleSniffer
             let actual = pair.Actual
             select $"({actual.Fleet.Number}-{actual.DeckIndex}) {assumed.NowHp}->{actual.NowHp}");
 
-        public string GenerateErrorLog(MainForm.Session s, string exception)
+        public string GenerateErrorLog(Main.Session s, string exception)
         {
             Privacy.Remove(s);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));

@@ -13,71 +13,51 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DynaJson;
-using KancolleSniffer.Log;
 using KancolleSniffer.Model;
-using KancolleSniffer.Net;
 using KancolleSniffer.Notification;
 using KancolleSniffer.Util;
 using KancolleSniffer.View;
-using Microsoft.CSharp.RuntimeBinder;
 using Clipboard = KancolleSniffer.Util.Clipboard;
-using Timer = System.Windows.Forms.Timer;
 
 namespace KancolleSniffer
 {
-    public partial class MainForm : Form
+    public partial class MainForm : Form, IMainForm
     {
-        private readonly ConfigDialog _configDialog;
-        private readonly ProxyManager _proxyManager;
         private readonly ResizableToolTip _toolTip = new ResizableToolTip();
         private readonly ResizableToolTip _tooltipCopy = new ResizableToolTip {ShowAlways = false, AutomaticDelay = 0};
         private readonly ListFormGroup _listFormGroup;
-
-        private readonly Notifier _notifier;
         private bool _started;
-        private bool _timerEnabled;
-        private string _debugLogFile;
-        private IEnumerator<string> _playLog;
-        private readonly TimeStep _step = new TimeStep();
+
         private IEnumerable<IUpdateContext> _updateable;
         private IEnumerable<IUpdateTimers> _timers;
+        private Main _main;
 
-        private readonly ErrorDialog _errorDialog = new ErrorDialog();
-        private readonly ErrorLog _errorLog;
+        public Sniffer Sniffer { get; private set; }
+        public Config Config { get; private set; }
+        public Label PlayLogSign => hqPanel.PlayLog;
+        public Notifier Notifier { get; }
 
-        public Sniffer Sniffer { get; } = new Sniffer();
-        public Config Config { get; } = new Config();
-
-        public MainForm()
+        public MainForm(Main main)
         {
             InitializeComponent();
-            HttpProxy.AfterSessionComplete += HttpProxy_AfterSessionComplete;
-            Config.Load();
-            _configDialog = new ConfigDialog(this);
+            SetupMain(main);
             _listFormGroup = new ListFormGroup(this);
-            _notifier = new Notifier(FlashWindow, ShowTaster, PlaySound);
+            Notifier = new Notifier(FlashWindow, ShowTaster, PlaySound);
             SetupView();
-            _proxyManager = new ProxyManager(this);
-            _proxyManager.UpdatePacFile();
-            _errorLog = new ErrorLog(Sniffer);
-            LoadData();
-            Sniffer.RepeatingTimerController = _notifier;
+        }
+
+        private void SetupMain(Main main)
+        {
+            _main = main;
+            Config = main.Config;
+            Sniffer = main.Sniffer;
         }
 
         private void SetupView()
@@ -100,9 +80,9 @@ namespace KancolleSniffer
             _updateable = new IUpdateContext[]
             {
                 hqPanel, missionPanel, kdockPanel, ndockPanel, materialHistoryPanel, shipInfoPanel, chargeStatus1,
-                chargeStatus2, chargeStatus3, chargeStatus4, _notifier
+                chargeStatus2, chargeStatus3, chargeStatus4, Notifier
             };
-            var context = new UpdateContext(Sniffer, Config, () => _step);
+            var context = new UpdateContext(Sniffer, Config, () => _main.Step);
             foreach (var updateable in _updateable)
                 updateable.Context = context;
             _timers = new IUpdateTimers[] {missionPanel, kdockPanel, ndockPanel, shipInfoPanel};
@@ -122,161 +102,20 @@ namespace KancolleSniffer
             Height += questPanel.Height - prevHeight;
         }
 
-        private readonly FileSystemWatcher _watcher = new FileSystemWatcher
-        {
-            Path = AppDomain.CurrentDomain.BaseDirectory,
-            NotifyFilter = NotifyFilters.LastWrite
-        };
-
-        private readonly Timer _watcherTimer = new Timer {Interval = 1000};
-
-        private void LoadData()
-        {
-            var target = "";
-            Sniffer.LoadState();
-            _watcher.SynchronizingObject = this;
-            _watcherTimer.Tick += (sender, ev) =>
-            {
-                _watcherTimer.Stop();
-                switch (target)
-                {
-                    case "status.xml":
-                        Sniffer.LoadState();
-                        break;
-                    case "TP.csv":
-                        Sniffer.AdditionalData.LoadTpSpec();
-                        break;
-                }
-            };
-            _watcher.Changed += (sender, ev) =>
-            {
-                target = ev.Name;
-                _watcherTimer.Stop();
-                _watcherTimer.Start();
-            };
-            _watcher.EnableRaisingEvents = true;
-        }
-
-        private void HttpProxy_AfterSessionComplete(HttpProxy.Session session)
-        {
-            BeginInvoke(new Action<HttpProxy.Session>(ProcessRequest), session);
-        }
-
-        public class Session
-        {
-            public string Url { get; set; }
-            public string Request { get; set; }
-            public string Response { get; set; }
-
-            public Session()
-            {
-            }
-
-            public Session(string url, string request, string response)
-            {
-                Url = url;
-                Request = request;
-                Response = response;
-            }
-
-            public string[] Lines => new[] {Url, Request, Response};
-        }
-
-        private void ProcessRequest(HttpProxy.Session session)
-        {
-            var url = session.Request.PathAndQuery;
-            if (!url.Contains("kcsapi/"))
-                return;
-            var s = new Session(url, session.Request.BodyAsString, session.Response.BodyAsString);
-            Privacy.Remove(s);
-            if (s.Response == null || !s.Response.StartsWith("svdata="))
-            {
-                WriteDebugLog(s);
-                return;
-            }
-            s.Response = UnEscapeString(s.Response.Remove(0, "svdata=".Length));
-            WriteDebugLog(s);
-            ProcessRequestMain(s);
-        }
-
-        private void ProcessRequestMain(Session s)
-        {
-            try
-            {
-                UpdateInfo(Sniffer.Sniff(s.Url, s.Request, JsonObject.Parse(s.Response)));
-                _errorLog.CheckBattleApi(s);
-            }
-
-            catch (RuntimeBinderException e)
-            {
-                if (_errorDialog.ShowDialog(this,
-                        "艦これに仕様変更があったか、受信内容が壊れています。",
-                        _errorLog.GenerateErrorLog(s, e.ToString())) == DialogResult.Abort)
-                    Exit();
-            }
-            catch (LogIOException e)
-            {
-                // ReSharper disable once PossibleNullReferenceException
-                if (_errorDialog.ShowDialog(this, e.Message, e.InnerException.ToString()) == DialogResult.Abort)
-                    Exit();
-            }
-            catch (BattleResultError)
-            {
-                if (_errorDialog.ShowDialog(this, "戦闘結果の計算に誤りがあります。",
-                        _errorLog.GenerateBattleErrorLog()) == DialogResult.Abort)
-                    Exit();
-            }
-            catch (Exception e)
-            {
-                if (_errorDialog.ShowDialog(this, "エラーが発生しました。",
-                        _errorLog.GenerateErrorLog(s, e.ToString())) == DialogResult.Abort)
-                    Exit();
-            }
-        }
-
-        private void Exit()
-        {
-            _proxyManager.Shutdown();
-            Environment.Exit(1);
-        }
-
-        private void WriteDebugLog(Session s)
-        {
-            if (_debugLogFile != null)
-            {
-                File.AppendAllText(_debugLogFile,
-                    $"date: {DateTime.Now:g}\nurl: {s.Url}\nrequest: {s.Request}\nresponse: {s.Response ?? "(null)"}\n");
-            }
-        }
-
-        private string UnEscapeString(string s)
-        {
-            try
-            {
-                var rx = new Regex(@"\\[uU]([0-9A-Fa-f]{4})");
-                return rx.Replace(s,
-                    match => ((char)int.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
-            }
-            catch (ArgumentException)
-            {
-                return s;
-            }
-        }
-
-        private void UpdateInfo(Sniffer.Update update)
+        public void UpdateInfo(Sniffer.Update update)
         {
             if (update == Sniffer.Update.Start)
             {
                 hqPanel.Login.Visible = false;
                 shipInfoPanel.Guide.Visible = false;
                 _started = true;
-                _notifier.StopAllRepeat();
+                Notifier.StopAllRepeat();
                 return;
             }
             if (!_started)
                 return;
-            if (_step.Now == DateTime.MinValue)
-                _step.SetNow();
+            if (_main.Step.Now == DateTime.MinValue)
+                _main.Step.SetNow();
             if ((update & Sniffer.Update.Item) != 0)
                 UpdateItemInfo();
             if ((update & Sniffer.Update.Timer) != 0)
@@ -305,42 +144,7 @@ namespace KancolleSniffer
                 shipInfoPanel.ToggleHpPercent();
             if (Config.ShipList.Visible)
                 _listFormGroup.Show();
-            ApplyConfig();
-            ApplyDebugLogSetting();
-            ApplyLogSetting();
-            ApplyProxySetting();
-            CheckVersionUp((current, latest) =>
-            {
-                if (latest == current)
-                    return;
-                var guide = shipInfoPanel.Guide;
-                guide.Text = $"バージョン{latest}があります。";
-                guide.LinkArea = new LinkArea(0, guide.Text.Length);
-                guide.Click += (obj, ev) =>
-                {
-                    Process.Start("https://ja.osdn.net/rel/kancollesniffer/" + latest);
-                };
-            });
-        }
-
-        public async void CheckVersionUp(Action<string, string> action)
-        {
-            var current = string.Join(".", Application.ProductVersion.Split('.').Take(2));
-            try
-            {
-                var latest = (await new WebClient().DownloadStringTaskAsync("http://kancollesniffer.osdn.jp/version"))
-                    .TrimEnd();
-                try
-                {
-                    action(current, latest);
-                }
-                catch (InvalidOperationException)
-                {
-                }
-            }
-            catch (WebException)
-            {
-            }
+            _main.CheckVersionUpMain(shipInfoPanel.Guide);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -355,12 +159,8 @@ namespace KancolleSniffer
                 }
             }
             _listFormGroup.Close();
-            Sniffer.FlashLog();
             Config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
             Config.ShowHpInPercent = shipInfoPanel.ShowHpInPercent;
-            Config.Save();
-            Sniffer.SaveState();
-            _proxyManager.Shutdown();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -434,12 +234,7 @@ namespace KancolleSniffer
 
         private void ConfigToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_configDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                Config.Save();
-                ApplyConfig();
-                _notifier.StopRepeatingTimer(_configDialog.RepeatSettingsChanged);
-            }
+            _main.ShowConfigDialog();
         }
 
         private void PerformZoom()
@@ -454,9 +249,8 @@ namespace KancolleSniffer
             foreach (var control in new Control[]
             {
                 this, shipInfoPanel.Guide, hqPanel.Login,
-                _configDialog, _configDialog.NotificationConfigDialog,
-                contextMenuStripMain, _errorDialog
-            })
+                contextMenuStripMain
+            }.Concat(_main.Controls))
             {
                 control.Font = ZoomFont(control.Font);
             }
@@ -489,36 +283,12 @@ namespace KancolleSniffer
                 Location = Config.Location;
         }
 
-        private void ApplyConfig()
+        public void ApplyConfig()
         {
             if (TopMost != Config.TopMost)
                 TopMost = _listFormGroup.TopMost = Config.TopMost;
-            Sniffer.ShipCounter.Margin = Config.MarginShips;
-            Sniffer.ItemCounter.Margin = Config.MarginEquips;
             hqPanel.Update();
-            _notifier.NotifyShipItemCount();
-            Sniffer.Achievement.ResetHours = Config.ResetHours;
             labelAkashiRepair.Visible = labelAkashiRepairTimer.Visible = Config.UsePresetAkashi;
-            Sniffer.WarnBadDamageWithDameCon = Config.WarnBadDamageWithDameCon;
-        }
-
-        public void ApplyDebugLogSetting()
-        {
-            _debugLogFile = Config.DebugLogging ? Config.DebugLogFile : null;
-        }
-
-        public bool ApplyProxySetting()
-        {
-            return _proxyManager.ApplyConfig();
-        }
-
-        public void ApplyLogSetting()
-        {
-            LogServer.OutputDir = Config.Log.OutputDir;
-            LogServer.LogProcessor = new LogProcessor(Sniffer.Material.MaterialHistory, Sniffer.MapDictionary);
-            Sniffer.EnableLog(Config.Log.On ? LogType.All : LogType.None);
-            Sniffer.MaterialLogInterval = Config.Log.MaterialLogInterval;
-            Sniffer.LogOutputDir = Config.Log.OutputDir;
         }
 
         public static bool IsTitleBarOnAnyScreen(Point location)
@@ -529,55 +299,6 @@ namespace KancolleSniffer
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect));
         }
 
-        private void timerMain_Tick(object sender, EventArgs e)
-        {
-            if (_timerEnabled)
-            {
-                try
-                {
-                    _step.SetNow();
-                    UpdateTimers();
-                    _notifier.NotifyTimers();
-                    _step.SetPrev();
-                }
-                catch (Exception ex)
-                {
-                    if (_errorDialog.ShowDialog(this, "エラーが発生しました。", ex.ToString()) == DialogResult.Abort)
-                        Exit();
-                }
-            }
-            if (_playLog == null || _configDialog.Visible)
-            {
-                hqPanel.PlayLog.Visible = false;
-                return;
-            }
-            PlayLog();
-        }
-
-        public void SetPlayLog(string file)
-        {
-            _playLog = File.ReadLines(file).GetEnumerator();
-        }
-
-        private void PlayLog()
-        {
-            var lines = new List<string>();
-            foreach (var s in new[] {"url: ", "request: ", "response: "})
-            {
-                do
-                {
-                    if (!_playLog.MoveNext() || _playLog.Current == null)
-                    {
-                        hqPanel.PlayLog.Visible = false;
-                        return;
-                    }
-                } while (!_playLog.Current.StartsWith(s));
-                lines.Add(_playLog.Current.Substring(s.Length));
-            }
-            hqPanel.PlayLog.Visible = !hqPanel.PlayLog.Visible;
-            ProcessRequestMain(new Session(lines[0], lines[1], lines[2]));
-        }
-
         private void ShowShipOnShipList(int id)
         {
             if (!_listFormGroup.Visible)
@@ -585,10 +306,10 @@ namespace KancolleSniffer
             _listFormGroup.ShowShip(id);
         }
 
-        private void UpdateItemInfo()
+        public void UpdateItemInfo()
         {
             hqPanel.Update();
-            _notifier.NotifyShipItemCount();
+            Notifier.NotifyShipItemCount();
             materialHistoryPanel.Update();
             if (_listFormGroup.Visible)
                 _listFormGroup.UpdateList();
@@ -598,7 +319,7 @@ namespace KancolleSniffer
         {
             shipInfoPanel.SetCurrentFleet();
             shipInfoPanel.Update();
-            _notifier.NotifyDamagedShip();
+            Notifier.NotifyDamagedShip();
             UpdateChargeInfo();
             UpdateRepairList();
             UpdateMissionLabels();
@@ -669,11 +390,10 @@ namespace KancolleSniffer
             missionPanel.Update();
         }
 
-        private void UpdateTimers()
+        public void UpdateTimers()
         {
             foreach (var timer in _timers)
                 timer.UpdateTimers();
-            _timerEnabled = true;
         }
 
         private void UpdateRepairList()
@@ -686,7 +406,7 @@ namespace KancolleSniffer
         {
             questPanel.Update(Sniffer.Quests);
             labelQuestCount.Text = Sniffer.Quests.Length.ToString();
-            _notifier.NotifyQuestComplete();
+            Notifier.NotifyQuestComplete();
         }
 
         private void FlashWindow()
@@ -699,32 +419,14 @@ namespace KancolleSniffer
             notifyIconMain.ShowBalloonTip(20000, title, message, ToolTipIcon.Info);
         }
 
-        [DllImport("winmm.dll")]
-        private static extern int mciSendString(String command,
-            StringBuilder buffer, int bufferSize, IntPtr hWndCallback);
-
-// ReSharper disable InconsistentNaming
-        // ReSharper disable once IdentifierTypo
-        private const int MM_MCINOTIFY = 0x3B9;
-
-        private const int MCI_NOTIFY_SUCCESSFUL = 1;
-// ReSharper restore InconsistentNaming
-
-        public void PlaySound(string file, int volume)
+        private void PlaySound(string file, int volume)
         {
-            if (!File.Exists(file))
-                return;
-            mciSendString("close sound", null, 0, IntPtr.Zero);
-            if (mciSendString("open \"" + file + "\" type mpegvideo alias sound", null, 0, IntPtr.Zero) != 0)
-                return;
-            mciSendString("setaudio sound volume to " + volume * 10, null, 0, IntPtr.Zero);
-            mciSendString("play sound notify", null, 0, Handle);
+            SoundPlayer.PlaySound(Handle, file, volume);
         }
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == MM_MCINOTIFY && (int)m.WParam == MCI_NOTIFY_SUCCESSFUL)
-                mciSendString("close sound", null, 0, IntPtr.Zero);
+            SoundPlayer.CloseSound(m);
             base.WndProc(ref m);
         }
 
@@ -790,7 +492,10 @@ namespace KancolleSniffer
 
         private void labelFleet1_MouseHover(object sender, EventArgs e)
         {
-            labelFleet1.Text = shipInfoPanel.CurrentFleet == 0 && Sniffer.IsCombinedFleet && !shipInfoPanel.CombinedFleet ? "連合" : "第一";
+            labelFleet1.Text =
+                shipInfoPanel.CurrentFleet == 0 && Sniffer.IsCombinedFleet && !shipInfoPanel.CombinedFleet
+                    ? "連合"
+                    : "第一";
         }
 
         private void labelFleet1_MouseLeave(object sender, EventArgs e)
@@ -830,12 +535,6 @@ namespace KancolleSniffer
                 await Task.Delay(1000);
                 _tooltipCopy.Active = false;
             });
-        }
-
-        public void ResetAchievement()
-        {
-            Sniffer.Achievement.Reset();
-            UpdateItemInfo();
         }
 
         private void labelRepairListButton_Click(object sender, EventArgs e)
@@ -902,17 +601,7 @@ namespace KancolleSniffer
 
         private void CaptureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var proc = new ProcessStartInfo("BurageSnap.exe") {WorkingDirectory = "Capture"};
-                Process.Start(proc);
-            }
-            catch (FileNotFoundException)
-            {
-            }
-            catch (Win32Exception)
-            {
-            }
+            _main.StartCapture();
         }
     }
 }

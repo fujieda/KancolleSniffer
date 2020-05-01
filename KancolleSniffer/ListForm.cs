@@ -384,7 +384,7 @@ namespace KancolleSniffer
             {
                 if (WindowState == FormWindowState.Minimized)
                 {
-                    Application.DoEvents();
+                    System.Windows.Forms.Application.DoEvents();
                     if (_config.HideOnMinimized)
                         ShowInTaskbar = true;
                     WindowState = FormWindowState.Normal;

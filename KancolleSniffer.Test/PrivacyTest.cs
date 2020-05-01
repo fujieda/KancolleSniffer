@@ -74,14 +74,14 @@ namespace KancolleSniffer.Test
 
         private string RemoveToken(string query)
         {
-            var s = new MainForm.Session(query, null, null);
+            var s = new Main.Session(query, null, null);
             Privacy.Remove(s);
             return s.Url;
         }
 
         private string RemoveName(string response)
         {
-            var s = new MainForm.Session(null, null, response);
+            var s = new Main.Session(null, null, response);
             Privacy.Remove(s);
             return s.Response;
         }

@@ -25,11 +25,11 @@ namespace KancolleSniffer
         {
             if (Win32API.ProcessAlreadyExists())
                 return;
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
             try
             {
-                Application.Run(new MainForm());
+                KancolleSniffer.Main.Run();
             }
             catch (Exception ex)
             {
