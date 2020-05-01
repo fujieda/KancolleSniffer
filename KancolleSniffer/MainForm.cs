@@ -65,6 +65,7 @@ namespace KancolleSniffer
             SetScaleFactorOfDpiScaling();
             SetupFleetClick();
             SetupQuestPanel();
+            SetMainFormEventHandler();
             shipInfoPanel.AkashiRepairTimer = labelAkashiRepairTimer;
             shipInfoPanel.ShowShipOnList = ShowShipOnShipList;
             panelRepairList.CreateLabels(panelRepairList_Click);
@@ -73,6 +74,14 @@ namespace KancolleSniffer
             materialHistoryPanel.SetClickHandler(labelMaterialCaption, dropDownButtonMaterialHistory);
             SetupUpdateable();
             PerformZoom();
+        }
+
+        private void SetMainFormEventHandler()
+        {
+            Load += MainForm_Load;
+            FormClosing += MainForm_FormClosing;
+            Resize += MainForm_Resize;
+            Activated += MainForm_Activated;
         }
 
         private void SetupUpdateable()
