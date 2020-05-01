@@ -33,14 +33,14 @@ namespace KancolleSniffer
     {
         private readonly Sniffer _sniffer;
         private BattleState _prevBattleState = BattleState.None;
-        private readonly List<string[]> _battleApiLog = new List<string[]>();
+        private readonly List<MainForm.Session> _battleApiLog = new List<MainForm.Session>();
 
         public ErrorLog(Sniffer sniffer)
         {
             _sniffer = sniffer;
         }
 
-        public void CheckBattleApi(string url, string request, string response)
+        public void CheckBattleApi(MainForm.Session session)
         {
             if (_prevBattleState == BattleState.None)
                 _battleApiLog.Clear();
@@ -48,7 +48,7 @@ namespace KancolleSniffer
             {
                 if (_sniffer.Battle.BattleState != BattleState.None)
                 {
-                    _battleApiLog.Add(new[] {url, request, response});
+                    _battleApiLog.Add(session);
                 }
                 else if (_prevBattleState == BattleState.Result &&
                          // battleresultのあとのship_deckかportでのみエラー判定する
@@ -65,11 +65,11 @@ namespace KancolleSniffer
 
         public string GenerateBattleErrorLog()
         {
-            foreach (var logs in _battleApiLog)
-                Privacy.Remove(ref logs[0], ref logs[1], ref logs[2]);
+            foreach (var s in _battleApiLog)
+                Privacy.Remove(s);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
             var api = CompressApi(string.Join("\r\n",
-                new[] {BattleStartSlots()}.Concat(_battleApiLog.SelectMany(logs => logs))));
+                new[] {BattleStartSlots()}.Concat(_battleApiLog.SelectMany(s => s.Lines))));
             var rank = _sniffer.Battle.DisplayedResultRank;
             var status = string.Join("\r\n", new[]
             {
@@ -99,11 +99,11 @@ namespace KancolleSniffer
             let actual = pair.Actual
             select $"({actual.Fleet.Number}-{actual.DeckIndex}) {assumed.NowHp}->{actual.NowHp}");
 
-        public string GenerateErrorLog(string url, string request, string response, string exception)
+        public string GenerateErrorLog(MainForm.Session s, string exception)
         {
-            Privacy.Remove(ref url, ref request, ref response);
+            Privacy.Remove(s);
             var version = string.Join(".", Application.ProductVersion.Split('.').Take(2));
-            var api = CompressApi($"{url}\r\n{request}\r\n{response}");
+            var api = CompressApi(string.Join("\r\n", s.Lines));
             var result = $"{{{{{{\r\n{DateTime.Now:g} {version}\r\n{exception}\r\n{api}\r\n}}}}}}";
             File.WriteAllText("error.log", result);
             return result;

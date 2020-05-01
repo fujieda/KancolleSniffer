@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -161,37 +162,56 @@ namespace KancolleSniffer
             BeginInvoke(new Action<HttpProxy.Session>(ProcessRequest), session);
         }
 
+        public class Session
+        {
+            public string Url { get; set; }
+            public string Request { get; set; }
+            public string Response { get; set; }
+
+            public Session()
+            {
+            }
+
+            public Session(string url, string request, string response)
+            {
+                Url = url;
+                Request = request;
+                Response = response;
+            }
+
+            public string[] Lines => new[] {Url, Request, Response};
+        }
+
         private void ProcessRequest(HttpProxy.Session session)
         {
             var url = session.Request.PathAndQuery;
             if (!url.Contains("kcsapi/"))
                 return;
-            var request = session.Request.BodyAsString;
-            var response = session.Response.BodyAsString;
-            Privacy.Remove(ref url, ref request, ref response);
-            if (response == null || !response.StartsWith("svdata="))
+            var s = new Session(url, session.Request.BodyAsString, session.Response.BodyAsString);
+            Privacy.Remove(s);
+            if (s.Response == null || !s.Response.StartsWith("svdata="))
             {
-                WriteDebugLog(url, request, response);
+                WriteDebugLog(s);
                 return;
             }
-            response = UnEscapeString(response.Remove(0, "svdata=".Length));
-            WriteDebugLog(url, request, response);
-            ProcessRequestMain(url, request, response);
+            s.Response = UnEscapeString(s.Response.Remove(0, "svdata=".Length));
+            WriteDebugLog(s);
+            ProcessRequestMain(s);
         }
 
-        private void ProcessRequestMain(string url, string request, string response)
+        private void ProcessRequestMain(Session s)
         {
             try
             {
-                UpdateInfo(Sniffer.Sniff(url, request, JsonObject.Parse(response)));
-                _errorLog.CheckBattleApi(url, request, response);
+                UpdateInfo(Sniffer.Sniff(s.Url, s.Request, JsonObject.Parse(s.Response)));
+                _errorLog.CheckBattleApi(s);
             }
 
             catch (RuntimeBinderException e)
             {
                 if (_errorDialog.ShowDialog(this,
                         "艦これに仕様変更があったか、受信内容が壊れています。",
-                        _errorLog.GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
+                        _errorLog.GenerateErrorLog(s, e.ToString())) == DialogResult.Abort)
                     Exit();
             }
             catch (LogIOException e)
@@ -209,7 +229,7 @@ namespace KancolleSniffer
             catch (Exception e)
             {
                 if (_errorDialog.ShowDialog(this, "エラーが発生しました。",
-                        _errorLog.GenerateErrorLog(url, request, response, e.ToString())) == DialogResult.Abort)
+                        _errorLog.GenerateErrorLog(s, e.ToString())) == DialogResult.Abort)
                     Exit();
             }
         }
@@ -220,12 +240,12 @@ namespace KancolleSniffer
             Environment.Exit(1);
         }
 
-        private void WriteDebugLog(string url, string request, string response)
+        private void WriteDebugLog(Session s)
         {
             if (_debugLogFile != null)
             {
                 File.AppendAllText(_debugLogFile,
-                    $"date: {DateTime.Now:g}\nurl: {url}\nrequest: {request}\nresponse: {response ?? "(null)"}\n");
+                    $"date: {DateTime.Now:g}\nurl: {s.Url}\nrequest: {s.Request}\nresponse: {s.Response ?? "(null)"}\n");
             }
         }
 
@@ -555,7 +575,7 @@ namespace KancolleSniffer
                 lines.Add(_playLog.Current.Substring(s.Length));
             }
             hqPanel.PlayLog.Visible = !hqPanel.PlayLog.Visible;
-            ProcessRequestMain(lines[0], lines[1], lines[2]);
+            ProcessRequestMain(new Session(lines[0], lines[1], lines[2]));
         }
 
         private void ShowShipOnShipList(int id)

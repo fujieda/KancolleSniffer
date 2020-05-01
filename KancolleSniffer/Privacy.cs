@@ -18,33 +18,34 @@ namespace KancolleSniffer
 {
     public static class Privacy
     {
-        public static void Remove(ref string url, ref string request, ref string response)
+        public static void Remove(MainForm.Session s)
         {
-            if (url != null)
-                url = RemoveToken(url);
-            if (request != null)
-                request = RemoveToken(request);
-            if (response != null && !(url != null && url.Contains("start2")))
-                response = RemoveName(response);
+            RemoveToken(s);
+            RemoveName(s);
+        }
+
+        private static void RemoveToken(MainForm.Session s)
+        {
+            s.Url = RemoveToken(s.Url);
+            s.Request = RemoveToken(s.Request);
+        }
+
+        private static string RemoveToken(string query)
+        {
+            if (query == null)
+                return null;
+            var result = new Regex(@"api(?:%5F|_)token=\w+|api(?:%5F|_)btime=\w+").Replace(query, "");
+            return result.Replace("&&", "&").Replace("?&", "?").Trim('&', '?');
         }
 
         private static readonly Regex NameRegex = new Regex(
             @"""api_member_id"":""?\d*""?,|""api_(?:nick)?name"":""(?:[^\""]|\\.)*"",""api_(?:nick)?name_id"":""\d*"",",
             RegexOptions.Compiled);
 
-        public static string RemoveName(string response)
+        private static void RemoveName(MainForm.Session s)
         {
-            var result = NameRegex.Replace(response, "");
-            return result;
-        }
-
-        public static string RemoveToken(string query)
-        {
-            var result = new Regex(@"api(?:%5F|_)token=\w+|api(?:%5F|_)btime=\w+").Replace(query, "");
-            result = result.Replace("&&", "&");
-            result = result.Replace("?&", "?");
-            result = result.Trim('&', '?');
-            return result;
+            if (s.Response != null && !(s.Url != null && s.Url.Contains("start2")))
+                s.Response = NameRegex.Replace(s.Response, "");
         }
     }
 }
