@@ -20,21 +20,21 @@ using Clipboard = KancolleSniffer.Util.Clipboard;
 
 namespace KancolleSniffer.View
 {
-    public class FleetPanel : PanelWithToolTip
+    public class FleetDataPanel : PanelWithToolTip
     {
         private const int LineHeight = 14;
         private const int LabelHeight = 12;
-        private FleetSpec.Record[] _spec = new FleetSpec.Record[0];
+        private FleetData.Record[] _data = new FleetData.Record[0];
         private readonly List<FleetLabels> _labelList = new List<FleetLabels>();
 
-        public FleetPanel()
+        public FleetDataPanel()
         {
             ToolTip.AutoPopDelay = 10000;
         }
 
         public void Update(Sniffer sniffer)
         {
-            _spec = FleetSpec.Create(sniffer);
+            _data = FleetData.Create(sniffer);
             SuspendLayout();
             CreateLabels();
             SetRecords();
@@ -43,7 +43,7 @@ namespace KancolleSniffer.View
 
         private void CreateLabels()
         {
-            for (var i = _labelList.Count; i < _spec.Length; i++)
+            for (var i = _labelList.Count; i < _data.Length; i++)
                 CreateLabels(i);
         }
 
@@ -83,15 +83,15 @@ namespace KancolleSniffer.View
 
         private void SetRecords()
         {
-            for (var i = 0; i < _spec.Length; i++)
+            for (var i = 0; i < _data.Length; i++)
                 SetRecord(i);
-            for (var i = _spec.Length; i < _labelList.Count; i++)
+            for (var i = _data.Length; i < _labelList.Count; i++)
                 _labelList[i].BackPanel.Visible = false;
         }
 
         private void SetRecord(int i)
         {
-            var e = _spec[i];
+            var e = _data[i];
             var labels = _labelList[i];
             labels.Fleet.Text = e.Fleet;
             labels.Fleet.Tag = "";
@@ -114,7 +114,7 @@ namespace KancolleSniffer.View
 
         public void ShowShip(int id)
         {
-            var i = Array.FindIndex(_spec, e => e.Id == id);
+            var i = Array.FindIndex(_data, e => e.Id == id);
             if (i == -1)
                 return;
             var y = Scaler.ScaleHeight(LineHeight * i);
@@ -123,7 +123,7 @@ namespace KancolleSniffer.View
 
         public void ShowFleet(string fn)
         {
-            var i = Array.FindIndex(_spec, e => e.Fleet.StartsWith(fn));
+            var i = Array.FindIndex(_data, e => e.Fleet.StartsWith(fn));
             if (i == -1)
                 return;
             var y = Scaler.ScaleHeight(LineHeight * i);

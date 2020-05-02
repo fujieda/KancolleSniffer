@@ -95,7 +95,7 @@ namespace KancolleSniffer
             this.airBattleResultPanel = new KancolleSniffer.View.AirBattleResultPanel();
             this.battleResultPanel = new KancolleSniffer.View.BattleResultPanel();
             this.antiAirPanel = new KancolleSniffer.View.AntiAirPanel();
-            this.fleetPanel = new KancolleSniffer.View.FleetPanel();
+            this.fleetPanel = new KancolleSniffer.View.FleetDataPanel();
             this.itemTreeView = new KancolleSniffer.View.ItemTreeView();
             this.shipListPanel = new KancolleSniffer.View.ShipListPanel.ShipListPanel();
             this.contextMenuStripShipList.SuspendLayout();
@@ -693,7 +693,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label1RepairHp;
         private System.Windows.Forms.Panel panelItemHeader;
-        private FleetPanel fleetPanel;
+        private FleetDataPanel fleetPanel;
         private ItemTreeView itemTreeView;
         private System.Windows.Forms.RichTextBox richTextBoxMiscText;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripItemList;

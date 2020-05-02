@@ -21,7 +21,7 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View
 {
-    public class FleetSpec
+    public static class FleetData
     {
         public static Record[] Create(Sniffer sniffer)
         {

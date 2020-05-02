@@ -92,7 +92,7 @@
     <Compile Include="RepairShipCountTest.cs" />
     <Compile Include="ShipStatusTest.cs" />
     <Compile Include="PrivacyTest.cs" />
-    <Compile Include="FleetSpecTest.cs" />
+    <Compile Include="FleetDataTest.cs" />
     <Compile Include="LogProcessorTest.cs" />
     <Compile Include="NotificationManagerTest.cs" />
     <Compile Include="QuestInfoTest.cs" />
