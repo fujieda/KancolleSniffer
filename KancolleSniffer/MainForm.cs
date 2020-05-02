@@ -17,10 +17,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using KancolleSniffer.Model;
 using KancolleSniffer.Notification;
 using KancolleSniffer.Util;
 using KancolleSniffer.View;
@@ -63,11 +61,10 @@ namespace KancolleSniffer
         private void SetupView()
         {
             SetScaleFactorOfDpiScaling();
-            SetupFleetClick();
             SetupQuestPanel();
             SetMainFormEventHandler();
-            shipInfoPanel.AkashiRepairTimer = labelAkashiRepairTimer;
-            shipInfoPanel.ShowShipOnList = ShowShipOnShipList;
+            mainFleetPanel.AkashiRepairTimer = labelAkashiRepairTimer;
+            mainFleetPanel.ShowShipOnList = ShowShipOnShipList;
             panelRepairList.CreateLabels(panelRepairList_Click);
             ndockPanel.SetClickHandler(labelNDockCaption);
             missionPanel.SetClickHandler(labelMissionCaption);
@@ -88,13 +85,12 @@ namespace KancolleSniffer
         {
             _updateable = new IUpdateContext[]
             {
-                hqPanel, missionPanel, kdockPanel, ndockPanel, materialHistoryPanel, shipInfoPanel, chargeStatus1,
-                chargeStatus2, chargeStatus3, chargeStatus4, Notifier
+                hqPanel, missionPanel, kdockPanel, ndockPanel, materialHistoryPanel, mainFleetPanel, Notifier
             };
             var context = new UpdateContext(Sniffer, Config, () => _main.Step);
             foreach (var updateable in _updateable)
                 updateable.Context = context;
-            _timers = new IUpdateTimers[] {missionPanel, kdockPanel, ndockPanel, shipInfoPanel};
+            _timers = new IUpdateTimers[] {missionPanel, kdockPanel, ndockPanel, mainFleetPanel};
         }
 
         private void SetScaleFactorOfDpiScaling()
@@ -116,7 +112,7 @@ namespace KancolleSniffer
             if (update == Sniffer.Update.Start)
             {
                 hqPanel.Login.Visible = false;
-                shipInfoPanel.Guide.Visible = false;
+                mainFleetPanel.Start();
                 _started = true;
                 Notifier.StopAllRepeat();
                 return;
@@ -150,10 +146,10 @@ namespace KancolleSniffer
             if (Config.HideOnMinimized && WindowState == FormWindowState.Minimized)
                 ShowInTaskbar = false;
             if (Config.ShowHpInPercent)
-                shipInfoPanel.ToggleHpPercent();
+                mainFleetPanel.ToggleHpPercent();
             if (Config.ShipList.Visible)
                 _listFormGroup.Show();
-            _main.CheckVersionUpMain(shipInfoPanel.Guide);
+            _main.CheckVersionUpMain(mainFleetPanel.Guide);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -169,7 +165,7 @@ namespace KancolleSniffer
             }
             _listFormGroup.Close();
             Config.Location = (WindowState == FormWindowState.Normal ? Bounds : RestoreBounds).Location;
-            Config.ShowHpInPercent = shipInfoPanel.ShowHpInPercent;
+            Config.ShowHpInPercent = mainFleetPanel.ShowHpInPercent;
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -257,7 +253,7 @@ namespace KancolleSniffer
             var prev = CurrentAutoScaleDimensions;
             foreach (var control in new Control[]
             {
-                this, shipInfoPanel.Guide, hqPanel.Login,
+                this, mainFleetPanel.Guide, hqPanel.Login,
                 contextMenuStripMain
             }.Concat(_main.Controls))
             {
@@ -326,8 +322,7 @@ namespace KancolleSniffer
 
         private void UpdateShipInfo()
         {
-            shipInfoPanel.SetCurrentFleet();
-            shipInfoPanel.Update();
+            mainFleetPanel.Update();
             Notifier.NotifyDamagedShip();
             UpdateChargeInfo();
             UpdateRepairList();
@@ -336,43 +331,11 @@ namespace KancolleSniffer
                 _listFormGroup.UpdateList();
         }
 
-        private void UpdatePanelShipInfo()
-        {
-            shipInfoPanel.Update();
-            ShowCurrentFleetNumber();
-            labelFleet1.Text = shipInfoPanel.CombinedFleet ? CombinedName : "第一";
-        }
-
-        private void ShowCurrentFleetNumber()
-        {
-            var labels = new[] {triangleMark1, triangleMark2, triangleMark3, triangleMark4};
-            for (var i = 0; i < labels.Length; i++)
-                labels[i].Visible = shipInfoPanel.CurrentFleet == i;
-        }
-
-        private string CombinedName
-        {
-            get
-            {
-                switch (Sniffer.Fleets[0].CombinedType)
-                {
-                    case CombinedType.Carrier:
-                        return "機動";
-                    case CombinedType.Surface:
-                        return "水上";
-                    case CombinedType.Transport:
-                        return "輸送";
-                    default:
-                        return "連合";
-                }
-            }
-        }
-
         private void UpdateBattleInfo()
         {
             _listFormGroup.UpdateBattleResult();
             _listFormGroup.UpdateAirBattleResult();
-            shipInfoPanel.UpdateBattleInfo();
+            mainFleetPanel.UpdateBattleInfo();
         }
 
         private void UpdateCellInfo()
@@ -382,11 +345,7 @@ namespace KancolleSniffer
 
         private void UpdateChargeInfo()
         {
-            foreach (var status in new[] {chargeStatus1, chargeStatus2, chargeStatus3, chargeStatus4})
-            {
-                status.Update();
-                _toolTip.SetToolTip(status, status.Text);
-            }
+            mainFleetPanel.UpdateChargeInfo();
         }
 
         private void UpdateNDocLabels()
@@ -437,113 +396,6 @@ namespace KancolleSniffer
         {
             SoundPlayer.CloseSound(m);
             base.WndProc(ref m);
-        }
-
-        private void SetupFleetClick()
-        {
-            var labels = new[]
-            {
-                new Control[] {labelFleet1, labelFleet2, labelFleet3, labelFleet4},
-                new Control[] {chargeStatus1, chargeStatus2, chargeStatus3, chargeStatus4}
-            };
-            foreach (var a in labels)
-            {
-                a[0].Tag = 0;
-                a[0].Click += labelFleet1_Click;
-                a[0].DoubleClick += labelFleet1_DoubleClick;
-                for (var fleet = 1; fleet < labels[0].Length; fleet++)
-                {
-                    a[fleet].Tag = fleet;
-                    a[fleet].Click += labelFleet_Click;
-                    a[fleet].DoubleClick += labelFleet_DoubleClick;
-                }
-            }
-        }
-
-        private void labelFleet_Click(object sender, EventArgs e)
-        {
-            if (!_started)
-                return;
-            var fleet = (int)((Control)sender).Tag;
-            if (shipInfoPanel.CurrentFleet == fleet)
-                return;
-            shipInfoPanel.CombinedFleet = false;
-            shipInfoPanel.CurrentFleet = fleet;
-            UpdatePanelShipInfo();
-        }
-
-        private readonly SemaphoreSlim _clickSemaphore = new SemaphoreSlim(1);
-        private readonly SemaphoreSlim _doubleClickSemaphore = new SemaphoreSlim(0);
-
-        private async void labelFleet1_Click(object sender, EventArgs e)
-        {
-            if (!_started)
-                return;
-            if (shipInfoPanel.CurrentFleet != 0)
-            {
-                labelFleet_Click(sender, e);
-                return;
-            }
-            if (!_clickSemaphore.Wait(0))
-                return;
-            try
-            {
-                if (await _doubleClickSemaphore.WaitAsync(SystemInformation.DoubleClickTime))
-                    return;
-            }
-            finally
-            {
-                _clickSemaphore.Release();
-            }
-            shipInfoPanel.CombinedFleet = Sniffer.IsCombinedFleet && !shipInfoPanel.CombinedFleet;
-            UpdatePanelShipInfo();
-        }
-
-        private void labelFleet1_MouseHover(object sender, EventArgs e)
-        {
-            labelFleet1.Text =
-                shipInfoPanel.CurrentFleet == 0 && Sniffer.IsCombinedFleet && !shipInfoPanel.CombinedFleet
-                    ? "連合"
-                    : "第一";
-        }
-
-        private void labelFleet1_MouseLeave(object sender, EventArgs e)
-        {
-            labelFleet1.Text = shipInfoPanel.CombinedFleet ? CombinedName : "第一";
-        }
-
-        private void labelFleet_DoubleClick(object sender, EventArgs e)
-        {
-            if (!_started)
-                return;
-            var fleet = (int)((Control)sender).Tag;
-            var text = TextGenerator.GenerateFleetData(Sniffer, fleet);
-            CopyFleetText(text, (Control)sender);
-        }
-
-        private void labelFleet1_DoubleClick(object sender, EventArgs e)
-        {
-            if (!_started)
-                return;
-            _doubleClickSemaphore.Release();
-            var text = TextGenerator.GenerateFleetData(Sniffer, 0);
-            if (shipInfoPanel.CombinedFleet)
-                text += TextGenerator.GenerateFleetData(Sniffer, 1);
-            CopyFleetText(text, (Control)sender);
-        }
-
-        private void CopyFleetText(string text, Control fleetButton)
-        {
-            if (string.IsNullOrEmpty(text))
-                return;
-            Clipboard.SetText(text);
-            _tooltipCopy.Active = true;
-            _tooltipCopy.Show("コピーしました。", fleetButton);
-            Task.Run(async () =>
-            {
-                await Task.Delay(1000);
-                _tooltipCopy.Active = false;
-            });
         }
 
         private void labelRepairListButton_Click(object sender, EventArgs e)

@@ -95,6 +95,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\IUpdateable.cs" />
+    <Compile Include="View\MainFleetPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\MaterialHistoryPanel.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -61,10 +61,6 @@ namespace KancolleSniffer
             this.CaptureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.labelFleet1 = new System.Windows.Forms.Label();
-            this.labelFleet4 = new System.Windows.Forms.Label();
-            this.labelFleet3 = new System.Windows.Forms.Label();
-            this.labelFleet2 = new System.Windows.Forms.Label();
             this.labelMaterialCaption = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.labelAkashiRepair = new System.Windows.Forms.Label();
@@ -78,16 +74,8 @@ namespace KancolleSniffer
             this.questPanel = new KancolleSniffer.View.QuestPanel();
             this.hqPanel = new KancolleSniffer.View.HqPanel();
             this.materialHistoryPanel = new KancolleSniffer.View.MaterialHistoryPanel();
-            this.shipInfoPanel = new KancolleSniffer.View.ShipInfoPanel();
-            this.chargeStatus1 = new KancolleSniffer.View.ChargeStatus();
-            this.chargeStatus2 = new KancolleSniffer.View.ChargeStatus();
-            this.chargeStatus3 = new KancolleSniffer.View.ChargeStatus();
-            this.chargeStatus4 = new KancolleSniffer.View.ChargeStatus();
-            this.triangleMark1 = new KancolleSniffer.View.TriangleMark();
-            this.triangleMark2 = new KancolleSniffer.View.TriangleMark();
-            this.triangleMark3 = new KancolleSniffer.View.TriangleMark();
-            this.triangleMark4 = new KancolleSniffer.View.TriangleMark();
             this.dropDownButtonMaterialHistory = new KancolleSniffer.View.DropDownButton();
+            this.mainFleetPanel = new KancolleSniffer.View.MainFleetPanel();
             this.contextMenuStripNotifyIcon.SuspendLayout();
             this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -214,40 +202,6 @@ namespace KancolleSniffer
             this.ExitToolStripMenuItem.Text = "終了(&X)";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
-            // labelFleet1
-            // 
-            this.labelFleet1.Location = new System.Drawing.Point(12, 43);
-            this.labelFleet1.Name = "labelFleet1";
-            this.labelFleet1.Size = new System.Drawing.Size(45, 12);
-            this.labelFleet1.TabIndex = 1;
-            this.labelFleet1.Text = "第一";
-            this.labelFleet1.MouseLeave += new System.EventHandler(this.labelFleet1_MouseLeave);
-            this.labelFleet1.MouseHover += new System.EventHandler(this.labelFleet1_MouseHover);
-            // 
-            // labelFleet4
-            // 
-            this.labelFleet4.Location = new System.Drawing.Point(177, 43);
-            this.labelFleet4.Name = "labelFleet4";
-            this.labelFleet4.Size = new System.Drawing.Size(45, 12);
-            this.labelFleet4.TabIndex = 17;
-            this.labelFleet4.Text = "第四";
-            // 
-            // labelFleet3
-            // 
-            this.labelFleet3.Location = new System.Drawing.Point(122, 43);
-            this.labelFleet3.Name = "labelFleet3";
-            this.labelFleet3.Size = new System.Drawing.Size(45, 12);
-            this.labelFleet3.TabIndex = 19;
-            this.labelFleet3.Text = "第三";
-            // 
-            // labelFleet2
-            // 
-            this.labelFleet2.Location = new System.Drawing.Point(67, 43);
-            this.labelFleet2.Name = "labelFleet2";
-            this.labelFleet2.Size = new System.Drawing.Size(45, 12);
-            this.labelFleet2.TabIndex = 21;
-            this.labelFleet2.Text = "第二";
-            // 
             // labelMaterialCaption
             // 
             this.labelMaterialCaption.AutoSize = true;
@@ -368,90 +322,6 @@ namespace KancolleSniffer
             this.materialHistoryPanel.TabIndex = 65;
             this.materialHistoryPanel.Visible = false;
             // 
-            // shipInfoPanel
-            // 
-            this.shipInfoPanel.AkashiRepairTimer = null;
-            this.shipInfoPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.shipInfoPanel.CombinedFleet = false;
-            this.shipInfoPanel.Context = null;
-            this.shipInfoPanel.CurrentFleet = 0;
-            this.shipInfoPanel.Location = new System.Drawing.Point(6, 57);
-            this.shipInfoPanel.Name = "shipInfoPanel";
-            this.shipInfoPanel.ShowShipOnList = null;
-            this.shipInfoPanel.Size = new System.Drawing.Size(220, 134);
-            this.shipInfoPanel.TabIndex = 67;
-            // 
-            // chargeStatus1
-            // 
-            this.chargeStatus1.Context = null;
-            this.chargeStatus1.Location = new System.Drawing.Point(40, 42);
-            this.chargeStatus1.Name = "chargeStatus1";
-            this.chargeStatus1.Size = new System.Drawing.Size(17, 13);
-            this.chargeStatus1.TabIndex = 69;
-            this.chargeStatus1.Text = "chargeStatus1";
-            // 
-            // chargeStatus2
-            // 
-            this.chargeStatus2.Context = null;
-            this.chargeStatus2.Location = new System.Drawing.Point(95, 42);
-            this.chargeStatus2.Name = "chargeStatus2";
-            this.chargeStatus2.Size = new System.Drawing.Size(17, 13);
-            this.chargeStatus2.TabIndex = 71;
-            this.chargeStatus2.Text = "chargeStatus2";
-            // 
-            // chargeStatus3
-            // 
-            this.chargeStatus3.Context = null;
-            this.chargeStatus3.Location = new System.Drawing.Point(150, 42);
-            this.chargeStatus3.Name = "chargeStatus3";
-            this.chargeStatus3.Size = new System.Drawing.Size(17, 13);
-            this.chargeStatus3.TabIndex = 72;
-            this.chargeStatus3.Text = "chargeStatus3";
-            // 
-            // chargeStatus4
-            // 
-            this.chargeStatus4.Context = null;
-            this.chargeStatus4.Location = new System.Drawing.Point(205, 42);
-            this.chargeStatus4.Name = "chargeStatus4";
-            this.chargeStatus4.Size = new System.Drawing.Size(17, 13);
-            this.chargeStatus4.TabIndex = 73;
-            this.chargeStatus4.Text = "chargeStatus4";
-            // 
-            // triangleMark1
-            // 
-            this.triangleMark1.Location = new System.Drawing.Point(7, 42);
-            this.triangleMark1.Name = "triangleMark1";
-            this.triangleMark1.Size = new System.Drawing.Size(5, 13);
-            this.triangleMark1.TabIndex = 75;
-            this.triangleMark1.Text = "triangleMark1";
-            // 
-            // triangleMark2
-            // 
-            this.triangleMark2.Location = new System.Drawing.Point(62, 42);
-            this.triangleMark2.Name = "triangleMark2";
-            this.triangleMark2.Size = new System.Drawing.Size(5, 13);
-            this.triangleMark2.TabIndex = 76;
-            this.triangleMark2.Text = "triangleMark2";
-            this.triangleMark2.Visible = false;
-            // 
-            // triangleMark3
-            // 
-            this.triangleMark3.Location = new System.Drawing.Point(117, 42);
-            this.triangleMark3.Name = "triangleMark3";
-            this.triangleMark3.Size = new System.Drawing.Size(5, 13);
-            this.triangleMark3.TabIndex = 77;
-            this.triangleMark3.Text = "triangleMark3";
-            this.triangleMark3.Visible = false;
-            // 
-            // triangleMark4
-            // 
-            this.triangleMark4.Location = new System.Drawing.Point(172, 42);
-            this.triangleMark4.Name = "triangleMark4";
-            this.triangleMark4.Size = new System.Drawing.Size(5, 13);
-            this.triangleMark4.TabIndex = 78;
-            this.triangleMark4.Text = "triangleMark4";
-            this.triangleMark4.Visible = false;
-            // 
             // dropDownButtonMaterialHistory
             // 
             this.dropDownButtonMaterialHistory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -461,22 +331,22 @@ namespace KancolleSniffer
             this.dropDownButtonMaterialHistory.TabIndex = 80;
             this.dropDownButtonMaterialHistory.Text = "dropDownButton1";
             // 
+            // mainFleetPanel
+            // 
+            this.mainFleetPanel.Context = null;
+            this.mainFleetPanel.Location = new System.Drawing.Point(6, 42);
+            this.mainFleetPanel.Name = "mainFleetPanel";
+            this.mainFleetPanel.Size = new System.Drawing.Size(220, 149);
+            this.mainFleetPanel.TabIndex = 82;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
             this.ContextMenuStrip = this.contextMenuStripMain;
+            this.Controls.Add(this.mainFleetPanel);
             this.Controls.Add(this.dropDownButtonMaterialHistory);
-            this.Controls.Add(this.triangleMark4);
-            this.Controls.Add(this.triangleMark3);
-            this.Controls.Add(this.triangleMark2);
-            this.Controls.Add(this.triangleMark1);
-            this.Controls.Add(this.chargeStatus3);
-            this.Controls.Add(this.chargeStatus4);
-            this.Controls.Add(this.chargeStatus2);
-            this.Controls.Add(this.chargeStatus1);
-            this.Controls.Add(this.shipInfoPanel);
             this.Controls.Add(this.materialHistoryPanel);
             this.Controls.Add(this.hqPanel);
             this.Controls.Add(this.kdockPanel);
@@ -491,14 +361,10 @@ namespace KancolleSniffer
             this.Controls.Add(this.dropDownButtonRepairList);
             this.Controls.Add(this.label31);
             this.Controls.Add(this.labelMaterialCaption);
-            this.Controls.Add(this.labelFleet2);
-            this.Controls.Add(this.labelFleet3);
-            this.Controls.Add(this.labelFleet4);
             this.Controls.Add(this.labelMissionCaption);
             this.Controls.Add(this.labelQuest);
             this.Controls.Add(this.labelConstruct);
             this.Controls.Add(this.labelNDockCaption);
-            this.Controls.Add(this.labelFleet1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -520,10 +386,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.ContextMenuStrip contextMenuStripMain;
         private System.Windows.Forms.ToolStripMenuItem ConfigToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
-        private System.Windows.Forms.Label labelFleet1;
-        private System.Windows.Forms.Label labelFleet4;
-        private System.Windows.Forms.Label labelFleet3;
-        private System.Windows.Forms.Label labelFleet2;
         private System.Windows.Forms.Label labelMaterialCaption;
         private DropDownButton dropDownButtonRepairList;
         private System.Windows.Forms.Label label31;
@@ -544,16 +406,8 @@ namespace KancolleSniffer
         private KDockPanel kdockPanel;
         private HqPanel hqPanel;
         private MaterialHistoryPanel materialHistoryPanel;
-        private ShipInfoPanel shipInfoPanel;
-        private ChargeStatus chargeStatus1;
-        private ChargeStatus chargeStatus2;
-        private ChargeStatus chargeStatus3;
-        private ChargeStatus chargeStatus4;
-        private TriangleMark triangleMark1;
-        private TriangleMark triangleMark2;
-        private TriangleMark triangleMark3;
-        private TriangleMark triangleMark4;
         private DropDownButton dropDownButtonMaterialHistory;
+        private MainFleetPanel mainFleetPanel;
     }
 }
 
