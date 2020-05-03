@@ -42,7 +42,7 @@ namespace KancolleSniffer.View
             public override Control[] Controls => new Control[] {Color, Count, Progress, Name};
         }
 
-        public void CreateLabels(int lines, EventHandler onDoubleClick)
+        public void CreateLabels(int lines)
         {
             _lines = LimitLines(lines);
             _labels = new QuestLabels[_lines];
@@ -75,7 +75,6 @@ namespace KancolleSniffer.View
                         TextAlign = ContentAlignment.MiddleRight
                     }
                 };
-                _labels[i].Name.DoubleClick += onDoubleClick;
                 _labels[i].Arrange(this);
             }
             ResumeLayout();

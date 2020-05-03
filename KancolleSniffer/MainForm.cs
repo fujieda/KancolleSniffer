@@ -16,12 +16,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using KancolleSniffer.Notification;
 using KancolleSniffer.Util;
 using KancolleSniffer.View;
-using Clipboard = KancolleSniffer.Util.Clipboard;
 
 namespace KancolleSniffer
 {
@@ -128,7 +126,7 @@ namespace KancolleSniffer
         private void SetupQuestPanel()
         {
             int prevHeight = questPanel.Height;
-            questPanel.CreateLabels(Config.QuestLines, labelQuest_DoubleClick);
+            questPanel.CreateLabels(Config.QuestLines);
             Height += questPanel.Height - prevHeight;
         }
 
@@ -445,21 +443,6 @@ namespace KancolleSniffer
         private void labelClearQuest_MouseUp(object sender, MouseEventArgs e)
         {
             labelClearQuest.BackColor = DefaultBackColor;
-        }
-
-        private void labelQuest_DoubleClick(object sender, EventArgs e)
-        {
-            var label = (Label)sender;
-            if (string.IsNullOrEmpty(label.Text))
-                return;
-            Clipboard.SetText(label.Text);
-            _tooltipCopy.Active = true;
-            _tooltipCopy.Show("コピーしました。", label);
-            Task.Run(async () =>
-            {
-                await Task.Delay(1000);
-                _tooltipCopy.Active = false;
-            });
         }
     }
 }

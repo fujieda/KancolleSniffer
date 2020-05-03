@@ -31,7 +31,7 @@ namespace KancolleSniffer.Test
         [TestInitialize]
         public void Initialize()
         {
-            _panel.CreateLabels(Lines, (obj, e) => { });
+            _panel.CreateLabels(Lines);
         }
 
         /// <summary>
