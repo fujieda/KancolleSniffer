@@ -26,7 +26,6 @@ namespace KancolleSniffer.Model
     {
         public int Id { get; set; }
         public int Category { get; set; }
-        public QuestInterval Interval { get; set; }
         public string Name { get; set; }
         public string Detail { get; set; }
         public int[] Material { get; set; }
@@ -70,7 +69,6 @@ namespace KancolleSniffer.Model
 
     public class QuestInfo : IHaveState
     {
-        private readonly SortedDictionary<int, QuestStatus> _quests = new SortedDictionary<int, QuestStatus>();
         private readonly QuestCountList _countList = new QuestCountList();
         private readonly Func<DateTime> _nowFunc = () => DateTime.Now;
         private DateTime _now;
@@ -84,11 +82,9 @@ namespace KancolleSniffer.Model
             Color.FromArgb(200, 148, 231), Color.FromArgb(232, 57, 41), Color.FromArgb(232, 57, 41)
         };
 
-        public int AcceptMax { get; set; } = 5;
+        public SortedDictionary<int, QuestStatus> QuestDictionary { get; } = new SortedDictionary<int, QuestStatus>();
 
-        public SortedDictionary<int, QuestStatus> QuestDictionary => _quests;
-
-        public QuestStatus[] Quests => _quests.Values.ToArray();
+        public QuestStatus[] Quests => QuestDictionary.Values.ToArray();
 
         public QuestInfo(Func<DateTime> nowFunc = null)
         {
@@ -98,7 +94,7 @@ namespace KancolleSniffer.Model
 
         public void GetNotifications(out string[] notify, out string[] stop)
         {
-            var cleared = _quests.Values.Where(q => q.Count.Cleared).ToArray();
+            var cleared = QuestDictionary.Values.Where(q => q.Count.Cleared).ToArray();
             notify = cleared.Except(_clearedQuest, new QuestComparer()).Select(q => q.Name).ToArray();
             stop = _clearedQuest.Except(cleared, new QuestComparer()).Select(q => q.Name).ToArray();
             _clearedQuest = cleared;
@@ -117,84 +113,61 @@ namespace KancolleSniffer.Model
             }
         }
 
-        private readonly QuestInterval[] _intervals =
-        {
-            QuestInterval.Daily, QuestInterval.Weekly, QuestInterval.Monthly,
-            QuestInterval.Other, QuestInterval.Quarterly, QuestInterval.Yearly2
-        };
-
         private readonly int[] _progress = {0, 50, 80};
 
-        public void InspectQuestList(dynamic json)
+        public void InspectQuestList(string request, dynamic json)
         {
-            ResetQuests();
+            ResetCounts();
+            var values = HttpUtility.ParseQueryString(request);
+            if (values["api_tab_id"] == "0")
+                QuestDictionary.Clear();
             if (json.api_list == null)
                 return;
-            for (var i = 0; i < 2; i++)
+            foreach (var entry in json.api_list)
             {
-                foreach (var entry in json.api_list)
+                if (entry is double) // -1の場合がある。
+                    continue;
+                var quest = new QuestStatus
                 {
-                    if (entry is double) // -1の場合がある。
-                        continue;
-                    var quest = new QuestStatus
-                    {
-                        Id = (int)entry.api_no,
-                        Category = (int)entry.api_category,
-                        Progress = _progress[(int)entry.api_progress_flag],
-                        Interval = _intervals[(int)entry.api_type - 1],
-                        Name = (string)entry.api_title,
-                        Detail = ((string)entry.api_detail).Replace("<br>", "\r\n"),
-                        Material = (int[])entry.api_get_material
-                    };
-                    var state = (int)entry.api_state;
-                    switch (state)
-                    {
-                        case 1:
-                            if (_quests.Remove(quest.Id))
-                                NeedSave = true;
-                            break;
-                        case 3:
-                            quest.Progress = 100;
-                            goto case 2;
-                        case 2:
-                            SetProcessedQuest(quest);
-                            break;
-                    }
+                    Id = (int)entry.api_no,
+                    Category = (int)entry.api_category,
+                    Progress = _progress[(int)entry.api_progress_flag],
+                    Name = (string)entry.api_title,
+                    Detail = ((string)entry.api_detail).Replace("<br>", "\r\n"),
+                    Material = (int[])entry.api_get_material
+                };
+                var state = (int)entry.api_state;
+                switch (state)
+                {
+                    case 3:
+                        quest.Progress = 100;
+                        goto case 2;
+                    case 2:
+                        AdjustQuest(quest);
+                        SetQuest(quest);
+                        break;
                 }
-                if (_quests.Count <= AcceptMax)
-                    break;
-                /*
-                 * ほかのPCで任務を達成した場合、任務が消えずに受領した任務の数がAcceptMaxを超えることがある。
-                 * その場合はいったん任務をクリアして、現在のページの任務だけを登録し直す。
-                 */
-                _quests.Clear();
             }
         }
 
-        private void SetProcessedQuest(QuestStatus quest)
+        private void AdjustQuest(QuestStatus quest)
         {
-            var count = _countList.GetCount(quest.Id);
-            if (count.AdjustCount(quest.Progress))
+            quest.Count = _countList.GetCount(quest.Id);
+            if (quest.Count.AdjustCount(quest.Progress))
                 NeedSave = true;
-            quest.Material = quest.Material.Concat(count.Spec.Material).ToArray();
-            if (!_quests.ContainsKey(quest.Id))
+            quest.Material = quest.Material.Concat(quest.Count.Spec.Material).ToArray();
+            if (!QuestDictionary.ContainsKey(quest.Id))
                 NeedSave = true;
-            SetQuest(quest);
         }
 
         private void SetQuest(QuestStatus quest)
         {
             quest.Count = _countList.GetCount(quest.Id);
             quest.Color = quest.Category <= _color.Length ? _color[quest.Category - 1] : Control.DefaultBackColor;
-            _quests[quest.Id] = quest;
+            QuestDictionary[quest.Id] = quest;
         }
 
-        public void ClearQuests()
-        {
-            _quests.Clear();
-        }
-
-        private void ResetQuests()
+        private void ResetCounts()
         {
             _now = _nowFunc();
             if (!CrossBoundary(QuestInterval.Daily))
@@ -203,7 +176,6 @@ namespace KancolleSniffer.Model
             {
                 if (!CrossBoundary(interval))
                     continue;
-                RemoveQuest(interval);
                 _countList.Remove(interval);
             }
             _lastReset = _now;
@@ -240,27 +212,10 @@ namespace KancolleSniffer.Model
             return _lastReset < boundary && boundary <= _now;
         }
 
-        private void RemoveQuest(QuestInterval interval)
-        {
-            foreach (var id in
-                (from kv in _quests
-                    where MatchInterval(kv.Value, interval)
-                    select kv.Key).ToArray())
-                _quests.Remove(id);
-        }
-
-        private bool MatchInterval(QuestStatus quest, QuestInterval interval)
-        {
-            var i = quest.Count.Spec.Interval;
-            return i == QuestInterval.Other // 定期任務の定義がない
-                ? quest.Interval == interval
-                : i == interval;
-        }
-
         public void InspectStop(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
-            _quests.Remove(int.Parse(values["api_quest_id"]));
+            QuestDictionary.Remove(int.Parse(values["api_quest_id"]));
             NeedSave = true;
         }
 
@@ -269,7 +224,7 @@ namespace KancolleSniffer.Model
             var values = HttpUtility.ParseQueryString(request);
             var id = int.Parse(values["api_quest_id"]);
             _countList.Remove(id);
-            _quests.Remove(id);
+            QuestDictionary.Remove(id);
             NeedSave = true;
         }
 
@@ -279,8 +234,8 @@ namespace KancolleSniffer.Model
         {
             NeedSave = false;
             status.QuestLastReset = _lastReset;
-            if (_quests != null)
-                status.QuestList = _quests.Values.ToArray();
+            if (QuestDictionary != null)
+                status.QuestList = QuestDictionary.Values.ToArray();
             if (_countList != null)
                 status.QuestCountList = _countList.NonZeroCountList.ToArray();
         }
@@ -292,7 +247,7 @@ namespace KancolleSniffer.Model
                 _countList.SetCountList(status.QuestCountList);
             if (status.QuestList != null)
             {
-                _quests.Clear();
+                QuestDictionary.Clear();
                 foreach (var quest in status.QuestList)
                     SetQuest(quest);
             }

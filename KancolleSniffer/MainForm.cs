@@ -428,21 +428,5 @@ namespace KancolleSniffer
             panelRepairList.Visible = false;
             dropDownButtonRepairList.BackColor = DefaultBackColor;
         }
-
-        private void labelClearQuest_Click(object sender, EventArgs e)
-        {
-            Sniffer.ClearQuests();
-            UpdateQuestList();
-        }
-
-        private void labelClearQuest_MouseDown(object sender, MouseEventArgs e)
-        {
-            labelClearQuest.BackColor = CustomColors.ActiveButtonColor;
-        }
-
-        private void labelClearQuest_MouseUp(object sender, MouseEventArgs e)
-        {
-            labelClearQuest.BackColor = DefaultBackColor;
-        }
     }
 }

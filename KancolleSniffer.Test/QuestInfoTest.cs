@@ -59,39 +59,9 @@ namespace KancolleSniffer.Test
 
         private void CheckQuestCountList(QuestInfo questInfo, Status status, int[] quests)
         {
-            questInfo.InspectQuestList(CreateQuestList(new[] {201}));
+            InspectQuestList(questInfo, new[] {201});
             questInfo.SaveState(status);
             PAssert.That(() =>  status.QuestCountList.Select(qc => qc.Id).SequenceEqual(quests));
-        }
-
-        [TestMethod]
-        public void ResetQuestList()
-        {
-            var queue = new Queue<DateTime>(new[]
-            {
-                new DateTime(2017, 11, 1, 5, 0, 0), new DateTime(2017, 11, 6, 5, 0, 0),
-                new DateTime(2017, 12, 1, 5, 0, 0)
-            });
-            var questInfo = new QuestInfo(() => queue.Dequeue());
-            var status = new Status
-            {
-                QuestList = new[]
-                {
-                    new QuestStatus {Id = 201, Category = 2}, new QuestStatus {Id = 213, Category = 2},
-                    new QuestStatus {Id = 265, Category = 2}, new QuestStatus {Id = 822, Category = 8}
-                },
-                QuestLastReset = new DateTime(2017, 10, 31, 5, 0, 0)
-            };
-            questInfo.LoadState(status);
-            questInfo.InspectQuestList(CreateQuestList(new int[0]));
-            questInfo.SaveState(status);
-            PAssert.That(() => status.QuestList.Select(q => q.Id).SequenceEqual(new[] {213, 822})); // デイリーとマンスリーが消える
-            questInfo.InspectQuestList(CreateQuestList(new int[0]));
-            questInfo.SaveState(status);
-            PAssert.That(() => status.QuestList.Select(q => q.Id).SequenceEqual(new[] {822})); // ウィークリーが消える
-            questInfo.InspectQuestList(CreateQuestList(new int[0]));
-            questInfo.SaveState(status);
-            PAssert.That(() => status.QuestList.Length == 0); // クォータリーが消える
         }
 
         [TestMethod]
@@ -108,7 +78,7 @@ namespace KancolleSniffer.Test
                 QuestLastReset = new DateTime(2019, 1, 20, 5, 16, 22)
             };
             questInfo.LoadState(status);
-            questInfo.InspectQuestList(CreateQuestList(new[] {201}));
+            InspectQuestList(questInfo, new[] {201});
             questInfo.SaveState(status);
             PAssert.That(() => status.QuestCountList.Length == 0);
         }
@@ -127,11 +97,19 @@ namespace KancolleSniffer.Test
                 QuestLastReset = new DateTime(2019, 1, 27, 5, 0, 0)
             };
             questInfo.LoadState(status);
-            questInfo.InspectQuestList( // 2019-1-27 10:00
-                CreateQuestList(new[] {237})); // 【節分拡張任務】南方海域 艦隊決戦
+            InspectQuestList(questInfo, // 2019-1-27 10:00
+                new[] {237}); // 【節分拡張任務】南方海域 艦隊決戦
             PAssert.That(() => questInfo.Quests[0].Id == 237);
-            questInfo.InspectQuestList(CreateQuestList(new[] {201})); // 2019-1-28 05:00
+            InspectQuestList(questInfo, new[] {201}); // 2019-1-28 05:00
             PAssert.That(() => questInfo.Quests[0].Id == 201);
+        }
+
+        [TestMethod]
+        public void NotImplemented()
+        {
+            var questInfo = new QuestInfo(() => new DateTime(2015, 1, 1));
+            InspectQuestList(questInfo, new[] {679});
+            PAssert.That(() => questInfo.Quests[0].Count.Spec.Material.Length == 0);
         }
 
         private JsonObject Js(object obj) => new JsonObject(obj);
@@ -156,13 +134,11 @@ namespace KancolleSniffer.Test
             };
         }
 
-        [TestMethod]
-        public void NotImplemented()
+        private void InspectQuestList(QuestInfo questInfo, int[] ids)
         {
-            var questInfo = new QuestInfo(() => new DateTime(2015, 1, 1));
-            questInfo.InspectQuestList(CreateQuestList(new[] {679}));
-            PAssert.That(() => questInfo.Quests[0].Count.Spec.Material.Length == 0);
+            questInfo.InspectQuestList("api_tab_id=0", CreateQuestList(ids));
         }
+
 
         /// <summary>
         /// 状態をロードするときに獲得資材に特殊資材のリストを追加しない
@@ -191,36 +167,6 @@ namespace KancolleSniffer.Test
             };
             questInfo.LoadState(status);
             PAssert.That(() => questInfo.Quests[0].Material.Length == 8);
-        }
-
-        /// <summary>
-        /// 任務を受領したときにNeedSaveを設定する
-        /// </summary>
-        [TestMethod]
-        public void SetNeedSaveOnStartQuest()
-        {
-            var questInfo = new QuestInfo(() => new DateTime(2019, 1, 1));
-            // _lastResetが未設定だと必ずResetQuestsが動いてNeedSaveがtrueになる
-            questInfo.LoadState(new Status {QuestLastReset = new DateTime(2019, 1, 1)});
-            questInfo.InspectQuestList(Js(
-                new
-                {
-                    api_list = new[]
-                    {
-                        CreateQuest(213, 1),
-                        CreateQuest(214, 1)
-                    }
-                }));
-            Assert.IsFalse(questInfo.NeedSave);
-            questInfo.InspectQuestList(Js(new
-            {
-                api_list = new[]
-                {
-                    CreateQuest(213, 1),
-                    CreateQuest(214, 2)
-                }
-            }));
-            Assert.IsTrue(questInfo.NeedSave);
         }
     }
 }

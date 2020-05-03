@@ -238,8 +238,13 @@ namespace KancolleSniffer.Test
 
         private QuestCount InjectQuest(int id)
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {id}));
+            InjectQuestList(new[] {id});
             return _questInfo.Quests[0].Count;
+        }
+
+        private void InjectQuestList(int[] ids)
+        {
+            _questInfo.InspectQuestList("api_tab_id=0", CreateQuestList(ids));
         }
 
         private void InjectMapStart(int map, int eventId)
@@ -304,7 +309,7 @@ namespace KancolleSniffer.Test
         {
             _battleInfo = new BattleInfo(null, null, null);
             _itemInfo = new ItemInfo(new ItemMaster(), new ItemInventory());
-            _questInfo = new QuestInfo(() => new DateTime(2015, 1, 1)) {AcceptMax = 10};
+            _questInfo = new QuestInfo(() => new DateTime(2015, 1, 1));
             _questCounter = new QuestCounter(_questInfo, _itemInfo, _battleInfo);
         }
 
@@ -317,7 +322,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_201_216_210_214()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {201, 216, 210, 214}));
+            InjectQuestList(new[] {201, 216, 210, 214});
 
             InjectMapStart(11, 4);
             var counts = _questInfo.Quests.Select(q => q.Count).ToArray();
@@ -361,7 +366,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_211_212_213_218_220_221()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {211, 212, 213, 218, 220, 221}));
+            InjectQuestList(new[] {211, 212, 213, 218, 220, 221});
             // 補給艦1隻と空母2隻
             _battleInfo.InjectResultStatus(new ShipStatus[0], new ShipStatus[0], new[]
             {
@@ -389,7 +394,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_228_230()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {228, 230}));
+            InjectQuestList(new[] {228, 230});
             // 潜水艦3
             _battleInfo.InjectResultStatus(new ShipStatus[0], new ShipStatus[0], new[]
             {
@@ -721,7 +726,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_822_854()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {822, 854}));
+            InjectQuestList(new[] {822, 854});
             var c822 = _questInfo.Quests[0].Count;
             var c854 = _questInfo.Quests[1].Count;
 
@@ -1320,7 +1325,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_280_854()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {280, 854}));
+            InjectQuestList(new[] {280, 854});
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(1, 1, 1, 1, 1, 1), new ShipStatus[0],
@@ -1337,7 +1342,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void BattleResult_888_893()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {888, 893}));
+            InjectQuestList(new[] {888, 893});
 
             _battleInfo.InjectResultStatus(
                 ShipStatusList(1, 1, 1, 1, 1, 1), new ShipStatus[0],
@@ -1358,7 +1363,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void PracticeResult_303_304_302_311_315()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {302, 303, 304, 311, 315}));
+            InjectQuestList(new[] {302, 303, 304, 311, 315});
 
             _battleInfo.InjectResultStatus(new[]
             {
@@ -1401,7 +1406,7 @@ namespace KancolleSniffer.Test
             Assert.AreEqual(1, count.Now);
 
             count.Now = 2;
-            _questInfo.InspectQuestList(CreateQuestList(new[] {318}));
+            InjectQuestList(new[] {318});
             Assert.AreEqual(2, count.Now, "進捗調節しない");
         }
 
@@ -1535,7 +1540,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void MissionResult_402_403_404_410_411()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {402, 403, 404, 410, 411}));
+            InjectQuestList(new[] {402, 403, 404, 410, 411});
 
             _questCounter.InspectDeck(Js(
                 new[]
@@ -1672,7 +1677,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void PowerUp_503_504()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {503, 504}));
+            InjectQuestList(new[] {503, 504});
 
             _questCounter.CountNyukyo();
             _questCounter.CountCharge();
@@ -1692,7 +1697,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void Kousyou_605_606_607_608_609_619()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {605, 606, 607, 608, 609, 619}));
+            InjectQuestList(new[] {605, 606, 607, 608, 609, 619});
 
             _questCounter.InspectCreateItem(
                 "api_verno=1&api_item1=10&api_item2=10&api_item3=30&api_item4=10&api_multiple_flag=0");
@@ -1752,8 +1757,7 @@ namespace KancolleSniffer.Test
             var items = new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31, 35, 23, 16, 3, 121};
             _itemInfo.InjectItems(items);
             var questList = new[] {613, 638, 643, 645, 653, 663, 673, 674, 675, 676, 677, 678, 680, 686, 688};
-            _questInfo.AcceptMax = questList.Length;
-            _questInfo.InspectQuestList(CreateQuestList(questList));
+            InjectQuestList(questList);
             _questCounter.InspectDestroyItem(
                 $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, items.Length))}&api%5Fverno=1", null);
             var scalar = new[]
@@ -1789,7 +1793,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void PowerUp_702_703()
         {
-            _questInfo.InspectQuestList(CreateQuestList(new[] {702, 703}));
+            InjectQuestList(new[] {702, 703});
             _questCounter.InspectPowerUp(Js(new {api_powerup_flag = 1}));
             PAssert.That(() =>
                 _questInfo.Quests.Select(q => new {q.Id, q.Count.Now})

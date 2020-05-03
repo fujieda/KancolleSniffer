@@ -55,7 +55,6 @@ namespace KancolleSniffer
             this.labelMaterialCaption = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.labelAkashiRepair = new System.Windows.Forms.Label();
-            this.labelClearQuest = new System.Windows.Forms.Label();
             this.dropDownButtonRepairList = new KancolleSniffer.View.DropDownButton();
             this.labelQuestCount = new System.Windows.Forms.Label();
             this.kdockPanel = new KancolleSniffer.View.KDockPanel();
@@ -148,19 +147,6 @@ namespace KancolleSniffer
             this.labelAkashiRepair.Size = new System.Drawing.Size(29, 12);
             this.labelAkashiRepair.TabIndex = 54;
             this.labelAkashiRepair.Text = "修理";
-            // 
-            // labelClearQuest
-            // 
-            this.labelClearQuest.AutoSize = true;
-            this.labelClearQuest.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelClearQuest.Location = new System.Drawing.Point(49, 340);
-            this.labelClearQuest.Name = "labelClearQuest";
-            this.labelClearQuest.Size = new System.Drawing.Size(15, 14);
-            this.labelClearQuest.TabIndex = 55;
-            this.labelClearQuest.Text = "↺";
-            this.labelClearQuest.Click += new System.EventHandler(this.labelClearQuest_Click);
-            this.labelClearQuest.MouseDown += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseDown);
-            this.labelClearQuest.MouseUp += new System.Windows.Forms.MouseEventHandler(this.labelClearQuest_MouseUp);
             // 
             // dropDownButtonRepairList
             // 
@@ -273,7 +259,6 @@ namespace KancolleSniffer
             this.Controls.Add(this.missionPanel);
             this.Controls.Add(this.labelQuestCount);
             this.Controls.Add(this.questPanel);
-            this.Controls.Add(this.labelClearQuest);
             this.Controls.Add(this.labelAkashiRepair);
             this.Controls.Add(this.labelAkashiRepairTimer);
             this.Controls.Add(this.dropDownButtonRepairList);
@@ -305,7 +290,6 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelAkashiRepairTimer;
         private System.Windows.Forms.Label labelAkashiRepair;
         private RepairListForMain panelRepairList;
-        private System.Windows.Forms.Label labelClearQuest;
         private QuestPanel questPanel;
         private System.Windows.Forms.Label labelQuestCount;
         private MissionPanel missionPanel;

@@ -152,7 +152,7 @@ namespace KancolleSniffer
             if (url.EndsWith("api_port/port"))
                 return ApiPort(data);
             if (url.Contains("member"))
-                return ApiMember(url, json);
+                return ApiMember(url, request,json);
             if (url.Contains("kousyou"))
                 return ApiKousyou(url, request, data);
             if (url.Contains("practice"))
@@ -213,8 +213,6 @@ namespace KancolleSniffer
             _questCounter.InspectDeck(data.api_deck_port);
             _dockInfo.InspectNDock(data.api_ndock);
             _achievement.InspectBasic(data.api_basic);
-            if (data.api_parallel_quest_count()) // 昔のログにはないので
-                _questInfo.AcceptMax = (int)data.api_parallel_quest_count;
             if (data.api_event_object())
                 _airBase.InspectEventObject(data.api_event_object);
             if (data.api_plane_info())
@@ -228,7 +226,7 @@ namespace KancolleSniffer
             return Update.All;
         }
 
-        private Update ApiMember(string url, dynamic json)
+        private Update ApiMember(string url, string request, dynamic json)
         {
             var data = json.api_data() ? json.api_data : new object();
 
@@ -274,7 +272,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_get_member/questlist"))
             {
-                _questInfo.InspectQuestList(data);
+                _questInfo.InspectQuestList(request, data);
                 return Update.QuestList;
             }
             if (url.EndsWith("api_get_member/deck"))
@@ -631,8 +629,6 @@ namespace KancolleSniffer
 
         public void GetQuestNotifications(out string[] notify, out string[] stop) =>
             _questInfo.GetNotifications(out notify, out stop);
-
-        public void ClearQuests() => _questInfo.ClearQuests();
 
         public NameAndTimer[] Missions => _missionInfo.Missions;
 
