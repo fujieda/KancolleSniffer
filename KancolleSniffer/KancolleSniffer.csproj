@@ -91,6 +91,12 @@
     <Compile Include="View\ChargeStatus.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="View\ContextMenuMain.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="View\ContextMenuNotifyIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\DropDownButton.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -358,6 +358,11 @@ namespace KancolleSniffer
             Sniffer.SaveState();
         }
 
+        public void ShowReport()
+        {
+            Process.Start("http://localhost:" + Config.Proxy.Listen + "/");
+        }
+
         public void StartCapture()
         {
             try

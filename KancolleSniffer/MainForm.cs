@@ -14,7 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +30,8 @@ namespace KancolleSniffer
         private readonly ResizableToolTip _toolTip = new ResizableToolTip();
         private readonly ResizableToolTip _tooltipCopy = new ResizableToolTip {ShowAlways = false, AutomaticDelay = 0};
         private readonly ListFormGroup _listFormGroup;
+        private readonly ContextMenuMain _contextMenuMain = new ContextMenuMain();
+        private readonly ContextMenuNotifyIcon _contextMenuNotifyIcon = new ContextMenuNotifyIcon();
 
         private IEnumerable<IUpdateContext> _updateable;
         private IEnumerable<IUpdateTimers> _timers;
@@ -44,6 +45,9 @@ namespace KancolleSniffer
         public MainForm(Main main)
         {
             InitializeComponent();
+            notifyIconMain.ContextMenuStrip = _contextMenuNotifyIcon;
+            // ReSharper disable once VirtualMemberCallInConstructor
+            ContextMenuStrip = _contextMenuMain;
             SetupMain(main);
             _listFormGroup = new ListFormGroup(this);
             Notifier = new Notifier(FlashWindow, ShowTaster, PlaySound);
@@ -62,6 +66,7 @@ namespace KancolleSniffer
             SetScaleFactorOfDpiScaling();
             SetupQuestPanel();
             SetMainFormEventHandler();
+            SetContextMenuEventHandler();
             mainFleetPanel.AkashiRepairTimer = labelAkashiRepairTimer;
             mainFleetPanel.ShowShipOnList = ShowShipOnShipList;
             panelRepairList.CreateLabels(panelRepairList_Click);
@@ -78,6 +83,27 @@ namespace KancolleSniffer
             FormClosing += MainForm_FormClosing;
             Resize += MainForm_Resize;
             Activated += MainForm_Activated;
+        }
+
+        private void SetContextMenuEventHandler()
+        {
+            SetContextMenuMainEventHandler();
+            SetContextMenuNotifyIconEventHandler();
+        }
+
+        private void SetContextMenuMainEventHandler()
+        {
+            _contextMenuMain.SetClickHandlers(
+                _listFormGroup.ShowOrCreate,
+                _main.ShowReport,
+                _main.StartCapture,
+                _main.ShowConfigDialog,
+                Close);
+        }
+
+        private void SetContextMenuNotifyIconEventHandler()
+        {
+            _contextMenuNotifyIcon.SetEventHandlers(RevertFromIcon, Close);
         }
 
         private void SetupUpdateable()
@@ -216,26 +242,16 @@ namespace KancolleSniffer
             }
         }
 
-        private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            NotifyIconOpenToolStripMenuItem_Click(sender, e);
-        }
-
-        private void NotifyIconOpenToolStripMenuItem_Click(object sender, EventArgs e)
+        private void RevertFromIcon()
         {
             ShowInTaskbar = true;
             WindowState = FormWindowState.Normal;
             TopMost = _listFormGroup.TopMost = Config.TopMost; // 最前面に表示されなくなることがあるのを回避する
         }
 
-        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            Close();
-        }
-
-        private void ConfigToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _main.ShowConfigDialog();
+            RevertFromIcon();
         }
 
         private void PerformZoom()
@@ -250,7 +266,7 @@ namespace KancolleSniffer
             foreach (var control in new Control[]
             {
                 this, mainFleetPanel.Guide, hqPanel.Login,
-                contextMenuStripMain
+                _contextMenuMain
             }.Concat(_main.Controls))
             {
                 control.Font = ZoomFont(control.Font);
@@ -415,16 +431,6 @@ namespace KancolleSniffer
             dropDownButtonRepairList.BackColor = DefaultBackColor;
         }
 
-        private void ShipListToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _listFormGroup.ShowOrCreate();
-        }
-
-        private void LogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Process.Start("http://localhost:" + Config.Proxy.Listen + "/");
-        }
-
         private void labelClearQuest_Click(object sender, EventArgs e)
         {
             Sniffer.ClearQuests();
@@ -454,11 +460,6 @@ namespace KancolleSniffer
                 await Task.Delay(1000);
                 _tooltipCopy.Active = false;
             });
-        }
-
-        private void CaptureToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _main.StartCapture();
         }
     }
 }

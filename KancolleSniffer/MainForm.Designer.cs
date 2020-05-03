@@ -52,15 +52,6 @@ namespace KancolleSniffer
             this.labelQuest = new System.Windows.Forms.Label();
             this.labelMissionCaption = new System.Windows.Forms.Label();
             this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
-            this.contextMenuStripNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.NotifyIconOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.NotifyIconExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextMenuStripMain = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.LogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CaptureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelMaterialCaption = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.labelAkashiRepair = new System.Windows.Forms.Label();
@@ -76,8 +67,6 @@ namespace KancolleSniffer
             this.materialHistoryPanel = new KancolleSniffer.View.MaterialHistoryPanel();
             this.dropDownButtonMaterialHistory = new KancolleSniffer.View.DropDownButton();
             this.mainFleetPanel = new KancolleSniffer.View.MainFleetPanel();
-            this.contextMenuStripNotifyIcon.SuspendLayout();
-            this.contextMenuStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // labelAkashiRepairTimer
@@ -127,80 +116,10 @@ namespace KancolleSniffer
             // 
             // notifyIconMain
             // 
-            this.notifyIconMain.ContextMenuStrip = this.contextMenuStripNotifyIcon;
             this.notifyIconMain.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIconMain.Icon")));
             this.notifyIconMain.Text = "KancolleSniffer";
             this.notifyIconMain.Visible = true;
             this.notifyIconMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIconMain_MouseDoubleClick);
-            // 
-            // contextMenuStripNotifyIcon
-            // 
-            this.contextMenuStripNotifyIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.NotifyIconOpenToolStripMenuItem,
-            this.NotifyIconExitToolStripMenuItem});
-            this.contextMenuStripNotifyIcon.Name = "contextMenuStripNotifyIcon";
-            this.contextMenuStripNotifyIcon.Size = new System.Drawing.Size(122, 48);
-            // 
-            // NotifyIconOpenToolStripMenuItem
-            // 
-            this.NotifyIconOpenToolStripMenuItem.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.NotifyIconOpenToolStripMenuItem.Name = "NotifyIconOpenToolStripMenuItem";
-            this.NotifyIconOpenToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
-            this.NotifyIconOpenToolStripMenuItem.Text = "開く(&O)";
-            this.NotifyIconOpenToolStripMenuItem.Click += new System.EventHandler(this.NotifyIconOpenToolStripMenuItem_Click);
-            // 
-            // NotifyIconExitToolStripMenuItem
-            // 
-            this.NotifyIconExitToolStripMenuItem.Name = "NotifyIconExitToolStripMenuItem";
-            this.NotifyIconExitToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
-            this.NotifyIconExitToolStripMenuItem.Text = "終了(&X)";
-            this.NotifyIconExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
-            // 
-            // contextMenuStripMain
-            // 
-            this.contextMenuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.listToolStripMenuItem,
-            this.LogToolStripMenuItem,
-            this.CaptureToolStripMenuItem,
-            this.ConfigToolStripMenuItem,
-            this.ExitToolStripMenuItem});
-            this.contextMenuStripMain.Name = "contextMenuStripToolTip";
-            this.contextMenuStripMain.Size = new System.Drawing.Size(126, 114);
-            // 
-            // listToolStripMenuItem
-            // 
-            this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-            this.listToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.listToolStripMenuItem.Text = "一覧(&L)";
-            this.listToolStripMenuItem.Click += new System.EventHandler(this.ShipListToolStripMenuItem_Click);
-            // 
-            // LogToolStripMenuItem
-            // 
-            this.LogToolStripMenuItem.Name = "LogToolStripMenuItem";
-            this.LogToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.LogToolStripMenuItem.Text = "報告書(&R)";
-            this.LogToolStripMenuItem.Click += new System.EventHandler(this.LogToolStripMenuItem_Click);
-            // 
-            // CaptureToolStripMenuItem
-            // 
-            this.CaptureToolStripMenuItem.Name = "CaptureToolStripMenuItem";
-            this.CaptureToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.CaptureToolStripMenuItem.Text = "撮影(&C)";
-            this.CaptureToolStripMenuItem.Click += new System.EventHandler(this.CaptureToolStripMenuItem_Click);
-            // 
-            // ConfigToolStripMenuItem
-            // 
-            this.ConfigToolStripMenuItem.Name = "ConfigToolStripMenuItem";
-            this.ConfigToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.ConfigToolStripMenuItem.Text = "設定(&O)";
-            this.ConfigToolStripMenuItem.Click += new System.EventHandler(this.ConfigToolStripMenuItem_Click);
-            // 
-            // ExitToolStripMenuItem
-            // 
-            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.ExitToolStripMenuItem.Text = "終了(&X)";
-            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // labelMaterialCaption
             // 
@@ -344,7 +263,6 @@ namespace KancolleSniffer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(232, 456);
-            this.ContextMenuStrip = this.contextMenuStripMain;
             this.Controls.Add(this.mainFleetPanel);
             this.Controls.Add(this.dropDownButtonMaterialHistory);
             this.Controls.Add(this.materialHistoryPanel);
@@ -370,8 +288,6 @@ namespace KancolleSniffer
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "KancolleSniffer";
-            this.contextMenuStripNotifyIcon.ResumeLayout(false);
-            this.contextMenuStripMain.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -383,18 +299,9 @@ namespace KancolleSniffer
         private System.Windows.Forms.Label labelQuest;
         private System.Windows.Forms.Label labelMissionCaption;
         private System.Windows.Forms.NotifyIcon notifyIconMain;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripMain;
-        private System.Windows.Forms.ToolStripMenuItem ConfigToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
         private System.Windows.Forms.Label labelMaterialCaption;
         private DropDownButton dropDownButtonRepairList;
         private System.Windows.Forms.Label label31;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripNotifyIcon;
-        private System.Windows.Forms.ToolStripMenuItem NotifyIconOpenToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem NotifyIconExitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem LogToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem CaptureToolStripMenuItem;
         private System.Windows.Forms.Label labelAkashiRepairTimer;
         private System.Windows.Forms.Label labelAkashiRepair;
         private RepairListForMain panelRepairList;
