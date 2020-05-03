@@ -22,6 +22,12 @@ namespace KancolleSniffer.Util
         public DateTime Prev { get; private set; }
         public DateTime Now { get; private set; }
 
+        public void SetNowIfNeeded()
+        {
+            if (Now == DateTime.MinValue)
+                SetNow();
+        }
+
         public void SetNow()
         {
             Now = DateTime.Now;

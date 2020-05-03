@@ -161,6 +161,9 @@ namespace KancolleSniffer
             {
                 var update = (Sniffer.Update)Sniffer.Sniff(s.Url, s.Request, JsonObject.Parse(s.Response));
                 _mainForm.UpdateInfo(update);
+                if (!Sniffer.Started)
+                    return;
+                Step.SetNowIfNeeded();
                 if ((update & Sniffer.Update.Timer) != 0)
                     _timerEnabled = true;
                 _errorLog.CheckBattleApi(s);

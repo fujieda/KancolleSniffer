@@ -117,8 +117,6 @@ namespace KancolleSniffer
             }
             if (!Sniffer.Started)
                 return;
-            if (_main.Step.Now == DateTime.MinValue)
-                _main.Step.SetNow();
             if ((update & Sniffer.Update.Item) != 0)
                 UpdateItemInfo();
             if ((update & Sniffer.Update.Timer) != 0)
