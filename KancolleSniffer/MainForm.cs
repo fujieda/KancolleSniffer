@@ -31,7 +31,6 @@ namespace KancolleSniffer
         private readonly ResizableToolTip _toolTip = new ResizableToolTip();
         private readonly ResizableToolTip _tooltipCopy = new ResizableToolTip {ShowAlways = false, AutomaticDelay = 0};
         private readonly ListFormGroup _listFormGroup;
-        private bool _started;
 
         private IEnumerable<IUpdateContext> _updateable;
         private IEnumerable<IUpdateTimers> _timers;
@@ -113,11 +112,10 @@ namespace KancolleSniffer
             {
                 hqPanel.Login.Visible = false;
                 mainFleetPanel.Start();
-                _started = true;
                 Notifier.StopAllRepeat();
                 return;
             }
-            if (!_started)
+            if (!Sniffer.Started)
                 return;
             if (_main.Step.Now == DateTime.MinValue)
                 _main.Step.SetNow();

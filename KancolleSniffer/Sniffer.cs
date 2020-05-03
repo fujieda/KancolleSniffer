@@ -23,7 +23,6 @@ namespace KancolleSniffer
 {
     public class Sniffer
     {
-        private bool _start;
         private readonly ItemMaster _itemMaster = new ItemMaster();
         private readonly ItemInventory _itemInventory = new ItemInventory();
         private readonly ItemInfo _itemInfo;
@@ -86,9 +85,11 @@ namespace KancolleSniffer
             All = (1 << 10) - 1
         }
 
-        public Sniffer(bool start = false)
+        public bool Started { get; private set; }
+
+        public Sniffer(bool started = false)
         {
-            _start = start;
+            Started = started;
             _itemInfo = new ItemInfo(_itemMaster, _itemInventory);
             _shipInfo = new ShipInfo(_shipMaster, _shipInventory, _itemInventory);
             _conditionTimer = new ConditionTimer(_shipInfo);
@@ -145,7 +146,7 @@ namespace KancolleSniffer
             {
                 return ApiStart(data);
             }
-            if (!_start)
+            if (!Started)
                 return Update.None;
 
             if (url.EndsWith("api_port/port"))
@@ -186,7 +187,7 @@ namespace KancolleSniffer
             _miscTextInfo.InspectMaster(data);
             _logger.InspectMapInfoMaster(data.api_mst_mapinfo);
             SetMapDictionary(data.api_mst_mapinfo);
-            _start = true;
+            Started = true;
             return Update.Start;
         }
 
@@ -692,11 +693,6 @@ namespace KancolleSniffer
         public void SetLogWriter(Action<string, string, string> writer, Func<DateTime> nowFunc)
         {
             _logger.SetWriter(writer, nowFunc);
-        }
-
-        public void SkipMaster()
-        {
-            _start = true;
         }
 
         public void EnableLog(LogType type)

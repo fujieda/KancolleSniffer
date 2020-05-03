@@ -38,7 +38,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void InspectMissionResult()
         {
-            var sniffer = new Sniffer();
+            var sniffer = new Sniffer(true);
             var result = "";
             var header = "";
             sniffer.SetLogWriter((path, s, h) =>
@@ -46,7 +46,6 @@ namespace KancolleSniffer.Test
                 result += s + "|";
                 header = h;
             }, () => new DateTime(2015, 1, 1));
-            sniffer.SkipMaster();
             sniffer.EnableLog(LogType.Mission);
             SnifferTest.SniffLogFile(sniffer, "mission_result_001");
             PAssert.That(() => "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材,改修資材" == header);
@@ -60,7 +59,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void MissionResultGetScrew()
         {
-            var sniffer = new Sniffer();
+            var sniffer = new Sniffer(true);
             var result = "";
             var header = "";
             sniffer.SetLogWriter((path, s, h) =>
@@ -68,7 +67,6 @@ namespace KancolleSniffer.Test
                 result += s + "|";
                 header = h;
             }, () => new DateTime(2019, 1, 1));
-            sniffer.SkipMaster();
             sniffer.EnableLog(LogType.Mission);
             SnifferTest.SniffLogFile(sniffer, "mission_result_002");
             PAssert.That(() => "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,開発資材,高速修復材,高速建造材,改修資材" == header);
