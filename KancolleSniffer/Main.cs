@@ -11,27 +11,16 @@ using System.Windows.Forms;
 using DynaJson;
 using KancolleSniffer.Log;
 using KancolleSniffer.Net;
-using KancolleSniffer.Notification;
 using KancolleSniffer.Util;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace KancolleSniffer
 {
-    public interface IMainForm
-    {
-        Label PlayLogSign { get; }
-        Notifier Notifier { get; }
-        void UpdateTimers();
-        void UpdateItemInfo();
-        void UpdateInfo(Sniffer.Update update);
-        void ApplyConfig();
-    }
-
     public class Main
     {
         private ProxyManager _proxyManager;
         private Form _form;
-        private IMainForm _mainForm;
+        private MainWindow _mainBehavior;
         private readonly ErrorDialog _errorDialog = new ErrorDialog();
         private ConfigDialog _configDialog;
         private ErrorLog _errorLog;
@@ -54,13 +43,13 @@ namespace KancolleSniffer
         {
             Config.Load();
             _configDialog = new ConfigDialog(this);
-            var form = new MainForm(this);
+            var form = new MainForm();
             _form = form;
-            _mainForm = form;
+            _mainBehavior = new MainWindow(this, form);
             _proxyManager = new ProxyManager(_form, Config);
             _proxyManager.UpdatePacFile();
             _errorLog = new ErrorLog(Sniffer);
-            Sniffer.RepeatingTimerController = _mainForm.Notifier;
+            Sniffer.RepeatingTimerController = _mainBehavior.Notifier;
             LoadData();
             ApplyConfig();
             ApplySettings();
@@ -160,7 +149,7 @@ namespace KancolleSniffer
             try
             {
                 var update = (Sniffer.Update)Sniffer.Sniff(s.Url, s.Request, JsonObject.Parse(s.Response));
-                _mainForm.UpdateInfo(update);
+                _mainBehavior.UpdateInfo(update);
                 if (!Sniffer.Started)
                     return;
                 Step.SetNowIfNeeded();
@@ -283,8 +272,8 @@ namespace KancolleSniffer
                 try
                 {
                     Step.SetNow();
-                    _mainForm.UpdateTimers();
-                    _mainForm.Notifier.NotifyTimers();
+                    _mainBehavior.UpdateTimers();
+                    _mainBehavior.Notifier.NotifyTimers();
                     Step.SetPrev();
                 }
                 catch (Exception ex)
@@ -295,7 +284,7 @@ namespace KancolleSniffer
             }
             if (_playLog == null || _configDialog.Visible)
             {
-                _mainForm.PlayLogSign.Visible = false;
+                _mainBehavior.PlayLogSign.Visible = false;
                 return;
             }
             PlayLog();
@@ -304,13 +293,13 @@ namespace KancolleSniffer
         public void ResetAchievement()
         {
             Sniffer.Achievement.Reset();
-            _mainForm.UpdateItemInfo();
+            _mainBehavior.UpdateItemInfo();
         }
 
         private void PlayLog()
         {
             var lines = new List<string>();
-            var sign = _mainForm.PlayLogSign;
+            var sign = _mainBehavior.PlayLogSign;
             foreach (var s in new[] {"url: ", "request: ", "response: "})
             {
                 do
@@ -333,7 +322,7 @@ namespace KancolleSniffer
             {
                 Config.Save();
                 ApplyConfig();
-                _mainForm.Notifier.StopRepeatingTimer(_configDialog.RepeatSettingsChanged);
+                _mainBehavior.Notifier.StopRepeatingTimer(_configDialog.RepeatSettingsChanged);
             }
         }
 
@@ -341,10 +330,10 @@ namespace KancolleSniffer
         {
             Sniffer.ShipCounter.Margin = Config.MarginShips;
             Sniffer.ItemCounter.Margin = Config.MarginEquips;
-            _mainForm.Notifier.NotifyShipItemCount();
+            _mainBehavior.Notifier.NotifyShipItemCount();
             Sniffer.Achievement.ResetHours = Config.ResetHours;
             Sniffer.WarnBadDamageWithDameCon = Config.WarnBadDamageWithDameCon;
-            _mainForm.ApplyConfig();
+            _mainBehavior.ApplyConfig();
         }
 
         public IEnumerable<Control> Controls =>

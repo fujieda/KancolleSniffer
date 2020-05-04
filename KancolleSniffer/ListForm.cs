@@ -27,8 +27,8 @@ namespace KancolleSniffer
     {
         private readonly Sniffer _sniffer;
         private readonly Config _config;
-        private readonly MainForm _main;
-        private readonly MainForm.TimeOutChecker _suppressActivate;
+        private readonly Form _form;
+        private readonly MainWindow.TimeOutChecker _suppressActivate;
         private readonly CheckBox[] _shipTypeCheckBoxes;
         private bool _isMaster;
         private Settings _settings;
@@ -94,11 +94,11 @@ namespace KancolleSniffer
             Repair
         }
 
-        public ListForm(MainForm main)
+        public ListForm(MainWindow main)
         {
             InitializeComponent();
             IsMaster = false;
-            _main = main;
+            _form = main.Form;
             _sniffer = main.Sniffer;
             _config = main.Config;
             _suppressActivate = main.SuppressActivate;
@@ -290,7 +290,7 @@ namespace KancolleSniffer
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);
-            if (MainForm.IsTitleBarOnAnyScreen(bounds.Location))
+            if (MainWindow.IsTitleBarOnAnyScreen(bounds.Location))
                 Location = bounds.Location;
             Height = bounds.Height;
         }
@@ -384,7 +384,7 @@ namespace KancolleSniffer
             {
                 if (WindowState == FormWindowState.Minimized)
                 {
-                    System.Windows.Forms.Application.DoEvents();
+                    Application.DoEvents();
                     if (_config.HideOnMinimized)
                         ShowInTaskbar = true;
                     WindowState = FormWindowState.Normal;
@@ -405,8 +405,8 @@ namespace KancolleSniffer
 
         private void RaiseBothWindows()
         {
-            _main.Owner = null;
-            Owner = _main;
+            _form.Owner = null;
+            Owner = _form;
             BringToFront();
             Owner = null;
         }

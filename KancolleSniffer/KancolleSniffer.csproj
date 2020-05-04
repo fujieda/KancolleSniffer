@@ -62,6 +62,7 @@
     <Compile Include="Log\BattleLogger.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="ListFormGroup.cs" />
+    <Compile Include="MainWindow.cs" />
     <Compile Include="Model\AirBattleResult.cs" />
     <Compile Include="Model\AirCorpsFighterPower.cs" />
     <Compile Include="Model\QuestCounter.cs" />

@@ -22,17 +22,17 @@ namespace KancolleSniffer
 {
     public class ListFormGroup
     {
-        private readonly MainForm _mainForm;
+        private readonly MainWindow _mainWindow;
         private readonly List<ListForm> _listForms = new List<ListForm>();
 
         public ListForm Main => _listForms[0];
 
-        public ListFormGroup(MainForm mainForm)
+        public ListFormGroup(MainWindow main)
         {
-            _mainForm = mainForm;
-            _listForms.Add(new ListForm(mainForm) {IsMaster = true});
-            for (var i = 0; i < mainForm.Config.ListFormGroup.Count; i++)
-                _listForms.Add(new ListForm(mainForm) {Owner = Main});
+            _mainWindow = main;
+            _listForms.Add(new ListForm(main) {IsMaster = true});
+            for (var i = 0; i < main.Config.ListFormGroup.Count; i++)
+                _listForms.Add(new ListForm(main) {Owner = Main});
         }
 
         public void ShowOrCreate()
@@ -50,7 +50,7 @@ namespace KancolleSniffer
                     return;
                 }
             }
-            var newForm = new ListForm(_mainForm) {Owner = Main, TopMost = Main.TopMost, Font = Main.Font};
+            var newForm = new ListForm(_mainWindow) {Owner = Main, TopMost = Main.TopMost, Font = Main.Font};
             newForm.Show();
             newForm.UpdateList();
             _listForms.Add(newForm);
