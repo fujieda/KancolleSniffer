@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.MainWindow
 {
     public class ContextMenuNotifyIcon : ContextMenuStrip
     {

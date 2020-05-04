@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using KancolleSniffer.View;
+using KancolleSniffer.View.ListWindow;
 using KancolleSniffer.View.ShipListPanel;
 
 namespace KancolleSniffer
@@ -92,11 +93,11 @@ namespace KancolleSniffer
             this.checkBoxSTypeBattleShip = new System.Windows.Forms.CheckBox();
             this.dropDownButtonSType = new KancolleSniffer.View.DropDownButton();
             this.labelSType = new System.Windows.Forms.Label();
-            this.airBattleResultPanel = new KancolleSniffer.View.AirBattleResultPanel();
-            this.battleResultPanel = new KancolleSniffer.View.BattleResultPanel();
-            this.antiAirPanel = new KancolleSniffer.View.AntiAirPanel();
-            this.fleetPanel = new KancolleSniffer.View.FleetDataPanel();
-            this.itemTreeView = new KancolleSniffer.View.ItemTreeView();
+            this.airBattleResultPanel = new AirBattleResultPanel();
+            this.battleResultPanel = new BattleResultPanel();
+            this.antiAirPanel = new AntiAirPanel();
+            this.fleetPanel = new FleetDataPanel();
+            this.itemTreeView = new ItemTreeView();
             this.shipListPanel = new KancolleSniffer.View.ShipListPanel.ShipListPanel();
             this.contextMenuStripShipList.SuspendLayout();
             this.contextMenuStripItemList.SuspendLayout();

@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using KancolleSniffer.View;
+using KancolleSniffer.View.ListWindow;
+using KancolleSniffer.View.MainWindow;
 
 namespace KancolleSniffer
 {
@@ -57,15 +59,15 @@ namespace KancolleSniffer
             this.labelAkashiRepair = new System.Windows.Forms.Label();
             this.dropDownButtonRepairList = new KancolleSniffer.View.DropDownButton();
             this.labelQuestCount = new System.Windows.Forms.Label();
-            this.kdockPanel = new KancolleSniffer.View.KDockPanel();
-            this.panelRepairList = new KancolleSniffer.View.RepairListForMain();
-            this.ndockPanel = new KancolleSniffer.View.NDockPanel();
-            this.missionPanel = new KancolleSniffer.View.MissionPanel();
-            this.questPanel = new KancolleSniffer.View.QuestPanel();
-            this.hqPanel = new KancolleSniffer.View.HqPanel();
-            this.materialHistoryPanel = new KancolleSniffer.View.MaterialHistoryPanel();
+            this.kdockPanel = new KDockPanel();
+            this.panelRepairList = new RepairListForMain();
+            this.ndockPanel = new NDockPanel();
+            this.missionPanel = new MissionPanel();
+            this.questPanel = new QuestPanel();
+            this.hqPanel = new HqPanel();
+            this.materialHistoryPanel = new MaterialHistoryPanel();
             this.dropDownButtonMaterialHistory = new KancolleSniffer.View.DropDownButton();
-            this.mainFleetPanel = new KancolleSniffer.View.MainFleetPanel();
+            this.mainFleetPanel = new MainFleetPanel();
             this.SuspendLayout();
             // 
             // labelAkashiRepairTimer

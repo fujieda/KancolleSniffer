@@ -20,7 +20,7 @@ using KancolleSniffer.Model;
 
 // ReSharper disable CoVariantArrayConversion
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.ListWindow
 {
     [DesignerCategory("Code")]
     public class AirBattleResultPanel : PanelWithToolTip

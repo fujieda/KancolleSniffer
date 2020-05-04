@@ -87,40 +87,40 @@
     <Compile Include="Util\Clipboard.cs" />
     <Compile Include="Util\SoundPlayer.cs" />
     <Compile Include="Util\TimeStep.cs" />
-    <Compile Include="View\ChargeStatus.cs">
+    <Compile Include="View\MainWindow\ChargeStatus.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\ContextMenuMain.cs">
+    <Compile Include="View\MainWindow\ContextMenuMain.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\ContextMenuNotifyIcon.cs">
+    <Compile Include="View\MainWindow\ContextMenuNotifyIcon.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\DropDownButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\IUpdateable.cs" />
-    <Compile Include="View\MainFleetPanel.cs">
+    <Compile Include="View\MainWindow\MainFleetPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\MaterialHistoryPanel.cs">
+    <Compile Include="View\MainWindow\MaterialHistoryPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\ShipInfoPanel.cs">
+    <Compile Include="View\MainWindow\ShipInfoPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\TriangleMark.cs">
+    <Compile Include="View\MainWindow\TriangleMark.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\UpdateContext.cs" />
-    <Compile Include="View\AntiAirPanel.cs">
+    <Compile Include="View\ListWindow\AntiAirPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\AirBattleResultPanel.cs" />
+    <Compile Include="View\ListWindow\AirBattleResultPanel.cs" />
     <Compile Include="Util\Ascii85.cs" />
     <Compile Include="Model\AirBase.cs" />
     <Compile Include="Model\BattleInfo.cs" />
-    <Compile Include="View\BattleResultPanel.cs">
+    <Compile Include="View\ListWindow\BattleResultPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\CellInfo.cs" />
@@ -143,7 +143,7 @@
     <Compile Include="Model\DockInfo.cs" />
     <Compile Include="Model\Fleet.cs" />
     <Compile Include="View\CustomColors.cs" />
-    <Compile Include="View\FleetDataPanel.cs">
+    <Compile Include="View\ListWindow\FleetDataPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\ExMapInfo.cs" />
@@ -155,24 +155,24 @@
     </Compile>
     <Compile Include="Net\HttpProxy.cs" />
     <Compile Include="Util\HttpUtility.cs" />
-    <Compile Include="View\FleetData.cs" />
+    <Compile Include="View\ListWindow\FleetData.cs" />
     <Compile Include="View\GrowLeftLabel.cs" />
-    <Compile Include="View\HqPanel.cs">
+    <Compile Include="View\MainWindow\HqPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\KDockPanel.cs">
+    <Compile Include="View\MainWindow\KDockPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\NDockPanel.cs">
+    <Compile Include="View\MainWindow\NDockPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\MissionPanel.cs">
+    <Compile Include="View\MainWindow\MissionPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\ShipLabels.cs" />
     <Compile Include="View\ShipListPanel\GroupConfigLabels.cs" />
-    <Compile Include="View\ListScroller.cs" />
-    <Compile Include="View\ItemTreeView.cs">
+    <Compile Include="View\MainWindow\ListScroller.cs" />
+    <Compile Include="View\ListWindow\ItemTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Log\Logger.cs" />
@@ -193,13 +193,13 @@
     <Compile Include="View\PanelWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\QuestPanel.cs">
+    <Compile Include="View\MainWindow\QuestPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\RepairListForMain.cs">
+    <Compile Include="View\MainWindow\RepairListForMain.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\MainShipLabels.cs" />
+    <Compile Include="View\MainWindow\MainShipLabels.cs" />
     <Compile Include="ListForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -218,7 +218,7 @@
     <Compile Include="Model\QuestInfo.cs" />
     <Compile Include="Model\ConditionTimer.cs" />
     <Compile Include="View\ShipListPanel\RepairListLabels.cs" />
-    <Compile Include="View\RepairShipCount.cs" />
+    <Compile Include="View\MainWindow\RepairShipCount.cs" />
     <Compile Include="View\ResizableToolTip.cs">
       <SubType>Component</SubType>
     </Compile>

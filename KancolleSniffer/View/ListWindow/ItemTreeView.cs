@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.ListWindow
 {
     public class ItemTreeView : TreeView
     {

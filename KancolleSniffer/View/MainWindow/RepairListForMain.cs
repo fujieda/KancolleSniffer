@@ -21,7 +21,7 @@ using static System.Math;
 
 // ReSharper disable CoVariantArrayConversion
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.MainWindow
 {
     public class RepairListForMain : Panel
     {

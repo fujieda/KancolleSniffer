@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.MainWindow
 {
     public class HqPanel : PanelWithToolTip, IUpdateContext
     {

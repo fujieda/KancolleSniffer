@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.MainWindow
 {
     public class ShipInfoPanel : PanelWithToolTip, IUpdateTimers
     {

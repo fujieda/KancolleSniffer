@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using KancolleSniffer.Model;
-using KancolleSniffer.View;
+using KancolleSniffer.View.MainWindow;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test

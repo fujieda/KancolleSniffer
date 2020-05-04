@@ -21,7 +21,7 @@ using System.Windows.Forms;
 using KancolleSniffer.Model;
 using static System.Math;
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.ListWindow
 {
     public class BattleResultPanel : PanelWithToolTip
     {

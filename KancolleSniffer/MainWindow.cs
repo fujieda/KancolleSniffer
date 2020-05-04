@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using KancolleSniffer.Notification;
 using KancolleSniffer.Util;
 using KancolleSniffer.View;
+using KancolleSniffer.View.MainWindow;
 
 namespace KancolleSniffer
 {

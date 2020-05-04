@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using KancolleSniffer.Model;
 using Clipboard = KancolleSniffer.Util.Clipboard;
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.MainWindow
 {
     public class MainFleetPanel : PanelWithToolTip, IUpdateTimers
     {

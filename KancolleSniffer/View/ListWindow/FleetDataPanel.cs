@@ -18,7 +18,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Clipboard = KancolleSniffer.Util.Clipboard;
 
-namespace KancolleSniffer.View
+namespace KancolleSniffer.View.ListWindow
 {
     public class FleetDataPanel : PanelWithToolTip
     {

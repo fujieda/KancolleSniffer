@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using KancolleSniffer.Model;
-using KancolleSniffer.View;
+using KancolleSniffer.View.MainWindow;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KancolleSniffer.Test
