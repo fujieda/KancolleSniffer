@@ -53,7 +53,7 @@ namespace KancolleSniffer
             this.labelMissionCaption = new System.Windows.Forms.Label();
             this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
             this.labelMaterialCaption = new System.Windows.Forms.Label();
-            this.label31 = new System.Windows.Forms.Label();
+            this.labelRepairListCaption = new System.Windows.Forms.Label();
             this.labelAkashiRepair = new System.Windows.Forms.Label();
             this.dropDownButtonRepairList = new KancolleSniffer.View.DropDownButton();
             this.labelQuestCount = new System.Windows.Forms.Label();
@@ -118,7 +118,6 @@ namespace KancolleSniffer
             this.notifyIconMain.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIconMain.Icon")));
             this.notifyIconMain.Text = "KancolleSniffer";
             this.notifyIconMain.Visible = true;
-            this.notifyIconMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIconMain_MouseDoubleClick);
             // 
             // labelMaterialCaption
             // 
@@ -129,15 +128,14 @@ namespace KancolleSniffer
             this.labelMaterialCaption.TabIndex = 43;
             this.labelMaterialCaption.Text = "資材";
             // 
-            // label31
+            // labelRepairListCaption
             // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(81, 195);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(41, 12);
-            this.label31.TabIndex = 46;
-            this.label31.Text = "要修復";
-            this.label31.Click += new System.EventHandler(this.labelRepairListButton_Click);
+            this.labelRepairListCaption.AutoSize = true;
+            this.labelRepairListCaption.Location = new System.Drawing.Point(81, 195);
+            this.labelRepairListCaption.Name = "labelRepairListCaption";
+            this.labelRepairListCaption.Size = new System.Drawing.Size(41, 12);
+            this.labelRepairListCaption.TabIndex = 46;
+            this.labelRepairListCaption.Text = "要修復";
             // 
             // labelAkashiRepair
             // 
@@ -155,7 +153,6 @@ namespace KancolleSniffer
             this.dropDownButtonRepairList.Name = "dropDownButtonRepairList";
             this.dropDownButtonRepairList.Size = new System.Drawing.Size(14, 14);
             this.dropDownButtonRepairList.TabIndex = 45;
-            this.dropDownButtonRepairList.Click += new System.EventHandler(this.labelRepairListButton_Click);
             // 
             // labelQuestCount
             // 
@@ -182,7 +179,6 @@ namespace KancolleSniffer
             this.panelRepairList.Size = new System.Drawing.Size(129, 21);
             this.panelRepairList.TabIndex = 4;
             this.panelRepairList.Visible = false;
-            this.panelRepairList.Click += new System.EventHandler(this.panelRepairList_Click);
             // 
             // ndockPanel
             // 
@@ -262,7 +258,7 @@ namespace KancolleSniffer
             this.Controls.Add(this.labelAkashiRepair);
             this.Controls.Add(this.labelAkashiRepairTimer);
             this.Controls.Add(this.dropDownButtonRepairList);
-            this.Controls.Add(this.label31);
+            this.Controls.Add(this.labelRepairListCaption);
             this.Controls.Add(this.labelMaterialCaption);
             this.Controls.Add(this.labelMissionCaption);
             this.Controls.Add(this.labelQuest);
@@ -286,7 +282,7 @@ namespace KancolleSniffer
         private System.Windows.Forms.NotifyIcon notifyIconMain;
         private System.Windows.Forms.Label labelMaterialCaption;
         private DropDownButton dropDownButtonRepairList;
-        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label labelRepairListCaption;
         private System.Windows.Forms.Label labelAkashiRepairTimer;
         private System.Windows.Forms.Label labelAkashiRepair;
         private RepairListForMain panelRepairList;

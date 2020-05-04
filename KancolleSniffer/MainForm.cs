@@ -63,8 +63,7 @@ namespace KancolleSniffer
         {
             SetScaleFactorOfDpiScaling();
             SetupQuestPanel();
-            SetMainFormEventHandler();
-            SetContextMenuEventHandler();
+            SetEventHandlers();
             mainFleetPanel.AkashiRepairTimer = labelAkashiRepairTimer;
             mainFleetPanel.ShowShipOnList = ShowShipOnShipList;
             panelRepairList.CreateLabels(panelRepairList_Click);
@@ -75,18 +74,21 @@ namespace KancolleSniffer
             PerformZoom();
         }
 
+        private void SetEventHandlers()
+        {
+            SetMainFormEventHandler();
+            SetContextMenuMainEventHandler();
+            SetContextMenuNotifyIconEventHandler();
+            SetNotifyIconEventHandler();
+            SetRepairListEventHandler();
+        }
+
         private void SetMainFormEventHandler()
         {
             Load += MainForm_Load;
             FormClosing += MainForm_FormClosing;
             Resize += MainForm_Resize;
             Activated += MainForm_Activated;
-        }
-
-        private void SetContextMenuEventHandler()
-        {
-            SetContextMenuMainEventHandler();
-            SetContextMenuNotifyIconEventHandler();
         }
 
         private void SetContextMenuMainEventHandler()
@@ -102,6 +104,18 @@ namespace KancolleSniffer
         private void SetContextMenuNotifyIconEventHandler()
         {
             _contextMenuNotifyIcon.SetEventHandlers(RevertFromIcon, Close);
+        }
+
+        private void SetNotifyIconEventHandler()
+        {
+            notifyIconMain.MouseDoubleClick += notifyIconMain_MouseDoubleClick;
+        }
+
+        private void SetRepairListEventHandler()
+        {
+            labelRepairListCaption.Click += labelRepairListButton_Click;
+            dropDownButtonRepairList.Click += labelRepairListButton_Click;
+            panelRepairList.Click += panelRepairList_Click;
         }
 
         private void SetupUpdateable()
@@ -377,7 +391,7 @@ namespace KancolleSniffer
         private void UpdateRepairList()
         {
             panelRepairList.SetRepairList(Sniffer.RepairList);
-            _toolTip.SetToolTip(label31, new RepairShipCount(Sniffer.RepairList).ToString());
+            _toolTip.SetToolTip(labelRepairListCaption, new RepairShipCount(Sniffer.RepairList).ToString());
         }
 
         private void UpdateQuestList()
