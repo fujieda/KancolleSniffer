@@ -59,6 +59,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\HorizontalMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HorizontalMainForm.designer.cs">
+      <DependentUpon>HorizontalMainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Log\BattleLogger.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Forms\ListFormGroup.cs" />
@@ -210,11 +216,11 @@
     <Compile Include="Forms\ListForm.Designer.cs">
       <DependentUpon>ListForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainForm.cs">
+    <Compile Include="Forms\VerticalMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="Forms\VerticalMainForm.Designer.cs">
+      <DependentUpon>VerticalMainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\MissionInfo.cs" />
     <Compile Include="Program.cs" />
@@ -253,11 +259,14 @@
     <EmbeddedResource Include="Forms\ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\HorizontalMainForm.resx">
+      <DependentUpon>HorizontalMainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ListForm.resx">
       <DependentUpon>ListForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\VerticalMainForm.resx">
+      <DependentUpon>VerticalMainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Notification\ConfigDialog.resx">
       <DependentUpon>ConfigDialog.cs</DependentUpon>

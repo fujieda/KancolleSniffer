@@ -44,7 +44,7 @@ namespace KancolleSniffer
         {
             Config.Load();
             _configDialog = new ConfigDialog(this);
-            var form = new MainForm();
+            var form = new HorizontalMainForm();
             _form = form;
             _mainBehavior = new MainWindow(this, form);
             _proxyManager = new ProxyManager(_form, Config);

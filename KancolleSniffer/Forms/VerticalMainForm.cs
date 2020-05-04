@@ -17,9 +17,9 @@ using KancolleSniffer.Util;
 
 namespace KancolleSniffer.Forms
 {
-    public partial class MainForm : Form
+    public partial class VerticalMainForm : Form
     {
-        public MainForm()
+        public VerticalMainForm()
         {
             InitializeComponent();
         }

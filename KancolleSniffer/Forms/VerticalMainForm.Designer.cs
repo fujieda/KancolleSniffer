@@ -17,7 +17,7 @@ using KancolleSniffer.View.MainWindow;
 
 namespace KancolleSniffer.Forms
 {
-    partial class MainForm
+    partial class VerticalMainForm
     {
         /// <summary>
         /// 必要なデザイナー変数です。
@@ -46,7 +46,7 @@ namespace KancolleSniffer.Forms
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VerticalMainForm));
             this.labelAkashiRepairTimer = new System.Windows.Forms.Label();
             this.labelNDockCaption = new System.Windows.Forms.Label();
             this.labelConstruct = new System.Windows.Forms.Label();

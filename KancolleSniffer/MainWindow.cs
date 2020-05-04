@@ -169,7 +169,7 @@ namespace KancolleSniffer
 
         private void SetupQuestPanel()
         {
-            int prevHeight = _c.questPanel.Height;
+            var prevHeight = _c.questPanel.Height;
             _c.questPanel.CreateLabels(Config.QuestLines);
             Form.Height += _c.questPanel.Height - prevHeight;
         }
