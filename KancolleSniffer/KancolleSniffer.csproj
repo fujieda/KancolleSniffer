@@ -238,7 +238,7 @@
     <Compile Include="View\StringTruncator.cs" />
     <Compile Include="View\SwipeScrollify.cs" />
     <Compile Include="Net\SystemProxy.cs" />
-    <Compile Include="TextGenerator.cs" />
+    <Compile Include="Model\TextGenerator.cs" />
     <Compile Include="Util\Win32API.cs" />
     <EmbeddedResource Include="Forms\ConfigDialog.resx">
       <DependentUpon>ConfigDialog.cs</DependentUpon>

@@ -15,11 +15,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
-using KancolleSniffer.Model;
 
-namespace KancolleSniffer
+namespace KancolleSniffer.Model
 {
     public static class TextGenerator
     {

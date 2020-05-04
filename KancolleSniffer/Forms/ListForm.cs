@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using KancolleSniffer.Model;
 using KancolleSniffer.View;
 using KancolleSniffer.View.ShipListPanel;
 using Clipboard = KancolleSniffer.Util.Clipboard;
