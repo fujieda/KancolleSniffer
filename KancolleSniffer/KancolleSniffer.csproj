@@ -61,7 +61,7 @@
   <ItemGroup>
     <Compile Include="Log\BattleLogger.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="ListFormGroup.cs" />
+    <Compile Include="Forms\ListFormGroup.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="Model\AirBattleResult.cs" />
     <Compile Include="Model\AirCorpsFighterPower.cs" />
@@ -126,16 +126,16 @@
     <Compile Include="Model\CellInfo.cs" />
     <Compile Include="ErrorLog.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="ConfigDialog.cs">
+    <Compile Include="Forms\ConfigDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfigDialog.Designer.cs">
+    <Compile Include="Forms\ConfigDialog.Designer.cs">
       <DependentUpon>ConfigDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfirmDialog.cs">
+    <Compile Include="Forms\ConfirmDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfirmDialog.Designer.cs">
+    <Compile Include="Forms\ConfirmDialog.Designer.cs">
       <DependentUpon>ConfirmDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="View\ControlsArranger.cs" />
@@ -147,10 +147,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\ExMapInfo.cs" />
-    <Compile Include="ErrorDialog.cs">
+    <Compile Include="Forms\ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ErrorDialog.Designer.cs">
+    <Compile Include="Forms\ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Net\HttpProxy.cs" />
@@ -200,16 +200,16 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\MainWindow\MainShipLabels.cs" />
-    <Compile Include="ListForm.cs">
+    <Compile Include="Forms\ListForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ListForm.Designer.cs">
+    <Compile Include="Forms\ListForm.Designer.cs">
       <DependentUpon>ListForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainForm.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\MissionInfo.cs" />
@@ -240,19 +240,19 @@
     <Compile Include="Net\SystemProxy.cs" />
     <Compile Include="TextGenerator.cs" />
     <Compile Include="Util\Win32API.cs" />
-    <EmbeddedResource Include="ConfigDialog.resx">
+    <EmbeddedResource Include="Forms\ConfigDialog.resx">
       <DependentUpon>ConfigDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConfirmDialog.resx">
+    <EmbeddedResource Include="Forms\ConfirmDialog.resx">
       <DependentUpon>ConfirmDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ErrorDialog.resx">
+    <EmbeddedResource Include="Forms\ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ListForm.resx">
+    <EmbeddedResource Include="Forms\ListForm.resx">
       <DependentUpon>ListForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Notification\ConfigDialog.resx">

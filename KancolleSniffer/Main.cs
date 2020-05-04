@@ -9,6 +9,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using DynaJson;
+using KancolleSniffer.Forms;
 using KancolleSniffer.Log;
 using KancolleSniffer.Net;
 using KancolleSniffer.Util;

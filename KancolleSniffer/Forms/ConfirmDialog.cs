@@ -14,7 +14,7 @@
 
 using System.Windows.Forms;
 
-namespace KancolleSniffer
+namespace KancolleSniffer.Forms
 {
     public partial class ConfirmDialog : Form
     {

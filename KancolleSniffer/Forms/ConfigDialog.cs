@@ -22,7 +22,7 @@ using KancolleSniffer.Net;
 using KancolleSniffer.Util;
 using KancolleSniffer.View;
 
-namespace KancolleSniffer
+namespace KancolleSniffer.Forms
 {
     public partial class ConfigDialog : Form
     {

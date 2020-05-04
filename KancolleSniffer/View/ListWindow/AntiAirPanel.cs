@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using KancolleSniffer.Forms;
 using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View.ListWindow

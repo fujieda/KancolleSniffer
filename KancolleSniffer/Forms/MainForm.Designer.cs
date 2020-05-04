@@ -13,10 +13,9 @@
 // limitations under the License.
 
 using KancolleSniffer.View;
-using KancolleSniffer.View.ListWindow;
 using KancolleSniffer.View.MainWindow;
 
-namespace KancolleSniffer
+namespace KancolleSniffer.Forms
 {
     partial class MainForm
     {

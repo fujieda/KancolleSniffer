@@ -17,7 +17,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Clipboard = KancolleSniffer.Util.Clipboard;
 
-namespace KancolleSniffer
+namespace KancolleSniffer.Forms
 {
     public partial class ErrorDialog : Form
     {

@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Clipboard = KancolleSniffer.Util.Clipboard;
+using KancolleSniffer.Forms;
 
 namespace KancolleSniffer.View.ListWindow
 {

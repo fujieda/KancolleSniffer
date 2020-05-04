@@ -15,7 +15,7 @@
 using System.Windows.Forms;
 using KancolleSniffer.Util;
 
-namespace KancolleSniffer
+namespace KancolleSniffer.Forms
 {
     public partial class MainForm : Form
     {

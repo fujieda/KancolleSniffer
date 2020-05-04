@@ -16,7 +16,7 @@ using KancolleSniffer.View;
 using KancolleSniffer.View.ListWindow;
 using KancolleSniffer.View.ShipListPanel;
 
-namespace KancolleSniffer
+namespace KancolleSniffer.Forms
 {
     partial class ListForm
     {

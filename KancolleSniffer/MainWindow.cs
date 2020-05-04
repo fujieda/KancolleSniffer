@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using KancolleSniffer.Forms;
 using KancolleSniffer.Notification;
 using KancolleSniffer.Util;
 using KancolleSniffer.View;

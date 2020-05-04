@@ -21,7 +21,7 @@ using KancolleSniffer.View;
 using KancolleSniffer.View.ShipListPanel;
 using Clipboard = KancolleSniffer.Util.Clipboard;
 
-namespace KancolleSniffer
+namespace KancolleSniffer.Forms
 {
     public partial class ListForm : Form
     {
