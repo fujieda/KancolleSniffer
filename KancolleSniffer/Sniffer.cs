@@ -621,8 +621,6 @@ namespace KancolleSniffer
 
         public AlarmCounter ItemCounter => _itemInfo.Counter;
 
-        public ItemInfo Item => _itemInfo;
-
         public MaterialInfo Material => _materialInfo;
 
         public QuestStatus[] Quests => _questInfo.Quests;
