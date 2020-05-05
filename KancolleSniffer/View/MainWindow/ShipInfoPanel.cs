@@ -255,6 +255,7 @@ namespace KancolleSniffer.View.MainWindow
 
         public void UpdateTimers()
         {
+            UpdateCondTimers();
             UpdateAkashiTimer();
             UpdatePresetAkashiTimer();
         }
