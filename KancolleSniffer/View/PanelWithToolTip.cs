@@ -19,7 +19,7 @@ namespace KancolleSniffer.View
 {
     public class PanelWithToolTip : Panel
     {
-        protected ResizableToolTip ToolTip { get; } = new ResizableToolTip();
+        public ResizableToolTip ToolTip { get; } = new ResizableToolTip();
 
         protected sealed override void ScaleControl(SizeF factor, BoundsSpecified specified)
         {

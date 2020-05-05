@@ -22,12 +22,14 @@ namespace KancolleSniffer.View.MainWindow
             Visible = false
         };
 
-        private readonly Panel _battleInfo = new Panel
+        private readonly BattleInfoPanel _battleInfo = new BattleInfoPanel
         {
             Location = new Point(59, 116),
             Size = new Size(157, 14),
             Visible = false
         };
+
+        private readonly FighterPower _fighterPower;
 
         private readonly Label _presetAkashiTimer = new Label
         {
@@ -45,34 +47,6 @@ namespace KancolleSniffer.View.MainWindow
             Text = "右クリックでメニューが出ます。"
         };
 
-        private readonly Label _enemyFighterPower = new Label
-        {
-            Location = new Point(129, 1),
-            Size = new Size(29, 12),
-            TextAlign = ContentAlignment.MiddleRight
-        };
-
-        private readonly Label _enemyFighterPowerCaption = new Label
-        {
-            AutoSize = true,
-            Location = new Point(90, 1),
-            Text = "敵制空"
-        };
-
-        private readonly Label _formation = new Label
-        {
-            Location = new Point(40, 1),
-            Size = new Size(48, 12)
-        };
-
-        private readonly Label _resultRank = new Label
-        {
-            Location = new Point(1, 1),
-            Size = new Size(42, 12),
-            TabIndex = 0,
-            Text = "判定"
-        };
-
         private readonly Label _lineOfSight = new Label
         {
             Location = new Point(85, 117),
@@ -86,21 +60,6 @@ namespace KancolleSniffer.View.MainWindow
             AutoSize = true,
             Location = new Point(59, 117),
             Text = "索敵"
-        };
-
-        private readonly Label _fighterPower = new Label
-        {
-            Location = new Point(28, 117),
-            Size = new Size(29, 12),
-            Text = "0",
-            TextAlign = ContentAlignment.MiddleRight
-        };
-
-        private readonly Label _fighterPowerCaption = new Label
-        {
-            AutoSize = true,
-            Location = new Point(2, 117),
-            Text = "制空"
         };
 
         private readonly Label _condTimerCaption = new Label
@@ -117,7 +76,13 @@ namespace KancolleSniffer.View.MainWindow
 
         private readonly MainShipLabels _mainLabels = new MainShipLabels();
 
-        public UpdateContext Context { get; set; }
+        private UpdateContext _context;
+
+        public UpdateContext Context
+        {
+            get => _context;
+            set => _battleInfo.Context = _fighterPower.Context = _context = value;
+        }
 
         public int CurrentFleet { get; set; }
 
@@ -135,17 +100,12 @@ namespace KancolleSniffer.View.MainWindow
                 Panel7Ships = _7Ships,
                 PanelCombinedFleet = _combinedFleet
             }, ShipClickHandler);
-            _battleInfo.Controls.AddRange(new Control[]
-            {
-                _enemyFighterPower, _enemyFighterPowerCaption, _formation, _resultRank
-            });
             Controls.AddRange(new Control[]
             {
                 _battleInfo,
-                _lineOfSight, _lineOfSightCaption, _fighterPower, _fighterPowerCaption, _condTimer, _condTimerCaption
+                _lineOfSight, _lineOfSightCaption, _condTimer, _condTimerCaption
             });
-            _resultRank.Click += ResultRankClick;
-            Size = new Size(220, 134);
+            _fighterPower = new FighterPower(this);
         }
 
         private void ShipClickHandler(object sender, EventArgs e)
@@ -209,7 +169,7 @@ namespace KancolleSniffer.View.MainWindow
             ShowCombinedFleet();
             _presetAkashiTimer.Visible = Context.Config.UsePresetAkashi;
             UpdateAkashiTimer();
-            UpdateFighterPower(IsCombinedFighterPower);
+            _fighterPower.UpdateFighterPower();
             UpdateLoS();
             UpdateCondTimers();
         }
@@ -224,26 +184,6 @@ namespace KancolleSniffer.View.MainWindow
                 _mainLabels.SetCombinedShipLabels(Context.Sniffer.Fleets[0].ActualShips,
                     Context.Sniffer.Fleets[1].ActualShips);
             }
-        }
-
-        private bool IsCombinedFighterPower => CombinedFleet &&
-                                               (Context.Sniffer.Battle.BattleState == BattleState.None ||
-                                                Context.Sniffer.Battle.EnemyIsCombined);
-
-        private void UpdateFighterPower(bool combined)
-        {
-            var fleets = Context.Sniffer.Fleets;
-            var fp = combined
-                ? fleets[0].FighterPower + fleets[1].FighterPower
-                : fleets[CurrentFleet].FighterPower;
-            _fighterPower.Text = fp.Min.ToString("D");
-            var cr = combined
-                ? fleets[0].ContactTriggerRate + fleets[1].ContactTriggerRate
-                : fleets[CurrentFleet].ContactTriggerRate;
-            var text = "制空: " + (fp.Diff ? fp.RangeString : fp.Min.ToString()) +
-                       $" 触接: {cr * 100:f1}";
-            ToolTip.SetToolTip(_fighterPower, text);
-            ToolTip.SetToolTip(_fighterPowerCaption, text);
         }
 
         private void UpdateLoS()
@@ -267,80 +207,14 @@ namespace KancolleSniffer.View.MainWindow
             ResetBattleInfo();
             if (Context.Sniffer.Battle.BattleState == BattleState.None)
                 return;
-            _battleInfo.BringToFront();
-            var battle = Context.Sniffer.Battle;
-            _formation.Text = new[] {"同航戦", "反航戦", "T字有利", "T字不利"}[battle.Formation[2] - 1];
-            UpdateBattleFighterPower();
-            if ((Context.Config.Spoilers & Spoiler.ResultRank) != 0)
-                ShowResultRank();
+            _battleInfo.Update();
+            _fighterPower.UpdateBattleFighterPower();
         }
 
         private void ResetBattleInfo()
         {
-            _formation.Text = "";
-            _enemyFighterPower.Text = "";
-            _fighterPower.ForeColor = DefaultForeColor;
-            _fighterPowerCaption.Text = "制空";
-            _resultRank.Text = "判定";
-            _battleInfo.Visible = Context.Sniffer.Battle.BattleState != BattleState.None;
-        }
-
-        private void UpdateBattleFighterPower()
-        {
-            UpdateEnemyFighterPower();
-            var battle = Context.Sniffer.Battle;
-            _fighterPower.ForeColor = AirControlLevelColor(battle);
-            _fighterPowerCaption.Text = AirControlLevelString(battle);
-            if (battle.BattleState == BattleState.AirRaid)
-            {
-                UpdateAirRaidFighterPower();
-            }
-            else
-            {
-                UpdateFighterPower(Context.Sniffer.IsCombinedFleet && battle.EnemyIsCombined);
-            }
-        }
-
-        private void UpdateEnemyFighterPower()
-        {
-            var fp = Context.Sniffer.Battle.EnemyFighterPower;
-            _enemyFighterPower.Text = fp.AirCombat + fp.UnknownMark;
-            var toolTip = fp.AirCombat == fp.Interception ? "" : "防空: " + fp.Interception + fp.UnknownMark;
-            ToolTip.SetToolTip(_enemyFighterPower, toolTip);
-            ToolTip.SetToolTip(_enemyFighterPowerCaption, toolTip);
-        }
-
-        private void UpdateAirRaidFighterPower()
-        {
-            var fp = Context.Sniffer.Battle.FighterPower;
-            _fighterPower.Text = fp.Min.ToString();
-            var toolTop = fp.Diff ? fp.RangeString : "";
-            ToolTip.SetToolTip(_fighterPower, toolTop);
-            ToolTip.SetToolTip(_fighterPowerCaption, toolTop);
-        }
-
-        private static Color AirControlLevelColor(BattleInfo battle)
-        {
-            return new[]
-                {DefaultForeColor, DefaultForeColor, CUDColors.Blue, CUDColors.Green, CUDColors.Orange, CUDColors.Red}[
-                battle.BattleState == BattleState.Night ? 0 : battle.AirControlLevel + 1];
-        }
-
-        private static string AirControlLevelString(BattleInfo battle)
-        {
-            return new[] {"制空", "拮抗", "確保", "優勢", "劣勢", "喪失"}[
-                battle.BattleState == BattleState.Night ? 0 : battle.AirControlLevel + 1];
-        }
-
-        private void ShowResultRank()
-        {
-            var result = new[] {"完全S", "勝利S", "勝利A", "勝利B", "敗北C", "敗北D", "敗北E"};
-            _resultRank.Text = result[(int)Context.Sniffer.Battle.ResultRank];
-        }
-
-        private void ResultRankClick(object sender, EventArgs e)
-        {
-            ShowResultRank();
+            _battleInfo.Reset();
+            _fighterPower.Reset();
         }
 
         private void UpdateCondTimers()

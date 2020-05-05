@@ -87,6 +87,9 @@
     <Compile Include="Util\Clipboard.cs" />
     <Compile Include="Util\SoundPlayer.cs" />
     <Compile Include="Util\TimeStep.cs" />
+    <Compile Include="View\MainWindow\BattleInfoPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\MainWindow\ChargeStatus.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -100,6 +103,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\IUpdateable.cs" />
+    <Compile Include="View\MainWindow\FighterPower.cs" />
     <Compile Include="View\MainWindow\MainFleetPanel.cs">
       <SubType>Component</SubType>
     </Compile>
