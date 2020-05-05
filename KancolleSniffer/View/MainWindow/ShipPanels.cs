@@ -22,19 +22,19 @@ namespace KancolleSniffer.View.MainWindow
 {
     public class ShipPanels
     {
-        private const int Width = 220;
+        private const int PanelWidth = 220;
 
         private readonly Panel _combined = new Panel
         {
             Location = new Point(0, 0),
-            Size = new Size(Width, 113),
+            Size = new Size(PanelWidth, 113),
             Visible = false
         };
 
         private readonly Panel _7Ships = new Panel
         {
             Location = new Point(0, 0),
-            Size = new Size(Width, 113),
+            Size = new Size(PanelWidth, 113),
             Visible = false
         };
 
@@ -148,7 +148,7 @@ namespace KancolleSniffer.View.MainWindow
                         Cond = new ShipLabel.Cond(new Point(131, y), _lineHeight),
                         Level = new ShipLabel.Level(new Point(155, y + 2), LabelHeight),
                         Exp = new ShipLabel.Exp(new Point(176, y + 2), LabelHeight),
-                        BackGround = new Label {Location = new Point(0, y), Size = new Size(parent.Width, _lineHeight)}
+                        BackGround = new Label {Location = new Point(0, y), Size = new Size(PanelWidth, _lineHeight)}
                     };
                     labels.Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));
                     labels.SetClickHandler(onClick);
@@ -166,7 +166,7 @@ namespace KancolleSniffer.View.MainWindow
                     new Label {Location = new Point(128, Top), Text = "cond", AutoSize = true},
                     new Label {Location = new Point(162, Top), Text = "Lv", AutoSize = true},
                     new Label {Location = new Point(194, Top), Text = "Exp", AutoSize = true},
-                    new Label {Location = new Point(0, 1), Size = new Size(parent.Width, _lineHeight - 1)}
+                    new Label {Location = new Point(0, 1), Size = new Size(PanelWidth, _lineHeight - 1)}
                 };
                 parent.Controls.AddRange(headings);
                 foreach (var control in headings)
@@ -293,7 +293,6 @@ namespace KancolleSniffer.View.MainWindow
 
             private const int Top = 1;
             private const int LineHeight = 16;
-            private const int ParentWidth = 220; // parent.Widthを使うとDPIスケーリング時に計算がくるうので
 
             public void Create(Control parent, HpToggle hpToggle, EventHandler onClick)
             {
@@ -301,14 +300,14 @@ namespace KancolleSniffer.View.MainWindow
                 CreateHeader(parent, hpToggle);
                 for (var i = 0; i < _combinedLines.Length; i++)
                 {
-                    var x = ParentWidth / 2 * (i / ShipInfo.MemberCount);
+                    var x = PanelWidth / 2 * (i / ShipInfo.MemberCount);
                     var y = Top + LineHeight * (i % ShipInfo.MemberCount + 1);
                     var labels = _combinedLines[i] = new ShipLabels
                     {
                         Name = new ShipLabel.Name(new Point(x + 2, y + 2), ShipNameWidth.Combined),
                         Hp = new ShipLabel.Hp(new Point(x + 88, y), LineHeight),
                         Cond = new ShipLabel.Cond(new Point(x + 85, y), LineHeight),
-                        BackGround = new Label {Location = new Point(x, y), Size = new Size(ParentWidth / 2, LineHeight)}
+                        BackGround = new Label {Location = new Point(x, y), Size = new Size(PanelWidth / 2, LineHeight)}
                     };
                     labels.Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));
                     labels.SetClickHandler(onClick);
@@ -327,7 +326,7 @@ namespace KancolleSniffer.View.MainWindow
                     new Label {Location = new Point(86, Top), Text = "cnd", AutoSize = true},
                     new Label {Location = new Point(177, Top), Text = "HP", AutoSize = true},
                     new Label {Location = new Point(195, Top), Text = "cnd", AutoSize = true},
-                    new Label {Location = new Point(0, 1), Size = new Size(ParentWidth, LineHeight - 1)}
+                    new Label {Location = new Point(0, 1), Size = new Size(PanelWidth, LineHeight - 1)}
                 };
                 parent.Controls.AddRange(headings);
                 foreach (var control in headings)
