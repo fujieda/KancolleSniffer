@@ -20,41 +20,48 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View.MainWindow
 {
-    public class MainShipPanels
+    public class ShipPanels
     {
-        public Control PanelShipInfo { get; set; }
-        public Control Panel7Ships { get; set; }
-        public Control PanelCombinedFleet { get; set; }
-    }
+        private const int Width = 220;
 
-    public class MainShipLabels
-    {
+        private readonly Panel _combined = new Panel
+        {
+            Location = new Point(0, 0),
+            Size = new Size(Width, 113),
+            Visible = false
+        };
+
+        private readonly Panel _7Ships = new Panel
+        {
+            Location = new Point(0, 0),
+            Size = new Size(Width, 113),
+            Visible = false
+        };
+
         private readonly ShipLabelLines _shipLines;
         private readonly ShipLabelLines _shipLines7;
         private readonly CombinedShipLines _combinedLines = new CombinedShipLines();
-        private readonly HpDisplay _hpDisplay = new HpDisplay();
+        private readonly HpToggle _hpToggle = new HpToggle();
 
-        public bool ShowHpInPercent => _hpDisplay.InPercent;
+        public bool ShowHpInPercent => _hpToggle.InPercent;
 
-        public MainShipLabels()
+        public ShipPanels(Control parent, EventHandler onClick)
         {
             _shipLines = new ShipLabelLines(ShipInfo.MemberCount, 16);
             _shipLines7 = new ShipLabelLines(7, 14);
-        }
+            parent.Controls.AddRange(new Control[]{_combined, _7Ships});
+            _shipLines.Create(parent, _hpToggle, onClick);
+            _shipLines7.Create(_7Ships, _hpToggle, onClick);
+            _combinedLines.Create(_combined, _hpToggle, onClick);
 
-        public void CreateAllShipLabels(MainShipPanels panels, EventHandler onClick)
-        {
-            _shipLines.Create(panels.PanelShipInfo, _hpDisplay, onClick);
-            _shipLines7.Create(panels.Panel7Ships, _hpDisplay, onClick);
-            _combinedLines.Create(panels.PanelCombinedFleet, _hpDisplay, onClick);
         }
 
         public void ToggleHpPercent()
         {
-            _hpDisplay.ToggleHpPercent();
+            _hpToggle.ToggleHpPercent();
         }
 
-        private class HpDisplay
+        private class HpToggle
         {
             private readonly List<ShipLabel.Hp> _labels = new List<ShipLabel.Hp>();
             public bool InPercent { get; private set; }
@@ -85,11 +92,22 @@ namespace KancolleSniffer.View.MainWindow
 
         public void SetShipLabels(IReadOnlyList<ShipStatus> ships)
         {
-            (ships.Count == 7 ? _shipLines7 : _shipLines).Set(ships);
+            _combined.Visible = false;
+            if (ships.Count == 7)
+            {
+                _7Ships.Visible = true;
+                _shipLines7.Set(ships);
+            }
+            else
+            {
+                _7Ships.Visible = false;
+                _shipLines.Set(ships);
+            }
         }
 
         public void SetCombinedShipLabels(IReadOnlyList<ShipStatus> first, IReadOnlyList<ShipStatus> second)
         {
+            _combined.Visible = true;
             _combinedLines.Set(first, second);
         }
 
@@ -114,11 +132,11 @@ namespace KancolleSniffer.View.MainWindow
                 _lineHeight = lineHeight;
             }
 
-            public void Create(Control parent, HpDisplay hpDisplay, EventHandler onClick)
+            public void Create(Control parent, HpToggle hpToggle, EventHandler onClick)
             {
                 parent.SuspendLayout();
                 _akashiTimerLabels.Create(parent);
-                CreateHeader(parent, hpDisplay);
+                CreateHeader(parent, hpToggle);
                 for (var i = 0; i < _shipLines.Length; i++)
                 {
 
@@ -135,12 +153,12 @@ namespace KancolleSniffer.View.MainWindow
                     labels.Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));
                     labels.SetClickHandler(onClick);
                     labels.SetTag(i);
-                    hpDisplay.AddHpLabel(labels.Hp);
+                    hpToggle.AddHpLabel(labels.Hp);
                 }
                 parent.ResumeLayout();
             }
 
-            private void CreateHeader(Control parent, HpDisplay hpDisplay)
+            private void CreateHeader(Control parent, HpToggle hpToggle)
             {
                 var headings = new Control[]
                 {
@@ -157,7 +175,7 @@ namespace KancolleSniffer.View.MainWindow
                     control.BackColor = CustomColors.ColumnColors.Bright;
                 }
                 headings[0].Cursor = Cursors.Hand;
-                hpDisplay.SetClickHandler(headings[0]);
+                hpToggle.SetClickHandler(headings[0]);
             }
 
             public void Set(IReadOnlyList<ShipStatus> ships)
@@ -277,10 +295,10 @@ namespace KancolleSniffer.View.MainWindow
             private const int LineHeight = 16;
             private const int ParentWidth = 220; // parent.Widthを使うとDPIスケーリング時に計算がくるうので
 
-            public void Create(Control parent, HpDisplay hpDisplay, EventHandler onClick)
+            public void Create(Control parent, HpToggle hpToggle, EventHandler onClick)
             {
                 parent.SuspendLayout();
-                CreateHeader(parent, hpDisplay);
+                CreateHeader(parent, hpToggle);
                 for (var i = 0; i < _combinedLines.Length; i++)
                 {
                     var x = ParentWidth / 2 * (i / ShipInfo.MemberCount);
@@ -296,12 +314,12 @@ namespace KancolleSniffer.View.MainWindow
                     labels.SetClickHandler(onClick);
                     labels.SetTag(i);
                     var hpLabel = _combinedLines[i].Hp;
-                    hpDisplay.AddHpLabel(hpLabel);
+                    hpToggle.AddHpLabel(hpLabel);
                 }
                 parent.ResumeLayout();
             }
 
-            private void CreateHeader(Control parent, HpDisplay hpDisplay)
+            private void CreateHeader(Control parent, HpToggle hpToggle)
             {
                 var headings = new Control[]
                 {
@@ -318,8 +336,8 @@ namespace KancolleSniffer.View.MainWindow
                     control.BackColor = CustomColors.ColumnColors.Bright;
                 }
                 headings[0].Cursor = headings[2].Cursor = Cursors.Hand;
-                hpDisplay.SetClickHandler(headings[0]);
-                hpDisplay.SetClickHandler(headings[2]);
+                hpToggle.SetClickHandler(headings[0]);
+                hpToggle.SetClickHandler(headings[2]);
             }
 
             public void Set(IReadOnlyList<ShipStatus> first, IReadOnlyList<ShipStatus> second)

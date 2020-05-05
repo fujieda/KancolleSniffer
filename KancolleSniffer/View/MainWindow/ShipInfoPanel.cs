@@ -8,20 +8,6 @@ namespace KancolleSniffer.View.MainWindow
 {
     public class ShipInfoPanel : PanelWithToolTip, IUpdateTimers
     {
-        private readonly Panel _combinedFleet = new Panel
-        {
-            Location = new Point(0, 0),
-            Size = new Size(220, 113),
-            Visible = false
-        };
-
-        private readonly Panel _7Ships = new Panel
-        {
-            Location = new Point(0, 0),
-            Size = new Size(220, 113),
-            Visible = false
-        };
-
         private readonly BattleInfoPanel _battleInfo = new BattleInfoPanel
         {
             Location = new Point(59, 116),
@@ -74,7 +60,7 @@ namespace KancolleSniffer.View.MainWindow
             Location = new Point(186, 117)
         };
 
-        private readonly MainShipLabels _mainLabels = new MainShipLabels();
+        private readonly ShipPanels _shipPanels;
 
         private UpdateContext _context;
 
@@ -92,14 +78,9 @@ namespace KancolleSniffer.View.MainWindow
 
         public ShipInfoPanel()
         {
-            Controls.AddRange(new Control[] {Guide, _presetAkashiTimer, _combinedFleet, _7Ships});
+            Controls.AddRange(new Control[] {Guide, _presetAkashiTimer});
             BorderStyle = BorderStyle.FixedSingle;
-            _mainLabels.CreateAllShipLabels(new MainShipPanels
-            {
-                PanelShipInfo = this,
-                Panel7Ships = _7Ships,
-                PanelCombinedFleet = _combinedFleet
-            }, ShipClickHandler);
+            _shipPanels = new ShipPanels(this, ShipClickHandler);
             Controls.AddRange(new Control[]
             {
                 _battleInfo,
@@ -120,10 +101,10 @@ namespace KancolleSniffer.View.MainWindow
 
         public void ToggleHpPercent()
         {
-            _mainLabels.ToggleHpPercent();
+            _shipPanels.ToggleHpPercent();
         }
 
-        public bool ShowHpInPercent => _mainLabels.ShowHpInPercent;
+        public bool ShowHpInPercent => _shipPanels.ShowHpInPercent;
 
         private bool _inSortie;
 
@@ -164,8 +145,7 @@ namespace KancolleSniffer.View.MainWindow
         public new void Update()
         {
             var ships = Context.Sniffer.Fleets[CurrentFleet].ActualShips;
-            _7Ships.Visible = ships.Count == 7;
-            _mainLabels.SetShipLabels(ships);
+            _shipPanels.SetShipLabels(ships);
             ShowCombinedFleet();
             _presetAkashiTimer.Visible = Context.Config.UsePresetAkashi;
             UpdateAkashiTimer();
@@ -178,10 +158,9 @@ namespace KancolleSniffer.View.MainWindow
         {
             if (!Context.Sniffer.IsCombinedFleet)
                 CombinedFleet = false;
-            _combinedFleet.Visible = CombinedFleet;
             if (CombinedFleet)
             {
-                _mainLabels.SetCombinedShipLabels(Context.Sniffer.Fleets[0].ActualShips,
+                _shipPanels.SetCombinedShipLabels(Context.Sniffer.Fleets[0].ActualShips,
                     Context.Sniffer.Fleets[1].ActualShips);
             }
         }
@@ -264,7 +243,7 @@ namespace KancolleSniffer.View.MainWindow
         {
             if (Context.Config.UsePresetAkashi)
                 UpdatePresetAkashiTimer();
-            _mainLabels.SetAkashiTimer(Context.Sniffer.Fleets[CurrentFleet].ActualShips,
+            _shipPanels.SetAkashiTimer(Context.Sniffer.Fleets[CurrentFleet].ActualShips,
                 Context.Sniffer.AkashiTimer.GetTimers(CurrentFleet, Context.GetStep().Now));
         }
 

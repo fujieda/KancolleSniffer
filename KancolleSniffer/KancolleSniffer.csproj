@@ -203,7 +203,7 @@
     <Compile Include="View\MainWindow\RepairListForMain.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\MainWindow\MainShipLabels.cs" />
+    <Compile Include="View\MainWindow\ShipPanels.cs" />
     <Compile Include="Forms\ListForm.cs">
       <SubType>Form</SubType>
     </Compile>
