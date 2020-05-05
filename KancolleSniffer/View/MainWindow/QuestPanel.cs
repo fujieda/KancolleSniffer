@@ -26,11 +26,13 @@ namespace KancolleSniffer.View.MainWindow
         private const int TopMargin = 5;
         private const int LeftMargin = 2;
         private const int LabelHeight = 12;
-        public const int LineHeight = 14;
+        private const int LineHeight = 14;
         private QuestLabels[] _labels;
         private QuestStatus[] _questList = new QuestStatus[0];
         private ListScroller _listScroller;
         private int _lines;
+
+        public int MinLines { get; set; } = 4;
 
         private class QuestLabels : ControlsArranger
         {
@@ -47,7 +49,7 @@ namespace KancolleSniffer.View.MainWindow
             _lines = LimitLines(lines);
             _labels = new QuestLabels[_lines];
             SuspendLayout();
-            Height = Scaler.ScaleHeight(TopMargin * 2 + LineHeight * lines);
+            Height = Scaler.ScaleHeight(TopMargin * 2 + LineHeight * _lines);
             for (var i = 0; i < _lines; i++)
             {
                 var y = TopMargin + i * LineHeight;
@@ -81,11 +83,10 @@ namespace KancolleSniffer.View.MainWindow
             SetupListScroller();
         }
 
-        private static int LimitLines(int lines)
+        private int LimitLines(int lines)
         {
-            const int min = 4;
             const int max = 7;
-            return Math.Min(Math.Max(lines, min), max);
+            return Math.Min(Math.Max(lines, MinLines), max);
         }
 
         private void SetupListScroller()
