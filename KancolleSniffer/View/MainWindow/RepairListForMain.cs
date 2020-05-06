@@ -83,8 +83,8 @@ namespace KancolleSniffer.View.MainWindow
         {
             get
             {
-                var baseHeight = Parent.ClientRectangle.Height - Location.Y;
-                return (int)Round((baseHeight - Scaler.ScaleHeight((float)PanelPadding) * 2) /
+                var baseHeight = Parent.ClientRectangle.Height - Location.Y + 2;
+                return (int)Floor((baseHeight - Scaler.ScaleHeight((float)PanelPadding) * 2) /
                                   Scaler.ScaleHeight((float)LineHeight));
             }
         }
