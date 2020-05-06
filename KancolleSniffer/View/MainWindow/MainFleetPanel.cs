@@ -13,7 +13,7 @@ namespace KancolleSniffer.View.MainWindow
         private readonly ShipInfoPanel _shipInfoPanel = new ShipInfoPanel
         {
             Location = new Point(0, 15),
-            Size = new Size(220, 134)
+            Size = new Size(220, 133)
         };
 
         private readonly ChargeStatus[] _chargeStatus =
