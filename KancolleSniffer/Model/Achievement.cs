@@ -22,10 +22,12 @@ namespace KancolleSniffer.Model
     {
         private int _current;
 
+        // ReSharper disable MemberCanBePrivate.Global
         public int Start { get; set; }
         public int StartOfMonth { get; set; }
         public DateTime LastReset { get; set; }
         public DateTime LastResetOfMonth { get; set; }
+        // ReSharper restore MemberCanBePrivate.Global
 
         private const double ExpPerAch = 10000 / 7.0;
         public double Value => (_current - Start) / ExpPerAch;

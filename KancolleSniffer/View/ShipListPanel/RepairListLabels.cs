@@ -14,7 +14,6 @@
 
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Forms;
 using KancolleSniffer.Model;
@@ -31,7 +30,7 @@ namespace KancolleSniffer.View.ShipListPanel
             public ShipLabel.RepairTime Time { get; set; }
             public Label PerHp { get; set; }
 
-            public override Control[] AddedControls => new Control[] {Time, PerHp};
+            protected override Control[] AddedControls => new Control[] {Time, PerHp};
 
             public override void Set(ShipStatus status)
             {

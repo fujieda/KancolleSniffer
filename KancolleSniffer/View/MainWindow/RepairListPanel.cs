@@ -36,7 +36,7 @@ namespace KancolleSniffer.View.MainWindow
             public ShipLabel.RepairTime Time { private get; set; }
             public ShipLabel.Hp Damage { get; set; }
 
-            public override Control[] AddedControls => new Control[] {Time, Damage};
+            protected override Control[] AddedControls => new Control[] {Time, Damage};
 
             public override void Set(ShipStatus status)
             {

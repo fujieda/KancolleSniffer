@@ -28,7 +28,7 @@ namespace KancolleSniffer.Net
     public class HttpProxy
     {
         private static HttpProxy _httpProxy;
-        public static int LocalPort { get; set; }
+        public static int LocalPort { get; private set; }
         public static string UpstreamProxyHost { get; set; }
         public static int UpstreamProxyPort { get; set; }
         public static bool IsEnableUpstreamProxy { get; set; }
@@ -39,14 +39,14 @@ namespace KancolleSniffer.Net
 #if DEBUG
         private static readonly object SyncObj = new object();
 #endif
-        public static void Startup(int port, bool dummy0, bool dummy1)
+        public static void Startup(int port)
         {
             LocalPort = port;
             _httpProxy = new HttpProxy();
             _httpProxy.Start();
         }
 
-        public void Start()
+        private void Start()
         {
             _listener = new TcpListener(IPAddress.Loopback, LocalPort);
             _listener.Start();
@@ -60,14 +60,14 @@ namespace KancolleSniffer.Net
             _httpProxy?.Stop();
         }
 
-        public void Stop()
+        private void Stop()
         {
             IsInListening = false;
             _listener.Server.Close();
             _listener.Stop();
         }
 
-        public void AcceptClient()
+        private void AcceptClient()
         {
             try
             {
@@ -349,23 +349,23 @@ namespace KancolleSniffer.Net
 
         public class Session
         {
-            public Request Request { get; set; } = new Request();
-            public Response Response { get; set; } = new Response();
+            public Request Request { get; } = new Request();
+            public Response Response { get; } = new Response();
         }
 
         public class Message
         {
             private string _headers;
-            public byte[] Body { get; set; }
+            public byte[] Body { get; private set; }
 
             private static readonly Regex CharsetRegex = new Regex("charset=([\\w-]+)",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-            public int ContentLength { get; set; } = -1;
-            public string TransferEncoding { get; set; }
-            public string ContentType { get; set; }
-            public string ContentEncoding { get; set; }
-            public string Host { get; set; }
+            public int ContentLength { get; private set; } = -1;
+            public string TransferEncoding { get; private set; }
+            private string ContentType { get; set; }
+            private string ContentEncoding { get; set; }
+            public string Host { get; private set; }
             public bool IsKeepAlive;
 
             public string Headers
@@ -374,7 +374,7 @@ namespace KancolleSniffer.Net
                 set
                 {
                     _headers = value;
-                    SetHeaders(_headers);
+                    SetHeaders();
                 }
             }
 
@@ -397,7 +397,7 @@ namespace KancolleSniffer.Net
                 return headers.Insert(headers.Length - 2, header);
             }
 
-            protected virtual void SetHeaders(string headers)
+            private void SetHeaders()
             {
                 var s = GetField("content-length");
                 if (s != null)
@@ -411,14 +411,14 @@ namespace KancolleSniffer.Net
                 IsKeepAlive = GetField("connection")?.ToLower(CultureInfo.InvariantCulture) != "close";
             }
 
-            protected Match MatchField(string name, string headers)
+            private Match MatchField(string name, string headers)
             {
                 var regex = new Regex("^" + name + ":\\s*([^\r]+)\r\n",
                     RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Multiline);
                 return regex.Match(headers);
             }
 
-            protected string GetField(string name)
+            private string GetField(string name)
             {
                 var m = MatchField(name, Headers);
                 return m.Success ? m.Groups[1].Value : null;
@@ -629,11 +629,10 @@ namespace KancolleSniffer.Net
                 return result.ToArray();
             }
 
-            public HttpStream Write(byte[] body)
+            public void Write(byte[] body)
             {
                 if (body != null)
                     Write(body, 0, body.Length);
-                return this;
             }
 
             public int Read(byte[] buf, int offset, int count)
@@ -661,7 +660,7 @@ namespace KancolleSniffer.Net
                 return total;
             }
 
-            public void Write(byte[] buf, int offset, int count)
+            private void Write(byte[] buf, int offset, int count)
             {
                 do
                 {

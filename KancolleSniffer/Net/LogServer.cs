@@ -22,7 +22,7 @@ using KancolleSniffer.Util;
 
 namespace KancolleSniffer.Net
 {
-    public class LogServer
+    public static class LogServer
     {
         private static readonly string IndexDir = AppDomain.CurrentDomain.BaseDirectory;
         private static string _outputDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -113,31 +113,20 @@ namespace KancolleSniffer.Net
 
         private static void SendError(Socket client, string error)
         {
-            using (var writer = new StreamWriter(new MemoryStream(), Encoding.ASCII))
-            {
-                writer.Write("HTTP/1.1 {0}\r\n", error);
-                writer.Write("Server: KancolleSniffer\r\n");
-                writer.Write("Date: {0:R}\r\n", DateTime.Now);
-                writer.Write("Connection: close\r\n\r\n");
-                writer.Write("<html><head><title>{0}</title></head>\r\n", error);
-                writer.Write("<body><h4>{0}</h4></body></html>\r\n\r\n", error);
-                writer.Flush();
-                client.Send(((MemoryStream)writer.BaseStream).ToArray());
-            }
+            using var writer = new StreamWriter(new MemoryStream(), Encoding.ASCII);
+            writer.Write("HTTP/1.1 {0}\r\n", error);
+            writer.Write("Server: KancolleSniffer\r\n");
+            writer.Write("Date: {0:R}\r\n", DateTime.Now);
+            writer.Write("Connection: close\r\n\r\n");
+            writer.Write("<html><head><title>{0}</title></head>\r\n", error);
+            writer.Write("<body><h4>{0}</h4></body></html>\r\n\r\n", error);
+            writer.Flush();
+            client.Send(((MemoryStream)writer.BaseStream).ToArray());
         }
 
         private static void SendJsonData(Socket client, string path, DateTime from, DateTime to, bool number)
         {
-            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
-            {
-                header.Write("HTTP/1.1 200 OK\r\n");
-                header.Write("Server: KancolleSniffer\r\n");
-                header.Write("Date: {0:R}\r\n", DateTime.Now);
-                header.Write("Content-Type: {0}\r\n", "application/json; charset=Shift_JIS");
-                header.Write("Connection: close\r\n\r\n");
-                header.Flush();
-                client.Send(((MemoryStream)header.BaseStream).ToArray());
-            }
+            SendJsonDataHeader(client);
             var csv = path.Replace(".json", ".csv");
             if (!File.Exists(csv))
                 return;
@@ -145,7 +134,8 @@ namespace KancolleSniffer.Net
             client.Send(encoding.GetBytes("{ \"data\": [\n"));
             try
             {
-                foreach (var record in LogProcessor.Process(File.ReadLines(csv, encoding).Skip(1), csv, from, to, number))
+                foreach (var record in LogProcessor.Process(File.ReadLines(csv, encoding).Skip(1), csv, from, to,
+                    number))
                     client.Send(encoding.GetBytes(record));
             }
             finally
@@ -154,34 +144,35 @@ namespace KancolleSniffer.Net
             }
         }
 
+        private static void SendJsonDataHeader(Socket client)
+        {
+            using var header = new StreamWriter(new MemoryStream(), Encoding.ASCII);
+            header.Write("HTTP/1.1 200 OK\r\n");
+            header.Write("Server: KancolleSniffer\r\n");
+            header.Write("Date: {0:R}\r\n", DateTime.Now);
+            header.Write("Content-Type: {0}\r\n", "application/json; charset=Shift_JIS");
+            header.Write("Connection: close\r\n\r\n");
+            header.Flush();
+            client.Send(((MemoryStream)header.BaseStream).ToArray());
+        }
+
         private static void SendFile(Socket client, string path, string mime)
         {
-            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
-            {
-                header.Write("HTTP/1.1 200 OK\r\n");
-                header.Write("Server: KancolleSniffer\r\n");
-                header.Write("Date: {0:R}\r\n", DateTime.Now);
-                header.Write("Content-Length: {0}\r\n", new FileInfo(path).Length);
-                header.Write("Content-Type: {0}\r\n", mime);
-                header.Write("Connection: close\r\n\r\n");
-                header.Flush();
-                client.SendFile(path, ((MemoryStream)header.BaseStream).ToArray(), null,
-                    TransmitFileOptions.UseDefaultWorkerThread);
-            }
+            using var header = new StreamWriter(new MemoryStream(), Encoding.ASCII);
+            header.Write("HTTP/1.1 200 OK\r\n");
+            header.Write("Server: KancolleSniffer\r\n");
+            header.Write("Date: {0:R}\r\n", DateTime.Now);
+            header.Write("Content-Length: {0}\r\n", new FileInfo(path).Length);
+            header.Write("Content-Type: {0}\r\n", mime);
+            header.Write("Connection: close\r\n\r\n");
+            header.Flush();
+            client.SendFile(path, ((MemoryStream)header.BaseStream).ToArray(), null,
+                TransmitFileOptions.UseDefaultWorkerThread);
         }
 
         private static void SendProxyPac(Socket client, int port)
         {
-            using (var header = new StreamWriter(new MemoryStream(), Encoding.ASCII))
-            {
-                header.Write("HTTP/1.1 200 OK\r\n");
-                header.Write("Server: KancolleSniffer\r\n");
-                header.Write("Date: {0:R}\r\n", DateTime.Now);
-                header.Write("Content-Type: application/x-ns-proxy-autoconfig\r\n");
-                header.Write("Connection: close\r\n\r\n");
-                header.Flush();
-                client.Send(((MemoryStream)header.BaseStream).ToArray());
-            }
+            SendProxyPacHeader(client);
             string pacFile;
             try
             {
@@ -192,6 +183,18 @@ namespace KancolleSniffer.Net
                 pacFile = "";
             }
             client.Send(Encoding.ASCII.GetBytes(pacFile));
+        }
+
+        private static void SendProxyPacHeader(Socket client)
+        {
+            using var header = new StreamWriter(new MemoryStream(), Encoding.ASCII);
+            header.Write("HTTP/1.1 200 OK\r\n");
+            header.Write("Server: KancolleSniffer\r\n");
+            header.Write("Date: {0:R}\r\n", DateTime.Now);
+            header.Write("Content-Type: application/x-ns-proxy-autoconfig\r\n");
+            header.Write("Connection: close\r\n\r\n");
+            header.Flush();
+            client.Send(((MemoryStream)header.BaseStream).ToArray());
         }
     }
 }

@@ -167,23 +167,18 @@ namespace KancolleSniffer.Net
             public InternetPerConnOptionValue Value;
         }
 
+        // ReSharper disable all
         [StructLayout(LayoutKind.Explicit)]
-        public struct InternetPerConnOptionValue
+        private struct InternetPerConnOptionValue
         {
             [FieldOffset(0)] public int dwValue;
             [FieldOffset(0)] public IntPtr pszValue;
             [FieldOffset(0)] public FILETIME ftValue;
         }
 
-        // ReSharper disable UnusedMember.Global
-        // ReSharper disable UnusedMember.Local
-        // ReSharper disable InconsistentNaming
-        // ReSharper disable IdentifierTypo
         private enum InternetOption : uint
         {
-
             INTERNET_OPTION_REFRESH = 0x00000025,
-
             INTERNET_OPTION_SETTINGS_CHANGED = 0x00000027,
             INTERNET_OPTION_PER_CONNECTION_OPTION = 0x0000004B,
             INTERNET_OPTION_PROXY_SETTINGS_CHANGED = 0x0000005F
@@ -191,13 +186,10 @@ namespace KancolleSniffer.Net
 
         private enum PerConnOption
         {
-
             INTERNET_PER_CONN_FLAGS = 1,
-
             INTERNET_PER_CONN_PROXY_SERVER = 2,
             INTERNET_PER_CONN_PROXY_BYPASS = 3,
             INTERNET_PER_CONN_AUTOCONFIG_URL = 4,
-
             INTERNET_PER_CONN_AUTODISCOVERY_FLAGS = 5
         }
 

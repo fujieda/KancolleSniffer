@@ -24,29 +24,27 @@ namespace KancolleSniffer.Net
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static void PushToPushbullet(string token, string title, string body)
         {
-            using (var wc = new WebClient())
+            using var wc = new WebClient
             {
-                wc.Headers[HttpRequestHeader.ContentType] = "application/json";
-                wc.Credentials = new NetworkCredential(token, "");
-                wc.Encoding = Encoding.UTF8;
-                wc.UploadString("https://api.pushbullet.com/v2/pushes",
-                    $"{{ \"type\": \"note\", \"title\": \"{title}\", \"body\": \"{body}\" }}");
-            }
+                Headers = {[HttpRequestHeader.ContentType] = "application/json"},
+                Credentials = new NetworkCredential(token, ""),
+                Encoding = Encoding.UTF8
+            };
+            wc.UploadString("https://api.pushbullet.com/v2/pushes",
+                $"{{ \"type\": \"note\", \"title\": \"{title}\", \"body\": \"{body}\" }}");
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static void PushToPushover(string apiKey, string userKey, string title, string body)
         {
-            using (var wc = new WebClient())
+            using var wc = new WebClient();
+            wc.UploadValues("https://api.pushover.net/1/messages.json", new NameValueCollection
             {
-                wc.UploadValues("https://api.pushover.net/1/messages.json", new NameValueCollection
-                {
-                    {"token", apiKey},
-                    {"user", userKey},
-                    {"message", body},
-                    {"title", title}
-                });
-            }
+                {"token", apiKey},
+                {"user", userKey},
+                {"message", body},
+                {"title", title}
+            });
         }
     }
 }

@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static System.Math;
+
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace KancolleSniffer.Model
@@ -30,7 +31,7 @@ namespace KancolleSniffer.Model
         public double BullRatio { get; set; }
         public int Bull { get; set; }
 
-        public ChargeStatus()
+        private ChargeStatus()
         {
         }
 

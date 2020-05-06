@@ -110,9 +110,5 @@ namespace KancolleSniffer.View.MainWindow
                 return -limit;
             return value;
         }
-
-        public void UpdateTimers()
-        {
-        }
     }
 }

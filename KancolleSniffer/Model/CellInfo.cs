@@ -20,9 +20,9 @@ namespace KancolleSniffer.Model
     {
         private int _battleCount;
 
-        public string Next { get; set; }
+        public string Next { get; private set; }
 
-        public string Current { get; set; }
+        public string Current { get; private set; }
 
         private string _info;
 
@@ -107,7 +107,7 @@ namespace KancolleSniffer.Model
             }
         }
 
-        private static readonly char[] FullNumber ="０１２３４５６７８９".ToCharArray();
+        private static readonly char[] FullNumber = "０１２３４５６７８９".ToCharArray();
 
         private string BattleCount => new string(_battleCount.ToString().Select(ch => FullNumber[ch - '0']).ToArray());
     }

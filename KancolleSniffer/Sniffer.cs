@@ -357,7 +357,7 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_kousyou/destroyship"))
             {
-                _shipInfo.InspectDestroyShip(request, data);
+                _shipInfo.InspectDestroyShip(request);
                 _materialInfo.InspectDestroyShip(data);
                 _conditionTimer.CheckCond();
                 _akashiTimer.CheckFleet();
@@ -366,8 +366,8 @@ namespace KancolleSniffer
             }
             if (url.EndsWith("api_req_kousyou/destroyitem2"))
             {
-                _questCounter.InspectDestroyItem(request, data); // 本当に削除される前
-                _itemInfo.InspectDestroyItem(request, data);
+                _questCounter.InspectDestroyItem(request); // 本当に削除される前
+                _itemInfo.InspectDestroyItem(request);
                 _materialInfo.InspectDestroyItem(data);
                 return Update.Item | Update.QuestList;
             }

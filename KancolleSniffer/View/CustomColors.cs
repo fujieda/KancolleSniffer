@@ -20,7 +20,7 @@ namespace KancolleSniffer.View
     {
         public static Color ActiveButtonColor = Color.FromArgb(152, 179, 208);
 
-        public class ColumnColors
+        public static class ColumnColors
         {
             public static readonly Color Bright = Color.White;
             private static readonly Color Dark = SystemColors.Control;

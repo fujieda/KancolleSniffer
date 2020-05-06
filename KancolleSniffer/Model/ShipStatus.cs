@@ -38,7 +38,6 @@ namespace KancolleSniffer.Model
         public int Fuel { get; set; }
         public int Bull { get; set; }
         public int[] OnSlot { get; set; }
-        public int NdockTime { get; set; }
         public int[] NdockItem { get; set; }
         public int LoS { get; set; }
         public int Firepower { get; set; }
@@ -52,6 +51,7 @@ namespace KancolleSniffer.Model
 
         public enum Attack
         {
+            // ReSharper disable once UnusedMember.Global
             None,
             Fire,
             Fired

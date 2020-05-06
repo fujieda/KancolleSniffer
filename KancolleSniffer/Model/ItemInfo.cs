@@ -92,7 +92,7 @@ namespace KancolleSniffer.Model
             InspectSlotItem(json.api_slotitem);
         }
 
-        public void InspectDestroyItem(string request, dynamic json)
+        public void InspectDestroyItem(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
             DeleteItems(values["api_slotitem_ids"].Split(',').Select(int.Parse).ToArray());

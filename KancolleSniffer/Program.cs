@@ -25,8 +25,8 @@ namespace KancolleSniffer
         {
             if (Win32API.ProcessAlreadyExists())
                 return;
-            System.Windows.Forms.Application.EnableVisualStyles();
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             try
             {
                 KancolleSniffer.Main.Run();

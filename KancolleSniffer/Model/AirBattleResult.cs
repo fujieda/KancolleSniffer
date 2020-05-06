@@ -19,7 +19,7 @@ namespace KancolleSniffer.Model
 {
     public class AirBattleResult
     {
-        public List<AirBattleRecord> Result = new List<AirBattleRecord>();
+        public List<AirBattleRecord> Result { get; } = new List<AirBattleRecord>();
 
         private bool _updated;
         private readonly Func<int, string> _getShipName;

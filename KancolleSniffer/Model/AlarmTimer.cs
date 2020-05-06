@@ -33,10 +33,9 @@ namespace KancolleSniffer.Model
     {
         private readonly TimeSpan _spare;
         private bool _finished;
+        private DateTime _endTime;
 
-        public bool IsFinished(DateTime now) => EndTime != DateTime.MinValue && EndTime - now < _spare || _finished;
-
-        public DateTime EndTime { get; private set; }
+        public bool IsFinished(DateTime now) => _endTime != DateTime.MinValue && _endTime - now < _spare || _finished;
 
         public AlarmTimer(int spare = 60)
         {
@@ -52,7 +51,7 @@ namespace KancolleSniffer.Model
 
         public void SetEndTime(DateTime time)
         {
-            EndTime = time;
+            _endTime = time;
             _finished = false;
         }
 
@@ -63,16 +62,16 @@ namespace KancolleSniffer.Model
 
         public bool CheckAlarm(TimeStep step)
         {
-            return EndTime != DateTime.MinValue && step.Prev < EndTime - _spare && EndTime - _spare <= step.Now;
+            return _endTime != DateTime.MinValue && step.Prev < _endTime - _spare && _endTime - _spare <= step.Now;
         }
 
         public string ToString(DateTime now, bool endTime = false)
         {
-            if (EndTime == DateTime.MinValue && !_finished)
+            if (_endTime == DateTime.MinValue && !_finished)
                 return "";
             if (endTime)
-                return EndTime.ToString(@"dd\ HH\:mm", CultureInfo.InvariantCulture);
-            var rest = _finished || EndTime - now < TimeSpan.Zero ? TimeSpan.Zero : EndTime - now;
+                return _endTime.ToString(@"dd\ HH\:mm", CultureInfo.InvariantCulture);
+            var rest = _finished || _endTime - now < TimeSpan.Zero ? TimeSpan.Zero : _endTime - now;
             return $"{(int)rest.TotalHours:d2}:" + rest.ToString(@"mm\:ss", CultureInfo.InvariantCulture);
         }
     }

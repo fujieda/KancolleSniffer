@@ -1759,7 +1759,7 @@ namespace KancolleSniffer.Test
             var questList = new[] {613, 638, 643, 645, 653, 663, 673, 674, 675, 676, 677, 678, 680, 686, 688};
             InjectQuestList(questList);
             _questCounter.InspectDestroyItem(
-                $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, items.Length))}&api%5Fverno=1", null);
+                $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, items.Length))}&api%5Fverno=1");
             var scalar = new[]
             {
                 new {Id = 613, Now = 1}, new {Id = 638, Now = 1}, new {Id = 643, Now = 1}, new {Id = 645, Now = 1},

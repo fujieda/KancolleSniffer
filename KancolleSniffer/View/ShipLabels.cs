@@ -34,7 +34,7 @@ namespace KancolleSniffer.View
             AddedControls.Concat(new Control[] {Fleet, Hp, Cond, Level, Exp, Name, BackGround}.Where(c => c != null))
                 .ToArray();
 
-        public virtual Control[] AddedControls => new Control[0];
+        protected virtual Control[] AddedControls => new Control[0];
 
         public virtual void Set(ShipStatus status)
         {

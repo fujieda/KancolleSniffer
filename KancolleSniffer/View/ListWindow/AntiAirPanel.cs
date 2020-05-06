@@ -32,7 +32,7 @@ namespace KancolleSniffer.View.ListWindow
             public Label Rate { get; set; }
             public Label Diff { get; set; }
 
-            public override Control[] AddedControls => new Control[] {Rate, Diff};
+            protected override Control[] AddedControls => new Control[] {Rate, Diff};
         }
 
         public void Update(Sniffer sniffer)

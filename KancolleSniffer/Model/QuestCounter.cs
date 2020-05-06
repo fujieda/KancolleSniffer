@@ -413,7 +413,7 @@ namespace KancolleSniffer.Model
 
         public void CountRemodelSlot() => Increment(619);
 
-        public void InspectDestroyItem(string request, dynamic json)
+        public void InspectDestroyItem(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
             var items = values["api_slotitem_ids"].Split(',')
@@ -450,23 +450,23 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public void Increment(QuestCount count)
+        private void Increment(QuestCount count)
         {
             Add(count, 1);
         }
 
-        public void Add(QuestCount count, int value)
+        private void Add(QuestCount count, int value)
         {
             count.Now += value;
             NeedSave = true;
         }
 
-        public void Increment(int id)
+        private void Increment(int id)
         {
             Add(id, 1);
         }
 
-        public void Add(int id, int value)
+        private void Add(int id, int value)
         {
             if (!_quests.TryGetValue(id, out var quest))
                 return;
@@ -474,7 +474,7 @@ namespace KancolleSniffer.Model
             NeedSave = true;
         }
 
-        public void IncrementNth(QuestCount count, int n)
+        private void IncrementNth(QuestCount count, int n)
         {
             count.NowArray[n]++;
             NeedSave = true;

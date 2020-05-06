@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 
 namespace KancolleSniffer.Util
 {
-    public class Win32API
+    public static class Win32API
     {
         [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -40,7 +40,8 @@ namespace KancolleSniffer.Util
                 {
                     if (cur.Id == p.Id)
                         continue;
-                    if (p.MainModule.FileName != cur.MainModule.FileName)
+                    if (p.MainModule == null || cur.MainModule == null ||
+                        p.MainModule.FileName != cur.MainModule.FileName)
                         continue;
                     if (IsIconic(p.MainWindowHandle))
                         ShowWindowAsync(p.MainWindowHandle, 9); // SW_RESTORE

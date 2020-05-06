@@ -229,8 +229,7 @@ namespace KancolleSniffer.Test
                 foreach (var zoom in data.Keys)
                 {
                     SetScaleFactor(zoom);
-                    var label = new ShipLabel.Name(Point.Empty, width);
-                    label.Font = ShipLabel.Name.BaseFont;
+                    var label = new ShipLabel.Name(Point.Empty, width) {Font = ShipLabel.Name.BaseFont};
                     for (var i = 0; i < data[zoom].Length; i++)
                     {
                         var entry = data[zoom][i];

@@ -128,20 +128,20 @@ namespace KancolleSniffer.Model
                 SetMaterial(Material.Bauxite, (int)json.api_after_bauxite);
         }
 
-        public void SetMaterials(int[] material)
+        private void SetMaterials(int[] material)
         {
             UpdatePrevPort();
             for (var i = 0; i < material.Length; i++)
                 MaterialHistory[i].Now = material[i];
         }
 
-        public void SetMaterial(Material m, int v)
+        private void SetMaterial(Material m, int v)
         {
             UpdatePrevPort();
             MaterialHistory[(int)m].Now = v;
         }
 
-        public void AddMaterials(int[] v)
+        private void AddMaterials(int[] v)
         {
             UpdatePrevPort();
             for (var i = 0; i < v.Length; i++)
@@ -176,16 +176,18 @@ namespace KancolleSniffer.Model
         Burner,
         Bucket,
         Development,
-        Screw,
+        Screw
     }
 
     public class MaterialCount
     {
         private int _now;
 
+        // ReSharper disable MemberCanBePrivate.Global
         public int BegOfDay { get; set; }
         public int BegOfWeek { get; set; }
         public DateTime LastSet { get; set; }
+        // ReSharper restore MemberCanBePrivate.Global
         [XmlIgnore]
         public bool NeedSave { get; set; }
 

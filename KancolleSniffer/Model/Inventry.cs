@@ -61,7 +61,7 @@ namespace KancolleSniffer.Model
             _inflated = 0;
         }
 
-        public virtual T this[int id]
+        public T this[int id]
         {
             get => _dict.TryGetValue(id, out var item) ? item : CreateDummy(id);
             set => _dict[id] = value;
@@ -92,7 +92,7 @@ namespace KancolleSniffer.Model
                 Remove(id);
         }
 
-        public void Remove(T item)
+        private void Remove(T item)
         {
             Remove(GetId(item));
         }

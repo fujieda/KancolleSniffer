@@ -26,15 +26,15 @@ namespace KancolleSniffer.View
     [DesignerCategory("Code")]
     public abstract class ShipLabel : GrowLeftLabel
     {
-        protected Color InitialBackColor;
+        private Color _initialBackColor;
 
         public override Color BackColor
         {
             get => base.BackColor;
             set
             {
-                if (InitialBackColor == Color.Empty)
-                    InitialBackColor = value;
+                if (_initialBackColor == Color.Empty)
+                    _initialBackColor = value;
                 base.BackColor = value;
             }
         }
@@ -133,7 +133,7 @@ namespace KancolleSniffer.View
                 SetName(name, _defaultWidth);
             }
 
-            public void SetName(string name, ShipNameWidth width)
+            private void SetName(string name, ShipNameWidth width)
             {
                 SetName("", name, SlotStatus.Equipped, width);
             }
@@ -214,7 +214,7 @@ namespace KancolleSniffer.View
             {
                 _status = null;
                 Text = "";
-                BackColor = InitialBackColor;
+                BackColor = _initialBackColor;
             }
 
             public override void Set(ShipStatus status)
@@ -246,7 +246,7 @@ namespace KancolleSniffer.View
                     ShipStatus.Damage.Badly => status.Escaped ? CUDColors.LightGray : CUDColors.Red,
                     ShipStatus.Damage.Half => CUDColors.Orange,
                     ShipStatus.Damage.Small => Color.FromArgb(240, 240, 0),
-                    _ => InitialBackColor
+                    _ => _initialBackColor
                 };
             }
 
@@ -268,7 +268,7 @@ namespace KancolleSniffer.View
             public override void Reset()
             {
                 Text = "";
-                BackColor = InitialBackColor;
+                BackColor = _initialBackColor;
             }
 
             public override void Set(ShipStatus status)
@@ -278,7 +278,7 @@ namespace KancolleSniffer.View
                 BackColor = cond >= 50
                     ? CUDColors.Yellow
                     : cond >= 30
-                        ? InitialBackColor
+                        ? _initialBackColor
                         : cond >= 20
                             ? CUDColors.Orange
                             : CUDColors.Red;
@@ -362,7 +362,7 @@ namespace KancolleSniffer.View
                 SetRepairTime(status.RepairTime);
             }
 
-            public void SetRepairTime(TimeSpan span)
+            private void SetRepairTime(TimeSpan span)
             {
                 Text = $@"{(int)span.TotalHours:d2}:{span:mm\:ss}";
             }

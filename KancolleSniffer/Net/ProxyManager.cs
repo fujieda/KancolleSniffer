@@ -68,7 +68,7 @@ namespace KancolleSniffer.Net
         {
             try
             {
-                HttpProxy.Startup(_config.Proxy.Listen, false, false);
+                HttpProxy.Startup(_config.Proxy.Listen);
             }
             catch (SocketException e)
             {
@@ -83,7 +83,7 @@ namespace KancolleSniffer.Net
                     RestoreSystemProxy();
                     return false;
                 }
-                HttpProxy.Startup(0, false, false);
+                HttpProxy.Startup(0);
                 _config.Proxy.Listen = HttpProxy.LocalPort;
             }
             return true;
@@ -165,14 +165,14 @@ namespace KancolleSniffer.Net
             SetAutoConfigUrl();
         }
 
-        private bool IsProxyWorking =>
+        private static bool IsProxyWorking =>
             WebRequest.GetSystemWebProxy().GetProxy(new Uri("http://125.6.184.16/")).IsLoopback;
 
         private void SetAutoConfigUrl()
         {
             var suffix = (DateTime.Now - _pacFileTime < TimeSpan.FromHours(6)
-                ? (int)_pacFileTime.TimeOfDay.TotalSeconds
-                : 0) + _autoConfigRetryCount;
+                             ? (int)_pacFileTime.TimeOfDay.TotalSeconds
+                             : 0) + _autoConfigRetryCount;
             _systemProxy.SetAutoConfigUrl(
                 $"http://localhost:{_config.Proxy.Listen}/proxy{(suffix == 0 ? "" : suffix.ToString("x"))}.pac");
         }

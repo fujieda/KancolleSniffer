@@ -51,13 +51,11 @@ namespace KancolleSniffer.View
                 _iconPadding = (int)Math.Round((Font.Height - _iconSize) / 2.0);
             }
             _padding = new Size((int)Math.Round(Font.Height * 0.2), (int)Math.Round(Font.Height * 0.15));
-            using (var g = Graphics.FromHwnd(e.AssociatedWindow.Handle))
-            {
-                var size = TextRenderer.MeasureText(g, GetToolTip(e.AssociatedControl), Font,
-                    new Size(int.MaxValue, int.MaxValue), TfFlags);
-                e.ToolTipSize = new Size(size.Width + _padding.Width * 2 + _iconSize,
-                    size.Height + _padding.Height * 2);
-            }
+            using var g = Graphics.FromHwnd(e.AssociatedWindow.Handle);
+            var size = TextRenderer.MeasureText(g, GetToolTip(e.AssociatedControl), Font,
+                new Size(int.MaxValue, int.MaxValue), TfFlags);
+            e.ToolTipSize = new Size(size.Width + _padding.Width * 2 + _iconSize,
+                size.Height + _padding.Height * 2);
         }
 
         private void OnDraw(object sender, DrawToolTipEventArgs e)

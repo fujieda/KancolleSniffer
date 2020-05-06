@@ -70,9 +70,9 @@ namespace KancolleSniffer.Model
         public int AirControlLevel { get; private set; }
         public BattleResultRank ResultRank { get; private set; }
         public RankPair DisplayedResultRank { get; } = new RankPair();
-        public BattleResult Result { get; set; }
+        public BattleResult Result { get; private set; }
         public bool EnemyIsCombined => _enemyGuard.Length > 0;
-        public AirBattleResult AirBattleResult;
+        public AirBattleResult AirBattleResult { get; }
         public int SupportType { get; private set; }
 
         public class RankPair
@@ -326,7 +326,7 @@ namespace KancolleSniffer.Model
                 };
         }
 
-        public void InspectAirRaidBattle(int areaId, dynamic json)
+        private void InspectAirRaidBattle(int areaId, dynamic json)
         {
             SetFormation(json);
             var attack = json.api_air_base_attack;
@@ -666,7 +666,7 @@ namespace KancolleSniffer.Model
             DisplayedResultRank.Actual = actual;
         }
 
-        public void SetEscapeShips(dynamic json)
+        private void SetEscapeShips(dynamic json)
         {
             _escapingShips.Clear();
             if (!json.api_escape_flag() || (int)json.api_escape_flag == 0)

@@ -47,11 +47,6 @@ namespace KancolleSniffer.View
             return (int)Math.Round(height * Factor.Height);
         }
 
-        public static Size Scale(Size size)
-        {
-            return new Size(ScaleWidth(size.Width), ScaleHeight(size.Height));
-        }
-
         public static Size Scale(int width, int height)
         {
             return new Size(ScaleWidth(width), ScaleHeight(height));

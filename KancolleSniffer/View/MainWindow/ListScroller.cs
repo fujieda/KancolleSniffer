@@ -45,7 +45,7 @@ namespace KancolleSniffer.View.MainWindow
             SetBottomEventHandler(bottomLabels);
         }
 
-        public void SetTopEventHandler(Control[] top)
+        private void SetTopEventHandler(Control[] top)
         {
             foreach (var label in top)
             {
@@ -55,7 +55,7 @@ namespace KancolleSniffer.View.MainWindow
             _topScrollRepeatTimer.Tick += (obj, e) => ScrollUp();
         }
 
-        public void SetBottomEventHandler(Control[] bottom)
+        private void SetBottomEventHandler(Control[] bottom)
         {
             foreach (var label in bottom)
             {
@@ -123,23 +123,21 @@ namespace KancolleSniffer.View.MainWindow
             var left = halfOfWidth - halfOfMark;
             var right = halfOfWidth + halfOfMark;
             var center = halfOfWidth;
-            using (var g = _panel.CreateGraphics())
-            {
-                DrawTopMark(g, left, right, center);
-                DrawBottomMark(g, left, right, center);
-            }
+            using var g = _panel.CreateGraphics();
+            DrawTopMark(g, left, right, center);
+            DrawBottomMark(g, left, right, center);
         }
 
         private void DrawTopMark(Graphics g, float left, float right, float center)
         {
             var brush = Position > 0 ? Brushes.Black : new SolidBrush(_panel.BackColor);
             var top = -1;
-            var base_ = Padding - 1;
+            var @base = Padding - 1;
             g.FillPolygon(brush,
                 new[]
                 {
-                    new PointF(left, base_), new PointF(right, base_), new PointF(center, top),
-                    new PointF(left, base_)
+                    new PointF(left, @base), new PointF(right, @base), new PointF(center, top),
+                    new PointF(left, @base)
                 });
         }
 
@@ -147,12 +145,12 @@ namespace KancolleSniffer.View.MainWindow
         {
             var brush = Position + Lines < DataCount ? Brushes.Black : new SolidBrush(_panel.BackColor);
             var top = _panel.Height - 2;
-            var base_ = _panel.Height - Padding - 1;
+            var @base = _panel.Height - Padding - 1;
             g.FillPolygon(brush,
                 new[]
                 {
-                    new PointF(left, base_), new PointF(right, base_), new PointF(center, top),
-                    new PointF(left, base_)
+                    new PointF(left, @base), new PointF(right, @base), new PointF(center, top),
+                    new PointF(left, @base)
                 });
         }
     }

@@ -53,8 +53,8 @@ namespace KancolleSniffer.Model
 
         public class ShipStatusPair
         {
-            public ShipStatus Assumed { get; set; }
-            public ShipStatus Actual { get; set; }
+            public ShipStatus Assumed { get; }
+            public ShipStatus Actual { get; }
 
             public ShipStatusPair(ShipStatus assumed, ShipStatus actual)
             {
@@ -233,7 +233,6 @@ namespace KancolleSniffer.Model
                 GetItem = item => _itemInventory[item.Id],
                 Slot = ((int[])entry.api_slot).Select(item => new ItemStatus(item)).ToArray(),
                 SlotEx = entry.api_slot_ex() ? new ItemStatus((int)entry.api_slot_ex) : new ItemStatus(0),
-                NdockTime = (int)entry.api_ndock_time,
                 NdockItem = (int[])entry.api_ndock_item,
                 LoS = (int)entry.api_sakuteki[0],
                 Firepower = (int)entry.api_karyoku[0],
@@ -336,7 +335,7 @@ namespace KancolleSniffer.Model
                 fleet.SetDeck(); // ShipStatusの差し替え
         }
 
-        public void InspectDestroyShip(string request, dynamic json)
+        public void InspectDestroyShip(string request)
         {
             var values = HttpUtility.ParseQueryString(request);
             var delItem = int.Parse(values["api_slot_dest_flag"] ?? "0") == 1;

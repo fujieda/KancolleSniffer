@@ -98,7 +98,7 @@ namespace KancolleSniffer.View.ShipListPanel
         }
 
         [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, IntPtr lParam);
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, IntPtr lParam);
 
         private void SuspendDrawing()
         {
@@ -106,7 +106,7 @@ namespace KancolleSniffer.View.ShipListPanel
             SuspendLayout();
         }
 
-        public void ResumeDrawing()
+        private void ResumeDrawing()
         {
             ResumeLayout();
             SendMessage(Handle, 11, true, IntPtr.Zero);
@@ -191,7 +191,7 @@ namespace KancolleSniffer.View.ShipListPanel
             return res;
         }
 
-        private IEnumerable<ShipStatus> FilterByShipTypes(IEnumerable<ShipStatus> ships, ShipCategory shipTypes)
+        private static IEnumerable<ShipStatus> FilterByShipTypes(IEnumerable<ShipStatus> ships, ShipCategory shipTypes)
         {
             var ids = Enumerable.Range(0, ShipTypeIds.Length)
                 .Where(type => ((int)shipTypes & (1 << type)) != 0)

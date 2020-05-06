@@ -322,7 +322,7 @@ namespace KancolleSniffer.Log
             WriteMaterialLog(now);
         }
 
-        public void WriteMaterialLog(DateTime now)
+        private void WriteMaterialLog(DateTime now)
         {
             _prevTime = now;
             Write("資材ログ", now,

@@ -30,8 +30,8 @@ namespace KancolleSniffer.Model
 
         public class RepairSpan
         {
-            public int Diff { get; set; }
-            public TimeSpan Span { get; set; }
+            public int Diff { get; }
+            public TimeSpan Span { get; }
 
             public RepairSpan(int diff, TimeSpan span)
             {
@@ -155,7 +155,7 @@ namespace KancolleSniffer.Model
         private enum State
         {
             Continue = 0,
-            Reset = 1,
+            Reset = 1
         }
 
         public void Port()
@@ -235,13 +235,16 @@ namespace KancolleSniffer.Model
             return r >= TimeSpan.Zero ? r : TimeSpan.Zero;
         }
 
-        public bool CheckRepairing(int fleet, DateTime now) => GetTimers(fleet, now).Any(r => r.Span != TimeSpan.MinValue);
+        public bool CheckRepairing(int fleet, DateTime now) =>
+            GetTimers(fleet, now).Any(r => r.Span != TimeSpan.MinValue);
 
-        public bool CheckRepairing(DateTime now) => Enumerable.Range(0, ShipInfo.FleetCount).Any(fleet => CheckRepairing(fleet, now));
+        public bool CheckRepairing(DateTime now) =>
+            Enumerable.Range(0, ShipInfo.FleetCount).Any(fleet => CheckRepairing(fleet, now));
 
         public bool CheckPresetRepairing()
             => _presetDeck.Decks.Where(deck => deck != null)
-                .Any(deck => RepairTarget(deck.Select(id => _shipInfo.GetShip(id)).ToArray()).Any(s => s.NowHp < s.MaxHp));
+                .Any(deck => RepairTarget(deck.Select(id => _shipInfo.GetShip(id)).ToArray())
+                    .Any(s => s.NowHp < s.MaxHp));
 
         public Notice[] GetNotice(TimeStep step)
         {

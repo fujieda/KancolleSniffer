@@ -188,7 +188,7 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public double SecondaryGunLevelBonus
+        private double SecondaryGunLevelBonus
         {
             get
             {

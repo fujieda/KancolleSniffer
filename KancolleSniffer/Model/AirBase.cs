@@ -30,7 +30,7 @@ namespace KancolleSniffer.Model
             _itemInfo = item;
         }
 
-        public BaseInfo[] AllBase { get; set; }
+        public BaseInfo[] AllBase { get; private set; }
 
         public BaseInfo GetAirBase(int areaId)
         {

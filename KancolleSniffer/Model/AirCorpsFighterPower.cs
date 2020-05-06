@@ -18,9 +18,9 @@ namespace KancolleSniffer.Model
 {
     public class AirCorpsFighterPower
     {
-        public Model.Range AirCombat;
-        public Model.Range Interception;
-        public bool Difference;
+        public Model.Range AirCombat { get; }
+        public Model.Range Interception { get; }
+        public bool Difference { get; }
 
         public AirCorpsFighterPower(Range fighterPower)
         {
@@ -77,16 +77,16 @@ namespace KancolleSniffer.Model
             public Pair Min { get; }
             public Pair Max { get; }
 
-            public Range(Pair min, Pair max)
+            private Range(Pair min, Pair max)
             {
                 Min = min;
                 Max = max;
             }
 
-            public Range(Pair base_, RangeD range)
+            public Range(Pair @base, RangeD range)
             {
-                Min = (base_ + range.Min).Floor();
-                Max = (base_ + range.Max).Floor();
+                Min = (@base + range.Min).Floor();
+                Max = (@base + range.Max).Floor();
             }
 
             public static Range operator +(Range lhs, Range rhs)

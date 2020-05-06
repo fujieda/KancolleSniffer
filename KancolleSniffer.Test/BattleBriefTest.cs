@@ -38,7 +38,7 @@ namespace KancolleSniffer.Test
                 return logfile.ReadToEnd().Split(new[] {"\r\n"}, StringSplitOptions.None);
         }
 
-        public void InjectShips(dynamic battle, dynamic item)
+        private void InjectShips(dynamic battle, dynamic item)
         {
             var deck = (int)battle.api_deck_id - 1;
             InjectShips(deck, (int[])battle.api_f_nowhps, (int[])battle.api_f_maxhps, (int[][])item[0]);

@@ -37,10 +37,10 @@ namespace KancolleSniffer.Model
             Max = (int)max;
         }
 
-        public Range(double base_, RangeD range)
+        public Range(double @base, RangeD range)
         {
-            Min = (int)(base_ + range.Min);
-            Max = (int)(base_ + range.Max);
+            Min = (int)(@base + range.Min);
+            Max = (int)(@base + range.Max);
         }
 
         public static Range operator +(Range lhs, Range rhs)

@@ -46,7 +46,7 @@ namespace KancolleSniffer.Test
             SetupFleet();
         }
 
-        public void SetupFleet()
+        private void SetupFleet()
         {
             _ships = new[]
             {
@@ -77,7 +77,7 @@ namespace KancolleSniffer.Test
         /// <summary>
         /// 母港
         /// </summary>
-        public void Port()
+        private void Port()
         {
             _timeProvider.DateTime = new DateTime(2018, 1, 1, 0, 0, 0);
             _akashiTimer.Port();

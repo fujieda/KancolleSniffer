@@ -14,12 +14,10 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Globalization;
-using System.Text;
 
 namespace KancolleSniffer.Util
 {
-    public class HttpUtility
+    public static class HttpUtility
     {
         public static NameValueCollection ParseQueryString(string query)
         {
@@ -40,58 +38,6 @@ namespace KancolleSniffer.Util
         public static string UrlDecode(string s)
         {
             return Uri.UnescapeDataString(s.Replace('+', ' '));
-        }
-
-        public static string JavascriptStringEncode(string s)
-        {
-            if (string.IsNullOrEmpty(s))
-                return "";
-            var sb = new StringBuilder();
-            foreach (var ch in s)
-            {
-                switch (ch)
-                {
-                    case '\\':
-                        sb.Append(@"\\");
-                        break;
-                    case '"':
-                        sb.Append(@"\""");
-                        break;
-                    case '/':
-                        sb.Append(@"\/");
-                        break;
-                    case '\b':
-                        sb.Append(@"\b");
-                        break;
-                    case '\t':
-                        sb.Append(@"\t");
-                        break;
-                    case '\n':
-                        sb.Append(@"\n");
-                        break;
-                    case '\f':
-                        sb.Append(@"\f");
-                        break;
-                    case '\r':
-                        sb.Append(@"\r");
-                        break;
-                    default:
-                        CharEncode(sb, ch);
-                        break;
-                }
-            }
-            return sb.ToString();
-        }
-
-        private static void CharEncode(StringBuilder sb, char ch)
-        {
-            if (ch < 0x20 || ch == '<' || ch == '>' || ch == '&')
-            {
-                sb.Append(@"\u");
-                sb.Append(((int)ch).ToString("x04", CultureInfo.InvariantCulture));
-                return;
-            }
-            sb.Append(ch);
         }
     }
 }

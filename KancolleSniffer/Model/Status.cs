@@ -28,7 +28,7 @@ namespace KancolleSniffer.Model
 
     public class Status
     {
-        public static bool Restoring { get; set; }
+        public static bool Restoring { get; private set; }
         public Achievement Achievement { get; set; }
         public List<MaterialCount> MaterialHistory { get; set; }
         // ReSharper disable once IdentifierTypo
