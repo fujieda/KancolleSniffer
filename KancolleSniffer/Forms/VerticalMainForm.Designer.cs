@@ -58,20 +58,20 @@ namespace KancolleSniffer.Forms
             this.labelAkashiRepair = new System.Windows.Forms.Label();
             this.dropDownButtonRepairList = new KancolleSniffer.View.DropDownButton();
             this.labelQuestCount = new System.Windows.Forms.Label();
-            this.kdockPanel = new KDockPanel();
-            this.panelRepairList = new RepairListForMain();
-            this.ndockPanel = new NDockPanel();
-            this.missionPanel = new MissionPanel();
-            this.questPanel = new QuestPanel();
-            this.hqPanel = new HqPanel();
-            this.materialHistoryPanel = new MaterialHistoryPanel();
+            this.kdockPanel = new KancolleSniffer.View.MainWindow.KDockPanel();
+            this.panelRepairList = new KancolleSniffer.View.MainWindow.RepairListForMain();
+            this.ndockPanel = new KancolleSniffer.View.MainWindow.NDockPanel();
+            this.missionPanel = new KancolleSniffer.View.MainWindow.MissionPanel();
+            this.questPanel = new KancolleSniffer.View.MainWindow.QuestPanel();
+            this.hqPanel = new KancolleSniffer.View.MainWindow.HqPanel();
+            this.materialHistoryPanel = new KancolleSniffer.View.MainWindow.MaterialHistoryPanel();
             this.dropDownButtonMaterialHistory = new KancolleSniffer.View.DropDownButton();
-            this.mainFleetPanel = new MainFleetPanel();
+            this.mainFleetPanel = new KancolleSniffer.View.MainWindow.MainFleetPanel();
             this.SuspendLayout();
             // 
             // labelAkashiRepairTimer
             // 
-            this.labelAkashiRepairTimer.Location = new System.Drawing.Point(179, 276);
+            this.labelAkashiRepairTimer.Location = new System.Drawing.Point(179, 275);
             this.labelAkashiRepairTimer.Name = "labelAkashiRepairTimer";
             this.labelAkashiRepairTimer.Size = new System.Drawing.Size(32, 12);
             this.labelAkashiRepairTimer.TabIndex = 43;
@@ -80,7 +80,7 @@ namespace KancolleSniffer.Forms
             // 
             this.labelNDockCaption.AutoSize = true;
             this.labelNDockCaption.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelNDockCaption.Location = new System.Drawing.Point(8, 195);
+            this.labelNDockCaption.Location = new System.Drawing.Point(8, 194);
             this.labelNDockCaption.Name = "labelNDockCaption";
             this.labelNDockCaption.Size = new System.Drawing.Size(29, 12);
             this.labelNDockCaption.TabIndex = 3;
@@ -89,7 +89,7 @@ namespace KancolleSniffer.Forms
             // labelConstruct
             // 
             this.labelConstruct.AutoSize = true;
-            this.labelConstruct.Location = new System.Drawing.Point(151, 195);
+            this.labelConstruct.Location = new System.Drawing.Point(151, 194);
             this.labelConstruct.Name = "labelConstruct";
             this.labelConstruct.Size = new System.Drawing.Size(29, 12);
             this.labelConstruct.TabIndex = 6;
@@ -98,7 +98,7 @@ namespace KancolleSniffer.Forms
             // labelQuest
             // 
             this.labelQuest.AutoSize = true;
-            this.labelQuest.Location = new System.Drawing.Point(8, 342);
+            this.labelQuest.Location = new System.Drawing.Point(8, 341);
             this.labelQuest.Name = "labelQuest";
             this.labelQuest.Size = new System.Drawing.Size(29, 12);
             this.labelQuest.TabIndex = 8;
@@ -108,7 +108,7 @@ namespace KancolleSniffer.Forms
             // 
             this.labelMissionCaption.AutoSize = true;
             this.labelMissionCaption.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelMissionCaption.Location = new System.Drawing.Point(8, 276);
+            this.labelMissionCaption.Location = new System.Drawing.Point(8, 275);
             this.labelMissionCaption.Name = "labelMissionCaption";
             this.labelMissionCaption.Size = new System.Drawing.Size(29, 12);
             this.labelMissionCaption.TabIndex = 10;
@@ -123,7 +123,7 @@ namespace KancolleSniffer.Forms
             // labelMaterialCaption
             // 
             this.labelMaterialCaption.AutoSize = true;
-            this.labelMaterialCaption.Location = new System.Drawing.Point(183, 342);
+            this.labelMaterialCaption.Location = new System.Drawing.Point(183, 341);
             this.labelMaterialCaption.Name = "labelMaterialCaption";
             this.labelMaterialCaption.Size = new System.Drawing.Size(29, 12);
             this.labelMaterialCaption.TabIndex = 43;
@@ -132,7 +132,7 @@ namespace KancolleSniffer.Forms
             // labelRepairListCaption
             // 
             this.labelRepairListCaption.AutoSize = true;
-            this.labelRepairListCaption.Location = new System.Drawing.Point(81, 195);
+            this.labelRepairListCaption.Location = new System.Drawing.Point(81, 194);
             this.labelRepairListCaption.Name = "labelRepairListCaption";
             this.labelRepairListCaption.Size = new System.Drawing.Size(41, 12);
             this.labelRepairListCaption.TabIndex = 46;
@@ -141,7 +141,7 @@ namespace KancolleSniffer.Forms
             // labelAkashiRepair
             // 
             this.labelAkashiRepair.AutoSize = true;
-            this.labelAkashiRepair.Location = new System.Drawing.Point(151, 276);
+            this.labelAkashiRepair.Location = new System.Drawing.Point(151, 275);
             this.labelAkashiRepair.Name = "labelAkashiRepair";
             this.labelAkashiRepair.Size = new System.Drawing.Size(29, 12);
             this.labelAkashiRepair.TabIndex = 54;
@@ -150,7 +150,7 @@ namespace KancolleSniffer.Forms
             // dropDownButtonRepairList
             // 
             this.dropDownButtonRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dropDownButtonRepairList.Location = new System.Drawing.Point(121, 193);
+            this.dropDownButtonRepairList.Location = new System.Drawing.Point(121, 192);
             this.dropDownButtonRepairList.Name = "dropDownButtonRepairList";
             this.dropDownButtonRepairList.Size = new System.Drawing.Size(14, 14);
             this.dropDownButtonRepairList.TabIndex = 45;
@@ -158,7 +158,7 @@ namespace KancolleSniffer.Forms
             // labelQuestCount
             // 
             this.labelQuestCount.AutoSize = true;
-            this.labelQuestCount.Location = new System.Drawing.Point(35, 342);
+            this.labelQuestCount.Location = new System.Drawing.Point(35, 341);
             this.labelQuestCount.Name = "labelQuestCount";
             this.labelQuestCount.Size = new System.Drawing.Size(11, 12);
             this.labelQuestCount.TabIndex = 57;
@@ -167,7 +167,7 @@ namespace KancolleSniffer.Forms
             // kdockPanel
             // 
             this.kdockPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.kdockPanel.Location = new System.Drawing.Point(149, 209);
+            this.kdockPanel.Location = new System.Drawing.Point(149, 208);
             this.kdockPanel.Name = "kdockPanel";
             this.kdockPanel.Size = new System.Drawing.Size(77, 64);
             this.kdockPanel.TabIndex = 60;
@@ -175,7 +175,7 @@ namespace KancolleSniffer.Forms
             // panelRepairList
             // 
             this.panelRepairList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelRepairList.Location = new System.Drawing.Point(6, 207);
+            this.panelRepairList.Location = new System.Drawing.Point(6, 206);
             this.panelRepairList.Name = "panelRepairList";
             this.panelRepairList.Size = new System.Drawing.Size(129, 21);
             this.panelRepairList.TabIndex = 4;
@@ -185,7 +185,7 @@ namespace KancolleSniffer.Forms
             // 
             this.ndockPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ndockPanel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ndockPanel.Location = new System.Drawing.Point(6, 209);
+            this.ndockPanel.Location = new System.Drawing.Point(6, 208);
             this.ndockPanel.Name = "ndockPanel";
             this.ndockPanel.Size = new System.Drawing.Size(140, 64);
             this.ndockPanel.TabIndex = 59;
@@ -194,7 +194,7 @@ namespace KancolleSniffer.Forms
             // 
             this.missionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.missionPanel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.missionPanel.Location = new System.Drawing.Point(6, 290);
+            this.missionPanel.Location = new System.Drawing.Point(6, 289);
             this.missionPanel.Name = "missionPanel";
             this.missionPanel.Size = new System.Drawing.Size(220, 49);
             this.missionPanel.TabIndex = 58;
@@ -202,7 +202,8 @@ namespace KancolleSniffer.Forms
             // questPanel
             // 
             this.questPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.questPanel.Location = new System.Drawing.Point(6, 356);
+            this.questPanel.Location = new System.Drawing.Point(6, 355);
+            this.questPanel.MinLines = 4;
             this.questPanel.Name = "questPanel";
             this.questPanel.Size = new System.Drawing.Size(220, 94);
             this.questPanel.TabIndex = 56;
@@ -218,7 +219,7 @@ namespace KancolleSniffer.Forms
             // materialHistoryPanel
             // 
             this.materialHistoryPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.materialHistoryPanel.Location = new System.Drawing.Point(38, 354);
+            this.materialHistoryPanel.Location = new System.Drawing.Point(38, 353);
             this.materialHistoryPanel.Name = "materialHistoryPanel";
             this.materialHistoryPanel.Size = new System.Drawing.Size(188, 52);
             this.materialHistoryPanel.TabIndex = 65;
@@ -227,7 +228,7 @@ namespace KancolleSniffer.Forms
             // dropDownButtonMaterialHistory
             // 
             this.dropDownButtonMaterialHistory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dropDownButtonMaterialHistory.Location = new System.Drawing.Point(211, 340);
+            this.dropDownButtonMaterialHistory.Location = new System.Drawing.Point(211, 339);
             this.dropDownButtonMaterialHistory.Name = "dropDownButtonMaterialHistory";
             this.dropDownButtonMaterialHistory.Size = new System.Drawing.Size(14, 14);
             this.dropDownButtonMaterialHistory.TabIndex = 80;
@@ -241,11 +242,11 @@ namespace KancolleSniffer.Forms
             this.mainFleetPanel.Size = new System.Drawing.Size(220, 149);
             this.mainFleetPanel.TabIndex = 82;
             // 
-            // MainForm
+            // VerticalMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(232, 456);
+            this.ClientSize = new System.Drawing.Size(232, 455);
             this.Controls.Add(this.mainFleetPanel);
             this.Controls.Add(this.dropDownButtonMaterialHistory);
             this.Controls.Add(this.materialHistoryPanel);
@@ -268,7 +269,7 @@ namespace KancolleSniffer.Forms
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "MainForm";
+            this.Name = "VerticalMainForm";
             this.Text = "KancolleSniffer";
             this.ResumeLayout(false);
             this.PerformLayout();
