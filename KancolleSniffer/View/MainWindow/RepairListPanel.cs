@@ -23,7 +23,7 @@ using static System.Math;
 
 namespace KancolleSniffer.View.MainWindow
 {
-    public class RepairListForMain : Panel
+    public class RepairListPanel : Panel
     {
         private const int PanelPadding = 5;
         private const int LineHeight = 15;

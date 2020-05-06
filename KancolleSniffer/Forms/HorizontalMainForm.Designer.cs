@@ -59,7 +59,7 @@ namespace KancolleSniffer.Forms
             this.dropDownButtonRepairList = new KancolleSniffer.View.DropDownButton();
             this.labelQuestCount = new System.Windows.Forms.Label();
             this.kdockPanel = new KancolleSniffer.View.MainWindow.KDockPanel();
-            this.panelRepairList = new KancolleSniffer.View.MainWindow.RepairListForMain();
+            this.panelRepairList = new KancolleSniffer.View.MainWindow.RepairListPanel();
             this.ndockPanel = new KancolleSniffer.View.MainWindow.NDockPanel();
             this.missionPanel = new KancolleSniffer.View.MainWindow.MissionPanel();
             this.questPanel = new KancolleSniffer.View.MainWindow.QuestPanel();
@@ -287,7 +287,7 @@ namespace KancolleSniffer.Forms
         private System.Windows.Forms.Label labelRepairListCaption;
         private System.Windows.Forms.Label labelAkashiRepairTimer;
         private System.Windows.Forms.Label labelAkashiRepair;
-        private RepairListForMain panelRepairList;
+        private RepairListPanel panelRepairList;
         private QuestPanel questPanel;
         private System.Windows.Forms.Label labelQuestCount;
         private MissionPanel missionPanel;

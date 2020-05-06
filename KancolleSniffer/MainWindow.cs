@@ -52,7 +52,7 @@ namespace KancolleSniffer
             public Label labelAkashiRepairTimer { get; set; }
             public Label labelRepairListCaption { get; set; }
             public Label dropDownButtonRepairList { get; set; }
-            public RepairListForMain panelRepairList { get; set; }
+            public RepairListPanel panelRepairList { get; set; }
             // ReSharper restore InconsistentNaming
             // ReSharper restore UnusedAutoPropertyAccessor.Local
         }
