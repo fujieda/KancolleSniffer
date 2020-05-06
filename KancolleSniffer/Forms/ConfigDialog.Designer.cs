@@ -139,6 +139,9 @@ namespace KancolleSniffer.Forms
             this.openSoundFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
+            this.label19 = new System.Windows.Forms.Label();
+            this.comboBoxShape = new System.Windows.Forms.ComboBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageWindow.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownQuest)).BeginInit();
@@ -184,6 +187,9 @@ namespace KancolleSniffer.Forms
             // 
             // tabPageWindow
             // 
+            this.tabPageWindow.Controls.Add(this.label20);
+            this.tabPageWindow.Controls.Add(this.comboBoxShape);
+            this.tabPageWindow.Controls.Add(this.label19);
             this.tabPageWindow.Controls.Add(this.label18);
             this.tabPageWindow.Controls.Add(this.label17);
             this.tabPageWindow.Controls.Add(this.label8);
@@ -1190,6 +1196,36 @@ namespace KancolleSniffer.Forms
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
             // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(125, 100);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(17, 12);
+            this.label19.TabIndex = 13;
+            this.label19.Text = "形";
+            // 
+            // comboBoxShape
+            // 
+            this.comboBoxShape.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxShape.FormattingEnabled = true;
+            this.comboBoxShape.Items.AddRange(new object[] {
+            "縦長",
+            "横長"});
+            this.comboBoxShape.Location = new System.Drawing.Point(145, 97);
+            this.comboBoxShape.Name = "comboBoxShape";
+            this.comboBoxShape.Size = new System.Drawing.Size(64, 20);
+            this.comboBoxShape.TabIndex = 14;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(210, 98);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(11, 12);
+            this.label20.TabIndex = 15;
+            this.label20.Text = "*";
+            // 
             // ConfigDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1343,5 +1379,8 @@ namespace KancolleSniffer.Forms
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.CheckBox checkBoxWarnBadDamageWithDamecon;
         private System.Windows.Forms.CheckBox checkBoxAutoBattleResult;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ComboBox comboBoxShape;
+        private System.Windows.Forms.Label label19;
     }
 }

@@ -220,6 +220,7 @@ namespace KancolleSniffer
         public bool HideOnMinimized { get; set; }
         public bool ExitSilently { get; set; }
         public int Zoom { get; set; } = 100;
+        public string Shape { get; set; } = "縦長";
         public int QuestLines { get; set; } = 6;
         public bool SaveLocationPerMachine { get; set; }
         public List<LocationPerMachine> LocationList { get; set; } = new List<LocationPerMachine>();

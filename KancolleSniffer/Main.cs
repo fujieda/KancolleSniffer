@@ -44,7 +44,7 @@ namespace KancolleSniffer
         {
             Config.Load();
             _configDialog = new ConfigDialog(this);
-            var form = new HorizontalMainForm();
+            var form = Config.Shape == "横長" ? (Form)new HorizontalMainForm() : new VerticalMainForm();
             _form = form;
             _mainBehavior = new MainWindow(this, form);
             _proxyManager = new ProxyManager(_form, Config);
