@@ -286,7 +286,8 @@ namespace KancolleSniffer.Model
                 }
                 var levelAverage = sum == 0 ? 0.0 : (double)level / sum;
                 bonus = Min(bonus, 0.2);
-                return bonus + 0.01 * bonus * levelAverage + tokudaiBonus[Min(tokudai, 4), Min(daihatsu, 4)];
+                var result = bonus + 0.01 * bonus * levelAverage + tokudaiBonus[Min(tokudai, 4), Min(daihatsu, 4)];
+                return Floor(result * 1000) / 10;
             }
         }
 
@@ -339,7 +340,7 @@ namespace KancolleSniffer.Model
                 if (drums > 0)
                     result.Add($"ド{drums}({drumShips}隻)");
                 if (DaihatsuBonus > 0)
-                    result.Add($"ﾀﾞ{DaihatsuBonus * 100:f1}%");
+                    result.Add($"ﾀﾞ{DaihatsuBonus:f1}%");
                 return string.Join(" ", result);
             }
         }

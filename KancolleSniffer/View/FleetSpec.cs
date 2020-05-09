@@ -206,7 +206,7 @@ namespace KancolleSniffer.View
                     var total = CalcTotal(fleet);
                     return "計:" + HideIfZero(" Lv", total.Level) +
                            HideIfZero(" ド", total.Drum) + HideIfZero("(", total.DrumShips, "隻)") +
-                           HideIfZero(" 大", fleet.DaihatsuBonus * 100, "%") + "\r\n" +
+                           HideIfZero(" 大", fleet.DaihatsuBonus, "%") + "\r\n" +
                            $"戦闘:燃{total.Fuel / 5}弾{total.Bull / 5} 支援:燃{total.Fuel / 2}弾{(int)(total.Bull * 0.8)}";
                 }
 
