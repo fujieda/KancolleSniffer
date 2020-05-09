@@ -55,16 +55,32 @@ namespace KancolleSniffer.View.ShipListPanel
                 Hp = new ShipLabel.Hp(new Point(118, 0), ShipListPanel.LineHeight),
                 Level = new ShipLabel.Level(new Point(116, 2), height),
                 Time = new ShipLabel.RepairTime(new Point(141, 2)),
-                PerHp = new Label {Location = new Point(186, 2), AutoSize = true},
+                PerHp = new Label {Location = new Point(185, 2), AutoSize = true},
                 BackPanel = new Panel
                 {
                     Location = new Point(0, y),
-                    Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight)
+                    Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight),
+                    Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top
                 }
             };
+            SetAnchorRight(labels.Hp, labels.Level, labels.Time, labels.PerHp);
             _labelList.Add(labels);
             labels.Arrange(_shipListPanel, CustomColors.ColumnColors.BrightFirst(i));
             _shipListPanel.SetHpPercent(labels.Hp);
+        }
+
+        private void SetAnchorRight(params Control[] controls)
+        {
+            foreach (var control in controls)
+                control.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        }
+
+        public void Resize(int i, int width)
+        {
+            var labels = _labelList[i];
+            labels.BackPanel.Width = width;
+            labels.Hp.AdjustLocation();
+            labels.Name.AdjustWidth(Scaler.DownWidth(width) - ListForm.PanelWidth);
         }
 
         public void SetRepairList(int i)

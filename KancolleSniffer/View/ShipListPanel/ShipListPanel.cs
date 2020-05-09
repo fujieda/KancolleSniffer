@@ -19,11 +19,12 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using KancolleSniffer.Forms;
 using KancolleSniffer.Model;
+using KancolleSniffer.View.ListWindow;
 using static System.Math;
 
 namespace KancolleSniffer.View.ShipListPanel
 {
-    public class ShipListPanel : Panel
+    public class ShipListPanel : Panel, IPanelResize
     {
         public const int LabelHeight = 12;
         public const int LineHeight = 16;
@@ -68,13 +69,13 @@ namespace KancolleSniffer.View.ShipListPanel
             ResumeDrawing();
         }
 
-        protected override void OnResize(EventArgs ev)
+        public void ApplyResize()
         {
-            base.OnResize(ev);
             if (_shipList == null || _shipList.Length == 0 || !Visible)
                 return;
             SuspendDrawing();
             SetupLabels();
+            ResizeLabels();
             SetShipLabels();
             ResumeDrawing();
         }
@@ -93,6 +94,7 @@ namespace KancolleSniffer.View.ShipListPanel
             CreateShipList(sniffer, settings);
             SuspendDrawing();
             SetupLabels();
+            ResizeLabels();
             SetShipLabels();
             ResumeDrawing();
         }
@@ -297,6 +299,17 @@ namespace KancolleSniffer.View.ShipListPanel
             ScrollBar.LargeChange = largeChange;
             ScrollBar.Maximum = Max(0, max + largeChange - 1); // ScrollBarを最大まで動かしてもmaxには届かない
             ScrollBar.Value = Min(ScrollBar.Value, max);
+        }
+
+        private void ResizeLabels()
+        {
+            var width = Width - SystemInformation.VerticalScrollBarWidth - 2;
+            for (var i = 0; i < _labelCount; i++)
+            {
+                _shipListLabels.Resize(i, width);
+                _groupConfigLabels.Resize(i, width);
+                _repairListLabels.Resize(i, width);
+            }
         }
 
         public void SetHpPercent(ShipLabel.Hp label)

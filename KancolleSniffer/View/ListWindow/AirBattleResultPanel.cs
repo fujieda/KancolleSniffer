@@ -23,7 +23,7 @@ using KancolleSniffer.Model;
 namespace KancolleSniffer.View.ListWindow
 {
     [DesignerCategory("Code")]
-    public class AirBattleResultPanel : PanelWithToolTip
+    public class AirBattleResultPanel : PanelWithToolTip, IPanelResize
     {
         private readonly Label _phaseName;
         private readonly Label _stage1;
@@ -32,6 +32,7 @@ namespace KancolleSniffer.View.ListWindow
         private int _resultIndex;
         private readonly ShipLabel.Name _ciShipName;
         private readonly Label _ciKind;
+        private const int InitWidth = 236;
 
         public bool ShowResultAutomatic { get; set; }
 
@@ -96,6 +97,11 @@ namespace KancolleSniffer.View.ListWindow
                 Size = new Size(24, 12)
             });
             _phaseName.Click += PhaseNameOnClick;
+        }
+
+        public void ApplyResize()
+        {
+            _ciShipName.AdjustWidth(Scaler.DownWidth(Width) - InitWidth, true);
         }
 
         public void SetResult(Sniffer sniffer)

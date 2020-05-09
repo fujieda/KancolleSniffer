@@ -36,7 +36,7 @@ namespace KancolleSniffer.Test
             {
                 AircraftSpec = "",
                 Color = SystemColors.Control,
-                Equip = "",
+                Equip = new FleetData.EquipRecord(""),
                 Fleet = "",
                 Fleet2 = null,
                 Id = 756,
@@ -64,7 +64,7 @@ namespace KancolleSniffer.Test
                         continue;
                     return false;
                 }
-                if (aVal.Equals(bVal))
+                if (aVal.ToString() == bVal.ToString())
                     continue;
                 return false;
             }
@@ -91,9 +91,9 @@ namespace KancolleSniffer.Test
                     Name = "大発動艇(八九式中戦車&陸戦隊)"
                 }
             };
-            Assert.AreEqual(item.Spec.Name, FleetData.Record.CreateItemRecord(item, 7, 7).Equip);
+            Assert.AreEqual(item.Spec.Name, FleetData.Record.CreateItemRecord(item, 7, 7).Equip.ToString(0));
             item.Level = 10;
-            Assert.AreEqual("大発動艇(八九式中戦車&陸戦★10", FleetData.Record.CreateItemRecord(item, 7, 7).Equip);
+            Assert.AreEqual("大発動艇(八九式中戦車&陸戦★10", FleetData.Record.CreateItemRecord(item, 7, 7).Equip.ToString(0));
 
             var aircraft = new ItemStatus
             {
@@ -103,9 +103,9 @@ namespace KancolleSniffer.Test
                     Type = 6
                 }
             };
-            Assert.AreEqual(aircraft.Spec.Name, FleetData.Record.CreateItemRecord(aircraft, 7, 7).Equip);
+            Assert.AreEqual(aircraft.Spec.Name, FleetData.Record.CreateItemRecord(aircraft, 7, 7).Equip.ToString(0));
             aircraft.Level = 10;
-            Assert.AreEqual("零式艦戦53型(岩本★10", FleetData.Record.CreateItemRecord(aircraft, 7, 7).Equip);
+            Assert.AreEqual("零式艦戦53型(岩本★10", FleetData.Record.CreateItemRecord(aircraft, 7, 7).Equip.ToString(0));
         }
     }
 }

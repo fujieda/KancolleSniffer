@@ -54,7 +54,7 @@ namespace KancolleSniffer.View
             AdjustLocation();
         }
 
-        private void AdjustLocation()
+        public void AdjustLocation()
         {
             if (!GrowLeft)
                 return;

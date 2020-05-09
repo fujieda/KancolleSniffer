@@ -63,6 +63,35 @@ namespace KancolleSniffer.View.ListWindow
             return items.Concat(new[] {Record.CreateItemRecord(ship.SlotEx, 0, 0)});
         }
 
+        public class EquipRecord
+        {
+            private readonly ItemStatus _item;
+            private readonly string _text;
+
+            public EquipRecord(ItemStatus item)
+            {
+                _item = new ItemStatus{Alv = item.Alv,  Level = item.Level, Spec = item.Spec};
+            }
+
+            public EquipRecord(string text = "")
+            {
+                _text = text;
+            }
+
+            public string ToString(int adjust)
+            {
+                if (_text != null)
+                    return _text;
+                var level = _item.Level == 0 ? "" : "★" + _item.Level;
+                return StringTruncator.Truncate(_item.Spec.Name, level, adjust + (_item.Spec.IsAircraft ? 132 : 180)) + level;
+            }
+
+            public override string ToString()
+            {
+                return _text;
+            }
+        }
+
         public class Record
         {
             public string Fleet { get; set; }
@@ -70,7 +99,7 @@ namespace KancolleSniffer.View.ListWindow
             public string Ship { get; set; }
             public string Ship2 { get; set; }
             public int Id { get; set; }
-            public string Equip { get; set; }
+            public EquipRecord Equip { get; set; }
             public Color Color { get; set; }
             public string Spec { get; set; }
             public string Spec2 { get; set; }
@@ -79,7 +108,8 @@ namespace KancolleSniffer.View.ListWindow
             public Record()
             {
                 Color = Control.DefaultBackColor;
-                Fleet = Ship = Equip = AircraftSpec = "";
+                Fleet = Ship = AircraftSpec = "";
+                Equip = new EquipRecord();
             }
 
             public static Record CreateShipRecord(ShipStatus ship)
@@ -120,7 +150,7 @@ namespace KancolleSniffer.View.ListWindow
             {
                 public ItemRecord(ItemStatus item, int onSlot, int maxEq)
                 {
-                    Equip = GenEquipString(item);
+                    Equip = new EquipRecord(item);
                     Spec = item.Spec.IsAircraft ? $"+{item.Alv} {onSlot}/{maxEq}" : "";
                     AircraftSpec = GetAircraftSpec(item, onSlot);
                     Color = item.Spec.Color;
@@ -140,12 +170,6 @@ namespace KancolleSniffer.View.ListWindow
                     }
                     return "";
                 }
-            }
-
-            private static string GenEquipString(ItemStatus item)
-            {
-                var level = item.Level == 0 ? "" : "★" + item.Level;
-                return StringTruncator.Truncate(item.Spec.Name, level, item.Spec.IsAircraft ? 132 : 180) + level;
             }
 
             public static Record CreateFleetRecord(IReadOnlyList<Fleet> fleets, int number)
@@ -298,7 +322,7 @@ namespace KancolleSniffer.View.ListWindow
                 public CorpsPlaneRecord(AirBase.PlaneInfo plane)
                 {
                     var planeFp = plane.FighterPower;
-                    Equip = plane.State != 1 ? plane.StateName : GenEquipString(plane.Slot);
+                    Equip = plane.State != 1 ? new EquipRecord(plane.StateName) : new EquipRecord(plane.Slot);
                     Spec = plane.State != 1 ? "" : $"+{plane.Slot.Alv} {plane.Count}/{plane.MaxCount}";
                     AircraftSpec =
                         $"距離:{plane.Slot.Spec.Distance} 制空:{RangeString(planeFp.AirCombat)}" +

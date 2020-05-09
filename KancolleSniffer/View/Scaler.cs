@@ -20,7 +20,7 @@ namespace KancolleSniffer.View
 {
     public static class Scaler
     {
-        public static SizeF Factor { private get; set; }
+        public static SizeF Factor { private get; set; } = new SizeF(1, 1);
 
         public static void Scale(Control control)
         {
@@ -60,6 +60,11 @@ namespace KancolleSniffer.View
         public static Point Move(int x, int y, int width, int height)
         {
             return new Point(x + ScaleWidth(width), y + ScaleHeight(height));
+        }
+
+        public static int DownWidth(int width)
+        {
+            return (int)(width / Factor.Width);
         }
     }
 }

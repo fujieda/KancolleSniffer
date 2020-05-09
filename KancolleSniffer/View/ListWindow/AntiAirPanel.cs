@@ -21,7 +21,7 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View.ListWindow
 {
-    public class AntiAirPanel : Panel
+    public class AntiAirPanel : Panel, IPanelResize
     {
         private const int LineHeight = 16;
         private readonly List<AntiAirLabels> _labelList = new List<AntiAirLabels>();
@@ -138,12 +138,21 @@ namespace KancolleSniffer.View.ListWindow
                 BackPanel = new Panel
                 {
                     Location = new Point(0, y),
-                    Size = new Size(ListForm.PanelWidth, LineHeight)
+                    Size = new Size(ListForm.PanelWidth, LineHeight),
                 }
             };
             _labelList.Add(labels);
             labels.Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
             labels.Move(AutoScrollPosition);
+        }
+
+        public void ApplyResize()
+        {
+            var width = Width - SystemInformation.VerticalScrollBarWidth - 2;
+            SuspendLayout();
+            foreach (var labels in _labelList)
+                labels.BackPanel.Width = width;
+            ResumeLayout();
         }
 
         private void SetRecords()

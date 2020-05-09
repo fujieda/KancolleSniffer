@@ -51,6 +51,7 @@ namespace KancolleSniffer.View.ShipListPanel
                 {
                     Location = new Point(0, y),
                     Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight),
+                    Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top
                 }
             };
             var cb = new CheckBox[GroupCount];
@@ -66,10 +67,24 @@ namespace KancolleSniffer.View.ShipListPanel
                 Scaler.Scale(cb[j]);
                 cb[j].CheckedChanged += checkboxGroup_CheckedChanged;
             }
+            SetAnchorRight(cb.Concat(new Control[] {labels.Level}).ToArray());
             _labelList.Add(labels);
             _checkBoxesList.Add(cb);
             labels.Arrange(_shipListPanel, CustomColors.ColumnColors.BrightFirst(i));
             labels.BackPanel.Controls.AddRange(cb);
+        }
+
+        private void SetAnchorRight(params Control[] controls)
+        {
+            foreach (var control in controls)
+                control.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        }
+
+        public void Resize(int i, int width)
+        {
+            var labels = _labelList[i];
+            labels.BackPanel.Width = width;
+            labels.Name.AdjustWidth(Scaler.DownWidth(width) - ListForm.PanelWidth);
         }
 
         private void checkboxGroup_CheckedChanged(object sender, EventArgs e)

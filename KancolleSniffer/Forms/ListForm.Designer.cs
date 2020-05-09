@@ -91,15 +91,15 @@ namespace KancolleSniffer.Forms
             this.checkBoxSTypeHeavyCruiser = new System.Windows.Forms.CheckBox();
             this.checkBoxSTypeAircraftCarrier = new System.Windows.Forms.CheckBox();
             this.checkBoxSTypeBattleShip = new System.Windows.Forms.CheckBox();
-            this.dropDownButtonSType = new KancolleSniffer.View.DropDownButton();
             this.labelSType = new System.Windows.Forms.Label();
-            this.airBattleResultPanel = new AirBattleResultPanel();
-            this.battleResultPanel = new BattleResultPanel();
-            this.antiAirPanel = new AntiAirPanel();
-            this.fleetPanel = new FleetDataPanel();
-            this.itemTreeView = new ItemTreeView();
-            this.shipListPanel = new KancolleSniffer.View.ShipListPanel.ShipListPanel();
             this.panelShipHeader = new System.Windows.Forms.Panel();
+            this.airBattleResultPanel = new KancolleSniffer.View.ListWindow.AirBattleResultPanel();
+            this.battleResultPanel = new KancolleSniffer.View.ListWindow.BattleResultPanel();
+            this.antiAirPanel = new KancolleSniffer.View.ListWindow.AntiAirPanel();
+            this.dropDownButtonSType = new KancolleSniffer.View.DropDownButton();
+            this.fleetPanel = new KancolleSniffer.View.ListWindow.FleetDataPanel();
+            this.itemTreeView = new KancolleSniffer.View.ListWindow.ItemTreeView();
+            this.shipListPanel = new KancolleSniffer.View.ShipListPanel.ShipListPanel();
             this.contextMenuStripShipList.SuspendLayout();
             this.contextMenuStripItemList.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
@@ -171,7 +171,7 @@ namespace KancolleSniffer.Forms
             // 
             this.labelHeaderCond.AutoSize = true;
             this.labelHeaderCond.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelHeaderCond.Location = new System.Drawing.Point(19, 5);
+            this.labelHeaderCond.Location = new System.Drawing.Point(20, 5);
             this.labelHeaderCond.Name = "labelHeaderCond";
             this.labelHeaderCond.Size = new System.Drawing.Size(29, 12);
             this.labelHeaderCond.TabIndex = 13;
@@ -182,7 +182,7 @@ namespace KancolleSniffer.Forms
             // 
             this.labelHeaderExp.AutoSize = true;
             this.labelHeaderExp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelHeaderExp.Location = new System.Drawing.Point(88, 5);
+            this.labelHeaderExp.Location = new System.Drawing.Point(86, 5);
             this.labelHeaderExp.Name = "labelHeaderExp";
             this.labelHeaderExp.Size = new System.Drawing.Size(24, 12);
             this.labelHeaderExp.TabIndex = 14;
@@ -192,7 +192,7 @@ namespace KancolleSniffer.Forms
             // labelHeaderLv
             // 
             this.labelHeaderLv.AutoSize = true;
-            this.labelHeaderLv.Location = new System.Drawing.Point(56, 5);
+            this.labelHeaderLv.Location = new System.Drawing.Point(55, 5);
             this.labelHeaderLv.Name = "labelHeaderLv";
             this.labelHeaderLv.Size = new System.Drawing.Size(17, 12);
             this.labelHeaderLv.TabIndex = 13;
@@ -200,14 +200,15 @@ namespace KancolleSniffer.Forms
             // 
             // panelGroupHeader
             // 
+            this.panelGroupHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panelGroupHeader.Controls.Add(this.label5);
             this.panelGroupHeader.Controls.Add(this.label9);
             this.panelGroupHeader.Controls.Add(this.label8);
             this.panelGroupHeader.Controls.Add(this.label7);
             this.panelGroupHeader.Controls.Add(this.label6);
-            this.panelGroupHeader.Location = new System.Drawing.Point(103, 3);
+            this.panelGroupHeader.Location = new System.Drawing.Point(101, 3);
             this.panelGroupHeader.Name = "panelGroupHeader";
-            this.panelGroupHeader.Size = new System.Drawing.Size(125, 19);
+            this.panelGroupHeader.Size = new System.Drawing.Size(112, 19);
             this.panelGroupHeader.TabIndex = 16;
             // 
             // label5
@@ -287,13 +288,14 @@ namespace KancolleSniffer.Forms
             // 
             // panelRepairHeader
             // 
+            this.panelRepairHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panelRepairHeader.Controls.Add(this.label10);
             this.panelRepairHeader.Controls.Add(this.label12);
             this.panelRepairHeader.Controls.Add(this.label13);
             this.panelRepairHeader.Controls.Add(this.label1RepairHp);
             this.panelRepairHeader.Location = new System.Drawing.Point(104, 3);
             this.panelRepairHeader.Name = "panelRepairHeader";
-            this.panelRepairHeader.Size = new System.Drawing.Size(121, 19);
+            this.panelRepairHeader.Size = new System.Drawing.Size(118, 19);
             this.panelRepairHeader.TabIndex = 2;
             // 
             // label10
@@ -318,8 +320,7 @@ namespace KancolleSniffer.Forms
             // 
             // panelEmptyHeader
             // 
-            this.panelEmptyHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelEmptyHeader.Location = new System.Drawing.Point(58, 3);
+            this.panelEmptyHeader.Location = new System.Drawing.Point(56, 3);
             this.panelEmptyHeader.Name = "panelEmptyHeader";
             this.panelEmptyHeader.Size = new System.Drawing.Size(167, 19);
             this.panelEmptyHeader.TabIndex = 0;
@@ -332,7 +333,7 @@ namespace KancolleSniffer.Forms
             this.richTextBoxMiscText.Location = new System.Drawing.Point(6, 23);
             this.richTextBoxMiscText.Name = "richTextBoxMiscText";
             this.richTextBoxMiscText.ReadOnly = true;
-            this.richTextBoxMiscText.Size = new System.Drawing.Size(238, 263);
+            this.richTextBoxMiscText.Size = new System.Drawing.Size(236, 263);
             this.richTextBoxMiscText.TabIndex = 0;
             this.richTextBoxMiscText.Text = "";
             // 
@@ -360,11 +361,12 @@ namespace KancolleSniffer.Forms
             // 
             // panelFleetHeader
             // 
+            this.panelFleetHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panelFleetHeader.Controls.Add(this.labelFleet4);
             this.panelFleetHeader.Controls.Add(this.label1Fleet3);
             this.panelFleetHeader.Controls.Add(this.labelFleet2);
             this.panelFleetHeader.Controls.Add(this.labelFleet1);
-            this.panelFleetHeader.Location = new System.Drawing.Point(58, 3);
+            this.panelFleetHeader.Location = new System.Drawing.Point(56, 3);
             this.panelFleetHeader.Name = "panelFleetHeader";
             this.panelFleetHeader.Size = new System.Drawing.Size(167, 19);
             this.panelFleetHeader.TabIndex = 0;
@@ -549,6 +551,18 @@ namespace KancolleSniffer.Forms
             this.labelSType.Text = "艦種";
             this.labelSType.Click += new System.EventHandler(this.labelSTypeButton_Click);
             // 
+            // panelShipHeader
+            // 
+            this.panelShipHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelShipHeader.Controls.Add(this.labelHeaderHp);
+            this.panelShipHeader.Controls.Add(this.labelHeaderCond);
+            this.panelShipHeader.Controls.Add(this.labelHeaderLv);
+            this.panelShipHeader.Controls.Add(this.labelHeaderExp);
+            this.panelShipHeader.Location = new System.Drawing.Point(113, 3);
+            this.panelShipHeader.Name = "panelShipHeader";
+            this.panelShipHeader.Size = new System.Drawing.Size(113, 19);
+            this.panelShipHeader.TabIndex = 21;
+            // 
             // airBattleResultPanel
             // 
             this.airBattleResultPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -557,7 +571,7 @@ namespace KancolleSniffer.Forms
             this.airBattleResultPanel.Location = new System.Drawing.Point(6, 23);
             this.airBattleResultPanel.Name = "airBattleResultPanel";
             this.airBattleResultPanel.ShowResultAutomatic = false;
-            this.airBattleResultPanel.Size = new System.Drawing.Size(238, 51);
+            this.airBattleResultPanel.Size = new System.Drawing.Size(236, 51);
             this.airBattleResultPanel.TabIndex = 18;
             // 
             // battleResultPanel
@@ -569,7 +583,7 @@ namespace KancolleSniffer.Forms
             this.battleResultPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.battleResultPanel.Location = new System.Drawing.Point(6, 73);
             this.battleResultPanel.Name = "battleResultPanel";
-            this.battleResultPanel.Size = new System.Drawing.Size(238, 213);
+            this.battleResultPanel.Size = new System.Drawing.Size(236, 213);
             this.battleResultPanel.TabIndex = 0;
             // 
             // antiAirPanel
@@ -581,7 +595,7 @@ namespace KancolleSniffer.Forms
             this.antiAirPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.antiAirPanel.Location = new System.Drawing.Point(6, 23);
             this.antiAirPanel.Name = "antiAirPanel";
-            this.antiAirPanel.Size = new System.Drawing.Size(238, 263);
+            this.antiAirPanel.Size = new System.Drawing.Size(236, 263);
             this.antiAirPanel.TabIndex = 17;
             // 
             // dropDownButtonSType
@@ -603,7 +617,7 @@ namespace KancolleSniffer.Forms
             this.fleetPanel.ContextMenuStrip = this.contextMenuStripFleetData;
             this.fleetPanel.Location = new System.Drawing.Point(6, 23);
             this.fleetPanel.Name = "fleetPanel";
-            this.fleetPanel.Size = new System.Drawing.Size(238, 263);
+            this.fleetPanel.Size = new System.Drawing.Size(236, 263);
             this.fleetPanel.TabIndex = 1;
             // 
             // itemTreeView
@@ -614,7 +628,7 @@ namespace KancolleSniffer.Forms
             this.itemTreeView.ContextMenuStrip = this.contextMenuStripItemList;
             this.itemTreeView.Location = new System.Drawing.Point(6, 23);
             this.itemTreeView.Name = "itemTreeView";
-            this.itemTreeView.Size = new System.Drawing.Size(238, 263);
+            this.itemTreeView.Size = new System.Drawing.Size(236, 263);
             this.itemTreeView.TabIndex = 0;
             // 
             // shipListPanel
@@ -627,26 +641,14 @@ namespace KancolleSniffer.Forms
             this.shipListPanel.GroupUpdated = false;
             this.shipListPanel.Location = new System.Drawing.Point(6, 23);
             this.shipListPanel.Name = "shipListPanel";
-            this.shipListPanel.Size = new System.Drawing.Size(238, 263);
+            this.shipListPanel.Size = new System.Drawing.Size(236, 263);
             this.shipListPanel.TabIndex = 0;
-            // 
-            // panelShipHeader
-            // 
-            this.panelShipHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelShipHeader.Controls.Add(this.labelHeaderHp);
-            this.panelShipHeader.Controls.Add(this.labelHeaderCond);
-            this.panelShipHeader.Controls.Add(this.labelHeaderLv);
-            this.panelShipHeader.Controls.Add(this.labelHeaderExp);
-            this.panelShipHeader.Location = new System.Drawing.Point(114, 3);
-            this.panelShipHeader.Name = "panelShipHeader";
-            this.panelShipHeader.Size = new System.Drawing.Size(113, 19);
-            this.panelShipHeader.TabIndex = 21;
             // 
             // ListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(250, 292);
+            this.ClientSize = new System.Drawing.Size(248, 292);
             this.Controls.Add(this.panelSType);
             this.Controls.Add(this.panelFleetHeader);
             this.Controls.Add(this.airBattleResultPanel);
@@ -671,6 +673,7 @@ namespace KancolleSniffer.Forms
             this.Activated += new System.EventHandler(this.ListForm_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ListForm_FormClosing);
             this.Load += new System.EventHandler(this.ListForm_Load);
+            this.ResizeEnd += new System.EventHandler(this.ListForm_ResizeEnd);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ListForm_KeyPress);
             this.contextMenuStripShipList.ResumeLayout(false);
             this.contextMenuStripItemList.ResumeLayout(false);

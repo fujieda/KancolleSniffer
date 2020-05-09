@@ -21,7 +21,7 @@ using KancolleSniffer.Forms;
 
 namespace KancolleSniffer.View.ListWindow
 {
-    public class FleetDataPanel : PanelWithToolTip
+    public class FleetDataPanel : PanelWithToolTip, IPanelResize
     {
         private const int LineHeight = 14;
         private const int LabelHeight = 12;
@@ -54,7 +54,7 @@ namespace KancolleSniffer.View.ListWindow
             public ShipLabel.Name Name { get; set; }
             public Label Equip { get; set; }
             public Label EquipColor { get; set; }
-            public Label Spec { get; set; }
+            public GrowLeftLabel Spec { get; set; }
 
             public override Control[] Controls => new Control[] {Fleet, Name, Equip, EquipColor, Spec};
         }
@@ -66,9 +66,9 @@ namespace KancolleSniffer.View.ListWindow
             {
                 Fleet = new Label {Location = new Point(1, 2), AutoSize = true},
                 Name = new ShipLabel.Name(new Point(10, 2), ShipNameWidth.Max),
-                Equip = new Label {Location = new Point(38, 2), AutoSize = true},
+                Equip = new Label {Location = new Point(38, 2), AutoSize = true, Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top},
                 EquipColor = new Label {Location = new Point(35, 2), Size = new Size(4, LabelHeight - 2)},
-                Spec = new GrowLeftLabel {Location = new Point(217, 2), GrowLeft = true},
+                Spec = new GrowLeftLabel {Location = new Point(217, 2), GrowLeft = true, Anchor = AnchorStyles.Right | AnchorStyles.Top},
                 BackPanel = new Panel
                 {
                     Location = new Point(0, y),
@@ -80,6 +80,19 @@ namespace KancolleSniffer.View.ListWindow
             labels.Fleet.DoubleClick += (obj, ev) => { Clipboard.SetText((string)labels.Fleet.Tag); };
             labels.Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
             labels.Move(AutoScrollPosition);
+        }
+
+        public void ApplyResize()
+        {
+            var width = Width - SystemInformation.VerticalScrollBarWidth - 2;
+            SuspendLayout();
+            foreach (var labels in _labelList)
+            {
+                labels.BackPanel.Width = width;
+                labels.Spec.AdjustLocation();
+            }
+            SetRecords();
+            ResumeLayout();
         }
 
         private void SetRecords()
@@ -99,8 +112,8 @@ namespace KancolleSniffer.View.ListWindow
             labels.Name.SetName(e.Ship);
             if (e.Ship2 != "")
                 ToolTip.SetToolTip(labels.Name, e.Ship2);
-            labels.Equip.Text = e.Equip;
-            labels.EquipColor.Visible = e.Equip != "";
+            labels.Equip.Text = e.Equip.ToString(Scaler.DownWidth(labels.BackPanel.Width) - ListForm.PanelWidth);
+            labels.EquipColor.Visible = e.Equip.ToString() != "";
             labels.EquipColor.BackColor = e.Color;
             labels.Spec.Text = e.Spec;
             if (e.Fleet != "" && e.Fleet2 != "")

@@ -19,6 +19,7 @@ using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Model;
 using KancolleSniffer.View;
+using KancolleSniffer.View.ListWindow;
 using KancolleSniffer.View.ShipListPanel;
 using Clipboard = KancolleSniffer.Util.Clipboard;
 
@@ -33,7 +34,7 @@ namespace KancolleSniffer.Forms
         private readonly CheckBox[] _shipTypeCheckBoxes;
         private bool _isMaster;
         private Settings _settings;
-        public const int PanelWidth = 217;
+        public const int PanelWidth = 215;
 
         public class Settings
         {
@@ -273,12 +274,8 @@ namespace KancolleSniffer.Forms
 
         private void ListForm_Load(object sender, EventArgs e)
         {
-            /* DPIではなくズームしたときにパネルは大きくなるがScrollBarはそのままなので隙間ができる。
-               そこでScrollBarの幅に合わせて全体の横幅を設定し直す。*/
-            Width = Scaler.ScaleWidth(PanelWidth + 12 /* PanelとFrameの内側 */) +
-                    SystemInformation.VerticalScrollBarWidth + 2 /* 縁の幅 */ + Width - ClientSize.Width;
-            MinimumSize = new Size(Width, 0);
-            MaximumSize = new Size(Width, int.MaxValue);
+            AdjustHeader();
+            SetMinimumSize();
             var config = GetConfig();
             _settings = Settings.FromShipListConfig(config);
             if (_settings.ShowHpInPercent)
@@ -294,7 +291,25 @@ namespace KancolleSniffer.Forms
             var bounds = new Rectangle(config.Location, config.Size);
             if (MainWindow.IsTitleBarOnAnyScreen(bounds.Location))
                 Location = bounds.Location;
-            Height = bounds.Height;
+            Size = bounds.Size;
+        }
+
+        private void AdjustHeader()
+        {
+            if (_config.Zoom == 100)
+                return;
+            foreach (var header in new[]
+            {
+                panelShipHeader, panelGroupHeader, panelRepairHeader
+            })
+            {
+                header.Left += SystemInformation.VerticalScrollBarWidth * (_config.Zoom - 100) / 100;
+            }
+        }
+
+        private void SetMinimumSize()
+        {
+            MinimumSize = new Size(Width - Scaler.ScaleWidth(24) - SystemInformation.VerticalScrollBarWidth * (_config.Zoom - 100) / 100, 0);
         }
 
         private ShipListConfig GetConfig()
@@ -607,6 +622,15 @@ namespace KancolleSniffer.Forms
             _settings.ShipType = checkBoxSTypeDetails.Checked;
             UpdateList();
             SetActiveControl();
+        }
+
+        private void ListForm_ResizeEnd(object sender, EventArgs e)
+        {
+            foreach (var panel in new IPanelResize[] {shipListPanel, antiAirPanel, airBattleResultPanel, battleResultPanel, fleetPanel})
+            {
+                if (panel.Visible)
+                    panel.ApplyResize();
+            }
         }
     }
 }

@@ -38,18 +38,34 @@ namespace KancolleSniffer.View.ShipListPanel
                 Fleet = new ShipLabel.Fleet(new Point(1, 2)),
                 Name = new ShipLabel.Name(new Point(10, 2), ShipNameWidth.ShipList),
                 Hp = new ShipLabel.Hp(new Point(126, 0), ShipListPanel.LineHeight),
-                Cond = new ShipLabel.Cond(new Point(128, 0), ShipListPanel.LineHeight),
-                Level = new ShipLabel.Level(new Point(154, 2), height),
-                Exp = new ShipLabel.Exp(new Point(175, 2), height),
+                Cond = new ShipLabel.Cond(new Point(127, 0), ShipListPanel.LineHeight),
+                Level = new ShipLabel.Level(new Point(152, 2), height),
+                Exp = new ShipLabel.Exp(new Point(174, 2), height),
                 BackPanel =  new Panel
                 {
                     Location = new Point(0, y),
                     Size = new Size(ListForm.PanelWidth, ShipListPanel.LineHeight),
+                    Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top
                 }
             };
+            SetAnchorRight(labels.Hp, labels.Cond, labels.Level, labels.Exp);
             _labelList.Add(labels);
             labels.Arrange(_shipListPanel, CustomColors.ColumnColors.BrightFirst(i));
             _shipListPanel.SetHpPercent(labels.Hp);
+        }
+
+        private void SetAnchorRight(params Control[] controls)
+        {
+            foreach (var control in controls)
+                control.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        }
+
+        public void Resize(int i, int width)
+        {
+            var labels = _labelList[i];
+            labels.BackPanel.Width = width;
+            labels.Hp.AdjustLocation();
+            labels.Name.AdjustWidth(Scaler.DownWidth(width) - ListForm.PanelWidth);
         }
 
         public void SetShipStatus(int i)

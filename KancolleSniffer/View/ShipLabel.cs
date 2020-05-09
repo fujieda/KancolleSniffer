@@ -51,14 +51,24 @@ namespace KancolleSniffer.View
         public new sealed class Name : ShipLabel
         {
             private SlotStatus _slotStatus, _prevSlotStatus;
-            private readonly ShipNameWidth _defaultWidth;
+            private ShipStatus _status;
 
             public static Font LatinFont { get; set; }
             public static Font BaseFont { get; set; }
+            private readonly ShipNameWidth _defaultWidth;
+            private int _nameWidth;
 
-            public Name(Point location, ShipNameWidth defaultWidth)
+            public void AdjustWidth(int adjust, bool update = false)
             {
-                _defaultWidth = defaultWidth;
+                _nameWidth = (int)_defaultWidth + Max(-24, adjust);
+                if (update && _status != null)
+                    Set(_status);
+            }
+
+            public Name(Point location, ShipNameWidth nameWidth)
+            {
+                _defaultWidth = nameWidth;
+                _nameWidth = (int)nameWidth;
                 Location = location;
                 AutoSize = true;
             }
@@ -74,7 +84,7 @@ namespace KancolleSniffer.View
 
             public override void Set(ShipStatus status)
             {
-                SetName(status, _defaultWidth);
+                SetName(status, _nameWidth);
             }
 
             public override void Reset()
@@ -84,6 +94,12 @@ namespace KancolleSniffer.View
 
             public void SetName(ShipStatus status, ShipNameWidth width)
             {
+                SetName(status, (int)width);
+            }
+
+            private void SetName(ShipStatus status, int width)
+            {
+                _status = status;
                 var slotStatus = GetSlotStatus(status);
                 var dcName = DameConName(status);
                 var sp = SpecialAttack(status);
@@ -130,19 +146,14 @@ namespace KancolleSniffer.View
 
             public void SetName(string name)
             {
-                SetName(name, _defaultWidth);
+                Set(new ShipStatus{Spec = new ShipSpec{Name = name}});
             }
 
-            private void SetName(string name, ShipNameWidth width)
-            {
-                SetName("", name, SlotStatus.Equipped, width);
-            }
-
-            private void SetName(string prefix, string name, SlotStatus slotStatus, ShipNameWidth width)
+            private void SetName(string prefix, string name, SlotStatus slotStatus, int width)
             {
                 _slotStatus = slotStatus;
                 ChangeFont(name);
-                var realWidth = width == ShipNameWidth.Max ? (int)width : Scaler.ScaleWidth((int)width);
+                var realWidth = width == int.MaxValue ? width : Scaler.ScaleWidth(width);
                 Text = prefix + StringTruncator.Truncate(name, "", realWidth, Font);
                 if (_prevSlotStatus != _slotStatus)
                     Invalidate(); // OnPaintを実行させるため

@@ -23,7 +23,7 @@ using static System.Math;
 
 namespace KancolleSniffer.View.ListWindow
 {
-    public class BattleResultPanel : PanelWithToolTip
+    public class BattleResultPanel : PanelWithToolTip, IPanelResize
     {
         private readonly List<ShipLabels> _friendLabels = new List<ShipLabels>();
         private readonly List<ShipLabels> _enemyLabels = new List<ShipLabels>();
@@ -238,7 +238,7 @@ namespace KancolleSniffer.View.ListWindow
             var lines = Max(Ships(result.Friend).Length, Ships(result.Enemy).Length);
             SetPanelVisible(lines);
             ResumeLayout(); // スクロールバーの有無を決定する
-            AdjustPanelWidth(lines);
+            AdjustPanelWidth();
         }
 
         private void SetEachResult(IReadOnlyList<ShipLabels> labelsList, BattleInfo.BattleResult.Combined fleet)
@@ -258,6 +258,7 @@ namespace KancolleSniffer.View.ListWindow
                 {
                     labels.Hp.Set(ship);
                     labels.Name.SetName(ShortenName(ship.Name));
+                    labels.Name.Left = CalcEnemyNameLeft(labels.Hp.Width);
                 }
                 else
                 {
@@ -320,6 +321,9 @@ namespace KancolleSniffer.View.ListWindow
         private const int LabelHeight = 12;
         private const int LabelMargin = (LineHeight - LabelHeight) / 2;
         private const int TopMargin = 4;
+        private const int EnemyNameLeft = 164;
+
+        private int _adjust;
 
         private void CreateLabels()
         {
@@ -368,7 +372,7 @@ namespace KancolleSniffer.View.ListWindow
                 friend.Hp.Click += HpLabelClickHandler;
                 var enemy = new ShipLabels
                 {
-                    Name = new ShipLabel.Name(new Point(164, LabelMargin), ShipNameWidth.Max),
+                    Name = new ShipLabel.Name(new Point(EnemyNameLeft, LabelMargin), ShipNameWidth.Max),
                     Hp = new ShipLabel.Hp
                     {
                         Location = new Point(119, 0),
@@ -388,12 +392,45 @@ namespace KancolleSniffer.View.ListWindow
                 _friendLabels[i].BackPanel.Visible = i < showPanels;
         }
 
-        private void AdjustPanelWidth(int lines)
+        private int _gap;
+
+        private void AdjustPanelWidth()
         {
+            var labelMax = _enemyLabels[0].Name.Location.X + _enemyLabels.Max(labels => labels.Name.Size.Width) - 1;
             var panelWidth = Max(ClientSize.Width, // スクロールバーの有無を反映した横幅
-                _enemyLabels[0].Name.Location.X + _enemyLabels.Max(labels => labels.Name.Size.Width) - 1); // 敵の名前の右端
-            for (var i = 0; i < lines; i++)
-                _friendLabels[i].BackPanel.Width = panelWidth;
+                labelMax); // 敵の名前の右端
+            foreach (var panel in from labels in _friendLabels where labels.BackPanel.Visible select labels.BackPanel)
+                panel.Width = panelWidth;
+            _gap = (ClientSize.Width - labelMax) * 2 / 3;
+        }
+
+        public void ApplyResize()
+        {
+            AdjustPanelWidth();
+            var prev = _adjust;
+            _adjust = Max(0, Min(Scaler.ScaleWidth(24), _adjust + _gap));
+            if (_adjust == prev)
+                return;
+            var diff = _adjust - prev;
+            foreach (var labels in _enemyLabels)
+            {
+                labels.Hp.Left += diff;
+                labels.Name.Left = CalcEnemyNameLeft(labels.Hp.Width);
+            }
+            foreach (var labels in _friendLabels)
+            {
+                labels.Hp.Left += diff;
+                labels.Hp.AdjustLocation();
+                labels.Name.AdjustWidth(Scaler.DownWidth(_adjust), true);
+            }
+        }
+
+        private int CalcEnemyNameLeft(int hpWidth)
+        {
+            var nameSpace = _adjust / 2;
+            var hpAdjust = Scaler.ScaleWidth(12);
+            var wideHp = hpWidth > Scaler.ScaleWidth(47);
+            return Scaler.ScaleWidth(EnemyNameLeft) + _adjust + (wideHp && nameSpace < hpAdjust ? hpAdjust : nameSpace);
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

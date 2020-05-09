@@ -93,6 +93,7 @@
     <Compile Include="Util\Clipboard.cs" />
     <Compile Include="Util\SoundPlayer.cs" />
     <Compile Include="Util\TimeStep.cs" />
+    <Compile Include="View\ListWindow\IPanelResize.cs" />
     <Compile Include="View\MainWindow\BattleInfoPanel.cs">
       <SubType>Component</SubType>
     </Compile>
