@@ -311,6 +311,13 @@ namespace KancolleSniffer.Model
                     return specs.Names.Count("鳥海", "青葉", "衣笠", "加古", "古鷹", "天龍", "夕張") >= 4;
                 case 894:
                     return specs.Specs.Any(spec => spec.IsAircraftCarrier);
+                case 903:
+                    return specs.Flagship.Name.StartsWith("夕張改二") &&
+                           specs.Names.Count("睦月", "如月", "弥生", "卯月", "菊月", "望月") >= 2;
+                case 904:
+                    return specs.Names.Count("綾波改二", "敷波改二") == 2;
+                case 905:
+                    return specs.Types.Count(type => type == 1) >= 3 && specs.Types.Length <= 5;
                 case 318:
                     return specs.Types.Count(type => type == 3) >= 2;
                 case 330:
@@ -321,10 +328,6 @@ namespace KancolleSniffer.Model
                     return specs.Names.Count("陽炎", "不知火", "霰", "霞") == 4;
                 case 339:
                     return specs.Names.Count("磯波", "浦波", "綾波", "敷波") == 4;
-                case 904:
-                    return specs.Names.Count("綾波改二", "敷波改二") == 2;
-                case 905:
-                    return specs.Types.Count(type => type == 1) >= 3 && specs.Types.Length <= 5;
                 default:
                     return true;
             }

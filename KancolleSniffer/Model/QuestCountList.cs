@@ -72,6 +72,7 @@ namespace KancolleSniffer.Model
             {888, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1}, Rank = "S", Maps = new[] {51, 53, 54}, Material = new[] {0, 0, 0, 0}}}, // 888: 新編成「三川艦隊」、鉄底海峡に突入せよ！
             {893, new QuestSortie {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Rank = "S", Maps = new[] {15, 71, 721, 722}, Material = new[] {0, 0, 0, 0}}}, // 893: 泊地周辺海域の安全確保を徹底せよ！
             {894, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "S", Maps = new[] {13, 14, 21, 22, 23}, Material = new[] {0, 0, 0, 0}}}, // 894: 空母戦力の投入による兵站線戦闘哨戒
+            {903, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {51, 54, 64, 65}, Material = new[] {0, 10, 0, 0}}}, // 903: 拡張「六水戦」、最前線へ！
             {904, new QuestSortie {Interval = Yearly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {25, 34, 45, 53}, Material = new[] {0, 8, 10, 4}}}, // 904: 精鋭「十九駆」、躍り出る！
             {905, new QuestSortie {Interval = Yearly, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "A", Maps = new[] {11, 12, 13, 15, 16}, Material = new[] {0, 6, 8, 0}}}, // 905: 「海防艦」、海を護る！
 

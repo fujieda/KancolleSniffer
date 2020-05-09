@@ -1075,6 +1075,51 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 拡張「六水戦」、最前線へ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_903()
+        {
+            var count = InjectQuest(903);
+            _battleInfo.InjectResultStatus(new[] {ShipStatus("夕張改二"), ShipStatus("睦月"), ShipStatus("綾波")},
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
+            InjectMapNext(51, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}), "六水戦駆逐が1隻");
+
+            _battleInfo.Result.Friend.Main[2] = ShipStatus("如月");
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}), "A勝利はカウントしない");
+
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "5-1");
+
+            InjectMapNext(54, 4);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "ボス以外はカウントしない");
+
+            _battleInfo.Result.Friend.Main = new[] {ShipStatus("睦月"), ShipStatus("如月"), ShipStatus("夕張改二")};
+            InjectMapNext(54, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "旗艦が夕張改二ではない");
+
+            _battleInfo.Result.Friend.Main = new[] {ShipStatus("夕張改二"), ShipStatus("弥生"), ShipStatus("卯月")};
+            InjectMapNext(54, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0, 0}), "5-4");
+
+            _battleInfo.Result.Friend.Main = new[] {ShipStatus("夕張改二"), ShipStatus("菊月"), ShipStatus("望月")};
+            InjectMapNext(64, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0}), "6-4");
+
+            InjectMapNext(65, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}), "6-5");
+        }
+
+        /// <summary>
         /// 904: 精鋭「十九駆」、躍り出る！
         /// </summary>
         [TestMethod]
