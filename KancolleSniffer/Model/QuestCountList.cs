@@ -23,7 +23,8 @@ namespace KancolleSniffer.Model
         private const QuestInterval Weekly = QuestInterval.Weekly;
         private const QuestInterval Monthly = QuestInterval.Monthly;
         private const QuestInterval Quarterly = QuestInterval.Quarterly;
-        private const QuestInterval Yearly = QuestInterval.Yearly;
+        private const QuestInterval Yearly2 = QuestInterval.Yearly2;
+        private const QuestInterval Yearly3 = QuestInterval.Yearly3;
 
         /// <summary>
         /// このテーブルは七四式電子観測儀を参考に作成した。
@@ -73,8 +74,8 @@ namespace KancolleSniffer.Model
             {893, new QuestSortie {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Rank = "S", Maps = new[] {15, 71, 721, 722}, Material = new[] {0, 0, 0, 0}}}, // 893: 泊地周辺海域の安全確保を徹底せよ！
             {894, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "S", Maps = new[] {13, 14, 21, 22, 23}, Material = new[] {0, 0, 0, 0}}}, // 894: 空母戦力の投入による兵站線戦闘哨戒
             {903, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {51, 54, 64, 65}, Material = new[] {0, 10, 0, 0}}}, // 903: 拡張「六水戦」、最前線へ！
-            {904, new QuestSortie {Interval = Yearly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {25, 34, 45, 53}, Material = new[] {0, 8, 10, 4}}}, // 904: 精鋭「十九駆」、躍り出る！
-            {905, new QuestSortie {Interval = Yearly, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "A", Maps = new[] {11, 12, 13, 15, 16}, Material = new[] {0, 6, 8, 0}}}, // 905: 「海防艦」、海を護る！
+            {904, new QuestSortie {Interval = Yearly2, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {25, 34, 45, 53}, Material = new[] {0, 8, 10, 4}}}, // 904: 精鋭「十九駆」、躍り出る！
+            {905, new QuestSortie {Interval = Yearly2, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "A", Maps = new[] {11, 12, 13, 15, 16}, Material = new[] {0, 6, 8, 0}}}, // 905: 「海防艦」、海を護る！
 
             {303, new QuestPractice {Interval = Daily, Max = 3, Rank = "E", Material = new[] {1, 0, 0, 0}}}, // 303: 「演習」で練度向上！
             {304, new QuestPractice {Interval = Daily, Max = 5, Rank = "B", Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！
@@ -94,6 +95,7 @@ namespace KancolleSniffer.Model
             {424, new QuestMission {Interval = Monthly, Max = 4, Shift = 1, Ids = new[] {5}, Material = new[] {0, 0, 0, 0}}}, // 424: 輸送船団護衛を強化せよ！
             {426, new QuestMission {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Ids = new[] {3, 4, 5, 10}, Material = new[] {0, 0, 4, 0}}}, // 426: 海上通商航路の警戒を厳とせよ！
             {428, new QuestMission {Interval = Quarterly, MaxArray = new[] {2, 2, 2}, Ids = new[] {4, 101, 102}, Material = new[] {0, 0, 0, 3}}}, // 428: 近海に侵入する敵潜を制圧せよ！
+            {436, new QuestMission {Interval = Yearly3, MaxArray = new[] {1, 1, 1, 1, 1}, Ids = new[] {1, 2, 3, 4, 10}, Material = new [] {0, 4, 0, 0}}}, // 436: 練習航海及び警備任務を実施せよ！
 
             {503, new QuestSpec {Interval = Daily, Max = 5, Material = new[] {0, 2, 0, 0}}}, // 503: 艦隊大整備！
             {504, new QuestSpec {Interval = Daily, Max = 15, Material = new[] {1, 0, 1, 0}}}, // 504: 艦隊酒保祭り！

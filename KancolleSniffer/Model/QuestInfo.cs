@@ -63,7 +63,8 @@ namespace KancolleSniffer.Model
         Weekly,
         Monthly,
         Quarterly,
-        Yearly
+        Yearly2,
+        Yearly3
     }
 
     public class QuestInfo : IHaveState
@@ -118,7 +119,7 @@ namespace KancolleSniffer.Model
         private readonly QuestInterval[] _intervals =
         {
             QuestInterval.Daily, QuestInterval.Weekly, QuestInterval.Monthly,
-            QuestInterval.Other, QuestInterval.Quarterly, QuestInterval.Yearly
+            QuestInterval.Other, QuestInterval.Quarterly, QuestInterval.Yearly2
         };
 
         private readonly int[] _progress = {0, 50, 80};
@@ -219,7 +220,7 @@ namespace KancolleSniffer.Model
                 QuestInterval.Weekly => CrossBoundary(LastMonday.AddHours(5)),
                 QuestInterval.Monthly => CrossBoundary(new DateTime(_now.Year, _now.Month, 1, 5, 0, 0)),
                 QuestInterval.Quarterly => CrossBoundary(QuarterlyBoundary.AddHours(5)),
-                QuestInterval.Yearly => CrossBoundary(new DateTime(_now.Year, 2, 1, 5, 0, 0)),
+                QuestInterval.Yearly2 => CrossBoundary(new DateTime(_now.Year, 2, 1, 5, 0, 0)),
                 _ => false
             };
         }
