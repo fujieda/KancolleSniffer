@@ -321,6 +321,8 @@ namespace KancolleSniffer.Model
                     return specs.Types.Count(type => type == 1) >= 3 && specs.Types.Length <= 5;
                 case 912:
                     return specs.Flagship.Name.StartsWith("明石") && specs.Types.Count(type => type == 2) >= 3;
+                case 914:
+                    return specs.Types.Count(type => type == 5) >= 3 && specs.Types.Count(type => type == 2) >= 1;
                 case 318:
                     return specs.Types.Count(type => type == 3) >= 2;
                 case 330:

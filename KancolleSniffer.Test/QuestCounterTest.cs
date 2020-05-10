@@ -1259,6 +1259,50 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 912: 重巡戦隊、西へ！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_914()
+        {
+            var count = InjectQuest(914);
+            _battleInfo.InjectResultStatus(
+                new []{ShipStatus(5), ShipStatus(5), ShipStatus(5), ShipStatus(1)},
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
+            InjectMapNext(41, 5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}), "駆逐艦なしはカウントしない");
+
+            _battleInfo.Result.Friend.Main[3] = ShipStatus(2);
+            InjectBattleResult("B");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0}), "B勝利はカウントしない");
+
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "4-1");
+
+            InjectMapNext(42, 4);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "ボス以外はカウントしない");
+
+            InjectMapNext(42, 5);
+            _battleInfo.Result.Friend.Main[0] = ShipStatus(6);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "重巡2隻はカウントしない");
+
+            _battleInfo.Result.Friend.Main[0] = ShipStatus(5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0, 0}), "4-2");
+
+            InjectMapNext(43, 5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0}), "4-3");
+
+            InjectMapNext(44, 5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}), "4-3");
+        }
+
+        /// <summary>
         /// 280と854以降を同時に遂行していると854以降がカウントされないことがある
         /// </summary>
         [TestMethod]
