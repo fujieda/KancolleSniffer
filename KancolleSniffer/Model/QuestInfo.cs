@@ -221,6 +221,7 @@ namespace KancolleSniffer.Model
                 QuestInterval.Monthly => CrossBoundary(new DateTime(_now.Year, _now.Month, 1, 5, 0, 0)),
                 QuestInterval.Quarterly => CrossBoundary(QuarterlyBoundary.AddHours(5)),
                 QuestInterval.Yearly2 => CrossBoundary(new DateTime(_now.Year, 2, 1, 5, 0, 0)),
+                QuestInterval.Yearly3 => CrossBoundary(new DateTime(_now.Year, 3, 1, 5, 0, 0)),
                 _ => false
             };
         }

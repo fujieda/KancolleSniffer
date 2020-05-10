@@ -31,7 +31,8 @@ namespace KancolleSniffer.Test
             var queue = new Queue<DateTime>(new[]
             {
                 new DateTime(2017, 11, 1, 5, 0, 0), new DateTime(2017, 11, 6, 5, 0, 0),
-                new DateTime(2017, 12, 1, 5, 0, 0), new DateTime(2018, 2, 1, 5, 0, 0)
+                new DateTime(2017, 12, 1, 5, 0, 0), new DateTime(2018, 2, 1, 5, 0, 0),
+                new DateTime(2018, 3, 1, 5, 0, 0),
             });
             var questInfo = new QuestInfo(() => queue.Dequeue());
             var status = new Status
@@ -39,25 +40,30 @@ namespace KancolleSniffer.Test
                 QuestCountList = new[]
                 {
                     new QuestCount {Id = 201, Now = 1}, new QuestCount {Id = 213, Now = 1},
-                    new QuestCount {Id = 265, Now = 1}, new QuestCount {Id = 822, Now = 1},
-                    new QuestCount {Id = 904, NowArray = new[] {1, 1, 1, 1}}
-                },
+                    new QuestCount {Id = 265, Now = 1},
+                    new QuestCount {Id = 436, NowArray = new[] {1, 1, 1, 1, 0}},
+                    new QuestCount {Id = 822, Now = 1},
+                    new QuestCount {Id = 904, NowArray = new[] {1, 1, 1, 1}}},
                 QuestLastReset = new DateTime(2017, 10, 31, 5, 0, 0)
             };
             questInfo.LoadState(status);
             questInfo.InspectQuestList(CreateQuestList(new[] {201}));
             questInfo.SaveState(status);
             PAssert.That(() =>
-                status.QuestCountList.Select(qc => qc.Id).SequenceEqual(new[] {213, 822, 904})); // デイリーとマンスリーが消える
+                status.QuestCountList.Select(qc => qc.Id).SequenceEqual(new[] {213, 436, 822, 904})); // デイリーとマンスリーが消える
             questInfo.InspectQuestList(CreateQuestList(new[] {201}));
             questInfo.SaveState(status);
-            PAssert.That(() => status.QuestCountList.Select(qc => qc.Id).SequenceEqual(new[] {822, 904})); // ウィークリーが消える
+            PAssert.That(() =>
+                status.QuestCountList.Select(qc => qc.Id).SequenceEqual(new[] {436, 822, 904})); // ウィークリーが消える
             questInfo.InspectQuestList(CreateQuestList(new[] {201}));
             questInfo.SaveState(status);
-            PAssert.That(() => status.QuestCountList.Select(qc => qc.Id).SequenceEqual(new[] {904})); // クォータリーが消える
+            PAssert.That(() => status.QuestCountList.Select(qc => qc.Id).SequenceEqual(new[] {436, 904})); // クォータリーが消える
             questInfo.InspectQuestList(CreateQuestList(new[] {201}));
             questInfo.SaveState(status);
-            PAssert.That(() => status.QuestCountList.Length == 0); // イヤーリーが消える
+            PAssert.That(() => status.QuestCountList.Select(qc => qc.Id).SequenceEqual(new[] {436})); // イヤーリー2月が消える
+            questInfo.InspectQuestList(CreateQuestList(new[] {201}));
+            questInfo.SaveState(status);
+            PAssert.That(() => status.QuestCountList.Length == 0); // イヤーリー3月が消える
         }
 
         [TestMethod]
