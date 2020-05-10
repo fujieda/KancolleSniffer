@@ -1210,6 +1210,55 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 912: 工作艦「明石」護衛任務
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_912()
+        {
+            var count = InjectQuest(912);
+            _battleInfo.InjectResultStatus(
+                new []{ShipStatus("明石"), ShipStatus(2), ShipStatus(2), ShipStatus(1)},
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
+            InjectMapNext(13, 5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0, 0}), "駆逐艦2隻はカウントしない");
+
+            _battleInfo.Result.Friend.Main[3] = ShipStatus(2);
+            InjectBattleResult("B");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0, 0, 0}), "B勝利はカウントしない");
+
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0, 0}), "1-3");
+
+            InjectMapNext(21, 4);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0, 0}), "ボス以外はカウントしない");
+
+            _battleInfo.Result.Friend.Main[0] = ShipStatus(2);
+            _battleInfo.Result.Friend.Main[1] = ShipStatus("明石");
+            InjectMapNext(21, 5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0, 0}), "旗艦明石以外はカウントしない");
+
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("明石");
+            _battleInfo.Result.Friend.Main[1] = ShipStatus(2);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0, 0, 0}), "2-1");
+
+            InjectMapNext(22, 5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0, 0}), "2-2");
+
+            InjectMapNext(23, 5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1, 0}), "2-3");
+
+            InjectMapNext(16, 8);
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1, 1}), "1-6");
+        }
+
+        /// <summary>
         /// 280と854以降を同時に遂行していると854以降がカウントされないことがある
         /// </summary>
         [TestMethod]
