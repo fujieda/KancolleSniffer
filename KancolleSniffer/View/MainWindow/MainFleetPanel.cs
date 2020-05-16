@@ -149,6 +149,7 @@ namespace KancolleSniffer.View.MainWindow
         {
             _shipInfoPanel.SetCurrentFleet();
             _shipInfoPanel.Update();
+            UpdatePanelShipInfo();
         }
 
         public void UpdateBattleInfo()
