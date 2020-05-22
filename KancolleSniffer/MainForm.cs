@@ -34,6 +34,7 @@ using KancolleSniffer.Util;
 using KancolleSniffer.View;
 using Microsoft.CSharp.RuntimeBinder;
 using static System.Math;
+using Clipboard = KancolleSniffer.Util.Clipboard;
 using Timer = System.Windows.Forms.Timer;
 
 namespace KancolleSniffer
