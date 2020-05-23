@@ -333,6 +333,9 @@ namespace KancolleSniffer.Model
                     return specs.Names.Count("陽炎", "不知火", "霰", "霞") == 4;
                 case 339:
                     return specs.Names.Count("磯波", "浦波", "綾波", "敷波") == 4;
+                case 342:
+                    var t12 = specs.Types.Count(type => type == 1 || type == 2);
+                    return t12 >= 4 || t12 >= 3 && specs.Types.Intersect(new[] {3, 4, 7, 21}).Any();
                 default:
                     return true;
             }

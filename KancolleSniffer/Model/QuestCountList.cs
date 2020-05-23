@@ -88,6 +88,7 @@ namespace KancolleSniffer.Model
             {330, new QuestPractice {Interval = Daily, Max = 4, Rank = "A", Material = new[] {0, 0, 3, 0}}}, // 330: 空母機動部隊、演習始め！
             {337, new QuestPractice {Interval = Daily, Max = 3, Rank = "S", Material = new[] {0, 0, 0, 3}, Shift = 2}}, // 337: 「十八駆」演習！
             {339, new QuestPractice {Interval = Daily, Max = 3, Rank = "S", Material = new[] {0, 0, 8, 3}, Shift = 2}}, // 339: 「十九駆」演習！
+            {342, new QuestPractice {Interval = Quarterly, Max = 4, Rank = "A", Material = new[] {0, 4, 4, 0}, Shift = 1}}, // 342: 小艦艇群演習強化任務
 
             {402, new QuestMission {Interval = Daily, Max = 3, Material = new[] {0, 0, 1, 0}}}, // 402: 「遠征」を3回成功させよう！
             {403, new QuestMission {Interval = Daily, Max = 10, Material = new[] {0, 0, 0, 0}}}, // 403: 「遠征」を10回成功させよう！
