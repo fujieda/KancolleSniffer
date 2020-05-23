@@ -25,6 +25,7 @@ namespace KancolleSniffer.Model
         private const QuestInterval Quarterly = QuestInterval.Quarterly;
         private const QuestInterval Yearly2 = QuestInterval.Yearly2;
         private const QuestInterval Yearly3 = QuestInterval.Yearly3;
+        private const QuestInterval Yearly5 = QuestInterval.Yearly5;
 
         /// <summary>
         /// このテーブルは七四式電子観測儀を参考に作成した。
@@ -99,6 +100,7 @@ namespace KancolleSniffer.Model
             {426, new QuestMission {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Ids = new[] {3, 4, 5, 10}, Material = new[] {0, 0, 4, 0}}}, // 426: 海上通商航路の警戒を厳とせよ！
             {428, new QuestMission {Interval = Quarterly, MaxArray = new[] {2, 2, 2}, Ids = new[] {4, 101, 102}, Material = new[] {0, 0, 0, 3}}}, // 428: 近海に侵入する敵潜を制圧せよ！
             {436, new QuestMission {Interval = Yearly3, MaxArray = new[] {1, 1, 1, 1, 1}, Ids = new[] {1, 2, 3, 4, 10}, Material = new [] {0, 4, 0, 0}}}, // 436: 練習航海及び警備任務を実施せよ！
+            {437, new QuestMission {Interval = Yearly5, MaxArray = new[] {1, 1, 1, 1}, Ids = new[] {4, 104, 105, 110}, Material = new [] {0, 0, 7, 3}, Shift = 1}}, // 437: 小笠原沖哨戒線の強化を実施せよ！
 
             {503, new QuestSpec {Interval = Daily, Max = 5, Material = new[] {0, 2, 0, 0}}}, // 503: 艦隊大整備！
             {504, new QuestSpec {Interval = Daily, Max = 15, Material = new[] {1, 0, 1, 0}}}, // 504: 艦隊酒保祭り！

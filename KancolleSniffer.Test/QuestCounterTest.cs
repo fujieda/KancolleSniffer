@@ -1637,6 +1637,35 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 437: 小笠原沖哨戒線の強化を実施せよ！
+        /// </summary>
+        [TestMethod]
+        public void MissionResult_437()
+        {
+            var count = InjectQuest(437);
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 4}},
+                    new {api_id = 3, api_mission = new[] {2, 104}},
+                    new {api_id = 4, api_mission = new[] {2, 105}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0}));
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 110}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
+        }
+
+        /// <summary>
         /// 503: 艦隊大整備！
         /// 504: 艦隊酒保祭り！
         /// </summary>
