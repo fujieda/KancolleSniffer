@@ -314,7 +314,7 @@ namespace KancolleSniffer.Model
                     return specs.Specs.Any(spec => spec.IsAircraftCarrier);
                 case 903:
                     return specs.Flagship.Name.StartsWith("夕張改二") &&
-                           specs.Names.Count("睦月", "如月", "弥生", "卯月", "菊月", "望月") >= 2;
+                           (specs.Names.Count("睦月", "如月", "弥生", "卯月", "菊月", "望月") >= 2 || specs.Names.Contains("由良改二"));
                 case 904:
                     return specs.Names.Count("綾波改二", "敷波改二") == 2;
                 case 905:

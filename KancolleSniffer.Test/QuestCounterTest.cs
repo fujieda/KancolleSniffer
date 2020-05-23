@@ -1103,6 +1103,10 @@ namespace KancolleSniffer.Test
             InjectBattleResult("S");
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "ボス以外はカウントしない");
 
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("夕張改");
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0, 0}), "旗艦が夕張改");
+
             _battleInfo.Result.Friend.Main = new[] {ShipStatus("睦月"), ShipStatus("如月"), ShipStatus("夕張改二")};
             InjectMapNext(54, 5);
             InjectBattleResult("S");
@@ -1121,6 +1125,14 @@ namespace KancolleSniffer.Test
             InjectMapNext(65, 5);
             InjectBattleResult("S");
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}), "6-5");
+
+            _battleInfo.Result.Friend.Main = new[] {ShipStatus("夕張改二"), ShipStatus("由良改")};
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}), "由良改");
+
+            _battleInfo.Result.Friend.Main = new[] {ShipStatus("夕張改二"), ShipStatus("由良改二")};
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 2}), "由良改二");
         }
 
         /// <summary>
