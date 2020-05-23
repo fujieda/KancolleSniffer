@@ -130,19 +130,19 @@ namespace KancolleSniffer.View
         {
             for (var i = 0; i < now.Count; i++)
             {
-                if (prev.Count <= i)
+                if (i < prev.Count)
                 {
-                    prev.Add(now[i]);
-                    continue;
+                    if (prev[i].Name == now[i].Name)
+                    {
+                        UpdateNodes(prev[i].Nodes, now[i].Nodes);
+                        continue;
+                    }
+                    prev.RemoveAt(i);
                 }
-                if (prev.Count > i && prev[i].Name == now[i].Name)
-                {
-                    UpdateNodes(prev[i].Nodes, now[i].Nodes);
-                    continue;
-                }
-                prev.RemoveAt(i);
                 prev.Insert(i, now[i]);
             }
+            for (var i = now.Count; i < prev.Count; i++)
+                prev.RemoveAt(i);
         }
 
         // ReSharper disable InconsistentNaming
