@@ -103,6 +103,8 @@ namespace KancolleSniffer.Log
                 delimiter = ",\n";
                 yield return result;
             }
+            if (now == default)
+                now = DateTime.Now;
             if (currentMaterial) // 資材の現在値を出力する
                 yield return delimiter + "[\"" + Logger.FormatDateTime(now) + "\",\"" +
                              string.Join("\",\"", _materialCount.Select(c => c.Now)) + "\"]";
