@@ -164,7 +164,8 @@ namespace KancolleSniffer.Forms
                     header.BringToFront();
             }
 
-            Set(panelItemHeader, InItemList || InAntiAir || InBattleResult || InMiscText);
+            Set(panelShipHeader, InShipStatus);
+            Set(panelEmptyHeader, InItemList || InAntiAir || InBattleResult || InMiscText);
             Set(panelGroupHeader, InGroupConfig);
             Set(panelRepairHeader, InRepairList);
             Set(panelFleetHeader, InFleetInfo);

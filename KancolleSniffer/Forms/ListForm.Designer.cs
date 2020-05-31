@@ -57,7 +57,7 @@ namespace KancolleSniffer.Forms
             this.labelHeaderHp = new System.Windows.Forms.Label();
             this.labelHeaderCond = new System.Windows.Forms.Label();
             this.labelHeaderExp = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.labelHeaderLv = new System.Windows.Forms.Label();
             this.panelGroupHeader = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -70,7 +70,7 @@ namespace KancolleSniffer.Forms
             this.panelRepairHeader = new System.Windows.Forms.Panel();
             this.label10 = new System.Windows.Forms.Label();
             this.label1RepairHp = new System.Windows.Forms.Label();
-            this.panelItemHeader = new System.Windows.Forms.Panel();
+            this.panelEmptyHeader = new System.Windows.Forms.Panel();
             this.richTextBoxMiscText = new System.Windows.Forms.RichTextBox();
             this.contextMenuStripFleetData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.fleetTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,6 +99,7 @@ namespace KancolleSniffer.Forms
             this.fleetPanel = new FleetDataPanel();
             this.itemTreeView = new ItemTreeView();
             this.shipListPanel = new KancolleSniffer.View.ShipListPanel.ShipListPanel();
+            this.panelShipHeader = new System.Windows.Forms.Panel();
             this.contextMenuStripShipList.SuspendLayout();
             this.contextMenuStripItemList.SuspendLayout();
             this.panelGroupHeader.SuspendLayout();
@@ -106,6 +107,7 @@ namespace KancolleSniffer.Forms
             this.contextMenuStripFleetData.SuspendLayout();
             this.panelFleetHeader.SuspendLayout();
             this.panelSType.SuspendLayout();
+            this.panelShipHeader.SuspendLayout();
             this.SuspendLayout();
             // 
             // contextMenuStripShipList
@@ -158,7 +160,7 @@ namespace KancolleSniffer.Forms
             // 
             this.labelHeaderHp.AutoSize = true;
             this.labelHeaderHp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelHeaderHp.Location = new System.Drawing.Point(113, 8);
+            this.labelHeaderHp.Location = new System.Drawing.Point(0, 5);
             this.labelHeaderHp.Name = "labelHeaderHp";
             this.labelHeaderHp.Size = new System.Drawing.Size(20, 12);
             this.labelHeaderHp.TabIndex = 13;
@@ -169,7 +171,7 @@ namespace KancolleSniffer.Forms
             // 
             this.labelHeaderCond.AutoSize = true;
             this.labelHeaderCond.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelHeaderCond.Location = new System.Drawing.Point(132, 8);
+            this.labelHeaderCond.Location = new System.Drawing.Point(19, 5);
             this.labelHeaderCond.Name = "labelHeaderCond";
             this.labelHeaderCond.Size = new System.Drawing.Size(29, 12);
             this.labelHeaderCond.TabIndex = 13;
@@ -180,21 +182,21 @@ namespace KancolleSniffer.Forms
             // 
             this.labelHeaderExp.AutoSize = true;
             this.labelHeaderExp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelHeaderExp.Location = new System.Drawing.Point(200, 8);
+            this.labelHeaderExp.Location = new System.Drawing.Point(88, 5);
             this.labelHeaderExp.Name = "labelHeaderExp";
             this.labelHeaderExp.Size = new System.Drawing.Size(24, 12);
             this.labelHeaderExp.TabIndex = 14;
             this.labelHeaderExp.Text = "Exp";
             this.labelHeaderExp.Click += new System.EventHandler(this.labelHeaderExp_Click);
             // 
-            // label3
+            // labelHeaderLv
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(168, 8);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(17, 12);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Lv";
+            this.labelHeaderLv.AutoSize = true;
+            this.labelHeaderLv.Location = new System.Drawing.Point(56, 5);
+            this.labelHeaderLv.Name = "labelHeaderLv";
+            this.labelHeaderLv.Size = new System.Drawing.Size(17, 12);
+            this.labelHeaderLv.TabIndex = 13;
+            this.labelHeaderLv.Text = "Lv";
             // 
             // panelGroupHeader
             // 
@@ -205,7 +207,7 @@ namespace KancolleSniffer.Forms
             this.panelGroupHeader.Controls.Add(this.label6);
             this.panelGroupHeader.Location = new System.Drawing.Point(103, 3);
             this.panelGroupHeader.Name = "panelGroupHeader";
-            this.panelGroupHeader.Size = new System.Drawing.Size(127, 19);
+            this.panelGroupHeader.Size = new System.Drawing.Size(125, 19);
             this.panelGroupHeader.TabIndex = 16;
             // 
             // label5
@@ -291,7 +293,7 @@ namespace KancolleSniffer.Forms
             this.panelRepairHeader.Controls.Add(this.label1RepairHp);
             this.panelRepairHeader.Location = new System.Drawing.Point(104, 3);
             this.panelRepairHeader.Name = "panelRepairHeader";
-            this.panelRepairHeader.Size = new System.Drawing.Size(126, 19);
+            this.panelRepairHeader.Size = new System.Drawing.Size(121, 19);
             this.panelRepairHeader.TabIndex = 2;
             // 
             // label10
@@ -314,12 +316,13 @@ namespace KancolleSniffer.Forms
             this.label1RepairHp.Text = "HP";
             this.label1RepairHp.Click += new System.EventHandler(this.labelHeaderHp_Click);
             // 
-            // panelItemHeader
+            // panelEmptyHeader
             // 
-            this.panelItemHeader.Location = new System.Drawing.Point(58, 3);
-            this.panelItemHeader.Name = "panelItemHeader";
-            this.panelItemHeader.Size = new System.Drawing.Size(172, 19);
-            this.panelItemHeader.TabIndex = 0;
+            this.panelEmptyHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelEmptyHeader.Location = new System.Drawing.Point(58, 3);
+            this.panelEmptyHeader.Name = "panelEmptyHeader";
+            this.panelEmptyHeader.Size = new System.Drawing.Size(167, 19);
+            this.panelEmptyHeader.TabIndex = 0;
             // 
             // richTextBoxMiscText
             // 
@@ -363,7 +366,7 @@ namespace KancolleSniffer.Forms
             this.panelFleetHeader.Controls.Add(this.labelFleet1);
             this.panelFleetHeader.Location = new System.Drawing.Point(58, 3);
             this.panelFleetHeader.Name = "panelFleetHeader";
-            this.panelFleetHeader.Size = new System.Drawing.Size(172, 19);
+            this.panelFleetHeader.Size = new System.Drawing.Size(167, 19);
             this.panelFleetHeader.TabIndex = 0;
             // 
             // labelFleet4
@@ -536,14 +539,6 @@ namespace KancolleSniffer.Forms
             this.checkBoxSTypeBattleShip.UseVisualStyleBackColor = true;
             this.checkBoxSTypeBattleShip.Click += new System.EventHandler(this.checkBoxSType_Click);
             // 
-            // dropDownButtonSType
-            // 
-            this.dropDownButtonSType.Location = new System.Drawing.Point(58, 7);
-            this.dropDownButtonSType.Name = "dropDownButtonSType";
-            this.dropDownButtonSType.Size = new System.Drawing.Size(14, 14);
-            this.dropDownButtonSType.TabIndex = 19;
-            this.dropDownButtonSType.Click += new System.EventHandler(this.labelSTypeButton_Click);
-            // 
             // labelSType
             // 
             this.labelSType.AutoSize = true;
@@ -589,6 +584,15 @@ namespace KancolleSniffer.Forms
             this.antiAirPanel.Size = new System.Drawing.Size(238, 263);
             this.antiAirPanel.TabIndex = 17;
             // 
+            // dropDownButtonSType
+            // 
+            this.dropDownButtonSType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.dropDownButtonSType.Location = new System.Drawing.Point(58, 7);
+            this.dropDownButtonSType.Name = "dropDownButtonSType";
+            this.dropDownButtonSType.Size = new System.Drawing.Size(14, 14);
+            this.dropDownButtonSType.TabIndex = 19;
+            this.dropDownButtonSType.Click += new System.EventHandler(this.labelSTypeButton_Click);
+            // 
             // fleetPanel
             // 
             this.fleetPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -626,6 +630,18 @@ namespace KancolleSniffer.Forms
             this.shipListPanel.Size = new System.Drawing.Size(238, 263);
             this.shipListPanel.TabIndex = 0;
             // 
+            // panelShipHeader
+            // 
+            this.panelShipHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelShipHeader.Controls.Add(this.labelHeaderHp);
+            this.panelShipHeader.Controls.Add(this.labelHeaderCond);
+            this.panelShipHeader.Controls.Add(this.labelHeaderLv);
+            this.panelShipHeader.Controls.Add(this.labelHeaderExp);
+            this.panelShipHeader.Location = new System.Drawing.Point(114, 3);
+            this.panelShipHeader.Name = "panelShipHeader";
+            this.panelShipHeader.Size = new System.Drawing.Size(113, 19);
+            this.panelShipHeader.TabIndex = 21;
+            // 
             // ListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -636,15 +652,12 @@ namespace KancolleSniffer.Forms
             this.Controls.Add(this.airBattleResultPanel);
             this.Controls.Add(this.battleResultPanel);
             this.Controls.Add(this.antiAirPanel);
-            this.Controls.Add(this.panelItemHeader);
+            this.Controls.Add(this.panelEmptyHeader);
             this.Controls.Add(this.panelRepairHeader);
             this.Controls.Add(this.panelGroupHeader);
             this.Controls.Add(this.labelSType);
             this.Controls.Add(this.dropDownButtonSType);
-            this.Controls.Add(this.labelHeaderExp);
-            this.Controls.Add(this.labelHeaderCond);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.labelHeaderHp);
+            this.Controls.Add(this.panelShipHeader);
             this.Controls.Add(this.richTextBoxMiscText);
             this.Controls.Add(this.fleetPanel);
             this.Controls.Add(this.itemTreeView);
@@ -669,6 +682,8 @@ namespace KancolleSniffer.Forms
             this.panelFleetHeader.ResumeLayout(false);
             this.panelSType.ResumeLayout(false);
             this.panelSType.PerformLayout();
+            this.panelShipHeader.ResumeLayout(false);
+            this.panelShipHeader.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -680,7 +695,7 @@ namespace KancolleSniffer.Forms
         private System.Windows.Forms.Label labelHeaderHp;
         private System.Windows.Forms.Label labelHeaderCond;
         private System.Windows.Forms.Label labelHeaderExp;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label labelHeaderLv;
         private System.Windows.Forms.Panel panelGroupHeader;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label9;
@@ -693,7 +708,7 @@ namespace KancolleSniffer.Forms
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label1RepairHp;
-        private System.Windows.Forms.Panel panelItemHeader;
+        private System.Windows.Forms.Panel panelEmptyHeader;
         private FleetDataPanel fleetPanel;
         private ItemTreeView itemTreeView;
         private System.Windows.Forms.RichTextBox richTextBoxMiscText;
@@ -727,5 +742,6 @@ namespace KancolleSniffer.Forms
         private System.Windows.Forms.Label labelSType;
         private System.Windows.Forms.CheckBox checkBoxSTypeDetails;
         private System.Windows.Forms.ToolStripMenuItem kantaiBunsekiToolStripMenuItem;
+        private System.Windows.Forms.Panel panelShipHeader;
     }
 }
