@@ -66,6 +66,7 @@ namespace KancolleSniffer.View.ShipListPanel
             SetAnchorRight(labels.Hp, labels.Level, labels.Time, labels.PerHp);
             _labelList.Add(labels);
             labels.Arrange(_shipListPanel, CustomColors.ColumnColors.BrightFirst(i));
+            labels.Scale();
             _shipListPanel.SetHpPercent(labels.Hp);
         }
 

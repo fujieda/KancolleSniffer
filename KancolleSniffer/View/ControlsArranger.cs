@@ -27,7 +27,6 @@ namespace KancolleSniffer.View
         public void Arrange(Control parent)
         {
             SetParent(parent);
-            Scale();
         }
 
         public void Arrange(Control parent, Color color)
@@ -45,7 +44,6 @@ namespace KancolleSniffer.View
         {
             parent.Controls.Add(BackPanel);
             BackPanel.BackColor = color;
-            Scaler.Scale(BackPanel);
         }
 
         private void SetParent(Control parent)
@@ -53,8 +51,13 @@ namespace KancolleSniffer.View
             parent.Controls.AddRange(Controls);
         }
 
-        private void Scale()
+        public void Scale()
         {
+            if (BackPanel != null)
+            {
+                Scaler.Scale(BackPanel);
+                return;
+            }
             foreach (var control in Controls)
                 Scaler.Scale(control);
         }

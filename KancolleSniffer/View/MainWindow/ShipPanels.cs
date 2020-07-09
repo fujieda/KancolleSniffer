@@ -49,11 +49,10 @@ namespace KancolleSniffer.View.MainWindow
         {
             _shipLines = new ShipLabelLines(ShipInfo.MemberCount, 16);
             _shipLines7 = new ShipLabelLines(7, 14);
-            parent.Controls.AddRange(new Control[]{_combined, _7Ships});
+            parent.Controls.AddRange(new Control[] {_combined, _7Ships});
             _shipLines.Create(parent, _hpToggle, onClick);
             _shipLines7.Create(_7Ships, _hpToggle, onClick);
             _combinedLines.Create(_combined, _hpToggle, onClick);
-
         }
 
         public void ToggleHpPercent()
@@ -139,7 +138,6 @@ namespace KancolleSniffer.View.MainWindow
                 CreateHeader(parent, hpToggle);
                 for (var i = 0; i < _shipLines.Length; i++)
                 {
-
                     var y = Top + _lineHeight * (i + 1);
                     var labels = _shipLines[i] = new ShipLabels
                     {
@@ -170,10 +168,7 @@ namespace KancolleSniffer.View.MainWindow
                 };
                 parent.Controls.AddRange(headings);
                 foreach (var control in headings)
-                {
-                    Scaler.Scale(control);
                     control.BackColor = CustomColors.ColumnColors.Bright;
-                }
                 headings[0].Cursor = Cursors.Hand;
                 hpToggle.SetClickHandler(headings[0]);
             }

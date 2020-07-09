@@ -78,6 +78,7 @@ namespace KancolleSniffer.View.MainWindow
                     }
                 };
                 _labels[i].Arrange(this);
+                _labels[i].Scale();
             }
             ResumeLayout();
             SetupListScroller();

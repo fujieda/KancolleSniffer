@@ -64,7 +64,6 @@ namespace KancolleSniffer.View.ShipListPanel
                     Size = new Size(12, 11),
                     Tag = i * 10 + j
                 };
-                Scaler.Scale(cb[j]);
                 cb[j].CheckedChanged += checkboxGroup_CheckedChanged;
             }
             SetAnchorRight(cb.Concat(new Control[] {labels.Level}).ToArray());
@@ -72,6 +71,7 @@ namespace KancolleSniffer.View.ShipListPanel
             _checkBoxesList.Add(cb);
             labels.Arrange(_shipListPanel, CustomColors.ColumnColors.BrightFirst(i));
             labels.BackPanel.Controls.AddRange(cb);
+            labels.Scale();
         }
 
         private void SetAnchorRight(params Control[] controls)
