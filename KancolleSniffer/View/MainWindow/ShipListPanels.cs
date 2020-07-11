@@ -20,7 +20,7 @@ using KancolleSniffer.Model;
 
 namespace KancolleSniffer.View.MainWindow
 {
-    public class ShipPanels
+    public class ShipListPanels
     {
         private const int PanelWidth = 220;
 
@@ -45,7 +45,7 @@ namespace KancolleSniffer.View.MainWindow
 
         public bool ShowHpInPercent => _hpToggle.InPercent;
 
-        public ShipPanels(Control parent, EventHandler onClick)
+        public ShipListPanels(Control parent, EventHandler onClick)
         {
             _shipLines = new ShipLabelLines(ShipInfo.MemberCount, 16);
             _shipLines7 = new ShipLabelLines(7, 14);

@@ -66,7 +66,7 @@ namespace KancolleSniffer.Forms
             this.hqPanel = new KancolleSniffer.View.MainWindow.HqPanel();
             this.materialHistoryPanel = new KancolleSniffer.View.MainWindow.MaterialHistoryPanel();
             this.dropDownButtonMaterialHistory = new KancolleSniffer.View.DropDownButton();
-            this.mainFleetPanel = new KancolleSniffer.View.MainWindow.MainFleetPanel();
+            this.fleetPanel = new KancolleSniffer.View.MainWindow.FleetPanel();
             this.SuspendLayout();
             // 
             // labelAkashiRepairTimer
@@ -236,11 +236,11 @@ namespace KancolleSniffer.Forms
             // 
             // mainFleetPanel
             // 
-            this.mainFleetPanel.Context = null;
-            this.mainFleetPanel.Location = new System.Drawing.Point(232, 3);
-            this.mainFleetPanel.Name = "mainFleetPanel";
-            this.mainFleetPanel.Size = new System.Drawing.Size(220, 148);
-            this.mainFleetPanel.TabIndex = 82;
+            this.fleetPanel.Context = null;
+            this.fleetPanel.Location = new System.Drawing.Point(232, 3);
+            this.fleetPanel.Name = "fleetPanel";
+            this.fleetPanel.Size = new System.Drawing.Size(220, 148);
+            this.fleetPanel.TabIndex = 82;
             // 
             // HorizontalMainForm
             // 
@@ -252,7 +252,7 @@ namespace KancolleSniffer.Forms
             this.Controls.Add(this.labelAkashiRepair);
             this.Controls.Add(this.labelAkashiRepairTimer);
             this.Controls.Add(this.missionPanel);
-            this.Controls.Add(this.mainFleetPanel);
+            this.Controls.Add(this.fleetPanel);
             this.Controls.Add(this.dropDownButtonMaterialHistory);
             this.Controls.Add(this.materialHistoryPanel);
             this.Controls.Add(this.hqPanel);
@@ -296,7 +296,7 @@ namespace KancolleSniffer.Forms
         private HqPanel hqPanel;
         private MaterialHistoryPanel materialHistoryPanel;
         private DropDownButton dropDownButtonMaterialHistory;
-        private MainFleetPanel mainFleetPanel;
+        private FleetPanel fleetPanel;
     }
 }
 

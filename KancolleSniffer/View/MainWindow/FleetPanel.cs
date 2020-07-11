@@ -8,7 +8,7 @@ using Clipboard = KancolleSniffer.Util.Clipboard;
 
 namespace KancolleSniffer.View.MainWindow
 {
-    public class MainFleetPanel : PanelWithToolTip, IUpdateTimers
+    public class FleetPanel : PanelWithToolTip, IUpdateTimers
     {
         private readonly ShipInfoPanel _shipInfoPanel = new ShipInfoPanel
         {
@@ -110,7 +110,7 @@ namespace KancolleSniffer.View.MainWindow
             }
         }
 
-        public MainFleetPanel()
+        public FleetPanel()
         {
             SetupFleetClick();
             _fleets[0].MouseHover += labelFleet1_MouseHover;

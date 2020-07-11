@@ -37,7 +37,7 @@ namespace KancolleSniffer
             // ReSharper disable UnusedAutoPropertyAccessor.Local
             public NotifyIcon notifyIconMain { get; set; }
             public HqPanel hqPanel { get; set; }
-            public MainFleetPanel mainFleetPanel { get; set; }
+            public FleetPanel fleetPanel { get; set; }
             public Label labelNDockCaption { get; set; }
             public NDockPanel ndockPanel { get; set; }
             public KDockPanel kdockPanel { get; set; }
@@ -94,8 +94,8 @@ namespace KancolleSniffer
             SetScaleFactorOfDpiScaling();
             SetupQuestPanel();
             SetEventHandlers();
-            _c.mainFleetPanel.AkashiRepairTimer = _c.labelAkashiRepairTimer;
-            _c.mainFleetPanel.ShowShipOnList = ShowShipOnShipList;
+            _c.fleetPanel.AkashiRepairTimer = _c.labelAkashiRepairTimer;
+            _c.fleetPanel.ShowShipOnList = ShowShipOnShipList;
             _c.panelRepairList.CreateLabels(panelRepairList_Click);
             _c.ndockPanel.SetClickHandler(_c.labelNDockCaption);
             _c.missionPanel.SetClickHandler(_c.labelMissionCaption);
@@ -151,13 +151,13 @@ namespace KancolleSniffer
         {
             _updateable = new IUpdateContext[]
             {
-                _c.hqPanel, _c.missionPanel, _c.kdockPanel, _c.ndockPanel, _c.materialHistoryPanel, _c.mainFleetPanel,
+                _c.hqPanel, _c.missionPanel, _c.kdockPanel, _c.ndockPanel, _c.materialHistoryPanel, _c.fleetPanel,
                 Notifier
             };
             var context = new UpdateContext(Sniffer, Config, () => _main.Step);
             foreach (var updateable in _updateable)
                 updateable.Context = context;
-            _timers = new IUpdateTimers[] {_c.missionPanel, _c.kdockPanel, _c.ndockPanel, _c.mainFleetPanel};
+            _timers = new IUpdateTimers[] {_c.missionPanel, _c.kdockPanel, _c.ndockPanel, _c.fleetPanel};
         }
 
         private void SetScaleFactorOfDpiScaling()
@@ -179,7 +179,7 @@ namespace KancolleSniffer
             if (update == Sniffer.Update.Start)
             {
                 _c.hqPanel.Login.Visible = false;
-                _c.mainFleetPanel.Start();
+                _c.fleetPanel.Start();
                 Notifier.StopAllRepeat();
                 return;
             }
@@ -210,10 +210,10 @@ namespace KancolleSniffer
             if (Config.HideOnMinimized && Form.WindowState == FormWindowState.Minimized)
                 Form.ShowInTaskbar = false;
             if (Config.ShowHpInPercent)
-                _c.mainFleetPanel.ToggleHpPercent();
+                _c.fleetPanel.ToggleHpPercent();
             if (Config.ShipList.Visible)
                 _listFormGroup.Show();
-            _main.CheckVersionUpMain(_c.mainFleetPanel.Guide);
+            _main.CheckVersionUpMain(_c.fleetPanel.Guide);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -229,7 +229,7 @@ namespace KancolleSniffer
             }
             _listFormGroup.Close();
             Config.Location = (Form.WindowState == FormWindowState.Normal ? Form.Bounds : Form.RestoreBounds).Location;
-            Config.ShowHpInPercent = _c.mainFleetPanel.ShowHpInPercent;
+            Config.ShowHpInPercent = _c.fleetPanel.ShowHpInPercent;
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -307,7 +307,7 @@ namespace KancolleSniffer
             var prev = Form.CurrentAutoScaleDimensions;
             foreach (var control in new Control[]
             {
-                Form, _c.mainFleetPanel.Guide, _c.hqPanel.Login,
+                Form, _c.fleetPanel.Guide, _c.hqPanel.Login,
                 _contextMenuMain
             }.Concat(_main.Controls))
             {
@@ -376,7 +376,7 @@ namespace KancolleSniffer
 
         private void UpdateShipInfo()
         {
-            _c.mainFleetPanel.Update();
+            _c.fleetPanel.Update();
             Notifier.NotifyDamagedShip();
             UpdateChargeInfo();
             UpdateRepairList();
@@ -389,7 +389,7 @@ namespace KancolleSniffer
         {
             _listFormGroup.UpdateBattleResult();
             _listFormGroup.UpdateAirBattleResult();
-            _c.mainFleetPanel.UpdateBattleInfo();
+            _c.fleetPanel.UpdateBattleInfo();
         }
 
         private void UpdateCellInfo()
@@ -399,7 +399,7 @@ namespace KancolleSniffer
 
         private void UpdateChargeInfo()
         {
-            _c.mainFleetPanel.UpdateChargeInfo();
+            _c.fleetPanel.UpdateChargeInfo();
         }
 
         private void UpdateNDocLabels()

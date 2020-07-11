@@ -111,7 +111,7 @@
     </Compile>
     <Compile Include="View\IUpdateable.cs" />
     <Compile Include="View\MainWindow\FighterPower.cs" />
-    <Compile Include="View\MainWindow\MainFleetPanel.cs">
+    <Compile Include="View\MainWindow\FleetPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\MainWindow\MaterialHistoryPanel.cs">
@@ -210,7 +210,7 @@
     <Compile Include="View\MainWindow\RepairListPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\MainWindow\ShipPanels.cs" />
+    <Compile Include="View\MainWindow\ShipListPanels.cs" />
     <Compile Include="Forms\ListForm.cs">
       <SubType>Form</SubType>
     </Compile>

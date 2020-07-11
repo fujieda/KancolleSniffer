@@ -60,7 +60,7 @@ namespace KancolleSniffer.View.MainWindow
             Location = new Point(186, 117)
         };
 
-        private readonly ShipPanels _shipPanels;
+        private readonly ShipListPanels _shipPanels;
 
         private UpdateContext _context;
 
@@ -80,7 +80,7 @@ namespace KancolleSniffer.View.MainWindow
         {
             Controls.AddRange(new Control[] {Guide, _presetAkashiTimer});
             BorderStyle = BorderStyle.FixedSingle;
-            _shipPanels = new ShipPanels(this, ShipClickHandler);
+            _shipPanels = new ShipListPanels(this, ShipClickHandler);
             Controls.AddRange(new Control[]
             {
                 _battleInfo,
