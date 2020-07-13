@@ -64,15 +64,14 @@ namespace KancolleSniffer.View.MainWindow
                         Location = new Point(LeftMargin + 30, y),
                         Size = new Size(135, LabelHeight)
                     },
-                    Timer = new Label
+                    Timer = new GrowLeftLabel()
                     {
-                        Location = new Point(LeftMargin + 165, y),
-                        Size = new Size(51, LabelHeight),
-                        TextAlign = ContentAlignment.MiddleRight
+                        Location = new Point(LeftMargin + 216, y),
+                        GrowLeft = true
                     }
                 };
             }
-            Controls.AddRange(_labels.SelectMany(l => new Control[] {l.Number, l.Params, l.Name, l.Timer}).ToArray());
+            Controls.AddRange(_labels.SelectMany(l => new Control[] {l.Number, l.Params, l.Timer, l.Name}).ToArray());
             SetCursor();
             SetClickHandler();
         }

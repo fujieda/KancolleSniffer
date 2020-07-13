@@ -53,6 +53,7 @@ namespace KancolleSniffer.Model
                 }
                 _missions[id].Name = _missionNames.TryGetValue((int)mission[1], out var name) ? name : "不明";
                 _missions[id].Timer.SetEndTime(mission[2]);
+                _missions[id].Timer.Minus = (int)mission[0] == 3;
             }
         }
 

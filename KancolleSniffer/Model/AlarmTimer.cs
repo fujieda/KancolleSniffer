@@ -35,6 +35,8 @@ namespace KancolleSniffer.Model
         private bool _finished;
         private DateTime _endTime;
 
+        public bool Minus { private get; set; }
+
         public bool IsFinished(DateTime now) => _endTime != DateTime.MinValue && _endTime - now < _spare || _finished;
 
         public AlarmTimer(int spare = 60)
@@ -72,7 +74,8 @@ namespace KancolleSniffer.Model
             if (endTime)
                 return _endTime.ToString(@"dd\ HH\:mm", CultureInfo.InvariantCulture);
             var rest = _finished || _endTime - now < TimeSpan.Zero ? TimeSpan.Zero : _endTime - now;
-            return $"{(int)rest.TotalHours:d2}:" + rest.ToString(@"mm\:ss", CultureInfo.InvariantCulture);
+            return $"{(Minus && rest != TimeSpan.Zero ? "-" : "")}{(int)rest.TotalHours:d2}:" +
+                   rest.ToString(@"mm\:ss", CultureInfo.InvariantCulture);
         }
     }
 }
