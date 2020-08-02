@@ -107,39 +107,40 @@ namespace KancolleSniffer.View.MainWindow
         public bool ShowHpInPercent => _shipPanels.ShowHpInPercent;
 
         private bool _inSortie;
+        private bool _prevCombined;
 
-        public void SetCurrentFleet()
+        public void ChangeCurrentFleet()
         {
             var inSortie = Context.Sniffer.InSortie;
-            if (_inSortie || inSortie == -1)
+            if (_inSortie)
             {
                 _inSortie = inSortie != -1;
                 return;
             }
-            _inSortie = true;
-            if (inSortie == 10)
+            if (inSortie == -1)
             {
-                CombinedFleet = true;
-                CurrentFleet = 0;
+                _inSortie = false;
+                if (Context.Sniffer.IsCombinedFleet && !_prevCombined)
+                {
+                    CombinedFleet = true;
+                    CurrentFleet = 0;
+                }
+                _prevCombined = Context.Sniffer.IsCombinedFleet;
             }
             else
             {
-                CombinedFleet = false;
-                CurrentFleet = inSortie;
+                _inSortie = true;
+                if (inSortie == 10)
+                {
+                    CombinedFleet = true;
+                    CurrentFleet = 0;
+                }
+                else
+                {
+                    CombinedFleet = false;
+                    CurrentFleet = inSortie;
+                }
             }
-            SetCombined();
-        }
-
-        private bool _prevCombined;
-
-        private void SetCombined()
-        {
-            if (Context.Sniffer.IsCombinedFleet && !_prevCombined)
-            {
-                CombinedFleet = true;
-                CurrentFleet = 0;
-            }
-            _prevCombined = Context.Sniffer.IsCombinedFleet;
         }
 
         public new void Update()

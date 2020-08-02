@@ -147,7 +147,7 @@ namespace KancolleSniffer.View.MainWindow
 
         public new void Update()
         {
-            _shipInfoPanel.SetCurrentFleet();
+            _shipInfoPanel.ChangeCurrentFleet();
             _shipInfoPanel.Update();
             UpdatePanelShipInfo();
         }
