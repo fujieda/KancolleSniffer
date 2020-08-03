@@ -143,8 +143,7 @@ namespace KancolleSniffer.Model
             Id == 226 || // 九五式爆雷
             Id == 227; // 二式爆雷
 
-        public bool IsSpecialDCT => Id == 287 || // 三式爆雷投射機 集中配備
-                                    Id == 288; // 試製15cm9連装対潜噴進砲
+        public bool IsSpecialDCT => Type == 15 && !IsDCT && !IsDC;
 
         public bool IsRepairFacility => Type == 31;
 
