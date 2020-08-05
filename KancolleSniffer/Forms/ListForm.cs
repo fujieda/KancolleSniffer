@@ -225,6 +225,7 @@ namespace KancolleSniffer.Forms
 
         public void UpdateCellInfo()
         {
+            MoveToBattleResult();
             battleResultPanel.Spoilers = _config.Spoilers;
             battleResultPanel.UpdateCellInfo(_sniffer.CellInfo);
         }
