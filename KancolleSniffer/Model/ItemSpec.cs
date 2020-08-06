@@ -223,6 +223,20 @@ namespace KancolleSniffer.Model
             }
         }
 
+        public double CalcAirReconScore(int slot)
+        {
+            switch (Type)
+            {
+                case 10: // 水偵
+                case 11: // 水爆
+                    return LoS * Math.Sqrt(Math.Sqrt(slot));
+                case 41: // 大艇
+                    return LoS * Math.Sqrt(slot);
+                default:
+                    return 0;
+            }
+        }
+
         public Color Color
         {
             get

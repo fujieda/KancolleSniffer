@@ -363,6 +363,17 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 航空偵察スコアを計算する
+        /// </summary>
+        [TestMethod]
+        public void AirReconScore()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "airrecon_score_001");
+            PAssert.That(() => Abs(sniffer.Fleets[0].AirReconScore - 26.88) < 0.01);
+        }
+
+        /// <summary>
         /// 編成で空き番号を使ったローテートを正しく反映する
         /// </summary>
         [TestMethod]

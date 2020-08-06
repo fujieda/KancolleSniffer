@@ -233,6 +233,10 @@ namespace KancolleSniffer.Model
             return result > 0 ? result - Ceiling(_getHqLevel() * 0.4) + emptyBonus * 2 : 0.0;
         }
 
+        public double AirReconScore =>
+            ActualShips.SelectMany(ship =>
+                ship.OnSlot.Zip(ship.Slot, (slot, item) => item.Spec.CalcAirReconScore(slot))).Sum();
+
         public double DaihatsuBonus
         {
             get
