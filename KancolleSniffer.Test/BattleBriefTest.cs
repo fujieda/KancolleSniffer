@@ -187,5 +187,19 @@ namespace KancolleSniffer.Test
             _battleInfo.InspectBattleResult(Data(logs[6]));
             PAssert.That(() => _shipInfo.Fleets[1].Ships[5].NowHp == 6);
         }
+
+        /// <summary>
+        /// 護衛退避艦がいるときに勝利判定がずれる
+        /// </summary>
+        [TestMethod]
+        public void WrongResultRankWithEscapedShip()
+        {
+            var logs = ReadAllLines("escape_rank_001");
+            var battle = Data(logs[3]);
+            InjectShips(battle, JsonObject.Parse(logs[0]));
+            _battleInfo.InspectBattle(logs[1], logs[2], battle);
+            _battleInfo.InspectBattleResult(Data(logs[6]));
+            PAssert.That(() => !_battleInfo.DisplayedResultRank.IsError);
+        }
     }
 }

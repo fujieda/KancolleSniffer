@@ -180,6 +180,25 @@ namespace KancolleSniffer.Model
             _guard = json.api_f_nowhps_combined()
                 ? Record.Setup(_shipInfo.Fleets[1].ActualShips, practice)
                 : new Record[0];
+            SetEscapedFlag(json);
+        }
+
+        /// <summary>
+        /// EscapedはShipStatusにあるがBattleBriefTestの用のログにはShipStatusがないので、
+        /// ここで戦闘用のAPIを元に設定する。
+        /// </summary>
+        private void SetEscapedFlag(dynamic json)
+        {
+            if (json.api_escape_idx())
+            {
+                foreach (int idx in json.api_escape_idx)
+                    _friend[idx - 1].Escaped = true;
+            }
+            if (json.api_escape_idx_combined())
+            {
+                foreach (int idx in json.api_escape_idx_combined)
+                    _guard[idx - 1].Escaped = true;
+            }
         }
 
         private void SetupEnemyDamageRecord(dynamic json, bool practice)
@@ -696,7 +715,7 @@ namespace KancolleSniffer.Model
             private bool _practice;
             public ShipStatus SnapShot => (ShipStatus)_status.Clone();
             public int NowHp => _status.NowHp;
-            public bool Escaped => _status.Escaped;
+            public bool Escaped { get; set; }
             public ShipStatus.Damage DamageLevel => _status.DamageLevel;
             public string Name => _status.Name;
             public int StartHp { get; private set; }
@@ -817,11 +836,10 @@ namespace KancolleSniffer.Model
 
             public ResultRankParams(Record[] records)
             {
-                var staying = records.Where(r => !r.Escaped).ToArray();
                 Count = records.Length;
-                Sunk = staying.Count(r => r.NowHp == 0);
-                Gauge = staying.Sum(r => r.StartHp - r.NowHp);
-                GaugeRate = (int)((double)Gauge / records.Sum(r => r.StartHp) * 100);
+                Sunk = records.Count(r => r.NowHp == 0);
+                Gauge = records.Sum(r => r.StartHp - r.NowHp);
+                GaugeRate = (int)((double)Gauge / records.Sum(r => r.Escaped ? 0 : r.StartHp) * 100);
             }
         }
 
