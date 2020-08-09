@@ -32,7 +32,7 @@ namespace KancolleSniffer.Model
         /// https://github.com/andanteyk/ElectronicObserver/blob/develop/ElectronicObserver/Data/Quest/QuestProgressManager.cs
         /// </summary>
         // @formatter:off
-        private static readonly Dictionary<int, QuestSpec> QuestSpecs = new Dictionary<int, QuestSpec>
+        private readonly Dictionary<int, QuestSpec> _questSpecs = new Dictionary<int, QuestSpec>
         {
             {201, new QuestSortie {Interval = Daily, Max = 1, Rank = "B", Material = new[] {0, 0, 1, 0}}}, // 201: 敵艦隊を撃滅せよ！
             {216, new QuestSortie {Interval = Daily, Max = 1, Rank = "B", Material = new[] {0, 1, 1, 0}}}, // 216: 敵艦隊主力を撃滅せよ！
@@ -135,11 +135,23 @@ namespace KancolleSniffer.Model
 
         private readonly Dictionary<int, QuestCount> _countDict = new Dictionary<int, QuestCount>();
 
+        public void SetMissionNames(dynamic json)
+        {
+            var dict = new Dictionary<int, string>();
+            foreach (var entry in json)
+                dict[(int)entry.api_id] = entry.api_name;
+            foreach (var spec in _questSpecs)
+            {
+                if (spec.Value is QuestMission mission && mission.Ids != null)
+                    mission.Names = mission.Ids.Select(id => dict.TryGetValue(id, out var name) ? name : "").ToArray();
+            }
+        }
+
         public QuestCount GetCount(int id)
         {
             if (_countDict.TryGetValue(id, out var value))
                 return value;
-            if (QuestSpecs.TryGetValue(id, out var spec))
+            if (_questSpecs.TryGetValue(id, out var spec))
             {
                 var nowArray = spec.MaxArray?.Select(x => 0).ToArray();
                 return _countDict[id] = new QuestCount
@@ -175,7 +187,7 @@ namespace KancolleSniffer.Model
                 return;
             foreach (var count in questCountList)
             {
-                count.Spec = QuestSpecs[count.Id];
+                count.Spec = _questSpecs[count.Id];
                 _countDict[count.Id] = count;
             }
         }

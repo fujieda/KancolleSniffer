@@ -69,7 +69,7 @@ namespace KancolleSniffer.Model
 
     public class QuestInfo : IHaveState
     {
-        private readonly QuestCountList _countList = new QuestCountList();
+        private readonly QuestCountList _countList;
         private readonly Func<DateTime> _nowFunc = () => DateTime.Now;
         private DateTime _now;
         private DateTime _lastReset;
@@ -86,8 +86,9 @@ namespace KancolleSniffer.Model
 
         public QuestStatus[] Quests => QuestDictionary.Values.ToArray();
 
-        public QuestInfo(Func<DateTime> nowFunc = null)
+        public QuestInfo(QuestCountList countList, Func<DateTime> nowFunc = null)
         {
+            _countList = countList;
             if (nowFunc != null)
                 _nowFunc = nowFunc;
         }

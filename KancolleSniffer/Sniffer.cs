@@ -30,8 +30,9 @@ namespace KancolleSniffer
         private readonly ShipInventory _shipInventory = new ShipInventory();
         private readonly ShipInfo _shipInfo;
         private readonly MaterialInfo _materialInfo = new MaterialInfo();
-        private readonly QuestInfo _questInfo = new QuestInfo();
+        private readonly QuestInfo _questInfo;
         private readonly QuestCounter _questCounter;
+        private readonly QuestCountList _questCountList = new QuestCountList();
         private readonly MissionInfo _missionInfo = new MissionInfo();
         private readonly ConditionTimer _conditionTimer;
         private readonly DockInfo _dockInfo;
@@ -98,6 +99,7 @@ namespace KancolleSniffer
             _airBase = new AirBase(_itemInfo);
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo, _airBase);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
+            _questInfo = new QuestInfo(_questCountList);
             _questCounter = new QuestCounter(_questInfo, _itemInfo, _battleInfo);
             _miscTextInfo = new MiscTextInfo(_shipInfo, _itemInfo);
             _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo, _questInfo};
@@ -187,6 +189,7 @@ namespace KancolleSniffer
             _miscTextInfo.InspectMaster(data);
             _logger.InspectMapInfoMaster(data.api_mst_mapinfo);
             SetMapDictionary(data.api_mst_mapinfo);
+            _questCountList.SetMissionNames(data.api_mst_mission);
             Started = true;
             return Update.Start;
         }

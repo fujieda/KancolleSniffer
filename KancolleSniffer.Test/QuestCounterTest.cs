@@ -167,9 +167,25 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 284, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 226, Now = 2},
                     new QuestCount {Id = 436, NowArray = new[] {1, 0, 1, 1, 1}},
+                    new QuestCount {Id = 437, NowArray = new[] {1, 0, 1, 1}}
                 }
             };
-            new QuestInfo().LoadState(status);
+            var countList = new QuestCountList();
+            countList.SetMissionNames(new JsonObject(new[]
+            {
+                new {api_id = 1, api_name = "練習航海"},
+                new {api_id = 2, api_name = "長距離練習航海"},
+                new {api_id = 3, api_name = "警備任務"},
+                new {api_id = 4, api_name = "対潜警戒任務"},
+                new {api_id = 5, api_name = "海上護衛任務"},
+                new {api_id = 10, api_name = "強行偵察任務"},
+                new {api_id = 101, api_name = "海峡警備行動"},
+                new {api_id = 102, api_name = "長時間対潜警戒"},
+                new {api_id = 104, api_name = "小笠原沖哨戒線"},
+                new {api_id = 105, api_name = "小笠原沖戦闘哨戒"},
+                new {api_id = 110, api_name = "南西方面航空偵察作戦"},
+            }));
+            new QuestInfo(countList).LoadState(status);
             Assert.AreEqual("2/3", status.QuestCountList[0].ToString());
             Assert.AreEqual("20/36 7/6 10/24 8/12", status.QuestCountList[1].ToString());
             var z = status.QuestCountList[2];
@@ -179,7 +195,7 @@ namespace KancolleSniffer.Test
             Assert.AreEqual("2-4:0 6-1:0 6-3:0 6-4:0", z.ToToolTip());
             var q426 = status.QuestCountList[3];
             Assert.AreEqual("1\u200a1\u200a1\u200a1", q426.ToString());
-            Assert.AreEqual("警備任務1 対潜警戒任務1 海上護衛任務1 強硬偵察任務1", q426.ToToolTip());
+            Assert.AreEqual("警備任務1 対潜警戒任務1 海上護衛任務1 強行偵察任務1", q426.ToToolTip());
             var q428 = status.QuestCountList[4];
             Assert.AreEqual("対潜警戒任務1 海峡警備行動1 長時間対潜警戒1", q428.ToToolTip());
             q428.NowArray = new[] {0, 1, 0};
@@ -212,6 +228,9 @@ namespace KancolleSniffer.Test
             var q436 = status.QuestCountList.First(q => q.Id == 436);
             Assert.AreEqual("1\u200a0\u200a1\u200a1\u200a1", q436.ToString());
             Assert.AreEqual("練習航海1 長距離練習航海0 警備任務1 対潜警戒任務1 強行偵察任務1", q436.ToToolTip());
+            var q437 = status.QuestCountList.First(q => q.Id == 437);
+            Assert.AreEqual("1\u200a0\u200a1\u200a1", q437.ToString());
+            Assert.AreEqual("対潜警戒任務1 小笠原沖哨戒線0 小笠原沖戦闘哨戒1 南西方面航空偵察作戦1", q437.ToToolTip());
         }
     }
 
@@ -309,7 +328,7 @@ namespace KancolleSniffer.Test
         {
             _battleInfo = new BattleInfo(null, null, null);
             _itemInfo = new ItemInfo(new ItemMaster(), new ItemInventory());
-            _questInfo = new QuestInfo(() => new DateTime(2015, 1, 1));
+            _questInfo = new QuestInfo(new QuestCountList(), () => new DateTime(2015, 1, 1));
             _questCounter = new QuestCounter(_questInfo, _itemInfo, _battleInfo);
         }
 
@@ -1148,7 +1167,7 @@ namespace KancolleSniffer.Test
         {
             var count = InjectQuest(904);
             _battleInfo.InjectResultStatus(
-                new []{ShipStatus("綾波改二"), ShipStatus("敷波")},
+                new[] {ShipStatus("綾波改二"), ShipStatus("敷波")},
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             InjectMapNext(25, 5);
@@ -1234,7 +1253,7 @@ namespace KancolleSniffer.Test
         {
             var count = InjectQuest(912);
             _battleInfo.InjectResultStatus(
-                new []{ShipStatus("明石"), ShipStatus(2), ShipStatus(2), ShipStatus(1)},
+                new[] {ShipStatus("明石"), ShipStatus(2), ShipStatus(2), ShipStatus(1)},
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             InjectMapNext(13, 5);
@@ -1283,7 +1302,7 @@ namespace KancolleSniffer.Test
         {
             var count = InjectQuest(914);
             _battleInfo.InjectResultStatus(
-                new []{ShipStatus(5), ShipStatus(5), ShipStatus(5), ShipStatus(1)},
+                new[] {ShipStatus(5), ShipStatus(5), ShipStatus(5), ShipStatus(1)},
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             InjectMapNext(41, 5);
@@ -1456,7 +1475,7 @@ namespace KancolleSniffer.Test
         {
             var count = InjectQuest(337);
 
-            _battleInfo.InjectResultStatus(new []
+            _battleInfo.InjectResultStatus(new[]
             {
                 ShipStatus("霰"), ShipStatus("霰"),
                 ShipStatus("陽炎"), ShipStatus("不知火"),
@@ -1482,7 +1501,7 @@ namespace KancolleSniffer.Test
         {
             var count = InjectQuest(339);
 
-            _battleInfo.InjectResultStatus(new []
+            _battleInfo.InjectResultStatus(new[]
             {
                 ShipStatus("磯波"), ShipStatus("浦波"),
                 ShipStatus("綾波"), ShipStatus("敷波"),
@@ -1505,7 +1524,7 @@ namespace KancolleSniffer.Test
         {
             var count = InjectQuest(342);
 
-            _battleInfo.InjectResultStatus(new []{ShipStatus(1), ShipStatus(1),ShipStatus(2), ShipStatus(5)},
+            _battleInfo.InjectResultStatus(new[] {ShipStatus(1), ShipStatus(1), ShipStatus(2), ShipStatus(5)},
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
             InjectPracticeResult("A");
             Assert.AreEqual(0, count.Now);

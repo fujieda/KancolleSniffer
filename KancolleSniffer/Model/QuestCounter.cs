@@ -115,18 +115,19 @@ namespace KancolleSniffer.Model
         {
             if (NowArray == null)
                 return "";
-            if (Spec is QuestSortie spec && spec.Maps != null && spec.MaxArray != null)
+            switch (Spec)
             {
-                return string.Join(" ", spec.Maps.Zip(NowArray, (map, n) => $"{MapString(map)}:{n}"));
+                case QuestSortie sortie when sortie.Maps != null && sortie.MaxArray != null:
+                    return string.Join(" ", sortie.Maps.Zip(NowArray, (map, n) => $"{MapString(map)}:{n}"));
+                case QuestMission mission when mission.Ids != null:
+                    return string.Join(" ", mission.Names.Zip(NowArray, (name, n) => $"{name}{n}"));
+                default:
+                    return string.Join(" ", (Id switch
+                    {
+                        688 => new[] {"艦戦", "艦爆", "艦攻", "水偵"},
+                        _ => new string[0]
+                    }).Zip(NowArray, (entry, n) => $"{entry}{n}"));
             }
-            return string.Join(" ", (Id switch
-            {
-                426 => new[] {"警備任務", "対潜警戒任務", "海上護衛任務", "強硬偵察任務"},
-                428 => new[] {"対潜警戒任務", "海峡警備行動", "長時間対潜警戒"},
-                436 => new[] {"練習航海", "長距離練習航海", "警備任務", "対潜警戒任務", "強行偵察任務"},
-                688 => new[] {"艦戦", "艦爆", "艦攻", "水偵"},
-                _ => new string[0]
-            }).Zip(NowArray, (entry, n) => $"{entry}{n}"));
         }
 
         public bool Cleared => NowArray?.Zip(Spec.MaxArray, (n, m) => n >= m).All(x => x) ??

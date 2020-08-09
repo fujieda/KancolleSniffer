@@ -93,6 +93,7 @@ namespace KancolleSniffer.Model
     public class QuestMission : QuestSpec
     {
         public int[] Ids { get; set; }
+        public string[] Names { get; set; }
 
         public bool Count(QuestCount count, int id)
         {

@@ -34,7 +34,7 @@ namespace KancolleSniffer.Test
                 new DateTime(2017, 12, 1, 5, 0, 0), new DateTime(2018, 2, 1, 5, 0, 0),
                 new DateTime(2018, 3, 1, 5, 0, 0), new DateTime(2018, 5, 1, 5, 0, 0)
             });
-            var questInfo = new QuestInfo(() => queue.Dequeue());
+            var questInfo = MakeQuestInfo(() => queue.Dequeue());
             var status = new Status
             {
                 QuestCountList = new[]
@@ -71,7 +71,7 @@ namespace KancolleSniffer.Test
             {
                 new DateTime(2019, 1, 22, 4, 0, 0)
             });
-            var questInfo = new QuestInfo(() => queue.Dequeue());
+            var questInfo = MakeQuestInfo(() => queue.Dequeue());
             var status = new Status
             {
                 QuestCountList = new[] {new QuestCount {Id = 213, Now = 1}},
@@ -91,7 +91,7 @@ namespace KancolleSniffer.Test
                 new DateTime(2019, 1, 27, 10, 0, 0),
                 new DateTime(2019, 1, 28, 5, 0, 0)
             });
-            var questInfo = new QuestInfo(() => queue.Dequeue());
+            var questInfo = MakeQuestInfo(() => queue.Dequeue());
             var status = new Status
             {
                 QuestLastReset = new DateTime(2019, 1, 27, 5, 0, 0)
@@ -107,7 +107,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void NotImplemented()
         {
-            var questInfo = new QuestInfo(() => new DateTime(2015, 1, 1));
+            var questInfo = MakeQuestInfo(() => new DateTime(2015, 1, 1));
             InspectQuestList(questInfo, new[] {679});
             PAssert.That(() => questInfo.Quests[0].Count.Spec.Material.Length == 0);
         }
@@ -146,7 +146,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void LoadStateNotAppendMaterialList()
         {
-            var questInfo = new QuestInfo(() => new DateTime(2015, 1, 1));
+            var questInfo = MakeQuestInfo(() => new DateTime(2015, 1, 1));
             var status = new Status
             {
                 QuestList = new[]
@@ -167,6 +167,11 @@ namespace KancolleSniffer.Test
             };
             questInfo.LoadState(status);
             PAssert.That(() => questInfo.Quests[0].Material.Length == 8);
+        }
+
+        private QuestInfo MakeQuestInfo(Func<DateTime> nowFunc)
+        {
+            return new QuestInfo(new QuestCountList(), nowFunc);
         }
     }
 }
