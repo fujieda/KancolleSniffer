@@ -70,7 +70,6 @@ namespace KancolleSniffer.Forms
             this.panelRepairHeader = new System.Windows.Forms.Panel();
             this.label10 = new System.Windows.Forms.Label();
             this.label1RepairHp = new System.Windows.Forms.Label();
-            this.panelEmptyHeader = new System.Windows.Forms.Panel();
             this.richTextBoxMiscText = new System.Windows.Forms.RichTextBox();
             this.contextMenuStripFleetData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.fleetTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -317,13 +316,6 @@ namespace KancolleSniffer.Forms
             this.label1RepairHp.TabIndex = 17;
             this.label1RepairHp.Text = "HP";
             this.label1RepairHp.Click += new System.EventHandler(this.labelHeaderHp_Click);
-            // 
-            // panelEmptyHeader
-            // 
-            this.panelEmptyHeader.Location = new System.Drawing.Point(56, 3);
-            this.panelEmptyHeader.Name = "panelEmptyHeader";
-            this.panelEmptyHeader.Size = new System.Drawing.Size(167, 19);
-            this.panelEmptyHeader.TabIndex = 0;
             // 
             // richTextBoxMiscText
             // 
@@ -654,7 +646,6 @@ namespace KancolleSniffer.Forms
             this.Controls.Add(this.airBattleResultPanel);
             this.Controls.Add(this.battleResultPanel);
             this.Controls.Add(this.antiAirPanel);
-            this.Controls.Add(this.panelEmptyHeader);
             this.Controls.Add(this.panelRepairHeader);
             this.Controls.Add(this.panelGroupHeader);
             this.Controls.Add(this.labelSType);
@@ -711,7 +702,6 @@ namespace KancolleSniffer.Forms
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label1RepairHp;
-        private System.Windows.Forms.Panel panelEmptyHeader;
         private FleetDataPanel fleetPanel;
         private ItemTreeView itemTreeView;
         private System.Windows.Forms.RichTextBox richTextBoxMiscText;

@@ -166,10 +166,10 @@ namespace KancolleSniffer.Forms
             }
 
             Set(panelShipHeader, InShipStatus);
-            Set(panelEmptyHeader, InItemList || InAntiAir || InBattleResult || InMiscText);
             Set(panelGroupHeader, InGroupConfig);
             Set(panelRepairHeader, InRepairList);
             Set(panelFleetHeader, InFleetInfo);
+            SetSTypeDropDownVisible(InShipStatus || InRepairList);
         }
 
         private void SetPanelVisibility()
@@ -581,6 +581,14 @@ namespace KancolleSniffer.Forms
             _settings.ShowHpInPercent = !_settings.ShowHpInPercent;
             shipListPanel.ToggleHpPercent();
             battleResultPanel.ToggleHpPercent();
+        }
+
+        private void SetSTypeDropDownVisible(bool visible)
+        {
+            if (!visible)
+                SetPanelSTypeState(false);
+            dropDownButtonSType.Visible = visible;
+            labelSType.Visible = visible;
         }
 
         private void labelSTypeButton_Click(object sender, EventArgs e)
