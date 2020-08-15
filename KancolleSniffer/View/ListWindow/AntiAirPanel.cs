@@ -40,6 +40,7 @@ namespace KancolleSniffer.View.ListWindow
             CreateTable(sniffer);
             SuspendLayout();
             CreateLabels();
+            ResizeLabels();
             SetRecords();
             ResumeLayout();
         }
@@ -143,16 +144,22 @@ namespace KancolleSniffer.View.ListWindow
             };
             _labelList.Add(labels);
             labels.Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
+            labels.Scale();
             labels.Move(AutoScrollPosition);
         }
 
         public void ApplyResize()
         {
-            var width = Width - SystemInformation.VerticalScrollBarWidth - 2;
             SuspendLayout();
+            ResizeLabels();
+            ResumeLayout();
+        }
+
+        private void ResizeLabels()
+        {
+            var width = Width - SystemInformation.VerticalScrollBarWidth - 2;
             foreach (var labels in _labelList)
                 labels.BackPanel.Width = width;
-            ResumeLayout();
         }
 
         private void SetRecords()
