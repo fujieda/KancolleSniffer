@@ -38,6 +38,7 @@ namespace KancolleSniffer.View.ListWindow
             _data = FleetData.Create(sniffer);
             SuspendLayout();
             CreateLabels();
+            ResizeLabels();
             SetRecords();
             ResumeLayout();
         }
@@ -79,20 +80,26 @@ namespace KancolleSniffer.View.ListWindow
             _labelList.Add(labels);
             labels.Fleet.DoubleClick += (obj, ev) => { Clipboard.SetText((string)labels.Fleet.Tag); };
             labels.Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
+            labels.Scale();
             labels.Move(AutoScrollPosition);
         }
 
         public void ApplyResize()
         {
-            var width = Width - SystemInformation.VerticalScrollBarWidth - 2;
             SuspendLayout();
+            ResizeLabels();
+            SetRecords();
+            ResumeLayout();
+        }
+
+        private void ResizeLabels()
+        {
+            var width = Width - SystemInformation.VerticalScrollBarWidth - 2;
             foreach (var labels in _labelList)
             {
                 labels.BackPanel.Width = width;
                 labels.Spec.AdjustLocation();
             }
-            SetRecords();
-            ResumeLayout();
         }
 
         private void SetRecords()
