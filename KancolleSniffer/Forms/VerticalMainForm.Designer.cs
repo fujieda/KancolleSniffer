@@ -184,7 +184,6 @@ namespace KancolleSniffer.Forms
             // ndockPanel
             // 
             this.ndockPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ndockPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ndockPanel.Location = new System.Drawing.Point(6, 208);
             this.ndockPanel.Name = "ndockPanel";
             this.ndockPanel.Size = new System.Drawing.Size(140, 64);
@@ -234,7 +233,7 @@ namespace KancolleSniffer.Forms
             this.dropDownButtonMaterialHistory.TabIndex = 80;
             this.dropDownButtonMaterialHistory.Text = "dropDownButton1";
             // 
-            // mainFleetPanel
+            // fleetPanel
             // 
             this.fleetPanel.Context = null;
             this.fleetPanel.Location = new System.Drawing.Point(6, 42);

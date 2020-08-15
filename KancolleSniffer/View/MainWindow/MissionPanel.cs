@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -72,8 +73,9 @@ namespace KancolleSniffer.View.MainWindow
                 };
             }
             Controls.AddRange(_labels.SelectMany(l => new Control[] {l.Number, l.Params, l.Timer, l.Name}).ToArray());
-            SetCursor();
-            SetClickHandler();
+            var timers = _labels.Select(l => l.Timer).ToArray();
+            SetCursor(timers);
+            SetClickHandler(timers);
         }
 
         public void SetClickHandler(Label caption)
@@ -82,17 +84,15 @@ namespace KancolleSniffer.View.MainWindow
             _caption = caption;
         }
 
-        private void SetCursor()
+        private void SetCursor(IEnumerable<Control> controls)
         {
-            Cursor = Cursors.Hand;
-            foreach (Control control in Controls)
+            foreach (var control in controls)
                 control.Cursor = Cursors.Hand;
         }
 
-        private void SetClickHandler()
+        private void SetClickHandler(IEnumerable<Control> controls)
         {
-            Click += ClickHandler;
-            foreach (Control control in Controls)
+            foreach (var control in controls)
                 control.Click += ClickHandler;
         }
 
