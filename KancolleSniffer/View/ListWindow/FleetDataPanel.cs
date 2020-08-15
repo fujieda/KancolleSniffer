@@ -137,10 +137,10 @@ namespace KancolleSniffer.View.ListWindow
 
         public void ShowFleet(string fn)
         {
-            var i = Array.FindIndex(_data, e => e.Fleet.StartsWith(fn));
+            var i = Array.FindIndex(_data, e => e.Fleet.Contains(fn));
             if (i == -1)
                 return;
-            var y = Scaler.ScaleHeight(LineHeight * i);
+            var y = fn == "基地" ? int.MaxValue : Scaler.ScaleHeight(LineHeight * i);
             AutoScrollPosition = new Point(0, y);
         }
     }

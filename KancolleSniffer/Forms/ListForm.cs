@@ -568,7 +568,7 @@ namespace KancolleSniffer.Forms
 
         private void labelFleet_Click(object sender, EventArgs e)
         {
-            fleetPanel.ShowFleet(((Label)sender).Text);
+            fleetPanel.ShowFleet(((Control)sender).Text);
         }
 
         private void labelHeaderHp_Click(object sender, EventArgs e)

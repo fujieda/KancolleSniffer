@@ -75,6 +75,7 @@ namespace KancolleSniffer.Forms
             this.fleetTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deckBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelFleetHeader = new System.Windows.Forms.Panel();
+            this.labelFleetBase = new System.Windows.Forms.Label();
             this.labelFleet4 = new System.Windows.Forms.Label();
             this.label1Fleet3 = new System.Windows.Forms.Label();
             this.labelFleet2 = new System.Windows.Forms.Label();
@@ -354,18 +355,29 @@ namespace KancolleSniffer.Forms
             // panelFleetHeader
             // 
             this.panelFleetHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelFleetHeader.Controls.Add(this.labelFleetBase);
             this.panelFleetHeader.Controls.Add(this.labelFleet4);
             this.panelFleetHeader.Controls.Add(this.label1Fleet3);
             this.panelFleetHeader.Controls.Add(this.labelFleet2);
             this.panelFleetHeader.Controls.Add(this.labelFleet1);
             this.panelFleetHeader.Location = new System.Drawing.Point(56, 3);
             this.panelFleetHeader.Name = "panelFleetHeader";
-            this.panelFleetHeader.Size = new System.Drawing.Size(167, 19);
+            this.panelFleetHeader.Size = new System.Drawing.Size(169, 19);
             this.panelFleetHeader.TabIndex = 0;
+            // 
+            // labelFleetBase
+            // 
+            this.labelFleetBase.Location = new System.Drawing.Point(142, 1);
+            this.labelFleetBase.Name = "labelFleetBase";
+            this.labelFleetBase.Size = new System.Drawing.Size(29, 18);
+            this.labelFleetBase.TabIndex = 4;
+            this.labelFleetBase.Text = "基地";
+            this.labelFleetBase.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelFleetBase.Click += new System.EventHandler(this.labelFleet_Click);
             // 
             // labelFleet4
             // 
-            this.labelFleet4.Location = new System.Drawing.Point(138, 1);
+            this.labelFleet4.Location = new System.Drawing.Point(111, 1);
             this.labelFleet4.Name = "labelFleet4";
             this.labelFleet4.Size = new System.Drawing.Size(29, 18);
             this.labelFleet4.TabIndex = 3;
@@ -375,7 +387,7 @@ namespace KancolleSniffer.Forms
             // 
             // label1Fleet3
             // 
-            this.label1Fleet3.Location = new System.Drawing.Point(100, 1);
+            this.label1Fleet3.Location = new System.Drawing.Point(80, 1);
             this.label1Fleet3.Name = "label1Fleet3";
             this.label1Fleet3.Size = new System.Drawing.Size(29, 18);
             this.label1Fleet3.TabIndex = 2;
@@ -385,7 +397,7 @@ namespace KancolleSniffer.Forms
             // 
             // labelFleet2
             // 
-            this.labelFleet2.Location = new System.Drawing.Point(62, 1);
+            this.labelFleet2.Location = new System.Drawing.Point(49, 1);
             this.labelFleet2.Name = "labelFleet2";
             this.labelFleet2.Size = new System.Drawing.Size(29, 18);
             this.labelFleet2.TabIndex = 1;
@@ -395,7 +407,7 @@ namespace KancolleSniffer.Forms
             // 
             // labelFleet1
             // 
-            this.labelFleet1.Location = new System.Drawing.Point(24, 1);
+            this.labelFleet1.Location = new System.Drawing.Point(19, 1);
             this.labelFleet1.Name = "labelFleet1";
             this.labelFleet1.Size = new System.Drawing.Size(29, 18);
             this.labelFleet1.TabIndex = 0;
@@ -536,7 +548,7 @@ namespace KancolleSniffer.Forms
             // labelSType
             // 
             this.labelSType.AutoSize = true;
-            this.labelSType.Location = new System.Drawing.Point(74, 8);
+            this.labelSType.Location = new System.Drawing.Point(73, 8);
             this.labelSType.Name = "labelSType";
             this.labelSType.Size = new System.Drawing.Size(29, 12);
             this.labelSType.TabIndex = 20;
@@ -736,5 +748,6 @@ namespace KancolleSniffer.Forms
         private System.Windows.Forms.CheckBox checkBoxSTypeDetails;
         private System.Windows.Forms.ToolStripMenuItem kantaiBunsekiToolStripMenuItem;
         private System.Windows.Forms.Panel panelShipHeader;
+        private System.Windows.Forms.Label labelFleetBase;
     }
 }
