@@ -49,8 +49,8 @@ namespace KancolleSniffer.Forms
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HorizontalMainForm));
             this.labelAkashiRepairTimer = new System.Windows.Forms.Label();
             this.labelNDockCaption = new System.Windows.Forms.Label();
-            this.labelConstruct = new System.Windows.Forms.Label();
-            this.labelQuest = new System.Windows.Forms.Label();
+            this.labelKDockCaption = new System.Windows.Forms.Label();
+            this.labelQuestCaption = new System.Windows.Forms.Label();
             this.labelMissionCaption = new System.Windows.Forms.Label();
             this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
             this.labelMaterialCaption = new System.Windows.Forms.Label();
@@ -86,23 +86,23 @@ namespace KancolleSniffer.Forms
             this.labelNDockCaption.TabIndex = 3;
             this.labelNDockCaption.Text = "入渠";
             // 
-            // labelConstruct
+            // labelKDockCaption
             // 
-            this.labelConstruct.AutoSize = true;
-            this.labelConstruct.Location = new System.Drawing.Point(603, 73);
-            this.labelConstruct.Name = "labelConstruct";
-            this.labelConstruct.Size = new System.Drawing.Size(29, 12);
-            this.labelConstruct.TabIndex = 6;
-            this.labelConstruct.Text = "建造";
+            this.labelKDockCaption.AutoSize = true;
+            this.labelKDockCaption.Location = new System.Drawing.Point(603, 73);
+            this.labelKDockCaption.Name = "labelKDockCaption";
+            this.labelKDockCaption.Size = new System.Drawing.Size(29, 12);
+            this.labelKDockCaption.TabIndex = 6;
+            this.labelKDockCaption.Text = "建造";
             // 
-            // labelQuest
+            // labelQuestCaption
             // 
-            this.labelQuest.AutoSize = true;
-            this.labelQuest.Location = new System.Drawing.Point(8, 43);
-            this.labelQuest.Name = "labelQuest";
-            this.labelQuest.Size = new System.Drawing.Size(29, 12);
-            this.labelQuest.TabIndex = 8;
-            this.labelQuest.Text = "任務";
+            this.labelQuestCaption.AutoSize = true;
+            this.labelQuestCaption.Location = new System.Drawing.Point(8, 43);
+            this.labelQuestCaption.Name = "labelQuestCaption";
+            this.labelQuestCaption.Size = new System.Drawing.Size(29, 12);
+            this.labelQuestCaption.TabIndex = 8;
+            this.labelQuestCaption.Text = "任務";
             // 
             // labelMissionCaption
             // 
@@ -261,8 +261,8 @@ namespace KancolleSniffer.Forms
             this.Controls.Add(this.dropDownButtonRepairList);
             this.Controls.Add(this.labelRepairListCaption);
             this.Controls.Add(this.labelMaterialCaption);
-            this.Controls.Add(this.labelQuest);
-            this.Controls.Add(this.labelConstruct);
+            this.Controls.Add(this.labelQuestCaption);
+            this.Controls.Add(this.labelKDockCaption);
             this.Controls.Add(this.labelNDockCaption);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -276,8 +276,8 @@ namespace KancolleSniffer.Forms
 
         #endregion
         private System.Windows.Forms.Label labelNDockCaption;
-        private System.Windows.Forms.Label labelConstruct;
-        private System.Windows.Forms.Label labelQuest;
+        private System.Windows.Forms.Label labelKDockCaption;
+        private System.Windows.Forms.Label labelQuestCaption;
         private System.Windows.Forms.Label labelMissionCaption;
         private System.Windows.Forms.NotifyIcon notifyIconMain;
         private System.Windows.Forms.Label labelMaterialCaption;

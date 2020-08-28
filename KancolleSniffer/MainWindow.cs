@@ -40,12 +40,14 @@ namespace KancolleSniffer
             public FleetPanel fleetPanel { get; set; }
             public Label labelNDockCaption { get; set; }
             public NDockPanel ndockPanel { get; set; }
+            public Label labelKDockCaption { get; set; }
             public KDockPanel kdockPanel { get; set; }
             public Label labelMissionCaption { get; set; }
             public MissionPanel missionPanel { get; set; }
             public Label labelMaterialCaption { get; set; }
             public DropDownButton dropDownButtonMaterialHistory { get; set; }
             public MaterialHistoryPanel materialHistoryPanel { get; set; }
+            public Label labelQuestCaption { get; set; }
             public Label labelQuestCount { get; set; }
             public QuestPanel questPanel { get; set; }
             public Label labelAkashiRepair { get; set; }
@@ -92,6 +94,8 @@ namespace KancolleSniffer
         private void SetupView()
         {
             SetScaleFactorOfDpiScaling();
+            if (Config.Shape == "横長2")
+                ChangeHorizontalLayout();
             SetupQuestPanel();
             SetEventHandlers();
             _c.fleetPanel.AkashiRepairTimer = _c.labelAkashiRepairTimer;
@@ -102,6 +106,28 @@ namespace KancolleSniffer
             _c.materialHistoryPanel.SetClickHandler(_c.labelMaterialCaption, _c.dropDownButtonMaterialHistory);
             SetupUpdateable();
             PerformZoom();
+        }
+
+        private void ChangeHorizontalLayout()
+        {
+            var diff = _c.missionPanel.Left - _c.hqPanel.Left;
+            foreach (var control in new Control[]
+            {
+                _c.hqPanel, _c.questPanel, _c.labelQuestCaption, _c.labelQuestCount, _c.materialHistoryPanel,
+                _c.dropDownButtonMaterialHistory, _c.labelMaterialCaption
+            })
+            {
+                control.Left += diff;
+            }
+            foreach (var control in new Control[]
+            {
+                _c.missionPanel, _c.labelMissionCaption, _c.labelRepairListCaption, _c.panelRepairList,
+                _c.dropDownButtonRepairList, _c.labelAkashiRepair, _c.labelAkashiRepairTimer,
+                _c.ndockPanel, _c.labelNDockCaption, _c.kdockPanel, _c.labelKDockCaption
+            })
+            {
+                control.Left -= diff;
+            }
         }
 
         private void SetEventHandlers()

@@ -44,6 +44,9 @@ namespace KancolleSniffer.Forms
         {
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageWindow = new System.Windows.Forms.TabPage();
+            this.label20 = new System.Windows.Forms.Label();
+            this.comboBoxShape = new System.Windows.Forms.ComboBox();
+            this.label19 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -139,9 +142,6 @@ namespace KancolleSniffer.Forms
             this.openSoundFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialogOutputDir = new System.Windows.Forms.FolderBrowserDialog();
             this.openDebugLogDialog = new System.Windows.Forms.OpenFileDialog();
-            this.label19 = new System.Windows.Forms.Label();
-            this.comboBoxShape = new System.Windows.Forms.ComboBox();
-            this.label20 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageWindow.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownQuest)).BeginInit();
@@ -208,6 +208,37 @@ namespace KancolleSniffer.Forms
             this.tabPageWindow.TabIndex = 0;
             this.tabPageWindow.Text = "ウィンドウ";
             this.tabPageWindow.UseVisualStyleBackColor = true;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(210, 98);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(11, 12);
+            this.label20.TabIndex = 15;
+            this.label20.Text = "*";
+            // 
+            // comboBoxShape
+            // 
+            this.comboBoxShape.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxShape.FormattingEnabled = true;
+            this.comboBoxShape.Items.AddRange(new object[] {
+            "縦長",
+            "横長1",
+            "横長2"});
+            this.comboBoxShape.Location = new System.Drawing.Point(145, 97);
+            this.comboBoxShape.Name = "comboBoxShape";
+            this.comboBoxShape.Size = new System.Drawing.Size(64, 20);
+            this.comboBoxShape.TabIndex = 14;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(125, 100);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(17, 12);
+            this.label19.TabIndex = 13;
+            this.label19.Text = "形";
             // 
             // label18
             // 
@@ -1195,36 +1226,6 @@ namespace KancolleSniffer.Forms
             // 
             this.openDebugLogDialog.CheckFileExists = false;
             this.openDebugLogDialog.Title = "ログファイルの選択";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(125, 100);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(17, 12);
-            this.label19.TabIndex = 13;
-            this.label19.Text = "形";
-            // 
-            // comboBoxShape
-            // 
-            this.comboBoxShape.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxShape.FormattingEnabled = true;
-            this.comboBoxShape.Items.AddRange(new object[] {
-            "縦長",
-            "横長"});
-            this.comboBoxShape.Location = new System.Drawing.Point(145, 97);
-            this.comboBoxShape.Name = "comboBoxShape";
-            this.comboBoxShape.Size = new System.Drawing.Size(64, 20);
-            this.comboBoxShape.TabIndex = 14;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(210, 98);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(11, 12);
-            this.label20.TabIndex = 15;
-            this.label20.Text = "*";
             // 
             // ConfigDialog
             // 
