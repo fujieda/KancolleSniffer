@@ -110,10 +110,19 @@ namespace KancolleSniffer.View.MainWindow
             {
                 var fleetParams = Context.Sniffer.Fleets[i + 1].MissionParameter;
                 var inPort = string.IsNullOrEmpty(names[i]);
-                _labels[i].Params.Visible = inPort;
-                _labels[i].Params.Text = fleetParams;
-                _labels[i].Name.Text = names[i];
-                ToolTip.SetToolTip(_labels[i].Name, inPort ? "" : fleetParams);
+                var labels = _labels[i];
+                labels.Params.Visible = inPort;
+                if (inPort)
+                {
+                    labels.Params.BringToFront();
+                }
+                else
+                {
+                    labels.Params.SendToBack();
+                }
+                labels.Params.Text = fleetParams;
+                labels.Name.Text = names[i];
+                ToolTip.SetToolTip(labels.Name, inPort ? "" : fleetParams);
             }
             SetCaption();
         }
