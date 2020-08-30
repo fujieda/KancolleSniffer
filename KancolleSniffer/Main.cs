@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -263,7 +264,13 @@ namespace KancolleSniffer
 
         public void SetPlayLog(string file)
         {
-            _playLog = File.ReadLines(file).GetEnumerator();
+            try
+            {
+                _playLog = File.ReadLines(file).GetEnumerator();
+            }
+            catch (FileNotFoundException)
+            {
+            }
         }
 
         private void TimerTick(object sender, EventArgs ev)
