@@ -301,6 +301,19 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 連合艦隊時の僚艦夜戦突撃に対応する
+        /// </summary>
+        [TestMethod]
+        public void KongoSpecial()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "kongospecial_001");
+            PAssert.That(() => !sniffer.IsBattleResultError);
+            PAssert.That(() => sniffer.Battle.Result.Friend.Guard[0].SpecialAttack == ShipStatus.Attack.Fire);
+            PAssert.That(() => sniffer.Fleets[1].Ships[0].SpecialAttack == ShipStatus.Attack.Fired);
+        }
+
+        /// <summary>
         /// レーダー射撃戦に対応する
         /// </summary>
         [TestMethod]

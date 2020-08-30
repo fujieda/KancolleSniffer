@@ -562,8 +562,8 @@ namespace KancolleSniffer.Model
                 return;
 
             var eFlags = (int[])json.api_at_eflag;
-            var sources = (int[])json.api_at_list;
-            var types = json.api_at_type() ? (int[])json.api_at_type : (int[])json.api_sp_list;
+            var night = json.api_sp_list();
+            var types = night ? (int[])json.api_sp_list : (int[])json.api_at_type;
             var targets = (int[][])json.api_df_list;
             var damages = (int[][])json.api_damage;
             var records = new BothRecord(_friend, _guard, _enemy, _enemyGuard);
@@ -572,7 +572,10 @@ namespace KancolleSniffer.Model
                 if (ignoreFriendDamage && eFlags[turn] == 1)
                     continue;
                 if (IsSpecialAttack(types[turn]))
-                    records.TriggerSpecialAttack(eFlags[turn] ^ 1, sources[turn]);
+                {
+                    var pos = night && _guard.Length > 0 ? 6 : 0; // 連合第二の僚艦夜戦突撃は6
+                    records.TriggerSpecialAttack(1, pos);
+                }
                 for (var shot = 0; shot < targets[turn].Length; shot++)
                 {
                     var target = targets[turn][shot];
@@ -590,6 +593,7 @@ namespace KancolleSniffer.Model
             // 100: Nelson Touch
             // 101: 長門一斉射
             // 102: 陸奥一斉射
+            // 104: 金剛僚艦夜戦突撃
             // 200: 瑞雲一体攻撃
             // 201: 海陸立体攻撃
             return type >= 100 && type < 200;
