@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -163,8 +162,8 @@ namespace KancolleSniffer
             catch (RuntimeBinderException e)
             {
                 if (_errorDialog.ShowDialog(_form,
-                        "艦これに仕様変更があったか、受信内容が壊れています。",
-                        _errorLog.GenerateErrorLog(s, e.ToString())) == DialogResult.Abort)
+                    "艦これに仕様変更があったか、受信内容が壊れています。",
+                    _errorLog.GenerateErrorLog(s, e.ToString())) == DialogResult.Abort)
                     Exit();
             }
             catch (LogIOException e)
@@ -176,13 +175,13 @@ namespace KancolleSniffer
             catch (BattleResultError)
             {
                 if (_errorDialog.ShowDialog(_form, "戦闘結果の計算に誤りがあります。",
-                        _errorLog.GenerateBattleErrorLog()) == DialogResult.Abort)
+                    _errorLog.GenerateBattleErrorLog()) == DialogResult.Abort)
                     Exit();
             }
             catch (Exception e)
             {
                 if (_errorDialog.ShowDialog(_form, "エラーが発生しました。",
-                        _errorLog.GenerateErrorLog(s, e.ToString())) == DialogResult.Abort)
+                    _errorLog.GenerateErrorLog(s, e.ToString())) == DialogResult.Abort)
                     Exit();
             }
         }
