@@ -31,7 +31,7 @@ namespace KancolleSniffer.Forms
         private readonly Config _config;
         private readonly Form _form;
         private readonly MainWindow.TimeOutChecker _suppressActivate;
-        private readonly CheckBox[] _shipTypeCheckBoxes;
+        private CheckBox[] _shipTypeCheckBoxes;
         private bool _isMaster;
         private Settings _settings;
         public const int PanelWidth = 215;
@@ -103,7 +103,32 @@ namespace KancolleSniffer.Forms
             _form = main.Form;
             _sniffer = main.Sniffer;
             _config = main.Config;
+            ApplySettings();
+            SetupShipTypeCheckBoxes();
             _suppressActivate = main.SuppressActivate;
+            battleResultPanel.HpLabelClick += ToggleHpPercent;
+            shipListPanel.HpLabelClick += ToggleHpPercent;
+            var swipe = new SwipeScrollify();
+            swipe.AddShipListPanel(shipListPanel);
+            swipe.AddTreeView(itemTreeView);
+            swipe.AddPanel(fleetPanel);
+        }
+
+        private void ApplySettings()
+        {
+            var config = GetConfig();
+            _settings = Settings.FromShipListConfig(config);
+            if (_settings.ShowHpInPercent)
+            {
+                shipListPanel.ToggleHpPercent();
+                battleResultPanel.ToggleHpPercent();
+            }
+            LoadShipGroupFromConfig();
+            comboBoxGroup.SelectedItem = _settings.Mode;
+        }
+
+        private void SetupShipTypeCheckBoxes()
+        {
             _shipTypeCheckBoxes = new[]
             {
                 checkBoxSTypeBattleShip,
@@ -115,12 +140,7 @@ namespace KancolleSniffer.Forms
                 checkBoxSTypeSubmarine,
                 checkBoxSTypeAuxiliary
             };
-            battleResultPanel.HpLabelClick += ToggleHpPercent;
-            shipListPanel.HpLabelClick += ToggleHpPercent;
-            var swipe = new SwipeScrollify();
-            swipe.AddShipListPanel(shipListPanel);
-            swipe.AddTreeView(itemTreeView);
-            swipe.AddPanel(fleetPanel);
+            SetCheckBoxSTypeState();
         }
 
         public void UpdateList()
@@ -277,16 +297,8 @@ namespace KancolleSniffer.Forms
         {
             AdjustHeader();
             SetMinimumSize();
-            var config = GetConfig();
-            _settings = Settings.FromShipListConfig(config);
-            if (_settings.ShowHpInPercent)
-            {
-                shipListPanel.ToggleHpPercent();
-                battleResultPanel.ToggleHpPercent();
-            }
-            LoadShipGroupFromConfig();
             comboBoxGroup.SelectedItem = _settings.Mode;
-            SetCheckBoxSTypeState();
+            var config = GetConfig();
             if (config.Location.X == int.MinValue)
                 return;
             var bounds = new Rectangle(config.Location, config.Size);
