@@ -192,7 +192,6 @@ namespace KancolleSniffer.Forms
             // missionPanel
             // 
             this.missionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.missionPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.missionPanel.Location = new System.Drawing.Point(6, 289);
             this.missionPanel.Name = "missionPanel";
             this.missionPanel.Size = new System.Drawing.Size(220, 49);
