@@ -221,8 +221,6 @@ namespace KancolleSniffer.View.MainWindow
                             });
                     label.BackColor = CustomColors.ColumnColors.DarkFirst(i);
                 }
-                foreach (var label in _timerLabels)
-                    Scaler.Scale(label);
             }
 
             public void SetAkashiTimer(IReadOnlyList<ShipStatus> ships, AkashiTimer.RepairSpan[] timers)
