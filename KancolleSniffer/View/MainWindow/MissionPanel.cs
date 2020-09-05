@@ -67,8 +67,10 @@ namespace KancolleSniffer.View.MainWindow
                     },
                     Timer = new GrowLeftLabel()
                     {
-                        Location = new Point(LeftMargin + 216, y),
-                        GrowLeft = true
+                        Location = new Point(LeftMargin + 216, y - 2),
+                        GrowLeft = true,
+                        MinimumSize = new Size(0, LineHeight),
+                        TextAlign = ContentAlignment.MiddleLeft
                     }
                 };
             }
