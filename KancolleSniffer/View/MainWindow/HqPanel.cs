@@ -115,8 +115,6 @@ namespace KancolleSniffer.View.MainWindow
         protected override void OnParentChanged(EventArgs e)
         {
             base.OnParentChanged(e);
-            _bucketHistory.Location =
-                new Point(Location.X + Parent.Location.X + 100, Location.Y + Parent.Location.Y + 30);
             Parent.Controls.Add(_bucketHistory);
         }
 
@@ -176,6 +174,7 @@ namespace KancolleSniffer.View.MainWindow
             }
             else
             {
+                _bucketHistory.Location = new Point(Location.X + 100, Location.Y + 30);
                 _bucketHistory.Visible = true;
                 _bucketHistory.BringToFront();
                 _bucketHistoryButton.BackColor = CustomColors.ActiveButtonColor;
