@@ -107,8 +107,6 @@ namespace KancolleSniffer.View.ListWindow
         public void SetResult(Sniffer sniffer)
         {
             var battleResult = sniffer.Battle.AirBattleResult;
-            if (!battleResult.CheckUpdate())
-                return;
             _resultList = battleResult.Result.ToArray();
             if (_resultList.Length == 0)
             {
