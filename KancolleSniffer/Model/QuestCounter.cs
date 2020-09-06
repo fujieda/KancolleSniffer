@@ -222,7 +222,7 @@ namespace KancolleSniffer.Model
                 return;
             foreach (var count in _quests.Values.Select(q => q.Count))
             {
-                if (!(count.Spec is QuestSortie sortie))
+                if (!(count.Spec is QuestSortie sortie) || sortie.Maps == null)
                     continue;
                 if (!FleetCheck(count.Id))
                     continue;

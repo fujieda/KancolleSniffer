@@ -374,6 +374,10 @@ namespace KancolleSniffer.Test
                 new {Id = 214, Now = 0}, new {Id = 216, Now = 2}
             }));
             PAssert.That(() => counts[2].NowArray.SequenceEqual(new[] {1, 1, 2, 1}));
+
+            // 1-6 ゴール
+            InjectMapNext(16,8);
+            Assert.AreEqual(2, counts[0].Now);
         }
 
         /// <summary>
