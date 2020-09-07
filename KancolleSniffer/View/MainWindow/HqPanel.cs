@@ -174,7 +174,7 @@ namespace KancolleSniffer.View.MainWindow
             }
             else
             {
-                _bucketHistory.Location = new Point(Location.X + 100, Location.Y + 30);
+                _bucketHistory.Location = new Point(Location.X + Scaler.ScaleWidth(100), Location.Y + Scaler.ScaleHeight(30));
                 _bucketHistory.Visible = true;
                 _bucketHistory.BringToFront();
                 _bucketHistoryButton.BackColor = CustomColors.ActiveButtonColor;
