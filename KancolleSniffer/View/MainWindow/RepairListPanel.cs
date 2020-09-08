@@ -73,6 +73,7 @@ namespace KancolleSniffer.View.MainWindow
                     }
                 };
                 _repairLabels[i].Arrange(this, CustomColors.ColumnColors.BrightFirst(i));
+                _repairLabels[i].Scale();
                 _repairLabels[i].SetClickHandler(onClick);
             }
             ResumeLayout();
