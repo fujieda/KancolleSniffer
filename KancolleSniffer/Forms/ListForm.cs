@@ -125,6 +125,8 @@ namespace KancolleSniffer.Forms
 
         public void UpdateList()
         {
+            if (_settings == null)
+                return;
             SetHeaderVisibility();
             SetPanelVisibility();
             if (InItemList)
@@ -467,6 +469,8 @@ namespace KancolleSniffer.Forms
 
         private void comboBoxGroup_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_settings == null)
+                return;
             _settings.Mode = comboBoxGroup.Text;
             UpdateList();
             SetActiveControl();
