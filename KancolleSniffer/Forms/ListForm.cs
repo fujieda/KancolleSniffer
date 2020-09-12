@@ -367,8 +367,6 @@ namespace KancolleSniffer.Forms
             var config = _config.ShipList;
             config.Visible = Visible && WindowState == FormWindowState.Normal;
             _settings.SetToShipListConfig(config);
-            if (!Visible)
-                return;
             SaveBounds(config); // 最小化時は以前のサイズを記録する
         }
 
