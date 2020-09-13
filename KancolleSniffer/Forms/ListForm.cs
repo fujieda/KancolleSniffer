@@ -34,6 +34,7 @@ namespace KancolleSniffer.Forms
         private readonly CheckBox[] _shipTypeCheckBoxes;
         private bool _isMaster;
         private Settings _settings;
+        private FormWindowState _windowState = FormWindowState.Minimized;
         public const int PanelWidth = 215;
 
         public class Settings
@@ -125,7 +126,7 @@ namespace KancolleSniffer.Forms
 
         public void UpdateList()
         {
-            if (_settings == null)
+            if (!Visible)
                 return;
             SetHeaderVisibility();
             SetPanelVisibility();
@@ -446,6 +447,8 @@ namespace KancolleSniffer.Forms
 
         public void ShowShip(int id)
         {
+            if (!Visible)
+                return;
             if (InShipStatus)
             {
                 shipListPanel.ShowShip(id);
@@ -644,6 +647,13 @@ namespace KancolleSniffer.Forms
                 if (panel.Visible)
                     panel.ApplyResize();
             }
+        }
+
+        private void ListForm_Resize(object sender, EventArgs e)
+        {
+            if (_windowState != WindowState && WindowState == FormWindowState.Normal)
+                UpdateList();
+            _windowState = WindowState;
         }
     }
 }

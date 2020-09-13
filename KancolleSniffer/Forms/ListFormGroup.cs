@@ -37,23 +37,15 @@ namespace KancolleSniffer.Forms
 
         public void ShowOrCreate()
         {
-            foreach (var listForm in _listForms)
+            var listForm = _listForms.FirstOrDefault(f => f.WindowState == FormWindowState.Minimized || !f.Visible);
+            if (listForm == null)
             {
-                if (listForm.WindowState == FormWindowState.Minimized)
-                {
-                    listForm.WindowState = FormWindowState.Normal;
-                    return;
-                }
-                if (!listForm.Visible)
-                {
-                    listForm.Show();
-                    return;
-                }
+                listForm = new ListForm(_mainWindow) { Owner = Main, TopMost = Main.TopMost, Font = Main.Font };
+                _listForms.Add(listForm);
             }
-            var newForm = new ListForm(_mainWindow) {Owner = Main, TopMost = Main.TopMost, Font = Main.Font};
-            newForm.Show();
-            newForm.UpdateList();
-            _listForms.Add(newForm);
+            listForm.Show();
+            if (listForm.WindowState == FormWindowState.Minimized)
+                listForm.WindowState = FormWindowState.Normal;
         }
 
         public void UpdateList()
@@ -75,8 +67,6 @@ namespace KancolleSniffer.Forms
         {
             InvokeAll(listForm => listForm.UpdateCellInfo());
         }
-
-        public bool Visible => _listForms.Any(listForm => listForm.Visible);
 
         public bool TopMost
         {

@@ -281,7 +281,7 @@ namespace KancolleSniffer
                 RaiseBothWindows();
         }
 
-        private bool NeedRaise => _listFormGroup.Visible && Form.WindowState != FormWindowState.Minimized;
+        private bool NeedRaise => _listFormGroup.Main.Visible && Form.WindowState != FormWindowState.Minimized;
 
         private void RaiseBothWindows()
         {
@@ -386,8 +386,6 @@ namespace KancolleSniffer
 
         private void ShowShipOnShipList(int id)
         {
-            if (!_listFormGroup.Visible)
-                return;
             _listFormGroup.ShowShip(id);
         }
 
@@ -396,8 +394,7 @@ namespace KancolleSniffer
             _c.hqPanel.Update();
             Notifier.NotifyShipItemCount();
             _c.materialHistoryPanel.Update();
-            if (_listFormGroup.Visible)
-                _listFormGroup.UpdateList();
+            _listFormGroup.UpdateList();
         }
 
         private void UpdateShipInfo()
@@ -407,8 +404,7 @@ namespace KancolleSniffer
             UpdateChargeInfo();
             UpdateRepairList();
             UpdateMissionLabels();
-            if (_listFormGroup.Visible)
-                _listFormGroup.UpdateList();
+            _listFormGroup.UpdateList();
         }
 
         private void UpdateBattleInfo()
