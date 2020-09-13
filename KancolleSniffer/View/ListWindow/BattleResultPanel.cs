@@ -32,6 +32,7 @@ namespace KancolleSniffer.View.ListWindow
         private readonly InformationPanel _information;
         private CellInfo _cellInfo;
         private readonly BattleData _data = new BattleData();
+        private int _lines;
 
         public Spoiler Spoilers { get; set; }
 
@@ -212,8 +213,9 @@ namespace KancolleSniffer.View.ListWindow
 
         private void ClearResult()
         {
+            _lines = 0;
             _scrollPosition = AutoScrollPosition;
-            SetPanelVisible(0);
+            SetPanelVisible();
             _information.Visible = false;
             _rankLabel.Text = "";
             _supportLabel.Text = "";
@@ -235,8 +237,8 @@ namespace KancolleSniffer.View.ListWindow
             SuspendLayout();
             SetEachResult(_friendLabels, result.Friend);
             SetEachResult(_enemyLabels, result.Enemy);
-            var lines = Max(Ships(result.Friend).Length, Ships(result.Enemy).Length);
-            SetPanelVisible(lines);
+            _lines = Max(Ships(result.Friend).Length, Ships(result.Enemy).Length);
+            SetPanelVisible();
             ResumeLayout(); // スクロールバーの有無を決定する
             AdjustPanelWidth();
         }
@@ -386,10 +388,10 @@ namespace KancolleSniffer.View.ListWindow
             }
         }
 
-        private void SetPanelVisible(int showPanels)
+        private void SetPanelVisible()
         {
             for (var i = 0; i < _friendLabels.Count; i++)
-                _friendLabels[i].BackPanel.Visible = i < showPanels;
+                _friendLabels[i].BackPanel.Visible = i < _lines;
         }
 
         private int _gap;
@@ -399,8 +401,8 @@ namespace KancolleSniffer.View.ListWindow
             var labelMax = _enemyLabels[0].Name.Location.X + _enemyLabels.Max(labels => labels.Name.Size.Width) - 1;
             var panelWidth = Max(ClientSize.Width, // スクロールバーの有無を反映した横幅
                 labelMax); // 敵の名前の右端
-            foreach (var panel in from labels in _friendLabels where labels.BackPanel.Visible select labels.BackPanel)
-                panel.Width = panelWidth;
+            for (var i = 0; i < _lines; i++)
+                _friendLabels[i].BackPanel.Width = panelWidth;
             _gap = (ClientSize.Width - labelMax) * 2 / 3;
         }
 
