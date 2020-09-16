@@ -88,7 +88,7 @@ namespace KancolleSniffer.View.ShipListPanel
                 ScrollBar.Value - e.Delta * SystemInformation.MouseWheelScrollLines / 120));
         }
 
-        public void Update(Sniffer sniffer, string mode, ListForm.Settings settings)
+        public void Update(Sniffer sniffer, string mode, ShipListConfig settings)
         {
             _mode = mode;
             CreateShipList(sniffer, settings);
@@ -115,7 +115,7 @@ namespace KancolleSniffer.View.ShipListPanel
             Refresh();
         }
 
-        private void CreateShipList(Sniffer sniffer, ListForm.Settings settings)
+        private void CreateShipList(Sniffer sniffer, ShipListConfig settings)
         {
             var ships = FilterByShipTypes(
                 _mode == "修復" ? sniffer.RepairList : _groupConfigLabels.FilterByGroup(sniffer.ShipList, _mode),
