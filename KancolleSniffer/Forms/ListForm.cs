@@ -154,7 +154,7 @@ namespace KancolleSniffer.Forms
             Set(panelGroupHeader, InGroupConfig);
             Set(panelRepairHeader, InRepairList);
             Set(panelFleetHeader, InFleetInfo);
-            SetSTypeDropDownVisible(InShipStatus || InRepairList);
+            SetSTypeDropDownVisible(InShipStatus || InGroupConfig || InRepairList);
         }
 
         private void SetPanelVisibility()
