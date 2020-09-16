@@ -103,7 +103,48 @@ namespace KancolleSniffer.Forms
                 shipListPanel.ToggleHpPercent();
                 battleResultPanel.ToggleHpPercent();
             }
-            LoadShipGroupFromConfig();
+        }
+
+        private ShipListConfig GetConfig()
+        {
+            if (_isMaster)
+            {
+                SetGroup();
+                return _config.ShipList;
+            }
+            if (_config.ListFormGroup.Count == 0)
+                return CreateSecondaryConfig();
+            var config = _config.ListFormGroup[0];
+            _config.ListFormGroup.RemoveAt(0);
+            config.ShipGroup = _config.ShipList.ShipGroup;
+            return config;
+        }
+
+        private ShipListConfig CreateSecondaryConfig()
+        {
+            var src = _config.ShipList;
+            var config = new ShipListConfig
+            {
+                Mode = src.Mode,
+                ShipCategories = src.ShipCategories,
+                ShipType = src.ShipType,
+                ShowHpInPercent = src.ShowHpInPercent,
+                SortOrder = src.SortOrder,
+                Location = src.Location,
+                Size = src.Size,
+                ShipGroup = src.ShipGroup
+            };
+            if (config.Mode == "分類" || string.IsNullOrEmpty(config.Mode))
+                config.Mode = "全艦";
+            return config;
+        }
+
+        private void SetGroup()
+        {
+            var groups = _config.ShipList.ShipGroup;
+            for (var i = groups.Count; i < GroupConfigLabels.GroupCount; i++)
+                groups.Add(new List<int>());
+            shipListPanel.GroupSettings = groups;
         }
 
         public void UpdateList()
@@ -135,9 +176,22 @@ namespace KancolleSniffer.Forms
             }
             if (shipListPanel.GroupUpdated)
             {
-                StoreShipGroupToConfig();
+                PurifyShipGroup();
                 _config.Save();
                 shipListPanel.GroupUpdated = false;
+            }
+        }
+
+        private void PurifyShipGroup()
+        {
+            var all = _sniffer.ShipList.Select(s => s.Id).ToArray();
+            if (all.Length == 0)
+                return;
+            foreach (var g in _config.ShipList.ShipGroup)
+            {
+                var filtered = g.Intersect(all).ToArray();
+                g.Clear();
+                g.AddRange(filtered);
             }
         }
 
@@ -287,43 +341,8 @@ namespace KancolleSniffer.Forms
 
         private void SetMinimumSize()
         {
-            MinimumSize = new Size(Width - Scaler.ScaleWidth(24) - SystemInformation.VerticalScrollBarWidth * (_config.Zoom - 100) / 100, 0);
-        }
-
-        private ShipListConfig GetConfig()
-        {
-            if (_isMaster)
-                return _config.ShipList;
-            if (_config.ListFormGroup.Count == 0)
-                return CreateSecondaryConfig();
-            var config = _config.ListFormGroup[0];
-            _config.ListFormGroup.RemoveAt(0);
-            return config;
-        }
-
-        private ShipListConfig CreateSecondaryConfig()
-        {
-            var src = _config.ShipList;
-            var config = new ShipListConfig
-            {
-                Mode = src.Mode,
-                ShipCategories = src.ShipCategories,
-                ShipType = src.ShipType,
-                ShowHpInPercent = src.ShowHpInPercent,
-                SortOrder = src.SortOrder,
-                Location = src.Location,
-                Size = src.Size
-            };
-            if (config.Mode == "分類" || string.IsNullOrEmpty(config.Mode))
-                config.Mode = "全艦";
-            return config;
-        }
-
-        private void LoadShipGroupFromConfig()
-        {
-            var group = _config.ShipList.ShipGroup;
-            for (var i = 0; i < GroupConfigLabels.GroupCount; i++)
-                shipListPanel.GroupSettings[i] = i < group.Count ? new HashSet<int>(group[i]) : new HashSet<int>();
+            MinimumSize = new Size(Width - Scaler.ScaleWidth(24) -
+                                   SystemInformation.VerticalScrollBarWidth * (_config.Zoom - 100) / 100, 0);
         }
 
         private void SetCheckBoxSTypeState()
@@ -354,7 +373,7 @@ namespace KancolleSniffer.Forms
 
         private void SaveMasterState()
         {
-            StoreShipGroupToConfig();
+            PurifyShipGroup();
             _listConfig.Visible = Visible && WindowState == FormWindowState.Normal;
             SaveBounds(_listConfig); // 最小化時は以前のサイズを記録する
         }
@@ -366,6 +385,7 @@ namespace KancolleSniffer.Forms
             if (WindowState != FormWindowState.Normal) // 最小化時は次回復旧しない
                 return;
             _listConfig.Visible = true;
+            _listConfig.ShipGroup = null;
             _config.ListFormGroup.Add(_listConfig);
             SaveBounds(_listConfig);
         }
@@ -417,19 +437,6 @@ namespace KancolleSniffer.Forms
             Owner = _form;
             BringToFront();
             Owner = null;
-        }
-
-        private void StoreShipGroupToConfig()
-        {
-            var all = _sniffer.ShipList.Select(s => s.Id).ToArray();
-            var group = _config.ShipList.ShipGroup;
-            group.Clear();
-            for (var i = 0; i < GroupConfigLabels.GroupCount; i++)
-            {
-                if (all.Length > 0)
-                    shipListPanel.GroupSettings[i].IntersectWith(all);
-                group.Add(shipListPanel.GroupSettings[i].ToList());
-            }
         }
 
         public void ShowShip(int id)
@@ -627,7 +634,8 @@ namespace KancolleSniffer.Forms
 
         private void ListForm_ResizeEnd(object sender, EventArgs e)
         {
-            foreach (var panel in new IPanelResize[] {shipListPanel, antiAirPanel, airBattleResultPanel, battleResultPanel, fleetPanel})
+            foreach (var panel in new IPanelResize[]
+                {shipListPanel, antiAirPanel, airBattleResultPanel, battleResultPanel, fleetPanel})
             {
                 if (panel.Visible)
                     panel.ApplyResize();

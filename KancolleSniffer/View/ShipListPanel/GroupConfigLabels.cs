@@ -18,7 +18,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using KancolleSniffer.Forms;
-using KancolleSniffer.Model;
 
 // ReSharper disable CoVariantArrayConversion
 
@@ -31,7 +30,7 @@ namespace KancolleSniffer.View.ShipListPanel
         private readonly List<ShipLabels> _labelList = new List<ShipLabels>();
 
         public const int GroupCount = 4;
-        public HashSet<int>[] GroupSettings { get; } = new HashSet<int>[GroupCount];
+        public List<List<int>> GroupSettings { get; set; }
         public bool GroupUpdated { get; set; }
 
         public GroupConfigLabels(ShipListPanel shipListPanel)
@@ -122,14 +121,6 @@ namespace KancolleSniffer.View.ShipListPanel
         public void HidePanel(int i)
         {
             _labelList[i].BackPanel.Visible = false;
-        }
-
-        public IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships, string group)
-        {
-            var g = Array.FindIndex(new[] {"A", "B", "C", "D"}, x => x == group);
-            if (g == -1)
-                return ships;
-            return from s in ships where GroupSettings[g].Contains(s.Id) select s;
         }
     }
 }

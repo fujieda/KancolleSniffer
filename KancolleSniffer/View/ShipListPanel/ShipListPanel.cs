@@ -37,7 +37,12 @@ namespace KancolleSniffer.View.ShipListPanel
         private string _mode;
         private bool _hpPercent;
 
-        public HashSet<int>[] GroupSettings => _groupConfigLabels.GroupSettings;
+        public List<List<int>> GroupSettings
+        {
+            get => _groupConfigLabels.GroupSettings;
+            set => _groupConfigLabels.GroupSettings = value;
+        }
+
 
         public bool GroupUpdated
         {
@@ -118,7 +123,7 @@ namespace KancolleSniffer.View.ShipListPanel
         private void CreateShipList(Sniffer sniffer, ShipListConfig settings)
         {
             var ships = FilterByShipTypes(
-                _mode == "修復" ? sniffer.RepairList : _groupConfigLabels.FilterByGroup(sniffer.ShipList, _mode),
+                _mode == "修復" ? sniffer.RepairList : FilterByGroup(sniffer.ShipList, settings.ShipGroup, _mode),
                 settings.ShipCategories).ToArray();
             var order = _mode == "修復" ? ListForm.SortOrder.Repair : settings.SortOrder;
             if (!settings.ShipType)
@@ -132,6 +137,17 @@ namespace KancolleSniffer.View.ShipListPanel
                     Spec = new ShipSpec {Name = type.Name, ShipType = type.Id},
                     Level = 1000
                 }).Concat(ships).OrderBy(ship => ship, new CompareShip(true, order)).ToArray();
+        }
+
+        private static IEnumerable<ShipStatus> FilterByGroup(IEnumerable<ShipStatus> ships,
+            IReadOnlyList<List<int>> groups, string groupName)
+        {
+            var g = Array.FindIndex(new[] {"A", "B", "C", "D"}, x => x == groupName);
+            if (g == -1)
+                return ships;
+            if (groups.Count == 0)
+                return new ShipStatus[0];
+            return from s in ships where groups[g].Contains(s.Id) select s;
         }
 
         private static readonly int[][] ShipTypeIds =
