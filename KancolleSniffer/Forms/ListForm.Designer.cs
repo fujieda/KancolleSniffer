@@ -206,9 +206,9 @@ namespace KancolleSniffer.Forms
             this.panelGroupHeader.Controls.Add(this.label8);
             this.panelGroupHeader.Controls.Add(this.label7);
             this.panelGroupHeader.Controls.Add(this.label6);
-            this.panelGroupHeader.Location = new System.Drawing.Point(101, 3);
+            this.panelGroupHeader.Location = new System.Drawing.Point(104, 3);
             this.panelGroupHeader.Name = "panelGroupHeader";
-            this.panelGroupHeader.Size = new System.Drawing.Size(112, 19);
+            this.panelGroupHeader.Size = new System.Drawing.Size(110, 19);
             this.panelGroupHeader.TabIndex = 16;
             // 
             // label5
@@ -642,6 +642,7 @@ namespace KancolleSniffer.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.shipListPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.shipListPanel.ContextMenuStrip = this.contextMenuStripShipList;
+            this.shipListPanel.GroupSettings = null;
             this.shipListPanel.GroupUpdated = false;
             this.shipListPanel.Location = new System.Drawing.Point(6, 23);
             this.shipListPanel.Name = "shipListPanel";
