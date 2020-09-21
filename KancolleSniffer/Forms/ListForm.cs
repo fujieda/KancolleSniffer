@@ -34,7 +34,7 @@ namespace KancolleSniffer.Forms
         private readonly CheckBox[] _shipTypeCheckBoxes;
         private bool _isMaster;
         private ShipListConfig _listConfig;
-        private FormWindowState _windowState = FormWindowState.Minimized;
+        private FormWindowState _windowState = FormWindowState.Normal;
         public const int PanelWidth = 215;
 
         private object[] PanelNames => new object[] {"全艦", "A", "B", "C", "D", "分類", "修復", "装備", "艦隊", "対空", "戦況", "情報"}
@@ -465,6 +465,8 @@ namespace KancolleSniffer.Forms
         private void comboBoxGroup_SelectedIndexChanged(object sender, EventArgs e)
         {
             _listConfig.Mode = comboBoxGroup.Text;
+            if (!Visible)
+                return;
             UpdateList();
             SetActiveControl();
             if (!(InShipStatus || InGroupConfig || InRepairList))
@@ -647,6 +649,12 @@ namespace KancolleSniffer.Forms
             if (_windowState != WindowState && WindowState == FormWindowState.Normal)
                 UpdateList();
             _windowState = WindowState;
+        }
+
+        private void ListForm_VisibleChanged(object sender, EventArgs e)
+        {
+            if (Visible)
+                UpdateList();
         }
     }
 }
