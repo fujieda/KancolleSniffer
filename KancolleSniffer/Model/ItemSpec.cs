@@ -82,6 +82,8 @@ namespace KancolleSniffer.Model
             }
         }
 
+        public int LoSSgRadarBonus => Id == 315 ? 4 : 0;
+
         public bool IsAircraft
         {
             get

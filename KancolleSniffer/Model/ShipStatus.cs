@@ -417,6 +417,9 @@ namespace KancolleSniffer.Model
 
         public int EffectiveBullMax => Max((int)(Spec.BullMax * (Level >= 100 ? 0.85 : 1.0)), 1);
 
+        public int RawLoS =>
+            LoS - AllSlot.Sum(item => item.Spec.LoS + (Spec.HaveSgRadarBonus ? item.Spec.LoSSgRadarBonus : 0));
+
         public object Clone()
         {
             var r = (ShipStatus)MemberwiseClone();

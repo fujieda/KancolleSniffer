@@ -134,7 +134,9 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public double LoSLevelBonus
+        public double EffectiveLoS => (Spec.LoS + LoSLevelBonus) * Spec.LoSScaleFactor;
+
+        private double LoSLevelBonus
         {
             get
             {

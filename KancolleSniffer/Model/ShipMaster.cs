@@ -39,6 +39,7 @@ namespace KancolleSniffer.Model
                     Id = (int)entry.api_id,
                     SortId = entry.api_sort_id() ? (int)entry.api_sort_id : 0,
                     Name = ShipName(entry),
+                    Yomi = entry.api_yomi,
                     FuelMax = entry.api_fuel_max() ? (int)entry.api_fuel_max : 0,
                     BullMax = entry.api_bull_max() ? (int)entry.api_bull_max : 0,
                     SlotNum = (int)entry.api_slot_num,

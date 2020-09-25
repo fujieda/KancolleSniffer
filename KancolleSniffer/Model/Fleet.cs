@@ -216,20 +216,10 @@ namespace KancolleSniffer.Model
 
         public double GetLineOfSights(int factor)
         {
-            var result = 0.0;
-            var emptyBonus = 6;
-            foreach (var s in ActualShips.Where(s => !s.Escaped))
-            {
-                emptyBonus--;
-                var itemLoS = 0;
-                foreach (var item in s.AllSlot)
-                {
-                    var spec = item.Spec;
-                    itemLoS += spec.LoS;
-                    result += (spec.LoS + item.LoSLevelBonus) * spec.LoSScaleFactor * factor;
-                }
-                result += Sqrt(s.LoS - itemLoS);
-            }
+            var actual = ActualShips.Where(s => !s.Escaped).ToArray();
+            var emptyBonus = 6 - actual.Length;
+            var result = actual.Sum(s =>
+                s.AllSlot.Sum(item => item.EffectiveLoS * factor) + Sqrt(s.RawLoS));
             return result > 0 ? result - Ceiling(_getHqLevel() * 0.4) + emptyBonus * 2 : 0.0;
         }
 

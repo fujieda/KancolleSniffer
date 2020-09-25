@@ -21,6 +21,7 @@ namespace KancolleSniffer.Model
         public int Id { get; set; }
         public int SortId { get; set; }
         public string Name { get; set; }
+        public string Yomi { get; set; }
         public int FuelMax { get; set; }
         public int BullMax { get; set; }
         public int SlotNum { get; set; }
@@ -149,5 +150,31 @@ namespace KancolleSniffer.Model
         public bool IsRepairShip => ShipType == 19;
 
         public bool IsTrainingCruiser => ShipType == 21;
+
+        public bool HaveSgRadarBonus
+        {
+            get
+            {
+                switch (Yomi)
+                {
+                    case "フレッチャー":
+                    case "ジョンストン":
+                    case "サミュエル・B・ロバーツ":
+                    case "コロラド":
+                    case "サウスダコタ":
+                    case "アイオワ":
+                    case "サラトガ":
+                    case "ホーネット":
+                    case "イントレピッド":
+                    case "ガンビア・ベイ":
+                    case "ヒューストン":
+                    case "ヘレナ":
+                    case "アトランタ":
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
     }
 }

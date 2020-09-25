@@ -233,6 +233,18 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// SGレーダー(初期型)の装備ボーナスを外して索敵スコアを計算する
+        /// </summary>
+        [TestMethod]
+        public void LineOfSightWithSgRadar()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "lineofsight_004");
+            var fleet = sniffer.Fleets[0];
+            PAssert.That(() => Abs(fleet.GetLineOfSights(1) - 0.93) < 0.01);
+        }
+
+        /// <summary>
         /// 触接開始率を正しく計算する
         /// </summary>
         [TestMethod]
