@@ -167,7 +167,8 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 284, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 226, Now = 2},
                     new QuestCount {Id = 436, NowArray = new[] {1, 0, 1, 1, 1}},
-                    new QuestCount {Id = 437, NowArray = new[] {1, 0, 1, 1}}
+                    new QuestCount {Id = 437, NowArray = new[] {1, 0, 1, 1}},
+                    new QuestCount {Id = 438, NowArray = new[] {1, 0, 1, 1}}
                 }
             };
             var countList = new QuestCountList();
@@ -178,12 +179,15 @@ namespace KancolleSniffer.Test
                 new {api_id = 3, api_name = "警備任務"},
                 new {api_id = 4, api_name = "対潜警戒任務"},
                 new {api_id = 5, api_name = "海上護衛任務"},
+                new {api_id = 9, api_name = "タンカー護衛任務"},
                 new {api_id = 10, api_name = "強行偵察任務"},
+                new {api_id = 100, api_name = "兵站強化任務"},
                 new {api_id = 101, api_name = "海峡警備行動"},
                 new {api_id = 102, api_name = "長時間対潜警戒"},
                 new {api_id = 104, api_name = "小笠原沖哨戒線"},
                 new {api_id = 105, api_name = "小笠原沖戦闘哨戒"},
                 new {api_id = 110, api_name = "南西方面航空偵察作戦"},
+                new {api_id = 114, api_name = "南西諸島捜索撃滅戦"}
             }));
             new QuestInfo(countList).LoadState(status);
             Assert.AreEqual("2/3", status.QuestCountList[0].ToString());
@@ -231,6 +235,9 @@ namespace KancolleSniffer.Test
             var q437 = status.QuestCountList.First(q => q.Id == 437);
             Assert.AreEqual("1\u200a0\u200a1\u200a1", q437.ToString());
             Assert.AreEqual("対潜警戒任務1 小笠原沖哨戒線0 小笠原沖戦闘哨戒1 南西方面航空偵察作戦1", q437.ToToolTip());
+            var q438 = status.QuestCountList.First(q => q.Id == 438);
+            Assert.AreEqual("1\u200a0\u200a1\u200a1", q438.ToString());
+            Assert.AreEqual("対潜警戒任務1 兵站強化任務0 タンカー護衛任務1 南西諸島捜索撃滅戦1", q438.ToToolTip());
         }
     }
 
@@ -1691,6 +1698,35 @@ namespace KancolleSniffer.Test
                 }));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
+        }
+
+        /// <summary>
+        /// 438: 南西諸島方面の海上護衛を強化せよ！
+        /// </summary>
+        [TestMethod]
+        public void MissionResult_438()
+        {
+            var count = InjectQuest(438);
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 4}},
+                    new {api_id = 3, api_mission = new[] {2, 100}},
+                    new {api_id = 4, api_mission = new[] {2, 9}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new { api_clear_result = 1 }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new { api_clear_result = 1 }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new { api_clear_result = 1 }));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] { 1, 1, 1, 0 }));
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 114}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new { api_clear_result = 1 }));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] { 1, 1, 1, 1 }));
         }
 
         /// <summary>
