@@ -168,7 +168,9 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 226, Now = 2},
                     new QuestCount {Id = 436, NowArray = new[] {1, 0, 1, 1, 1}},
                     new QuestCount {Id = 437, NowArray = new[] {1, 0, 1, 1}},
-                    new QuestCount {Id = 438, NowArray = new[] {1, 0, 1, 1}}
+                    new QuestCount {Id = 438, NowArray = new[] {1, 0, 1, 1}},
+                    new QuestCount {Id = 439, NowArray = new[] {1, 0, 1, 1}},
+                    new QuestCount {Id = 440, NowArray = new[] {1, 0, 1, 1, 1}}
                 }
             };
             var countList = new QuestCountList();
@@ -181,13 +183,18 @@ namespace KancolleSniffer.Test
                 new {api_id = 5, api_name = "海上護衛任務"},
                 new {api_id = 9, api_name = "タンカー護衛任務"},
                 new {api_id = 10, api_name = "強行偵察任務"},
+                new {api_id = 11, api_name = "ボーキサイト輸送任務"},
+                new {api_id = 40, api_name = "水上機前線輸送"},
+                new {api_id = 46, api_name = "南西海域戦闘哨戒"},
+                new {api_id = 71, api_name = "ブルネイ泊地沖哨戒"},
                 new {api_id = 100, api_name = "兵站強化任務"},
                 new {api_id = 101, api_name = "海峡警備行動"},
                 new {api_id = 102, api_name = "長時間対潜警戒"},
                 new {api_id = 104, api_name = "小笠原沖哨戒線"},
                 new {api_id = 105, api_name = "小笠原沖戦闘哨戒"},
                 new {api_id = 110, api_name = "南西方面航空偵察作戦"},
-                new {api_id = 114, api_name = "南西諸島捜索撃滅戦"}
+                new {api_id = 114, api_name = "南西諸島捜索撃滅戦"},
+                new {api_id = 142, api_name = "強行鼠輸送作戦"}
             }));
             new QuestInfo(countList).LoadState(status);
             Assert.AreEqual("2/3", status.QuestCountList[0].ToString());
@@ -238,6 +245,12 @@ namespace KancolleSniffer.Test
             var q438 = status.QuestCountList.First(q => q.Id == 438);
             Assert.AreEqual("1\u200a0\u200a1\u200a1", q438.ToString());
             Assert.AreEqual("対潜警戒任務1 兵站強化任務0 タンカー護衛任務1 南西諸島捜索撃滅戦1", q438.ToToolTip());
+            var q439 = status.QuestCountList.First(q => q.Id == 439);
+            Assert.AreEqual("1\u200a0\u200a1\u200a1", q439.ToString());
+            Assert.AreEqual("海上護衛任務1 兵站強化任務0 ボーキサイト輸送任務1 南西方面航空偵察作戦1", q439.ToToolTip());
+            var q440 = status.QuestCountList.First(q => q.Id == 440);
+            Assert.AreEqual("1\u200a0\u200a1\u200a1\u200a1", q440.ToString());
+            Assert.AreEqual("海上護衛任務1 ブルネイ泊地沖哨戒0 南西海域戦闘哨戒1 水上機前線輸送1 強行鼠輸送作戦1", q440.ToToolTip());
         }
     }
 
@@ -1727,6 +1740,66 @@ namespace KancolleSniffer.Test
                 }));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new { api_clear_result = 1 }));
             PAssert.That(() => count.NowArray.SequenceEqual(new[] { 1, 1, 1, 1 }));
+        }
+
+        /// <summary>
+        /// 439: 兵站強化遠征任務【基本作戦】
+        /// </summary>
+        [TestMethod]
+        public void MissionResult_439()
+        {
+            var count = InjectQuest(439);
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 5}},
+                    new {api_id = 3, api_mission = new[] {2, 100}},
+                    new {api_id = 4, api_mission = new[] {2, 11}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0}));
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 110}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
+        }
+
+        /// <summary>
+        /// 440: 兵站強化遠征任務【拡張作戦】
+        /// </summary>
+        [TestMethod]
+        public void MissionResult_440()
+        {
+            var count = InjectQuest(440);
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 71}},
+                    new {api_id = 3, api_mission = new[] {2, 5}},
+                    new {api_id = 4, api_mission = new[] {2, 40}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0, 1, 0}));
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 142}},
+                    new {api_id = 3, api_mission = new[] {2, 46}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new { api_clear_result = 1 }));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1, 1}));
         }
 
         /// <summary>

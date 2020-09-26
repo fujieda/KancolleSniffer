@@ -65,7 +65,8 @@ namespace KancolleSniffer.Model
         Yearly2,
         Yearly3,
         Yearly5,
-        Yearly8
+        Yearly8,
+        Yearly9
     }
 
     public class QuestInfo : IHaveState
@@ -199,6 +200,7 @@ namespace KancolleSniffer.Model
                 QuestInterval.Yearly3 => CrossBoundary(new DateTime(_now.Year, 3, 1, 5, 0, 0)),
                 QuestInterval.Yearly5 => CrossBoundary(new DateTime(_now.Year, 5, 1, 5, 0, 0)),
                 QuestInterval.Yearly8 => CrossBoundary(new DateTime(_now.Year, 8, 1, 5, 0, 0)),
+                QuestInterval.Yearly9 => CrossBoundary(new DateTime(_now.Year, 9, 1, 5, 0, 0)),
                 _ => false
             };
         }
