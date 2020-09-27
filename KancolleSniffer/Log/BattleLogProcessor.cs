@@ -43,7 +43,14 @@ namespace KancolleSniffer.Log
                 case 39:
                     map = data[38];
                     break;
-                case 40: // 七隻分のログが出力されている
+                case 40:
+                    if (data[8] == "深海5" && data[9] == "500t級軽巡洋艦")
+                    {
+                        data[8] = "深海5,500t級軽巡洋艦";
+                        Array.Copy(data, 10, data, 9, 30);
+                        goto case 39;
+                    }
+                    // 七隻分のログが出力されている
                     data[21] = data[21] + "・" + data[23];
                     data[22] = data[22] + "・" + data[24];
                     Array.Copy(data, 24, data, 23, 15);
