@@ -289,7 +289,7 @@ namespace KancolleSniffer.View.ShipListPanel
 
         private void SetupLabels()
         {
-            for (; _labelCount * LineHeight < Height; _labelCount++)
+            for (; _labelCount * Scaler.ScaleHeight(LineHeight) < Height; _labelCount++)
             {
                 _groupConfigLabels.CreateComponents(_labelCount);
                 _repairListLabels.CreateLabels(_labelCount);
@@ -338,7 +338,7 @@ namespace KancolleSniffer.View.ShipListPanel
 
         private void SetShipLabels()
         {
-            for (var i = 0; i < (Height + LineHeight - 1) / LineHeight; i++)
+            for (var i = 0; i * Scaler.ScaleHeight(LineHeight) < Height; i++)
             {
                 HidePanels(i);
                 if (i + ScrollBar.Value >= _shipList.Length)
