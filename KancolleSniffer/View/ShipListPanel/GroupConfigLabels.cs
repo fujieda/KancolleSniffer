@@ -91,14 +91,9 @@ namespace KancolleSniffer.View.ShipListPanel
             var cb = (CheckBox)sender;
             var group = (int)cb.Tag % 10;
             var idx = (int)cb.Tag / 10;
+            GroupSettings[group].RemoveAll(id => id == _shipListPanel.GetShip(idx).Id);
             if (cb.Checked)
-            {
                 GroupSettings[group].Add(_shipListPanel.GetShip(idx).Id);
-            }
-            else
-            {
-                GroupSettings[group].Remove(_shipListPanel.GetShip(idx).Id);
-            }
             GroupUpdated = true;
         }
 
