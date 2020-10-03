@@ -185,8 +185,8 @@ namespace KancolleSniffer.Test
                 new {api_id = 10, api_name = "強行偵察任務"},
                 new {api_id = 11, api_name = "ボーキサイト輸送任務"},
                 new {api_id = 40, api_name = "水上機前線輸送"},
+                new {api_id = 41, api_name = "ブルネイ泊地沖哨戒"},
                 new {api_id = 46, api_name = "南西海域戦闘哨戒"},
-                new {api_id = 71, api_name = "ブルネイ泊地沖哨戒"},
                 new {api_id = 100, api_name = "兵站強化任務"},
                 new {api_id = 101, api_name = "海峡警備行動"},
                 new {api_id = 102, api_name = "長時間対潜警戒"},
@@ -1782,7 +1782,7 @@ namespace KancolleSniffer.Test
             _questCounter.InspectDeck(Js(
                 new[]
                 {
-                    new {api_id = 2, api_mission = new[] {2, 71}},
+                    new {api_id = 2, api_mission = new[] {2, 41}},
                     new {api_id = 3, api_mission = new[] {2, 5}},
                     new {api_id = 4, api_mission = new[] {2, 40}}
                 }));
