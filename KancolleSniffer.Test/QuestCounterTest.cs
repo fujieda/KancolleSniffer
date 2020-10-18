@@ -1574,6 +1574,60 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 345: 演習ティータイム！
+        /// </summary>
+        [TestMethod]
+        public void PracticeResult_345()
+        {
+            var count = InjectQuest(345);
+
+            _battleInfo.InjectResultStatus(new []{ShipStatus("Warspite"), ShipStatus("金剛"), ShipStatus("Ark Royal"), ShipStatus("Richelieu"), ShipStatus("Perth")},
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            InjectPracticeResult("B");
+            Assert.AreEqual(0, count.Now);
+
+            InjectPracticeResult("A");
+            Assert.AreEqual(0, count.Now);
+
+            _battleInfo.Result.Friend.Main[3] = ShipStatus("Jervis");
+            InjectPracticeResult("A");
+            Assert.AreEqual(1, count.Now);
+
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("Janus");
+            InjectPracticeResult("A");
+            Assert.AreEqual(2, count.Now);
+
+            _battleInfo.Result.Friend.Main[1] = ShipStatus("Richelieu");
+            InjectPracticeResult("A");
+            Assert.AreEqual(2, count.Now);
+        }
+
+        /// <summary>
+        /// 346: 最精鋭！主力オブ主力、演習開始！
+        /// </summary>
+        [TestMethod]
+        public void PracticeResult_346()
+        {
+            var count = InjectQuest(346);
+
+            _battleInfo.InjectResultStatus(new []{ShipStatus("夕雲改二"), ShipStatus("巻雲改二"), ShipStatus("風雲改二"), ShipStatus("秋雲改")},
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            InjectPracticeResult("A");
+            Assert.AreEqual(0, count.Now);
+
+            InjectPracticeResult("S");
+            Assert.AreEqual(0, count.Now);
+
+            _battleInfo.Result.Friend.Main[3] = ShipStatus("秋雲改二");
+            InjectPracticeResult("S");
+            Assert.AreEqual(1, count.Now);
+
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("綾波改二");
+            InjectPracticeResult("S");
+            Assert.AreEqual(1, count.Now);
+        }
+
+        /// <summary>
         /// 402: 「遠征」を3回成功させよう！
         /// 403: 「遠征」を10回成功させよう！
         /// 404: 大規模遠征作戦、発令！

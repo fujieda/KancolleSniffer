@@ -28,6 +28,7 @@ namespace KancolleSniffer.Model
         private const QuestInterval Yearly5 = QuestInterval.Yearly5;
         private const QuestInterval Yearly8 = QuestInterval.Yearly8;
         private const QuestInterval Yearly9 = QuestInterval.Yearly9;
+        private const QuestInterval Yearly10 = QuestInterval.Yearly10;
 
         /// <summary>
         /// このテーブルは七四式電子観測儀を参考に作成した。
@@ -92,6 +93,8 @@ namespace KancolleSniffer.Model
             {337, new QuestPractice {Interval = Daily, Max = 3, Rank = "S", Material = new[] {0, 0, 0, 3}, Shift = 2}}, // 337: 「十八駆」演習！
             {339, new QuestPractice {Interval = Daily, Max = 3, Rank = "S", Material = new[] {0, 0, 8, 3}, Shift = 2}}, // 339: 「十九駆」演習！
             {342, new QuestPractice {Interval = Quarterly, Max = 4, Rank = "A", Material = new[] {0, 4, 4, 0}, Shift = 1}}, // 342: 小艦艇群演習強化任務
+            {345, new QuestPractice {Interval = Yearly10, Max = 4, Rank = "A", Material = new[] {0, 5, 4, 0}, Shift = 1}}, // 345: 演習ティータイム！
+            {346, new QuestPractice {Interval = Yearly10, Max = 4, Rank = "S", Material = new[] {0, 4, 6, 0}, Shift = 1}}, // 346: 最精鋭！主力オブ主力、演習開始！
 
             {402, new QuestMission {Interval = Daily, Max = 3, Material = new[] {0, 0, 1, 0}}}, // 402: 「遠征」を3回成功させよう！
             {403, new QuestMission {Interval = Daily, Max = 10, Material = new[] {0, 0, 0, 0}}}, // 403: 「遠征」を10回成功させよう！
