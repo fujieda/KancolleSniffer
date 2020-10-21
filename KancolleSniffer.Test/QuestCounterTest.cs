@@ -166,6 +166,7 @@ namespace KancolleSniffer.Test
                     new QuestCount {Id = 872, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 284, NowArray = new[] {1, 1, 1, 1}},
                     new QuestCount {Id = 226, Now = 2},
+                    new QuestCount {Id = 434, NowArray = new[] {1, 0, 1, 0, 1}},
                     new QuestCount {Id = 436, NowArray = new[] {1, 0, 1, 1, 1}},
                     new QuestCount {Id = 437, NowArray = new[] {1, 0, 1, 1}},
                     new QuestCount {Id = 438, NowArray = new[] {1, 0, 1, 1}},
@@ -236,6 +237,9 @@ namespace KancolleSniffer.Test
             var q226 = status.QuestCountList.First(q => q.Id == 226);
             Assert.AreEqual("2/5", q226.ToString());
             Assert.AreEqual("", q226.ToToolTip());
+            var q434 = status.QuestCountList.First(q => q.Id == 434);
+            Assert.AreEqual("1\u200a0\u200a1\u200a0\u200a1", q434.ToString());
+            Assert.AreEqual("警備任務1 海上護衛任務0 兵站強化任務1 海峡警備行動0 タンカー護衛任務1", q434.ToToolTip());
             var q436 = status.QuestCountList.First(q => q.Id == 436);
             Assert.AreEqual("1\u200a0\u200a1\u200a1\u200a1", q436.ToString());
             Assert.AreEqual("練習航海1 長距離練習航海0 警備任務1 対潜警戒任務1 強行偵察任務1", q436.ToToolTip());
@@ -1705,6 +1709,37 @@ namespace KancolleSniffer.Test
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1}));
+        }
+
+        /// <summary>
+        /// 434: 特設護衛船団司令部、活動開始！
+        /// </summary>
+        [TestMethod]
+        public void MissionResult_434()
+        {
+            var count = InjectQuest(434);
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 3}},
+                    new {api_id = 3, api_mission = new[] {2, 5}},
+                    new {api_id = 4, api_mission = new[] {2, 100}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0, 0}));
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 101}},
+                    new {api_id = 3, api_mission = new[] {2, 9}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1, 1}));
         }
 
         /// <summary>

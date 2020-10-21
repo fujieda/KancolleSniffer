@@ -104,8 +104,9 @@ namespace KancolleSniffer.Model
             {424, new QuestMission {Interval = Monthly, Max = 4, Shift = 1, Ids = new[] {5}, Material = new[] {0, 0, 0, 0}}}, // 424: 輸送船団護衛を強化せよ！
             {426, new QuestMission {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Ids = new[] {3, 4, 5, 10}, Material = new[] {0, 0, 4, 0}}}, // 426: 海上通商航路の警戒を厳とせよ！
             {428, new QuestMission {Interval = Quarterly, MaxArray = new[] {2, 2, 2}, Ids = new[] {4, 101, 102}, Material = new[] {0, 0, 0, 3}}}, // 428: 近海に侵入する敵潜を制圧せよ！
-            {436, new QuestMission {Interval = Yearly3, MaxArray = new[] {1, 1, 1, 1, 1}, Ids = new[] {1, 2, 3, 4, 10}, Material = new [] {0, 4, 0, 0}}}, // 436: 練習航海及び警備任務を実施せよ！
-            {437, new QuestMission {Interval = Yearly5, MaxArray = new[] {1, 1, 1, 1}, Ids = new[] {4, 104, 105, 110}, Material = new [] {0, 0, 7, 3}, Shift = 1}}, // 437: 小笠原沖哨戒線の強化を実施せよ！
+            {434, new QuestMission {Interval = Yearly2, MaxArray = new[] {1, 1, 1, 1, 1}, Ids = new[] {3, 5, 100, 101, 9}, Material = new[] {0, 5, 0, 3}}}, // 434: 特設護衛船団司令部、活動開始！
+            {436, new QuestMission {Interval = Yearly3, MaxArray = new[] {1, 1, 1, 1, 1}, Ids = new[] {1, 2, 3, 4, 10}, Material = new[] {0, 4, 0, 0}}}, // 436: 練習航海及び警備任務を実施せよ！
+            {437, new QuestMission {Interval = Yearly5, MaxArray = new[] {1, 1, 1, 1}, Ids = new[] {4, 104, 105, 110}, Material = new[] {0, 0, 7, 3}, Shift = 1}}, // 437: 小笠原沖哨戒線の強化を実施せよ！
             {438, new QuestMission {Interval = Yearly8, MaxArray = new[] {1, 1, 1, 1}, Ids = new[] {4, 100, 9, 114}, Material = new[] {0, 0, 5, 4}, Shift = 1}}, // 438: 南西諸島方面の海上護衛を強化せよ！
             {439, new QuestMission {Interval = Yearly9, MaxArray = new[] {1, 1, 1, 1}, Ids = new[] {5, 100, 11, 110}, Material = new[] {0, 0, 5, 4}, Shift = 1}}, // 439: 兵站強化遠征任務【基本作戦】
             {440, new QuestMission {Interval = Yearly9, MaxArray = new[] {1, 1, 1, 1, 1}, Ids = new[] {5, 41, 46, 40, 142}, Material = new[] {0, 0, 0, 4}}}, // 440: 兵站強化遠征任務【拡張作戦】
