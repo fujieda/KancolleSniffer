@@ -82,6 +82,7 @@ namespace KancolleSniffer.Model
             {905, new QuestSortie {Interval = Yearly2, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "A", Maps = new[] {11, 12, 13, 15, 16}, Material = new[] {0, 6, 8, 0}}}, // 905: 「海防艦」、海を護る！
             {912, new QuestSortie {Interval = Yearly3, MaxArray = new[] {1, 1, 1, 1, 1}, Rank = "A", Maps = new[] {13, 21, 22, 23, 16}, Material = new[] {0, 5, 6, 0}}}, // 912: 工作艦「明石」護衛任務
             {914, new QuestSortie {Interval = Yearly3, MaxArray = new[] {1, 1, 1, 1}, Rank = "A", Maps = new[] {41, 42, 43, 44}, Material = new[] {0, 5, 0, 4}}}, // 914: 重巡戦隊、西へ！
+            {928, new QuestSortie {Interval = Yearly9, MaxArray = new[] {2, 2, 2}, Rank = "S", Maps = new[] {732, 722, 42}, Material = new[] {0, 0, 10, 8}}}, // 928: 歴戦「第十方面艦隊」、全力出撃！
 
             {303, new QuestPractice {Interval = Daily, Max = 3, Rank = "E", Material = new[] {1, 0, 0, 0}}}, // 303: 「演習」で練度向上！
             {304, new QuestPractice {Interval = Daily, Max = 5, Rank = "B", Material = new[] {0, 0, 1, 0}}}, // 304: 「演習」で他提督を圧倒せよ！

@@ -1367,6 +1367,36 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 928: 歴戦「第十方面艦隊」、全力出撃！
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_928()
+        {
+            var count = InjectQuest(928);
+            _battleInfo.InjectResultStatus(
+                new[] {ShipStatus("羽黒改二"), ShipStatus("那智"), ShipStatus(1), ShipStatus(1), ShipStatus(1), ShipStatus(1)},
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+
+            InjectMapNext(732, 5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0}));
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0}));
+
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("妙高");
+            _battleInfo.Result.Friend.Main[1] = ShipStatus("高雄");
+            InjectMapNext(722, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0}));
+
+            _battleInfo.Result.Friend.Main[0] = ShipStatus("神風");
+            _battleInfo.Result.Friend.Main[1] = ShipStatus("高雄");
+            InjectMapNext(42, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1}));
+        }
+
+        /// <summary>
         /// 280と854以降を同時に遂行していると854以降がカウントされないことがある
         /// </summary>
         [TestMethod]

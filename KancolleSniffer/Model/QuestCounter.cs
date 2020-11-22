@@ -207,14 +207,20 @@ namespace KancolleSniffer.Model
         public void InspectMapNext(dynamic json)
         {
             _map = (int)json.api_maparea_id * 10 + (int)json.api_mapinfo_no;
+            var cell = json.api_no() ? (int)json.api_no : 0;
             if (_map == 72)
             {
-                var cell = json.api_no() ? (int)json.api_no : 0;
-                _map *= 10;
                 if (cell == 7)
-                    _map++;
-                if (cell == 15)
-                    _map += 2;
+                    _map = 721;
+                else if (cell == 15)
+                    _map = 722;
+            }
+            if (_map == 73)
+            {
+                if (cell == 5)
+                    _map = 731;
+                else if (cell == 18)
+                    _map = 732;
             }
             _boss = (int)json.api_event_id == 5;
 
