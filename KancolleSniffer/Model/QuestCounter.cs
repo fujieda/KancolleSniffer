@@ -138,6 +138,7 @@ namespace KancolleSniffer.Model
     {
         private readonly QuestInfo _questInfo;
         private readonly ItemInventory _itemInventory;
+        private readonly ShipInventory _shipInventory;
         private readonly BattleInfo _battleInfo;
         private readonly SortedDictionary<int, QuestStatus> _quests;
         private int _map;
@@ -184,11 +185,12 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public QuestCounter(QuestInfo questInfo, ItemInventory itemInventory, BattleInfo battleInfo)
+        public QuestCounter(QuestInfo questInfo, ItemInventory itemInventory, ShipInventory shipInventory, BattleInfo battleInfo)
         {
             _questInfo = questInfo;
             _quests = questInfo.QuestDictionary;
             _itemInventory = itemInventory;
+            _shipInventory = shipInventory;
             _battleInfo = battleInfo;
         }
 
@@ -448,7 +450,7 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public void InspectPowerUp(dynamic json)
+        public void InspectPowerUp(string request, dynamic json)
         {
             if ((int)json.api_powerup_flag == 0)
                 return;
@@ -457,6 +459,15 @@ namespace KancolleSniffer.Model
                 var count = quest.Count;
                 if (!(count.Spec is QuestPowerUp))
                     continue;
+                if (quest.Id == 714)
+                {
+                    var values = HttpUtility.ParseQueryString(request);
+                    if (_shipInventory[int.Parse(values["api_id"])].Spec.ShipType != 2)
+                        return;
+                    var ships = values["api_id_items"].Split(',').Select(id => _shipInventory[int.Parse(id)]);
+                    if (ships.Count(s => s.Spec.ShipType == 2) < 3)
+                        return;
+                }
                 Increment(count);
             }
         }

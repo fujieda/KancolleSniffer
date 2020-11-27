@@ -345,6 +345,7 @@ namespace KancolleSniffer.Test
 
         private BattleInfo _battleInfo;
         private ItemInventory _itemInventory;
+        private ShipInventory _shipInventory;
         private QuestInfo _questInfo;
         private QuestCounter _questCounter;
 
@@ -353,8 +354,9 @@ namespace KancolleSniffer.Test
         {
             _battleInfo = new BattleInfo(null, null, null);
             _itemInventory = new ItemInventory();
+            _shipInventory = new ShipInventory();
             _questInfo = new QuestInfo(new QuestCountList(), () => new DateTime(2015, 1, 1));
-            _questCounter = new QuestCounter(_questInfo, _itemInventory, _battleInfo);
+            _questCounter = new QuestCounter(_questInfo, _itemInventory, _shipInventory, _battleInfo);
         }
 
         /// <summary>
@@ -2055,10 +2057,31 @@ namespace KancolleSniffer.Test
         public void PowerUp_702_703()
         {
             InjectQuestList(new[] {702, 703});
-            _questCounter.InspectPowerUp(Js(new {api_powerup_flag = 1}));
+            _questCounter.InspectPowerUp("", Js(new {api_powerup_flag = 1}));
             PAssert.That(() =>
                 _questInfo.Quests.Select(q => new {q.Id, q.Count.Now})
                     .SequenceEqual(new[] {new {Id = 702, Now = 1}, new {Id = 703, Now = 1}}));
+        }
+
+        /// <summary>
+        /// 714: 「駆逐艦」の改修工事を実施せよ！
+        /// </summary>
+        [TestMethod]
+        public void PowerUp_714()
+        {
+            var ships = new[] {ShipStatus(2), ShipStatus(2), ShipStatus(2), ShipStatus(2), ShipStatus(3)};
+            _shipInventory.Add(ships.Select((s, i) =>
+            {
+                s.Id = i + 1;
+                return s;
+            }));
+            var q714 = InjectQuest(714);
+            _questCounter.InspectPowerUp("api_id=3&api_id_items=1,2", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(0, q714.Now);
+            _questCounter.InspectPowerUp("api_id=5&api_id_items=1,2,3", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(0, q714.Now);
+            _questCounter.InspectPowerUp("api_id=4&api_id_items=1,2,3", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(1, q714.Now);
         }
     }
 }

@@ -939,5 +939,16 @@ namespace KancolleSniffer.Test
             SniffLogFile(sniffer, "ship_count_003");
             PAssert.That(() => sniffer.ShipCounter.Now == 266 && sniffer.ShipCounter.Alarm, "ドロップ");
         }
+
+        /// <summary>
+        /// 714: 「駆逐艦」の改修工事を実施せよ！
+        /// </summary>
+        [TestMethod]
+        public void PowerUp_714()
+        {
+            var sniffer = new Sniffer();
+            SniffLogFile(sniffer, "powerup_004");
+            PAssert.That(() => sniffer.Quests.First(q => q.Id == 714).Count.Now == 2);
+        }
     }
 }

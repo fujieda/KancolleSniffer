@@ -143,7 +143,8 @@ namespace KancolleSniffer.Model
             {688, new QuestDestroyItem {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Types = new[] {6, 7, 8, 10}, Material = new[] {0, 0, 0, 0}}}, // 688: 航空戦力の強化
 
             {702, new QuestPowerUp {Interval = Daily, Max = 2, Material = new[] {0, 1, 0, 0}}}, // 702: 艦の「近代化改修」を実施せよ！
-            {703, new QuestPowerUp {Interval = Weekly, Max = 15, Material = new[] {1, 0, 2, 0}}} // 703: 「近代化改修」を進め、戦備を整えよ！
+            {703, new QuestPowerUp {Interval = Weekly, Max = 15, Material = new[] {1, 0, 2, 0}}}, // 703: 「近代化改修」を進め、戦備を整えよ！
+            {714, new QuestPowerUp {Interval = Yearly11, Max = 2, Material = new[] {0, 2, 2, 0}}} // 714: 「駆逐艦」の改修工事を実施せよ！
         };
         // @formatter:on
 

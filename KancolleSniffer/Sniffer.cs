@@ -100,7 +100,7 @@ namespace KancolleSniffer
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo, _airBase);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
             _questInfo = new QuestInfo(_questCountList);
-            _questCounter = new QuestCounter(_questInfo, _itemInventory, _battleInfo);
+            _questCounter = new QuestCounter(_questInfo, _itemInventory, _shipInventory, _battleInfo);
             _miscTextInfo = new MiscTextInfo(_shipInfo, _itemInfo);
             _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo, _questInfo};
             AdditionalData = new AdditionalData();
@@ -480,10 +480,10 @@ namespace KancolleSniffer
         {
             if (url.EndsWith("api_req_kaisou/powerup"))
             {
+                _questCounter.InspectPowerUp(request, data); // 艦種が必要なので艦が消える前
                 _shipInfo.InspectPowerUp(request, data);
                 _conditionTimer.CheckCond();
                 _akashiTimer.CheckFleet();
-                _questCounter.InspectPowerUp(data);
                 return Update.Item | Update.Ship | Update.QuestList;
             }
             if (url.EndsWith("api_req_kaisou/slot_exchange_index"))
