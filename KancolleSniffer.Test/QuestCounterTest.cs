@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DynaJson;
 using ExpressionToCodeLib;
@@ -343,7 +344,7 @@ namespace KancolleSniffer.Test
 
 
         private BattleInfo _battleInfo;
-        private ItemInfo _itemInfo;
+        private ItemInventory _itemInventory;
         private QuestInfo _questInfo;
         private QuestCounter _questCounter;
 
@@ -351,9 +352,9 @@ namespace KancolleSniffer.Test
         public void Initialize()
         {
             _battleInfo = new BattleInfo(null, null, null);
-            _itemInfo = new ItemInfo(new ItemMaster(), new ItemInventory());
+            _itemInventory = new ItemInventory();
             _questInfo = new QuestInfo(new QuestCountList(), () => new DateTime(2015, 1, 1));
-            _questCounter = new QuestCounter(_questInfo, _itemInfo, _battleInfo);
+            _questCounter = new QuestCounter(_questInfo, _itemInventory, _battleInfo);
         }
 
         /// <summary>
@@ -1987,7 +1988,7 @@ namespace KancolleSniffer.Test
         [TestMethod]
         public void DestroyItem_613_638_643_645_653_654_655_657_663_673_674_675_676_677_678_680_686_688()
         {
-            _itemInfo.InjectItemSpec(new[]
+            InjectItems(new[]
             {
                 new ItemSpec {Id = 1, Name = "12cm単装砲", Type = 1},
                 new ItemSpec {Id = 37, Name = "7.7mm機銃", Type = 21},
@@ -2009,12 +2010,10 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 242, Name = "Swordfish", Type = 8},
                 new ItemSpec {Id = 249, Name = "Fulmar", Type = 6}
             });
-            var items = new[] {1, 37, 19, 4, 11, 75, 7, 25, 13, 20, 28, 31, 35, 23, 16, 3, 121, 242, 249};
-            _itemInfo.InjectItems(items);
             var questList = new[] {613, 638, 643, 645, 655, 653, 654, 657, 663, 673, 674, 675, 676, 677, 678, 680, 686, 688};
             InjectQuestList(questList);
             _questCounter.InspectDestroyItem(
-                $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, items.Length))}&api%5Fverno=1");
+                $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, _itemInventory.Count))}&api%5Fverno=1");
             var scalar = new[]
             {
                 new {Id = 613, Now = 1}, new {Id = 638, Now = 1}, new {Id = 643, Now = 1}, new {Id = 645, Now = 1},
@@ -2041,6 +2040,11 @@ namespace KancolleSniffer.Test
                 Assert.AreEqual(e.Id, c.Id);
                 PAssert.That(() => c.NowArray.SequenceEqual(e.NowArray), $"{c.Id}");
             }
+        }
+
+        private void InjectItems(IEnumerable<ItemSpec> specs)
+        {
+            _itemInventory.Add(specs.Select((s, i) => new ItemStatus{Id = i + 1, Spec = s}));
         }
 
         /// <summary>

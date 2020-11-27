@@ -137,7 +137,7 @@ namespace KancolleSniffer.Model
     public class QuestCounter
     {
         private readonly QuestInfo _questInfo;
-        private readonly ItemInfo _itemInfo;
+        private readonly ItemInventory _itemInventory;
         private readonly BattleInfo _battleInfo;
         private readonly SortedDictionary<int, QuestStatus> _quests;
         private int _map;
@@ -184,11 +184,11 @@ namespace KancolleSniffer.Model
             }
         }
 
-        public QuestCounter(QuestInfo questInfo, ItemInfo itemInfo, BattleInfo battleInfo)
+        public QuestCounter(QuestInfo questInfo, ItemInventory itemInventory, BattleInfo battleInfo)
         {
             _questInfo = questInfo;
             _quests = questInfo.QuestDictionary;
-            _itemInfo = itemInfo;
+            _itemInventory = itemInventory;
             _battleInfo = battleInfo;
         }
 
@@ -428,7 +428,7 @@ namespace KancolleSniffer.Model
         {
             var values = HttpUtility.ParseQueryString(request);
             var items = values["api_slotitem_ids"].Split(',')
-                .Select(id => _itemInfo.GetStatus(int.Parse(id)).Spec).ToArray();
+                .Select(id => _itemInventory[int.Parse(id)].Spec).ToArray();
             Increment(613); // 613: 資源の再利用
             foreach (var quest in _quests.Values)
             {

@@ -100,7 +100,7 @@ namespace KancolleSniffer
             _battleInfo = new BattleInfo(_shipInfo, _itemInfo, _airBase);
             _logger = new Logger(_shipInfo, _itemInfo, _battleInfo);
             _questInfo = new QuestInfo(_questCountList);
-            _questCounter = new QuestCounter(_questInfo, _itemInfo, _battleInfo);
+            _questCounter = new QuestCounter(_questInfo, _itemInventory, _battleInfo);
             _miscTextInfo = new MiscTextInfo(_shipInfo, _itemInfo);
             _haveState = new List<IHaveState> {_achievement, _materialInfo, _conditionTimer, _exMapInfo, _questInfo};
             AdditionalData = new AdditionalData();
