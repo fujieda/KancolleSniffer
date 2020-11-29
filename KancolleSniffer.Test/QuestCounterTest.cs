@@ -249,13 +249,13 @@ namespace KancolleSniffer.Test
             Assert.AreEqual("対潜警戒任務1 小笠原沖哨戒線0 小笠原沖戦闘哨戒1 南西方面航空偵察作戦1", q437.ToToolTip());
             var q438 = status.QuestCountList.First(q => q.Id == 438);
             Assert.AreEqual("1\u200a0\u200a1\u200a1", q438.ToString());
-            Assert.AreEqual("対潜警戒任務1 兵站強化任務0 タンカー護衛任務1 南西諸島捜索撃滅戦1", q438.ToToolTip());
+            Assert.AreEqual("兵站強化任務1 対潜警戒任務0 タンカー護衛任務1 南西諸島捜索撃滅戦1", q438.ToToolTip());
             var q439 = status.QuestCountList.First(q => q.Id == 439);
             Assert.AreEqual("1\u200a0\u200a1\u200a1", q439.ToString());
             Assert.AreEqual("海上護衛任務1 兵站強化任務0 ボーキサイト輸送任務1 南西方面航空偵察作戦1", q439.ToToolTip());
             var q440 = status.QuestCountList.First(q => q.Id == 440);
             Assert.AreEqual("1\u200a0\u200a1\u200a1\u200a1", q440.ToString());
-            Assert.AreEqual("海上護衛任務1 ブルネイ泊地沖哨戒0 南西海域戦闘哨戒1 水上機前線輸送1 強行鼠輸送作戦1", q440.ToToolTip());
+            Assert.AreEqual("ブルネイ泊地沖哨戒1 海上護衛任務0 水上機前線輸送1 強行鼠輸送作戦1 南西海域戦闘哨戒1", q440.ToToolTip());
         }
     }
 
@@ -1911,7 +1911,7 @@ namespace KancolleSniffer.Test
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
-            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 0, 1, 0}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0, 0}));
 
             _questCounter.InspectDeck(Js(
                 new[]
