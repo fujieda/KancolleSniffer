@@ -86,7 +86,7 @@ namespace KancolleSniffer.View.MainWindow
 
         private int LimitLines(int lines)
         {
-            const int max = 7;
+            const int max = 8;
             return Math.Min(Math.Max(lines, MinLines), max);
         }
 

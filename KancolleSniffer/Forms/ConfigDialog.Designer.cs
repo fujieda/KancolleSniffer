@@ -271,7 +271,7 @@ namespace KancolleSniffer.Forms
             // 
             this.numericUpDownQuest.Location = new System.Drawing.Point(87, 127);
             this.numericUpDownQuest.Maximum = new decimal(new int[] {
-            7,
+            8,
             0,
             0,
             0});
