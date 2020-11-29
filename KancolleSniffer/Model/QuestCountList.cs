@@ -144,7 +144,8 @@ namespace KancolleSniffer.Model
 
             {702, new QuestPowerUp {Interval = Daily, Max = 2, Material = new[] {0, 1, 0, 0}}}, // 702: 艦の「近代化改修」を実施せよ！
             {703, new QuestPowerUp {Interval = Weekly, Max = 15, Material = new[] {1, 0, 2, 0}}}, // 703: 「近代化改修」を進め、戦備を整えよ！
-            {714, new QuestPowerUp {Interval = Yearly11, Max = 2, Material = new[] {0, 2, 2, 0}}} // 714: 「駆逐艦」の改修工事を実施せよ！
+            {714, new QuestPowerUp {Interval = Yearly11, Max = 2, Material = new[] {0, 2, 2, 0}}}, // 714: 「駆逐艦」の改修工事を実施せよ！
+            {715, new QuestPowerUp {Interval = Yearly11, Max = 2, Material = new[] {0, 2, 3, 2}}}, // 715: 続：「駆逐艦」の改修工事を実施せよ！
         };
         // @formatter:on
 

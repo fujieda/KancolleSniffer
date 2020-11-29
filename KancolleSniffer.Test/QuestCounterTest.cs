@@ -2065,16 +2065,22 @@ namespace KancolleSniffer.Test
 
         /// <summary>
         /// 714: 「駆逐艦」の改修工事を実施せよ！
+        /// 715: 続：「駆逐艦」の改修工事を実施せよ！
         /// </summary>
         [TestMethod]
-        public void PowerUp_714()
+        public void PowerUp_714_715()
         {
-            var ships = new[] {ShipStatus(2), ShipStatus(2), ShipStatus(2), ShipStatus(2), ShipStatus(3)};
+            var ships = new[]
+            {
+                ShipStatus(2), ShipStatus(2), ShipStatus(2), ShipStatus(2),
+                ShipStatus(3), ShipStatus(3), ShipStatus(3), ShipStatus(3)
+            };
             _shipInventory.Add(ships.Select((s, i) =>
             {
                 s.Id = i + 1;
                 return s;
             }));
+
             var q714 = InjectQuest(714);
             _questCounter.InspectPowerUp("api_id=3&api_id_items=1,2", Js(new {api_powerup_flag = 1}));
             Assert.AreEqual(0, q714.Now);
@@ -2082,6 +2088,12 @@ namespace KancolleSniffer.Test
             Assert.AreEqual(0, q714.Now);
             _questCounter.InspectPowerUp("api_id=4&api_id_items=1,2,3", Js(new {api_powerup_flag = 1}));
             Assert.AreEqual(1, q714.Now);
+
+            var q715 = InjectQuest(715);
+            _questCounter.InspectPowerUp("api_id=4&api_id_items=1,2,3", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(0, q715.Now);
+            _questCounter.InspectPowerUp("api_id=4&api_id_items=5,6,7", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(1, q715.Now);
         }
     }
 }

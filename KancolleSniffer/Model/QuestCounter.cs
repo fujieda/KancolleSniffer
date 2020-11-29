@@ -459,13 +459,14 @@ namespace KancolleSniffer.Model
                 var count = quest.Count;
                 if (!(count.Spec is QuestPowerUp))
                     continue;
-                if (quest.Id == 714)
+                if (quest.Id == 714 || quest.Id == 715)
                 {
                     var values = HttpUtility.ParseQueryString(request);
                     if (_shipInventory[int.Parse(values["api_id"])].Spec.ShipType != 2)
                         return;
-                    var ships = values["api_id_items"].Split(',').Select(id => _shipInventory[int.Parse(id)]);
-                    if (ships.Count(s => s.Spec.ShipType == 2) < 3)
+                    var ships = values["api_id_items"].Split(',').Select(id => _shipInventory[int.Parse(id)]).ToArray();
+                    var type = quest.Id == 714 ? 2 : quest.Id == 715 ? 3 : -1;
+                    if (ships.Count(s => s.Spec.ShipType == type) < 3)
                         return;
                 }
                 Increment(count);
