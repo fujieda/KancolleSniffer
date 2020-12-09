@@ -323,10 +323,7 @@ namespace KancolleSniffer.View.MainWindow
                 };
                 parent.Controls.AddRange(headings);
                 foreach (var control in headings)
-                {
-                    Scaler.Scale(control);
                     control.BackColor = CustomColors.ColumnColors.Bright;
-                }
                 headings[0].Cursor = headings[2].Cursor = Cursors.Hand;
                 hpToggle.SetClickHandler(headings[0]);
                 hpToggle.SetClickHandler(headings[2]);
