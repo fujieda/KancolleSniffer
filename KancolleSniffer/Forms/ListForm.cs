@@ -35,6 +35,7 @@ namespace KancolleSniffer.Forms
         private bool _isMaster;
         private ShipListConfig _listConfig;
         private FormWindowState _windowState = FormWindowState.Normal;
+        private bool _systemShutdown;
         public const int PanelWidth = 215;
 
         private object[] PanelNames => new object[] {"全艦", "A", "B", "C", "D", "分類", "修復", "装備", "艦隊", "対空", "戦況", "情報"}
@@ -355,6 +356,11 @@ namespace KancolleSniffer.Forms
 
         private void ListForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (_systemShutdown)
+            {
+                SaveConfig();
+                return;
+            }
             e.Cancel = true;
             Hide();
         }
@@ -655,6 +661,13 @@ namespace KancolleSniffer.Forms
         {
             if (Visible)
                 UpdateList();
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == 0x11) // WM_QUERYENDSESSION
+                _systemShutdown = true;
+            base.WndProc(ref m);
         }
     }
 }

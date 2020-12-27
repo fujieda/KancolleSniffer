@@ -25,6 +25,7 @@ namespace KancolleSniffer
         private IEnumerable<IUpdateTimers> _timers;
         private Main _main;
 
+        public static bool SystemShutdown { get; set; }
         public Sniffer Sniffer { get; private set; }
         public Config Config { get; private set; }
         public Label PlayLogSign => _c.hqPanel.PlayLog;
@@ -244,7 +245,7 @@ namespace KancolleSniffer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!Config.ExitSilently)
+            if (!Config.ExitSilently && !SystemShutdown)
             {
                 using var dialog = new ConfirmDialog();
                 if (dialog.ShowDialog(Form) != DialogResult.Yes)
@@ -253,7 +254,8 @@ namespace KancolleSniffer
                     return;
                 }
             }
-            _listFormGroup.Close();
+            if (!SystemShutdown)
+                _listFormGroup.Close(); // 各自で終了処理するのでシャットダウン時は不要
             Config.Location = (Form.WindowState == FormWindowState.Normal ? Form.Bounds : Form.RestoreBounds).Location;
             Config.ShowHpInPercent = _c.fleetPanel.ShowHpInPercent;
         }
