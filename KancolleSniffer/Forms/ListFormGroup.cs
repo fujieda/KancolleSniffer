@@ -31,7 +31,7 @@ namespace KancolleSniffer.Forms
         {
             _mainWindow = main;
             _listForms.Add(new ListForm(main, true));
-            for (var i = 0; i < main.Config.ListFormGroup.Count; i++)
+            while (main.Config.ListFormGroup.Count > 0)
                 _listForms.Add(new ListForm(main) {Owner = Main});
         }
 
