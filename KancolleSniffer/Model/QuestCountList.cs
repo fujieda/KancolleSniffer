@@ -23,6 +23,7 @@ namespace KancolleSniffer.Model
         private const QuestInterval Weekly = QuestInterval.Weekly;
         private const QuestInterval Monthly = QuestInterval.Monthly;
         private const QuestInterval Quarterly = QuestInterval.Quarterly;
+        private const QuestInterval Yearly1 = QuestInterval.Yearly1;
         private const QuestInterval Yearly2 = QuestInterval.Yearly2;
         private const QuestInterval Yearly3 = QuestInterval.Yearly3;
         private const QuestInterval Yearly5 = QuestInterval.Yearly5;
@@ -139,6 +140,7 @@ namespace KancolleSniffer.Model
             {677, new QuestDestroyItem {Interval = Weekly, MaxArray = new[] {4, 2, 3}, Types = new[] {3, 10, 5}, Material = new[] {0, 5, 0, 0}}}, // 677: 継戦支援能力の整備
             {678, new QuestDestroyItem {Interval = Quarterly, MaxArray = new[] {3, 5}, Ids = new[] {19, 20}, Material = new[] {0, 0, 8, 0}}}, // 678: 主力艦上戦闘機の更新
             {680, new QuestSpec {Interval = Quarterly, MaxArray = new[] {4, 4}, Material = new[] {0, 0, 6, 0}}}, // 680: 対空兵装の整備拡充
+            {681, new QuestDestroyItem {Interval = Yearly1, MaxArray = new[] {4, 4}, Types = new[] {7, 8}, Material = new[] {0, 0, 0, 4}}}, // 681: 航空戦力の再編増強準備
             {686, new QuestDestroyItem {Interval = Quarterly, MaxArray = new[] {4, 1}, Ids = new[] {3, 121}, Material = new[] {0, 0, 0, 0}}}, // 686: 戦時改修A型高角砲の量産
             {688, new QuestDestroyItem {Interval = Quarterly, MaxArray = new[] {3, 3, 3, 3}, Types = new[] {6, 7, 8, 10}, Material = new[] {0, 0, 0, 0}}}, // 688: 航空戦力の強化
 

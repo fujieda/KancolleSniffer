@@ -1985,10 +1985,11 @@ namespace KancolleSniffer.Test
         /// 677: 継戦支援能力の整備
         /// 678: 主力艦上戦闘機の更新
         /// 680: 対空兵装の整備拡充
+        /// 681: 航空戦力の再編増強準備
         /// 688: 航空戦力の強化
         /// </summary>
         [TestMethod]
-        public void DestroyItem_613_638_643_645_653_654_655_657_663_673_674_675_676_677_678_680_686_688()
+        public void DestroyItem_613_638_643_645_653_654_655_657_663_673_674_675_676_677_678_680_681_686_688()
         {
             InjectItems(new[]
             {
@@ -2012,7 +2013,7 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 242, Name = "Swordfish", Type = 8},
                 new ItemSpec {Id = 249, Name = "Fulmar", Type = 6}
             });
-            var questList = new[] {613, 638, 643, 645, 655, 653, 654, 657, 663, 673, 674, 675, 676, 677, 678, 680, 686, 688};
+            var questList = new[] {613, 638, 643, 645, 655, 653, 654, 657, 663, 673, 674, 675, 676, 677, 678, 680, 681, 686, 688};
             InjectQuestList(questList);
             _questCounter.InspectDestroyItem(
                 $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, _itemInventory.Count))}&api%5Fverno=1");
@@ -2034,6 +2035,7 @@ namespace KancolleSniffer.Test
                 new {Id = 675, NowArray = new[] {3, 1}}, new {Id = 676, NowArray = new[] {1, 1, 1}},
                 new {Id = 677, NowArray = new[] {1, 1, 1}}, new {Id = 678, NowArray = new[] {1, 1}},
                 new {Id = 680, NowArray = new[] {1, 2}}, new {Id = 686, NowArray = new[] {1, 1}},
+                new {Id = 681, NowArray = new[] {1, 2}},
                 new {Id = 688, NowArray = new[] {3, 1, 2, 1}}
             };
             foreach (var e in array)
