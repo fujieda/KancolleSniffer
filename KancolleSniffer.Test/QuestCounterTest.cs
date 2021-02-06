@@ -1491,6 +1491,29 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 329: 【節分任務】節分演習！
+        /// </summary>
+        [TestMethod]
+        public void PracticeResult_329()
+        {
+            var count = InjectQuest(329);
+
+            _battleInfo.InjectResultStatus(
+                ShipStatusList(3, 2),
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            InjectPracticeResult("S");
+            Assert.AreEqual(0, count.Now, "軽巡、駆逐");
+
+            _battleInfo.Result.Friend.Main = ShipStatusList(3, 2, 1);
+            InjectPracticeResult("A");
+            Assert.AreEqual(0, count.Now, "A勝利でカウントしない");
+
+            _battleInfo.Result.Friend.Main = ShipStatusList(3, 2, 1);
+            InjectPracticeResult("S");
+            Assert.AreEqual(1, count.Now, "軽巡、駆逐、海防");
+        }
+
+        /// <summary>
         /// 330: 空母機動部隊、演習始め！
         /// </summary>
         [TestMethod]

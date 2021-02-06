@@ -334,6 +334,8 @@ namespace KancolleSniffer.Model
                     return specs.Types.Count(type => type == 5) >= 3 && specs.Types.Count(type => type == 2) >= 1;
                 case 318:
                     return specs.Types.Count(type => type == 3) >= 2;
+                case 329:
+                    return specs.Types.Count(type => type == 2 || type == 1) >= 2;
                 case 330:
                     return specs.Flagship.IsAircraftCarrier &&
                            specs.Specs.Count(spec => spec.IsAircraftCarrier) >= 2 &&
