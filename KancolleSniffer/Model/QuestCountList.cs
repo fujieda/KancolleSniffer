@@ -69,6 +69,7 @@ namespace KancolleSniffer.Model
             {284, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Rank = "S", Maps = new[] {14, 21, 22, 23}, Material = new[] {0, 0, 0, 4}}}, // 284: 南西諸島方面「海上警備行動」発令！
 
             {822, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "S", Maps = new[] {24}, Material = new[] {0, 0, 0, 5}}}, // 822: 沖ノ島海域迎撃戦
+            {840, new QuestSortie {Interval = Weekly, MaxArray = new[] {1, 1, 1}, Rank = "A", Maps = new[] {21, 22, 23}, Material = new[] {0, 3, 0, 0}, Shift = 1}}, // 840: 【節分任務】令和三年節分作戦
             {845, new QuestSortie {Interval = Quarterly, MaxArray = new []{1, 1, 1, 1, 1}, Rank = "S", Maps = new[] {41, 42, 43, 44, 45}, Material = new[] {0, 0, 1, 0}}}, // 845: 発令！「西方海域作戦」
             {854, new QuestSortie {Interval = Quarterly, MaxArray = new[] {1, 1, 1, 1}, Ranks = new[] {"A", "A", "A", "S"}, Maps = new[] {24, 61, 63, 64}, Material = new[] {0, 0, 0, 4}}}, // 854: 戦果拡張任務！「Z作戦」前段作戦
             {861, new QuestSortie {Interval = Quarterly, Max = 2, Rank = "B", Maps = new[] {16}, Material = new[] {0, 4, 0, 0}}}, // 861: 強行輸送艦隊、抜錨！

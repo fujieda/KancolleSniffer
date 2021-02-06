@@ -308,6 +308,9 @@ namespace KancolleSniffer.Model
                 case 284:
                     return specs.Types.Count(type => type == 1 || type == 2) >= 3 &&
                            specs.Types.Intersect(new[] {3, 4, 7, 21}).Any();
+                case 840:
+                    return new[] {3, 4, 7, 21}.Contains(specs.FlagshipType) &&
+                           specs.Types.Count(type => type == 2 || type == 1) >= 3;
                 case 861:
                     return specs.Types.Count(s => s == 10 || s == 22) == 2;
                 case 862:

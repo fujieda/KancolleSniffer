@@ -770,6 +770,36 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 840: 【節分任務】令和三年節分作戦
+        /// </summary>
+        [TestMethod]
+        public void BattleResult_840()
+        {
+            var count = InjectQuest(840);
+
+            _battleInfo.InjectResultStatus(
+                ShipStatusList(7, 2, 1), new ShipStatus[0],
+                new ShipStatus[0], new ShipStatus[0]);
+
+            InjectMapNext(21, 5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0}));
+            _battleInfo.Result.Friend.Main = ShipStatusList(7, 2, 1, 1);
+            InjectBattleResult("B");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0}));
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 0, 0}));
+
+            _battleInfo.Result.Friend.Main = ShipStatusList(3, 2, 1, 1);
+            InjectMapNext(22, 5);
+            InjectBattleResult("A");
+            _battleInfo.Result.Friend.Main = ShipStatusList(21, 2, 1, 1);
+            InjectMapNext(23, 5);
+            InjectBattleResult("A");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1}));
+        }
+
+        /// <summary>
         /// 822: 沖ノ島海域迎撃戦
         /// 854: 戦果拡張任務！「Z作戦」前段作戦
         /// </summary>
