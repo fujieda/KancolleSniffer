@@ -1407,10 +1407,17 @@ namespace KancolleSniffer.Test
         {
             var count = InjectQuest(928);
             _battleInfo.InjectResultStatus(
-                new[] {ShipStatus("羽黒改二"), ShipStatus("那智"), ShipStatus(1), ShipStatus(1), ShipStatus(1), ShipStatus(1)},
+                new[]
+                {
+                    ShipStatus("羽黒改二"), ShipStatus("那智"), ShipStatus(1), ShipStatus(1), ShipStatus(1), ShipStatus(1)
+                },
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
 
             InjectMapNext(732, 5);
+            InjectBattleResult("S");
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0}));
+
+            _battleInfo.Result.Friend.Main[1] = ShipStatus("妙高");
             InjectBattleResult("A");
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {0, 0, 0}));
             InjectBattleResult("S");
