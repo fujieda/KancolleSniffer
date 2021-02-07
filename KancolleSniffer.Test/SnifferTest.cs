@@ -263,7 +263,7 @@ namespace KancolleSniffer.Test
         {
             var sniffer = new Sniffer();
             var msgs = new[] {"", "鬼怒改二+特大発+おにぎり", "駆逐艦+士魂部隊", "補給艦"};
-            var results = new[] {47, 19, 13, 15};
+            var results = new[] {27, 19, 13, 15};
             for (var i = 0; i < msgs.Length; i++)
             {
                 SniffLogFile(sniffer, "transportpoint_00" + (i + 1));
