@@ -2021,6 +2021,35 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 442: 西方連絡作戦準備を実施せよ！
+        /// </summary>
+        [TestMethod]
+        public void MissionResult_442()
+        {
+            var count = InjectQuest(442);
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 131}},
+                    new {api_id = 3, api_mission = new[] {2, 29}},
+                    new {api_id = 4, api_mission = new[] {2, 30}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0}));
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 133}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
+        }
+
+        /// <summary>
         /// 503: 艦隊大整備！
         /// 504: 艦隊酒保祭り！
         /// </summary>
