@@ -2223,5 +2223,41 @@ namespace KancolleSniffer.Test
             _questCounter.InspectPowerUp("api_id=4&api_id_items=5,6,7", Js(new {api_powerup_flag = 1}));
             Assert.AreEqual(1, q715.Now);
         }
+
+        /// <summary>
+        /// 716: 「軽巡」級の改修工事を実施せよ！
+        /// 717: 続：「軽巡」級の改修工事を実施せよ！
+        /// </summary>
+        [TestMethod]
+        public void PowerUp_716_717()
+        {
+            var ships = new[]
+            {
+                ShipStatus(3), ShipStatus(3), ShipStatus(4), ShipStatus(21),
+                ShipStatus(5), ShipStatus(6), ShipStatus(6)
+            };
+            _shipInventory.Add(ships.Select((s, i) =>
+            {
+                s.Id = i + 1;
+                return s;
+            }));
+
+            var q716 = InjectQuest(716);
+            _questCounter.InspectPowerUp("api_id=1&api_id_items=2,3", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(0, q716.Now);
+            _questCounter.InspectPowerUp("api_id=1&api_id_items=2,3,5", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(0, q716.Now);
+            _questCounter.InspectPowerUp("api_id=5&api_id_items=2,3,4", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(0, q716.Now);
+            _questCounter.InspectPowerUp("api_id=1&api_id_items=2,3,4", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(1, q716.Now);
+
+            var q717 = InjectQuest(717);
+            _questCounter.InspectPowerUp("api_id=1&api_id_items=3,4,5", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(0, q717.Now);
+            _questCounter.InspectPowerUp("api_id=1&api_id_items=5,6,7", Js(new {api_powerup_flag = 1}));
+            Assert.AreEqual(1, q717.Now);
+        }
+
     }
 }

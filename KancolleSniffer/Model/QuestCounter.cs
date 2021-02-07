@@ -465,6 +465,7 @@ namespace KancolleSniffer.Model
         {
             if ((int)json.api_powerup_flag == 0)
                 return;
+            var values = HttpUtility.ParseQueryString(request);
             foreach (var quest in _quests.Values)
             {
                 var count = quest.Count;
@@ -472,16 +473,36 @@ namespace KancolleSniffer.Model
                     continue;
                 if (quest.Id == 714 || quest.Id == 715)
                 {
-                    var values = HttpUtility.ParseQueryString(request);
-                    if (_shipInventory[int.Parse(values["api_id"])].Spec.ShipType != 2)
+                    if (ShipTypeById(values["api_id"]) != 2)
                         return;
-                    var ships = values["api_id_items"].Split(',').Select(id => _shipInventory[int.Parse(id)]).ToArray();
-                    var type = quest.Id == 714 ? 2 : quest.Id == 715 ? 3 : -1;
-                    if (ships.Count(s => s.Spec.ShipType == type) < 3)
+                    var ships = values["api_id_items"].Split(',').Select(ShipTypeById).ToArray();
+                    var required = quest.Id == 714 ? 2 : quest.Id == 715 ? 3 : -1;
+                    if (ships.Count(type => type == required) < 3)
                         return;
+                }
+                if (quest.Id == 716 || quest.Id == 717)
+                {
+                    if (!new[] {3, 4, 21}.Contains(ShipTypeById(values["api_id"])))
+                        return;
+                    var ships = values["api_id_items"].Split(',').Select(ShipTypeById).ToArray();
+                    if (quest.Id == 716)
+                    {
+                        if (ships.Count(type => new[] {3, 4, 21}.Contains(type)) < 3)
+                            return;
+                    }
+                    else
+                    {
+                        if (ships.Count(type => new[] {5, 6}.Contains(type)) < 3)
+                            return;
+                    }
                 }
                 Increment(count);
             }
+        }
+
+        private int ShipTypeById(string id)
+        {
+            return _shipInventory[int.Parse(id)].Spec.ShipType;
         }
 
         private void Increment(QuestCount count)
