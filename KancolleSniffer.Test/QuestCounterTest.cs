@@ -403,7 +403,7 @@ namespace KancolleSniffer.Test
             PAssert.That(() => counts[2].NowArray.SequenceEqual(new[] {1, 1, 2, 1}));
 
             // 1-6 ゴール
-            InjectMapNext(16,8);
+            InjectMapNext(16, 8);
             Assert.AreEqual(2, counts[0].Now);
         }
 
@@ -1678,7 +1678,12 @@ namespace KancolleSniffer.Test
         {
             var count = InjectQuest(345);
 
-            _battleInfo.InjectResultStatus(new []{ShipStatus("Warspite"), ShipStatus("金剛"), ShipStatus("Ark Royal"), ShipStatus("Richelieu"), ShipStatus("Perth")},
+            _battleInfo.InjectResultStatus(
+                new[]
+                {
+                    ShipStatus("Warspite"), ShipStatus("金剛"), ShipStatus("Ark Royal"), ShipStatus("Richelieu"),
+                    ShipStatus("Perth")
+                },
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
             InjectPracticeResult("B");
             Assert.AreEqual(0, count.Now);
@@ -1707,7 +1712,8 @@ namespace KancolleSniffer.Test
         {
             var count = InjectQuest(346);
 
-            _battleInfo.InjectResultStatus(new []{ShipStatus("夕雲改二"), ShipStatus("巻雲改二"), ShipStatus("風雲改二"), ShipStatus("秋雲改")},
+            _battleInfo.InjectResultStatus(
+                new[] {ShipStatus("夕雲改二"), ShipStatus("巻雲改二"), ShipStatus("風雲改二"), ShipStatus("秋雲改")},
                 new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
             InjectPracticeResult("A");
             Assert.AreEqual(0, count.Now);
@@ -1910,18 +1916,18 @@ namespace KancolleSniffer.Test
                     new {api_id = 3, api_mission = new[] {2, 100}},
                     new {api_id = 4, api_mission = new[] {2, 9}}
                 }));
-            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new { api_clear_result = 1 }));
-            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new { api_clear_result = 1 }));
-            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new { api_clear_result = 1 }));
-            PAssert.That(() => count.NowArray.SequenceEqual(new[] { 1, 1, 1, 0 }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0}));
 
             _questCounter.InspectDeck(Js(
                 new[]
                 {
                     new {api_id = 2, api_mission = new[] {2, 114}}
                 }));
-            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new { api_clear_result = 1 }));
-            PAssert.That(() => count.NowArray.SequenceEqual(new[] { 1, 1, 1, 1 }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1}));
         }
 
         /// <summary>
@@ -1980,7 +1986,7 @@ namespace KancolleSniffer.Test
                     new {api_id = 3, api_mission = new[] {2, 46}}
                 }));
             _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
-            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new { api_clear_result = 1 }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
             PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1, 1}));
         }
 
@@ -2073,7 +2079,8 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 242, Name = "Swordfish", Type = 8},
                 new ItemSpec {Id = 249, Name = "Fulmar", Type = 6}
             });
-            var questList = new[] {613, 638, 643, 645, 655, 653, 654, 657, 663, 673, 674, 675, 676, 677, 678, 680, 681, 686, 688};
+            var questList = new[]
+                {613, 638, 643, 645, 655, 653, 654, 657, 663, 673, 674, 675, 676, 677, 678, 680, 681, 686, 688};
             InjectQuestList(questList);
             _questCounter.InspectDestroyItem(
                 $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, _itemInventory.Count))}&api%5Fverno=1");
@@ -2108,7 +2115,7 @@ namespace KancolleSniffer.Test
 
         private void InjectItems(IEnumerable<ItemSpec> specs)
         {
-            _itemInventory.Add(specs.Select((s, i) => new ItemStatus{Id = i + 1, Spec = s}));
+            _itemInventory.Add(specs.Select((s, i) => new ItemStatus {Id = i + 1, Spec = s}));
         }
 
         /// <summary>
