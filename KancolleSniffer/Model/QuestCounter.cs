@@ -356,6 +356,10 @@ namespace KancolleSniffer.Model
                     return specs.Names.Count("Warspite", "金剛", "Ark Royal", "Nelson", "Jervis", "Janus") >= 4;
                 case 346:
                     return specs.Names.Count("夕雲改二", "巻雲改二", "風雲改二", "秋雲改二") == 4;
+                case 348:
+                    return new[] {3, 21}.Contains(specs.FlagshipType) &&
+                           specs.Types.Skip(1).Count(type => new[] {3, 4, 21}.Contains(type)) >= 2 &&
+                           specs.Types.Count(type => type == 2) >= 2;
                 default:
                     return true;
             }

@@ -1731,6 +1731,36 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 348: 「精鋭軽巡」演習！
+        /// </summary>
+        [TestMethod]
+        public void PracticeResult_348()
+        {
+            var count = InjectQuest(348);
+
+            _battleInfo.InjectResultStatus(ShipStatusList(3, 3, 21, 2, 2),
+                new ShipStatus[0], new ShipStatus[0], new ShipStatus[0]);
+            InjectPracticeResult("B");
+            Assert.AreEqual(0, count.Now);
+
+            InjectPracticeResult("A");
+            Assert.AreEqual(1, count.Now);
+
+            _battleInfo.Result.Friend.Main[0] = ShipStatus(4);
+            InjectPracticeResult("A");
+            Assert.AreEqual(1, count.Now);
+
+            _battleInfo.Result.Friend.Main[0] = ShipStatus(21);
+            _battleInfo.Result.Friend.Main[4] = ShipStatus(1);
+            InjectPracticeResult("A");
+            Assert.AreEqual(1, count.Now);
+
+            _battleInfo.Result.Friend.Main[4] = ShipStatus(2);
+            InjectPracticeResult("A");
+            Assert.AreEqual(2, count.Now);
+        }
+
+        /// <summary>
         /// 402: 「遠征」を3回成功させよう！
         /// 403: 「遠征」を10回成功させよう！
         /// 404: 大規模遠征作戦、発令！
