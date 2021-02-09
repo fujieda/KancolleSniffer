@@ -77,7 +77,7 @@ namespace KancolleSniffer.Notification
             {
                 "泊地修理20分経過", new Message
                 {
-                    Title = "泊地修理 %f艦隊",
+                    Title = "泊地修理",
                     Body = "20分経過しました。"
                 }
             },
