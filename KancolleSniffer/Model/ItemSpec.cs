@@ -103,6 +103,7 @@ namespace KancolleSniffer.Model
                     case 47: // 陸上攻撃機
                     case 48: // 局地戦闘機
                     case 49: // 陸上偵察機
+                    case 53: // 大型陸上機
                     case 56:
                     case 57:
                     case 58:
