@@ -26,7 +26,7 @@ namespace KancolleSniffer.Util
             foreach (var st in seg)
             {
                 var pair = st.Split('=');
-                if (pair.Length <= 0)
+                if (pair.Length < 2)
                     continue;
                 var key = pair[0].Trim('?', ' ');
                 var val = pair[1].Trim();
