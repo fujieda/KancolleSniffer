@@ -219,10 +219,19 @@ namespace KancolleSniffer.Model
             }
             if (_map == 73)
             {
-                if (cell == 5)
-                    _map = 731;
-                else if (cell == 18)
-                    _map = 732;
+                switch (cell)
+                {
+                    case 5:
+                    case 8:
+                        _map = 731;
+                        break;
+                    case 18:
+                    case 23:
+                    case 24:
+                    case 25:
+                        _map = 732;
+                        break;
+                }
             }
             _boss = (int)json.api_event_id == 5;
 
