@@ -152,7 +152,7 @@ namespace KancolleSniffer.Test
             var manager =
                 new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
-            var hakuchi = new Message {Title = "泊地修理 第一艦隊", Body = "20分経過しました。", Name = "泊地修理20分経過"};
+            var hakuchi = new Message {Title = "泊地修理", Body = "20分経過しました。", Name = "泊地修理20分経過"};
             var elapsed = 0;
             while (true)
             {
@@ -197,7 +197,7 @@ namespace KancolleSniffer.Test
             var manager =
                 new Scheduler((t, b, n) => { result = new Message {Title = t, Body = b, Name = n}; }, time.GetNow);
             var ensei = new Message {Title = "遠征が終わりました", Body = "第二艦隊 防空射撃演習", Name = "遠征終了"};
-            var hakuchi = new Message {Title = "泊地修理 第一艦隊", Body = "20分経過しました。", Name = "泊地修理20分経過"};
+            var hakuchi = new Message {Title = "泊地修理", Body = "20分経過しました。", Name = "泊地修理20分経過"};
             var elapsed = 0;
             while (true)
             {
