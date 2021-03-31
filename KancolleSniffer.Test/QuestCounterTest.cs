@@ -2050,6 +2050,37 @@ namespace KancolleSniffer.Test
         }
 
         /// <summary>
+        /// 444: 新兵装開発資材輸送を船団護衛せよ！
+        /// </summary>
+        [TestMethod]
+        public void MissionResult_444()
+        {
+            var count = InjectQuest(444);
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 5}},
+                    new {api_id = 3, api_mission = new[] {2, 12}},
+                    new {api_id = 4, api_mission = new[] {2, 9}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=4", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 0, 0}));
+
+            _questCounter.InspectDeck(Js(
+                new[]
+                {
+                    new {api_id = 2, api_mission = new[] {2, 110}},
+                    new {api_id = 3, api_mission = new[] {2, 11}}
+                }));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=2", Js(new {api_clear_result = 1}));
+            _questCounter.InspectMissionResult("api%5Fdeck%5Fid=3", Js(new {api_clear_result = 1}));
+            PAssert.That(() => count.NowArray.SequenceEqual(new[] {1, 1, 1, 1, 1}));
+        }
+
+        /// <summary>
         /// 503: 艦隊大整備！
         /// 504: 艦隊酒保祭り！
         /// </summary>
