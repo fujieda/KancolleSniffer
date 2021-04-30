@@ -2167,17 +2167,19 @@ namespace KancolleSniffer.Test
                 new ItemSpec {Id = 3, Name = "10cm連装高角砲", Type = 1},
                 new ItemSpec {Id = 121, Name = "94式高射装置", Type = 36},
                 new ItemSpec {Id = 242, Name = "Swordfish", Type = 8},
-                new ItemSpec {Id = 249, Name = "Fulmar", Type = 6}
+                new ItemSpec {Id = 249, Name = "Fulmar", Type = 6},
+                new ItemSpec {Id = 21, Name = "零式艦戦52型", Type = 6}
             });
             var questList = new[]
-                {613, 638, 643, 645, 655, 653, 654, 657, 663, 673, 674, 675, 676, 677, 678, 680, 681, 686, 688};
+                {613, 628, 638, 643, 645, 655, 653, 654, 657, 663, 673, 674, 675, 676, 677, 678, 680, 681, 686, 688};
             InjectQuestList(questList);
             _questCounter.InspectDestroyItem(
                 $"api%5Fslotitem%5Fids={string.Join("%2C", Enumerable.Range(1, _itemInventory.Count))}&api%5Fverno=1");
             var scalar = new[]
             {
-                new {Id = 613, Now = 1}, new {Id = 638, Now = 1}, new {Id = 643, Now = 1}, new {Id = 645, Now = 1},
-                new {Id = 653, Now = 1}, new {Id = 663, Now = 1}, new {Id = 673, Now = 2}, new {Id = 674, Now = 1}
+                new {Id = 613, Now = 1}, new{Id = 628, Now = 1}, new {Id = 638, Now = 1}, new {Id = 643, Now = 1},
+                new {Id = 645, Now = 1}, new {Id = 653, Now = 1}, new {Id = 663, Now = 1}, new {Id = 673, Now = 2},
+                new {Id = 674, Now = 1}
             };
             foreach (var e in scalar)
             {
@@ -2189,11 +2191,11 @@ namespace KancolleSniffer.Test
             {
                 new {Id = 654, NowArray = new[] {1, 1}}, new {Id = 655, NowArray = new[] {2, 1, 1, 1, 2}},
                 new {Id = 657, NowArray = new[] {2, 1, 1}},
-                new {Id = 675, NowArray = new[] {3, 1}}, new {Id = 676, NowArray = new[] {1, 1, 1}},
+                new {Id = 675, NowArray = new[] {4, 1}}, new {Id = 676, NowArray = new[] {1, 1, 1}},
                 new {Id = 677, NowArray = new[] {1, 1, 1}}, new {Id = 678, NowArray = new[] {1, 1}},
                 new {Id = 680, NowArray = new[] {1, 2}}, new {Id = 686, NowArray = new[] {1, 1}},
                 new {Id = 681, NowArray = new[] {1, 2}},
-                new {Id = 688, NowArray = new[] {3, 1, 2, 1}}
+                new {Id = 688, NowArray = new[] {4, 1, 2, 1}}
             };
             foreach (var e in array)
             {

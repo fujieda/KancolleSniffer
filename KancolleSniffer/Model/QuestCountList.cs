@@ -130,6 +130,7 @@ namespace KancolleSniffer.Model
             {619, new QuestSpec {Interval = Daily, Max = 1, Material = new[] {0, 0, 0, 1}}}, // 619: 装備の改修強化
 
             {613, new QuestSpec {Interval = Weekly, Max = 24, Material = new[] {0, 0, 0, 0}}}, // 613: 資源の再利用
+            {628, new QuestDestroyItem {Interval = Quarterly, Max = 2, Ids = new[] {21}, Material = new[] {0, 0, 4, 4}, AdjustCount = false}}, // 628: 機種転換
             {638, new QuestDestroyItem {Interval = Weekly, Max = 6, Types = new[] {21}, Material = new[] {0, 0, 2, 1}}}, // 638: 対空機銃量産
             {643, new QuestDestroyItem {Interval = Quarterly, Max = 2, Ids = new[] {20}, Material = new[] {0, 0, 2, 0}, AdjustCount = false}}, // 643: 主力「陸攻」の調達
             {645, new QuestDestroyItem {Interval = Monthly, Max = 1, Ids = new[] {35}, Material = new[] {0, 0, 0, 0}, AdjustCount = false}}, // 645: 「洋上補給」物資の調達
