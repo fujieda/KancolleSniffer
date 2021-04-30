@@ -420,6 +420,21 @@ namespace KancolleSniffer.Model
         public int RawLoS =>
             LoS - AllSlot.Sum(item => item.Spec.LoS + (Spec.HaveSgRadarBonus ? item.Spec.LoSSgRadarBonus : 0));
 
+        public string GetEquipString()
+        {
+            var result =
+                (from i in Enumerable.Range(0, Slot.Count)
+                    let item = Slot[i]
+                    where !item.Empty
+                    select item.Spec.Name +
+                           (item.Spec.IsAircraft && OnSlot.Length > 0 && Spec.MaxEq.Length > 0
+                               ? $"{OnSlot[i]}/{Spec.MaxEq[i]}"
+                               : ""));
+            if (SlotEx.Id > 0)
+                result = result.Concat(new[] {SlotEx.Spec.Name});
+            return string.Join("\r\n", result);
+        }
+
         public object Clone()
         {
             var r = (ShipStatus)MemberwiseClone();

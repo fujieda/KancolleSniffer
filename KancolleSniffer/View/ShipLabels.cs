@@ -36,10 +36,11 @@ namespace KancolleSniffer.View
 
         protected virtual Control[] AddedControls => new Control[0];
 
-        public virtual void Set(ShipStatus status)
+        public virtual void Set(ShipStatus status, ToolTip toolTip)
         {
             foreach (var label in new ShipLabel[] {Fleet, Name, Hp, Cond, Level, Exp})
                 label?.Set(status);
+            toolTip.SetToolTip(Name, status.GetEquipString());
         }
 
         public virtual void Reset()

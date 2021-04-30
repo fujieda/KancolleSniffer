@@ -32,9 +32,9 @@ namespace KancolleSniffer.View.ShipListPanel
 
             protected override Control[] AddedControls => new Control[] {Time, PerHp};
 
-            public override void Set(ShipStatus status)
+            public override void Set(ShipStatus status, ToolTip toolTip)
             {
-                base.Set(status);
+                base.Set(status, toolTip);
                 Time.Set(status);
             }
         }
@@ -93,7 +93,8 @@ namespace KancolleSniffer.View.ShipListPanel
                 return;
             }
             var labels = _labelList[i];
-            labels.Set(s);
+            labels.Set(s, _shipListPanel.ToolTip);
+            _shipListPanel.ToolTip.SetToolTip(labels.Name, s.GetEquipString());
             labels.PerHp.Text = s.RepairTimePerHp.ToString(@"mm\:ss");
             labels.BackPanel.Visible = true;
         }

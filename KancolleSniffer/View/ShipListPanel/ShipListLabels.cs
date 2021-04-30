@@ -78,7 +78,7 @@ namespace KancolleSniffer.View.ShipListPanel
                 SetShipType(i);
                 return;
             }
-            labels.Set(s);
+            labels.Set(s, _shipListPanel.ToolTip);
             labels.BackPanel.Visible = true;
         }
 

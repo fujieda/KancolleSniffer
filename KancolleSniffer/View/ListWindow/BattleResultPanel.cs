@@ -264,11 +264,10 @@ namespace KancolleSniffer.View.ListWindow
                 }
                 else
                 {
-                    labels.Set(ship);
+                    labels.Set(ship, ToolTip);
                     if (ship.Name.StartsWith("基地航空隊"))
                         labels.Name.SetName(ship.Name.Substring(2));
                 }
-                ToolTip.SetToolTip(labels.Name, GetEquipString(ship));
             }
             for (var i = ships.Length; i < labelsList.Count; i++)
                 labelsList[i].Reset();
@@ -279,21 +278,6 @@ namespace KancolleSniffer.View.ListWindow
             if (fleet.Guard.Length == 0)
                 return fleet.Main;
             return fleet.Main.Concat(new[] {new ShipStatus()}.Concat(fleet.Guard)).ToArray();
-        }
-
-        private static string GetEquipString(ShipStatus ship)
-        {
-            var result =
-                (from i in Enumerable.Range(0, ship.Slot.Count)
-                    let item = ship.Slot[i]
-                    where !item.Empty
-                    select item.Spec.Name +
-                           (item.Spec.IsAircraft && ship.OnSlot.Length > 0 && ship.Spec.MaxEq.Length > 0
-                               ? $"{ship.OnSlot[i]}/{ship.Spec.MaxEq[i]}"
-                               : ""));
-            if (ship.SlotEx.Id > 0)
-                result = result.Concat(new[] {ship.SlotEx.Spec.Name});
-            return string.Join("\r\n", result);
         }
 
         private static string ShortenName(string name)

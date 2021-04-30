@@ -24,7 +24,7 @@ using static System.Math;
 
 namespace KancolleSniffer.View.ShipListPanel
 {
-    public class ShipListPanel : Panel, IPanelResize
+    public class ShipListPanel : PanelWithToolTip, IPanelResize
     {
         public const int LabelHeight = 12;
         public const int LineHeight = 16;

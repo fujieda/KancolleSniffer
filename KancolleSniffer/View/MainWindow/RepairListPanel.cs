@@ -23,7 +23,7 @@ using static System.Math;
 
 namespace KancolleSniffer.View.MainWindow
 {
-    public class RepairListPanel : Panel
+    public class RepairListPanel : PanelWithToolTip
     {
         private const int PanelPadding = 5;
         private const int LineHeight = 15;
@@ -38,9 +38,9 @@ namespace KancolleSniffer.View.MainWindow
 
             protected override Control[] AddedControls => new Control[] {Time, Damage};
 
-            public override void Set(ShipStatus status)
+            public override void Set(ShipStatus status, ToolTip toolTip)
             {
-                base.Set(status);
+                base.Set(status, toolTip);
                 Time.Set(status);
             }
 
@@ -129,7 +129,7 @@ namespace KancolleSniffer.View.MainWindow
             {
                 var s = _repairList[i + _listScroller.Position];
                 var labels = _repairLabels[i];
-                labels.Set(s);
+                labels.Set(s, ToolTip);
                 labels.Damage.SetColor(s);
             }
             if (_repairList.Length < _repairLabels.Length)

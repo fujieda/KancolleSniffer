@@ -106,7 +106,7 @@ namespace KancolleSniffer.View.ShipListPanel
                 _shipListPanel.SetShipType(i);
                 return;
             }
-            labels.Set(s);
+            labels.Set(s, _shipListPanel.ToolTip);
             var cb = _checkBoxesList[i];
             for (var j = 0; j < cb.Length; j++)
                 cb[j].Checked = GroupSettings[j].Contains(s.Id);

@@ -42,17 +42,21 @@ namespace KancolleSniffer.View.MainWindow
         private readonly ShipLabelLines _shipLines7;
         private readonly CombinedShipLines _combinedLines = new CombinedShipLines();
         private readonly HpToggle _hpToggle = new HpToggle();
+        private readonly ToolTip _toolTip;
+        private readonly EventHandler _onClick;
 
         public bool ShowHpInPercent => _hpToggle.InPercent;
 
-        public ShipListPanels(Control parent, EventHandler onClick)
+        public ShipListPanels(ShipInfoPanel parent, EventHandler onClick)
         {
+            _onClick = onClick;
+            _toolTip = parent.ToolTip;
             _shipLines = new ShipLabelLines(ShipInfo.MemberCount, 16);
             _shipLines7 = new ShipLabelLines(7, 14);
             parent.Controls.AddRange(new Control[] {_combined, _7Ships});
-            _shipLines.Create(parent, _hpToggle, onClick);
-            _shipLines7.Create(_7Ships, _hpToggle, onClick);
-            _combinedLines.Create(_combined, _hpToggle, onClick);
+            _shipLines.Create(parent, this);
+            _shipLines7.Create(_7Ships, this);
+            _combinedLines.Create(_combined, this);
         }
 
         public void ToggleHpPercent()
@@ -120,6 +124,7 @@ namespace KancolleSniffer.View.MainWindow
             private readonly int _lineHeight;
             private readonly ShipLabels[] _shipLines;
             private readonly AkashiTimerLabels _akashiTimerLabels;
+            private ToolTip _toolTip;
 
             private const int Top = 1;
             private const int LabelHeight = 12;
@@ -131,11 +136,12 @@ namespace KancolleSniffer.View.MainWindow
                 _lineHeight = lineHeight;
             }
 
-            public void Create(Control parent, HpToggle hpToggle, EventHandler onClick)
+            public void Create(Control parent, ShipListPanels panels)
             {
+                _toolTip = panels._toolTip;
                 parent.SuspendLayout();
                 _akashiTimerLabels.Create(parent);
-                CreateHeader(parent, hpToggle);
+                CreateHeader(parent, panels._hpToggle);
                 for (var i = 0; i < _shipLines.Length; i++)
                 {
                     var y = Top + _lineHeight * (i + 1);
@@ -149,9 +155,9 @@ namespace KancolleSniffer.View.MainWindow
                         BackGround = new Label {Location = new Point(0, y), Size = new Size(PanelWidth, _lineHeight)}
                     };
                     labels.Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));
-                    labels.SetClickHandler(onClick);
+                    labels.SetClickHandler(panels._onClick);
                     labels.SetTag(i);
-                    hpToggle.AddHpLabel(labels.Hp);
+                    panels._hpToggle.AddHpLabel(labels.Hp);
                 }
                 parent.ResumeLayout();
             }
@@ -183,7 +189,7 @@ namespace KancolleSniffer.View.MainWindow
                         labels.Reset();
                         continue;
                     }
-                    labels.Set(ships[i]);
+                    labels.Set(ships[i], _toolTip);
                 }
             }
 
@@ -286,11 +292,13 @@ namespace KancolleSniffer.View.MainWindow
 
             private const int Top = 1;
             private const int LineHeight = 16;
+            private ToolTip _toolTip;
 
-            public void Create(Control parent, HpToggle hpToggle, EventHandler onClick)
+            public void Create(Control parent, ShipListPanels panels)
             {
+                _toolTip = panels._toolTip;
                 parent.SuspendLayout();
-                CreateHeader(parent, hpToggle);
+                CreateHeader(parent, panels._hpToggle);
                 for (var i = 0; i < _combinedLines.Length; i++)
                 {
                     var x = PanelWidth / 2 * (i / ShipInfo.MemberCount);
@@ -303,10 +311,10 @@ namespace KancolleSniffer.View.MainWindow
                         BackGround = new Label {Location = new Point(x, y), Size = new Size(PanelWidth / 2, LineHeight)}
                     };
                     labels.Arrange(parent, CustomColors.ColumnColors.DarkFirst(i));
-                    labels.SetClickHandler(onClick);
+                    labels.SetClickHandler(panels._onClick);
                     labels.SetTag(i);
                     var hpLabel = _combinedLines[i].Hp;
-                    hpToggle.AddHpLabel(hpLabel);
+                    panels._hpToggle.AddHpLabel(hpLabel);
                 }
                 parent.ResumeLayout();
             }
@@ -341,7 +349,7 @@ namespace KancolleSniffer.View.MainWindow
                         labels.Reset();
                         continue;
                     }
-                    labels.Set(ships[idx]);
+                    labels.Set(ships[idx], _toolTip);
                 }
             }
         }
