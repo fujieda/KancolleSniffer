@@ -292,6 +292,9 @@ namespace KancolleSniffer.Model
                         return HaveSonar &&
                                specs.Any(spec => spec.IsTorpedoBomber && spec.AntiSubmarine >= 7 ||
                                                  spec.IsArmyAircraft);
+                    case "日向改二":
+                        return Slot.Count(item => item.Spec.IsAutoGiro) >= 2 ||
+                               Slot.Count(item => item.Spec.IsHelicopter) >= 1;
                     default:
                         if (HaveSonar && AntiSubmarine >= 100)
                             return true;

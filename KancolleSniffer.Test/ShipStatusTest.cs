@@ -141,6 +141,30 @@ namespace KancolleSniffer.Test
             }
         };
 
+        private static readonly ItemStatus S51J = new ItemStatus
+        {
+            Id = 1,
+            Spec = new ItemSpec
+            {
+                Id = 326,
+                Name = "S-51J",
+                Type = 25,
+                IconType = 44
+            }
+        };
+
+        private static readonly ItemStatus S51J改 = new ItemStatus
+        {
+            Id = 1,
+            Spec = new ItemSpec
+            {
+                Id = 327,
+                Name = "S-51J改",
+                Type = 25,
+                IconType = 44
+            }
+        };
+
         [TestClass]
         public class OpeningSubmarineAttack
         {
@@ -403,6 +427,29 @@ namespace KancolleSniffer.Test
                     流星改
                 };
                 Assert.IsFalse(ship.CanOpeningAntiSubmarineAttack);
+            }
+
+            [TestMethod]
+            public void 日向改二()
+            {
+                var ship = new ShipStatus
+                {
+                    Spec = new ShipSpec {Name = "日向改二"},
+                    Slot = new ItemStatus[0]
+                };
+                Assert.IsFalse(ship.CanOpeningAntiSubmarineAttack);
+
+                ship.Slot = new[] {カ号観測機};
+                Assert.IsFalse(ship.CanOpeningAntiSubmarineAttack);
+
+                ship.Slot = new[] {カ号観測機, カ号観測機};
+                Assert.IsTrue(ship.CanOpeningAntiSubmarineAttack);
+
+                ship.Slot = new[] {S51J};
+                Assert.IsTrue(ship.CanOpeningAntiSubmarineAttack);
+
+                ship.Slot = new[] {S51J改};
+                Assert.IsTrue(ship.CanOpeningAntiSubmarineAttack);
             }
         }
 

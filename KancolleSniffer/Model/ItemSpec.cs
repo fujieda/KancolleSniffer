@@ -156,6 +156,10 @@ namespace KancolleSniffer.Model
 
         public bool IsNightRecon => Id == 102;
 
+        public bool IsAutoGiro => Type == 25;
+
+        public bool IsHelicopter => IconType == 44;
+
         public double ContactTriggerRate
         {
             get
