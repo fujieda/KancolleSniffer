@@ -100,5 +100,16 @@ namespace KancolleSniffer.Forms
             foreach (var listForm in _listForms)
                 action(listForm);
         }
+
+        public void WaitForCloseAll()
+        {
+            var start = DateTime.Now;
+            do
+            {
+                Application.DoEvents();
+                if (_listForms.All(listFrom => !listFrom.Visible))
+                    return;
+            } while ((DateTime.Now - start).TotalSeconds < 5);
+        }
     }
 }

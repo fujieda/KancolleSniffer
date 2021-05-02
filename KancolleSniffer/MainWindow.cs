@@ -256,6 +256,7 @@ namespace KancolleSniffer
             }
             if (!SystemShutdown)
                 _listFormGroup.Close(); // 各自で終了処理するのでシャットダウン時は不要
+            _listFormGroup.WaitForCloseAll();
             Config.Location = (Form.WindowState == FormWindowState.Normal ? Form.Bounds : Form.RestoreBounds).Location;
             Config.ShowHpInPercent = _c.fleetPanel.ShowHpInPercent;
         }
