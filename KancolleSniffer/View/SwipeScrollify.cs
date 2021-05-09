@@ -165,7 +165,7 @@ namespace KancolleSniffer.View
 
             public void MouseDown(IntPtr handle, ref bool handled)
             {
-                if (!_panel.ScrollBar.Visible)
+                if (!_panel.ScrollBar.Visible || _panel.IsDisposed)
                     return;
                 if (!_mouseStart.IsEmpty)
                     return;
