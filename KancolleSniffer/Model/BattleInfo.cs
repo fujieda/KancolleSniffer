@@ -703,7 +703,7 @@ namespace KancolleSniffer.Model
             }
             else
             {
-                _escapingShips.Add(_shipInfo.Fleets[2].Deck[damaged]);
+                _escapingShips.Add(_fleet.Deck[damaged]);
             }
         }
 
