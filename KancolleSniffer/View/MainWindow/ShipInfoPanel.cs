@@ -168,12 +168,13 @@ namespace KancolleSniffer.View.MainWindow
 
         private void UpdateLoS()
         {
-            var fleet = Context.Sniffer.Fleets[CurrentFleet];
-            _lineOfSight.Text = RoundDown(fleet.GetLineOfSights(1)).ToString("F1");
-            var text = $"係数2: {RoundDown(fleet.GetLineOfSights(2)):F1}\r\n" +
-                       $"係数3: {RoundDown(fleet.GetLineOfSights(3)):F1}\r\n" +
-                       $"係数4: {RoundDown(fleet.GetLineOfSights(4)):F1}\r\n" +
-                       $"偵察: {RoundDown(fleet.AirReconScore):F1}";
+            var fleets = new[] {Context.Sniffer.Fleets[CurrentFleet]}.ToList();
+            if (CombinedFleet)
+                fleets.Add(Context.Sniffer.Fleets[1]);
+            _lineOfSight.Text = RoundDown(fleets.Sum(f => f.GetLineOfSights(1))).ToString("F1");
+            var text = string.Concat(
+                new[] {2, 3, 4}.Select(n => $"係数{n}: {RoundDown(fleets.Sum(f => f.GetLineOfSights(n))):F1}\r\n")) +
+                $"偵察: {RoundDown(fleets.Sum(f => f.AirReconScore)):F1}";
             ToolTip.SetToolTip(_lineOfSight, text);
             ToolTip.SetToolTip(_lineOfSightCaption, text);
         }
