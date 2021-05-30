@@ -261,6 +261,7 @@ namespace KancolleSniffer.View.ListWindow
                     labels.Hp.Set(ship);
                     labels.Name.SetName(ShortenName(ship.Name));
                     labels.Name.Left = CalcEnemyNameLeft(labels.Hp.Width);
+                    ToolTip.SetToolTip(labels.Name, ship.GetEquipString());
                 }
                 else
                 {
